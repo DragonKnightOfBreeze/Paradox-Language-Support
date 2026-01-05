@@ -13,6 +13,7 @@ import icu.windea.pls.config.configContext.inlineScriptExpression
 import icu.windea.pls.config.configContext.parameterElement
 import icu.windea.pls.config.configContext.parameterValueQuoted
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
@@ -215,7 +216,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val configGroup = context.configGroup
-        val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptManager.inlineScriptKey] ?: return null
+        val inlineConfigs = configGroup.directivesModel.inlineScript.orNull() ?: return null
         val contextElement = context.element
         val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
         val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)

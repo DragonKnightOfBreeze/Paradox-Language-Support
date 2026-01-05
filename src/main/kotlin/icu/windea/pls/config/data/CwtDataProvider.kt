@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig
@@ -15,12 +16,10 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -88,11 +87,8 @@ interface CwtDataProvider {
     val scopeGroups: Map<@CaseInsensitive String, CwtScopeGroupConfig>
 
     val singleAliases: Map<String, CwtSingleAliasConfig>
-
     val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
-
-    val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
-    val macroConfigs: Map<String, CwtMacroConfig>
+    val directives: List<CwtDirectiveConfig>
 
     // name - config
     val modifierCategories: Map<String, CwtModifierCategoryConfig>
@@ -142,9 +138,11 @@ interface CwtDataProvider {
     /** 相关本地化的模式，用于从本地化导航到相关定义。 */
     val relatedLocalisationPatterns: Set<Tuple2<String, String>>
 
-    /** 获取符合特定条件的排序后的链接规则。 */
+    /** 获取符合特定条件的链接规则。 */
     val linksModel: CwtLinksModel
-    /** 获取符合特定条件的排序后的本地化的链接规则。 */
+    /** 获取符合特定条件的指令规则。 */
+    val directivesModel: CwtDirectivesModel
+    /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinksModel: CwtLinksModel
     /** 获取符合特定条件的定义类型。 */
     val definitionTypesModel: CwtDefinitionTypesModel
@@ -173,6 +171,12 @@ interface CwtLinksModel {
     val forValueFromArgumentSorted: List<CwtLinkConfig>
     val forValueFromDataSorted: List<CwtLinkConfig>
     val forValueFromDataNoPrefixSorted: List<CwtLinkConfig>
+}
+
+/** 用于获取符合特定条件的指令规则。 */
+interface CwtDirectivesModel {
+    val inlineScript: List<CwtDirectiveConfig>
+    val definitionInjection: CwtDirectiveConfig?
 }
 
 /** 用于获取符合特定条件的定义类型。 */

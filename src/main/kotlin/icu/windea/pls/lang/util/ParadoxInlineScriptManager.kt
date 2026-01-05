@@ -62,8 +62,9 @@ object ParadoxInlineScriptManager {
      */
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
-        val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
-        if (configs.isNullOrEmpty()) return false
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configs = configGroup.directivesModel.inlineScript
+        if (configs.isEmpty()) return false
         return true
     }
 

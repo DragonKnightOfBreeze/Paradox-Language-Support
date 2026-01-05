@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
@@ -220,7 +220,7 @@ object CwtConfigManipulator {
 
     // region Inline Methods
 
-    fun inline(config: CwtInlineConfig): CwtPropertyConfig {
+    fun inline(config: CwtDirectiveConfig): CwtPropertyConfig {
         val other = config.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = other,
@@ -255,9 +255,9 @@ object CwtConfigManipulator {
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
-        inlined.inlineConfig = config.inlineConfig
-        inlined.aliasConfig = config.aliasConfig
         inlined.singleAliasConfig = singleAliasConfig
+        inlined.aliasConfig = config.aliasConfig
+        inlined.inlineConfig = config.inlineConfig
         return inlined
     }
 
@@ -295,9 +295,9 @@ object CwtConfigManipulator {
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
-        inlined.inlineConfig = config.inlineConfig
-        inlined.aliasConfig = aliasConfig
         inlined.singleAliasConfig = config.singleAliasConfig
+        inlined.aliasConfig = aliasConfig
+        inlined.inlineConfig = config.inlineConfig
         val finalInlined = when (inlined.valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> inlineSingleAlias(inlined) ?: return null
             else -> inlined

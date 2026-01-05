@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig
@@ -17,12 +18,10 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -44,10 +43,9 @@ import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 /**
@@ -83,8 +81,7 @@ abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
     override val scopeGroups get() = from.scopeGroups
     override val singleAliases get() = from.singleAliases
     override val aliasGroups get() = from.aliasGroups
-    override val inlineConfigGroup get() = from.inlineConfigGroup
-    override val macroConfigs get() = from.macroConfigs
+    override val directives get() = from.directives
     override val modifierCategories get() = from.modifierCategories
     override val modifiers get() = from.modifiers
     override val databaseObjectTypes get() = from.databaseObjectTypes
@@ -104,6 +101,7 @@ abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
     override val relatedLocalisationPatterns get() = from.relatedLocalisationPatterns
     override val linksModel get() = from.linksModel
     override val localisationLinksModel get() = from.localisationLinksModel
+    override val directivesModel get() = from.directivesModel
     override val definitionTypesModel get() = from.definitionTypesModel
     override val filePathExpressions get() = from.filePathExpressions
     override val parameterConfigs get() = from.parameterConfigs
@@ -167,10 +165,8 @@ private val UserDataHolder.singleAliases: FastMap<String, CwtSingleAliasConfig>
     by registerKey(CwtConfigGroup.Keys) { FastMap() }
 private val UserDataHolder.aliasGroups: FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>
     by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.inlineConfigGroup: FastMap<String, FastList<CwtInlineConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.macroConfigs: FastMap<String, CwtMacroConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
+private val UserDataHolder.directives: FastList<CwtDirectiveConfig>
+    by registerKey(CwtConfigGroup.Keys) { FastList() }
 private val UserDataHolder.modifierCategories: FastMap<String, CwtModifierCategoryConfig>
     by registerKey(CwtConfigGroup.Keys) { FastMap() }
 private val UserDataHolder.modifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
@@ -209,6 +205,8 @@ private val UserDataHolder.linksModel: CwtLinksModelBase
     by registerKey(CwtConfigGroup.Keys) { CwtLinksModelBase() }
 private val UserDataHolder.localisationLinksModel: CwtLinksModelBase
     by registerKey(CwtConfigGroup.Keys) { CwtLinksModelBase() }
+private val UserDataHolder.directivesModel: CwtDirectivesModelBase
+    by registerKey(CwtConfigGroup.Keys) { CwtDirectivesModelBase() }
 private val UserDataHolder.definitionTypesModel: CwtDefinitionTypesModelBase
     by registerKey(CwtConfigGroup.Keys) { CwtDefinitionTypesModelBase() }
 private val UserDataHolder.filePathExpressions: FastSet<CwtDataExpression>
@@ -228,6 +226,11 @@ class CwtLinksModelBase : CwtLinksModel {
     override val forValueFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
     override val forValueFromDataSorted: FastList<CwtLinkConfig> = FastList()
     override val forValueFromDataNoPrefixSorted: FastList<CwtLinkConfig> = FastList()
+}
+
+class CwtDirectivesModelBase : CwtDirectivesModel {
+    override val inlineScript: FastList<CwtDirectiveConfig> = FastList()
+    override var definitionInjection: CwtDirectiveConfig? = null
 }
 
 class CwtDefinitionTypesModelBase : CwtDefinitionTypesModel {

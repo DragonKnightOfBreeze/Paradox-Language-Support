@@ -213,6 +213,20 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
+        // compute `directivesModel`
+        run {
+            currentCoroutineContext.ensureActive()
+            with(initializer.directivesModel) {
+                val directives = initializer.directives
+                directives.forEach { c ->
+                    when (c.name) {
+                        "inline_script" -> inlineScript += c
+                        "definition_injection" -> definitionInjection = c
+                    }
+                }
+            }
+        }
+
         // compute `definitionTypesModel`
         run {
             currentCoroutineContext.ensureActive()

@@ -16,7 +16,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.data.definitionParameterModificationTracker
 import icu.windea.pls.core.castOrNull
@@ -432,7 +432,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         // NOTE 2.1.0 这里目前不验证游戏类型
-        var inlineConfig: CwtInlineConfig? = null
+        var inlineConfig: CwtDirectiveConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1
         when (from) {

@@ -51,10 +51,9 @@ import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtBlockElement
@@ -601,9 +600,8 @@ object CwtConfigCompletionManager {
                         val finalConfigs = configGroup.aliasGroups[aliasName] ?: return true
                         finalConfigs.process { (n, c) -> processLookupElement(n, c.singleOrNull()) }
                     }
-                    "inline" -> {
-                        val finalConfigs = configGroup.inlineConfigGroup
-                        finalConfigs.process { (n, c) -> processLookupElement(n, c.singleOrNull()) }
+                    "directive" -> {
+                        true // no completion yet
                     }
                     else -> true
                 }

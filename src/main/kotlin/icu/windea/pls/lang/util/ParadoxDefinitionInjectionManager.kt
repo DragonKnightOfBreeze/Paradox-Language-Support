@@ -40,14 +40,13 @@ object ParadoxDefinitionInjectionManager {
         val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
     }
 
-    const val definitionInjectionKey = "definition_injection"
-
     /**
      * 检查指定的游戏类型是否支持定义注入。
      */
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
-        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val config = configGroup.directivesModel.definitionInjection
         if (config == null) return false
         return true
     }
@@ -58,7 +57,8 @@ object ParadoxDefinitionInjectionManager {
     fun isSupported(mode: String, gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
         if (mode.isEmpty()) return false
-        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val config = configGroup.directivesModel.definitionInjection
         if (config == null) return false
         if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写
         return true
@@ -124,8 +124,8 @@ object ParadoxDefinitionInjectionManager {
         val type = stub.type
         val gameType = stub.gameType
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
-        val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
-        val modeConfig = macroConfig.modeConfigs[mode] ?: return null
+        val config = configGroup.directivesModel.definitionInjection ?: return null
+        val modeConfig = config.modeConfigs[mode] ?: return null
         val typeConfig = configGroup.types[type]
         return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
@@ -140,8 +140,8 @@ object ParadoxDefinitionInjectionManager {
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
-        val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
-        val modeConfig = macroConfig.modeConfigs[mode] ?: return null
+        val config = configGroup.directivesModel.definitionInjection ?: return null
+        val modeConfig = config.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
         run {
             if (target.isNullOrEmpty()) return@run
@@ -196,8 +196,8 @@ object ParadoxDefinitionInjectionManager {
         val mode = definitionInjectionInfo.mode
         val gameType = definitionInjectionInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return false
-        return mode in macroConfig.relaxModes
+        val config = configGroup.directivesModel.definitionInjection ?: return false
+        return mode in config.relaxModes
     }
 
     fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {

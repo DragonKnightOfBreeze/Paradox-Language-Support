@@ -4,16 +4,15 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.util.option.CwtOptionDataAccessor
 import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.core.toBooleanYesNo
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
@@ -39,14 +38,14 @@ fun <T> CwtMemberConfig<*>.optionData(accessor: CwtOptionDataAccessor<T>): T = a
 /** 通过 [CwtOptionDataAccessor] 获取选项数据。 */
 inline fun <T> CwtMemberConfig<*>.optionData(accessorGetter: CwtOptionDataAccessors.() -> CwtOptionDataAccessor<T>): T = optionData(CwtOptionDataAccessors.accessorGetter())
 
-/** 绑定到当前属性规则的单内联规则（解析阶段填充）。*/
+/** 绑定到当前属性规则的单别名规则（解析阶段填充）。*/
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
-/** 绑定到当前属性规则的内联规则（解析阶段填充）。*/
+/** 绑定到当前属性规则的别名规则（解析阶段填充）。*/
 var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
-/** 绑定到当前属性规则的内联扩展规则（解析阶段填充）。*/
-var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by registerKey(CwtMemberConfig.Keys)
+/** 绑定到当前属性规则的内联规则（解析阶段填充）。*/
+var CwtPropertyConfig.inlineConfig: CwtDirectiveConfig? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前值规则的标签类型（解析阶段推断，用于渲染和提示）。*/
 var CwtValueConfig.tagType: ParadoxTagType? by registerKey(CwtMemberConfig.Keys)

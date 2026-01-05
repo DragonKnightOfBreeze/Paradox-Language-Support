@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
@@ -15,16 +15,16 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtDirectiveConfigResolverImpl : CwtDirectiveConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtMacroConfig? = doResolve(config)
+    override fun resolve(config: CwtPropertyConfig): CwtDirectiveConfig? = doResolve(config)
 
-    private fun doResolve(config: CwtPropertyConfig): CwtMacroConfig? {
-        val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized() ?: return null
+    private fun doResolve(config: CwtPropertyConfig): CwtDirectiveConfig? {
+        val name = config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() ?: return null
         val propElements = config.properties
         if (propElements.isNullOrEmpty()) {
-            logger.warn("Skipped invalid macro config (name: $name): Missing properties.".withLocationPrefix(config))
+            logger.warn("Skipped invalid directive config (name: $name): Missing properties.".withLocationPrefix(config))
             return null
         }
         val propGroup = propElements.groupBy { it.key }
@@ -34,16 +34,16 @@ internal class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRe
         val relaxModes = propGroup.getOne("relax_modes")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()
-        logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
-        return CwtMacroConfigImpl(config, name, modeConfigs, relaxModes)
+        logger.debug { "Resolved directive config (name: $name).".withLocationPrefix(config) }
+        return CwtDirectiveConfigImpl(config, name, modeConfigs, relaxModes)
     }
 }
 
-private class CwtMacroConfigImpl(
+private class CwtDirectiveConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val modeConfigs: Map<String, CwtValueConfig>,
     override val relaxModes: Set<String>,
-) : UserDataHolderBase(), CwtMacroConfig {
-    override fun toString() = "CwtMacroConfigImpl(name='$name')"
+) : UserDataHolderBase(), CwtDirectiveConfig {
+    override fun toString() = "CwtDirectiveConfigImpl(name='$name')"
 }

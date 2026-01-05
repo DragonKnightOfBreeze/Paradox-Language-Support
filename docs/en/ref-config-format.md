@@ -178,58 +178,28 @@ system_scopes = {
 }
 ```
 
-#### Inline Config {#config-inline}
+#### Directive Configs {#config-directive}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDirectiveConfigResolverImpl -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-
-These configs describe the structure of inline usage locations, thereby providing features such as code highlighting, reference resolution, code completion, and code inspection in script files.
-These structures can be used in various places within script files (not limited to definition declarations), but there are also specific rules and limitations.
-Inline logic allows a code snippet to be reused during writing. At runtime, its usage location is replaced with the actual inlined code snippet.
-
-Currently, they are only available for **inline scripts**.
-
-**Path location**: `inline[{name}]`, where `{name}` is the config name.
-
-**Cooperation with other configs**:
-- After expansion, the result behaves like normal property configs and participates in validation and completion.
-- If you need to provide context and polymorphic settings for the "inline script path", refer to the extended config: "Inline Script (Extended)".
-
-**Example** (Stellaris):
-
-```cwt
-inline[inline_script] = filepath[common/inline_scripts/,.txt]
-
-inline[inline_script] = {
-    ## cardinality = 1..1
-    script = filepath[common/inline_scripts/,.txt]
-    ## cardinality = 0..inf
-    $parameter = $parameter_value
-}
-```
-
-#### Macro Configs {#config-macro}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtMacroConfigResolverImpl -->
 <!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/common/definition_injections.cwt -->
 
-These configs describe format of macro expressions and provide additional metadata for validation, thereby enabling features such as code highlighting, reference resolving, code completion, and code inspection in script files.
-These expressions can be used in various places within script files (not limited to definition declarations), but there are also specific rules and restrictions.
-Different macros serve different purposes and have distinct processing logic during game runtime.
+Used to describe special expressions and structures in script files that are different from general abstractions, and provide additional metadata for hints and validation.
+These expressions and structures change the behavior of the script parser at game runtime, allowing you to modify, extend, or reuse existing script snippets.
+Different directives can have different config structures.
 
-Currently, they are only available for **definition injections**.
+Language features currently involved:
+- **Inline_script**: (Sellaris) will be replaced by the content of the target file during the parsing phase, and arguments can be specified.
+- **definition_injection**: (VIC3/EU5) will inject or replace The declaration of the target definition during the parsing phase, and the mode can be specified to determine the specific behavior.
 
-**路径定位**：`macro[{name}]`，`{name}` 匹配规则名称。
+**Path location**: `directive[{name}]`, where `{name}` is the config name.
 
-**示例**（VIC3/EU5）：
+**Example**：
 
 ```cwt
-macro[definition_injection] = {
-    modes = {
-        # ...
-    }
+directive[inline_script] = {
     # ...
 }
 ```
@@ -319,7 +289,7 @@ types = {
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
 
-- **Purpose**: abstract reusable config fragments as named aliases that can be referenced and expanded in multiple places; a single-alias is for one-to-one reuse on the value side.
+- **Purpose**: abstract reusable config snippets as named aliases that can be referenced and expanded in multiple places; a single-alias is for one-to-one reuse on the value side.
 - **Path location**:
   - Alias: `alias[{name}:{subName}]` (`{subName}` is a constrained data expression).
   - Single alias: `single_alias[{name}]`.
@@ -344,13 +314,13 @@ types = {
   - Single alias expands on the value side: `CwtConfigManipulator.inlineSingleAlias` replaces the entire declaration into the value and child block at the use site.
 
 - **Cooperation with other configs**:
-  - Often used with "Declaration" to reuse trigger/effect fragments inside definition declarations.
+  - Often used with "Declaration" to reuse trigger/effect snippets inside definition declarations.
   - Works with "Types and Subtypes" as part of modifier configs or context constraints.
 
 **Example**:
 
 ```cwt
-# Alias: define an effect fragment
+# Alias: define an effect snippet
 alias[effect:apply_bonus] = {
     add_modifier = {
         modifier = enum[modifier_rule]
@@ -363,7 +333,7 @@ scripted_effect = {
     alias_name[effect] = alias_match_left[effect]
 }
 
-# Single alias: define a trigger-block fragment
+# Single alias: define a trigger-block snippet
 single_alias[trigger_clause] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
@@ -1456,8 +1426,8 @@ postfix = {
 Config expressions are structured syntax used inside string fields of configs to describe value shapes or matching patterns.
 
 Include:
-- Data Expression: parse data types or dynamic fragments.
-- Template Expression: patterns concatenating constants and dynamic fragments for flexible matching.
+- Data Expression: parse data types or dynamic snippets.
+- Template Expression: patterns concatenating constants and dynamic snippets for flexible matching.
 - Cardinality Expression: declare occurrence ranges and strict/lenient checks.
 - Location Expression: locate resources like images/localisations.
 - Schema Expression: declare RHS value shapes in config files.
@@ -1498,7 +1468,7 @@ pre_<opinion_modifier>_suf
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 Describe more complex value shapes (as a combination of multiple data expressions).
-Built from segments: constant fields + dynamic fragments (restricted data expressions).
+Built from segments: constant fields + dynamic snippets (restricted data expressions).
 
 Defaults and constraints:
 
@@ -1683,7 +1653,7 @@ some_config
 
 Since plugin version 2.1.0, config injection can be performed during the resolving phase of config by using the `inject` option.
 
-If there is an existing config fragment
+If there is an existing config snippet
 
 ```cwt
 # some/file.cwt
@@ -1693,7 +1663,7 @@ some = {
 }
 ```
 
-Then the config fragment
+Then the config snippet
 
 ```cwt
 # some/other/file.cwt

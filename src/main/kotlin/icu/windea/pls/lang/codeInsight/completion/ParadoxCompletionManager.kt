@@ -30,6 +30,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
@@ -801,25 +802,6 @@ object ParadoxCompletionManager {
         ParadoxParameterManager.completeArguments(contextElement, context, result)
     }
 
-    fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
-        val configGroup = context.configGroup ?: return
-        configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ inlineConfig ->
-            ProgressManager.checkCanceled()
-            context.config = inlineConfig
-            context.isKey = true
-            val name = inlineConfig.name
-            val element = inlineConfig.pointer.element ?: return@f
-            val typeFile = inlineConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false)
-                .withPriority(ParadoxCompletionPriorities.constant)
-                .withPatchableIcon(PlsIcons.Nodes.Directive)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
-        }
-    }
-
     fun completeHeaderColumn(context: ProcessingContext, result: CompletionResultSet) {
         val column = context.contextElement?.castOrNull<ParadoxCsvColumn>() ?: return
         if (!column.isHeaderColumn()) return
@@ -844,6 +826,30 @@ object ParadoxCompletionManager {
                 .withIcon(PlsIcons.Nodes.Column)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.constant)
+            result.addElement(lookupElement, context)
+        }
+    }
+
+    // endregion
+
+    // region Directive Completion Methods
+
+    fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
+        val configGroup = context.configGroup ?: return
+        val configs = configGroup.directivesModel.inlineScript.orNull() ?: return
+        configs.forEach f@{ config ->
+            ProgressManager.checkCanceled()
+            context.config = config
+            context.isKey = true
+            val name = config.name
+            val element = config.pointer.element ?: return@f
+            val typeFile = config.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCaseSensitivity(false)
+                .withPriority(ParadoxCompletionPriorities.constant)
+                .withPatchableIcon(PlsIcons.Nodes.Directive)
+                .forScriptExpression(context)
             result.addElement(lookupElement, context)
         }
     }

@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig
@@ -19,12 +20,10 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
-import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -372,12 +371,8 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
                     }
                     run {
-                        val inlineConfig = CwtInlineConfig.resolve(property) ?: return@run
-                        initializer.inlineConfigGroup.computeIfAbsent(inlineConfig.name) { FastList() } += inlineConfig
-                    }
-                    run {
-                        val macroConfig = CwtMacroConfig.resolve(property) ?: return@run
-                        initializer.macroConfigs[macroConfig.name] = macroConfig
+                        val directiveConfig = CwtDirectiveConfig.resolve(property) ?: return@run
+                        initializer.directives += directiveConfig
                     }
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run

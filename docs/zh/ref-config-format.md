@@ -178,63 +178,33 @@ system_scopes = {
 }
 ```
 
-#### 内联规则 {#config-inline}
+#### 指令规则 {#config-directive}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDirectiveConfigResolverImpl -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-
-用于描述内联的使用处的结构，从而在脚本文件中提供代码高亮、引用解析、代码补全、代码检查等功能。
-这些结构可以在脚本文件中的各种地方使用（不限于定义声明中），但是也存在特定的规则和限制。
-内联逻辑使得一段代码片段可以在编写时被复用。在运行时，其使用处会被替换为内联后的实际代码片段。
-
-目前仅适用于**内联脚本（inline scripts）**。
-
-**路径定位**：`inline[{name}]`，`{name}` 为规则名称。
-
-**与其他规则协作**：
-- 展开后的规则与普通属性规则一致，参与校验与补全。
-- 若需为“内联脚本路径”提供上下文与多态配置，请参考扩展规则：`内联脚本（扩展）`。
-
-**示例**（Stellaris）：
-
-```cwt
-inline[inline_script] = filepath[common/inline_scripts/,.txt]
-
-inline[inline_script] = {
-    ## cardinality = 1..1
-    script = filepath[common/inline_scripts/,.txt]
-    ## cardinality = 0..inf
-    $parameter = $parameter_value
-}
-```
-
-#### 宏规则  {#config-macro}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtMacroConfigResolverImpl -->
 <!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/common/definition_injections.cwt -->
 
-用于描述宏的表达式格式并提供额外的用于校验的元数据，从而在脚本文件中提供代码高亮、引用解析、代码补全、代码检查等功能。
-这些表达式可以在脚本文件中的各种地方使用（不限于定义声明中），但是也存在特定的规则和限制。
-不同的宏拥有不同的用处与游戏运行时的处理逻辑。
+用于描述脚本文件中区别于一般抽象的特殊的表达式和结构，并提供额外的用于提示和验证的元数据。
+这些表达式和结构会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
+不同的指令可以拥有不同的规则结构。
 
-目前仅适用于**定义注入（definition injections）**。
+目前涉及的语言特性：
+- **内联脚本（inline_script）**：（Sellaris）会在解析阶段被替换为目标文件的内容，且可以指定参数。
+- **定义注入（definition_injection）**：（VIC3 / EU5）会在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
 
-**路径定位**：`macro[{name}]`，`{name}` 匹配规则名称。
+**路径定位**：`directive[{name}]`，`{name}` 为规则名称。
 
-**示例**（VIC3/EU5）：
+**示例**：
 
 ```cwt
-macro[definition_injection] = {
-    modes = {
-        # ...
-    }
+directive[inline_script] = {
     # ...
 }
 ```
 
-#### 类型规则与子类型规则  {#config-type}
+#### 类型规则与子类型规则 {#config-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
