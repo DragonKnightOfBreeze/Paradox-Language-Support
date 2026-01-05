@@ -71,7 +71,7 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedOnActions.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
