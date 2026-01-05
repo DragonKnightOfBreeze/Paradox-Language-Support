@@ -1,0 +1,9 @@
+# https://vic3.paradoxwikis.com/Mod_files_load_order
+
+INJECT:ai_strategy_default = {
+    wargoal_scores = {
+        d = {
+            # some score calc
+        }
+    }
+}
