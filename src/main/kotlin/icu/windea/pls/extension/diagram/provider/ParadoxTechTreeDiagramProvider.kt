@@ -22,7 +22,6 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
@@ -193,7 +192,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        private val definitionType = ParadoxDefinitionTypes.Technology
+        private val definitionType = ParadoxDefinitionTypes.technology
         private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
         private val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
 

@@ -241,19 +241,19 @@ class ParadoxDefinitionHierarchyTreeStructure(
         for ((nodeType, name) in groupingRules) {
             when {
                 nodeType == NodeType.EventType -> {
-                    if (definitionInfo.type != ParadoxDefinitionTypes.Event) return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.event) return false
                     if (ParadoxEventManager.getType(definitionInfo) != name) return false
                 }
                 nodeType == NodeType.TechTier -> {
-                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.technology) return false
                     if (ParadoxTechnologyManager.Stellaris.getTier(definition) != name) return false
                 }
                 nodeType == NodeType.TechArea -> {
-                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.technology) return false
                     if (ParadoxTechnologyManager.Stellaris.getArea(definition) != name) return false
                 }
                 nodeType == NodeType.TechCategory -> {
-                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.technology) return false
                     if (!(ParadoxTechnologyManager.Stellaris.getCategories(definition).contains(name))) return false
                 }
                 else -> {}

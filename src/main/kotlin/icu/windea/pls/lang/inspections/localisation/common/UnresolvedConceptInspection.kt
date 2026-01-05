@@ -53,7 +53,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 if (!ignoredByConfigs) return false
                 val name = element.name
                 val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
-                val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.GameConcept) }
+                val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.gameConcept) }
                 if (config != null) return true
                 return false
             }

@@ -42,7 +42,7 @@ class ParadoxBaseDefinitionScopeContextProvider : ParadoxDefinitionScopeContextP
 
 class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == ParadoxDefinitionTypes.GameRule
+        return definitionInfo.type == ParadoxDefinitionTypes.gameRule
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
@@ -54,7 +54,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
 
 class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == ParadoxDefinitionTypes.OnAction
+        return definitionInfo.type == ParadoxDefinitionTypes.onAction
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {

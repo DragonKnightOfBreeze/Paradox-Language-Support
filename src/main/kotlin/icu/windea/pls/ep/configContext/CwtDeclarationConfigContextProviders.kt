@@ -54,7 +54,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
  */
 class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
-        if (definitionType != ParadoxDefinitionTypes.GameRule) return null
+        if (definitionType != ParadoxDefinitionTypes.gameRule) return null
         if (definitionName.isNullOrEmpty()) return null
         val gameRuleConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup) ?: return null
         if (gameRuleConfig.config.configs.isNullOrEmpty()) return null
@@ -87,7 +87,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
  */
 class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
-        if (definitionType != ParadoxDefinitionTypes.OnAction) return null
+        if (definitionType != ParadoxDefinitionTypes.onAction) return null
         if (definitionName.isNullOrEmpty()) return null
         val onActionConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup) ?: return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)

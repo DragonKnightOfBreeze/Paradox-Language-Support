@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 /**
  * 基于特定条件，禁用适用于CSV文件的代码检查。
@@ -46,7 +46,7 @@ class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container !is PsiFile) return
-            val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
+            val text = PlsStrings.suppressInspectionsTagName + " " + myID
             val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage)
             container.addAfter(comment, null)
         }

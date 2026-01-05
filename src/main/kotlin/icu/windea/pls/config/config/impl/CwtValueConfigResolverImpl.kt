@@ -30,7 +30,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 
 class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMixin {
@@ -136,7 +136,7 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
     }
 }
 
-private const val blockValue = PlsStringConstants.blockFolder
+private const val blockValue = PlsStrings.blockFolder
 private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24

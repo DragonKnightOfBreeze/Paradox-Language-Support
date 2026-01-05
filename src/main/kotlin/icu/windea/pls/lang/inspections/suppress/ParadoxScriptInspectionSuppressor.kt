@@ -16,7 +16,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.psi.findParentDefinitionInjection
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -84,7 +84,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container !is PsiFile) return
-            val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
+            val text = PlsStrings.suppressInspectionsTagName + " " + myID
             val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
             container.addAfter(comment, null)
         }

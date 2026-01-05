@@ -14,7 +14,7 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 import java.util.*
 
@@ -41,7 +41,7 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver,
     }
 }
 
-private const val blockValue = PlsStringConstants.blockFolder
+private const val blockValue = PlsStrings.blockFolder
 private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {

@@ -6,13 +6,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.PlsPatterns
 
 class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
     private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-        return PlsPatternConstants.localisationPropertyName.matches(newName)
+        return PlsPatterns.localisationPropertyName.matches(newName)
     }
 
     override fun getPattern(): ElementPattern<out PsiElement> {

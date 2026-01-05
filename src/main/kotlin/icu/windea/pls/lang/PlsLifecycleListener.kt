@@ -18,7 +18,7 @@ import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
@@ -67,7 +67,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCachesAsync() {
-        PlsPathConstants.initAsync()
+        PlsPaths.initAsync()
         PlsPathService.initAsync()
     }
 

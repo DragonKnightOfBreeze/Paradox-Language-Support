@@ -167,9 +167,9 @@ object PlsIcons {
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
-            ParadoxDefinitionTypes.OnAction -> OnAction
-            ParadoxDefinitionTypes.Event -> EventId
-            ParadoxDefinitionTypes.EventNamespace -> EventNamespace
+            ParadoxDefinitionTypes.onAction -> OnAction
+            ParadoxDefinitionTypes.event -> EventId
+            ParadoxDefinitionTypes.eventNamespace -> EventNamespace
             else -> Definition
         }
 

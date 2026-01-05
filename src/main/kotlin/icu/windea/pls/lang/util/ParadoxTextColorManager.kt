@@ -9,7 +9,6 @@ import icu.windea.pls.core.isExactLetter
 import icu.windea.pls.core.isExactWord
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -76,7 +75,7 @@ object ParadoxTextColorManager {
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TextColor, selector).find()
+        val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
         return doGetInfoFromCache(definition)
     }
@@ -102,7 +101,7 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.TextColor, selector).findAll()
+        val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }

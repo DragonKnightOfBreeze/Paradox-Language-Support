@@ -14,7 +14,6 @@ import icu.windea.pls.config.data.definitionScopeContextModificationTracker
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -160,7 +159,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == ParadoxDefinitionTypes.Event
+        return definitionInfo.type == ParadoxDefinitionTypes.event
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -269,7 +268,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == ParadoxDefinitionTypes.Event
+        return definitionInfo.type == ParadoxDefinitionTypes.event
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -416,7 +415,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == ParadoxDefinitionTypes.OnAction
+        return definitionInfo.type == ParadoxDefinitionTypes.onAction
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {

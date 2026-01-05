@@ -18,12 +18,12 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
-        Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.Resource),
-        EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.EconomicCategory),
-        GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.GameConcept),
-        TextColor(PlsIndexKeys.DefinitionNameForTextColor, ParadoxDefinitionTypes.TextColor),
-        TextIcon(PlsIndexKeys.DefinitionNameForTextIcon, ParadoxDefinitionTypes.TextIcon),
-        TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ParadoxDefinitionTypes.TextFormat, ignoreCase = true),
+        Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.resource),
+        EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.economicCategory),
+        GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.gameConcept),
+        TextColor(PlsIndexKeys.DefinitionNameForTextColor, ParadoxDefinitionTypes.textColor),
+        TextIcon(PlsIndexKeys.DefinitionNameForTextIcon, ParadoxDefinitionTypes.textIcon),
+        TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ParadoxDefinitionTypes.textFormat, ignoreCase = true),
         ;
 
         open fun supports(definitionType: String): Boolean = definitionType == this.definitionType

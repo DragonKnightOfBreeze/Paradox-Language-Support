@@ -198,12 +198,12 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 result += matchedConfigs
             }
             run r1@{
-                if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return@r1
+                if (definitionInfo.type != ParadoxDefinitionTypes.gameRule) return@r1
                 val extendedConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }
             run r1@{
-                if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return@r1
+                if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return@r1
                 val extendedConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }

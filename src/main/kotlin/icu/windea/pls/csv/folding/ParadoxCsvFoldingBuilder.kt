@@ -14,12 +14,12 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStringConstants.commentFolder
+            COMMENT -> PlsStrings.commentFolder
             else -> null
         }
     }

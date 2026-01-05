@@ -25,7 +25,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
 
         file.properties().options { inline() }.forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
-            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
+            if (definitionInfo.type != ParadoxDefinitionTypes.event) return@f
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) return@f

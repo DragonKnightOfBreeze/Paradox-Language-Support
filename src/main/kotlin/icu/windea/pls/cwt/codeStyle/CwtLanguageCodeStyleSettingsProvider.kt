@@ -11,14 +11,14 @@ import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import kotlin.reflect.KMutableProperty1
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = CwtLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.cwtCodeStyleSettingsSample
+    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.cwtCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 

@@ -45,7 +45,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
@@ -190,10 +190,10 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxRenderer<PsiElement, Context,
                     }
                 }
                 resolved is CwtProperty -> {
-                    context.builder.append(resolved.value?.escapeXml() ?: PlsStringConstants.unresolved)
+                    context.builder.append(resolved.value?.escapeXml() ?: PlsStrings.unresolved)
                 }
                 resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                    context.builder.append(resolved.value?.escapeXml() ?: PlsStringConstants.unresolved)
+                    context.builder.append(resolved.value?.escapeXml() ?: PlsStrings.unresolved)
                 }
                 else -> {
                     context.builder.append("<code>")

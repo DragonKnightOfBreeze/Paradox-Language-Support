@@ -2,6 +2,7 @@ package icu.windea.pls.model.constants
 
 import icu.windea.pls.core.util.TextPattern
 
+@Suppress("unused")
 object CwtConfigTextPatterns {
     val type = TextPattern("type[", "]")
     val subtype = TextPattern("subtype[", "]")

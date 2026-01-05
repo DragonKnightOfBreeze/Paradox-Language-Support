@@ -15,9 +15,9 @@ enum class ParadoxDefinitionHierarchyType(
     Type(PlsBundle.message("title.hierarchy.definition")),
     TypeAndSubtypes(PlsBundle.message("title.hierarchy.definition.with.subtypes")),
 
-    EventTreeInvoker(PlsBundle.message("title.hierarchy.eventTree.invoker"), true, true, { it.type == ParadoxDefinitionTypes.Event }),
-    EventTreeInvoked(PlsBundle.message("title.hierarchy.eventTree.invoked"), true, true, { it.type == ParadoxDefinitionTypes.Event }),
-    TechTreePre(PlsBundle.message("title.hierarchy.techTree.pre"), true, true, { it.type == ParadoxDefinitionTypes.Technology && it.gameType == ParadoxGameType.Stellaris }),
-    TechTreePost(PlsBundle.message("title.hierarchy.techTree.post"), true, true, { it.type == ParadoxDefinitionTypes.Technology && it.gameType == ParadoxGameType.Stellaris }),
+    EventTreeInvoker(PlsBundle.message("title.hierarchy.eventTree.invoker"), true, true, { it.type == ParadoxDefinitionTypes.event }),
+    EventTreeInvoked(PlsBundle.message("title.hierarchy.eventTree.invoked"), true, true, { it.type == ParadoxDefinitionTypes.event }),
+    TechTreePre(PlsBundle.message("title.hierarchy.techTree.pre"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
+    TechTreePost(PlsBundle.message("title.hierarchy.techTree.post"), true, true, { it.type == ParadoxDefinitionTypes.technology && it.gameType == ParadoxGameType.Stellaris }),
     ;
 }

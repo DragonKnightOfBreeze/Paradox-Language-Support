@@ -22,7 +22,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.PlsPatterns
 
 /**
  * 用于支持在markdown文件中，将内联代码尝试解析为匹配的目标引用（定义、本地化等）。
@@ -69,7 +69,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
 
             when {
                 prefix == "@" -> {
-                    if (!PlsPatternConstants.scriptedVariableName.matches(name)) return emptySet()
+                    if (!PlsPatterns.scriptedVariableName.matches(name)) return emptySet()
                     val selector = selector(element.project, element).scriptedVariable().contextSensitive()
                     val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
                     return result.asSymbol().singleton.set()
@@ -81,7 +81,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                         return result.asSymbol().singleton.set()
                     }
                     run {
-                        if (!PlsPatternConstants.localisationName.matches(name)) return@run
+                        if (!PlsPatterns.localisationName.matches(name)) return@run
                         val selector = selector(element.project, element).localisation().contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run

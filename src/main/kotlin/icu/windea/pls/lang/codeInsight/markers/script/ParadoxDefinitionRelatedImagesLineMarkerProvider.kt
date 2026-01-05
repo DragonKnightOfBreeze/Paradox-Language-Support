@@ -14,7 +14,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -36,7 +36,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         if (imageInfos.isEmpty()) return
         // 显示在提示中 & 可导航：定义名或文件路径，不包括没有对应的图片的项，按解析顺序排序
         val icon = PlsIcons.Gutter.RelatedImages
-        val prefix = PlsStringConstants.relatedImagePrefix
+        val prefix = PlsStrings.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()
         val keys0 = mutableSetOf<String>()
         val targets0 = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重

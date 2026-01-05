@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -38,7 +38,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
         val name = element.name?.orNull() ?: return
-        val prefix = PlsStringConstants.scriptedVariablePrefix
+        val prefix = PlsStrings.scriptedVariablePrefix
         val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         // 目标：同名封装变量
         val targets by lazy {

@@ -15,7 +15,7 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -39,7 +39,7 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()
         // 提示文本：relatedLocalisation: <key>
-        val prefix = PlsStringConstants.relatedLocalisationPrefix
+        val prefix = PlsStrings.relatedLocalisationPrefix
         val tooltip = "$prefix $name"
         // 目标：单个本地化属性
         ProgressManager.checkCanceled()

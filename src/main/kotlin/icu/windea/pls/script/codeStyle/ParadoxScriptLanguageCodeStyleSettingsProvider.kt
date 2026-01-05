@@ -10,7 +10,7 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import kotlin.reflect.KMutableProperty1
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Settings
@@ -18,7 +18,7 @@ import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Setting
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxScriptLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.paradoxScriptCodeStyleSettingsSample
+    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxScriptCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 

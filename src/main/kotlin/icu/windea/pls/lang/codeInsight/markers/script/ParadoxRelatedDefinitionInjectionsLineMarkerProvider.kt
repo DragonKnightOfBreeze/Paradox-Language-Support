@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.selector.definitionInjection
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -42,7 +42,7 @@ class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemL
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
         // 显示在提示中 & 可导航
         val icon = PlsIcons.Gutter.RelatedDefinitionInjections
-        val prefix = PlsStringConstants.definitionInjectionPrefix
+        val prefix = PlsStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
         val targetKey = definitionInfo.type + "@" + definitionInfo.name
         val project = element.project

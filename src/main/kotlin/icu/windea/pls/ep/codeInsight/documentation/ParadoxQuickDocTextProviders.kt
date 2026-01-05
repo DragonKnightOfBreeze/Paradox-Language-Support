@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-        if (definitionInfo.type != ParadoxDefinitionTypes.TextColor) return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.textColor) return null
         val info = ParadoxTextColorManager.getInfo(element) ?: return null
         val quickDoc = info.textWithColor
         return quickDoc
@@ -55,7 +55,7 @@ class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderB
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-        if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.gameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
@@ -68,7 +68,7 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-        if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findByPattern(name, element, configGroup) ?: return null

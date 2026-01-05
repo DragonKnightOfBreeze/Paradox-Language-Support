@@ -11,7 +11,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -120,7 +119,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Resource, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.resource, selector).findAll()
             .mapTo(mutableSetOf()) { it.name }  // it.name is ok
     }
 
@@ -129,7 +128,7 @@ object ParadoxEconomicCategoryManager {
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.EconomicCategory, selector).processQuery p@{
+                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.economicCategory, selector).processQuery p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)

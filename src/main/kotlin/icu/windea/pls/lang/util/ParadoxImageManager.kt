@@ -17,7 +17,6 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
@@ -35,7 +34,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsPaths
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
@@ -77,7 +76,7 @@ object ParadoxImageManager {
         val definitionInfo = definition.definitionInfo ?: return null
         val newFrameInfo = when {
             frameInfo == null -> null
-            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> ParadoxSpriteManager.getFrameInfo(definition, frameInfo)
+            definitionInfo.type == ParadoxDefinitionTypes.sprite -> ParadoxSpriteManager.getFrameInfo(definition, frameInfo)
             else -> frameInfo
         }
         try {
@@ -164,7 +163,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveSlicedImagePath(imageAbsPath: String, imageRelPath: String?, frameInfo: ImageFrameInfo): Path {
-        val imagesPath = PlsPathConstants.images
+        val imagesPath = PlsPaths.images
         imagesPath.createDirectories()
         if (imageRelPath != null) {
             // 路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png

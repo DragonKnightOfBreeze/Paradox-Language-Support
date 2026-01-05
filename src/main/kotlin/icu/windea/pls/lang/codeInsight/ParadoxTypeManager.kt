@@ -35,7 +35,7 @@ import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -104,8 +104,8 @@ object ParadoxTypeManager {
     fun getExpression(element: PsiElement): String? {
         if (element.language !is ParadoxLanguage) return null
         return when (element) {
-            is ParadoxScriptBlock -> PlsStringConstants.blockFolder
-            is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder
+            is ParadoxScriptBlock -> PlsStrings.blockFolder
+            is ParadoxScriptInlineMath -> PlsStrings.inlineMathFolder
             is ParadoxScriptedVariableReference -> element.text
             is ParadoxExpressionElement -> element.text
             is ParadoxScriptInlineMathNumber -> element.text

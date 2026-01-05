@@ -7,12 +7,12 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.core.pass
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 class ParadoxCsvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxCsvLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.paradoxCsvCodeStyleSettingsSample
+    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxCsvCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxCsvCodeStyleSettings(settings)
 

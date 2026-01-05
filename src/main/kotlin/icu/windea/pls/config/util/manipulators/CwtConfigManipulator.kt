@@ -32,7 +32,7 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -342,7 +342,7 @@ object CwtConfigManipulator {
         return CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = configGroup,
-            value = PlsStringConstants.blockFolder,
+            value = PlsStrings.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
             optionConfigs = config?.optionConfigs.orEmpty()

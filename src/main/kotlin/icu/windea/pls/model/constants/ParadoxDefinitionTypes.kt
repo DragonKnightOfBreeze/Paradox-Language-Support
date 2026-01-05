@@ -1,23 +1,27 @@
 package icu.windea.pls.model.constants
 
+@Suppress("unused")
 object ParadoxDefinitionTypes {
-    const val ModDescriptor = "mod_descriptor"
+    const val modDescriptor = "mod_descriptor"
 
-    const val OnAction = "on_action"
-    const val Sprite = "sprite"
-    const val EconomicCategory = "economic_category"
-    const val GameConcept = "game_concept"
-    const val GameRule = "game_rule"
-    const val Technology = "technology"
-    const val TechnologyCategory = "technology_category"
-    const val Job = "job"
-    const val SwappedJob = "swapped_job"
-    const val Resource = "resource"
+    const val onAction = "on_action"
+    const val economicCategory = "economic_category"
+    const val gameConcept = "game_concept"
+    const val gameRule = "game_rule"
+    const val technology = "technology"
+    const val technologyCategory = "technology_category"
+    const val job = "job"
+    const val swappedJob = "swapped_job"
+    const val resource = "resource"
+    const val scriptedTrigger = "scripted_trigger"
+    const val scriptedEffect = "scripted_effect"
 
-    const val Event = "event"
-    const val EventNamespace = "event_namespace"
+    const val event = "event"
+    const val eventNamespace = "event_namespace"
 
-    const val TextColor = "text_color"
-    const val TextFormat = "text_format"
-    const val TextIcon = "text_icon"
+    const val sprite = "sprite"
+
+    const val textColor = "text_color"
+    const val textFormat = "text_format"
+    const val textIcon = "text_icon"
 }

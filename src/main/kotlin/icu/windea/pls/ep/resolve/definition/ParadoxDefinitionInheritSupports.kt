@@ -89,7 +89,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getBaseName(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: List<CwtSubtypeConfig>): String? {
-        if (definitionInfo.type != T.Event) return null
+        if (definitionInfo.type != T.event) return null
         if (subtypeConfigs.none { it.name == "inherited" }) return null
         val data = getData(definitionInfo) ?: return null
         return data.base
@@ -99,7 +99,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         val result = withRecursionGuard {
             withRecursionCheck(baseName) a@{
                 val selector = selector(definitionInfo.project, definitionInfo.element).definition().contextSensitive()
-                val superDefinition = ParadoxDefinitionSearch.search(baseName, T.Event, selector).find() ?: return@a null
+                val superDefinition = ParadoxDefinitionSearch.search(baseName, T.event, selector).find() ?: return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
 
                 // 事件类型不匹配 - 不处理

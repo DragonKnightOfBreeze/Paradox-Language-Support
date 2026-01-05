@@ -14,7 +14,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
@@ -23,14 +23,14 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            COMMENT -> PlsStringConstants.commentFolder
-            BLOCK -> PlsStringConstants.blockFolder
+            COMMENT -> PlsStrings.commentFolder
+            BLOCK -> PlsStrings.blockFolder
             PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
                 if (expression == null) return "..."
-                PlsStringConstants.parameterConditionFolder(expression)
+                PlsStrings.parameterConditionFolder(expression)
             }
-            INLINE_MATH -> PlsStringConstants.inlineMathFolder
+            INLINE_MATH -> PlsStrings.inlineMathFolder
             else -> null
         }
     }

@@ -29,7 +29,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
 
         file.properties().options { inline() }.forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
-            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
+            if (definitionInfo.type != ParadoxDefinitionTypes.event) return@f
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no `triggered` subtype declared, skip
             if ("inherited" in definitionInfo.subtypes) return@f  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) return@f

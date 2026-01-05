@@ -12,7 +12,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
@@ -53,7 +53,7 @@ class PlsPathServiceImpl : PlsPathService {
             }
             OS.Linux -> {
                 // 默认路径（不准确，但是已经足够）
-                val steamPath = PlsPathConstants.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
+                val steamPath = PlsPaths.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
                 steamPath
             }
         }
@@ -106,8 +106,8 @@ class PlsPathServiceImpl : PlsPathService {
     private fun doGetGameDataPath(gameName: String): Path? {
         // 实际上应当基于launcher-settings.json中的gameDataPath
         return when (OS.value) {
-            OS.Windows -> PlsPathConstants.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
-            OS.Linux -> PlsPathConstants.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
+            OS.Windows -> PlsPaths.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
+            OS.Linux -> PlsPaths.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
     }
 

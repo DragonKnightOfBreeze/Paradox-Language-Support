@@ -115,7 +115,7 @@ class ParadoxExtendedGameRuleHintTextProvider : ParadoxHintTextProviderBase.Defi
     override val source get() = Source.Extended
 
     override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
-        if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.gameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
@@ -133,7 +133,7 @@ class ParadoxExtendedOnActionHintTextProvider : ParadoxHintTextProviderBase.Defi
     override val source get() = Source.Extended
 
     override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
-        if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findByPattern(name, element, configGroup) ?: return null

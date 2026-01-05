@@ -26,7 +26,7 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         return when (declarationInfo) {
             is ParadoxTargetInfo.Definition -> {
                 when (declarationInfo.type) {
-                    ParadoxDefinitionTypes.Event -> false // 排除事件
+                    ParadoxDefinitionTypes.event -> false // 排除事件
                     else -> true
                 }
             }

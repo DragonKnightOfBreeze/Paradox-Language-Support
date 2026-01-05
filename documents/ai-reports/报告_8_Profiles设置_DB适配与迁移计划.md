@@ -30,7 +30,7 @@
     ```
 
 ## 实施细节（2025-08-31 13:30）
-- 路径常量：`icu.windea.pls.model.constants.PlsPathConstants`
+- 路径常量：`icu.windea.pls.model.constants.PlsPaths`
   - `~/.pls/database/` 由 `SmartInitializer` 在 IDE 启动时异步确保存在。
 - DB 存储模型（简述）：
   - 建议表结构：`profiles_settings(key TEXT PRIMARY KEY, value TEXT NOT NULL, group TEXT NOT NULL)`；

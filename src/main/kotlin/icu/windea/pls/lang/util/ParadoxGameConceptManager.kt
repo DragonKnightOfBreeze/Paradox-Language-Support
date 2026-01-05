@@ -27,7 +27,7 @@ object ParadoxGameConceptManager {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
             .filterBy { getName(it) == nameOrAlias || getAlias(it).contains(nameOrAlias) }
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {

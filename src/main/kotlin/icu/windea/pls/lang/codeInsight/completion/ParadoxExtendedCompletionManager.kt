@@ -64,7 +64,7 @@ object ParadoxExtendedCompletionManager {
             }
         }
         run r1@{
-            val tGameRule = ParadoxDefinitionTypes.GameRule
+            val tGameRule = ParadoxDefinitionTypes.gameRule
             if (typeExpression != tGameRule) return@r1
             configGroup.extendedGameRules.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
@@ -82,7 +82,7 @@ object ParadoxExtendedCompletionManager {
             }
         }
         run r1@{
-            val tOnAction = ParadoxDefinitionTypes.OnAction
+            val tOnAction = ParadoxDefinitionTypes.onAction
             if (typeExpression != tOnAction) return@r1
             configGroup.extendedOnActions.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()

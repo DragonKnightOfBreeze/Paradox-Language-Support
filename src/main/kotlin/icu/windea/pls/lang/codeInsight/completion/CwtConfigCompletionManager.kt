@@ -71,7 +71,7 @@ import icu.windea.pls.cwt.psi.isOptionBlockValue
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.paths.CwtConfigPath
 
 object CwtConfigCompletionManager {
@@ -636,7 +636,7 @@ object CwtConfigCompletionManager {
             else -> return null
         }
         val valueText = when {
-            insertCurlyBraces -> PlsStringConstants.blockFolder
+            insertCurlyBraces -> PlsStrings.blockFolder
             config is CwtOptionMemberConfig<*> -> config.value
             config is CwtMemberConfig<*> -> config.value
             else -> return null

@@ -110,8 +110,8 @@ object CwtLocationExpressionManager {
 
     private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxIndexConstraint.Localisation? {
         return when (definitionInfo.type) {
-            ParadoxDefinitionTypes.Event -> ParadoxIndexConstraint.Localisation.Event
-            ParadoxDefinitionTypes.Technology -> ParadoxIndexConstraint.Localisation.Tech
+            ParadoxDefinitionTypes.event -> ParadoxIndexConstraint.Localisation.Event
+            ParadoxDefinitionTypes.technology -> ParadoxIndexConstraint.Localisation.Tech
             else -> null
         }
     }
@@ -127,7 +127,7 @@ object CwtLocationExpressionManager {
         val project = definitionInfo.project
 
         val nextFrameInfo = when {
-            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> ParadoxSpriteManager.getFrameInfo(definition)
+            definitionInfo.type == ParadoxDefinitionTypes.sprite -> ParadoxSpriteManager.getFrameInfo(definition)
             else -> findByPaths(definition, framePaths)?.toIntOrNull()?.let { ImageFrameInfo.of(it) }
         }
         val newFrameInfo = ImageFrameInfo.merge(frameInfo, nextFrameInfo)
@@ -140,7 +140,7 @@ object CwtLocationExpressionManager {
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
                     val definitionSelector = selector(project, definition).definition().contextSensitive()
-                    val resolved = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, definitionSelector).find()
+                    val resolved = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
@@ -186,7 +186,7 @@ object CwtLocationExpressionManager {
             resolved is ParadoxScriptDefinitionElement -> {
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                if (!toFile && resolvedDefinitionInfo.type == ParadoxDefinitionTypes.Sprite) {
+                if (!toFile && resolvedDefinitionInfo.type == ParadoxDefinitionTypes.sprite) {
                     val spriteName = resolvedDefinitionInfo.name
                     return createImageResolveResult(spriteName, newFrameInfo, definition, project)
                 }
@@ -214,10 +214,10 @@ object CwtLocationExpressionManager {
     ): CwtImageLocationExpression.ResolveResult {
         return CwtImageLocationExpression.ResolveResult(spriteName, frameInfo, null, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, selector).find()
+            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, selector).findAll()
+            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
         })
     }
 

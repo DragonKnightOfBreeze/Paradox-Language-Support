@@ -30,7 +30,7 @@ class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<Compl
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationTextFormat>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return
 
-        val definitionType = ParadoxDefinitionTypes.TextFormat
+        val definitionType = ParadoxDefinitionTypes.textFormat
         val icon = PlsIcons.Nodes.LocalisationTextFormat // 使用特定图标
         val tailText = " from <$definitionType>"
         val originalFile = parameters.originalFile

@@ -10,7 +10,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
 
 object ParadoxCsvNavigationManager {
@@ -40,9 +40,9 @@ object ParadoxCsvNavigationManager {
             // 文件名
             is ParadoxCsvFile -> element.name
             // 特殊标记
-            is ParadoxCsvHeader -> PlsStringConstants.headerMarker
+            is ParadoxCsvHeader -> PlsStrings.headerMarker
             // 特殊标记
-            is ParadoxCsvRow -> PlsStringConstants.rowMarker
+            is ParadoxCsvRow -> PlsStrings.rowMarker
             // 截断后的名字
             is ParadoxCsvColumn -> element.name.formatted()
             else -> null

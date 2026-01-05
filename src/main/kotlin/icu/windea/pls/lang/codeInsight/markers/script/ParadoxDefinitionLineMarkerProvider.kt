@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -38,7 +38,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
         val icon = PlsIcons.Gutter.Definition
-        val prefix = PlsStringConstants.definitionPrefix
+        val prefix = PlsStrings.definitionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typesText}"
         val targets by lazy {
             val project = element.project

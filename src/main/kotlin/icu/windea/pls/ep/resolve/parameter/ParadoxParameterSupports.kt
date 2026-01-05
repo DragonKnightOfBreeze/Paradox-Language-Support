@@ -53,7 +53,7 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -65,7 +65,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-// NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 PlsPatternConstants.argumentName）
+// NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
@@ -76,7 +76,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
 
     override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
-        // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 injectionHost）
+        // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 `injectionHost`）
         val finalElement = PlsInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = finalElement.findParentDefinition()
         return context?.takeIf { isContext(it) }
@@ -250,7 +250,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -577,7 +577,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
         // 加上名字
         val name = parameterElement.name
-        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        append(PlsStrings.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         // 加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {

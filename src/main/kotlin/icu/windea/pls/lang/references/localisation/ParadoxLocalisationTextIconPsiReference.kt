@@ -53,7 +53,7 @@ class ParadoxLocalisationTextIconPsiReference(
     private fun doResolve(): PsiElement? {
         val element = element
         val definitionName = element.name?.orNull() ?: return null
-        val definitionType = ParadoxDefinitionTypes.TextIcon
+        val definitionType = ParadoxDefinitionTypes.textIcon
         val definitionSelector = selector(project, element).definition().contextSensitive()
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
         return resolved
@@ -62,7 +62,7 @@ class ParadoxLocalisationTextIconPsiReference(
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
-        val definitionType = ParadoxDefinitionTypes.TextIcon
+        val definitionType = ParadoxDefinitionTypes.textIcon
         val definitionSelector = selector(project, element).definition().contextSensitive()
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).findAll()
         return resolved.createResults()

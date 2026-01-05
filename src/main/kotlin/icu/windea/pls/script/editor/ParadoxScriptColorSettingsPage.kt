@@ -6,7 +6,7 @@ import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 
 class ParadoxScriptColorSettingsPage : ColorSettingsPage {
@@ -105,5 +105,5 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = PlsBundle.message("language.name.script")
 
-    override fun getDemoText() = PlsStringConstants.paradoxScriptColorSettingsSample
+    override fun getDemoText() = PlsStrings.paradoxScriptColorSettingsSample
 }

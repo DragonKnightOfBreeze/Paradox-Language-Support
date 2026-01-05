@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.images.tools
 
 import icu.windea.pls.images.ImageInputStreamAdapter
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsPaths
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -42,7 +42,7 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         val pathsToDelete = mutableSetOf<Path>()
         try {
-            val tempParentPath = PlsPathConstants.imagesTemp
+            val tempParentPath = PlsPaths.imagesTemp
             tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)

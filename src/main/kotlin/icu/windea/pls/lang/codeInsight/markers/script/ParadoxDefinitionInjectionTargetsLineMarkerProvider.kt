@@ -18,7 +18,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -40,7 +40,7 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
         val icon = PlsIcons.Gutter.DefinitionInjectionTargets
-        val prefix = PlsStringConstants.definitionInjectionTargetPrefix
+        val prefix = PlsStrings.definitionInjectionTargetPrefix
         val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
         val targets by lazy {
             val project = element.project

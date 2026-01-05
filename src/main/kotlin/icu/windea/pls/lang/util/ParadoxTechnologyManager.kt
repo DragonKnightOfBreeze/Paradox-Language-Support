@@ -14,7 +14,6 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -51,7 +50,7 @@ object ParadoxTechnologyManager {
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Technology, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technology, selector).findAll()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
@@ -85,18 +84,18 @@ object ParadoxTechnologyManager {
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
-            return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.TechnologyCategory, selector).findAll()
+            return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }
 
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-            val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
+            val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
                 eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
-            val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
+            val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }
         }
 
@@ -145,7 +144,7 @@ object ParadoxTechnologyManager {
             // NOTE 1. 目前不兼容封装变量引用
 
             val name = definition.definitionInfo?.name
-            val type = ParadoxDefinitionTypes.Technology
+            val type = ParadoxDefinitionTypes.technology
             if (name.isNullOrEmpty()) return emptyList()
             val prerequisites = getPrerequisites(definition)
             if (prerequisites.isEmpty()) return emptyList()
@@ -169,7 +168,7 @@ object ParadoxTechnologyManager {
             // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
 
             val name = definition.definitionInfo?.name
-            val type = ParadoxDefinitionTypes.Technology
+            val type = ParadoxDefinitionTypes.technology
             if (name.isNullOrEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{

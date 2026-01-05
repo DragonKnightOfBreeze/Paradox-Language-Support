@@ -2,7 +2,7 @@ package icu.windea.pls.model.constants
 
 import icu.windea.pls.core.toClasspathUrl
 
-object PlsStringConstants {
+object PlsStrings {
     const val anonymous = "(anonymous)"
     const val unknown = "(unknown)"
     const val unresolved = "(unresolved)"

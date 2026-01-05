@@ -94,7 +94,7 @@ object PlsDocBundle {
         run {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
-            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
+            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
             val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
             return text

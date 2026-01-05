@@ -31,7 +31,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
-        val event = element.findParentByPath("id", definitionType = ParadoxDefinitionTypes.Event) // 不处理内联的情况
+        val event = element.findParentByPath("id", definitionType = ParadoxDefinitionTypes.event) // 不处理内联的情况
         if (event !is ParadoxScriptProperty) return
 
         ParadoxCompletionManager.initializeContext(parameters, context)

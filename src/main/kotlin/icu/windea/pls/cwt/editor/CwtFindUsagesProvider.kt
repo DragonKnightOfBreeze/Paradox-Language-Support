@@ -16,7 +16,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.codeInsight.configType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {
@@ -36,7 +36,7 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
         if (element.elementType == CwtElementTypes.LEFT_BRACE) {
             return when (location) {
                 UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.block")
-                else -> PlsStringConstants.blockFolder
+                else -> PlsStrings.blockFolder
             }
         }
         return when (element) {

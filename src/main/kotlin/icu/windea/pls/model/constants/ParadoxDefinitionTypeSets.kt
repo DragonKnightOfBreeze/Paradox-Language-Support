@@ -2,6 +2,7 @@ package icu.windea.pls.model.constants
 
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes as C
 
+@Suppress("unused")
 object ParadoxDefinitionTypeSets {
-    val Job = setOf(C.Job, C.SwappedJob)
+    val job = setOf(C.job, C.swappedJob)
 }

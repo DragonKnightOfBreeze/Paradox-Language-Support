@@ -36,7 +36,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
-        return PlsStringConstants.blockFolder
+        return PlsStrings.blockFolder
     }
 
     // endregion
@@ -319,7 +319,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsStringConstants.blockFolder
+        return PlsStrings.blockFolder
     }
 
     // endregion
@@ -381,7 +381,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
-        return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsStrings.parameterConditionFolder(it) }
     }
 
     // endregion
@@ -417,7 +417,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
-        return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsStrings.parameterConditionFolder(it) }
     }
 
     // endregion
@@ -462,7 +462,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsStringConstants.inlineMathFolder
+        return PlsStrings.inlineMathFolder
     }
 
     @JvmStatic

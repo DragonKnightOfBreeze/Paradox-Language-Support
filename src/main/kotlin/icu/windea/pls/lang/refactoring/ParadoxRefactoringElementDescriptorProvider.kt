@@ -21,7 +21,7 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
             element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> {
                 val definitionInfo = element.definitionInfo ?: return null
                 when {
-                    definitionInfo.type == ParadoxDefinitionTypes.Sprite -> PlsBundle.message("refactoring.sprite.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
+                    definitionInfo.type == ParadoxDefinitionTypes.sprite -> PlsBundle.message("refactoring.sprite.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
                     else -> PlsBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
                 }
             }

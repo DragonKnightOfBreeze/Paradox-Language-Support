@@ -40,7 +40,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
@@ -209,10 +209,10 @@ class ParadoxLocalisationTextInlayRenderer(
                     }
                 }
                 resolved is CwtProperty -> {
-                    context.factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    context.factory.smallText(resolved.value ?: PlsStrings.unresolved)
                 }
                 resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                    context.factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    context.factory.smallText(resolved.value ?: PlsStrings.unresolved)
                 }
                 else -> {
                     context.factory.truncatedSmallText(element.text)

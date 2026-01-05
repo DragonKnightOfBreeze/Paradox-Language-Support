@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 @WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.EconomicCategory)
+@WithDefinitionType(ParadoxDefinitionTypes.economicCategory)
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val parent: String? by data.get("parent")
     val useForAiBudget: Boolean by data.get("use_for_ai_budget", false)
@@ -30,7 +30,7 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.GameConcept)
+@WithDefinitionType(ParadoxDefinitionTypes.gameConcept)
 class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tooltipOverride: String? by data.get("tooltip_override")
@@ -38,7 +38,7 @@ class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionDataB
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.Technology)
+@WithDefinitionType(ParadoxDefinitionTypes.technology)
 class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tier: String? by data.get("tier")
@@ -59,7 +59,7 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionDataBa
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.Event)
+@WithDefinitionType(ParadoxDefinitionTypes.event)
 class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val base: String? by data.get("base")
     val descClear: Boolean by data.get("desc_clear", false)

@@ -59,7 +59,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -161,16 +161,16 @@ object CwtDocumentationManager {
             val prefix = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
-                referenceElement is ParadoxScriptPropertyKey -> PlsStringConstants.definitionPropertyPrefix
-                referenceElement is ParadoxScriptValue -> PlsStringConstants.definitionValuePrefix
-                element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsStringConstants.definitionPropertyPrefix
-                element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsStringConstants.definitionValuePrefix
+                referenceElement is ParadoxScriptPropertyKey -> PlsStrings.definitionPropertyPrefix
+                referenceElement is ParadoxScriptValue -> PlsStrings.definitionValuePrefix
+                element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsStrings.definitionPropertyPrefix
+                element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
                 else -> configType?.prefix
             }
             val finalPrefix = when {
                 prefix != null -> prefix
-                element is CwtProperty -> PlsStringConstants.propertyPrefix
-                element is CwtString -> PlsStringConstants.stringPrefix
+                element is CwtProperty -> PlsStrings.propertyPrefix
+                element is CwtString -> PlsStrings.stringPrefix
                 else -> null
             }
 
@@ -241,14 +241,14 @@ object CwtDocumentationManager {
         run {
             if (nameLocalisation == null) return@run
             appendBr()
-            append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
+            append(PlsStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
         }
         run {
             if (descLocalisation == null) return@run
             appendBr()
-            append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
+            append(PlsStrings.relatedLocalisationPrefix).append(" ")
             val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
         }
@@ -285,7 +285,7 @@ object CwtDocumentationManager {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
             appendBr()
-            append(PlsStringConstants.relatedImagePrefix).append(" ")
+            append(PlsStrings.relatedImagePrefix).append(" ")
             val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
         }

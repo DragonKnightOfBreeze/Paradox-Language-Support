@@ -7,7 +7,7 @@ import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.get
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-@WithDefinitionType(ParadoxDefinitionTypes.ModDescriptor)
+@WithDefinitionType(ParadoxDefinitionTypes.modDescriptor)
 class ParadoxModDescriptorData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val name: String? by data.get("name")
     val version: String? by data.get("version")
@@ -18,7 +18,7 @@ class ParadoxModDescriptorData(data: ParadoxScriptData) : ParadoxDefinitionDataB
     val path: String? by data.get("path")
 }
 
-@WithDefinitionType(ParadoxDefinitionTypes.Sprite)
+@WithDefinitionType(ParadoxDefinitionTypes.sprite)
 class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val textureFile: String? by data.get("textureFile")
     val spriteSheetSpriteType: String? by data.get("sprite_sheet_sprite_type")

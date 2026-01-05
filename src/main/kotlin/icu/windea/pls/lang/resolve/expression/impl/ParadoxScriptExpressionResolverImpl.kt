@@ -9,7 +9,7 @@ import icu.windea.pls.lang.match.ParadoxMatchUtil
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import java.util.*
 
 internal class ParadoxScriptExpressionResolverImpl : ParadoxScriptExpression.Resolver {
-    private val blockExpression: ParadoxScriptExpression = ParadoxScriptExpressionImpl(PlsStringConstants.blockFolder, ParadoxType.Block, false, false)
+    private val blockExpression: ParadoxScriptExpression = ParadoxScriptExpressionImpl(PlsStrings.blockFolder, ParadoxType.Block, false, false)
 
     override fun resolveBlock(): ParadoxScriptExpression {
         return blockExpression
@@ -82,7 +82,7 @@ private class ParadoxScriptExpressionLazyImpl(
         element.resolved()?.scriptedVariableValue
     }
 
-    override val value: String get() = valueElement?.value ?: PlsStringConstants.unknown
+    override val value: String get() = valueElement?.value ?: PlsStrings.unknown
     override val type: ParadoxType get() = valueElement?.type ?: ParadoxType.Unknown
     override val quoted: Boolean get() = valueElement?.text?.isLeftQuoted() ?: false
 }

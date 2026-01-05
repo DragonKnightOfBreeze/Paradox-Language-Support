@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-object PlsPatternConstants {
+object PlsPatterns {
     val scriptedVariableName = """[A-Za-z_][A-Za-z0-9_]*""".toRegex()
     val localisationName = """[A-Za-z0-9_.\-']+""".toRegex()
     val localisationPropertyName = """[A-Za-z0-9_.\-']+""".toRegex()

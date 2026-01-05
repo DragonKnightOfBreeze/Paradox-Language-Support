@@ -14,7 +14,7 @@ import javax.swing.JComponent
  * 科技的图形表示（科技卡）。
  */
 @WithGameType(ParadoxGameType.Stellaris)
-@WithDefinitionType(ParadoxDefinitionTypes.Technology)
+@WithDefinitionType(ParadoxDefinitionTypes.technology)
 class StellarisTechnologyCardPresentation(element: ParadoxScriptDefinitionElement) : ParadoxDefinitionPresentationBase(element) {
     override fun createComponent(): JComponent? {
         return runCatchingCancelable { doCreateComponent() }.onFailure { thisLogger().warn(it) }.getOrNull()

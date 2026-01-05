@@ -30,7 +30,7 @@ class ParadoxLocalisationTextIconCompletionProvider : CompletionProvider<Complet
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationTextIcon>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return
 
-        val definitionType = ParadoxDefinitionTypes.TextIcon
+        val definitionType = ParadoxDefinitionTypes.textIcon
         val icon = PlsIcons.Nodes.LocalisationTextIcon // 使用特定图标
         val tailText = " from <$definitionType>"
         val originalFile = parameters.originalFile

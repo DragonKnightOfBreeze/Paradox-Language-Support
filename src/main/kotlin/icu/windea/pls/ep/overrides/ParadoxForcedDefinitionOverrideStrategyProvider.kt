@@ -29,7 +29,7 @@ class ParadoxForcedDefinitionOverrideStrategyProvider : ParadoxOverrideStrategyP
     private fun getOverrideStrategy(typeConfig: CwtTypeConfig): ParadoxOverrideStrategy? {
         return when {
             // event namespace -> ORDERED (don't care)
-            typeConfig.name == ParadoxDefinitionTypes.EventNamespace -> ParadoxOverrideStrategy.ORDERED
+            typeConfig.name == ParadoxDefinitionTypes.eventNamespace -> ParadoxOverrideStrategy.ORDERED
             // swapped type -> ORDERED (don't care)
             typeConfig.baseType != null -> ParadoxOverrideStrategy.ORDERED
             // force anonymous -> ORDERED (don't care)

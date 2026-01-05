@@ -38,7 +38,7 @@ class MismatchedEventIdInspection : EventInspectionBase() {
                 val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
                 namespace2Events.getOrPut(namespace) { mutableListOf() }
-            } else if (definitionInfo.type == ParadoxDefinitionTypes.Event) {
+            } else if (definitionInfo.type == ParadoxDefinitionTypes.event) {
                 namespace2Events.getOrPut(nextNamespace) { mutableListOf() }.add(property)
             }
         }

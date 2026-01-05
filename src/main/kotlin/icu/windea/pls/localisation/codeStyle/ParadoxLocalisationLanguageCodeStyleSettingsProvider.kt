@@ -8,12 +8,12 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.core.pass
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxLocalisationLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.paradoxLocalisationCodeStyleSettingsSample
+    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxLocalisationCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
 

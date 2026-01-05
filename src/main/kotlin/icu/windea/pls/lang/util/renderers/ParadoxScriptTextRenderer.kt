@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -92,7 +92,7 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
         renderSeparator(element)
         val propertyValue = element.propertyValue
         if (propertyValue == null) {
-            context.builder.append(PlsStringConstants.unresolved)
+            context.builder.append(PlsStrings.unresolved)
             return
         }
         renderValue(propertyValue)
@@ -120,7 +120,7 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
     context(context: Context)
     private fun renderExpressionElement(element: ParadoxScriptExpressionElement) {
         val v = element.value()?.letIf(element is ParadoxScriptStringExpressionElement) { it.quoteIfNecessary() }
-        context.builder.append(v ?: PlsStringConstants.unresolved)
+        context.builder.append(v ?: PlsStrings.unresolved)
     }
 
     context(context: Context)

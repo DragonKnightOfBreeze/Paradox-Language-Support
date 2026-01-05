@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvi
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 /**
  * 提供本地化（localisation）的相关封装变量（relatedScriptedVariables）的装订线图标。
@@ -39,7 +39,7 @@ class ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider : ParadoxRel
         val targets = ParadoxLocalisationManager.getRelatedScriptedVariables(element).optimized()
         if (targets.isEmpty()) return
         ProgressManager.checkCanceled()
-        val prefix = PlsStringConstants.relatedScriptedVariablePrefix
+        val prefix = PlsStrings.relatedScriptedVariablePrefix
         val tooltip = "$prefix @${name}"
         val icon = PlsIcons.Gutter.RelatedScriptedVariables
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

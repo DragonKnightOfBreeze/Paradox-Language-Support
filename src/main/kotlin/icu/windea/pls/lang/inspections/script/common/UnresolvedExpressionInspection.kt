@@ -216,11 +216,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
                         val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
                         if (config != null) return true
-                        if (definitionType == ParadoxDefinitionTypes.GameRule) {
+                        if (definitionType == ParadoxDefinitionTypes.gameRule) {
                             val config1 = configGroup.extendedGameRules.findByPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }
-                        if (definitionType == ParadoxDefinitionTypes.OnAction) {
+                        if (definitionType == ParadoxDefinitionTypes.onAction) {
                             val config1 = configGroup.extendedOnActions.findByPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }

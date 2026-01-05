@@ -57,7 +57,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         words.add(definitionInfo.name)
 
         // for <game_concept>
-        if (definitionInfo.type == ParadoxDefinitionTypes.GameConcept) {
+        if (definitionInfo.type == ParadoxDefinitionTypes.gameConcept) {
             val data = target.getDefinitionData<StellarisGameConceptData>()
             data?.alias?.forEach {
                 val name = it.orNull()

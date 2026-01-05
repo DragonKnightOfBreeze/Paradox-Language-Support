@@ -22,7 +22,7 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.PlsPatterns
 
 class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,
@@ -120,7 +120,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
         if (variableName.isEmpty()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
-        } else if (!PlsPatternConstants.scriptedVariableName.matches(variableName)) {
+        } else if (!PlsPatterns.scriptedVariableName.matches(variableName)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
         }
         return null

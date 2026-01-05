@@ -20,7 +20,6 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -77,7 +76,7 @@ object ParadoxEventManager {
     }
 
     fun getEvents(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Event, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
@@ -106,26 +105,26 @@ object ParadoxEventManager {
     }
 
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllTypes) {
             eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.EventType) }.map { it.name }.toSet()
         }
     }
 
     fun getAllTypeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
-        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.EventType) }
     }
 
     fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllAttributes) {
             eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.EventAttribute) }.map { it.name }.toSet()
         }
     }
 
     fun getAllAttributeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
-        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.event] ?: return emptySet()
         return eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.EventAttribute) }
     }
 
@@ -202,7 +201,7 @@ object ParadoxEventManager {
 
             private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
                 return config.configExpression.type == CwtDataTypes.Definition
-                    && config.configExpression.value?.substringBefore('.') == ParadoxDefinitionTypes.Event
+                    && config.configExpression.value?.substringBefore('.') == ParadoxDefinitionTypes.event
             }
         })
         return result
@@ -219,7 +218,7 @@ object ParadoxEventManager {
         if (name.isNullOrEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.Event, selector).processQuery p0@{ definition0 ->
+            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.event, selector).processQuery p0@{ definition0 ->
                 ProgressManager.checkCanceled()
                 ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
@@ -228,7 +227,7 @@ object ParadoxEventManager {
                     val rDefinition = refElement.findParentDefinition() ?: return@p true
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if (rDefinitionInfo.name.isEmpty()) return@p true
-                    if (rDefinitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
+                    if (rDefinitionInfo.type != ParadoxDefinitionTypes.event) return@p true
                     this += rDefinition
                     true
                 }
@@ -250,7 +249,7 @@ object ParadoxEventManager {
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Event, selector).processQuery p@{ rDefinition ->
+            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).processQuery p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                 if (rDefinitionInfo.name.isEmpty()) return@p true

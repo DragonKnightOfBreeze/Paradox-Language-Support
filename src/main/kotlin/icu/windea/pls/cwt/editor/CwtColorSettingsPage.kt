@@ -7,7 +7,7 @@ import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.PlsStrings
 
 class CwtColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -38,5 +38,5 @@ class CwtColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = PlsBundle.message("language.name.cwt")
 
-    override fun getDemoText() = PlsStringConstants.cwtColorSettingsSample
+    override fun getDemoText() = PlsStrings.cwtColorSettingsSample
 }
