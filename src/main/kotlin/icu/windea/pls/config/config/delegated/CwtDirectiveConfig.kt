@@ -36,7 +36,7 @@ interface CwtDirectiveConfig: CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val name: String
     @FromProperty("modes: string[]")
     val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
-    @FromProperty("relax: string[]")
+    @FromProperty("relax_modes: string[]")
     val relaxModes: Set<@CaseInsensitive String>
 
     interface Resolver {

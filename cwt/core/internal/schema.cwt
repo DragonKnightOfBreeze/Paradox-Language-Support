@@ -239,11 +239,6 @@ alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 directive[$directive$] = $any
 
-macro[$macro$] = {
-    modes = { $scalar }
-    # anything else?
-}
-
 # no `## inject = ...` completion now
 
 ## replace_scopes = $scope_context
