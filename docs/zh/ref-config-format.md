@@ -1106,8 +1106,8 @@ inline_scripts = {
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
 
-- **用途**：为触发/效应/内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：
-  - 绑定“上下文键”（指向具体触发/效应/内联脚本的上下文）。
+- **用途**：为触发器/效果/内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：
+  - 绑定“上下文键”（指向具体触发器/效果/内联脚本的上下文）。
   - 声明上下文规则与作用域上下文。
   - 支持从使用处“继承”上下文。
 - **路径定位**：`parameters/{name}`。

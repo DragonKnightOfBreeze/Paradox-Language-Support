@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.bug
+package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
@@ -61,8 +61,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
                 if (recursions.isEmpty()) return
                 val message = when {
-                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.1")
-                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.2")
+                    definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2")
+                    definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.3")
                     else -> return
                 }
                 val location = element.propertyKey

@@ -102,32 +102,26 @@
                      key="inspection.script.incorrectPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectPathReferenceInspection"/>
-    <!--endregion-->
-    <!--region Paradox script/Possible Bugs-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectSyntax"
                      key="inspection.script.incorrectSyntax" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.IncorrectSyntaxInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
-                     key="inspection.script.unsupportedParameterUsage" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.unsupportedParameterUsage" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedParameterUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterCondition"
-                     key="inspection.script.unsupportedParameterCondition" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.unsupportedParameterCondition" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterConditionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedParameterConditionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMath"
-                     key="inspection.script.unsupportedInlineMath" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.unsupportedInlineMath" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineMathInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
-                     key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineScriptUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedInlineMathInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedRecursion"
-                     key="inspection.script.unsupportedRecursion" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.unsupportedRecursion" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedRecursionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnsupportedRecursionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
@@ -142,6 +136,10 @@
                      key="inspection.script.incorrectScopeLinkChain" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
+                     key="inspection.script.conflictingScopeContextInference" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="false" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.scope.ConflictingScopeContextInferenceInspection"/>
     <!--endregion-->
     <!--region Paradox script/Complex expressions-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
@@ -195,19 +193,19 @@
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.NonTriggeredEventInspection"/>
     <!--endregion-->
-    <!--region Paradox script/Smart inference-->
+    <!--region Paradox script/Inline scripts-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
+                     key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"
-                     key="inspection.script.conflictingInlineScriptUsage" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.conflictingInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.inference.ConflictingInlineScriptUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.ConflictingInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptRecursiveInlineScriptUsage"
-                     key="inspection.script.recursiveInlineScriptUsage" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.recursiveInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.inference.RecursiveInlineScriptUsageInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
-                     key="inspection.script.conflictingScopeContextInference" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="false" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.inference.ConflictingScopeContextInferenceInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.RecursiveInlineScriptUsageInspection"/>
     <!--endregion-->
     <!--endregion-->
 
@@ -265,16 +263,14 @@
                      key="inspection.localisation.unresolvedTextIcon" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextIconInspection"/>
-    <!--endregion-->
-    <!--region Paradox localisation/Possible bugs-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectSyntax"
                      key="inspection.localisation.incorrectSyntax" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.bug.IncorrectSyntaxInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
-                     key="inspection.localisation.unsupportedRecursion" groupKey="inspection.localisation.bug.group" groupPathKey="inspection.localisation.groupPath"
+                     key="inspection.localisation.unsupportedRecursion" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.bug.UnsupportedRecursionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnsupportedRecursionInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Scope issues-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScope"
@@ -304,27 +300,27 @@
 
     <!--region Paradox csv-->
     <!--region Paradox csv/Common-->
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumnsInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumns"
                      key="inspection.csv.missingColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.MissingColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumnsInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumns"
                      key="inspection.csv.duplicateColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.DuplicateColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumnsInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumns"
                      key="inspection.csv.unresolvedColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSizeInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSize"
                      key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpressionInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpression"
                      key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedExpressionInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectExpressionInspection"
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectExpression"
                      key="inspection.csv.incorrectExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectExpressionInspection"/>

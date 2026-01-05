@@ -1,23 +1,21 @@
-package icu.windea.pls.lang.inspections.script.bug
+package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
 /**
- * （对于脚本文件）检查是否在不支持的地方使用了内联脚本。
+ * （对于脚本文件）检查是否在不支持的地方使用了内联数学表达式。
  */
-class UnsupportedInlineScriptUsageInspection : LocalInspectionTool()/*, DumbAware*/ {
+class UnsupportedInlineMathInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
-        if (!ParadoxInlineScriptManager.isSupported(selectGameType(file))) return false
         return true
     }
 
@@ -26,15 +24,13 @@ class UnsupportedInlineScriptUsageInspection : LocalInspectionTool()/*, DumbAwar
         if (extension == "asset") {
             return object : PsiElementVisitor() {
                 override fun visitElement(element: PsiElement) {
-                    if (element is ParadoxScriptProperty) {
-                        if (ParadoxInlineScriptManager.isMatched(element.name)) {
-                            holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1"))
-                        }
+                    if (element is ParadoxScriptInlineMath) {
+                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
                     }
                 }
             }
         }
+
         return PsiElementVisitor.EMPTY_VISITOR
     }
 }
-

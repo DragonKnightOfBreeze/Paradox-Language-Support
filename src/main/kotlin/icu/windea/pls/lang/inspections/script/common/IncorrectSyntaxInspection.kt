@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.bug
+package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
@@ -22,7 +22,9 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 不正确的语法的代码检查。
+ * （对于脚本文件）检查是否存在不正确的语法。
+ *
+ * - 报告不期望的比较操作符。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {

@@ -14,7 +14,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
- * - 参数是指触发（trigger）、效应（effect）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
+ * - 参数是指特定类型的定义（如封装触发器，scripted trigger）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
  * 路径定位：`parameters/{name}`，`{name}` 匹配规则名称。

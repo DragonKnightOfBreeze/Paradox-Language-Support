@@ -12,7 +12,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 /**
  * 作用域上下文。
  *
- * **作用域上下文（scope context）** 是模组编程中 **谓语**（如触发、效应、修正等）的结构中，某处的当前状态，
+ * **作用域上下文（scope context）** 是模组编程中 **谓语**（如触发器、效果、修正等）的结构中，某处的当前状态，
  * 保存了 **系统作用域** 到 **作用域** 信息的映射。
  * 以便进行取值、回溯、入栈、替换等操作。
  *

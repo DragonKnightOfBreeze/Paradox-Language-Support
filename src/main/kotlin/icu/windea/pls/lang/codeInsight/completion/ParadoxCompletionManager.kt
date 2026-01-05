@@ -259,11 +259,11 @@ object ParadoxCompletionManager {
 
     private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
         val expression = config.keyExpression
-        // 如果类型是aliasName，则无论cardinality如何定义，都应该提供补全（某些cwt规则文件未正确编写）
+        // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
         if (expression.type == CwtDataTypes.AliasName) return true
         val actualCount = occurrenceMap[expression]?.actual ?: 0
-        // 如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
-        // 如果上限是动态的值（如，基于define的值），也不作限制
+        // 如果写明了 `cardinality`，则为 `cardinality.max` ，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
+        // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
         val cardinality = config.optionData { cardinality }
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
@@ -276,8 +276,8 @@ object ParadoxCompletionManager {
     private fun shouldComplete(config: CwtValueConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
         val expression = config.valueExpression
         val actualCount = occurrenceMap[expression]?.actual ?: 0
-        // 如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
-        // 如果上限是动态的值（如，基于define的值），也不作限制
+        // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
+        // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
         val cardinality = config.optionData { cardinality }
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
@@ -311,7 +311,7 @@ object ParadoxCompletionManager {
     // region General Completion Methods
 
     fun completeKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath, rootKeyPrefix: Lazy<String?>) {
-        // 从以下来源收集需要提示的key（顶级键和类型键）
+        // 从以下来源收集需要提示的键（顶级键和类型键）
         // - skip_root_key
         // - type_key_filter
         // - type_key_prefix

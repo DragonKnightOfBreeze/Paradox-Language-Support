@@ -225,7 +225,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     /**
      * 支持的作用域。默认支持任意作用域。
      *
-     * 适用对象：触发（trigger）与效应（effect）对应的别名规则（[CwtAliasConfig]）。
+     * 适用对象：触发器（trigger）与效果（effect）对应的别名规则（[CwtAliasConfig]）。
      *
      * CWTools 兼容性：兼容。PLS 会做作用域 ID 归一化。
      *

@@ -1,23 +1,22 @@
-package icu.windea.pls.lang.inspections.localisation.bug
+package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
+/**
+ * （对于本地化文件）检查是否存在不正确的语法。
+ *
+ * - 报告悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。
+ * - 报告悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。
+ */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
-    }
-
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {

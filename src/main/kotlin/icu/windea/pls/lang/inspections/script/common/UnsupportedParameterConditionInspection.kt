@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.bug
+package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder

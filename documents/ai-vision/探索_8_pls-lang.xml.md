@@ -60,7 +60,7 @@
   - `elementDescriptionProvider`、`nameSuggestionProvider`
   - `renameInputValidator`：脚本变量/本地化属性/参数/本地化参数
   - `automaticRenamerFactory`：相关本地化/图片、生成的修饰符（名称/描述/图标）
-  - `inlineActionHandler`：脚本变量/脚本化触发/效果/内联脚本、本地化
+  - `inlineActionHandler`：脚本变量/封装触发器/效果/内联脚本、本地化
   - `refactoring.extractIncludeHandler`：引入本地/全局脚本变量
 - 层级/桩/索引
   - `typeHierarchyProvider`、`callHierarchyProvider`

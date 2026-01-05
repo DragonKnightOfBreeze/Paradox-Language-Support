@@ -53,7 +53,7 @@
   - UnusedDynamicValue（WEAK WARNING，默认关）
   - UnsetDynamicValue（WEAK WARNING，默认关）
   - IncorrectPathReference（WARNING）
-- Possible Bugs（groupKey=`inspection.script.bug.group`）：
+- Possible Bugs（groupKey=`inspection.script.common.group`）：
   - IncorrectSyntax / UnsupportedParameterUsage / UnsupportedParameterCondition / UnsupportedInlineMath / UnsupportedInlineScriptUsage / UnsupportedRecursion（均 WARNING）
 - Scope issues（groupKey=`inspection.script.scope.group`）：
   - IncorrectScope / IncorrectScopeSwitch（WARNING），IncorrectScopeLinkChain（WEAK WARNING）
@@ -83,7 +83,7 @@
   - UnresolvedConcept（ERROR）
   - UnresolvedTextFormat（ERROR）
   - UnresolvedTextIcon（ERROR）
-- Possible bugs（groupKey=`inspection.localisation.bug.group`）：
+- Possible bugs（groupKey=`inspection.localisation.common.group`）：
   - IncorrectSyntax / UnsupportedRecursion（WARNING）
 - Scope issues（groupKey=`inspection.localisation.scope.group`）：
   - IncorrectScope / IncorrectScopeSwitch（WARNING），IncorrectScopeLinkChain（WEAK WARNING）

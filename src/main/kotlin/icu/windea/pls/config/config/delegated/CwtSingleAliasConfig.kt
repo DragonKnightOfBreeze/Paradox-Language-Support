@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 单别名规则是一种可以按一对一的形式，在多个位置复用（作为属性的值）的规则。
  * 单别名规则可用来简化规则文件，提升可读性和复用性。
- * 另外，包括触发块（trigger clause）、效应块（effect clause）在内的多种代码片段对应的规则，都建议以单别名规则的形式提供。
+ * 另外，包括触发块（trigger clause）、效果块（effect clause）在内的多种代码片段对应的规则，都建议以单别名规则的形式提供。
  *
  * 路径定位：`single_alias[{name}]`，`{name}` 匹配名称。
  *

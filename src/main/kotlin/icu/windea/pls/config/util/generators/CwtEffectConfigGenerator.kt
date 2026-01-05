@@ -28,7 +28,7 @@ import kotlinx.coroutines.withContext
 /**
  * 从 `effects.log` 生成 `effects.cwt`。
  *
- * @property ignoredNames 需要忽略的效应的名字（忽略大小写）。
+ * @property ignoredNames 需要忽略的效果的名字（忽略大小写）。
  *
  * @see CwtAliasConfig
  */
