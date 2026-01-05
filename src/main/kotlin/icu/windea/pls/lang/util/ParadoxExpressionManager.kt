@@ -59,13 +59,12 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withDependencyItems
@@ -501,8 +500,9 @@ object ParadoxExpressionManager {
                 val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
+                if (candidates.isEmpty() && orDefault) return resultForKey // 如果无结果，则需要考虑回退
                 val finalResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
-                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果且需要使用默认值，则返回所有候选规则
+                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果，则需要考虑回退
                 return finalResult // 返回最终匹配的规则
             }
             else -> {
@@ -520,9 +520,10 @@ object ParadoxExpressionManager {
                 val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
+                if (candidates.isEmpty() && orDefault) return result // 如果无结果，则需要考虑回退
                 val finalResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
                     .let { ParadoxMatchPipeline.optimize(element, valueExpression, it, matchOptions) }
-                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果且需要使用默认值，则返回所有候选规则
+                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果，则需要考虑回退
                 return finalResult // 返回最终匹配的规则
             }
         }
