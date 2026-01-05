@@ -6,8 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.inspections.PlsInspectionService
-import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -15,11 +16,19 @@ import icu.windea.pls.script.psi.isExpression
 
 /**
  * 不正确的表达式的代码检查。
+ *
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
+    @JvmField
+    var ignoredInInjectedFiles = false
+    @JvmField
+    var ignoredInInlineScriptFiles = false
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

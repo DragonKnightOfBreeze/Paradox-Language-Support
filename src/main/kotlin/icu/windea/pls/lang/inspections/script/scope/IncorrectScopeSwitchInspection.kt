@@ -10,13 +10,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -28,8 +28,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     private var checkForSystemScopes = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

@@ -12,10 +12,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -28,8 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 
 class IncorrectScopeInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
