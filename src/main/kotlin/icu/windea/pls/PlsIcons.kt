@@ -141,9 +141,7 @@ object PlsIcons {
         @JvmField
         val Tag = IconManager.getInstance().getIcon("/icons/nodes/tag.svg")
         @JvmField
-        val Inline = IconManager.getInstance().getIcon("/icons/nodes/inline.svg") // lower case 'i'
-        @JvmField
-        val Macro = IconManager.getInstance().getIcon("/icons/nodes/macro.svg") // lower case 'm'
+        val Directive = IconManager.getInstance().getIcon("/icons/nodes/directive.svg")
         @JvmField
         val TemplateExpression = IconManager.getInstance().getIcon("icons/nodes/templateExpression.svg")
         @JvmField
@@ -182,7 +180,7 @@ object PlsIcons {
 
         @JvmStatic
         fun PathReference(pathExpression: CwtDataExpression?) = when(pathExpression) {
-            ParadoxInlineScriptManager.inlineScriptPathExpression -> Inline
+            ParadoxInlineScriptManager.inlineScriptPathExpression -> Directive
             else -> PathReference
         }
     }

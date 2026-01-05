@@ -814,7 +814,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ParadoxCompletionPriorities.constant)
-                .withPatchableIcon(PlsIcons.Nodes.Inline)
+                .withPatchableIcon(PlsIcons.Nodes.Directive)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
         }

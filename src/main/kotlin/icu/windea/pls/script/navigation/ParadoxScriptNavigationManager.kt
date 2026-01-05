@@ -60,12 +60,12 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 作为内联脚本用法的属性使用特殊图标
                     if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
-                    return PlsIcons.Nodes.Inline
+                    return PlsIcons.Nodes.Directive
                 }
                 run {
                     // 作为定义注入的属性使用特殊图标
                     if (!ParadoxPsiMatcher.isDefinitionInjection(element)) return@run
-                    return PlsIcons.Nodes.Macro
+                    return PlsIcons.Nodes.Directive
                 }
                 run {
                     // 作为定义的属性使用特殊图标
