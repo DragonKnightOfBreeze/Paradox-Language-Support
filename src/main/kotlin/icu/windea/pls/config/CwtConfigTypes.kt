@@ -45,11 +45,6 @@ object CwtConfigTypes {
         prefix = PlsStringConstants.dynamicValuePrefix
         description = PlsBundle.message("cwt.config.description.dynamicValue")
     }
-    val Inline = CwtConfigType.create("inline") {
-        icon = PlsIcons.Nodes.Directive
-        prefix = PlsStringConstants.inlinePrefix
-        description = PlsBundle.message("cwt.config.description.inline")
-    }
     val SingleAlias = CwtConfigType.create("single alias") {
         icon = PlsIcons.Nodes.Alias
         prefix = PlsStringConstants.singleAliasPrefix
@@ -59,6 +54,11 @@ object CwtConfigTypes {
         icon = PlsIcons.Nodes.Alias
         prefix = PlsStringConstants.aliasPrefix
         description = PlsBundle.message("cwt.config.description.alias")
+    }
+    val Directive = CwtConfigType.create("directive") {
+        icon = PlsIcons.Nodes.Directive
+        prefix = PlsStringConstants.directivePrefix
+        description = PlsBundle.message("cwt.config.description.directive")
     }
     val Link = CwtConfigType.create("link", isReference = true) {
         icon = PlsIcons.Nodes.Link

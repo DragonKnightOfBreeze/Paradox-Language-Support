@@ -75,9 +75,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
     @JvmField
-    val INLINE_KEY = createTextAttributesKey("PARADOX_SCRIPT.INLINE", MARKUP_TAG)
-    @JvmField
-    val MACRO_KEY = createTextAttributesKey("PARADOX_SCRIPT.MACRO", MARKUP_TAG)
+    val DIRECTIVE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DIRECTIVE", MARKUP_TAG)
 
     @JvmField
     val SYSTEM_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_SCOPE", STATIC_METHOD)

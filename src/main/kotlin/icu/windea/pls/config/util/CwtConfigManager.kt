@@ -37,11 +37,10 @@ import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
@@ -272,9 +271,6 @@ object CwtConfigManager {
             element is CwtValue && configPath.path.matchesAntPattern("values/value[*]/*") -> {
                 CwtConfigTypes.DynamicValue
             }
-            element is CwtProperty && configPath.path.matchesAntPattern("inline[*]") -> {
-                CwtConfigTypes.Inline
-            }
             element is CwtProperty && configPath.path.matchesAntPattern("single_alias[*]") -> {
                 CwtConfigTypes.SingleAlias
             }
@@ -286,6 +282,9 @@ object CwtConfigManager {
                     aliasName == "effect" -> return CwtConfigTypes.Effect
                 }
                 CwtConfigTypes.Alias
+            }
+            element is CwtProperty && configPath.path.matchesAntPattern("directive[*]") -> {
+                CwtConfigTypes.Directive
             }
             element is CwtProperty && configPath.path.matchesAntPattern("links/*") -> {
                 CwtConfigTypes.Link
@@ -355,12 +354,12 @@ object CwtConfigManager {
             CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
             CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
             CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
-            CwtConfigTypes.Inline -> text.removeSurroundingOrNull("inline[", "]")
             CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
             CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
             CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
+            CwtConfigTypes.Directive -> text.removeSurroundingOrNull("directive[", "]")
             else -> text
         }?.orNull()?.optimized() // optimized to optimize memory
     }

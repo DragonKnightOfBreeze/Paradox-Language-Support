@@ -18,7 +18,7 @@ object PlsStringConstants {
     const val complexEnumValuePrefix = "(complex enum value)"
     const val dynamicValueTypePrefix = "(dynamic value type)"
     const val dynamicValuePrefix = "(dynamic value)"
-    const val inlinePrefix = "(inline)"
+    const val directivePrefix = "(directive)"
     const val singleAliasPrefix = "(single alias)"
     const val aliasPrefix = "(alias)"
     const val linkPrefix = "(link)"

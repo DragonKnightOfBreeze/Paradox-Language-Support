@@ -61,12 +61,7 @@
     </value>
   </option>
 
-  <option name="PARADOX_SCRIPT.INLINE">
-    <value>
-      <option name="FOREGROUND" value="E8BF6A"/>
-    </value>
-  </option>
-  <option name="PARADOX_SCRIPT.MACRO">
+  <option name="PARADOX_SCRIPT.DIRECTIVE">
     <value>
       <option name="FOREGROUND" value="E8BF6A"/>
     </value>

@@ -14,7 +14,7 @@ settings = {
 	color = rgb { 142 188 241 }
 	parameter = $PARAM$
 	[[!PARAM] parameter_condition = $PARAM$ ]
-	inline_math = @[2 + ($MAX$ - 1 + var)]
+	directive_math = @[2 + ($MAX$ - 1 + var)]
 }
 
 <DEFINITION>some_definition</DEFINITION> = {
@@ -41,6 +41,6 @@ settings = {
 	}
 }
 
-<INLINE>inline_script</INLINE> = <PATH_REFERENCE>some/inline_script</PATH_REFERENCE>
+<DIRECTIVE>directive_script</DIRECTIVE> = <PATH_REFERENCE>some/directive_script</PATH_REFERENCE>
 
-<MACRO>INJECT</MACRO><MARKER>:</MARKER><DEFINITION_REFERENCE>some_definition</DEFINITION_REFERENCE> = {}
+<DIRECTIVE>INJECT</DIRECTIVE><MARKER>:</MARKER><DEFINITION_REFERENCE>some_definition</DEFINITION_REFERENCE> = {}

@@ -5,6 +5,7 @@ import com.intellij.platform.images.icons.PlatformImagesIcons
 import com.intellij.ui.IconManager
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.Icon
 
 @Suppress("unused")
@@ -166,9 +167,9 @@ object PlsIcons {
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
-            "on_action" -> OnAction
-            "event" -> EventId
-            "event_namespace" -> EventNamespace
+            ParadoxDefinitionTypes.OnAction -> OnAction
+            ParadoxDefinitionTypes.Event -> EventId
+            ParadoxDefinitionTypes.EventNamespace -> EventNamespace
             else -> Definition
         }
 
@@ -179,7 +180,7 @@ object PlsIcons {
         }
 
         @JvmStatic
-        fun PathReference(pathExpression: CwtDataExpression?) = when(pathExpression) {
+        fun PathReference(pathExpression: CwtDataExpression?) = when (pathExpression) {
             ParadoxInlineScriptManager.inlineScriptPathExpression -> Directive
             else -> PathReference
         }

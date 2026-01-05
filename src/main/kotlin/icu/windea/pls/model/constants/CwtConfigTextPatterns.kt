@@ -12,12 +12,12 @@ object CwtConfigTextPatterns {
     val value = TextPattern("value[", "]")
     val valueSet = TextPattern("value_set[", "]")
     val dynamicValue = TextPattern("dynamic_value[", "]")
-    val inline = TextPattern("inline[", "]")
     val singleAliasRight = TextPattern("single_alias_right[", "]")
     val aliasName = TextPattern("alias_name[", "]")
     val aliasMatchLeft = TextPattern("alias_match_left[", "]")
     val aliasKeysField = TextPattern("alias_keys_field[", "]")
     val singleAlias = TextPattern("single_alias[", "]")
     val alias = TextPattern("alias[", "]", ":")
+    val directive = TextPattern("directive[", "]")
     val definition = TextPattern("<", ">")
 }

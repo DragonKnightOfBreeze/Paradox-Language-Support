@@ -45,8 +45,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY),
-        AttributesDescriptor(PlsBundle.message("script.displayName.inline"), ParadoxScriptAttributesKeys.INLINE_KEY),
-        AttributesDescriptor(PlsBundle.message("script.displayName.macro"), ParadoxScriptAttributesKeys.MACRO_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.directive"), ParadoxScriptAttributesKeys.DIRECTIVE_KEY),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.systemScope"), ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE_KEY),
@@ -90,8 +89,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,
         "EFFECT" to ParadoxScriptAttributesKeys.EFFECT_KEY,
         "TAG" to ParadoxScriptAttributesKeys.TAG_KEY,
-        "INLINE" to ParadoxScriptAttributesKeys.INLINE_KEY,
-        "MACRO" to ParadoxScriptAttributesKeys.MACRO_KEY,
+        "DIRECTIVE" to ParadoxScriptAttributesKeys.DIRECTIVE_KEY,
         "VARIABLE" to ParadoxScriptAttributesKeys.VARIABLE_KEY,
     )
 

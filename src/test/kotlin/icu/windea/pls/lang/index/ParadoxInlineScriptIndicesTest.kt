@@ -24,7 +24,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
 
     @Before
     fun setup() {
-        initConfigGroup(project, ParadoxGameType.Stellaris) // required (depends on `inline[inline_script]` configs)
+        initConfigGroup(project, ParadoxGameType.Stellaris) // required (depends on `directive[inline_script]` configs)
         markIntegrationTest()
     }
 

@@ -22,7 +22,7 @@ import icu.windea.pls.cwt.psi.stringValue
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     // - 规则的属性名为 `alias[x:y]` 时，其在脚本文件中匹配的属性名会是 `y`，需要特殊处理
-    // - 规则的属性名为 `inline[x]` 时，其在脚本文件中匹配的属性名会是 `x`，需要特殊处理
+    // - 规则的属性名为 `directive[x]` 时，其在脚本文件中匹配的属性名可能会是 `x`，需要特殊处理
     // - 对于连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
@@ -48,8 +48,8 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
                 val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")?.orNull()
                 if (aliasSubName != null) extraWords.add(aliasSubName)
             }
-            CwtConfigTypes.Inline -> {
-                val inlineName = target.name.removeSurroundingOrNull("inline[", "]")?.orNull()
+            CwtConfigTypes.Directive -> {
+                val inlineName = target.name.removeSurroundingOrNull("directive[", "]")?.orNull()
                 if (inlineName != null) extraWords.add(inlineName)
             }
             CwtConfigTypes.Link, CwtConfigTypes.LocalisationLink -> {
