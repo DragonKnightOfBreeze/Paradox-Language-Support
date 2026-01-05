@@ -22,11 +22,7 @@ internal class CwtDirectiveConfigResolverImpl : CwtDirectiveConfig.Resolver, Cwt
 
     private fun doResolve(config: CwtPropertyConfig): CwtDirectiveConfig? {
         val name = config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
-            logger.warn("Skipped invalid directive config (name: $name): Missing properties.".withLocationPrefix(config))
-            return null
-        }
+        val propElements = config.properties.orEmpty()
         val propGroup = propElements.groupBy { it.key }
         val modeConfigs = propGroup.getOne("modes")?.let { prop ->
             prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
