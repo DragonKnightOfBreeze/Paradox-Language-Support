@@ -7,7 +7,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroup
+import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -24,7 +24,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
 
     @Before
     fun setup() {
-        initConfigGroup(project, ParadoxGameType.Stellaris) // required (depends on `directive[inline_script]` configs)
+        initConfigGroups(project, ParadoxGameType.Stellaris) // required (depends on `directive[inline_script]` configs)
         markIntegrationTest()
     }
 

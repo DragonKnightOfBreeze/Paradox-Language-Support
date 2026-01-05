@@ -123,7 +123,7 @@
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtRemoteConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtLocalConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtProjectConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtTestConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtInjectedConfigGroupFileProvider"/>
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionResolver"/>

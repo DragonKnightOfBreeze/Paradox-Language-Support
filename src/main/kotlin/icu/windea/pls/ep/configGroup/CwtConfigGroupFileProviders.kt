@@ -16,6 +16,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 
@@ -230,26 +231,28 @@ class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 }
 
 /**
- * 提供可在单元测试中使用的规则分组。
+ * 提供注入的规则分组。可在集成测试中使用。
  *
- * 位置：`config/{gameType}`
+ * 位置：`{injectedConfigDirectory}/{gameType}`
  *
- * - 位于特定的测试数据目录中，一般是 `src/test/testData`。
+ * - `{injectedConfigDirectory}` 需要在加载规则数据前，预先手动指定。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ *
+ * @see icu.windea.pls.lang.analysis.ParadoxAnalysisDataService.injectedConfigDirectory
  */
-class CwtTestConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    private val rootDirectory by lazy { doGetRootDirectory() }
+class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+    private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
     override val source get() = CwtConfigGroupSource.BuiltIn
 
-    override val isEnabled get() = PlsFacade.isUnitTestMode()
+    override val isEnabled get() = with(dataService) { injectedConfigDirectory != null }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        return rootDirectory
+        return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val path = "src/test/testData/config".toPathOrNull() ?: return null
+        val path = with(dataService) { injectedConfigDirectory } ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }

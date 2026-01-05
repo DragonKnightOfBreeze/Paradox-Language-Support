@@ -63,7 +63,7 @@ class ParadoxLauncherSettingsJsonInfoTest {
     @Test
     fun readLauncherSettings_fromLocal_ifExists() {
         val gameType = ParadoxGameType.Stellaris
-        val gameDataDir = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
+        val gameDataDir = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Skip: gameDir not found", gameDataDir != null)
         gameDataDir!!
 

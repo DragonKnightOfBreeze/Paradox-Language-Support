@@ -25,6 +25,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralN
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.injectConfigDirectory
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
 import org.junit.Before
@@ -40,6 +41,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     @Before
     fun setup() {
         markIntegrationTest()
+        injectConfigDirectory("features/complexExpression/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 

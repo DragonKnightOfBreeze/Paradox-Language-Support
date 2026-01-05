@@ -5,20 +5,18 @@ package icu.windea.pls.test
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 
 context(_: UsefulTestCase)
-fun initConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
-    val configGroupService = CwtConfigGroupService.getInstance(project)
-    val groups = configGroupService.getConfigGroups().values
-        .filter { it.gameType == ParadoxGameType.Core || it.gameType == gameType }
-    runBlocking { configGroupService.init(groups, project) }
-    return configGroupService.getConfigGroup(gameType)
+fun injectConfigDirectory(relPath: String) {
+    val testDataPath = "src/test/testData".toPathOrNull() ?: return
+    val path = testDataPath.resolve(relPath)
+    ParadoxAnalysisInjector.injectConfigDirectory(path)
 }
 
 context(_: UsefulTestCase)

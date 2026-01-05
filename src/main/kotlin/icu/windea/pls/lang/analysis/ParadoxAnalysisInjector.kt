@@ -8,6 +8,7 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
+import java.nio.file.Path
 
 @Suppress("unused")
 object ParadoxAnalysisInjector {
@@ -109,6 +110,10 @@ object ParadoxAnalysisInjector {
 
     fun clearMarkedFileInfo() {
         dataService.markedFileInfo = null
+    }
+
+    fun injectConfigDirectory(path: Path) {
+        dataService.injectedConfigDirectory = path
     }
 
     // endregion
