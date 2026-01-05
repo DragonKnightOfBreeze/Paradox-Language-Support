@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -30,15 +31,19 @@ internal class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRe
         val modeConfigs = propGroup.getOne("modes")?.let { prop ->
             prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
         }?.optimized().orEmpty()
+        val relaxModes = propGroup.getOne("relax_modes")?.let { prop ->
+            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+        }?.optimized().orEmpty()
         logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
-        return CwtMacroConfigImpl(config, name, modeConfigs)
+        return CwtMacroConfigImpl(config, name, modeConfigs, relaxModes)
     }
 }
 
 private class CwtMacroConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val modeConfigs: Map<String, CwtValueConfig>
+    override val modeConfigs: Map<String, CwtValueConfig>,
+    override val relaxModes: Set<String>,
 ) : UserDataHolderBase(), CwtMacroConfig {
     override fun toString() = "CwtMacroConfigImpl(name='$name')"
 }

@@ -19,8 +19,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.configContext.inRoot
+import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
@@ -254,10 +254,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getHighlightType(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType {
         run {
-            // localisation reference -> expression can be a string literal instead  -> use weak warning (wave lines) instead
+            // localisation reference -> expression can be a string literal instead  -> use weaker highlight type
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeGroups.LocalisationReference }
-            if (r) return ProblemHighlightType.WEAK_WARNING
+            if (r) return PlsInspectionUtil.getWeakerHighlightType()
         }
         return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
     }

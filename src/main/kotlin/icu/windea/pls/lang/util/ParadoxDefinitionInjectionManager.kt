@@ -11,10 +11,9 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -23,6 +22,9 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -141,14 +143,19 @@ object ParadoxDefinitionInjectionManager {
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
-        if (target.isNullOrEmpty()) return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null) // 兼容目标为空的情况
-        val path = fileInfo.path
-        val elementPath = ParadoxElementPath.resolve(listOf(target))
-        val typeKey = target
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, null) ?: return null
-        if (!canApply(typeConfig)) return null // 排除不期望匹配的类型规则
-        val type = typeConfig.name
-        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
+        run {
+            if (target.isNullOrEmpty()) return@run
+            val path = fileInfo.path
+            val elementPath = ParadoxElementPath.resolve(listOf(target))
+            val typeKey = target
+            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, null)
+            if (typeConfig == null) return@run
+            if (!canApply(typeConfig)) return@run // 排除不期望匹配的类型规则
+            val type = typeConfig.name
+            return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
+        }
+        // 兼容目标为空或者目标类型无法解析的情况
+        return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
     }
 
     @Suppress("unused")
@@ -183,5 +190,23 @@ object ParadoxDefinitionInjectionManager {
 
     fun getDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
         return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo)
+    }
+
+    fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+        val mode = definitionInjectionInfo.mode
+        val gameType = definitionInjectionInfo.gameType
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return false
+        return mode in macroConfig.relaxModes
+    }
+
+    fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
+        if (definitionInjectionInfo.target.isNullOrEmpty()) return false
+        if (definitionInjectionInfo.type.isNullOrEmpty()) return false
+        if (definitionInjectionInfo.typeConfig == null) return false
+        val name = definitionInjectionInfo.target
+        val typeExpression = definitionInjectionInfo.type
+        val selector = selector(definitionInjectionInfo.project, context).definition()
+        return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
     }
 }

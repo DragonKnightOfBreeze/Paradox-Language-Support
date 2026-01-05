@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -18,6 +17,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
@@ -136,10 +136,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
-                    val highlightType = when {
-                        relaxMax -> ProblemHighlightType.WEAK_WARNING // use weak warning (wave lines) instead
-                        else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                    }
+                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(relaxMax)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false

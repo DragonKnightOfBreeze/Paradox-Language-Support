@@ -1,0 +1,29 @@
+package icu.windea.pls.lang.inspections.script.definitionInjection
+
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+
+/**
+ * 检查是否在不支持的地方使用了定义注入。
+ *
+ * - 必须存在可以匹配的定义类型（在脚本文件的顶层声明定义，并且使用类型键作为定义的名字）。
+ * - TODO 2.1.1+ 基于 Wiki 和官方开发日志，进行更加严格的检查。
+ */
+class UnsupportedDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase()/*, DumbAware*/ {
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if (element !is ParadoxScriptProperty) return
+                val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
+                if (definitionInjectionInfo.target.isNullOrEmpty()) return // considered "incorrect"
+                if (definitionInjectionInfo.type.isNullOrEmpty()) return
+                if (definitionInjectionInfo.typeConfig != null) return
+                holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedDefinitionInjectionUsage.desc.1"))
+            }
+        }
+    }
+}

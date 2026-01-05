@@ -32,11 +32,13 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 名称。
  */
-interface CwtMacroConfig: CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("macro[$]")
     val name: String
     @FromProperty("modes: string[]")
     val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
+    @FromProperty("relax: string[]")
+    val relaxModes: Set<@CaseInsensitive String>
 
     interface Resolver {
         /** 由属性规则解析为宏规则。*/

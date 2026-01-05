@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -18,6 +17,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
@@ -136,10 +136,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                         minDefine == null -> PlsBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
                         else -> PlsBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
                     }
-                    val highlightType = when {
-                        relaxMin -> ProblemHighlightType.WEAK_WARNING // weak warning (wave lines), not warning
-                        else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                    }
+                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(relaxMin)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false
