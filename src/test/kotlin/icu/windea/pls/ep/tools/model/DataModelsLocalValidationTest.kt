@@ -24,7 +24,7 @@ import kotlin.io.path.isRegularFile
  *   -Dpls.test.include.local.env=true
  */
 class DataModelsLocalValidationTest {
-    private val gameDataDir = PlsPathService.getGameDataPath(ParadoxGameType.Stellaris.title)
+    private val gameDataDir = PlsPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris.title)
 
     // 不需要
     // @Before
@@ -86,12 +86,12 @@ class DataModelsLocalValidationTest {
             val model = jsonMapper.readValue(file.toFile(), LauncherJsonV3::class.java)
             assert(model.mods.all { it.position >= 0 })
             // 每个 mod 应该至少有 steamId 或 pdxId
-            assert(model.mods.all { (it.steamId != null && it.steamId.isNotEmpty()) || (it.pdxId != null && it.pdxId.isNotEmpty()) })
+            assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V3, mods=${model.mods.size}")
         } else {
             val model = jsonMapper.readValue(file.toFile(), LauncherJsonV2::class.java)
             assert(model.mods.all { it.position.isNotEmpty() })
-            assert(model.mods.all { (it.steamId != null && it.steamId.isNotEmpty()) || (it.pdxId != null && it.pdxId.isNotEmpty()) })
+            assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V2, mods=${model.mods.size}")
         }
     }

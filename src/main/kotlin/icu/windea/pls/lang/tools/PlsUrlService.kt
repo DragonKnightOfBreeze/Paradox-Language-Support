@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.lang.tools.impl.PlsUrlServiceImpl
 
 interface PlsUrlService {
@@ -56,5 +57,8 @@ interface PlsUrlService {
      */
     fun copyUrl(url: String)
 
-    companion object : PlsUrlService by PlsUrlServiceImpl()
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsUrlService = serviceOrNull() ?: PlsUrlServiceImpl()
+    }
 }

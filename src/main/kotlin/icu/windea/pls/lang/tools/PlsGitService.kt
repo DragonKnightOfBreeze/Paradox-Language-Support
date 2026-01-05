@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.core.console.CommandExecutionException
 import icu.windea.pls.lang.tools.impl.PlsGitServiceImpl
 import java.io.IOException
@@ -25,5 +26,8 @@ interface PlsGitService {
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun pull(url: String, workDirectory: Path): String
 
-    companion object : PlsGitService by PlsGitServiceImpl()
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsGitService = serviceOrNull() ?: PlsGitServiceImpl()
+    }
 }

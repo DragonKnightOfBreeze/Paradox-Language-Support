@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.tools.impl
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.lang.tools.PlsUrlService
 import java.awt.datatransfer.StringSelection

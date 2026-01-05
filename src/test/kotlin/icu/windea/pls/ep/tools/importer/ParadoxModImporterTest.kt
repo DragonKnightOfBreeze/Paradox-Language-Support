@@ -36,8 +36,8 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     private fun addAllowedRoots() {
         // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
         val additionalAllowedRoots = listOfNotNull(
-            PlsPathService.getSteamWorkshopPath(gameType.steamId),
-            PlsPathService.getGameDataPath(gameType.title),
+            PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId),
+            PlsPathService.getInstance().getGameDataPath(gameType.title),
         )
         System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))
     }
@@ -84,7 +84,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteService.executeSql(dbFile, sql)
+        PlsSqliteService.getInstance().executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
@@ -102,7 +102,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v4_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteService.executeSql(dbFile, sql)
+        PlsSqliteService.getInstance().executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())

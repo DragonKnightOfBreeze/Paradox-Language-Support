@@ -41,7 +41,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
+            return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -58,7 +58,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getSteamWorkshopUrl(steamId)
+            return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
         }
     }
 
@@ -91,7 +91,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
+            return PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 }

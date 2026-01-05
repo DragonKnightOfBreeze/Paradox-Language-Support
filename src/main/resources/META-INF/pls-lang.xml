@@ -361,6 +361,14 @@
     <registryKey key="pls.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsUrlServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsGitServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsSqliteServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.ParadoxLaunchGameService" serviceImplementation="icu.windea.pls.lang.tools.impl.ParadoxLaunchGameServiceImpl"/>
+  </extensions>
+
   <extensions defaultExtensionNs="icu.windea.pls.search">
     <configSymbolSearch implementation="icu.windea.pls.lang.search.CwtConfigSymbolSearcher"/>
     <scriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxScriptedVariableSearcher"/>

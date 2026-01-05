@@ -31,9 +31,9 @@ interface LaunchGameActions {
 
         override fun actionPerformed(e: AnActionEvent) {
             val rootInfo = getRootInfo(e) ?: return
-            ParadoxLaunchGameService.launchGameInSteam(rootInfo)
+            ParadoxLaunchGameService.getInstance().launchGameInSteam(rootInfo)
             val project = e.project ?: return
-            ParadoxLaunchGameService.showNotification(rootInfo, project)
+            ParadoxLaunchGameService.getInstance().showNotification(rootInfo, project)
         }
     }
 
@@ -56,8 +56,8 @@ interface LaunchGameActions {
 
         override fun actionPerformed(e: AnActionEvent) {
             val rootInfo = getRootInfo(e) ?: return
-            ParadoxLaunchGameService.launchGameInSteam(rootInfo)
-            ParadoxLaunchGameService.exitIde()
+            ParadoxLaunchGameService.getInstance().launchGameInSteam(rootInfo)
+            ParadoxLaunchGameService.getInstance().exitIde()
         }
     }
 }

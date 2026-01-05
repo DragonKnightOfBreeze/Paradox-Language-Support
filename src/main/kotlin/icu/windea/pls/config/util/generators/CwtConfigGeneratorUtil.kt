@@ -36,7 +36,7 @@ object CwtConfigGeneratorUtil {
         } else {
             // TODO 2.0.6+ 需要确定对于群星以外的游戏，这里的相对路径是否固定是 `logs/script_documentation`
             val fileName = generator.getDefaultInputName()
-            val gameDataPath = PlsPathService.getGameDataPath(gameType.title)
+            val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)
             gameDataPath?.resolve("logs/script_documentation")?.resolve(fileName)?.formatted()
         }
         return resultPath?.takeIf { it.exists() }

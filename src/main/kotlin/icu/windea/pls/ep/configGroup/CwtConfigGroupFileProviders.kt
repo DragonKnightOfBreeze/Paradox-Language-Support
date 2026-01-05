@@ -157,7 +157,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
-            ?.let { PlsGitService.getRepositoryPathFromUrl(it) }
+            ?.let { PlsGitService.getInstance().getRepositoryPathFromUrl(it) }
         return fromConfig
     }
 
@@ -166,7 +166,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls.entries
-            .find { PlsGitService.getRepositoryPathFromUrl(it.value) == directoryName }
+            .find { PlsGitService.getInstance().getRepositoryPathFromUrl(it.value) == directoryName }
             ?.key
         return fromConfig
     }

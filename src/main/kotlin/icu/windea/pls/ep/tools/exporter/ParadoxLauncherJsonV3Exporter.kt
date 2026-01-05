@@ -6,8 +6,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
-import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -76,7 +76,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
-        val gameDataPath = PlsPathService.getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
         val playlistsDir = gameDataPath.resolve(Constants.playlistsName)
         return playlistsDir.takeIf { it.exists() } ?: gameDataPath
     }

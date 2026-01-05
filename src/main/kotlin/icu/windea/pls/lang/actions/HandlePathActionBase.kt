@@ -44,11 +44,11 @@ abstract class HandlePathActionBase(
 
     protected fun openPath(e: AnActionEvent) {
         val targetPath = getTargetPath(e) ?: return
-        PlsPathService.openPath(targetPath)
+        PlsPathService.getInstance().openPath(targetPath)
     }
 
     protected fun copyPath(e: AnActionEvent) {
         val targetPath = getTargetPath(e) ?: return
-        PlsPathService.copyPath(targetPath)
+        PlsPathService.getInstance().copyPath(targetPath)
     }
 }

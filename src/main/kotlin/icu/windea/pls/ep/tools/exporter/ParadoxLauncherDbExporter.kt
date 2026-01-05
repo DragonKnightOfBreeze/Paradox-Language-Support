@@ -125,7 +125,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
         // 游戏数据目录
-        return PlsPathService.getGameDataPath(gameType.title)?.takeIf { it.exists() }
+        return PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() }
     }
 
     override fun getSavedFileName(gameType: ParadoxGameType): String? {

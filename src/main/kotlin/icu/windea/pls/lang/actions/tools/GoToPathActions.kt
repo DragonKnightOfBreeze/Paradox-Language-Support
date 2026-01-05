@@ -15,7 +15,7 @@ interface GoToPathActions {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (targetPath == null) {
-                targetPath = PlsPathService.getSteamPath()
+                targetPath = PlsPathService.getInstance().getSteamPath()
             }
             return true
         }
@@ -31,7 +31,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
+                this.targetPath = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
             }
             return true
         }
@@ -48,7 +48,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsPathService.getSteamWorkshopPath(gameType.steamId)
+                this.targetPath = PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
             }
             return true
         }
@@ -65,7 +65,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsPathService.getGameDataPath(gameType.title)
+                this.targetPath = PlsPathService.getInstance().getGameDataPath(gameType.title)
             }
             return true
         }

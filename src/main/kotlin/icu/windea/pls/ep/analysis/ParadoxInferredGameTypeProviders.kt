@@ -14,7 +14,7 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
         val gameDataDir = modDir.parent ?: return null
         val gameName = gameDataDir.name
         val gameType = ParadoxGameType.getAll().find { it.title == gameName } ?: return null
-        if (PlsPathService.getGameDataPath(gameName) != gameDataDir.toNioPath()) return null
+        if (PlsPathService.getInstance().getGameDataPath(gameName) != gameDataDir.toNioPath()) return null
         return gameType
     }
 }
@@ -28,7 +28,7 @@ class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameType
         val steamWorkshopDir = parentDir ?: return null
         val steamId = steamWorkshopDir.name
         val gameType = ParadoxGameType.getAll().find { it.steamId == steamId } ?: return null
-        if (PlsPathService.getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
+        if (PlsPathService.getInstance().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
         return gameType
     }
 }

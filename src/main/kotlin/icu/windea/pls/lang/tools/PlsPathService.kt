@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools
 
+import com.intellij.openapi.components.serviceOrNull
 import icu.windea.pls.lang.tools.impl.PlsPathServiceImpl
 import java.nio.file.Path
 
@@ -36,5 +37,8 @@ interface PlsPathService {
      */
     fun copyPath(path: Path)
 
-    companion object : PlsPathService by PlsPathServiceImpl()
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsPathService = serviceOrNull() ?: PlsPathServiceImpl()
+    }
 }

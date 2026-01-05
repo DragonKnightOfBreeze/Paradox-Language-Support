@@ -16,7 +16,7 @@ import kotlin.io.path.notExists
 
 object ParadoxGameManager {
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
+        val path = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.notExists()) return null
         return path.toString()
     }

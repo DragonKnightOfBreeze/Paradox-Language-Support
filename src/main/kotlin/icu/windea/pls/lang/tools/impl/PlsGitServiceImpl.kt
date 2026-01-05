@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.tools.impl
 
+import com.intellij.openapi.components.Service
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.tools.PlsGitService

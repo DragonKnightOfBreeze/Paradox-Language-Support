@@ -49,7 +49,7 @@ object ParadoxFileManager {
      * 将输入路径视为相对于游戏的主要入口目录的路径，得到规范化后的绝对路径。
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
-        val gamePath = PlsPathService.getSteamGamePath(gameType.id, gameType.title) ?: return null
+        val gamePath = PlsPathService.getInstance().getSteamGamePath(gameType.id, gameType.title) ?: return null
         val mainEntryName = gameType.entryInfo.gameMain.firstOrNull()
         val mainEntryPath = if (mainEntryName != null) gamePath.resolve(mainEntryName) else gamePath
         val resultPath = mainEntryPath.resolve(path)

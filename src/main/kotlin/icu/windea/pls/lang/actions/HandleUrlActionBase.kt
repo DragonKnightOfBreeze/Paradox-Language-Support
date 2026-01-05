@@ -43,11 +43,11 @@ abstract class HandleUrlActionBase(
 
     protected fun copyUrl(e: AnActionEvent) {
         val targetUrl = getTargetUrl(e) ?: return
-        PlsUrlService.copyUrl(targetUrl)
+        PlsUrlService.getInstance().copyUrl(targetUrl)
     }
 
     protected fun openUrl(e: AnActionEvent) {
         val targetUrl = getTargetUrl(e) ?: return
-        PlsUrlService.openUrl(targetUrl)
+        PlsUrlService.getInstance().openUrl(targetUrl)
     }
 }

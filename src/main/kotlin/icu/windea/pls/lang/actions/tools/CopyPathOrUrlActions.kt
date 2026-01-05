@@ -16,7 +16,7 @@ interface CopyPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return PlsPathService.getSteamPath()
+            return PlsPathService.getInstance().getSteamPath()
         }
     }
 
@@ -25,7 +25,7 @@ interface CopyPathOrUrlActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
+            return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
 
@@ -34,7 +34,7 @@ interface CopyPathOrUrlActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getSteamWorkshopPath(gameType.steamId)
+            return PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
         }
     }
 
@@ -43,7 +43,7 @@ interface CopyPathOrUrlActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getGameDataPath(gameType.title)
+            return PlsPathService.getInstance().getGameDataPath(gameType.title)
         }
     }
 
@@ -87,7 +87,7 @@ interface CopyPathOrUrlActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val gameType = getGameType(e) ?: return null
             val steamId = gameType.steamId
-            return PlsUrlService.getSteamGameStoreUrl(steamId)
+            return PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
         }
     }
 
@@ -97,7 +97,7 @@ interface CopyPathOrUrlActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val gameType = getGameType(e) ?: return null
             val steamId = gameType.steamId
-            return PlsUrlService.getSteamGameWorkshopUrl(steamId)
+            return PlsUrlService.getInstance().getSteamGameWorkshopUrl(steamId)
         }
     }
 
@@ -115,7 +115,7 @@ interface CopyPathOrUrlActions {
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
-            return PlsUrlService.getSteamWorkshopUrl(steamId)
+            return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
         }
     }
 }

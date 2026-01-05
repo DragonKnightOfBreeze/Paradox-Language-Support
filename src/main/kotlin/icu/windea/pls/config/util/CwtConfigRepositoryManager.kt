@@ -38,6 +38,7 @@ object CwtConfigRepositoryManager {
         return "https://github.com/DragonKnightOfBreeze/cwtools-${gameType.id}-config"
     }
 
+    @Suppress("unused")
     fun getDefaultDirectoryName(gameType: ParadoxGameType): String {
         return "cwtools-${gameType.id}-config"
     }
@@ -91,7 +92,7 @@ object CwtConfigRepositoryManager {
 
     private fun tryCheckRemote(string: String): Result<String> {
         if (string.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitService.checkRemote(string) }
+        return runCatchingCancelable { PlsGitService.getInstance().checkRemote(string) }
     }
 
     fun isValidToSync(): Boolean {
@@ -155,7 +156,7 @@ object CwtConfigRepositoryManager {
                 return@c
             }
 
-            val updated = results.any { result -> result.getOrNull().let { !PlsGitService.isUpdateToDate(it) } }
+            val updated = results.any { result -> result.getOrNull().let { !PlsGitService.getInstance().isUpdateToDate(it) } }
 
             // 发送成功的通知
             val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0")
@@ -173,6 +174,6 @@ object CwtConfigRepositoryManager {
 
     private fun trySyncFromRemote(url: String, parentDirectory: String): Result<String> {
         if (url.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitService.syncFromRemote(url, parentDirectory) }
+        return runCatchingCancelable { PlsGitService.getInstance().syncFromRemote(url, parentDirectory) }
     }
 }
