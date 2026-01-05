@@ -465,27 +465,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     val colorType: CwtOptionDataAccessor<String?> by create {
         findOption("color_type")?.stringValue
     }
-
-    /**
-     * 检查抑制集合（suppress）。
-     *
-     * 通过若干 `## suppress = TOOL_ID` 来禁用对应 ID 的代码检查。
-     *
-     * 适用对象：定义成员对应的规则。
-     *
-     * CWTools 兼容性：PLS 未启用相关功能。
-     *
-     * 示例：`## suppress = ParadoxScriptUnresolvedExpression`
-     *
-     * TODO 暂未使用，需要验证
-     *
-     * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor
-     */
-    val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
-        val r = findOptions("suppress").mapNotNullTo(FastSet()) { it.stringValue }
-        r.optimized()
-    }
-
+    
     /**
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
      *

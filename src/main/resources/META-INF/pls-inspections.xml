@@ -5,7 +5,6 @@
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxLocalisationInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxCsvInspectionSuppressor"/>
-    <!--<lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor"/>-->
 
     <!--region Overrides-->
     <localInspection language="" shortName="ParadoxOverrideForFile"
