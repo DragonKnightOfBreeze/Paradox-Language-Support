@@ -25,10 +25,9 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
@@ -81,7 +80,8 @@ object ParadoxPsiManager {
         if (comments.isEmpty()) return null
         return buildString {
             for (comment in comments) {
-                val line = comment.text.trimStart('#').trim()
+                val text = comment.text
+                val line = text.trimStart('#').trim()
                 if (line.isEmpty()) continue
                 val l = line.escapeXml()
                 append(l)
