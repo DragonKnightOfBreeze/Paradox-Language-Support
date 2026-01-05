@@ -30,6 +30,8 @@ class ParadoxForcedDefinitionOverrideStrategyProvider : ParadoxOverrideStrategyP
         return when {
             // event namespace -> ORDERED (don't care)
             typeConfig.name == ParadoxDefinitionTypes.eventNamespace -> ParadoxOverrideStrategy.ORDERED
+            // on action -> ORDERED (don't care)
+            typeConfig.name == ParadoxDefinitionTypes.onAction -> ParadoxOverrideStrategy.ORDERED
             // swapped type -> ORDERED (don't care)
             typeConfig.baseType != null -> ParadoxOverrideStrategy.ORDERED
             // force anonymous -> ORDERED (don't care)
