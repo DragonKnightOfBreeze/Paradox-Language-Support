@@ -13,10 +13,17 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 
 context(_: UsefulTestCase)
-fun injectConfigDirectory(relPath: String) {
+fun markRootDirectory(relPath: String) {
     val testDataPath = "src/test/testData".toPathOrNull() ?: return
     val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.injectConfigDirectory(path)
+    ParadoxAnalysisInjector.markRootDirectory(path)
+}
+
+context(_: UsefulTestCase)
+fun markConfigDirectory(relPath: String) {
+    val testDataPath = "src/test/testData".toPathOrNull() ?: return
+    val path = testDataPath.resolve(relPath)
+    ParadoxAnalysisInjector.markConfigDirectory(path)
 }
 
 context(_: UsefulTestCase)

@@ -11,10 +11,9 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.rootInfo
@@ -90,14 +89,13 @@ object PlsMarkdownManager {
         return host
     }
 
-    fun getInjectFileInfoFromInjectedFile(element: MarkdownCodeFence): ParadoxFileInfo? {
+    fun getInjectedFileInfoFromInjectedFile(element: MarkdownCodeFence): ParadoxFileInfo? {
         val pathInjectionInfo = getPathInjectionInfo(element) ?: return null
         val path = ParadoxPath.resolve(pathInjectionInfo.path)
         if (!canInject(path)) return null
 
         run {
-            val rootInfo = selectRootFile(element)?.rootInfo
-            if (rootInfo == null) return@run
+            val rootInfo = selectRootFile(element)?.rootInfo ?: return@run
             val group = ParadoxFileGroup.resolve(path)
             val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
             return injectedFileInfo
@@ -105,8 +103,8 @@ object PlsMarkdownManager {
 
         // 需要尽可能兼容 markdown 文件不在游戏或模组目录中的情况
 
-        val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
         val group = ParadoxFileGroup.resolve(path)
+        val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
         val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
         return injectedFileInfo
     }

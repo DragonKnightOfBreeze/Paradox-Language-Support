@@ -239,7 +239,7 @@ object ParadoxAnalysisManager {
         return when {
             from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
             from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
-            from is VirtualFile -> getFileInfo(from)?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
+            from is VirtualFile -> getFileInfo(from)?.rootInfo?.rootFile
             else -> selectRootFile(selectFile(from))
         }
     }

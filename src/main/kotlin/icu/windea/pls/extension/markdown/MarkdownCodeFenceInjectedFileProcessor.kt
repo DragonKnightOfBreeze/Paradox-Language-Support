@@ -15,7 +15,7 @@ class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
         val vFile = file.virtualFile
         if (PlsFileManager.isStubFile(vFile)) return false
         val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return false
-        val injectedFileInfo = PlsMarkdownManager.getInjectFileInfoFromInjectedFile(element)
+        val injectedFileInfo = PlsMarkdownManager.getInjectedFileInfoFromInjectedFile(element)
         ParadoxAnalysisInjector.injectFileInfo(vFile, injectedFileInfo)
         return true
     }

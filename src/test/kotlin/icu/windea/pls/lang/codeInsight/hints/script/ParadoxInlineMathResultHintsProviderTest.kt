@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
+import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
+import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
@@ -12,7 +14,10 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineMathResultHintsProviderTest : DeclarativeInlayHintsProviderTestCase() {
+    override fun getTestDataPath() = "src/test/testData"
+
     @Before
     fun setup() = markIntegrationTest()
 
@@ -20,18 +25,29 @@ class ParadoxInlineMathResultHintsProviderTest : DeclarativeInlayHintsProviderTe
     fun clear() = clearIntegrationTest()
 
     @Test
+    fun preview() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        val text = "/inlayProviders/paradox.script.inlineMathResult/preview.txt".toClasspathUrl().readText()
+        doTest(text)
+    }
+
+    @Test
     fun simple() {
-        doTest("""
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        val text = """
 key = @[ 1 + 1 ]/*<# => 2 #>*/
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     @Test
     fun withLocalSv() {
-        doTest("""
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        val text = """
 @var = 1
 key = @[ var + 1 ]/*<# => 2 #>*/
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     @Test
@@ -39,38 +55,45 @@ key = @[ var + 1 ]/*<# => 2 #>*/
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global.txt")
         myFixture.configureByText("global.txt", "@var = 1")
 
-        doTest("""
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        val text = """
 key = @[ var + 1 ]/*<# => 2 #>*/
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     @Test
     fun withUnresolvedSv() {
-        doTest("""
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        val text = """
 // NO_HINTS
 key = @[ var + 1 ]
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     @Test
     fun withParameter() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
         val p = "\$PARAM|1$"
-        doTest("""
+        val text = """
 key = @[ $p + 1 ]/*<# => 2 #>*/
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     @Test
     fun withUnresolvedParameter() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
         val p = "\$PARAM$"
-        doTest("""
+        val text = """
 // NO_HINTS
 key = @[ $p + 1 ]
-        """.trimIndent())
+        """.trimIndent()
+        doTest(text)
     }
 
     private fun doTest(text: String) {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
         doTestProvider("test.txt", text, ParadoxInlineMathResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

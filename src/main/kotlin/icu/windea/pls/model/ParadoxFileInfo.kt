@@ -19,16 +19,9 @@ class ParadoxFileInfo(
     val rootInfo: ParadoxRootInfo,
 ) {
     val rootPath: Path?
-        get() {
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            return rootInfo.rootFile.toNioPath()
-        }
+        get() = rootInfo.rootFile?.toNioPath()
     val entryPath: Path?
-        get() {
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val rootPath = rootInfo.rootFile.toNioPath()
-            return if (entry.isEmpty()) rootPath else rootPath.resolve(entry)
-        }
+        get() = if (entry.isEmpty()) rootPath else rootPath?.resolve(entry)
 
     val inMainOrExtraEntry: Boolean get() = inMainEntry || inExtraEntry
     val inMainEntry: Boolean get() = entry.isEmpty() && rootInfo.mainEntries.isEmpty() || entry in rootInfo.mainEntries

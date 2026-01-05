@@ -3,6 +3,7 @@ package icu.windea.pls.lang.analysis
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -52,6 +53,11 @@ object ParadoxAnalysisInjector {
 
     // region Manipulation Methods
 
+    fun createInjectedRootInfo(gameType: ParadoxGameType): ParadoxRootInfo.Injected {
+        val rootDirectory = dataService.markedRootDirectory
+        return ParadoxRootInfo.Injected(gameType, rootDirectory?.toVirtualFile())
+    }
+
     fun injectRootInfo(rootFile: VirtualFile, rootInfo: ParadoxRootInfo?): Boolean {
         with(dataService) { rootFile.injectedRootInfo = rootInfo }
         return true
@@ -66,7 +72,7 @@ object ParadoxAnalysisInjector {
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
-        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, ParadoxRootInfo.Injected(gameType))
+        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, createInjectedRootInfo(gameType))
         with(dataService) { file.injectedFileInfo = fileInfo }
     }
 
@@ -104,7 +110,7 @@ object ParadoxAnalysisInjector {
         val filePath = ParadoxPath.resolve(path)
         val fileEntry = entry
         val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
-        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, ParadoxRootInfo.Injected(gameType))
+        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, createInjectedRootInfo(gameType))
         dataService.markedFileInfo = fileInfo
     }
 
@@ -112,8 +118,20 @@ object ParadoxAnalysisInjector {
         dataService.markedFileInfo = null
     }
 
-    fun injectConfigDirectory(path: Path) {
-        dataService.injectedConfigDirectory = path
+    fun markRootDirectory(path: Path) {
+        dataService.markedRootDirectory = path
+    }
+
+    fun clearMarkedRootDirectory() {
+        dataService.markedRootDirectory = null
+    }
+
+    fun markConfigDirectory(path: Path) {
+        dataService.markedConfigDirectory = path
+    }
+
+    fun clearMarkedConfigDirectory() {
+        dataService.markedConfigDirectory = null
     }
 
     // endregion

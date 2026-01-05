@@ -231,28 +231,28 @@ class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 }
 
 /**
- * 提供注入的规则分组。可在集成测试中使用。
+ * 提供注入的规则分组。可用于集成测试。
  *
  * 位置：`{injectedConfigDirectory}/{gameType}`
  *
  * - `{injectedConfigDirectory}` 需要在加载规则数据前，预先手动指定。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  *
- * @see icu.windea.pls.lang.analysis.ParadoxAnalysisDataService.injectedConfigDirectory
+ * @see icu.windea.pls.lang.analysis.ParadoxAnalysisDataService.markedConfigDirectory
  */
 class CwtInjectedConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
     override val source get() = CwtConfigGroupSource.BuiltIn
 
-    override val isEnabled get() = with(dataService) { injectedConfigDirectory != null }
+    override val isEnabled get() = with(dataService) { markedConfigDirectory != null }
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val path = with(dataService) { injectedConfigDirectory } ?: return null
+        val path = with(dataService) { markedConfigDirectory } ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }

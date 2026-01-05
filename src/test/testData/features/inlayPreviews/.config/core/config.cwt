@@ -8,19 +8,35 @@ types = {
             title = title
         }
     }
+    type[species] = {
+        path = "game/common/species"
+        path_extension = .txt
+        localisation = {
+            ## primary
+            name = name
+        }
+    }
 }
 
 character = {
-    id = scalar
     name = localisation
     title = localisation
     gender = enum[gender]
     species = <species>
-    tags = { enum[character_tag] }
+    ## cardinality = 0..1
+    tags = {
+        ## cardinality = 0..inf
+        enum[character_tag]
+    }
+    ## cardinality = 0..1
     ## replace_scopes = { this = character root = character from = character fromfrom = scene }
-    on_awakened = single_alias_right[effect]
+    on_awakened = single_alias_right[effect_clause]
+    ## cardinality = 0..1
     ## replace_scopes = { this = character root = character from = character fromfrom = scene }
-    on_abandoned = single_alias_right[effect]
+    on_abandoned = single_alias_right[effect_clause]
+}
+species = {
+    name = localisation
 }
 
 rows = {

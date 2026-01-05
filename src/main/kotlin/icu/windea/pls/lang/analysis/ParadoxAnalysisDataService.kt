@@ -31,16 +31,18 @@ class ParadoxAnalysisDataService : Disposable {
 
     // 全局状态（注意：不能使用 `ThreadLocal`）
 
-    /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。通常用于集成测试。 */
+    /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。可用于集成测试。 */
     @Volatile var useDefaultFileExtensions: Boolean = false
-    /** 是否从文件名推断游戏类型（[ParadoxGameType]）。通常用于集成测试。 */
+    /** 是否从文件名推断游戏类型（[ParadoxGameType]）。可用于集成测试。 */
     @Volatile var useGameTypeInference: Boolean = false
-    /** 接下来需要注入的根信息。通常用于集成测试。 */
+    /** 接下来需要注入的根信息。可用于集成测试。 */
     @Volatile var markedRootInfo: ParadoxRootInfo? = null
-    /** 接下来需要注入的文件信息。需要匹配可能的规则分组（[ParadoxFileGroup]）。通常用于集成测试。 */
+    /** 接下来需要注入的文件信息。需要匹配可能的规则分组（[ParadoxFileGroup]）。可用于集成测试。 */
     @Volatile var markedFileInfo: ParadoxFileInfo? = null
-    /** 注入的规则目录，需要在加载规则数据前，预先手动指定。 */
-    @Volatile var injectedConfigDirectory: Path? = null
+    /** 接下来需要注入的游戏或模组的根目录。可用于集成测试。 */
+    @Volatile var markedRootDirectory: Path? = null
+    /** 接下来需要注入的规则目录，需要在加载规则数据前，预先手动指定。可用于集成测试。 */
+    @Volatile var markedConfigDirectory: Path? = null
 
     // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）
 

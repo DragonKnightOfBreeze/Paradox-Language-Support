@@ -9,11 +9,13 @@ import icu.windea.pls.core.orNull
  * 游戏或模组信息。
  *
  * @property gameType 游戏类型。
+ * @property rootFile 根目录。可以为空。
  *
  * @see ParadoxRootMetadata
  */
 sealed interface ParadoxRootInfo {
     val gameType: ParadoxGameType
+    val rootFile: VirtualFile?
 
     val mainEntries: Set<String> get() = emptySet()
     val extraEntries: Set<String> get() = emptySet()
@@ -25,7 +27,7 @@ sealed interface ParadoxRootInfo {
 
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
-        val rootFile: VirtualFile get() = metadata.rootFile
+        override val rootFile: VirtualFile get() = metadata.rootFile
         val infoFile: VirtualFile? get() = metadata.infoFile
     }
 
@@ -69,5 +71,8 @@ sealed interface ParadoxRootInfo {
             get() = if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
     }
 
-    class Injected(override val gameType: ParadoxGameType) : ParadoxRootInfo
+    class Injected(
+        override val gameType: ParadoxGameType,
+        override val rootFile: VirtualFile? = null,
+    ) : ParadoxRootInfo
 }

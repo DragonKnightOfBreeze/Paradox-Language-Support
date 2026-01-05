@@ -24,11 +24,10 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.contextElement

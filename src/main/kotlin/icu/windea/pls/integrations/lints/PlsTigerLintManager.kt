@@ -11,11 +11,10 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
@@ -80,8 +79,7 @@ object PlsTigerLintManager {
     private fun doGetTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val rootFile = rootInfo.rootFile
+        val rootFile = rootInfo.rootFile ?: return null
         val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
         val lock = getTigerLintResultLock(rootDirectory)
         val allResult = synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
