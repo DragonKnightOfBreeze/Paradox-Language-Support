@@ -9,6 +9,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -183,8 +184,9 @@ object ParadoxDefinitionInjectionManager {
     }
 
     fun canApply(typeConfig: CwtTypeConfig): Boolean {
-        if (typeConfig.nameField != null) return false
         if (typeConfig.skipRootKey.isNotEmpty()) return false
+        if (typeConfig.nameField != null) return false
+        if (typeConfig.typeKeyPrefix.isNotNullOrEmpty()) return false
         return true
     }
 

@@ -13,7 +13,7 @@ import javax.swing.JComponent
 /**
  * 检查定义注入的用法是否正确。
  *
- * - 基于定义引用的模式，定义目标的存在性必须正确。
+ * - 基于定义注入的模式，定义目标的存在性必须正确。
  */
 class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
     private var checkForRelaxModes = false
@@ -25,7 +25,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
                 val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
                 if (definitionInjectionInfo.target.isNullOrEmpty()) {
                     val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
-                    holder.registerProblem(element, description)
+                    holder.registerProblem(element.propertyKey, description)
                     return
                 }
                 if (definitionInjectionInfo.type.isNullOrEmpty()) return // considered "unsupported"
@@ -39,11 +39,11 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
                         if (checkForRelaxModes) {
                             val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
                             val highlightType = PlsInspectionUtil.getWeakerHighlightType() // use weaker highlight type
-                            holder.registerProblem(element, description, highlightType)
+                            holder.registerProblem(element.propertyKey, description, highlightType)
                         }
                     } else {
                         val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
-                        holder.registerProblem(element, description)
+                        holder.registerProblem(element.propertyKey, description)
                     }
                 }
             }

@@ -209,11 +209,11 @@
     <!--region Paradox script/Definition injections-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedDefinitionInjectionUsage"
                      key="inspection.script.unsupportedDefinitionInjectionUsage" groupKey="inspection.script.definitionInjection.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.UnsupportedDefinitionInjectionUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionInjectionUsage"
                      key="inspection.script.incorrectDefinitionInjectionUsage" groupKey="inspection.script.definitionInjection.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.IncorrectDefinitionInjectionUsageInspection"/>
     <!--endregion-->
     <!--endregion-->

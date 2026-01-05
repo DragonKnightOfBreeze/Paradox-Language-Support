@@ -19,7 +19,7 @@ class UnsupportedInlineScriptUsageInspection : InlineScriptInspectionBase()/*, D
                     if (element !is ParadoxScriptProperty) return
                     if (!ParadoxInlineScriptManager.isMatched(element.name)) return
                     val description = PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1")
-                    holder.registerProblem(element, description)
+                    holder.registerProblem(element.propertyKey, description)
                 }
             }
         }
