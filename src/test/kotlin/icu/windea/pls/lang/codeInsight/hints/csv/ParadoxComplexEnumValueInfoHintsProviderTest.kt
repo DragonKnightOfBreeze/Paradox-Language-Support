@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
-import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.core.loadText
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -38,7 +38,7 @@ class ParadoxComplexEnumValueInfoHintsProviderTest: DeclarativeInlayHintsProvide
         myFixture.configureByFile("features/inlayPreviews/common/chracter_tags/00_character_tags.txt")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/characters/00_characters.txt")
-        val text = "/inlayProviders/paradox.csv.complexEnumValueInfo/preview.txt".toClasspathUrl().readText()
+        val text = loadText("/inlayProviders/paradox.csv.complexEnumValueInfo/preview.txt")
         doTest(text)
     }
 

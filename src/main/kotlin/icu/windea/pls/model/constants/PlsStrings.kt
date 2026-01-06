@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.core.loadText
 
 object PlsStrings {
     const val anonymous = "(anonymous)"
@@ -71,15 +71,15 @@ object PlsStrings {
 
     const val suppressInspectionsTagName = "noinspection"
 
-    val cwtColorSettingsSample by lazy { "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText() }
-    val cwtCodeStyleSettingsSample by lazy { "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText() }
+    val cwtColorSettingsSample by lazy { loadText("/samples/Cwt.colorSettings.txt") }
+    val cwtCodeStyleSettingsSample by lazy { loadText("/samples/Cwt.codeStyleSettings.txt") }
 
-    val paradoxLocalisationColorSettingsSample by lazy { "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText() }
-    val paradoxLocalisationCodeStyleSettingsSample by lazy { "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText() }
+    val paradoxLocalisationColorSettingsSample by lazy { loadText("/samples/ParadoxLocalisation.colorSettings.txt") }
+    val paradoxLocalisationCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxLocalisation.codeStyleSettings.txt") }
 
-    val paradoxScriptColorSettingsSample by lazy { "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText() }
-    val paradoxScriptCodeStyleSettingsSample by lazy { "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText() }
+    val paradoxScriptColorSettingsSample by lazy { loadText("/samples/ParadoxScript.colorSettings.txt") }
+    val paradoxScriptCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxScript.codeStyleSettings.txt") }
 
-    val paradoxCsvColorSettingsSample by lazy { "/samples/ParadoxCsv.colorSettings.txt".toClasspathUrl().readText() }
-    val paradoxCsvCodeStyleSettingsSample by lazy { "/samples/ParadoxCsv.codeStyleSettings.txt".toClasspathUrl().readText() }
+    val paradoxCsvColorSettingsSample by lazy { loadText("/samples/ParadoxCsv.colorSettings.txt") }
+    val paradoxCsvCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxCsv.codeStyleSettings.txt") }
 }

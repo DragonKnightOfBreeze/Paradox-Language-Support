@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
-import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.core.loadText
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -35,7 +35,7 @@ class ParadoxDefinitionInjectionInfoHintsProviderTest: DeclarativeInlayHintsProv
     @Test
     fun preview() {
         markFileInfo(ParadoxGameType.Vic3, "common/characters/00_characters.txt")
-        val text = "/inlayProviders/paradox.script.definitionInjectionInfo/preview.txt".toClasspathUrl().readText()
+        val text = loadText("/inlayProviders/paradox.script.definitionInjectionInfo/preview.txt")
         doTest(text)
     }
 

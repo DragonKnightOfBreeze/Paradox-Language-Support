@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
-import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.core.loadText
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
@@ -30,7 +30,7 @@ class ParadoxScriptedVariableReferenceValueHintsProviderTest : DeclarativeInlayH
         myFixture.configureByText("global.txt", "@var = 1")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/test.yml")
-        val text = "/inlayProviders/paradox.localisation.scriptedVariableReferenceValue/preview.yml".toClasspathUrl().readText()
+        val text = loadText("/inlayProviders/paradox.localisation.scriptedVariableReferenceValue/preview.yml")
         doTest(text)
     }
 
