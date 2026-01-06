@@ -144,7 +144,7 @@ object ParadoxDefinitionInjectionManager {
         run {
             if (target.isNullOrEmpty()) return@run
             val path = fileInfo.path
-            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(element, configGroup, path) ?: return@run
+            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return@run
             val type = typeConfig.name
             return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
         }

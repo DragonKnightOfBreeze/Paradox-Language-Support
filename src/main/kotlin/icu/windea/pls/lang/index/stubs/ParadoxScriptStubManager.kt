@@ -91,7 +91,7 @@ object ParadoxScriptStubManager {
                 return@run
             }
             if (ParadoxDefinitionInjectionManager.isMatched(name, gameType)) {
-                val stub = createDefinitionInjectionStub(tree, node, parentStub, name)
+                val stub = createDefinitionInjectionStub(parentStub, name)
                 if (stub != null) return stub
                 return@run
             }
@@ -181,14 +181,14 @@ object ParadoxScriptStubManager {
         return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
     }
 
-    private fun createDefinitionInjectionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
+    private fun createDefinitionInjectionStub(parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
         // 排除带参数的情况
         // 目标或目标类型为空时，也会创建存根
         if (name.isParameterized()) return null
         val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
         if (mode.isNullOrEmpty()) return null
         val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        val type = getDefinitionInjectionTypeWhenCreateStub(tree, node, parentStub, target)
+        val type = getDefinitionInjectionTypeWhenCreateStub(parentStub, target)
         return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
     }
 
@@ -196,7 +196,7 @@ object ParadoxScriptStubManager {
         return psi.definitionInjectionInfo?.type
     }
 
-    private fun getDefinitionInjectionTypeWhenCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, target: String?): String? {
+    private fun getDefinitionInjectionTypeWhenCreateStub(parentStub: StubElement<out PsiElement>, target: String?): String? {
         if (target.isNullOrEmpty()) return null
         val psi = parentStub.psi
         val file = psi.containingFile
@@ -206,7 +206,7 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(node, tree, configGroup, path) ?: return null
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return null
         return typeConfig.name
     }
 }

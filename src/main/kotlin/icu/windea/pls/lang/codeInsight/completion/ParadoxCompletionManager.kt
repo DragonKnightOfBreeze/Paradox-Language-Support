@@ -91,9 +91,7 @@ import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.property
 import java.util.concurrent.Callable
 
 object ParadoxCompletionManager {
@@ -832,12 +830,11 @@ object ParadoxCompletionManager {
     fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
         val config = configGroup.directivesModel.definitionInjection ?: return
-        val element = context.contextElement.castOrNull<ParadoxScriptPropertyKey>() ?: return
-        val property = element.property ?: return
+        val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         val file = context.parameters?.originalFile ?: return
         val fileInfo = file.fileInfo ?: return
         val path = fileInfo.path
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(property, configGroup, path) ?: return
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return
 
         ProgressManager.checkCanceled()
         val keyword = context.keyword
@@ -848,12 +845,14 @@ object ParadoxCompletionManager {
             val modeConfigs = config.modeConfigs.values
             for (modeConfig in modeConfigs) {
                 context.config = modeConfig
-                val name = modeConfig.value + ":"
+                val name = modeConfig.value
                 val element = modeConfig.pointer.element ?: continue
+                val tailText = " from definition injection modes"
                 val typeFile = modeConfig.pointer.containingFile
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withBoldness(true)
                     .withIcon(PlsIcons.Nodes.Directive)
+                    .withTailText(tailText)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
                     .withPriority(PlsCompletionPriorities.prefix)

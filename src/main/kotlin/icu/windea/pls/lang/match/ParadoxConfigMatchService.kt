@@ -117,28 +117,13 @@ object ParadoxConfigMatchService {
     }
 
     fun getMatchedTypeConfigForInjection(
-        element: ParadoxScriptDefinitionElement,
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
     ): CwtTypeConfig? {
-        val target = "INJECT:windea"
-        val memberPath = ParadoxMemberPath.resolve(listOf(target))
-        val typeKey = target
-        return getMatchedTypeConfig(element, configGroup, path, memberPath, typeKey, null)
-            ?.takeIf { canApplyForInjection(it) } // 排除不期望匹配的类型规则
-    }
-
-    fun getMatchedTypeConfigForInjection(
-        node: LighterASTNode,
-        tree: LighterAST,
-        configGroup: CwtConfigGroup,
-        path: ParadoxPath,
-    ): CwtTypeConfig? {
-        val target = "INJECT:windea"
-        val memberPath = ParadoxMemberPath.resolve(listOf(target))
-        val typeKey = target
-        return getMatchedTypeConfig(node, tree, configGroup, path, memberPath, typeKey, null)
-            ?.takeIf { canApplyForInjection(it) } // 排除不期望匹配的类型规则
+        // 优先从基于文件路径的缓存中获取
+        val configs = configGroup.typeConfigsCache.get(path)
+        if (configs.isEmpty()) return null
+        return configs.find { config -> canApplyForInjection(config) && matchesTypeByUnknownDeclaration(config, null) }
     }
 
     fun matchesType(
@@ -184,9 +169,9 @@ object ParadoxConfigMatchService {
         tree: LighterAST,
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        memberPath: ParadoxMemberPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
+        memberPath: ParadoxMemberPath? = null,
+        typeKey: String? = null,
+        typeKeyPrefix: Lazy<String?>? = null
     ): Boolean {
         // 判断 definition 是否需要是 scriptFile 还是 scriptProperty
         run {
@@ -217,9 +202,9 @@ object ParadoxConfigMatchService {
     fun matchesTypeByUnknownDeclaration(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        memberPath: ParadoxMemberPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
+        memberPath: ParadoxMemberPath? = null,
+        typeKey: String? = null,
+        typeKeyPrefix: Lazy<String?>? = null
     ): Boolean {
         // 判断 element 是否需要是 scriptFile 还是 scriptProperty
         if (typeConfig.typePerFile) return false
@@ -233,9 +218,9 @@ object ParadoxConfigMatchService {
     fun matchesTypeFast(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        memberPath: ParadoxMemberPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
+        memberPath: ParadoxMemberPath? = null,
+        typeKey: String? = null,
+        typeKeyPrefix: Lazy<String?>? = null
     ): Boolean? {
         // 判断 path 是否匹配
         if (path != null) {
