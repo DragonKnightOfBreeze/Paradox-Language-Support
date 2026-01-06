@@ -21,8 +21,8 @@ abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase()
 
     override fun getAllErrors(element: ParadoxExpressionElement?): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        errors += this.errors
-        this.accept(object : ParadoxComplexExpressionVisitor() {
+        errors += getErrors(element)
+        accept(object : ParadoxComplexExpressionVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 node.getUnresolvedError()?.let { errors += it }
                 if (element != null) node.getUnresolvedError(element)?.let { errors += it }
@@ -34,7 +34,7 @@ abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase()
 
     override fun getAllReferences(element: ParadoxExpressionElement): List<PsiReference> {
         val references = mutableListOf<PsiReference>()
-        this.accept(object : ParadoxComplexExpressionVisitor() {
+        accept(object : ParadoxComplexExpressionVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 node.getReference(element)?.let { references += it }
                 return super.visit(node)
