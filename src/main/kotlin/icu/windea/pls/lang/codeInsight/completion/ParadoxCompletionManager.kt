@@ -30,7 +30,6 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processQueryAsync
@@ -872,7 +871,6 @@ object ParadoxCompletionManager {
                 processDefinition(context, resultToUse, it)
             }
 
-            context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
             ParadoxExtendedCompletionManager.completeExtendedDefinition(context, resultToUse)
         }
     }

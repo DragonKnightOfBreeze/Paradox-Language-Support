@@ -6,9 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -106,7 +104,6 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
-                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
                     ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
@@ -132,7 +129,6 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
-                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
                     ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }

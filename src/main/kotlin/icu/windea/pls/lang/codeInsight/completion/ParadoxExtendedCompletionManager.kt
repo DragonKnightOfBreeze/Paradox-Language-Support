@@ -5,6 +5,9 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -38,9 +41,15 @@ object ParadoxExtendedCompletionManager {
         if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val config = context.config ?: return
+        // `context.config` can be either declaration (`type = {...}`) or reference (`<type>`)
+
+        val contextConfig = context.config ?: return
+        val configGroup = contextConfig.configGroup
+        val config = when (contextConfig) {
+            is CwtPropertyConfig -> CwtValueConfig.create(emptyPointer(), configGroup, "<${contextConfig.key}>")
+            else -> contextConfig
+        }
         val typeExpression = config.configExpression?.value ?: return
-        val configGroup = config.configGroup
         val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
