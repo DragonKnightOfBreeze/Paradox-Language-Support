@@ -859,12 +859,14 @@ object ParadoxCompletionManager {
             }
         } else {
             // commplete definition reference
-            val resultToUse = result.withPrefixMatcher(keyword.substring(index + 1))
+            val keywordToUse = keyword.substring(index + 1)
+            val resultToUse = result.withPrefixMatcher(keywordToUse)
             val type = typeConfig.name
             val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
             context.config = config
             context.isKey = true
             context.expressionTailText = ""
+            context.keyword = keywordToUse
             val project = configGroup.project
             val selector = selector(project, file).definition().contextSensitive().distinctByName()
             ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {

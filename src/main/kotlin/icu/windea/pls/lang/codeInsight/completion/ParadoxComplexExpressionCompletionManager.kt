@@ -21,6 +21,7 @@ import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -663,6 +664,11 @@ object ParadoxComplexExpressionCompletionManager {
         return withState(PlsStates.incompleteComplexExpression, action)
     }
 
+    private fun isIdentifierKeyword(context: ProcessingContext, vararg extraChars: Char): Boolean {
+        val keyword = context.keyword
+        return keyword.isEmpty() || keyword.isIdentifier(*extraChars)
+    }
+
     // endregion
 
     // region General Completion Methods
@@ -892,6 +898,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
 
@@ -914,6 +922,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeScope(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -940,6 +950,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1017,6 +1029,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeValueField(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1044,6 +1058,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeValueFieldPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1235,6 +1251,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeCommandScope(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1262,6 +1280,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeCommandScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1334,6 +1354,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completePredefinedCommandField(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1359,6 +1381,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeCommandField(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
@@ -1386,6 +1410,8 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     fun completeCommandFieldPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        if (!isIdentifierKeyword(context)) return // 前缀不合法时需要跳过，避免补全项被意外去重
+
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
