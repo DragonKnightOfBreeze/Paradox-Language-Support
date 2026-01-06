@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -907,7 +906,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
-                .withPriority(ParadoxCompletionPriorities.systemScope)
+                .withPriority(PlsCompletionPriorities.systemScope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -933,7 +932,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
+                .withPriority(PlsCompletionPriorities.scope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -957,9 +956,9 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withAddParenthesesInsertHandler()
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -977,7 +976,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1059,9 +1058,9 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withAddParenthesesInsertHandler()
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1078,7 +1077,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1127,7 +1126,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
@@ -1186,7 +1185,7 @@ object ParadoxComplexExpressionCompletionManager {
         val name = "define:"
         val lookupElement = LookupElementBuilder.create(name)
             .withBoldness(true)
-            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withPriority(PlsCompletionPriorities.prefix)
             .withCompletionId()
         result.addElement(lookupElement, context)
     }
@@ -1251,7 +1250,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) // 忽略大小写
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
+                .withPriority(PlsCompletionPriorities.scope)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1275,9 +1274,9 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withAddParenthesesInsertHandler()
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1296,7 +1295,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1397,9 +1396,9 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withAddParenthesesInsertHandler()
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1416,7 +1415,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1455,18 +1454,5 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    private fun LookupElementBuilder.withAddParenthesesInsertHandler() = withInsertHandler { c, _ ->
-        // 按照当前的字符来决定是要插入左右括号，还是仅插入左括号，还是什么都不做
-        val editor = c.editor
-        val caretOffset = editor.caretModel.offset
-        val charsSequence = editor.document.charsSequence
-        val c = charsSequence.get(caretOffset)
-        when (c) {
-            '(' -> {}
-            ')' -> EditorModificationUtil.insertStringAtCaret(editor, "(", false, true, 1)
-            else -> EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
-        }
-    }
-
-// endregion
+    // endregion
 }

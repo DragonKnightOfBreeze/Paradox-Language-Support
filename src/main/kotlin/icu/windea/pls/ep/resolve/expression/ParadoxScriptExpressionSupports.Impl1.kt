@@ -7,9 +7,10 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.addBlockScriptExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.ParadoxClauseTemplateCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 // Base
@@ -23,8 +24,8 @@ class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupportBase() 
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(ParadoxCompletionManager.yesLookupElement, context)
-        result.addElement(ParadoxCompletionManager.noLookupElement, context)
+        result.addElement(PlsLookupElements.yesLookupElement, context)
+        result.addElement(PlsLookupElements.noLookupElement, context)
     }
 }
 
@@ -41,6 +42,11 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupportBase()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addBlockScriptExpressionElement(context)
+        result.addElement(PlsLookupElements.blockLookupElement, context)
+
+        // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
+        val config = context.config!!
+        val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildBlockLookupElement(context, config)
+        result.addElement(extraLookupElement, context)
     }
 }

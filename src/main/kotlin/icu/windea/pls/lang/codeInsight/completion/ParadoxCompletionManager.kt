@@ -1,11 +1,9 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
 import com.intellij.util.ProcessingContext
@@ -90,7 +88,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -100,31 +97,6 @@ import icu.windea.pls.script.psi.property
 import java.util.concurrent.Callable
 
 object ParadoxCompletionManager {
-    // region Predefined Lookup Elements
-
-    val yesLookupElement = LookupElementBuilder.create("yes").bold()
-        .withPriority(ParadoxCompletionPriorities.keyword)
-        .withCompletionId()
-
-    val noLookupElement = LookupElementBuilder.create("no").bold()
-        .withPriority(ParadoxCompletionPriorities.keyword)
-        .withCompletionId()
-
-    val blockLookupElement = LookupElementBuilder.create("")
-        .withPresentableText("{...}")
-        .withInsertHandler { c, _ ->
-            val editor = c.editor
-            val customSettings = CodeStyle.getCustomSettings(c.file, ParadoxScriptCodeStyleSettings::class.java)
-            val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-            val text = if (spaceWithinBraces) "{  }" else "{}"
-            val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
-            EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
-        }
-        .withPriority(ParadoxCompletionPriorities.keyword)
-        .withCompletionId()
-
-    // endregion
-
     // region Core Methods
 
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext) {
@@ -388,7 +360,7 @@ object ParadoxCompletionManager {
                 .withCaseSensitivity(false)
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
-                .withPriority(ParadoxCompletionPriorities.rootKey)
+                .withPriority(PlsCompletionPriorities.rootKey)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
             context.isKey = null
@@ -421,7 +393,7 @@ object ParadoxCompletionManager {
                 .withPatchableIcon(icon)
                 .withPatchableTailText(tailText)
                 .withForceInsertCurlyBraces(tuples.isEmpty())
-                .withPriority(ParadoxCompletionPriorities.rootKey)
+                .withPriority(PlsCompletionPriorities.rootKey)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
             context.config = null
@@ -642,7 +614,7 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
-                    .withPriority(ParadoxCompletionPriorities.enumValue)
+                    .withPriority(PlsCompletionPriorities.enumValue)
                     .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
@@ -665,7 +637,7 @@ object ParadoxCompletionManager {
                 val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, info.readWriteAccess, info.gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPriority(ParadoxCompletionPriorities.complexEnumValue)
+                    .withPriority(PlsCompletionPriorities.complexEnumValue)
                     .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
@@ -769,12 +741,12 @@ object ParadoxCompletionManager {
             // 常量的值也可能是yes/no
             if (name == "yes") {
                 if (context.quoted) return
-                result.addElement(yesLookupElement, context)
+                result.addElement(PlsLookupElements.yesLookupElement, context)
                 return
             }
             if (name == "no") {
                 if (context.quoted) return
-                result.addElement(noLookupElement, context)
+                result.addElement(PlsLookupElements.noLookupElement, context)
                 return
             }
         }
@@ -783,7 +755,7 @@ object ParadoxCompletionManager {
         val lookupElement = LookupElementBuilder.create(element, name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withCaseSensitivity(false)
-            .withPriority(ParadoxCompletionPriorities.constant)
+            .withPriority(PlsCompletionPriorities.constant)
             .withPatchableIcon(icon)
             .withScopeMatched(context.scopeMatched)
             .forScriptExpression(context)
@@ -828,7 +800,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.Column)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.constant)
+                .withPriority(PlsCompletionPriorities.constant)
             result.addElement(lookupElement, context)
         }
     }
@@ -850,7 +822,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
-                .withPriority(ParadoxCompletionPriorities.constant)
+                .withPriority(PlsCompletionPriorities.constant)
                 .withPatchableIcon(PlsIcons.Nodes.Directive)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
@@ -884,8 +856,9 @@ object ParadoxCompletionManager {
                     .withIcon(PlsIcons.Nodes.Directive)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
-                    .withPriority(ParadoxCompletionPriorities.prefix)
+                    .withPriority(PlsCompletionPriorities.prefix)
                     .withCompletionId()
+                    .withInsertHandler(PlsInsertHandlers.addColon())
                 result.addElement(lookupElement, context)
             }
         } else {

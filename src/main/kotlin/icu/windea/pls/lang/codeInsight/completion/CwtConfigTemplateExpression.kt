@@ -10,6 +10,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.core.removeSurroundingOrNull
 
+@Suppress("unused")
 sealed class CwtConfigTemplateExpression(
     val context: ProcessingContext,
     val schemaExpression: CwtSchemaExpression,

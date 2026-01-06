@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
@@ -35,8 +36,8 @@ class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(ParadoxCompletionManager.yesLookupElement, context)
-        result.addElement(ParadoxCompletionManager.noLookupElement, context)
+        result.addElement(PlsLookupElements.yesLookupElement, context)
+        result.addElement(PlsLookupElements.noLookupElement, context)
     }
 }
 

@@ -8,6 +8,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.fileInfo
@@ -18,12 +19,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
  * 提供关键字的代码补全（要求不在定义声明中提供）。
  */
 class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
-    private val lookupElements = listOf(
-        ParadoxCompletionManager.yesLookupElement,
-        ParadoxCompletionManager.noLookupElement,
-        ParadoxCompletionManager.blockLookupElement,
-    )
-
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
@@ -37,9 +32,9 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
 
         // 判断所在文件是否可能包含定义，如果可能，则不提示关键字
         val isDefinitionAwareFile = path != null && configGroup.types.values.any { CwtConfigManager.matchesFilePathPattern(it, path) }
-        if(isDefinitionAwareFile) return
+        if (isDefinitionAwareFile) return
 
-        lookupElements.forEach { lookupElement ->
+        PlsLookupElements.keywordLookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)
         }
     }

@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.CwtLanguage
 class CwtCodeStyleSettings(
     container: CodeStyleSettings
 ) : CustomCodeStyleSettings(CwtLanguage.id, container) {
-    // 自定义配置项对应的字段（需要是@JvmField var）
+    // 自定义配置项对应的字段（需要是 `JvmField var`）
 
     // spacing settings
 

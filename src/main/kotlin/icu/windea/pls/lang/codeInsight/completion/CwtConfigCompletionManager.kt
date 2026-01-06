@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertionContext
@@ -13,7 +12,6 @@ import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
-import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -55,7 +53,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtExpressionElement
@@ -95,31 +92,6 @@ object CwtConfigCompletionManager {
     var ProcessingContext.isKey: Boolean by registerKey(Keys) { false }
     var ProcessingContext.isKeyOnly: Boolean by registerKey(Keys) { false }
     var ProcessingContext.isValueOnly: Boolean by registerKey(Keys) { false }
-
-    // endregion
-
-    // region Predefined Lookup Elements
-
-    val yesLookupElement = LookupElementBuilder.create("yes").bold()
-        .withPriority(CwtConfigCompletionPriorities.keyword)
-        .withCompletionId()
-
-    val noLookupElement = LookupElementBuilder.create("no").bold()
-        .withPriority(CwtConfigCompletionPriorities.keyword)
-        .withCompletionId()
-
-    val blockLookupElement = LookupElementBuilder.create("")
-        .withPresentableText("{...}")
-        .withInsertHandler { c, _ ->
-            val editor = c.editor
-            val customSettings = CodeStyle.getCustomSettings(c.file, CwtCodeStyleSettings::class.java)
-            val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-            val text = if (spaceWithinBraces) "{  }" else "{}"
-            val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
-            EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
-        }
-        .withPriority(CwtConfigCompletionPriorities.keyword)
-        .withCompletionId()
 
     // endregion
 
@@ -288,7 +260,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
-                        result.addElement(blockLookupElement, context)
+                        result.addElement(PlsLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -298,7 +270,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
-                        result.addElement(blockLookupElement, context)
+                        result.addElement(PlsLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -338,7 +310,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
-                        result.addElement(blockLookupElement, context)
+                        result.addElement(PlsLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -348,7 +320,7 @@ object CwtConfigCompletionManager {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
                         completeBySchemaExpression(schemaExpression, schema, config, context, result)
                     } else {
-                        result.addElement(blockLookupElement, context)
+                        result.addElement(PlsLookupElements.blockLookupElement, context)
                     }
                 }
             }
@@ -391,7 +363,7 @@ object CwtConfigCompletionManager {
                 val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withIcon(icon)
-                    .withPriority(CwtConfigCompletionPriorities.constant)
+                    .withPriority(PlsCompletionPriorities.constant)
                 processor.process(lookupElement)
             }
             is CwtSchemaExpression.Enum -> {
@@ -404,7 +376,7 @@ object CwtConfigCompletionManager {
                     val lookupElement = LookupElementBuilder.create(v).withPsiElement(element)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withIcon(icon)
-                        .withPriority(CwtConfigCompletionPriorities.enumValue)
+                        .withPriority(PlsCompletionPriorities.enumValue)
                         .withPatchableTailText(tailText)
                     processor.process(lookupElement)
                 }
@@ -422,11 +394,11 @@ object CwtConfigCompletionManager {
             is CwtSchemaExpression.Type -> {
                 val typeName = schemaExpression.name
                 if (typeName == "bool" || typeName == "any") {
-                    processor.process(yesLookupElement)
-                    processor.process(noLookupElement)
+                    processor.process(PlsLookupElements.yesLookupElement)
+                    processor.process(PlsLookupElements.noLookupElement)
                 }
                 if (typeName == "any") {
-                    processor.process(blockLookupElement)
+                    processor.process(PlsLookupElements.blockLookupElement)
                 }
                 // TODO 1.3.19+
                 true
@@ -626,8 +598,7 @@ object CwtConfigCompletionManager {
 
     private fun LookupElementBuilder.forConfig(context: ProcessingContext, config: CwtConfig<*>, schemaExpression: CwtSchemaExpression): LookupElement? {
         var lookupElement = this
-
-        if (lookupElement == yesLookupElement || lookupElement == noLookupElement || lookupElement == blockLookupElement) return lookupElement
+        if (lookupElement in PlsLookupElements.keywordLookupElements) return lookupElement
 
         val isKeyConfig = config is CwtOptionConfig || config is CwtPropertyConfig
         val insertCurlyBraces = when {
@@ -649,11 +620,17 @@ object CwtConfigCompletionManager {
         }
         lookupElement = lookupElement.withTailText(tailText, true)
 
+        val params = PlsInsertHandlers.Params(
+            quoted = context.quoted,
+            isKey = context.isKey,
+            insertCurlyBraces = insertCurlyBraces,
+        )
+
         if (context.isKeyOnly || context.isValueOnly) { // key or value only
-            lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context) }
+            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyOrValue(params))
         }
         if (isKeyConfig && context.isKey && !context.isKeyOnly) { // key with value
-            lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyWithValueInsertHandler(c, context, insertCurlyBraces) }
+            lookupElement = lookupElement.withInsertHandler(PlsInsertHandlers.keyWithValue(params))
         }
 
         if (schemaExpression is CwtSchemaExpression.Template) {
@@ -670,45 +647,6 @@ object CwtConfigCompletionManager {
         }
 
         return lookupElement
-    }
-
-    private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext) {
-        // 这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
-        // 这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
-        if (!context.quoted) return
-        val editor = c.editor
-        val caretOffset = editor.caretModel.offset
-        val charsSequence = editor.document.charsSequence
-        val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
-        if (rightQuoted) {
-            // 在必要时将光标移到右双引号之后
-            editor.caretModel.moveToOffset(caretOffset + 1)
-        } else {
-            // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
-            EditorModificationUtil.insertStringAtCaret(editor, "\"", false, true)
-        }
-    }
-
-    private fun applyKeyWithValueInsertHandler(c: InsertionContext, context: ProcessingContext, insertCurlyBraces: Boolean) {
-        val editor = c.editor
-        applyKeyOrValueInsertHandler(c, context)
-        val customSettings = CodeStyle.getCustomSettings(c.file, CwtCodeStyleSettings::class.java)
-        val spaceAroundPropertySeparator = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
-        val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-        val text = buildString {
-            if (spaceAroundPropertySeparator) append(" ")
-            append("=")
-            if (spaceAroundPropertySeparator) append(" ")
-            if (insertCurlyBraces) {
-                if (spaceWithinBraces) append("{  }") else append("{}")
-            }
-        }
-        val length = if (insertCurlyBraces) {
-            if (spaceWithinBraces) text.length - 2 else text.length - 1
-        } else {
-            text.length
-        }
-        EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
     }
 
     private fun applyExpandTemplateInsertHandler(c: InsertionContext, context: ProcessingContext, schemaExpression: CwtSchemaExpression.Template, caretMarker: RangeMarker) {
