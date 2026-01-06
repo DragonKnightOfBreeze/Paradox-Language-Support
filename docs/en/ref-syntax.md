@@ -104,6 +104,9 @@ Comments and documentation:
   - Common examples: `## cardinality = 0..1`, `## severity = warning`, `## push_scope = country`.
 - **Documentation Comment**: Starts with `###`; used to provide descriptive text for a member (shown in completion/documentation).
 
+> [!tip]
+> If a documentation comment begins with `####` (or more `#`), PLS will render the comment text directly as HTML.
+
 Grammar highlights and example:
 
 ```cwt
