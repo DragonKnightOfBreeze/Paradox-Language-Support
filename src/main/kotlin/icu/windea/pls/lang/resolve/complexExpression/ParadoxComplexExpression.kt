@@ -9,6 +9,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxComplexExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 
 /**
  * 复杂表达式。

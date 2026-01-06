@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.complexExpression
+package icu.windea.pls.lang.resolve.complexExpression.util
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType

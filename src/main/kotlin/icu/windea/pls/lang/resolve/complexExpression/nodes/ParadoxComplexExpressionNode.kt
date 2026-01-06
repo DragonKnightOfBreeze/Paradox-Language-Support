@@ -6,8 +6,8 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionVisitor
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 
 /**
  * 复杂表达式的节点。复杂表达式由数个节点组成，本身也是一个节点。

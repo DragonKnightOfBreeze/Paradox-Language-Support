@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.complexExpression
+package icu.windea.pls.lang.resolve.complexExpression.util
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.PlsBundle

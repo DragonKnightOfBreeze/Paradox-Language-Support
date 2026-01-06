@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionVisitor
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 
 abstract class ParadoxComplexExpressionNodeBase : ParadoxComplexExpressionNode {
     override val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()

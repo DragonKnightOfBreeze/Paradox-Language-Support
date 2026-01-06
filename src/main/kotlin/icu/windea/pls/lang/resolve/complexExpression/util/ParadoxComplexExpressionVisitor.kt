@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.complexExpression
+package icu.windea.pls.lang.resolve.complexExpression.util
 
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 
