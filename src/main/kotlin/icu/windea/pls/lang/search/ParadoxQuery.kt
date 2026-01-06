@@ -112,8 +112,9 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
             ProgressManager.checkCanceled()
             if (selector.select(it) && keysToDistinct.add(keySelector?.apply(it) ?: it)) {
                 consumer.process(it)
+            } else {
+                true
             }
-            true
         }
     }
 
