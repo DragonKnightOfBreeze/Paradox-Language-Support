@@ -30,7 +30,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private val groupNameGeneral = "general"
     private val callbackLock = CallbackLock()
 
-    @Suppress("AssignedValueIsNeverRead")
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
         val settings = PlsSettings.getInstance().state
@@ -270,7 +269,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
                         .bindSelected(completionSettings::completeByExtendedConfigs)
-                    PlsBundle.message("settings.completion.completeByExtendedConfigs.tip")
+                    contextHelp(PlsBundle.message("settings.completion.completeByExtendedConfigs.tip"))
                 }
             }
             // folding
