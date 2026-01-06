@@ -4,16 +4,15 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
@@ -95,20 +94,7 @@ private class ParadoxVariableFieldExpressionImpl(
     override val variableNode: ParadoxDataSourceNode
         get() = nodes.last().cast()
 
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when {
-                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                else -> true
-            }
-        }
-        val malformed = !result
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedVariableFieldExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxVariableFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()

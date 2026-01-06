@@ -3,19 +3,17 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
@@ -111,20 +109,7 @@ private class ParadoxCommandExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when {
-                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                else -> true
-            }
-        }
-        val malformed = !result
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedCommandExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxCommandExpression && text == other.text
     override fun hashCode() = text.hashCode()

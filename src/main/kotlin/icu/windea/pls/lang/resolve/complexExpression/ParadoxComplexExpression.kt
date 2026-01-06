@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
-import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -17,11 +16,11 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * 对应脚本语言与本地化语言中的一段特定的表达式文本，它们可能包含数个节点，且允许嵌套包含。
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
-    val errors: List<ParadoxComplexExpressionError>
+    fun getErrors(element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> = emptyList()
 
-    fun validateAllNodes(errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean
-    fun getAllErrors(element: ParadoxExpressionElement?): List<ParadoxComplexExpressionError>
-    fun getAllReferences(element: ParadoxExpressionElement): List<PsiReference>
+    fun getAllErrors(element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> = emptyList()
+
+    fun getAllReferences(element: ParadoxExpressionElement): List<PsiReference> = emptyList()
 
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int

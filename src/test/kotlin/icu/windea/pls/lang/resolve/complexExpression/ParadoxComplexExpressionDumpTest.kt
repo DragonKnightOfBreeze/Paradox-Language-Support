@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslRender
+import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslRenderer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -149,7 +149,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
         val s = ""
         val exp = parseValue(s, incomplete = true)!!
         val out1 = exp.render()
-        val out2 = ParadoxComplexExpressionDslRender.render(exp, ParadoxComplexExpressionDslRender.Options(trimEmptyNodes = true))
+        val out2 = ParadoxComplexExpressionDslRenderer.render(exp, ParadoxComplexExpressionDslRenderer.Options(trimEmptyNodes = true))
         println("default:\n$out1")
         println("trimmed:\n$out2")
         Assert.assertTrue(out1.length >= out2.length)

@@ -3,16 +3,14 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpression.Resolver {
@@ -80,20 +78,7 @@ private class ParadoxScopeFieldExpressionImpl(
     override val scopeNodes: List<ParadoxScopeLinkNode>
         get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
 
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when {
-                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                else -> true
-            }
-        }
-        val malformed = !result
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedScopeFieldExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxScopeFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()

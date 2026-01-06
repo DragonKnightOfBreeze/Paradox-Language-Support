@@ -6,18 +6,15 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpression.Resolver {
@@ -106,29 +103,7 @@ private class ParadoxScriptValueExpressionImpl(
             }
         }
 
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when {
-                it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
-                it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
-                it is ParadoxScriptValueArgumentValueNode -> true
-                else -> true
-            }
-        }
-        var malformed = !result
-        if (!malformed) {
-            // check whether pipe count is valid
-            val pipeNodeCount = nodes.count { it is ParadoxTokenNode && it.text == "|" }
-            if (pipeNodeCount == 1 || (pipeNodeCount != 0 && pipeNodeCount % 2 == 0)) {
-                malformed = true
-            }
-        }
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedScriptValueExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxScriptValueExpression && text == other.text
     override fun hashCode() = text.hashCode()

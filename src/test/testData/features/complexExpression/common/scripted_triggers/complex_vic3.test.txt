@@ -1,0 +1,8 @@
+test_trigger = {
+    ai_treaty_export_value:root > 1
+    "ai_treaty_export_value:root" > 1
+    ai_treaty_export_value(root) > 1
+    "ai_treaty_export_value(root)" > 1
+    ai_treaty_export_value(scope:some_scope) > 1
+    "ai_treaty_export_value(scope:some_scope)" > 1
+}

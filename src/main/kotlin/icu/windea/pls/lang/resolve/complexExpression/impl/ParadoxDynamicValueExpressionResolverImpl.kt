@@ -8,16 +8,15 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
@@ -91,20 +90,7 @@ private class ParadoxDynamicValueExpression(
     override val scopeFieldExpression: ParadoxScopeFieldExpression?
         get() = nodes.getOrNull(2)?.cast()
 
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when {
-                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') // 兼容点号
-                else -> true
-            }
-        }
-        val malformed = !result
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedDynamicValueExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is ParadoxDynamicValueExpression && text == other.text
     override fun hashCode() = text.hashCode()

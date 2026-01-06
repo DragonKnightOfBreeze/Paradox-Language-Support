@@ -6,10 +6,9 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandNode
@@ -21,6 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 
 /**
  * 解析器：Stellaris 命名格式表达式。
@@ -44,6 +44,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         val textLength = text.length
 
         // 对于命名格式：不将任何位置视为“参数区间”，以免误将 [ ... ] 内容整体跳过
+        @Suppress("UNUSED_PARAMETER")
         fun inParam(i: Int): Boolean = false
 
         fun addConstant(targetNodes: MutableList<ParadoxComplexExpressionNode>, s: Int, e: Int) {
@@ -51,7 +52,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
             var k = s
             while (k < e) {
                 // blanks
-                var bStart = k
+                val bStart = k
                 while (k < e && text[k].isWhitespace()) k++
                 if (k > bStart) {
                     val nodeText = text.substring(bStart, k)
@@ -59,7 +60,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                     targetNodes += ParadoxBlankNode(nodeText, nodeRange, configGroup)
                 }
                 // non-blanks
-                var tStart = k
+                val tStart = k
                 while (k < e && !text[k].isWhitespace()) k++
                 if (k > tStart) {
                     val nodeText = text.substring(tStart, k)
@@ -371,21 +372,7 @@ private class StellarisNameFormatExpressionImpl(
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), StellarisNameFormatExpression {
-    override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
-
-    private fun validate(): List<ParadoxComplexExpressionError> {
-        val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = validateAllNodes(errors) {
-            when (it) {
-                is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
-                is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
-                else -> true
-            }
-        }
-        val malformed = !result
-        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedStellarisNameFormatExpression(rangeInExpression, text)
-        return errors
-    }
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
     override fun equals(other: Any?) = this === other || other is StellarisNameFormatExpression && text == other.text
     override fun hashCode() = text.hashCode()

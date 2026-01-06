@@ -28,6 +28,8 @@ object ParadoxComplexExpressionErrorBuilder {
     private const val CODE_MALFORMED_STELLARIS_NAME_FORMAT_EXPRESSION = 108
     private const val CODE_MALFORMED_COMMAND_EXPRESSION = 151
 
+    private const val CODE_NOT_QUOTED_NESTED_LINKED = 201
+
     fun unresolvedTemplateSnippet(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = CODE_UNRESOLVED_TEMPLATE_SNIPPET
         val description = PlsBundle.message("script.expression.unresolvedTemplateSnippet", value, type)
@@ -157,6 +159,12 @@ object ParadoxComplexExpressionErrorBuilder {
     fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
         val code = CODE_MALFORMED_COMMAND_EXPRESSION
         val description = PlsBundle.message("script.expression.malformedCommandExpression", text)
+        return ParadoxComplexExpressionError(code, rangeInExpression, description)
+    }
+
+    fun notQuotedNestedWithPrefixes(rangeInExpression: TextRange) : ParadoxComplexExpressionError {
+        val code = CODE_NOT_QUOTED_NESTED_LINKED
+        val description = PlsBundle.message("script.expression.notQuotedNestedWithPrefixes")
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 }

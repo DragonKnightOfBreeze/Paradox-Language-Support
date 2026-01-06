@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.dsl
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 
-object ParadoxComplexExpressionDslRender {
+object ParadoxComplexExpressionDslRenderer {
     data class Options(
         val trimEmptyNodes: Boolean = false,
     )

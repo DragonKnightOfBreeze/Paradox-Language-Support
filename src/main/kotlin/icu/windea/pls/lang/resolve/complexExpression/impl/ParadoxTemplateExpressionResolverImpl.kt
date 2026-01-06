@@ -9,7 +9,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
@@ -79,8 +78,6 @@ private class ParadoxTemplateExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
-    override val errors: List<ParadoxComplexExpressionError> get() = emptyList()
-
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text
     override fun hashCode(): Int = text.hashCode()
     override fun toString() = text

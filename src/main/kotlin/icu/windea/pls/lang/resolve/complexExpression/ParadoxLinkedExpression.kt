@@ -4,8 +4,9 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 
 /**
- * 由一组链接节点（[ParadoxLinkNode]）组成的复杂表达式。
- * 链接节点之间用 `.` 分隔（作为标记节点，即 [ParadoxMarkerNode]）。
+ * 链式的复杂表达式。
+ *
+ * 由一组链接节点（[ParadoxLinkNode]）组成，链接节点之间使用作为标记节点（[ParadoxMarkerNode]）的点号分隔。
  */
 interface ParadoxLinkedExpression : ParadoxComplexExpression {
     @Suppress("unused")
