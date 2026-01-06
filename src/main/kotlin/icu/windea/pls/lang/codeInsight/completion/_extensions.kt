@@ -21,7 +21,6 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.settings.PlsSettings
@@ -75,15 +74,15 @@ fun <T : LookupElement> T.withPatchableTailText(tailText: String?): T {
     return this
 }
 
+fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boolean): T {
+    this.forceInsertCurlyBraces = forceInsertCurlyBraces
+    return this
+}
+
 fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementBuilder {
     this.scopeMatched = scopeMatched
     if (scopeMatched) return this
     return withItemTextForeground(JBColor.GRAY)
-}
-
-fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boolean): T {
-    this.forceInsertCurlyBraces = forceInsertCurlyBraces
-    return this
 }
 
 fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
@@ -140,33 +139,20 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     }
 
     // 排除重复项
-    val completionId = when {
-        isKeyElement || (isStringElement && isKey != true) -> lookupString
-        constantValue != null -> "$lookupString = $constantValue"
-        insertCurlyBraces -> "$lookupString = {...}"
-        else -> lookupString
+    val withValueText = when {
+        isKeyElement || (isStringElement && isKey != true) -> ""
+        constantValue != null -> " = $constantValue"
+        insertCurlyBraces -> " = {...}"
+        else -> ""
     }
+    val completionId = lookupString + withValueText
     if (context.completionIds?.add(completionId) == false) return null
 
     var lookupElement = this
 
-    val localizedNames = this.localizedNames
-    if (localizedNames.isNotNullOrEmpty()) {
-        lookupElement = lookupElement.withLookupStrings(localizedNames)
-    }
-    val patchableIcon = this.patchableIcon
-    if (patchableIcon != null) {
-        lookupElement = lookupElement.withIcon(getPatchedIcon(patchableIcon, config))
-    }
-    val patchableTailText = this.patchableTailText
-    val tailText = buildString {
-        if (!(isKeyElement || isStringElement && isKey != true)) {
-            if (constantValue != null) append(" = ").append(constantValue)
-            if (insertCurlyBraces) append(" = {...}")
-        }
-        if (patchableTailText != null) append(patchableTailText)
-    }
-    lookupElement = lookupElement.withTailText(tailText, true)
+    lookupElement = lookupElement.addLocalizedNames()
+    lookupElement = lookupElement.patchIcon(config)
+    lookupElement = lookupElement.patchTailText(withValueText)
 
     if (!isKeyElement && !isStringElement) return lookupElement // not in a key or value position
     if (isKey == null) return lookupElement // not complete full key or value
@@ -189,11 +175,23 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
     if (isKey && !isKeyElement && isBlockConfig && config != null) {
         val extraLookupElement = ParadoxClauseTemplateCompletionManager.buildLookupElement(context, config, lookupElement)
-        if(extraLookupElement != null) extraLookupElements.add(extraLookupElement)
+        if (extraLookupElement != null) extraLookupElements.add(extraLookupElement)
     }
 
     lookupElement.extraLookupElements = extraLookupElements
     return lookupElement
+}
+
+private fun LookupElementBuilder.addLocalizedNames(): LookupElementBuilder {
+    val localizedNames = localizedNames
+    if (localizedNames.isNullOrEmpty()) return this
+    return withLookupStrings(localizedNames)
+}
+
+private fun LookupElementBuilder.patchIcon(config: CwtConfig<*>?): LookupElementBuilder {
+    val patchableIcon = patchableIcon
+    if (patchableIcon == null) return this
+    return withIcon(getPatchedIcon(patchableIcon, config))
 }
 
 private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
@@ -216,4 +214,14 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
         }
     }
     return icon
+}
+
+private fun LookupElementBuilder.patchTailText(withValueText: String): LookupElementBuilder {
+    val patchableTailText = patchableTailText
+    val finalTailText = buildString {
+        append(withValueText)
+        if (patchableTailText != null) append(patchableTailText)
+    }
+    if (finalTailText.isEmpty()) return this
+    return withTailText(finalTailText, true)
 }

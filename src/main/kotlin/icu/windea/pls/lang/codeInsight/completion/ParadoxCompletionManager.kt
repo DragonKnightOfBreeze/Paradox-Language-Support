@@ -840,20 +840,20 @@ object ParadoxCompletionManager {
             // complete mode
             context.isKey = null
             val modeConfigs = config.modeConfigs.values
+            val tailText = " from definition injection modes"
             for (modeConfig in modeConfigs) {
                 context.config = modeConfig
                 val name = modeConfig.value
                 val element = modeConfig.pointer.element ?: continue
-                val tailText = " from definition injection modes"
                 val typeFile = modeConfig.pointer.containingFile
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withBoldness(true)
                     .withIcon(PlsIcons.Nodes.Directive)
-                    .withTailText(tailText)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
                     .withInsertHandler(PlsInsertHandlers.addColon())
                     .withPriority(PlsCompletionPriorities.prefix)
+                    .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
