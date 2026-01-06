@@ -32,6 +32,7 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processQueryAsync
@@ -53,10 +54,11 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
-import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -89,9 +91,12 @@ import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.property
 import java.util.concurrent.Callable
 
 object ParadoxCompletionManager {
@@ -398,12 +403,10 @@ object ParadoxCompletionManager {
                 typeConfigToUse == null || tuples.isEmpty() -> null
                 else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
             }
-            val config = run {
-                if (typeToUse == null) return@run null
-                if (typeConfigToUse.typeKeyPrefix != null) return@run typeConfigToUse.typeKeyPrefixConfig
-                val declarationConfig = configGroup.declarations.get(typeToUse) ?: return@run null
-                val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
-                declarationConfigContext?.getConfig(declarationConfig)
+            val config = when {
+                typeToUse == null -> null
+                typeConfigToUse.typeKeyPrefix != null -> typeConfigToUse.typeKeyPrefixConfig
+                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement!!, configGroup, typeToUse, subtypesToUse)
             }
             val element = config?.pointer?.element
             val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
@@ -837,12 +840,12 @@ object ParadoxCompletionManager {
     fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
         val configs = configGroup.directivesModel.inlineScript.orNull() ?: return
-        configs.forEach f@{ config ->
+        for (config in configs) {
             ProgressManager.checkCanceled()
             context.config = config
             context.isKey = true
             val name = config.name
-            val element = config.pointer.element ?: return@f
+            val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -852,6 +855,77 @@ object ParadoxCompletionManager {
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
         }
+    }
+
+    fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
+        val configGroup = context.configGroup ?: return
+        val config = configGroup.directivesModel.definitionInjection ?: return
+        val element = context.contextElement.castOrNull<ParadoxScriptPropertyKey>() ?: return
+        val property = element.property ?: return
+        val file = context.parameters?.originalFile ?: return
+        val fileInfo = file.fileInfo ?: return
+        val path = fileInfo.path
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(property, configGroup, path) ?: return
+
+        ProgressManager.checkCanceled()
+        val keyword = context.keyword
+        val index = keyword.indexOf(':')
+        if (index == -1) {
+            // complete mode
+            context.isKey = null
+            val modeConfigs = config.modeConfigs.values
+            for (modeConfig in modeConfigs) {
+                context.config = modeConfig
+                val name = modeConfig.value + ":"
+                val element = modeConfig.pointer.element ?: continue
+                val typeFile = modeConfig.pointer.containingFile
+                val lookupElement = LookupElementBuilder.create(element, name)
+                    .withBoldness(true)
+                    .withIcon(PlsIcons.Nodes.Directive)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withCaseSensitivity(false)
+                    .withPriority(ParadoxCompletionPriorities.prefix)
+                    .withCompletionId()
+                result.addElement(lookupElement, context)
+            }
+        } else {
+            // commplete definition reference
+            val resultToUse = result.withPrefixMatcher(keyword.substring(index + 1))
+            val type = typeConfig.name
+            val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
+            context.config = config
+            context.isKey = true
+            context.expressionTailText = " from definition type $type"
+            val project = configGroup.project
+            val selector = selector(project, file).definition().contextSensitive().distinctByName()
+            ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+                processDefinition(context, resultToUse, it)
+            }
+
+            context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
+            ParadoxExtendedCompletionManager.completeExtendedDefinition(context, resultToUse)
+        }
+    }
+
+    // endregion
+
+    // region Process Methods
+
+    fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
+        ProgressManager.checkCanceled()
+        val definitionInfo = element.definitionInfo ?: return true
+        if (definitionInfo.name.isEmpty()) return true // ignore anonymous definitions
+
+        val name = definitionInfo.name
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, name)
+            .withTypeText(typeFile?.name, typeFile?.icon, true)
+            .withPatchableIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
+            .withPatchableTailText(context.expressionTailText)
+            .withDefinitionLocalizedNamesIfNecessary(element)
+            .forScriptExpression(context)
+        result.addElement(lookupElement, context)
+        return true
     }
 
     // endregion

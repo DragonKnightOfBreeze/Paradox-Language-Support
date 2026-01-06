@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * - 必须存在可以匹配的定义类型（在脚本文件的顶层声明定义，使用类型键作为定义的名字，且不存在类型键前缀）。
  * - TODO 2.1.1+ 基于 Wiki 和官方开发日志，进行更加严格的检查。
  */
-class UnsupportedDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase()/*, DumbAware*/ {
+class UnsupportedDefinitionInjectionInspection : DefinitionInjectionInspectionBase()/*, DumbAware*/ {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {

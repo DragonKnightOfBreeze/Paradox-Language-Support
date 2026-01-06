@@ -21,6 +21,7 @@ import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
@@ -30,6 +31,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
@@ -40,7 +42,6 @@ import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxMemberPath
@@ -113,6 +114,31 @@ object ParadoxConfigMatchService {
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesType(node, tree, config, null, memberPath, typeKey, typeKeyPrefix) }
+    }
+
+    fun getMatchedTypeConfigForInjection(
+        element: ParadoxScriptDefinitionElement,
+        configGroup: CwtConfigGroup,
+        path: ParadoxPath,
+    ): CwtTypeConfig? {
+        val target = "INJECT:windea"
+        val memberPath = ParadoxMemberPath.resolve(listOf(target))
+        val typeKey = target
+        return getMatchedTypeConfig(element, configGroup, path, memberPath, typeKey, null)
+            ?.takeIf { canApplyForInjection(it) } // 排除不期望匹配的类型规则
+    }
+
+    fun getMatchedTypeConfigForInjection(
+        node: LighterASTNode,
+        tree: LighterAST,
+        configGroup: CwtConfigGroup,
+        path: ParadoxPath,
+    ): CwtTypeConfig? {
+        val target = "INJECT:windea"
+        val memberPath = ParadoxMemberPath.resolve(listOf(target))
+        val typeKey = target
+        return getMatchedTypeConfig(node, tree, configGroup, path, memberPath, typeKey, null)
+            ?.takeIf { canApplyForInjection(it) } // 排除不期望匹配的类型规则
     }
 
     fun matchesType(
@@ -373,11 +399,11 @@ object ParadoxConfigMatchService {
                 return ParadoxMatchService.matchScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
             }
             // 匹配 single_alias
-            ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
+            isSingleAliasEntryConfig(propertyConfig) -> {
                 return matchesSingleAliasForSubtype(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
             }
             // 匹配 alias
-            ParadoxExpressionManager.isAliasEntryConfig(propertyConfig) -> {
+            isAliasEntryConfig(propertyConfig) -> {
                 return matchesAliasForSubtype(definitionElement, propertyElement, propertyConfig, matchOptions)
             }
             propertyConfig.configs.orEmpty().isNotEmpty() -> {
@@ -478,7 +504,7 @@ object ParadoxConfigMatchService {
         val key = propertyElement.name
         val quoted = propertyElement.propertyKey.text.isLeftQuoted()
         val configGroup = propertyConfig.configGroup
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, key, propertyElement, quoted, matchOptions) ?: return false
+        val aliasSubName = getMatchedAliasKey(configGroup, aliasName, key, propertyElement, quoted, matchOptions) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->
@@ -671,6 +697,33 @@ object ParadoxConfigMatchService {
         if (path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(rowConfig, path)) return false
         }
+        return true
+    }
+
+    // endregion
+
+    // region Misc Methods
+
+    fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
+        return propertyConfig.keyExpression.type == CwtDataTypes.AliasName && propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
+    }
+
+    fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
+        return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
+    }
+
+    fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, matchOptions: Int = ParadoxMatchOptions.Default): String? {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
+        if (constKey != null) return constKey
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
+        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
+        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+    }
+
+    fun canApplyForInjection(typeConfig: CwtTypeConfig): Boolean {
+        if (typeConfig.skipRootKey.isNotEmpty()) return false
+        if (typeConfig.nameField != null) return false
+        if (typeConfig.typeKeyPrefix.isNotNullOrEmpty()) return false
         return true
     }
 

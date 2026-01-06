@@ -907,33 +907,6 @@ object ParadoxExpressionManager {
 
     // region Misc Methods
 
-    fun isConstantMatch(configGroup: CwtConfigGroup, expression: ParadoxScriptExpression, configExpression: CwtDataExpression): Boolean {
-        // 注意这里可能需要在同一循环中同时检查 `keyExpression` 和 `valueExpression`，因此这里需要特殊处理
-        if (configExpression.isKey && expression.isKey == false) return false
-        if (!configExpression.isKey && expression.isKey == true) return false
-
-        if (configExpression.type == CwtDataTypes.Constant) return true
-        if (configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.value) } == true) return true
-        if (configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.value) } == true) return true
-        return false
-    }
-
-    fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.keyExpression.type == CwtDataTypes.AliasName && propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
-    }
-
-    fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
-    }
-
-    fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, matchOptions: Int = ParadoxMatchOptions.Default): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
-    }
-
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key

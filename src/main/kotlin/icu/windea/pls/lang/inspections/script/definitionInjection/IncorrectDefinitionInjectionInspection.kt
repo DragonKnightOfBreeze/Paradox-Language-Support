@@ -15,7 +15,7 @@ import javax.swing.JComponent
  *
  * - 基于定义注入的模式，定义目标的存在性必须正确。
  */
-class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
+class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase() {
     private var checkForRelaxModes = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -24,7 +24,7 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
                 if (element !is ParadoxScriptProperty) return
                 val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
                 if (definitionInjectionInfo.target.isNullOrEmpty()) {
-                    val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
+                    val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.1")
                     holder.registerProblem(element.propertyKey, description)
                     return
                 }
@@ -37,12 +37,12 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
                 if (!targetExist) {
                     if (relax) {
                         if (checkForRelaxModes) {
-                            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
+                            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.3", target, type)
                             val highlightType = PlsInspectionUtil.getWeakerHighlightType() // use weaker highlight type
                             holder.registerProblem(element.propertyKey, description, highlightType)
                         }
                     } else {
-                        val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
+                        val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.2", target, type)
                         holder.registerProblem(element.propertyKey, description)
                     }
                 }
@@ -53,10 +53,10 @@ class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectio
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes"))
+                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes"))
                     .bindSelected(::checkForRelaxModes)
                     .actionListener { _, component -> checkForRelaxModes = component.isSelected }
-                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes.tip"))
+                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes.tip"))
             }
         }
     }

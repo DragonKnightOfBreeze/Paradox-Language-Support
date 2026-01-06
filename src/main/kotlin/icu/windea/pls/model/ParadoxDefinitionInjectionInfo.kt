@@ -19,4 +19,8 @@ data class ParadoxDefinitionInjectionInfo(
     val declarationConfig get() = type?.orNull()?.let { configGroup.declarations.get(it) }
 
     val expression: String get() = mode + ":" + type.orEmpty()
+
+    override fun toString(): String {
+        return "ParadoxDefinitionInjectionInfo(mode=$mode, target=$target, type=$type, gameType=$gameType)"
+    }
 }

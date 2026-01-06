@@ -3,40 +3,34 @@ package icu.windea.pls.lang.codeInsight.completion.script
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.getKeyword
-import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.expressionOffset
 import icu.windea.pls.lang.codeInsight.completion.expressionTailText
-import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.isKey
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
-import icu.windea.pls.lang.codeInsight.completion.withDefinitionLocalizedNamesIfNecessary
-import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -49,7 +43,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -100,21 +93,20 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     if (typeConfig.nameField != null) continue
                     if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, memberPath, null, typeKeyPrefix)) continue
                     val type = typeConfig.name
-                    val declarationConfig = configGroup.declarations.get(type) ?: continue
-                    // 需要考虑不指定子类型的情况
-                    val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, null, type, null, configGroup)
-                    val config = declarationConfigContext?.getConfig(declarationConfig) ?: continue
+                    val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
 
                     context.config = config
                     context.isKey = true
-                    context.expressionTailText = ""
-
+                    context.expressionTailText = " from definition type $type"
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+                        ParadoxCompletionManager.processDefinition(context, result, it)
+                    }
 
+                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
                     ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
@@ -129,34 +121,21 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 
                     context.config = config
                     context.isKey = false
-                    context.expressionTailText = ""
-
+                    context.expressionTailText = " from definition type $type"
                     // 这里需要基于rootKey过滤结果
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+                        ParadoxCompletionManager.processDefinition(context, result, it)
+                    }
 
+                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, "<$type>")
                     ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
         }
-    }
-
-    private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
-        ProgressManager.checkCanceled()
-        val definitionInfo = element.definitionInfo ?: return true
-        if (definitionInfo.name.isEmpty()) return true // ignore anonymous definitions
-        val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
-        val typeFile = element.containingFile
-        val lookupElement = LookupElementBuilder.create(element, definitionInfo.name)
-            .withTypeText(typeFile?.name, typeFile?.icon, true)
-            .withPatchableIcon(icon)
-            .withDefinitionLocalizedNamesIfNecessary(element)
-            .forScriptExpression(context)
-        result.addElement(lookupElement, context)
-        return true
     }
 }

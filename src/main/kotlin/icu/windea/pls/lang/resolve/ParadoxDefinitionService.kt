@@ -3,12 +3,14 @@ package icu.windea.pls.lang.resolve
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.castOrNull
@@ -78,11 +80,17 @@ object ParadoxDefinitionService {
         return result.distinctBy { it.name } // it's necessary to distinct by name
     }
 
-    fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
+    fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
         val configGroup = definitionInfo.configGroup
         val declarationConfig = configGroup.declarations.get(definitionInfo.type) ?: return null
         val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
-        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
+        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
+        return declarationConfigContext?.getConfig(declarationConfig)
+    }
+
+    fun resolveDeclaration(element: PsiElement, configGroup: CwtConfigGroup, type: String, subtypes: List<String>? = null): CwtPropertyConfig? {
+        val declarationConfig = configGroup.declarations.get(type) ?: return null
+        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

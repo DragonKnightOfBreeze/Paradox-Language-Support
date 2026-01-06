@@ -91,7 +91,7 @@ class ParadoxDefinitionInfo(
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val cache = declarationConfigsCache
         val result = cache.getOrPut(matchOptions) {
-            ParadoxDefinitionService.resolveDeclaration(this, matchOptions) ?: EMPTY_OBJECT
+            ParadoxDefinitionService.resolveDeclaration(element, this, matchOptions) ?: EMPTY_OBJECT
         }
         return result.castOrNull()
     }

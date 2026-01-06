@@ -30,6 +30,8 @@ object ParadoxScriptTokenSets {
     val SCRIPTED_VARIABLE_NAME_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_NAME_TOKEN)
     @JvmField
     val SCRIPTED_VARIABLE_REFERENCE_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
+    // @JvmField
+    // val KEY_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN)
     @JvmField
     val STRING_TOKENS = TokenSet.create(STRING_TOKEN)
     @JvmField

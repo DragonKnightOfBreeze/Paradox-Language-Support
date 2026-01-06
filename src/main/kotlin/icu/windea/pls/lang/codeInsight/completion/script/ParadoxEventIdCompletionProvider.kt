@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 /**
- * 提供事件ID中事件命名空间的代码补全。
+ * 提供事件ID中的事件命名空间的代码补全。
  */
 class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

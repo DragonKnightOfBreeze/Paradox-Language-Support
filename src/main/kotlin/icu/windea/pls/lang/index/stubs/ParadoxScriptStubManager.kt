@@ -23,7 +23,6 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -207,10 +206,7 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val memberPath = ParadoxMemberPath.resolve(listOf(target))
-        val typeKey = target
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, memberPath, typeKey, null) ?: return null
-        if (!ParadoxDefinitionInjectionManager.canApply(typeConfig)) return null // 排除不期望匹配的类型规则
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(node, tree, configGroup, path) ?: return null
         return typeConfig.name
     }
 }

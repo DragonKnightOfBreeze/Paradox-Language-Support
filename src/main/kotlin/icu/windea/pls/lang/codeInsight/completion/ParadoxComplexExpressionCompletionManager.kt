@@ -19,8 +19,8 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.withState
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -66,7 +66,6 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.core.withState
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexExpressionCompletionManager {
@@ -563,7 +562,7 @@ object ParadoxComplexExpressionCompletionManager {
         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return
         val config = context.config ?: return
         val formatName = config.configExpression?.value ?: return
-        val defType = "${formatName}_name_parts_list"
+        val type = "${formatName}_name_parts_list"
 
         // caret position inside expression
         val caretInExpr = context.offsetInParent - context.expressionOffset
@@ -614,7 +613,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (leftAngle >= 0) {
                 val innerStart = leftAngle + 1
                 val keywordToUse = exprText.substring(innerStart, caret)
-                val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "<${defType}>")
+                val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "<${type}>")
                 val bakConfig = context.config
                 val bakKeyword = context.keyword
                 val bakKeywordOffset = context.keywordOffset
@@ -1146,8 +1145,7 @@ object ParadoxComplexExpressionCompletionManager {
         val typeToSearch = node.getTypeToSearch()
         if (typeToSearch == null) return
 
-        val tailText = " from database object type ${config.name}"
-        context.expressionTailText = tailText
+        context.expressionTailText = " from database object type ${config.name}"
 
         // complete forced base database object
         completeForcedBaseDatabaseObject(context, result, node)
@@ -1179,21 +1177,8 @@ object ParadoxComplexExpressionCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processQueryAsync p@{ definition ->
-            ProgressManager.checkCanceled()
-            val definitionInfo = definition.definitionInfo ?: return@p true
-            if (definitionInfo.name.isEmpty()) return@p true // ignore anonymous definitions
-
-            val name = definitionInfo.name
-            val typeFile = definition.containingFile
-            val lookupElement = LookupElementBuilder.create(definition, name)
-                .withTypeText(typeFile.name, typeFile.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
-                .withPatchableTailText(context.expressionTailText)
-                .withDefinitionLocalizedNamesIfNecessary(definition)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
-            true
+        ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processQueryAsync {
+            ParadoxCompletionManager.processDefinition(context, result, it)
         }
     }
 
@@ -1483,5 +1468,5 @@ object ParadoxComplexExpressionCompletionManager {
         }
     }
 
-    // endregion
+// endregion
 }

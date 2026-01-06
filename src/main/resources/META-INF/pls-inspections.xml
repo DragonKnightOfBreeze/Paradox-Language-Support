@@ -210,11 +210,11 @@
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedDefinitionInjectionUsage"
                      key="inspection.script.unsupportedDefinitionInjectionUsage" groupKey="inspection.script.definitionInjection.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.UnsupportedDefinitionInjectionUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.UnsupportedDefinitionInjectionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefinitionInjectionUsage"
-                     key="inspection.script.incorrectDefinitionInjectionUsage" groupKey="inspection.script.definitionInjection.group" groupPathKey="inspection.script.groupPath"
+                     key="inspection.script.incorrectDefinitionInjection" groupKey="inspection.script.definitionInjection.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.IncorrectDefinitionInjectionUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.definitionInjection.IncorrectDefinitionInjectionInspection"/>
     <!--endregion-->
     <!--endregion-->
 

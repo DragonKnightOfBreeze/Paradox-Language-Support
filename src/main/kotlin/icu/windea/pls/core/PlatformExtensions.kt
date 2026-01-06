@@ -509,7 +509,7 @@ fun PsiFile.findAllElementsBetween(
 }
 
 /**
- * @param forward 查找偏移之前还是之后的PSI引用，默认为null，表示同时考虑。
+ * @param forward 查找偏移之前还是之后的 PSI 引用，默认为 `null`，表示同时考虑。
  */
 fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (reference: PsiReference) -> Boolean): PsiReference? {
     if (forward != false) {
@@ -562,7 +562,7 @@ private fun doCollectReferences(sourceReference: PsiReference, result: MutableLi
 }
 
 /**
- * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
+ * 判断两个 [PsiElement] 是否在同一 [VirtualFile] 的同一位置。
  */
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
     if (this == other) return true
@@ -599,7 +599,7 @@ inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement)
     }
 }
 
-/** 处理当前 PSI 的直接子元素；处理器返回 false 时提前终止。*/
+/** 处理当前 PSI 的直接子元素；处理器返回 `false` 时提前终止。*/
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
     // 不会忽略某些特定类型的子元素
     var child: PsiElement? = if (forward) this.firstChild else this.lastChild

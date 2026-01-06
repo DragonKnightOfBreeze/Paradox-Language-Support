@@ -7,7 +7,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager.isConstantMatch
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -22,7 +21,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizer.Context): List<CwtMemberConfig<*>>? {
         if (configs.size <= 1) return null
         if (context.expression.type != ParadoxType.String) return null
-        val filtered = configs.filter { isConstantMatch(context.configGroup, context.expression, it.configExpression) }
+        val filtered = configs.filter { ParadoxMatchService.isConstantMatch(context.configGroup, context.expression, it.configExpression) }
         if (filtered.isEmpty()) return null
         return filtered
     }

@@ -7,9 +7,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -29,7 +27,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -78,8 +75,8 @@ object ParadoxDefinitionInjectionManager {
      * 检查内联脚本用法在 [element] 对应的位置是否可用（但不一定支持或正确）。这意味着至少会提供代码高亮。
      */
     fun isAvailable(element: ParadoxScriptProperty): Boolean {
-        if (element.propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
         if (element.parent !is ParadoxScriptRootBlock) return false // 属性必须位于文件顶级（就目前看来）
+        if (element.propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
         if (!ParadoxPsiFileMatcher.isScriptFile(element.containingFile)) return false // 额外检查
         return true // 这里目前不继续检查当前位置是否匹配任意定义类型
     }
@@ -147,11 +144,7 @@ object ParadoxDefinitionInjectionManager {
         run {
             if (target.isNullOrEmpty()) return@run
             val path = fileInfo.path
-            val memberPath = ParadoxMemberPath.resolve(listOf(target))
-            val typeKey = target
-            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, memberPath, typeKey, null)
-            if (typeConfig == null) return@run
-            if (!canApply(typeConfig)) return@run // 排除不期望匹配的类型规则
+            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(element, configGroup, path) ?: return@run
             val type = typeConfig.name
             return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
         }
@@ -179,14 +172,7 @@ object ParadoxDefinitionInjectionManager {
     fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
         if (definitionInfo.name.isEmpty()) return false
         if (definitionInfo.type.isEmpty()) return false
-        if (!canApply(definitionInfo.typeConfig)) return false // 排除不期望匹配的类型规则
-        return true
-    }
-
-    fun canApply(typeConfig: CwtTypeConfig): Boolean {
-        if (typeConfig.skipRootKey.isNotEmpty()) return false
-        if (typeConfig.nameField != null) return false
-        if (typeConfig.typeKeyPrefix.isNotNullOrEmpty()) return false
+        if (!ParadoxConfigMatchService.canApplyForInjection(definitionInfo.typeConfig)) return false // 排除不期望匹配的类型规则
         return true
     }
 
