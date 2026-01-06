@@ -954,11 +954,12 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
                 .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -973,6 +974,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
@@ -1056,11 +1058,12 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
                 .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1075,6 +1078,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(PlsCompletionPriorities.prefix)
@@ -1125,9 +1129,9 @@ object ParadoxComplexExpressionCompletionManager {
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.DatabaseObjectType)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(PlsCompletionPriorities.prefix)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
@@ -1272,11 +1276,12 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
                 .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1292,6 +1297,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
@@ -1394,11 +1400,12 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withInsertHandler(PlsInsertHandlers.addParentheses())
                 .withPriority(PlsCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler(PlsInsertHandlers.addParentheses())
             result.addElement(lookupElement, context)
         }
 
@@ -1413,6 +1420,7 @@ object ParadoxComplexExpressionCompletionManager {
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
+                .withIcon(PlsIcons.Nodes.Link)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(PlsCompletionPriorities.prefix)
