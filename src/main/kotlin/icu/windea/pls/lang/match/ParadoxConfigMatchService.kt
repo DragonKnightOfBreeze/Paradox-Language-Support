@@ -32,10 +32,9 @@ import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
@@ -77,6 +76,11 @@ object ParadoxConfigMatchService {
     private val CwtConfigGroup.complexEnumConfigsCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
+        }.cancelable()
+    }
+    private val CwtConfigGroup.rowConfigsCache by registerKey(CwtConfigGroup.Keys) {
+        CacheBuilder().build<ParadoxPath, List<CwtRowConfig>> { path ->
+            rows.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
         }.cancelable()
     }
 
@@ -463,7 +467,12 @@ object ParadoxConfigMatchService {
         return matchesPropertyForSubtype(definitionElement, propertyElement, singleAlias.config, configGroup, matchOptions)
     }
 
-    private fun matchesAliasForSubtype(definitionElement: ParadoxScriptDefinitionElement, propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
+    private fun matchesAliasForSubtype(
+        definitionElement: ParadoxScriptDefinitionElement,
+        propertyElement: ParadoxScriptProperty,
+        propertyConfig: CwtPropertyConfig,
+        matchOptions: Int
+    ): Boolean {
         // aliasName 和 aliasSubName 需要匹配
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
@@ -483,14 +492,22 @@ object ParadoxConfigMatchService {
 
     // NOTE 这里匹配时并不兼容向下内联的情况
 
-    fun getMatchedComplexEnumConfig(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, path: ParadoxPath): CwtComplexEnumConfig? {
+    fun getMatchedComplexEnumConfig(
+        element: ParadoxScriptStringExpressionElement,
+        configGroup: CwtConfigGroup,
+        path: ParadoxPath
+    ): CwtComplexEnumConfig? {
         // 优先从基于文件路径的缓存中获取
         val configs = configGroup.complexEnumConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesComplexEnum(element, config, null) }
     }
 
-    fun matchesComplexEnum(element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig, path: ParadoxPath?): Boolean {
+    fun matchesComplexEnum(
+        element: ParadoxScriptStringExpressionElement,
+        complexEnumConfig: CwtComplexEnumConfig,
+        path: ParadoxPath?
+    ): Boolean {
         if (path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(complexEnumConfig, path)) return false
         }
@@ -644,11 +661,10 @@ object ParadoxConfigMatchService {
     // region Row Config
 
     fun getMatchedRowConfig(configGroup: CwtConfigGroup, path: ParadoxPath): CwtRowConfig? {
-        for (rowConfig in configGroup.rows.values) {
-            if (!matchesRow(rowConfig, path)) continue
-            return rowConfig
-        }
-        return null
+        // 优先从基于文件路径的缓存中获取
+        val configs = configGroup.rowConfigsCache.get(path)
+        if (configs.isEmpty()) return null
+        return configs.find { config -> matchesRow(config, null) }
     }
 
     fun matchesRow(rowConfig: CwtRowConfig, path: ParadoxPath?): Boolean {
