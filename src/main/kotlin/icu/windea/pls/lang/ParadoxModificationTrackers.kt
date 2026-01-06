@@ -42,6 +42,8 @@ object ParadoxModificationTrackers {
         ScriptFile,
         LocalisationFile,
         FilePath,
+        ParameterConfigInference,
+        InlineScriptConfigInference,
     )
     val Scope = DefinitionScopeContextInference
 }
