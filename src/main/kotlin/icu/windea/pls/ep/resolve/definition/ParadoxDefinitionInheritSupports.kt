@@ -80,7 +80,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         val baseName = getBaseName(definitionInfo, subtypeConfigs) ?: return true
         val superDefinition = getSuperDefinition(definitionInfo, baseName, subtypeConfigs) ?: return true
         val superDefinitionInfo = superDefinition.definitionInfo ?: return true
-        superDefinitionInfo.subtypeConfigs.filterTo(subtypeConfigs) { it.inGroup(CwtSubtypeGroup.EventAttribute) }
+        superDefinitionInfo.subtypeConfigs.filterTo(subtypeConfigs) { it in CwtSubtypeGroup.EventAttribute }
         val clearData = getData(definitionInfo)?.triggerClear ?: false
         if (clearData) {
             subtypeConfigs.removeIf { it.name == "triggered" }
@@ -103,8 +103,8 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
 
                 // 事件类型不匹配 - 不处理
-                val eventType = subtypeConfigs.find { it.inGroup(CwtSubtypeGroup.EventType) }?.name
-                val superEventType = superDefinitionInfo.subtypeConfigs.find { it.inGroup(CwtSubtypeGroup.EventType) }?.name
+                val eventType = subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
+                val superEventType = superDefinitionInfo.subtypeConfigs.find { it in CwtSubtypeGroup.EventType }?.name
                 if (eventType != superEventType) return@a null
 
                 superDefinition

@@ -140,10 +140,10 @@ interface CwtDataProvider {
 
     /** 获取符合特定条件的链接规则。 */
     val linksModel: CwtLinksModel
-    /** 获取符合特定条件的指令规则。 */
-    val directivesModel: CwtDirectivesModel
     /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinksModel: CwtLinksModel
+    /** 获取符合特定条件的指令规则。 */
+    val directivesModel: CwtDirectivesModel
     /** 获取符合特定条件的定义类型。 */
     val definitionTypesModel: CwtDefinitionTypesModel
 

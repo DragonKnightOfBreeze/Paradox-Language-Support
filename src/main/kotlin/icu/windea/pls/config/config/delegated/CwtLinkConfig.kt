@@ -60,7 +60,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
  * @property inputScopes 输入作用域（类型）的集合。
  * @property outputScope 输出作用域（类型）。如果为 `null`，则表示需要基于数据源传递作用域。
  * @property forDefinitionType 仅用于指定的定义类型。
- * @property isStatic 是否为静态链接。
  * @property isLocalisationLink 是否为本地化链接（可在本地化命令中使用）。
  * @property dataSourceIndex 数据源的索引。适用于有多个传参的场合。
  * @property dataSourceExpression 指定索引（[dataSourceIndex]）的数据源对应的数据表达式。
@@ -94,17 +93,12 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromProperty("for_definition_type: string?")
     val forDefinitionType: String?
 
-    val isStatic: Boolean
     val isLocalisationLink: Boolean
-
     val dataSourceIndex: Int
     val dataSourceExpression: CwtDataExpression?
     val dataSourceExpressions: List<CwtDataExpression>
 
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
-
-    fun forScope() = type.forScope()
-    fun forValue() = type.forValue()
 
     interface Resolver {
         /** 由属性规则解析为（常规）链接规则。*/
@@ -119,3 +113,4 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
     companion object : Resolver by CwtLinkConfigResolverImpl()
 }
+

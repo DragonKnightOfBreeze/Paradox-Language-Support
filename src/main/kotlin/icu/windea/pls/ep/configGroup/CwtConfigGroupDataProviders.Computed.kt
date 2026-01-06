@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
+import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filePathPatterns
@@ -168,17 +169,17 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             with(initializer.linksModel) {
                 val staticLinks = initializer.links.values.filter { it.isStatic }
                 staticLinks.forEach { c ->
-                    if (c.forScope()) forScopeStatic += c
-                    if (c.forValue()) forValueStatic += c
+                    if (c.type.forScope()) forScopeStatic += c
+                    if (c.type.forValue()) forValueStatic += c
                 }
                 val dynamicLinksSorted = initializer.links.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
                 dynamicLinksSorted.forEach { c ->
-                    if (c.forScope()) {
+                    if (c.type.forScope()) {
                         if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
                         if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
                         if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
                     }
-                    if (c.forValue()) {
+                    if (c.type.forValue()) {
                         if (c.name == "variable") variable += c
                         if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
                         if (c.fromData && c.prefix != null) forValueFromDataSorted += c
@@ -194,17 +195,17 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             with(initializer.localisationLinksModel) {
                 val staticLinks = initializer.localisationLinks.values.filter { it.isStatic }
                 staticLinks.forEach { c ->
-                    if (c.forScope()) forScopeStatic += c
-                    if (c.forValue()) forValueStatic += c
+                    if (c.type.forScope()) forScopeStatic += c
+                    if (c.type.forValue()) forValueStatic += c
                 }
                 val dynamicLinksSorted = initializer.localisationLinks.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
                 dynamicLinksSorted.forEach { c ->
-                    if (c.forScope()) {
+                    if (c.type.forScope()) {
                         if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
                         if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
                         if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
                     }
-                    if (c.forValue()) {
+                    if (c.type.forValue()) {
                         if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
                         if (c.fromData && c.prefix != null) forValueFromDataSorted += c
                         if (c.fromData && c.prefix == null) forValueFromDataNoPrefixSorted += c

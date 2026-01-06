@@ -14,10 +14,10 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
@@ -90,13 +90,13 @@ object ParadoxTechnologyManager {
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
             val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
-                eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }.map { it.name }.toSet()
+                eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
             val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.technology] ?: return emptySet()
-            return eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }
+            return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }
         }
 
         fun getTier(element: ParadoxScriptDefinitionElement): String? {
@@ -117,7 +117,7 @@ object ParadoxTechnologyManager {
 
         fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
             return definitionInfo.getOrPutUserData(Keys.technologyAttributes) {
-                definitionInfo.subtypeConfigs.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }.mapTo(mutableSetOf()) { it.name }
+                definitionInfo.subtypeConfigs.filter { it in CwtSubtypeGroup.TechnologyAttribute }.mapTo(mutableSetOf()) { it.name }
             }
         }
 

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.psi.PsiResolvedReference
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -38,7 +39,7 @@ class ParadoxPredefinedValueFieldNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedValueFieldNode? {
             if (text.isParameterized()) return null
-            val config = configGroup.links[text]?.takeIf { it.forValue() && it.isStatic } ?: return null
+            val config = configGroup.links[text]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
             return ParadoxPredefinedValueFieldNode(text, textRange, configGroup, config)
         }
     }

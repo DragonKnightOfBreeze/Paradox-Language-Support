@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.psi.PsiResolvedReference
 import icu.windea.pls.core.util.set
@@ -45,7 +46,7 @@ class ParadoxScopeNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeNode? {
             if (text.isParameterized()) return null
-            val config = configGroup.links[text]?.takeIf { it.forScope() && it.isStatic } ?: return null
+            val config = configGroup.links[text]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
             return ParadoxScopeNode(text, textRange, configGroup, config)
         }
     }

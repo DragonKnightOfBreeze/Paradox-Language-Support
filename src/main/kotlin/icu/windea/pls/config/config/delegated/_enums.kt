@@ -11,6 +11,8 @@ enum class CwtSubtypeGroup(val id: String) {
     TechnologyAttribute("technology_attribute"),
     ;
 
+    operator fun contains(config: CwtSubtypeConfig) = config.group == id
+
     override fun toString() = id
 }
 

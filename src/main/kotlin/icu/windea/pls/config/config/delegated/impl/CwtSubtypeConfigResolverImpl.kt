@@ -39,9 +39,5 @@ private class CwtSubtypeConfigImpl(
     override val onlyIfNot: Set<String>? = null,
     override val group: String? = null,
 ) : UserDataHolderBase(), CwtSubtypeConfig {
-    override fun inGroup(group: CwtSubtypeGroup): Boolean {
-        return this.group == group.id
-    }
-
     override fun toString() = "CwtSubtypeConfigImpl(name='$name')"
 }

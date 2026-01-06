@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.prefixFromArgument
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.findIsInstance
 
@@ -30,10 +31,10 @@ class ParadoxDynamicCommandFieldNode(
             run r1@{
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.localisationLinksModel.forValueFromArgumentSorted
-                    .filter { text.startsWith(it.prefix!! + '(') }
+                    .filter { text.startsWith(it.prefixFromArgument!! + '(') }
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
-                    val nodeText = linkConfigs.first().prefix!!
+                    val nodeText = linkConfigs.first().prefixFromArgument!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxCommandFieldPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node

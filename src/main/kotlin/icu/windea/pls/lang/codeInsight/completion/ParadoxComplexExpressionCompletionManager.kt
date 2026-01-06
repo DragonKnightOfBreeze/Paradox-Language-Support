@@ -9,6 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.prefixFromArgument
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -948,7 +949,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix ?: continue
+            val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -997,7 +998,7 @@ object ParadoxComplexExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.links.values.filter { it.forScope() && it.prefix == prefix }
+        val linkConfigs = configGroup.links.values.filter { it.type.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null
@@ -1052,7 +1053,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix ?: continue
+            val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1101,7 +1102,7 @@ object ParadoxComplexExpressionCompletionManager {
         val argIndex = context.argumentIndex
 
         val linkConfigs = if (variableOnly) configGroup.linksModel.variable
-        else configGroup.links.values.filter { it.forValue() && it.prefix == prefix }
+        else configGroup.links.values.filter { it.type.forValue() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.configs = linkConfigs
@@ -1270,7 +1271,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix ?: continue
+            val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1319,7 +1320,7 @@ object ParadoxComplexExpressionCompletionManager {
         val configs = context.configs
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null
@@ -1394,7 +1395,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix ?: continue
+            val name = linkConfig.prefixFromArgument ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1441,7 +1442,7 @@ object ParadoxComplexExpressionCompletionManager {
         val configs = context.configs
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.prefix == prefix }
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forValue() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null

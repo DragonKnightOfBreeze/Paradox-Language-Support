@@ -39,7 +39,7 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
         val fromData = propGroup.getOne("from_data")?.booleanValue ?: false
         val fromArgument = propGroup.getOne("from_argument")?.booleanValue ?: false
         val argumentSeparator = propGroup.getOne("argument_separator")?.stringValue.let { CwtLinkArgumentSeparator.resolve(it) }
-        var prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
+        val prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
         val dataSources = propGroup.getAll("data_source").mapNotNull { it.stringValue }.optimized()
         val inputScopes = buildSet {
             // both input_scopes and input_scope are supported
@@ -64,8 +64,6 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
             logger.warn("Skipped invalid link config (name: $name): No data_source properties while from_argument = yes.".withLocationPrefix(config))
             return null
         }
-        // ensure prefix not ends with ':' when from argument (note that may not end with ':' when from data)
-        if (fromArgument && prefix != null) prefix = prefix.removeSuffix(":")
 
         logger.debug { "Resolved link config (name: $name).".withLocationPrefix(config) }
         return CwtLinkConfigImpl(
@@ -108,7 +106,6 @@ private class CwtLinkConfigImpl(
     override val forDefinitionType: String?,
     override val isLocalisationLink: Boolean,
 ) : UserDataHolderBase(), CwtLinkConfig {
-    override val isStatic get() = dataSources.isEmpty()
     override val dataSourceIndex: Int get() = 0
     override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it, false) }.optimized()
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()

@@ -31,6 +31,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
@@ -873,13 +874,13 @@ object ParadoxExpressionManager {
     }
 
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.forScope() && it.isStatic } ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }
 
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.forValue() && it.isStatic } ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }
