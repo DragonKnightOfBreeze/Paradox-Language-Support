@@ -601,7 +601,7 @@
 - [X] Support for providing extended inlay hints for scripted variables via extended CWT configs (see reference documentation for details)
 - [X] #66 Support for providing additional code completion for various targets via extended CWT configs (For scripted variables, definitions, inline scripts, parameters, complex enum values and dynamic values; Configurable; Disabled by default)
 - [X] #69 Support for specifying the scope context for various targets via extended CWT configs (For definitions, parameters and inline scripts; Via `## replace_scopes` and `## push_scope`; Ignore invalid situations)
-- [X] #70 Provide code completion for inline script invocations (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types)
+- [X] #70 Provide code completion for inline script usages (`inline_script = ...`; Configurable; Disabled by default; Currently for all game types)
 - [X] New code inspection: Unused inline scripts (level: weak warning)
 - [X] Other optimizations and bug fixes
 

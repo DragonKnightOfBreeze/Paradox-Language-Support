@@ -222,15 +222,20 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                         .bindSelected(completionSettings::completeLocalisationNames)
                 }
-                // completeInlineScriptUsage
-                row {
-                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptUsage"))
-                        .bindSelected(completionSettings::completeInlineScriptUsage)
-                }
                 // completeVariableNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeVariableNames"))
                         .bindSelected(completionSettings::completeVariableNames)
+                }
+                // completeInlineScriptUsage
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptUsage"))
+                        .bindSelected(completionSettings::completeInlineScriptUsages)
+                }
+                // completeDefinitionInjectionExpressions
+                row {
+                    checkBox(PlsBundle.message("settings.completion.completeDefinitionInjectionExpressions"))
+                        .bindSelected(completionSettings::completeDefinitionInjectionExpressions)
                 }
                 // completeWithValue
                 row {

@@ -160,11 +160,11 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, uFile)
             doProcessAllElements(name, project, fileScope) p@{ element ->
-                if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script invocation
+                if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script usage
                 consumer.process(element)
             }.let { if (!it) return@p false }
 
-            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script invocation can be recursive
+            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script usage can be recursive
         }
     }
 

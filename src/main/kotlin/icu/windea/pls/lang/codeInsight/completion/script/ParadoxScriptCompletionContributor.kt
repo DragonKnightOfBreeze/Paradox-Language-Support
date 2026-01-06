@@ -66,9 +66,9 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
         extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 
         // 提供内联脚本用法（`inline_script = ...`）的代码补全
-        val inlineScriptInvocationPattern = psiElement()
+        val inlineScriptUsagePattern = psiElement()
             .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
-        extend(null, inlineScriptInvocationPattern, ParadoxInlineScriptUsageCompletionProvider())
+        extend(null, inlineScriptUsagePattern, ParadoxInlineScriptUsageCompletionProvider())
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

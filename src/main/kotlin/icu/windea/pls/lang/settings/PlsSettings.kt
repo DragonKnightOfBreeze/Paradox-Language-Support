@@ -95,8 +95,9 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * @property completeInlineScriptUsage 进行代码补全时，是否需要提供对内联脚本用法的代码补全。
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
+     * @property completeInlineScriptUsages 进行代码补全时，是否需要提供对内联脚本用法的代码补全。
+     * @property completeDefinitionInjectionExpressions 进行代码补全时，是否需要提供对定义注入表达式的代码补全。
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
      * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模板。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
@@ -108,8 +109,9 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
         var completeLocalisationNames by property(true)
-        var completeInlineScriptUsage by property(false)
         var completeVariableNames by property(true)
+        var completeInlineScriptUsages by property(false)
+        var completeDefinitionInjectionExpressions by property(false)
         var completeWithValue by property(true)
         var completeWithClauseTemplate by property(true)
         var completeOnlyScopeIsMatched by property(true)

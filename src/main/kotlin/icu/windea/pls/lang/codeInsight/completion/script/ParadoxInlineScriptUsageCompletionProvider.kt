@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.resolved
  */
 class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsage) return
+        if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsages) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
@@ -51,7 +51,7 @@ class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<Completion
             if (propertyValue != null && propertyValue.resolved().let { it != null && it !is ParadoxScriptString && it !is ParadoxScriptBlock }) return
         }
 
-        // inline script invocation cannot be nested directly
+        // inline script usage cannot be nested directly
         val configContext = ParadoxExpressionManager.getConfigContext(element)
         if (configContext != null && configContext.provider is CwtInlineScriptUsageConfigContextProvider) return
 
@@ -69,5 +69,14 @@ class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<Completion
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
 
         ParadoxCompletionManager.completeInlineScriptUsage(context, result)
+    }
+}
+
+/**
+ * 提供定义注入用法的代码补全。
+ */
+class ParadoxDefinitionInjectionUsageCompletionProvider: CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+
     }
 }
