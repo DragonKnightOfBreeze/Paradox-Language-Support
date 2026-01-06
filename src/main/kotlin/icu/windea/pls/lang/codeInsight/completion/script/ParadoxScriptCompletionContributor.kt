@@ -38,7 +38,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
         // 当用户可能正在输入 scriptedVariableReference 时提示
         val scriptedVariableReferencePattern = psiElement()
             .withElementType(ParadoxScriptTokenSets.SCRIPTED_VARIABLE_REFERENCE_TOKENS)
-        extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
+        extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableReferenceCompletionProvider())
 
         // 当用户可能正在输入 scriptExpression 时提示
         val expressionPattern = psiElement()

@@ -576,10 +576,9 @@ object ParadoxCompletionManager {
                 val file = virtualFile.toPsiFile(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
-                val icon = PlsIcons.Nodes.PathReference(config.configExpression)
                 val lookupElement = LookupElementBuilder.create(file, name)
                     .withTypeText(file.name, file.icon, true)
-                    .withPatchableIcon(icon)
+                    .withPatchableIcon(PlsIcons.Nodes.PathReference(config.configExpression))
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
@@ -691,9 +690,8 @@ object ParadoxCompletionManager {
                     val name = info.name
                     if (name == keyword) return@p true // 排除和当前输入的同名的
                     val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, info.readWriteAccess, info.gameType, project)
-                    val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
                     val lookupElement = LookupElementBuilder.create(element, name)
-                        .withPatchableIcon(icon)
+                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
                         .forScriptExpression(context)
                     result.addElement(lookupElement, context)

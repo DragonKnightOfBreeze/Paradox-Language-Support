@@ -156,7 +156,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     }
     val patchableIcon = this.patchableIcon
     if (patchableIcon != null) {
-        lookupElement = lookupElement.withIcon(getIconToUse(patchableIcon, config))
+        lookupElement = lookupElement.withIcon(getPatchedIcon(patchableIcon, config))
     }
     val patchableTailText = this.patchableTailText
     val tailText = buildString {
@@ -196,7 +196,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     return lookupElement
 }
 
-private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
+private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if (icon == null) return null
     when (config) {
         is CwtValueConfig -> {

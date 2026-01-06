@@ -14,7 +14,6 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
-import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
@@ -28,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 /**
  * 提供封装变量引用的名字的代码补全。
  */
-class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptedVariableReference>() ?: return
@@ -50,13 +49,12 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
     private fun processScriptedVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
         ProgressManager.checkCanceled()
         val name = element.name ?: return true
-        val icon = PlsIcons.Nodes.ScriptedVariable
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
+            .withIcon(PlsIcons.Nodes.ScriptedVariable)
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .withPatchableIcon(icon)
             .withScriptedVariableLocalizedNamesIfNecessary(element)
             .forScriptExpression(context)
         result.addElement(lookupElement, context)

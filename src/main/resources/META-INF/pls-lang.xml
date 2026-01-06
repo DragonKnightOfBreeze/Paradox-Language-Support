@@ -64,7 +64,7 @@
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableNameCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionNameCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider-->
-    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableReferenceCompletionProvidernProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventIdCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider-->
@@ -75,7 +75,7 @@
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationNameCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider-->
-    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxScriptedVariableCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxScriptedVariableReferenceCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationExpressionCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider-->

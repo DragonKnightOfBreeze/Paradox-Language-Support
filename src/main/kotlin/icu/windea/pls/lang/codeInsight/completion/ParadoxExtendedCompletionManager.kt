@@ -115,9 +115,9 @@ object ParadoxExtendedCompletionManager {
             val element = config0.pointer.element
             val typeFile = config0.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
+                .withIcon(PlsIcons.Nodes.Directive)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableIcon(PlsIcons.Nodes.Directive)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
