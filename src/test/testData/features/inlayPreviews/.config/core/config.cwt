@@ -16,6 +16,14 @@ types = {
             name = name
         }
     }
+    type[chapter] = {
+        path = "game/common/chapters"
+        path_extension = .txt
+        localisation = {
+            ## primary
+            name = name
+        }
+    }
 }
 
 character = {
@@ -38,6 +46,9 @@ character = {
 species = {
     name = localisation
 }
+chapter = {
+    name = localisation
+}
 
 rows = {
     row[chapter_page] = {
@@ -58,7 +69,15 @@ enums = {
         female
     }
     complex_enum[character_tag] = {
-        path = "game/common/character_tags"
+        path = "game/common/characters/tags"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+    complex_enum[chapter_category] = {
+        path = "game/common/chapters/categories"
         path_extension = .txt
         start_from_root = yes
         name = {

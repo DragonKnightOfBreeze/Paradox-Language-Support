@@ -34,12 +34,17 @@ class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestC
 
     @Test
     fun preview() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/characters/00_characters.txt")
-        val text = loadText("/inlayProviders/paradox.csv.definitionReferenceInfo/preview.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapters.txt")
+        myFixture.configureByFile("features/inlayPreviews/common/chapters/00_chapters.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/categories/00_chapter_categories.txt")
+        myFixture.configureByFile("features/inlayPreviews/common/chapters/categories/00_chapter_categories.txt")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapter_pages.csv")
+        val text = loadText("/inlayProviders/paradox.csv.definitionReferenceInfo/preview.csv")
         doTest(text)
     }
 
     private fun doTest(text: String) {
-        doTestProvider("test.txt", text, ParadoxDefinitionReferenceInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        doTestProvider("test.csv", text, ParadoxDefinitionReferenceInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

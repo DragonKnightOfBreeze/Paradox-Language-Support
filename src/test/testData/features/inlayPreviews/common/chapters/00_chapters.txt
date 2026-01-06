@@ -1,3 +1,7 @@
-name;page;category;
-awakening;1;narrative;
-guidance;2;narrative;
+awakening = {
+    name = c_awakening
+}
+
+guidance = {
+    name = c_guidance
+}

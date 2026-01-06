@@ -10,7 +10,7 @@ windea = {
 
     on_awakened = {
         from = {
-            save_global_event_target_as = the_waker/*<# : event_target #>*/
+            save_global_event_target_as = the_waker/*<# : global_event_target #>*/
         }
         pass = yes
     }

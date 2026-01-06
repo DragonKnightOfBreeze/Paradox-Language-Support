@@ -34,8 +34,8 @@ class ParadoxComplexEnumValueInfoHintsProviderTest: DeclarativeInlayHintsProvide
 
     @Test
     fun preview() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/chracter_tags/00_character_tags.txt")
-        myFixture.configureByFile("features/inlayPreviews/common/chracter_tags/00_character_tags.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/characters/tags/00_character_tags.txt")
+        myFixture.configureByFile("features/inlayPreviews/common/characters/tags/00_character_tags.txt")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/characters/00_characters.txt")
         val text = loadText("/inlayProviders/paradox.script.complexEnumValueInfo/preview.txt")
