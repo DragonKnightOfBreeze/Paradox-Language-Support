@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.optimized
