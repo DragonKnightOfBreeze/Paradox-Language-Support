@@ -29,7 +29,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
-import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -101,30 +100,16 @@ object ParadoxAnalysisManager {
         return doGetFileInfo(filePath)
     }
 
-    private fun isPossible(info: ParadoxFileInfo, file: VirtualFile): Boolean {
-        return info.group == ParadoxFileGroup.resolvePossible(file.name)
-    }
-
-    private fun isValid(fileInfo: ParadoxFileInfo?): Boolean {
-        if (fileInfo != null && fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
-            // consistency check
-            val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
-            if (expectedRootInfo != fileInfo.rootInfo) {
-                return false
-            }
-        }
-        return true
-    }
-
     private fun doGetForcedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { isPossible(it, file) }?.also { file.injectedFileInfo = it } }
+        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it } }
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
         val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: StatefulValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
-        if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { isValid(it) }
+        doCheckCachedFileInfo(cachedFileInfo)
+        if (cachedFileInfo.isInitialized) return cachedFileInfo.value
         synchronized(cachedFileInfo) {
-            if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { isValid(it) }
+            if (cachedFileInfo.isInitialized) return cachedFileInfo.value
             runCatchingCancelable {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null
@@ -142,6 +127,18 @@ object ParadoxAnalysisManager {
             }.onFailure { e -> logger.warn(e) }
             cachedFileInfo.value = null
             return null
+        }
+    }
+
+    private fun doCheckCachedFileInfo(cachedFileInfo: StatefulValue<ParadoxFileInfo>) {
+        val fileInfo = cachedFileInfo.value ?: return
+        // consistency check
+        if (fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
+            val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
+            if (expectedRootInfo != fileInfo.rootInfo) {
+                cachedFileInfo.reset()
+                return
+            }
         }
     }
 

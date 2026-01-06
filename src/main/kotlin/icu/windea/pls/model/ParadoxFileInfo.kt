@@ -1,5 +1,6 @@
 package icu.windea.pls.model
 
+import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 import java.util.*
@@ -18,14 +19,14 @@ class ParadoxFileInfo(
     val group: ParadoxFileGroup,
     val rootInfo: ParadoxRootInfo,
 ) {
-    val rootPath: Path?
-        get() = rootInfo.rootFile?.toNioPath()
-    val entryPath: Path?
-        get() = if (entry.isEmpty()) rootPath else rootPath?.resolve(entry)
+    val rootPath: Path? get() = rootInfo.rootFile?.toNioPath()
+    val entryPath: Path? get() = if (entry.isEmpty()) rootPath else rootPath?.resolve(entry)
 
     val inMainOrExtraEntry: Boolean get() = inMainEntry || inExtraEntry
     val inMainEntry: Boolean get() = entry.isEmpty() && rootInfo.mainEntries.isEmpty() || entry in rootInfo.mainEntries
     val inExtraEntry: Boolean get() = entry in rootInfo.extraEntries
+
+    fun isPossible(file: VirtualFile): Boolean = group == ParadoxFileGroup.resolvePossible(file.name)
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxFileInfo
