@@ -1,7 +1,7 @@
 package icu.windea.pls.model.paths
 
 import icu.windea.pls.core.collections.removePrefixOrNull
-import icu.windea.pls.model.paths.impl.ParadoxElementPathResolverImpl
+import icu.windea.pls.model.paths.impl.ParadoxMemberPathResolverImpl
 
 /**
  * 脚本成员在脚本文件中的路径。
@@ -44,7 +44,7 @@ interface ParadoxMemberPath : Iterable<String> {
         fun resolve(input: List<String>): ParadoxMemberPath
     }
 
-    companion object : Resolver by ParadoxElementPathResolverImpl()
+    companion object : Resolver by ParadoxMemberPathResolverImpl()
 }
 
 fun ParadoxMemberPath.relativeTo(other: ParadoxMemberPath): ParadoxMemberPath? {

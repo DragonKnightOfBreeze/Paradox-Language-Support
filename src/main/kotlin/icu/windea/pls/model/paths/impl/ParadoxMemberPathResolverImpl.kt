@@ -14,7 +14,7 @@ private fun String.internPath() = stringInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').map { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
-internal class ParadoxElementPathResolverImpl : ParadoxMemberPath.Resolver {
+internal class ParadoxMemberPathResolverImpl : ParadoxMemberPath.Resolver {
     override fun resolveEmpty(): ParadoxMemberPath = EmptyParadoxMemberPath
 
     override fun resolve(input: String): ParadoxMemberPath {

@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.definitionInfo
 import icu.windea.pls.config.configContext.definitionInjectionInfo
-import icu.windea.pls.config.configContext.memberPathFromRoot
 import icu.windea.pls.config.configContext.inlineScriptExpression
+import icu.windea.pls.config.configContext.memberPathFromRoot
 import icu.windea.pls.config.configContext.parameterElement
 import icu.windea.pls.config.configContext.parameterValueQuoted
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -78,8 +78,8 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val definitionElementPath = definitionInfo.memberPath
-        val memberPathFromRoot = definitionElementPath.relativeTo(memberPath) ?: return null
+        val definitionMemberPath = definitionInfo.memberPath
+        val memberPathFromRoot = definitionMemberPath.relativeTo(memberPath) ?: return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, memberPath.normalize(), gameType, configGroup)
         configContext.definitionInfo = definitionInfo
