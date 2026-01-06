@@ -9,21 +9,19 @@ import icu.windea.pls.config.util.CwtLocationExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxScriptService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -90,21 +88,21 @@ object ParadoxDefinitionManager {
         val subtypes = stub.definitionSubtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
         val typeKey = stub.typeKey
-        val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath)
+        val memberPath = stub.memberPath
+        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, memberPath)
     }
 
     private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
         val path = fileInfo.path
-        val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
-        if (elementPath.path.isParameterized()) return null // 忽略成员路径带参数的情况
+        val memberPath = ParadoxMemberService.getPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
+        if (memberPath.path.isParameterized()) return null // 忽略成员路径带参数的情况
         val typeKey = getTypeKey(element) ?: return null
-        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
+        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxMemberService.getKeyPrefixes(element).firstOrNull() } else null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize())
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, memberPath, typeKey, typeKeyPrefix) ?: return null
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, memberPath.normalize())
     }
 
     fun getTypeKey(element: ParadoxScriptDefinitionElement): String? {

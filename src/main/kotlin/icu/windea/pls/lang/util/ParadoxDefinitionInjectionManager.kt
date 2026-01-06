@@ -29,7 +29,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -147,9 +147,9 @@ object ParadoxDefinitionInjectionManager {
         run {
             if (target.isNullOrEmpty()) return@run
             val path = fileInfo.path
-            val elementPath = ParadoxElementPath.resolve(listOf(target))
+            val memberPath = ParadoxMemberPath.resolve(listOf(target))
             val typeKey = target
-            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, null)
+            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, memberPath, typeKey, null)
             if (typeConfig == null) return@run
             if (!canApply(typeConfig)) return@run // 排除不期望匹配的类型规则
             val type = typeConfig.name

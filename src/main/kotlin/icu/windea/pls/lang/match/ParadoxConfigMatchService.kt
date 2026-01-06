@@ -43,7 +43,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -90,14 +90,14 @@ object ParadoxConfigMatchService {
         element: ParadoxScriptDefinitionElement,
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        memberPath: ParadoxMemberPath,
         typeKey: String,
         typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
         // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(element, config, null, elementPath, typeKey, typeKeyPrefix) }
+        return configs.find { config -> matchesType(element, config, null, memberPath, typeKey, typeKeyPrefix) }
     }
 
     fun getMatchedTypeConfig(
@@ -105,21 +105,21 @@ object ParadoxConfigMatchService {
         tree: LighterAST,
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxElementPath,
+        memberPath: ParadoxMemberPath,
         typeKey: String,
         typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
         // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(node, tree, config, null, elementPath, typeKey, typeKeyPrefix) }
+        return configs.find { config -> matchesType(node, tree, config, null, memberPath, typeKey, typeKeyPrefix) }
     }
 
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
+        memberPath: ParadoxMemberPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
@@ -132,7 +132,7 @@ object ParadoxConfigMatchService {
             }
         }
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, memberPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
         // 判断 definition 的 propertyValue 是否需要是 block
@@ -158,7 +158,7 @@ object ParadoxConfigMatchService {
         tree: LighterAST,
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
+        memberPath: ParadoxMemberPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
@@ -172,7 +172,7 @@ object ParadoxConfigMatchService {
             }
         }
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, memberPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
         // 判断 definition 的 propertyValue 是否需要是 block
@@ -191,14 +191,14 @@ object ParadoxConfigMatchService {
     fun matchesTypeByUnknownDeclaration(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
+        memberPath: ParadoxMemberPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
         // 判断 element 是否需要是 scriptFile 还是 scriptProperty
         if (typeConfig.typePerFile) return false
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, memberPath, typeKey, typeKeyPrefix)
         if (fastResult == false) return fastResult
 
         return true
@@ -207,7 +207,7 @@ object ParadoxConfigMatchService {
     fun matchesTypeFast(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
+        memberPath: ParadoxMemberPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean? {
@@ -252,16 +252,16 @@ object ParadoxConfigMatchService {
             if (!result) return false
         }
 
-        if (elementPath != null) {
+        if (memberPath != null) {
             // 如果属性 skip_root_key 存在，则要判断是否需要跳过 rootKey
             // skip_root_key 可以为列表（如果是列表，其中的每一个 root_key 都要依次匹配）
             // skip_root_key 可以重复（其中之一匹配即可）
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {
-                if (elementPath.length > 1) return false
+                if (memberPath.length > 1) return false
             } else {
-                if (elementPath.isEmpty()) return false
-                val input = elementPath.subPaths.dropLast(1)
+                if (memberPath.isEmpty()) return false
+                val input = memberPath.subPaths.dropLast(1)
                 val result = skipRootKeyConfig.any { PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
                 if (!result) return false
             }

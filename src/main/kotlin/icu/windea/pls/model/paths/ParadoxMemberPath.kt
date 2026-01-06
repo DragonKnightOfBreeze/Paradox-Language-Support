@@ -23,7 +23,7 @@ import icu.windea.pls.model.paths.impl.ParadoxElementPathResolverImpl
  * - `foo/bar` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar` 的属性。
  * - `foo/-` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，任意的值。
  */
-interface ParadoxElementPath : Iterable<String> {
+interface ParadoxMemberPath : Iterable<String> {
     val path: String
     val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
@@ -31,7 +31,7 @@ interface ParadoxElementPath : Iterable<String> {
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
-    fun normalize(): ParadoxElementPath = this
+    fun normalize(): ParadoxMemberPath = this
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
@@ -39,17 +39,17 @@ interface ParadoxElementPath : Iterable<String> {
     override fun toString(): String
 
     interface Resolver {
-        fun resolveEmpty(): ParadoxElementPath
-        fun resolve(input: String): ParadoxElementPath
-        fun resolve(input: List<String>): ParadoxElementPath
+        fun resolveEmpty(): ParadoxMemberPath
+        fun resolve(input: String): ParadoxMemberPath
+        fun resolve(input: List<String>): ParadoxMemberPath
     }
 
     companion object : Resolver by ParadoxElementPathResolverImpl()
 }
 
-fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath? {
-    if (this == other) return ParadoxElementPath.resolveEmpty()
+fun ParadoxMemberPath.relativeTo(other: ParadoxMemberPath): ParadoxMemberPath? {
+    if (this == other) return ParadoxMemberPath.resolveEmpty()
     if (this.isEmpty()) return other
     val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
-    return ParadoxElementPath.resolve(subPaths)
+    return ParadoxMemberPath.resolve(subPaths)
 }

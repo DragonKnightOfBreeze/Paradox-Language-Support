@@ -17,7 +17,7 @@ import icu.windea.pls.ep.config.CwtRelatedConfigProvider
 import icu.windea.pls.ep.configContext.CwtConfigContextProvider
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
-import icu.windea.pls.lang.resolve.ParadoxScriptService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -86,11 +86,11 @@ object CwtConfigService {
      */
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
-        val elementPath = ParadoxScriptService.getElementPath(element) ?: return null
+        val memberPath = ParadoxMemberService.getPath(element) ?: return null
         val gameType = selectGameType(file)
         return CwtConfigContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getContext(element, elementPath, file)?.also { it.provider = ep }
+            ep.getContext(element, memberPath, file)?.also { it.provider = ep }
         }
     }
 

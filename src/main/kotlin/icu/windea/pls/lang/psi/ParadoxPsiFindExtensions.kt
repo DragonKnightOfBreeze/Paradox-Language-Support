@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -104,7 +104,7 @@ fun PsiElement.findProperty(
  * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- * @see ParadoxElementPath
+ * @see ParadoxMemberPath
  * @see ParadoxScriptMember
  */
 fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
@@ -117,8 +117,8 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
     if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMember = this
     if (path.isNotEmpty()) {
-        val elementPath = ParadoxElementPath.resolve(path)
-        for (subPath in elementPath.subPaths) {
+        val memberPath = ParadoxMemberPath.resolve(path)
+        for (subPath in memberPath.subPaths) {
             if (subPath == "-") {
                 return null // TODO 暂不支持
             } else {
@@ -230,7 +230,7 @@ fun PsiElement.findParentProperty(
 /**
  * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
- * @see ParadoxElementPath
+ * @see ParadoxMemberPath
  * @see ParadoxScriptMember
  * @see ParadoxDefinitionTypeExpression
  */
@@ -242,8 +242,8 @@ fun ParadoxScriptMember.findParentByPath(
     if (language !is ParadoxScriptLanguage) return null
     var current = this
     if (path.isNotEmpty()) {
-        val elementPath = ParadoxElementPath.resolve(path)
-        for (subPath in elementPath.subPaths.reversed()) {
+        val memberPath = ParadoxMemberPath.resolve(path)
+        for (subPath in memberPath.subPaths.reversed()) {
             current = when (subPath) {
                 "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
                 else -> current.findParentProperty(subPath, ignoreCase) ?: return null

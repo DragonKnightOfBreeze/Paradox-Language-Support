@@ -15,7 +15,7 @@ import icu.windea.pls.core.parent
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -26,13 +26,13 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
-object ParadoxScriptService {
+object ParadoxMemberService {
     /**
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
      *
-     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
+     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 `null`。
      */
-    fun getElementPath(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
+    fun getPath(element: PsiElement, maxDepth: Int = -1): ParadoxMemberPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -52,7 +52,7 @@ object ParadoxScriptService {
             current = current.parent ?: break
         }
         applyInjectionForRootKeys(current, subPaths)
-        return ParadoxElementPath.resolve(subPaths)
+        return ParadoxMemberPath.resolve(subPaths)
     }
 
     private fun applyInjectionForRootKeys(current: PsiElement, subPaths: ArrayDeque<String>) {
@@ -66,9 +66,9 @@ object ParadoxScriptService {
     /**
      * 得到 [node] 对应的脚本成员的节点的相对于所在文件的路径。
      *
-     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
+     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 `null`。
      */
-    fun getElementPath(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
+    fun getPath(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxMemberPath? {
         var current: LighterASTNode = node
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -88,7 +88,7 @@ object ParadoxScriptService {
             current = tree.getParent(current) ?: break
         }
         applyInjectionForRootKeys(current, file, subPaths)
-        return ParadoxElementPath.resolve(subPaths)
+        return ParadoxMemberPath.resolve(subPaths)
     }
 
     private fun applyInjectionForRootKeys(current: LighterASTNode, file: VirtualFile, subPaths: ArrayDeque<String>) {

@@ -7,7 +7,7 @@ import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, memberPath: ParadoxMemberPath, file: PsiFile): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, matchOptions: Int = ParadoxMatchOptions.Default): String?
 

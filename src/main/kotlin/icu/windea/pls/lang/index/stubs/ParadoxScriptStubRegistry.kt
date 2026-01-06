@@ -20,7 +20,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.forGameType
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -139,9 +139,9 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     if (!named) {
                         dataStream.writeName(stub.name)
                     }
-                    val elementPathParts = stub.elementPath.subPaths.let { if (it.isEmpty()) emptyList() else it.dropLast(1) }
-                    dataStream.writeInt(elementPathParts.size)
-                    elementPathParts.forEach { p -> dataStream.writeName(p) }
+                    val memberPathParts = stub.memberPath.subPaths.let { if (it.isEmpty()) emptyList() else it.dropLast(1) }
+                    dataStream.writeInt(memberPathParts.size)
+                    memberPathParts.forEach { p -> dataStream.writeName(p) }
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     dataStream.writeByte(Flags.inlineScriptUsage)
@@ -180,12 +180,12 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                         else -> MutableList(definitionSubtypesSize) { dataStream.readNameString().orEmpty() }
                     }
                     val name = if (flag == Flags.definitionNamed) definitionName else dataStream.readNameString().orEmpty()
-                    val elementPathPartsSize = dataStream.readInt()
-                    val elementPath = when (elementPathPartsSize) {
-                        0 -> ParadoxElementPath.resolve(listOf(name))
-                        else -> ParadoxElementPath.resolve(MutableList(elementPathPartsSize) { dataStream.readNameString().orEmpty() } + name)
+                    val memberPathPartsSize = dataStream.readInt()
+                    val memberPath = when (memberPathPartsSize) {
+                        0 -> ParadoxMemberPath.resolve(listOf(name))
+                        else -> ParadoxMemberPath.resolve(MutableList(memberPathPartsSize) { dataStream.readNameString().orEmpty() } + name)
                     }
-                    ParadoxScriptPropertyStub.createDefinition(parentStub, name, definitionName, definitionType, definitionSubtypes, elementPath)
+                    ParadoxScriptPropertyStub.createDefinition(parentStub, name, definitionName, definitionType, definitionSubtypes, memberPath)
                 }
                 Flags.inlineScriptUsage -> {
                     val name = dataStream.readNameString().orEmpty()

@@ -14,7 +14,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。
  * @property typeKey 定义的类型键（不一定是定义的名字）。
- * @property elementPath 相对于所属文件的定义成员路径。
+ * @property memberPath 相对于所属文件的定义成员路径。
  */
 class ParadoxDefinitionInfo(
     val element: ParadoxScriptDefinitionElement, // use element directly here
@@ -32,7 +32,7 @@ class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
-    val elementPath: ParadoxElementPath,
+    val memberPath: ParadoxMemberPath,
 ) : UserDataHolderBase() {
     val configGroup get() = typeConfig.configGroup
     val gameType get() = configGroup.gameType

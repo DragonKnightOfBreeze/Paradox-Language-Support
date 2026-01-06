@@ -16,14 +16,14 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxScriptService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -110,8 +110,8 @@ object ParadoxScriptStubManager {
         if (definitionType.isEmpty()) return null
         val definitionName = definitionInfo.name // NOTE 这里不处理需要内联的情况
         val definitionSubtypes = getDefinitionSubtypesWhenCreateStub(definitionInfo) // 如果无法在索引时获取，之后再懒加载
-        val elementPath = definitionInfo.elementPath
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
+        val memberPath = definitionInfo.memberPath
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, memberPath)
     }
 
     private fun createDefinitionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
@@ -125,15 +125,15 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val elementPath = ParadoxScriptService.getElementPath(node, tree, vFile, PlsInternalSettings.getInstance().maxDefinitionDepth)
-        if (elementPath == null) return null
-        val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(node, tree).firstOrNull() }
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        val memberPath = ParadoxMemberService.getPath(node, tree, vFile, PlsInternalSettings.getInstance().maxDefinitionDepth)
+        if (memberPath == null) return null
+        val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefixes(node, tree).firstOrNull() }
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, memberPath, typeKey, typeKeyPrefix) ?: return null
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
         val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionSubtypes = getDefinitionSubtypesWhenCreateStub(typeConfig, typeKey) // 如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, memberPath)
     }
 
     private fun getDefinitionSubtypesWhenCreateStub(definitionInfo: ParadoxDefinitionInfo): List<String>? {
@@ -207,9 +207,9 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val elementPath = ParadoxElementPath.resolve(listOf(target))
+        val memberPath = ParadoxMemberPath.resolve(listOf(target))
         val typeKey = target
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, null) ?: return null
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, memberPath, typeKey, null) ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(typeConfig)) return null // 排除不期望匹配的类型规则
         return typeConfig.name
     }

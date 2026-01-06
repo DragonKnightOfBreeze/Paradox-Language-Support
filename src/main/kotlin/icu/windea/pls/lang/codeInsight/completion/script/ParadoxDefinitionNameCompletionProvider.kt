@@ -37,7 +37,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.findParentDefinition
-import icu.windea.pls.lang.resolve.ParadoxScriptService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -93,12 +93,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
-                val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
-                if (elementPath.path.isParameterized()) return // 忽略成员路径带参数的情况
-                val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() }
+                val memberPath = ParadoxMemberService.getPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
+                if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
+                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue
+                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, memberPath, null, typeKeyPrefix)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     // 需要考虑不指定子类型的情况

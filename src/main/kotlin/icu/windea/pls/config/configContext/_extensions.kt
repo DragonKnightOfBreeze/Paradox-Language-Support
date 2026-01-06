@@ -4,11 +4,11 @@ package icu.windea.pls.config.configContext
 
 fun CwtConfigContext.isRootForDefinition(): Boolean {
     return (definitionInfo != null || definitionInjectionInfo != null)
-        && elementPathFromRoot.let { it != null && it.isEmpty() }
+        && memberPathFromRoot.let { it != null && it.isEmpty() }
 }
 
 fun CwtConfigContext.inRoot(): Boolean {
-    return elementPathFromRoot != null
+    return memberPathFromRoot != null
 }
 
 // endregion

@@ -208,9 +208,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val text = definition.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
-        val elementPath = definition.definitionInfo?.elementPath
-        if (elementPath != null && elementPath.length > 1) {
-            ParadoxAnalysisInjector.injectRootKeys(tempFile, elementPath.subPaths.dropLast(1))
+        val memberPath = definition.definitionInfo?.memberPath
+        if (memberPath != null && memberPath.length > 1) {
+            ParadoxAnalysisInjector.injectRootKeys(tempFile, memberPath.subPaths.dropLast(1))
         }
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)

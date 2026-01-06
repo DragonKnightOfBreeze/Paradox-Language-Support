@@ -98,7 +98,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -300,20 +300,20 @@ object ParadoxExpressionManager {
     }
 
     fun getConfigsForConfigContext(
-        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, elementPathFromRoot: ParadoxElementPath, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default
+        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
-        val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
+        val result = doGetConfigsForConfigContext(element, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
     }
 
     private fun doGetConfigsForConfigContext(
-        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, elementPathFromRoot: ParadoxElementPath, configGroup: CwtConfigGroup, matchOptions: Int
+        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int
     ): List<CwtMemberConfig<*>> {
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
 
         var result: List<CwtMemberConfig<*>> = rootConfigs
 
-        val subPaths = elementPathFromRoot.subPaths
+        val subPaths = memberPathFromRoot.subPaths
         subPaths.forEachIndexed f1@{ i, subPath ->
             // 如果整个过程中得到的某个 propertyConfig 的 valueExpressionType 是 `single_alias_right` 或 `alias_matches_left` ，则需要内联子规则
             // 如果整个过程中的某个 key 匹配内联规则的名字（如，`inline_script`），则需要内联此内联规则
@@ -325,7 +325,7 @@ object ParadoxExpressionManager {
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
-            val pathToMatch = ParadoxElementPath.resolve(subPaths.drop(i).dropLast(1))
+            val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
             val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {

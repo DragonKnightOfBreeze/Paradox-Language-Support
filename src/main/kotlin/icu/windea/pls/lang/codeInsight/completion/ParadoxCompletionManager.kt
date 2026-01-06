@@ -56,7 +56,7 @@ import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
-import icu.windea.pls.lang.resolve.ParadoxScriptService
+import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -87,7 +87,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.PlsPatterns
-import icu.windea.pls.model.paths.ParadoxElementPath
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -140,11 +140,11 @@ object ParadoxCompletionManager {
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.inRoot()) {
-            val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
-            if (elementPath.path.isParameterized()) return // 忽略成员路径带参数的情况
-            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptService.getKeyPrefixes(it).firstOrNull() } }
+            val memberPath = ParadoxMemberService.getPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
+            if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
+            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxMemberService.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
-            completeKey(context, result, elementPath, typeKeyPrefix)
+            completeKey(context, result, memberPath, typeKeyPrefix)
             return
         }
 
@@ -311,7 +311,7 @@ object ParadoxCompletionManager {
 
     // region General Completion Methods
 
-    fun completeKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath, rootKeyPrefix: Lazy<String?>) {
+    fun completeKey(context: ProcessingContext, result: CompletionResultSet, memberPath: ParadoxMemberPath, rootKeyPrefix: Lazy<String?>) {
         // 从以下来源收集需要提示的键（顶级键和类型键）
         // - skip_root_key
         // - type_key_filter
@@ -337,7 +337,7 @@ object ParadoxCompletionManager {
             if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {
-                if (elementPath.isEmpty()) {
+                if (memberPath.isEmpty()) {
                     typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                         infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                     }
@@ -349,7 +349,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
-                    val relative = PathMatcher.relative(elementPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
+                    val relative = PathMatcher.relative(memberPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

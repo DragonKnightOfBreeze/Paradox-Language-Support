@@ -37,7 +37,7 @@ import java.util.concurrent.*
 class CwtConfigContext(
     val element: ParadoxScriptMember, // use element directly here
     val fileInfo: ParadoxFileInfo?,
-    val elementPath: ParadoxElementPath?,
+    val memberPath: ParadoxMemberPath?,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
