@@ -9,7 +9,7 @@ import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.StatefulValue
+import icu.windea.pls.core.util.LazyValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -47,11 +47,11 @@ class ParadoxAnalysisDataService : Disposable {
     // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）
 
     /** 用于在根目录级别保存根信息（[ParadoxRootInfo]）。 */
-    var VirtualFile.cachedRootInfo: StatefulValue<ParadoxRootInfo>? by registerKey(Keys)
+    var VirtualFile.cachedRootInfo: LazyValue<ParadoxRootInfo>? by registerKey(Keys)
     /** 用于在文件级别保存文件信息（[ParadoxFileInfo]）。 */
-    var VirtualFile.cachedFileInfo: StatefulValue<ParadoxFileInfo>? by registerKey(Keys)
+    var VirtualFile.cachedFileInfo: LazyValue<ParadoxFileInfo>? by registerKey(Keys)
     /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
-    var VirtualFile.cachedLocaleConfig: StatefulValue<CwtLocaleConfig>? by registerKey(Keys)
+    var VirtualFile.cachedLocaleConfig: LazyValue<CwtLocaleConfig>? by registerKey(Keys)
 
     /** 用于为文件注入根信息（[ParadoxRootInfo]）。 */
     var VirtualFile.injectedRootInfo: ParadoxRootInfo? by registerKey(Keys)

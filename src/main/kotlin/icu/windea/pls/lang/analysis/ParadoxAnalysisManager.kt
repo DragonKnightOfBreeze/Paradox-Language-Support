@@ -19,7 +19,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.StatefulValue
+import icu.windea.pls.core.util.LazyValue
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
@@ -60,21 +60,18 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = with(dataService) { rootFile.cachedRootInfo ?: StatefulValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it } }
-        if (cachedRootInfo.isInitialized) return cachedRootInfo.value
-        synchronized(cachedRootInfo) {
-            if (cachedRootInfo.isInitialized) return cachedRootInfo.value
-            runCatchingCancelable {
-                val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
-                cachedRootInfo.value = rootInfo
-                if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
-                    application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-                }
-                return rootInfo
-            }.onFailure { e -> logger.warn(e) }
-            cachedRootInfo.value = null
-            return null
+        val cachedRootInfo = with(dataService) { rootFile.cachedRootInfo ?: LazyValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it } }
+        return cachedRootInfo.initialize {
+            runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
+    }
+
+    private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+        val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
+        if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
+            application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+        }
+        return rootInfo
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
@@ -105,41 +102,38 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: StatefulValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
-        doCheckCachedFileInfo(cachedFileInfo)
-        if (cachedFileInfo.isInitialized) return cachedFileInfo.value
-        synchronized(cachedFileInfo) {
-            if (cachedFileInfo.isInitialized) return cachedFileInfo.value
-            runCatchingCancelable {
-                val filePath = file.path
-                var currentFilePath = filePath.toPathOrNull() ?: return null
-                var currentFile = doGetFile(file, currentFilePath)
-                while (true) {
-                    val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
-                    if (rootInfo != null) {
-                        val fileInfo = ParadoxAnalysisService.resolveFileInfo(file, rootInfo)
-                        cachedFileInfo.value = fileInfo
-                        return fileInfo
-                    }
-                    currentFilePath = currentFilePath.parent ?: break
-                    currentFile = doGetFile(currentFile?.parent, currentFilePath)
-                }
-            }.onFailure { e -> logger.warn(e) }
-            cachedFileInfo.value = null
-            return null
+        val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: LazyValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
+        cachedFileInfo.check { fileInfo ->
+            doCheckFileInfo(fileInfo)
+        }
+        return cachedFileInfo.initialize {
+            runCatchingCancelable { doResolveFileInfo(file) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
 
-    private fun doCheckCachedFileInfo(cachedFileInfo: StatefulValue<ParadoxFileInfo>) {
-        val fileInfo = cachedFileInfo.value ?: return
+    private fun doCheckFileInfo(fileInfo: ParadoxFileInfo): Boolean {
         // consistency check
         if (fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
             val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
-            if (expectedRootInfo != fileInfo.rootInfo) {
-                cachedFileInfo.reset()
-                return
-            }
+            if (expectedRootInfo != fileInfo.rootInfo) return false
         }
+        return true
+    }
+
+    private fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        val filePath = file.path
+        var currentFilePath = filePath.toPathOrNull() ?: return null
+        var currentFile = doGetFile(file, currentFilePath)
+        while (true) {
+            val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
+            if (rootInfo != null) {
+                val fileInfo = ParadoxAnalysisService.resolveFileInfo(file, rootInfo)
+                return fileInfo
+            }
+            currentFilePath = currentFilePath.parent ?: break
+            currentFile = doGetFile(currentFile?.parent, currentFilePath)
+        }
+        return null
     }
 
     private fun doGetFileInfo(filePath: FilePath): ParadoxFileInfo? {
@@ -198,18 +192,14 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val cachedLocaleConfig = with(dataService) { file.cachedLocaleConfig ?: StatefulValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it } }
-        if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
-        synchronized(cachedLocaleConfig) {
-            if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
-            runCatchingCancelable {
-                val localeConfig = ParadoxAnalysisService.resolveLocaleConfig(file, project)
-                cachedLocaleConfig.value = localeConfig
-                return localeConfig
-            }.onFailure { e -> logger.warn(e) }
-            cachedLocaleConfig.value = null
-            return null
+        val cachedLocaleConfig = with(dataService) { file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it } }
+        return cachedLocaleConfig.initialize {
+            runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
+    }
+
+    private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+        return ParadoxAnalysisService.resolveLocaleConfig(file, project)
     }
 
     fun getSliceInfos(file: VirtualFile): MutableSet<String> {
