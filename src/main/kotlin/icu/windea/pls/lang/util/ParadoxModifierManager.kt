@@ -22,7 +22,7 @@ import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -122,7 +122,7 @@ object ParadoxModifierManager {
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
                 val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-                ParadoxDefinitionSearch.search(null, typeExpression, selector).processQueryAsync p@{ definition ->
+                ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
                     val name = definition.definitionInfo?.name ?: return@p true
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
@@ -152,7 +152,7 @@ object ParadoxModifierManager {
                         .withSearchScopeType(searchScopeType)
                         .contextSensitive()
                         .distinctByName()
-                    ParadoxComplexEnumValueSearch.search(null, enumName, selector).processQueryAsync p@{ info ->
+                    ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync p@{ info ->
                         ProgressManager.checkCanceled()
                         val name = info.name
                         doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
@@ -172,7 +172,7 @@ object ParadoxModifierManager {
                 }
                 ProgressManager.checkCanceled()
                 val selector = selector(project, contextElement).dynamicValue().distinctByName()
-                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
+                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     // 去除后面的作用域信息
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)

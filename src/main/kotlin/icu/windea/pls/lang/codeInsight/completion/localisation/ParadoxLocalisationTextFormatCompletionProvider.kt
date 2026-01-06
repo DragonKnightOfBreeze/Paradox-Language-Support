@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
@@ -36,7 +36,7 @@ class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<Compl
         val originalFile = parameters.originalFile
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = definitionInfo.name

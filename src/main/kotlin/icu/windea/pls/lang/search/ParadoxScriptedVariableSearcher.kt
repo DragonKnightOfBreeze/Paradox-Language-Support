@@ -12,7 +12,6 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.PlsStates
@@ -147,7 +146,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         val selector = selector(project, file).inlineScriptUsage()
         val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
         ProgressManager.checkCanceled()
-        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQuery p@{ p ->
+        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).process p@{ p ->
             ProgressManager.checkCanceled()
             val uFile = p.containingFile?.virtualFile ?: return@p true
             if (!processedFiles.add(uFile)) return@p true

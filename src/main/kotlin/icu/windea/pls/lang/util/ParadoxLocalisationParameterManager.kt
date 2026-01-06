@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -58,7 +58,7 @@ object ParadoxLocalisationParameterManager {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
         val selector = selector(element.project, element).localisationParameter()
-        ParadoxLocalisationParameterSearch.search(null, targetLocalisationName, selector).processQueryAsync p@{ info ->
+        ParadoxLocalisationParameterSearch.search(null, targetLocalisationName, selector).processAsync p@{ info ->
             result.add(info.name)
             true
         }

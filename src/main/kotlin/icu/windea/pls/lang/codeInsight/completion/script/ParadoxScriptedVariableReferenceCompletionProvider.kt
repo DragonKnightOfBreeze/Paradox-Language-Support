@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -39,8 +39,8 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
 
         // 同时需要同时查找当前文件中的和全局的
         val selector = selector(project, element).scriptedVariable().contextSensitive().distinctByName()
-        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
-        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchLocal(null, selector).processAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)
     }

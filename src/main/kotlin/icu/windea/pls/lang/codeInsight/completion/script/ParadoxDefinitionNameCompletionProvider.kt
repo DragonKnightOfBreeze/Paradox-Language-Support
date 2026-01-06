@@ -10,7 +10,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
@@ -100,7 +100,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
@@ -125,7 +125,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 

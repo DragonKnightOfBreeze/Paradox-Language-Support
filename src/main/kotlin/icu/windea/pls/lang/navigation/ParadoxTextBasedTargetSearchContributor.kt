@@ -18,7 +18,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.psi.mock.NavigationPsiElement
 import icu.windea.pls.lang.search.target.ParadoxTextBasedTargetSearch
 import icu.windea.pls.lang.settings.PlsSettings
@@ -66,7 +66,7 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
 
         val scope = GlobalSearchScope.projectScope(project)
         val search = ParadoxTextBasedTargetSearch.search(queryText, project, scope)
-        search.processQuery p@{ element ->
+        search.process p@{ element ->
             progressIndicator.checkCanceled()
             if (element !is NavigatablePsiElement) return@p true
             consumer.process(FoundItemDescriptor(NavigationPsiElement(element), 0))

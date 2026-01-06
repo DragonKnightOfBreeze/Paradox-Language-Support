@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
@@ -67,7 +67,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
                         val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) // use file as context
-                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processQueryAsync p@{
+                        val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {
                                 statusMap[resolved] = true

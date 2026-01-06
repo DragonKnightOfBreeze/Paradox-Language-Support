@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -51,7 +51,7 @@ class ParadoxGameElementNode(
         val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
-        ParadoxFilePathSearch.search(null, null, selector).processQuery p@{ file ->
+        ParadoxFilePathSearch.search(null, null, selector).process p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.length != 1) return@p true // 必须直接位于入口目录中
             if(!fileInfo.inMainOrExtraEntry) return@p true // 必须位于合法的入口目录中

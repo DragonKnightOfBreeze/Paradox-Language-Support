@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -67,7 +67,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
                         val selector = selector(project, file).parameter().withSearchScope(searchScope) // use file as context
-                        val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processQueryAsync p@{
+                        val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {
                                 statusMap[resolved] = true

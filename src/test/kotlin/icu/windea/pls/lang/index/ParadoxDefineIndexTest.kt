@@ -4,7 +4,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
@@ -65,7 +65,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         // act
         val selector = selector(project, myFixture.file).define()
         val results = mutableListOf<ParadoxDefineIndexInfo>()
-        ParadoxDefineSearch.search("NGameplay", "MARINE", selector).processQuery { info ->
+        ParadoxDefineSearch.search("NGameplay", "MARINE", selector).process { info ->
             results += info
             true
         }

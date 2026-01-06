@@ -25,7 +25,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -221,7 +221,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
         val selector = selector(project, parameterElement).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync(processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }
 
@@ -232,7 +232,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
         val selector = selector(project, element).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync(processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }
 

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.index
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
@@ -47,7 +47,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
 
         // Act
         val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search(filePath = asked, selector = selector, ignoreLocale = true).processQuery { vf ->
+        ParadoxFilePathSearch.search(filePath = asked, selector = selector, ignoreLocale = true).process { vf ->
             results += vf.name
             true
         }
@@ -75,7 +75,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
 
         // Act
         val names = mutableListOf<String>()
-        ParadoxFilePathSearch.search(filePath = asked, selector = selector, ignoreLocale = true).processQuery { vf ->
+        ParadoxFilePathSearch.search(filePath = asked, selector = selector, ignoreLocale = true).process { vf ->
             names += vf.name
             true
         }

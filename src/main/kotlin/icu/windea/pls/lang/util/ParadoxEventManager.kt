@@ -17,7 +17,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.registerKey
@@ -218,9 +218,9 @@ object ParadoxEventManager {
         if (name.isNullOrEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.event, selector).processQuery p0@{ definition0 ->
+            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
                 ProgressManager.checkCanceled()
-                ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
+                ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                     ProgressManager.checkCanceled()
                     val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
@@ -249,7 +249,7 @@ object ParadoxEventManager {
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).processQuery p@{ rDefinition ->
+            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                 if (rDefinitionInfo.name.isEmpty()) return@p true

@@ -19,7 +19,7 @@ import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
@@ -386,7 +386,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         if (element !is ParadoxScriptStringExpressionElement) return
 
         val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).processQueryAsync p@{ economicCategory ->
+        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true

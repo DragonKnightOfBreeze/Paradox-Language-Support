@@ -9,7 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -42,7 +42,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
 
         // 这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
         val selector = selector(project, element).scriptedVariable().contextSensitive().notSamePosition(element).distinctByName()
-        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)
     }

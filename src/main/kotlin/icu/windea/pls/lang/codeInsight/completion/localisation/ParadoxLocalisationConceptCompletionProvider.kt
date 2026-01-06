@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -41,7 +41,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         // 提示concept的name或alias
         val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processQueryAsync p@{ concept ->
+        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
             val icon = PlsIcons.Nodes.LocalisationConcept

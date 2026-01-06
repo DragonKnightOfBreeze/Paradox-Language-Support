@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.parentOfType
 import com.intellij.ui.tree.LeafState
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
@@ -53,7 +53,7 @@ class ParadoxCallerHierarchyTreeStructure(
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
-        ReferencesSearch.search(element, scope).processQueryAsync { reference ->
+        ReferencesSearch.search(element, scope).processAsync { reference ->
             ProgressManager.checkCanceled()
             processReference(reference, descriptor, descriptors, hierarchySettings)
             true

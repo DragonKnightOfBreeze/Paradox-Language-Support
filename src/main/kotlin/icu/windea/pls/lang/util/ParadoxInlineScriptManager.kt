@@ -21,7 +21,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
@@ -139,7 +139,7 @@ object ParadoxInlineScriptManager {
      */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val selector = selector(project, context).file().contextSensitive()
-        return ParadoxFilePathSearch.searchInlineScript(expression, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync p@{
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).onlyMostRelevant(onlyMostRelevant).processAsync p@{
             val file = it.toPsiFile(project)?.castOrNull<ParadoxScriptFile>() ?: return@p true
             processor(file)
             true
@@ -254,7 +254,7 @@ object ParadoxInlineScriptManager {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()
-        ParadoxInlineScriptUsageSearch.search(expression, selector).processQueryAsync p@{ p ->
+        ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!isMatched(p.name)) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true

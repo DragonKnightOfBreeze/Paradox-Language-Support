@@ -8,7 +8,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.registerKey
@@ -128,7 +128,7 @@ object ParadoxEconomicCategoryManager {
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.economicCategory, selector).processQuery p@{
+                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)

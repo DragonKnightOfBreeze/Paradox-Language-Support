@@ -10,7 +10,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.parameters
@@ -90,7 +90,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = nameGetter(definitionInfo.name)
@@ -131,7 +131,7 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
         val fileSelector = selector(project, originalFile).file().contextSensitive().distinctByFilePath()
-        ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processQueryAsync p@{ file ->
+        ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension
             val psiFile = file.toPsiFile(project) ?: return@p true

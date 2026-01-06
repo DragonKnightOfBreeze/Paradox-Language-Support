@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
@@ -40,7 +40,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
         if (definitionType.substringBefore('.') !in ParadoxDefinitionTypeSets.job) return
         val configGroup = modifierConfig.config.configGroup
         val selector = selector(configGroup.project, element).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQuery p@{ definition ->
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).process p@{ definition ->
             ProgressManager.checkCanceled()
             val property = definition.findProperty("icon", inline = true) ?: return@p true
             val propertyValue = property.propertyValue ?: return@p true

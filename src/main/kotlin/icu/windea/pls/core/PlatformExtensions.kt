@@ -138,11 +138,11 @@ fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.R
     return CachedValueProvider.Result.create(this, dependencyItems)
 }
 
-fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
-    return this.forEach(consumer)
+fun <T> Query<T>.process(consumer: Processor<in T>): Boolean {
+    return forEach(consumer)
 }
 
-fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
+fun <T> Query<T>.processAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
 

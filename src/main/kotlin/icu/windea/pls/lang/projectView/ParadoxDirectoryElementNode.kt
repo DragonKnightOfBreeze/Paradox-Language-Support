@@ -15,7 +15,7 @@ import com.intellij.util.PlatformIcons
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.matchesPath
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
@@ -61,7 +61,7 @@ class ParadoxDirectoryElementNode(
         val comparator = query.overrideComparator then Comparator { o1, o2 -> if (o1 == o2) 0 else 1 }
         val files = sortedSetOf(comparator).synced() // 按覆盖顺序进行排序
         val directoryNames = mutableSetOf<String>().synced()
-        query.processQuery p@{ file ->
+        query.process p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.parent != value.path.path) return@p true
             if (file.isDirectory) {

@@ -32,7 +32,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.listOrEmpty
@@ -524,7 +524,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, typeExpression, selector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             if (definitionInfo.name.isEmpty()) return@p true // ignore anonymous definitions
@@ -570,7 +570,7 @@ object ParadoxCompletionManager {
             val selector = selector(project, contextElement).file().contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
-            ParadoxFilePathSearch.search(null, configExpression, selector).processQueryAsync p@{ virtualFile ->
+            ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
@@ -627,7 +627,7 @@ object ParadoxCompletionManager {
                 .withSearchScopeType(searchScopeType)
                 .contextSensitive()
                 .distinctByName()
-            ParadoxComplexEnumValueSearch.search(null, enumName, selector).processQueryAsync { info ->
+            ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync { info ->
                 ProgressManager.checkCanceled()
                 val name = info.name
                 val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, info.readWriteAccess, info.gameType, project)
@@ -684,7 +684,7 @@ object ParadoxCompletionManager {
                 ProgressManager.checkCanceled()
                 val tailText = " by $configExpression"
                 val selector = selector(project, contextElement).dynamicValue().distinctByName()
-                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
+                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     val name = info.name
                     if (name == keyword) return@p true // 排除和当前输入的同名的
@@ -867,7 +867,7 @@ object ParadoxCompletionManager {
             context.expressionTailText = ""
             val project = configGroup.project
             val selector = selector(project, file).definition().contextSensitive().distinctByName()
-            ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {
+            ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                 processDefinition(context, resultToUse, it)
             }
 

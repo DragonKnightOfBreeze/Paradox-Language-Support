@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
@@ -150,7 +150,7 @@ object ParadoxTechnologyManager {
             if (prerequisites.isEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{
-                ParadoxDefinitionSearch.search(null, type, selector).processQuery p@{ rDefinition ->
+                ParadoxDefinitionSearch.search(null, type, selector).process p@{ rDefinition ->
                     ProgressManager.checkCanceled()
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if (rDefinitionInfo.name.isEmpty()) return@p true
@@ -172,9 +172,9 @@ object ParadoxTechnologyManager {
             if (name.isNullOrEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{
-                ParadoxDefinitionSearch.search(name, type, selector).processQuery p0@{ definition0 ->
+                ParadoxDefinitionSearch.search(name, type, selector).process p0@{ definition0 ->
                     ProgressManager.checkCanceled()
-                    ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
+                    ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
                         val rDefinition = refElement.findParentByPath("prerequisites/-", definitionType = type) ?: return@p true

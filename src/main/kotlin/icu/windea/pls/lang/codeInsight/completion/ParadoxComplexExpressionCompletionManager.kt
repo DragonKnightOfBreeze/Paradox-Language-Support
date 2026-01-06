@@ -15,7 +15,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withState
@@ -1180,7 +1180,7 @@ object ParadoxComplexExpressionCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processQueryAsync {
+        ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)
         }
     }
@@ -1199,7 +1199,7 @@ object ParadoxComplexExpressionCompletionManager {
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
         val selector = selector(project, contextElement).define().distinctByExpression()
-        ParadoxDefineSearch.search(null, "", selector).processQueryAsync p@{ info ->
+        ParadoxDefineSearch.search(null, "", selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val namespace = info.namespace
             val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true
@@ -1220,7 +1220,7 @@ object ParadoxComplexExpressionCompletionManager {
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
         val selector = selector(project, contextElement).define().distinctByExpression()
-        ParadoxDefineSearch.search(namespace, null, selector).processQueryAsync p@{ info ->
+        ParadoxDefineSearch.search(namespace, null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val variable = info.variable ?: return@p true
             val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true

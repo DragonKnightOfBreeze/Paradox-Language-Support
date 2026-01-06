@@ -19,7 +19,7 @@ import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -51,7 +51,7 @@ class ParadoxScriptedTriggerInlineProcessor(
         if (reference != null) {
             usages.add(UsageInfo(reference.element))
         }
-        ReferencesSearch.search(element, myRefactoringScope, true).processQuery p@{ reference ->
+        ReferencesSearch.search(element, myRefactoringScope, true).process p@{ reference ->
             ProgressManager.checkCanceled()
             if (!ParadoxPsiMatcher.isInvocationReference(element, reference.element)) return@p true
             usages.add(UsageInfo(reference.element))

@@ -4,7 +4,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
@@ -55,7 +55,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file.virtualFile).scriptedVariable()
         val results = mutableListOf<String>()
-        ParadoxScriptedVariableSearch.searchLocal("var", selector).processQuery { v ->
+        ParadoxScriptedVariableSearch.searchLocal("var", selector).process { v ->
             results += v.name ?: ""
             true
         }
@@ -69,7 +69,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file.findElementAt(myFixture.caretOffset)!!).scriptedVariable()
         val results = mutableListOf<String>()
-        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQuery { v ->
+        ParadoxScriptedVariableSearch.searchLocal(null, selector).process { v ->
             results += v.name ?: ""
             true
         }
@@ -123,7 +123,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).scriptedVariable()
         val results = mutableListOf<String>()
-        ParadoxScriptedVariableSearch.searchGlobal("var", selector).processQuery { v ->
+        ParadoxScriptedVariableSearch.searchGlobal("var", selector).process { v ->
             results += v.name ?: ""
             true
         }
