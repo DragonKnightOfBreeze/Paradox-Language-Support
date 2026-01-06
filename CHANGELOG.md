@@ -301,7 +301,7 @@
 
 - [X] 兼容脚本文件中的内联模板表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
 - [X] #96
-- [X] #97 兼容VIC3中的预设值（define）引用（对应新的规则类型`$define_reference`）
+- [X] #97 兼容VIC3中的定值（define）引用（对应新的规则类型`$define_reference`）
 - [X] #100 删除`disableLogger`以免忽略某些重要的报错
 
 ***
@@ -723,7 +723,7 @@
 
 ## 1.1.11
 
-- [X] 修复 #51 - 无法解析使用了scripted_variables的参数预设值
+- [X] 修复 #51 - 无法解析使用了scripted_variables的参数定值
 - [X] 优化 #30 - 兼容脚本文件的高级插值语法（`a[[b]c]d$e|f$g`）
 
 ## 1.1.10

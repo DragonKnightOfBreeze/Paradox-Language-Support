@@ -8,7 +8,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespac
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 
 /**
- * 预设值引用表达式。
+ * 定值引用表达式。
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。

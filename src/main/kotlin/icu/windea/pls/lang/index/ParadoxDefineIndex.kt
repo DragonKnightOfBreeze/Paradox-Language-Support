@@ -25,7 +25,7 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 预设值的命名空间和变量的索引。
+ * 定值的命名空间和变量的索引。
  *
  * @see ParadoxDefineIndexInfo
  */
