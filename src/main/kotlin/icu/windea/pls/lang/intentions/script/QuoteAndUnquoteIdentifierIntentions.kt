@@ -12,22 +12,22 @@ import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.psi.CwtExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+class QuoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
-    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的`\"v\"`）
+    // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
-    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
     }
 
-    override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
         // can also be applied to number value tokens
         return when (element) {
             is ParadoxScriptPropertyKey -> canQuote(element)
@@ -38,22 +38,22 @@ class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>
         }
     }
 
-    private fun canQuote(element: CwtExpressionElement): Boolean {
+    private fun canQuote(element: ParadoxScriptExpressionElement): Boolean {
         val text = element.text
         return !text.isQuoted()
     }
 }
 
-class UnquoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+class UnquoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
-    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的`\"v\"`）
+    // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
 
-    override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
+    override fun invoke(context: ActionContext, element: ParadoxScriptExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())
     }
 
-    override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: ParadoxScriptExpressionElement, context: ActionContext): Boolean {
         return when (element) {
             is ParadoxScriptPropertyKey -> canUnquote(element)
             is ParadoxScriptString -> canUnquote(element)
@@ -61,7 +61,7 @@ class UnquoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElemen
         }
     }
 
-    fun canUnquote(element: CwtExpressionElement): Boolean {
+    fun canUnquote(element: ParadoxScriptExpressionElement): Boolean {
         val text = element.text
         return text.isQuoted() && !text.containsBlank()
     }
