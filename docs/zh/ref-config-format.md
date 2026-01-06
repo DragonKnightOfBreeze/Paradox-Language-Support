@@ -751,7 +751,7 @@ database_object_types = {
 rows = {
     row[component_template] = {
         path = "game/common/component_templates"
-        file_extension = .csv
+        path_extension = .csv
         columns = {
             key = <component_template>
             # ... other columns

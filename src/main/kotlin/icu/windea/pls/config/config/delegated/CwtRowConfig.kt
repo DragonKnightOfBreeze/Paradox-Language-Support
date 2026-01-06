@@ -18,7 +18,7 @@ import icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl
  * rows = {
  *     row[component_template] = {
  *         path = "game/common/component_templates"
- *         file_extension = .csv
+ *         path_extension = .csv
  *         columns = {
  *             key = <component_template>
  *             # ...

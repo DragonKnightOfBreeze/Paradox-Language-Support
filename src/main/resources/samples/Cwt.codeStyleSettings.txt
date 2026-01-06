@@ -7,7 +7,7 @@ types = {
 	### Doc comment
 	type[army] = {
         path = "game/common/armies"
-        file_extension = .txt
+        path_extension = .txt
 		subtype[has_species] = {
 			## cardinality = 0..0
 			has_species = no

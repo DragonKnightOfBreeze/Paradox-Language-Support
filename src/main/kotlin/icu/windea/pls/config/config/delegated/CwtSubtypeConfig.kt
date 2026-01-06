@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * types = {
  *     type[civic_or_origin] = {
  *         path = "game/common/governments/civics"
- *         file_extension = .txt
+ *         path_extension = .txt
  *         subtype[origin] = {
  *             is_origin = yes
  *             # ...
