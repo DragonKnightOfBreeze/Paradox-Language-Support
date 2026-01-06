@@ -31,7 +31,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
-import icu.windea.pls.lang.search.processQueryAsync
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
@@ -140,7 +139,7 @@ object ParadoxInlineScriptManager {
      */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val selector = selector(project, context).file().contextSensitive()
-        return ParadoxFilePathSearch.searchInlineScript(expression, selector).processQueryAsync(onlyMostRelevant) p@{
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync p@{
             val file = it.toPsiFile(project)?.castOrNull<ParadoxScriptFile>() ?: return@p true
             processor(file)
             true

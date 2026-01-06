@@ -25,6 +25,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -41,7 +42,6 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.processQueryAsync
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
@@ -221,7 +221,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
         val selector = selector(project, parameterElement).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync(processor)
         return true
     }
 
@@ -232,7 +232,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
         val selector = selector(project, element).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
+        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processQueryAsync(processor)
         return true
     }
 

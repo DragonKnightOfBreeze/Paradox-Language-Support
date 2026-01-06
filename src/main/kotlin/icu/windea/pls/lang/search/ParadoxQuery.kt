@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.AbstractQuery
-import com.intellij.util.CommonProcessors
 import com.intellij.util.Processor
 import com.intellij.util.Query
 import icu.windea.pls.core.collections.synced
@@ -22,6 +21,8 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     private val original: Query<T>,
     private val searchParameters: P
 ) : AbstractQuery<T>() {
+    private var onlyMostRelevant: Boolean = false
+
     val overrideComparator by lazy { ParadoxOverrideService.getOverrideComparator(searchParameters) }
     val finalComparator by lazy { computeFinalComparator() }
 
@@ -89,25 +90,36 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
 
     override fun forEach(consumer: Processor<in T>): Boolean {
-        // 为了优化性能，目前不再先得到处理后的最终结果再遍历，而是直接遍历并进行必要的过滤与去重（不进行排序）
+        // 不应当直接重载这个方法，而是应当重载 `processResults()`（否则会破坏调用 `allowParallelProcessing()` 后的行为）
+
+        return super.forEach(consumer)
+    }
+
+    override fun processResults(consumer: Processor<in T>): Boolean {
+        if (onlyMostRelevant) {
+            // 仅查询最相关的项
+            find()?.let { consumer.process(it) }
+            return true
+        }
+
+        // 为了优化性能，目前不再先得到处理后的最终结果再遍历，而是直接遍历并进行必要的过滤和去重（不进行排序）
+        // 注意最终的 `forEach()` 的行为和 `find()` `findFirst()` `findAll()` 并不相同
 
         val selector = searchParameters.selector
         val keySelector = selector.keySelector()
         val keysToDistinct = mutableSetOf<Any?>().synced()
         return delegateProcessResults(original) {
             ProgressManager.checkCanceled()
-            if (selector.select(it) && (keySelector == null || keysToDistinct.add(keySelector.apply(it)))) {
+            if (selector.select(it) && keysToDistinct.add(keySelector?.apply(it) ?: it)) {
                 consumer.process(it)
             }
             true
         }
-
-        // val result = findAll()
-        // return result.process { consumer.process(it) }
     }
 
-    override fun processResults(consumer: Processor<in T>): Boolean {
-        return delegateProcessResults(original, CommonProcessors.UniqueProcessor(consumer))
+    fun onlyMostRelevant(value: Boolean): ParadoxQuery<T, P> {
+        onlyMostRelevant = value
+        return this
     }
 
     override fun toString(): String {
