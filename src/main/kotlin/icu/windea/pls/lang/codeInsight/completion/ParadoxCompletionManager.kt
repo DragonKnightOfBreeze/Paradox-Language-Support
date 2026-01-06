@@ -868,7 +868,7 @@ object ParadoxCompletionManager {
             val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
             context.config = config
             context.isKey = true
-            context.expressionTailText = " from definition type $type"
+            context.expressionTailText = ""
             val project = configGroup.project
             val selector = selector(project, file).definition().contextSensitive().distinctByName()
             ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processQueryAsync {

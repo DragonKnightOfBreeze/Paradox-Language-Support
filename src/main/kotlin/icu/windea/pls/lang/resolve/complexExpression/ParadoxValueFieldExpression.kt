@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxValueFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedValueFieldNode
