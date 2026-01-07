@@ -14,6 +14,14 @@ import kotlin.contracts.contract
 
 object ParadoxPsiFileMatcher {
     /**
+     * 是否是直接位于游戏或模组目录（或者对应的入口目录）中的文件。
+     */
+    fun isTopFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        return fileInfo.path.length <= 1
+    }
+
+    /**
      * 是否是符合特定约束的脚本文件。
      *
      * @param smart 要求文件路径可以获取且是可接受的。
