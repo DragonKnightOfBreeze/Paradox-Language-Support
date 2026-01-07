@@ -7,17 +7,15 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 用于在脚本文件和本地化文件中提供基于上下文的语义高亮。
@@ -26,8 +24,9 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  */
 class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
     override fun matchBrace(file: PsiFile, offset: Int): Pair<TextRange, TextRange>? {
-        if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return null
-        if (file.fileInfo == null) return null
+        val matched = ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
+            || ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        if (!matched) return null
         matchBraceInComplexExpression(offset, file)?.let { return it }
         return null
     }

@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.fileInfo
 
 /**
  * 导航到对应的规则。
@@ -24,7 +23,6 @@ class GotoRelatedConfigsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (file.fileInfo == null) return
         if (file.language !is ParadoxLanguage) return
         presentation.isEnabledAndVisible = true
     }

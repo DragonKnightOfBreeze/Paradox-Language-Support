@@ -6,14 +6,12 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 用于在脚本文件和本地化文件中提供基于当前输入与上下文的代码补全。
@@ -23,8 +21,9 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  */
 class ParadoxTypedHandler : TypedHandlerDelegate() {
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return Result.CONTINUE
-        if (file.fileInfo == null) return Result.CONTINUE
+        val matched = ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
+            || ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        if (!matched) return Result.CONTINUE
         charTypedInComplexExpression(c, project, editor, file)?.let { return it }
         return Result.CONTINUE
     }
