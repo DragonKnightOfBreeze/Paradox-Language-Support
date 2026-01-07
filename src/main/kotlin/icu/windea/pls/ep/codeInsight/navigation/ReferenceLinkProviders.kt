@@ -14,7 +14,6 @@ import icu.windea.pls.core.toPsiFileSystemItem
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch

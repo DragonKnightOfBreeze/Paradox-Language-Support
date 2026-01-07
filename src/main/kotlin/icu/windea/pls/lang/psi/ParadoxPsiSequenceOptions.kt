@@ -4,10 +4,9 @@ package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.collections.WalkingSequenceOptions
 import icu.windea.pls.core.collections.WalkingSequenceOptionsBuilder
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 
 /** 如果包含参数条件块，是否需要处理其中的子节点。 */

@@ -14,11 +14,11 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.core.withErrorRef
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect

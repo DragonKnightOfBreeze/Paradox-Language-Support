@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.tools.impl
 
 import com.intellij.ide.actions.RevealFileAction
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.console.CommandType

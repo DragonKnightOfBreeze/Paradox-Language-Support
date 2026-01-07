@@ -16,11 +16,11 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.core.withErrorRef
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 

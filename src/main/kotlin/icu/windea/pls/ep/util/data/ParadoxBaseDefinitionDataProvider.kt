@@ -8,7 +8,6 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager

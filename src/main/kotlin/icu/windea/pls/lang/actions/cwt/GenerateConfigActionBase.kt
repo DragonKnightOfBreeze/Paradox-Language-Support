@@ -30,11 +30,11 @@ import com.intellij.unscramble.AnalyzeStacktraceUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
+import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.core.errorDetails
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException

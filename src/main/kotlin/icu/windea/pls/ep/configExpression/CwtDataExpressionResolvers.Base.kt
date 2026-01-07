@@ -3,7 +3,6 @@ package icu.windea.pls.ep.configExpression
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.toCommaDelimitedStringSet
 
 abstract class CwtRuleBasedDataExpressionResolver : CwtDataExpressionResolver {
     sealed interface Rule {

@@ -2,9 +2,9 @@ package icu.windea.pls.config.configContext
 
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxDefinitionInfo

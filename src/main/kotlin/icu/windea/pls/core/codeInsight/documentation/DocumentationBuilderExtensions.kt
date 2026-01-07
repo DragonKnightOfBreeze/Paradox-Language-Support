@@ -3,10 +3,9 @@
 package icu.windea.pls.core.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import java.util.*
 

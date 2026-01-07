@@ -15,13 +15,13 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")

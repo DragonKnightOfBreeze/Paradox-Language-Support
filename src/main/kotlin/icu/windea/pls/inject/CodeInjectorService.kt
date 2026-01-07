@@ -8,7 +8,6 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.application
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool

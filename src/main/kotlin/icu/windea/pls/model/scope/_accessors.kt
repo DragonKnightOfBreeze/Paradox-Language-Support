@@ -1,9 +1,8 @@
 package icu.windea.pls.model.scope
 
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
 

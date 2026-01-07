@@ -11,9 +11,9 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 /**

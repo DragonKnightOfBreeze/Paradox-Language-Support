@@ -22,10 +22,10 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extension.diagram.OrderedDiagramNodeContentManager

@@ -16,8 +16,8 @@ import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.core.errorDetails
+import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
