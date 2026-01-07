@@ -67,8 +67,8 @@ dependencies {
     }
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
-    implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
-    implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")
+    implementation("com.twelvemonkeys.imageio:imageio-dds:3.13.0")
+    implementation("com.twelvemonkeys.imageio:imageio-tga:3.13.0")
 
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
