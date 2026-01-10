@@ -5,6 +5,11 @@
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:x = {...}`） / NEW: Support injection syntax in VIC3 and EU5 (e.g, `inject:x = {...}`)
 - [ ] 新功能：支持内联定义（即通过内联脚本声明的定义） / NEW: Support inline definitions (aka definitions declared by inline scripts) #194
 
+## 2.1.1-dev
+
+- [ ] #259 [Vic 3] PLS Hangs while indexing game files
+- [ ] #253 Priorities not applied correctly
+
 ## 2.1.0
 
 - [x] 更新 IDEA 版本到 2025.2 / Update IDEA version to 2025.2
