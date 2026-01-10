@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
+import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember

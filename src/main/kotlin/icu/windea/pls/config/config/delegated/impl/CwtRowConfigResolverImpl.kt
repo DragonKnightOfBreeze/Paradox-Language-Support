@@ -9,14 +9,15 @@ import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)

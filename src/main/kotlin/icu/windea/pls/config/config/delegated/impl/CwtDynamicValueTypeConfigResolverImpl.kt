@@ -6,14 +6,15 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverMixin {
+class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     // TODO a dynamic value can also be a template expression

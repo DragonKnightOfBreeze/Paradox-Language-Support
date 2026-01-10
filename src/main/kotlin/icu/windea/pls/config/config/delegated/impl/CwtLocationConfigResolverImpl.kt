@@ -5,9 +5,9 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
 
-internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver, CwtConfigResolverScope {
     // no logger here (unnecessary)
 
     override fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)

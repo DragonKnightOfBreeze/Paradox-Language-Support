@@ -6,9 +6,10 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 
-internal class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)

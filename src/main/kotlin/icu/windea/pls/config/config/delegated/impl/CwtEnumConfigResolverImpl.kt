@@ -6,14 +6,15 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     // TODO an enum value can also be a template expression

@@ -5,7 +5,7 @@ package icu.windea.pls.config.config.impl
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
@@ -18,7 +18,7 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 import java.util.*
 
-internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
     override fun create(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {

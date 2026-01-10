@@ -6,7 +6,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
@@ -21,7 +22,7 @@ import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
 import java.util.*
 
-internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
     private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 

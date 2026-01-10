@@ -31,4 +31,3 @@ interface CwtConfigGroup : CwtDataProvider, UserDataHolder {
 
     object Keys : KeyRegistry()
 }
-

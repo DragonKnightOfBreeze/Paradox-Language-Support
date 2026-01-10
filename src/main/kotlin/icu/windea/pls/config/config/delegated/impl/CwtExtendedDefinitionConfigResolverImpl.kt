@@ -7,9 +7,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 
-class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Resolver, CwtConfigResolverMixin {
+class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? = doResolve(config)

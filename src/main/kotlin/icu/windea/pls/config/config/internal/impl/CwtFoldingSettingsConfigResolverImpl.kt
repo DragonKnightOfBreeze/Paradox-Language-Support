@@ -5,11 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 
-internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolveInFile(fileConfig: CwtFileConfig) {

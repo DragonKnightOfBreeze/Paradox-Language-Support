@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -17,7 +16,8 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -26,8 +26,9 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
+import icu.windea.pls.model.ParadoxTagType
 
-internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)

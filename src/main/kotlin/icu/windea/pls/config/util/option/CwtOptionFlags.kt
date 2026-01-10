@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util.option
 
-import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -11,6 +10,7 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.model.ParadoxTagType
 
 /**
  * 选项标志。

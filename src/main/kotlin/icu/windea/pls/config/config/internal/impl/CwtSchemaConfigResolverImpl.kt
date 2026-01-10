@@ -4,9 +4,9 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
 
-internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverScope {
     // no logger here (unnecessary)
 
     override fun resolveInFile(fileConfig: CwtFileConfig) {

@@ -113,9 +113,9 @@ abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
     }
 }
 
-private inline val CwtDataProviderBase.from get() = this as UserDataHolder
-
 // region Accessor Implementations
+
+private inline val CwtDataProviderBase.from get() = this as UserDataHolder
 
 private val UserDataHolder.schemas: FastList<CwtSchemaConfig>
     by registerKey(CwtConfigGroup.Keys) { FastList() }

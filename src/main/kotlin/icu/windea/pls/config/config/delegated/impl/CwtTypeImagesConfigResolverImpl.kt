@@ -4,14 +4,14 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
-internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverScope {
     // no logger here (unnecessary)
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)

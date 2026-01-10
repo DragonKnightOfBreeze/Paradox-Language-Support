@@ -2,7 +2,6 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
@@ -17,6 +16,7 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxTagType
 
 // region CwtMemberConfig Accessors
 

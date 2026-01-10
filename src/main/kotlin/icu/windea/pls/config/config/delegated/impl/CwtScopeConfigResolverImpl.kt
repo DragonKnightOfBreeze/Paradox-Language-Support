@@ -6,12 +6,13 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 
-internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtScopeConfig? = doResolve(config)

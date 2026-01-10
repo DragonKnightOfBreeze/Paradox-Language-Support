@@ -7,11 +7,12 @@ import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
-internal class CwtLocaleConfigResolverImpl : CwtLocaleConfig.Resolver, CwtConfigResolverMixin {
+internal class CwtLocaleConfigResolverImpl : CwtLocaleConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     private val autoLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO)

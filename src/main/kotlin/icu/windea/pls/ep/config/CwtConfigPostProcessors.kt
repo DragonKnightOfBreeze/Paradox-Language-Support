@@ -1,13 +1,13 @@
 package icu.windea.pls.ep.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.model.ParadoxTagType
 
 class CwtBaseConfigPostProcessor : CwtConfigPostProcessor {
     override fun postProcess(config: CwtMemberConfig<*>) {
