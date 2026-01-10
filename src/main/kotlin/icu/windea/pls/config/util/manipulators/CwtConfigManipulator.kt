@@ -181,8 +181,9 @@ object CwtConfigManipulator {
     }
 
     private fun getKeyForDeepCopy(containerConfig: CwtMemberConfig<*>): Any? {
-        // TODO 2.1.0 需要评估：这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
-        return containerConfig.pointer.takeIf { it != emptyPointer<PsiElement>() }
+        // NOTE 2.1.1 这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
+        // NOTE 2.1.1 为了优化性能，这里可以直接检查是否引用相等
+        return containerConfig.pointer.takeIf { it !== emptyPointer<PsiElement>() }
     }
 
     private fun doDeepCopyConfigs(
