@@ -23,6 +23,7 @@ import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
@@ -74,7 +75,7 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
 
     override fun postProcess(config: CwtPropertyConfig) {
         // bind parent config
-        config.configs?.forEach { it.parentConfig = config }
+        config.configs?.forEachFast { it.parentConfig = config }
         // run post processors
         CwtConfigService.postProcess(config)
         // collect information
@@ -89,7 +90,7 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
             is CwtPropertyConfigDelegateWithConfigs -> config.configs = config.configs?.optimized()
         }
         // bind parent config
-        config.configs?.forEach { it.parentConfig = config }
+        config.configs?.forEachFast { it.parentConfig = config }
     }
 
     override fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {

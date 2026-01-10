@@ -24,7 +24,8 @@ internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRe
         val tokens = key.removeSurroundingOrNull("alias[", "]")?.orNull()
             ?.split(':', limit = 2)?.takeIf { it.size == 2 }
             ?: return null
-        val (name, subName) = tokens
+        val name = tokens[0].optimized()
+        val subName = tokens[1].optimized()
         logger.debug { "Resolved alias config (name: $name, subName: $subName).".withLocationPrefix(config) }
         return CwtAliasConfigImpl(config, name, subName)
     }
@@ -37,15 +38,11 @@ internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRe
 
 private class CwtAliasConfigImpl(
     override val config: CwtPropertyConfig,
-    name: String,
-    subName: String
+    override val name: String,
+    override val subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val name = name.optimized() // optimized to optimize memory
-    override val subName = subName.optimized() // optimized to optimize memory
-
-    override val supportedScopes get() = config.optionData { this.supportedScopes }
+    override val supportedScopes get() = config.optionData { supportedScopes }
     override val outputScope get() = config.optionData { pushScope }
-
     override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
 
     override fun toString() = "CwtAliasConfigImpl(name='$name', subName='$subName')"

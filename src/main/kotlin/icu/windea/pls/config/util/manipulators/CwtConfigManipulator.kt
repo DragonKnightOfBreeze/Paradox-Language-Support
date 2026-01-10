@@ -19,10 +19,10 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigService
-import icu.windea.pls.core.annotations.Fast
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.merge
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -41,12 +41,12 @@ object CwtConfigManipulator {
     // region Common Methods
 
     @Suppress("unused")
-    @Fast
+    @Optimized
     fun getIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int = -1): String {
         return doGetIdentifierKey(config, maxDepth)
     }
 
-    @Fast
+    @Optimized
     fun getIdentifierKey(configs: List<CwtMemberConfig<*>>, maxDepth: Int = -1): String {
         return doGetIdentifierKey(configs, maxDepth)
     }
@@ -74,12 +74,12 @@ object CwtConfigManipulator {
     }
 
     @Suppress("unused")
-    @Fast
+    @Optimized
     fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>): String {
         return doGetIdentifierKey(optionConfig)
     }
 
-    @Fast
+    @Optimized
     fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
         return doGetIdentifierKey(optionConfigs)
     }
@@ -153,11 +153,11 @@ object CwtConfigManipulator {
         return FastList()
     }
 
+    @Optimized
     fun deepCopyConfigs(
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig
     ): List<CwtMemberConfig<*>>? {
-        // TODO 2.1.0 需要评估：这里的递归检测可能会影响性能
         return withRecursionGuard {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
@@ -166,12 +166,12 @@ object CwtConfigManipulator {
         }
     }
 
+    @Optimized
     fun deepCopyConfigsInDeclarationConfig(
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig,
         context: CwtDeclarationConfigContext
     ): List<CwtMemberConfig<*>>? {
-        // TODO 2.1.0 需要评估：这里的递归检测可能会影响性能
         return withRecursionGuard {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
@@ -193,7 +193,7 @@ object CwtConfigManipulator {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
-        for (config in configs) {
+        configs.forEachFast { config ->
             val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
@@ -201,7 +201,7 @@ object CwtConfigManipulator {
             result += delegatedConfig
         }
         CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
-        result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
+        result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result // 这里需要直接返回可变列表
     }
 
@@ -213,14 +213,14 @@ object CwtConfigManipulator {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
-        for (config in configs) {
+        configs.forEachFast f@{ config ->
             val matched = isSubtypeMatchedInDeclarationConfig(config, context)
             if (matched != null) {
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
                 if (matched) {
                     result += deepCopyConfigsInDeclarationConfig(config, parentConfig, context).orEmpty()
                 }
-                continue
+                return@f
             }
 
             val childConfigs = createListForDeepCopy(config.configs)
@@ -230,7 +230,7 @@ object CwtConfigManipulator {
             result += delegatedConfig
         }
         CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
-        result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
+        result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result // 这里需要直接返回可变列表
     }
 
@@ -246,6 +246,7 @@ object CwtConfigManipulator {
 
     // region Inline Methods
 
+    @Optimized
     fun inline(config: CwtDirectiveConfig): CwtPropertyConfig {
         val other = config.config
         val inlined = CwtPropertyConfig.copy(
@@ -254,11 +255,12 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other)
         )
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.inlineConfig = config
         return inlined
     }
 
+    @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
@@ -268,6 +270,7 @@ object CwtConfigManipulator {
         return inlineSingleAlias(config, singleAliasConfig)
     }
 
+    @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
         // inline all value and configs
         val other = singleAliasConfig.config
@@ -279,7 +282,7 @@ object CwtConfigManipulator {
             optionConfigs = config.optionConfigs,
         )
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
@@ -287,6 +290,7 @@ object CwtConfigManipulator {
         return inlined
     }
 
+    @Optimized
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
@@ -299,15 +303,16 @@ object CwtConfigManipulator {
         aliasKeys.forEach f1@{ aliasKey ->
             val aliasConfigs = aliasConfigGroup[aliasKey]
             if (aliasConfigs.isNullOrEmpty()) return@f1
-            aliasConfigs.forEach f2@{ aliasConfig ->
+            aliasConfigs.forEachFast f2@{ aliasConfig ->
                 result += inlineAlias(config, aliasConfig) ?: return@f2
             }
         }
         val parentConfig = config.parentConfig
         if (parentConfig != null) CwtConfigService.injectConfigs(parentConfig, result)
-        return result.optimized()
+        return result
     }
 
+    @Optimized
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
@@ -319,7 +324,7 @@ object CwtConfigManipulator {
             optionConfigs = other.optionConfigs
         )
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = aliasConfig
@@ -331,6 +336,7 @@ object CwtConfigManipulator {
         return finalInlined
     }
 
+    @Optimized
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
@@ -356,7 +362,7 @@ object CwtConfigManipulator {
             },
         )
         CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.configs?.forEachFast { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
