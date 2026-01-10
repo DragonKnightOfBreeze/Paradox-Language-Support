@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -15,7 +14,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - 跨内联向下的查询。
  * - 跨内联向下的调用层次视图（[ParadoxCalleeHierarchyTreeStructure]）。
  */
-@WithGameTypeEP
 interface ParadoxInlineSupport {
     /**
      * 从指定的定义成员得到需要被内联的 PSI。
