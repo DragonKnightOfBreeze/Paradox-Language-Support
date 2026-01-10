@@ -18,7 +18,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
-import java.util.*
 
 class GotoFilesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -35,7 +34,7 @@ class GotoFilesHandler : GotoTargetHandler() {
             readAction {
                 val selector = selector(project, file).file().contextSensitive()
                 val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
-                resolved.forEach { targets.add(it.toPsiFile(project)) }
+                targets.addAll(resolved.mapNotNull { it.toPsiFile(project) })
             }
         }
         if (targets.isNotEmpty()) targets.removeIf { it == file } // remove current file from targets
