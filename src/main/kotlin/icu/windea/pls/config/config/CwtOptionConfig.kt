@@ -1,7 +1,8 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtOptionConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.config.util.option.CwtOptionDataAccessor
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.model.CwtSeparatorType
@@ -19,11 +20,10 @@ import icu.windea.pls.model.CwtType
  * @property valueType 选项值类型，用于后续解析与校验。
  * @property separatorType 分隔符类型。用于为作为条件的选项数据取正或取反。
  *
- * @see CwtMember
  * @see CwtOptionComment
  * @see CwtOption
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessor
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors
+ * @see CwtOptionDataAccessor
+ * @see CwtOptionDataAccessors
  */
 interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String

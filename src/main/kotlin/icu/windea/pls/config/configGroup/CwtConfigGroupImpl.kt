@@ -55,7 +55,7 @@ class CwtConfigGroupImpl(
         }
     }
 
-    override fun <T : Any?> getUserData(key: Key<T?>): T? {
+    override fun <T> getUserData(key: Key<T?>): T? {
         // 这里不保证规则数据已全部加载完毕（手动重新解析已打开的文件，或者让 IDE 自动感知）
         return super.getUserData(key)
     }

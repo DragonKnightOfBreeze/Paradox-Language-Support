@@ -4,6 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
@@ -34,8 +35,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 定义类型。
  * @property hint 提示文本（可选）。
  *
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
+ * @see CwtOptionDataAccessors.replaceScopes
+ * @see CwtOptionDataAccessors.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey

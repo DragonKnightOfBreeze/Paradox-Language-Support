@@ -8,6 +8,8 @@ import icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+
 /**
  * 修正规则。
  *
@@ -56,8 +58,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierCategoryConfig
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
+ * @see CwtOptionDataAccessors.replaceScopes
+ * @see CwtOptionDataAccessors.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {

@@ -3,6 +3,7 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtModifierCategoryConfigResolverImpl
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
@@ -25,8 +26,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
+ * @see CwtOptionDataAccessors.replaceScopes
+ * @see CwtOptionDataAccessors.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {

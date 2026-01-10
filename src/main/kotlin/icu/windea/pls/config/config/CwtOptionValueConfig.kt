@@ -1,7 +1,8 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtOptionValueConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.config.util.option.CwtOptionDataAccessor
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
@@ -14,11 +15,10 @@ import icu.windea.pls.model.CwtType
  * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
  * 在选项注释中单独使用时，常用来提供布尔标志或较短的语义标签。
  *
- * @see CwtMember
  * @see CwtOptionComment
  * @see CwtValue
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessor
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors
+ * @see CwtOptionDataAccessor
+ * @see CwtOptionDataAccessors
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {

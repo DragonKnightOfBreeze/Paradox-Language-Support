@@ -1,6 +1,7 @@
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResolverImpl
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 
 /**
  * 基数表达式。
@@ -26,7 +27,7 @@ import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResol
  * @property relaxMin 宽松标记。当为 `true` 时，小于最小值仅视为（弱）警告而非错误。
  * @property relaxMax 宽松标记。当为 `true` 时，大于最大值仅视为（弱）警告而非错误。
  *
- * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.cardinality
+ * @see CwtOptionDataAccessors.cardinality
  */
 interface CwtCardinalityExpression : CwtConfigExpression {
     val min: Int
