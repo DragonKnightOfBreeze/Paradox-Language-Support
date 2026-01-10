@@ -35,7 +35,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
 
     val keyExpression: CwtDataExpression
     override val valueExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression get() = keyExpression
+    override val configExpression: CwtDataExpression
 
     interface Resolver {
         fun create(

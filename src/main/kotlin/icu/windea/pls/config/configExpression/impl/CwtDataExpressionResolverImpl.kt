@@ -9,6 +9,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.model.constants.PlsStrings
 
 internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     private val cacheForKey = CacheBuilder("expireAfterAccess=30m")
@@ -20,7 +21,7 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant, "")
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant, "")
-    private val blockExpression = CwtDataExpressionImpl("{...}", false, CwtDataTypes.Block)
+    private val blockExpression = CwtDataExpressionImpl(PlsStrings.blockFolder, false, CwtDataTypes.Block)
 
     override fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
         if (expressionString.isEmpty()) return resolveEmpty(isKey)

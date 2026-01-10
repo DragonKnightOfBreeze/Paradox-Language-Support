@@ -49,7 +49,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression get() = subNameExpression
+    override val configExpression: CwtDataExpression
 
     interface Resolver {
         /** 由属性规则解析为别名规则。*/

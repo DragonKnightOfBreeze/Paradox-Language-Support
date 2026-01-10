@@ -97,8 +97,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val dataSourceIndex: Int
     val dataSourceExpression: CwtDataExpression?
     val dataSourceExpressions: List<CwtDataExpression>
-
-    override val configExpression: CwtDataExpression? get() = dataSourceExpression
+    override val configExpression: CwtDataExpression?
 
     interface Resolver {
         /** 由属性规则解析为（常规）链接规则。*/

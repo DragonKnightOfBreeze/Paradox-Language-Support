@@ -44,6 +44,7 @@ private class CwtAliasConfigImpl(
     override val supportedScopes get() = config.optionData { supportedScopes }
     override val outputScope get() = config.optionData { pushScope }
     override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
+    override val configExpression: CwtDataExpression get() = subNameExpression
 
     override fun toString() = "CwtAliasConfigImpl(name='$name', subName='$subName')"
 }
