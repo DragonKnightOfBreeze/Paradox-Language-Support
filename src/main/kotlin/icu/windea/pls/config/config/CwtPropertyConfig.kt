@@ -38,6 +38,18 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     override val configExpression: CwtDataExpression
 
     interface Resolver {
+        /** 由 [CwtProperty] 解析为属性规则。 */
+        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
+
+        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
+
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
+        fun postProcess(config: CwtPropertyConfig)
+
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        fun postOptimize(config: CwtPropertyConfig)
+
+        /** 创建属性规则。其中的选项数据仍然需要手动初始化。 */
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
             configGroup: CwtConfigGroup,
@@ -46,21 +58,10 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             valueType: CwtType = CwtType.String,
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
-            optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
             injectable: Boolean = false,
         ): CwtPropertyConfig
 
-        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
-
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
-        fun postProcess(config: CwtPropertyConfig)
-
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
-        fun postOptimize(config: CwtPropertyConfig)
-
-        /** 由 [CwtProperty] 解析为属性规则。 */
-        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
-
+        /** 创建基于 [targetConfig] 的复制规则。其中的规则数据仍然需要手动合并。 */
         fun copy(
             targetConfig: CwtPropertyConfig,
             pointer: SmartPsiElementPointer<out CwtProperty> = targetConfig.pointer,
@@ -69,20 +70,15 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             valueType: CwtType = targetConfig.valueType,
             separatorType: CwtSeparatorType = targetConfig.separatorType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>> = targetConfig.optionConfigs,
         ): CwtPropertyConfig
 
-        /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。
-         */
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
         fun delegated(
             targetConfig: CwtPropertyConfig,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
         ): CwtPropertyConfig
 
-        /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 `null`。
-         */
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 `null`。 */
         fun delegatedWith(
             targetConfig: CwtPropertyConfig,
             key: String,

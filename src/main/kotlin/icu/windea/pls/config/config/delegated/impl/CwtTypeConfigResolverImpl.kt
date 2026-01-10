@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
@@ -58,10 +57,10 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
             // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
             prop.stringValue?.let { listOf(it) } ?: prop.values?.mapNotNull { it.stringValue }?.optimized().orEmpty()
         }
-        val typeKeyFilter = config.optionData { typeKeyFilter }
-        val typeKeyRegex = config.optionData { typeKeyRegex }
-        val startsWith = config.optionData { startsWith }
-        val graphRelatedTypes = config.optionData { graphRelatedTypes }
+        val typeKeyFilter = config.optionData.typeKeyFilter
+        val typeKeyRegex = config.optionData.typeKeyRegex
+        val startsWith = config.optionData.startsWith
+        val graphRelatedTypes = config.optionData.graphRelatedTypes
         val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }

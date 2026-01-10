@@ -16,6 +16,13 @@ object PlsStates {
     val resolveForMergedIndex = ThreadLocal<Boolean>()
 
     /**
+     * 用于标记是否正在解析内部规则。
+     *
+     * @see icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider
+     */
+    val resolveForInternalConfigs = ThreadLocal<Boolean>()
+
+    /**
      * 用于标记是否是动态的上下文规则（例如需要基于脚本上下文）。
      *
      * @see icu.windea.pls.config.configContext.CwtConfigContext

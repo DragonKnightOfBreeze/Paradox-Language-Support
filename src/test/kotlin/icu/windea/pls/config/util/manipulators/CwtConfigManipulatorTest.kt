@@ -114,11 +114,9 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
 
         val copied = CwtConfigManipulator.deepCopyConfigs(containerCfg, parentConfig = containerCfg)!!
         val p2Copied = copied.filterIsInstance<CwtPropertyConfig>().single { it.key == "p2" }
-        // optionConfigs preserved (required + severity=info)
-        val opts = p2Copied.optionConfigs
-        assertNotNull(opts)
-        assertTrue(opts.any { it is icu.windea.pls.config.config.CwtOptionValueConfig && it.value == "required" })
-        assertTrue(opts.any { it is icu.windea.pls.config.config.CwtOptionConfig && it.key == "severity" && it.value == "info" })
+        // optionData preserved (required + severity=info)
+        assertTrue(p2Copied.optionData.required)
+        assertTrue(p2Copied.optionData.severity == "info")
         // userData not copied (wrapper has no own value), but read is inherited from delegate
         assertEquals("orig", p2Copied.getUserData(extraKey))
         // writing to wrapper with another key does not affect original

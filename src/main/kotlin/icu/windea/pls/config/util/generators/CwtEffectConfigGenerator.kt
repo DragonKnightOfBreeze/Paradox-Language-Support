@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
@@ -94,7 +93,7 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
-        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData { apiStatus } }
+        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData.apiStatus }
         return EffectConfigInfo(name, description, supportedScopes, apiStatus)
     }
 

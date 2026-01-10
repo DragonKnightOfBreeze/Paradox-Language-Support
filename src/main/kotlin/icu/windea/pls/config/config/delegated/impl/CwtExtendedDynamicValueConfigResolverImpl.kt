@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 
@@ -17,7 +16,7 @@ class CwtExtendedDynamicValueConfigResolverImpl : CwtExtendedDynamicValueConfig.
 
     private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData { hint }
+        val hint = config.optionData.hint
         logger.debug { "Resolved extended dynamic value config (name: $name, type: $type).".withLocationPrefix(config) }
         return CwtExtendedDynamicValueConfigImpl(config, name, type, hint)
     }

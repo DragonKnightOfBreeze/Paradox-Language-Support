@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -43,9 +42,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val yesC = CwtValueConfig.resolve(yes, file, group)
         assertEquals("yes", yesC.value)
         assertEquals(CwtType.Boolean, yesC.valueType)
-        assertNotNull(yesC.optionConfigs)
-        val hasTag = yesC.optionConfigs.any { it is CwtOptionValueConfig && it.value == "tag" }
-        assertTrue(hasTag)
+        assertTrue(yesC.optionData.tag)
 
         // 42 int
         val i = root.findChild<CwtValue> { it.value == "42" }!!
@@ -81,21 +78,11 @@ class CwtValueConfigTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testBoundaries_values_and_Options() {
+    fun testBoundaries_values() {
         myFixture.configureByFile("features/config/value_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
         val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
-
-        // option value with space, preceding a plain identifier value
-        run {
-            val ident = root.findChild<CwtValue> { it.value == "ident_val" }!!
-            val c = CwtValueConfig.resolve(ident, file, group)
-            assertEquals(CwtType.String, c.valueType)
-            val opts = c.optionConfigs
-            assertNotNull(opts)
-            assertTrue(opts.any { it is CwtOptionValueConfig && it.value == "note with space" })
-        }
 
         // number forms
         run {
@@ -132,24 +119,6 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             assertNotNull(c.configs)
             assertTrue(c.configs!!.isEmpty())
         }
-
-        // block value with option comment containing nested option members (## meta = { inner = 1 foo })
-        run {
-            val blocks = PsiTreeUtil.findChildrenOfType(file, CwtValue::class.java).filter { it.value == "{...}" }
-            val target = blocks.first { b ->
-                val cfg = CwtValueConfig.resolve(b, file, group)
-                val opts = cfg.optionConfigs
-                opts.filterIsInstance<CwtOptionConfig>().any { it.key == "meta" }
-            }
-            val c = CwtValueConfig.resolve(target, file, group)
-            assertEquals(CwtType.Block, c.valueType)
-            val meta = c.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
-            assertEquals(CwtType.Block, meta.valueType)
-            val nested = meta.optionConfigs
-            assertNotNull(nested)
-            assertTrue(nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" })
-            assertTrue(nested.any { it is CwtOptionValueConfig && it.value == "foo" })
-        }
     }
 
     // region Resolver: create/copy/delegated/delegatedWith/resolveFromPropertyConfig + userData
@@ -173,7 +142,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             val created = CwtValueConfig.create(
                 baseCfg.pointer, baseCfg.configGroup,
                 baseCfg.value, baseCfg.valueType,
-                null, baseCfg.optionConfigs, null
+                null,
             )
             assertEquals(baseCfg.value, created.value)
             assertEquals(CwtType.Block, created.valueType)
@@ -190,13 +159,11 @@ class CwtValueConfigTest : BasePlatformTestCase() {
                 value = baseCfg.value,
                 valueType = baseCfg.valueType,
                 configs = baseCfg.configs,
-                optionConfigs = baseCfg.optionConfigs,
                 propertyConfig = baseCfg.propertyConfig
             )
             assertEquals(baseCfg.value, copied.value)
             assertEquals(baseCfg.valueType, copied.valueType)
             assertEquals(baseCfg.configs?.size, copied.configs?.size)
-            assertEquals(baseCfg.optionConfigs.size, copied.optionConfigs.size)
             assertNull(copied.getUserData(extraKey))
         }
 
@@ -242,7 +209,6 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         assertEquals(pCfg.value, vCfg.value)
         assertEquals(pCfg.valueType, vCfg.valueType)
         assertEquals(pCfg.configs?.size, vCfg.configs?.size)
-        assertEquals(pCfg.optionConfigs.size, vCfg.optionConfigs.size)
         // for block property, wrapper valueExpression is blockExpression with isKey=false
         assertFalse(vCfg.valueExpression.isKey)
         // userData should NOT be inherited from property config on wrapper

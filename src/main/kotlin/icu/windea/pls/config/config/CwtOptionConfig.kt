@@ -1,8 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtOptionConfigResolverImpl
-import icu.windea.pls.config.util.option.CwtOptionDataAccessor
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.model.CwtSeparatorType
@@ -22,8 +21,7 @@ import icu.windea.pls.model.CwtType
  *
  * @see CwtOptionComment
  * @see CwtOption
- * @see CwtOptionDataAccessor
- * @see CwtOptionDataAccessors
+ * @see CwtOptionDataHolder
  */
 interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String

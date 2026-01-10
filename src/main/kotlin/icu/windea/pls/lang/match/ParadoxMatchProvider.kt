@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -64,7 +63,7 @@ object ParadoxMatchProvider {
      */
     fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         run {
-            val predicate = config.optionData { predicate }
+            val predicate = config.optionData.predicate
             if (predicate.isNullOrEmpty()) return@run
             val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
             predicate.forEach f@{ (pk, pv) ->

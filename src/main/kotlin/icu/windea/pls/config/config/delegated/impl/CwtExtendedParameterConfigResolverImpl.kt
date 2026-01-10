@@ -7,7 +7,6 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
@@ -26,13 +25,13 @@ internal class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConf
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextKey = config.optionData { contextKey }
+        val contextKey = config.optionData.contextKey
         if (contextKey == null) {
             logger.warn("Skipped invalid extended parameter config (name: $name): Missing context_key option.".withLocationPrefix(config))
             return null
         }
-        val contextConfigsType = config.optionData { contextConfigsType }
-        val inherit = config.optionData { flags }.inherit
+        val contextConfigsType = config.optionData.contextConfigsType
+        val inherit = config.optionData.inherit
         logger.debug { "Resolved extended parameter config (name: $name, context key: $contextKey).".withLocationPrefix(config) }
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
@@ -77,6 +76,7 @@ private class CwtExtendedParameterConfigImpl(
         if (containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
+            // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
             else -> containerConfig.valueConfig.singleton.listOrEmpty()
         }
         if (r.isEmpty()) return emptyList()

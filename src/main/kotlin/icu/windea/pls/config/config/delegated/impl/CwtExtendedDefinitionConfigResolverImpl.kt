@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 
@@ -17,12 +16,12 @@ class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Reso
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val type = config.optionData { type }
+        val type = config.optionData.type
         if (type == null) {
             logger.warn("Skipped invalid extended definition config (name: $name): Missing type option.".withLocationPrefix(config))
             return null
         }
-        val hint = config.optionData { hint }
+        val hint = config.optionData.hint
         logger.debug { "Resolved extended definition config (name: $name, type: $type).".withLocationPrefix(config) }
         return CwtExtendedDefinitionConfigImpl(config, name, type, hint)
     }

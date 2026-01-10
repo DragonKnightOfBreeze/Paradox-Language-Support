@@ -18,7 +18,6 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -242,7 +241,7 @@ object ParadoxConfigMatchService {
                 if (!result) return false
             }
 
-            // 如果选项 type_key_filter存在，则需要通过 type_key 进行过滤（忽略大小写）
+            // 如果选项 type_key_filter 存在，则需要通过 type_key 进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
                 val result = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
@@ -328,8 +327,8 @@ object ParadoxConfigMatchService {
         // 如果 type_key_filter 存在，则通过 typeKey 进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
         if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-            val filterResult = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
-            if (!filterResult) return false
+            val result = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
+            if (!result) return false
         }
 
         // 根据 config 对 property 进行内容匹配
@@ -371,7 +370,7 @@ object ParadoxConfigMatchService {
     ): Boolean {
         val propValue = propertyElement.propertyValue
         // 对于 propertyValue 同样这样判断（可能脚本没有写完）
-        if (propValue == null) return propertyConfig.optionData { cardinality }?.min == 0
+        if (propValue == null) return propertyConfig.optionData.cardinality?.min == 0
 
         when {
             // 匹配布尔值

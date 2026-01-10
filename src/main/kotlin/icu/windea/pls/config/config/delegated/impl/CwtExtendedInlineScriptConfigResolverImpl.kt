@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
@@ -20,7 +19,7 @@ internal class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScri
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextConfigsType = config.optionData { contextConfigsType }
+        val contextConfigsType = config.optionData.contextConfigsType
         logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }
@@ -53,6 +52,7 @@ private class CwtExtendedInlineScriptConfigImpl(
         if (containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
+            // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
             else -> containerConfig.valueConfig.singleton.listOrEmpty()
         }
         if (r.isEmpty()) return emptyList()

@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 
@@ -42,8 +42,8 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。
  *
- * @see CwtOptionDataAccessors.replaceScopes
- * @see CwtOptionDataAccessors.pushScope
+ * @see CwtOptionDataHolder.replaceScopes
+ * @see CwtOptionDataHolder.pushScope
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey

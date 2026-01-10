@@ -82,58 +82,22 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testOptionConfigs_onProperty() {
+    fun testOptionData_onProperty() {
         val (file, group) = prepare().let { it.first to it.second }
         val root = file.block!!
         val p = root.findChild<CwtProperty> { it.name == "opt_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
-        val opts = c.optionConfigs
-        assertNotNull(opts)
         // ## required ; ## severity = info
-        assertEquals(2, opts.size)
-        val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
-        val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "info" }
-        assertTrue(hasRequired)
-        assertTrue(hasSeverity)
+        assertTrue(c.optionData.required)
+        assertTrue(c.optionData.severity == "info")
     }
 
     @Test
-    fun testBoundaries_propertyOptions_and_NumberFormats() {
+    fun testBoundaries_numberFormats() {
         myFixture.configureByFile("features/config/property_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
         val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
-
-        // option value with space, with normal comment between option and property
-        run {
-            val p = root.findChild<CwtProperty> { it.name == "space_prop" }!!
-            val c = CwtPropertyConfig.resolve(p, file, group)!!
-            val opts = c.optionConfigs
-            assertNotNull(opts)
-            assertTrue(opts.any { it is CwtOptionValueConfig && it.value == "label with space" })
-        }
-
-        // two options with different separators for same key
-        run {
-            val p = root.findChild<CwtProperty> { it.name == "mode_prop" }!!
-            val c = CwtPropertyConfig.resolve(p, file, group)!!
-            val opts = c.optionConfigs.filterIsInstance<CwtOptionConfig>()
-            assertEquals(2, opts.size)
-            assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.EQUAL && it.value == "strict" })
-            assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.NOT_EQUAL && it.value == "relax" })
-        }
-
-        // option with block value having nested option members
-        run {
-            val p = root.findChild<CwtProperty> { it.name == "opt_block_prop" }!!
-            val c = CwtPropertyConfig.resolve(p, file, group)!!
-            val meta = c.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
-            assertEquals(CwtType.Block, meta.valueType)
-            val nested = meta.optionConfigs
-            assertNotNull(nested)
-            assertTrue(nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" })
-            assertTrue(nested.any { it is CwtOptionValueConfig && it.value == "inner_val" })
-        }
 
         // empty block property -> configs should be non-null and empty
         run {
@@ -194,7 +158,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             val created = CwtPropertyConfig.create(
                 baseCfg.pointer, baseCfg.configGroup,
                 baseCfg.key, baseCfg.value, baseCfg.valueType, baseCfg.separatorType,
-                null, baseCfg.optionConfigs
+                null,
             )
             assertEquals(baseCfg.key, created.key)
             assertEquals(baseCfg.value, created.value)
@@ -214,14 +178,12 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
                 valueType = baseCfg.valueType,
                 separatorType = CwtSeparatorType.EQUAL,
                 configs = baseCfg.configs,
-                optionConfigs = baseCfg.optionConfigs
             )
             assertEquals(baseCfg.key + "_c", copied.key)
             assertEquals(baseCfg.value, copied.value)
             assertEquals(baseCfg.valueType, copied.valueType)
             assertEquals(CwtSeparatorType.EQUAL, copied.separatorType)
             assertEquals(baseCfg.configs?.size, copied.configs?.size)
-            assertEquals(baseCfg.optionConfigs.size, copied.optionConfigs.size)
             assertNull(copied.getUserData(extraKey))
         }
 

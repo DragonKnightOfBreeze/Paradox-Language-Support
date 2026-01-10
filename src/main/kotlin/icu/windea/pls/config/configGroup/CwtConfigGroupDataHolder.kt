@@ -43,6 +43,8 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
  * @see CwtConfigGroupInitializer
  */
 interface CwtConfigGroupDataHolder {
+    fun clear()
+
     // region Internal
 
     val schemas: List<CwtSchemaConfig>
@@ -155,8 +157,6 @@ interface CwtConfigGroupDataHolder {
     val parameterConfigs: MutableSet<CwtMemberConfig<*>>
 
     // endregion
-
-    fun clear()
 }
 
 /** 用于获取符合特定条件的链接规则。 */

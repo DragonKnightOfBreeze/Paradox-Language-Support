@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.util.option.CwtOptionDataAccessor
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.model.CwtType
@@ -19,8 +18,7 @@ import icu.windea.pls.model.CwtType
  *
  * @see CwtOptionComment
  * @see CwtOptionMember
- * @see CwtOptionDataAccessor
- * @see CwtOptionDataAccessors
+ * @see CwtOptionDataHolder
  */
 sealed interface CwtOptionMemberConfig<out T : CwtOptionMember> : CwtDetachedConfig {
     val value: String

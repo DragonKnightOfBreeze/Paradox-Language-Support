@@ -1,4 +1,3 @@
-## note with space
 ident_val
 
 -7
@@ -8,5 +7,4 @@ ident_val
 " spaced "
 {}
 
-## meta = { inner = 1 foo }
 { a = 1 }

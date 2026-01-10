@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -110,8 +109,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             val p = targetProps.getValue("non_block")
             assertEquals("1", p.value)
             assertNull(p.configs)
-            val injectOption = p.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "inject" }
-            assertEquals("common/test/injection_source.cwt@injected_group/*", injectOption.value)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", p.optionData.inject)
         }
 
         // duplicate keys are allowed: injected configs are appended (no de-dup)
@@ -155,8 +153,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             assertNotNull(v.pointer.element)
             assertEquals(targetFile.name, v.pointer.element!!.containingFile.name)
 
-            val injectOption = v.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "inject" }
-            assertEquals("common/test/injection_source.cwt@injected_group/*", injectOption.value)
+            assertEquals("common/test/injection_source.cwt@injected_group/*", v.optionData.inject)
         }
     }
 

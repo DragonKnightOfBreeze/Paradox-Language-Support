@@ -278,7 +278,7 @@ object CwtConfigCompletionManager {
     }
 
     private fun completeByOptionConfigs(config: CwtMemberConfig<*>, schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
-        val optionConfigs = config.optionConfigs
+        val optionConfigs = config.optionData.optionConfigs
         if (optionConfigs.isEmpty()) return
         val optionConfigsGroup = optionConfigs.groupBy { optionConfig ->
             when (optionConfig) {

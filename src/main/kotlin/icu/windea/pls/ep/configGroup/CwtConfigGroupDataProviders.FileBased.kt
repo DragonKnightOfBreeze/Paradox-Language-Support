@@ -50,7 +50,9 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.Tuple3
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.withState
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.currentCoroutineContext
@@ -108,12 +110,14 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val fileConfigs = mutableMapOf<String, CwtFileConfig>()
         readAction {
             try {
-                for ((filePath, file) in allInternalFiles) {
-                    if (internalFileConfigs.containsKey(filePath)) continue
-                    currentCoroutineContext.ensureActive()
-                    CwtConfigResolverManager.setLocation(filePath, configGroup)
-                    val fileConfig = resolveFileConfig(configGroup, file, filePath) ?: continue
-                    internalFileConfigs[filePath] = fileConfig
+                withState(PlsStates.resolveForInternalConfigs) {
+                    for ((filePath, file) in allInternalFiles) {
+                        if (internalFileConfigs.containsKey(filePath)) continue
+                        currentCoroutineContext.ensureActive()
+                        CwtConfigResolverManager.setLocation(filePath, configGroup)
+                        val fileConfig = resolveFileConfig(configGroup, file, filePath) ?: continue
+                        internalFileConfigs[filePath] = fileConfig
+                    }
                 }
                 for ((filePath, file) in allFiles) {
                     if (fileConfigs.containsKey(filePath)) continue

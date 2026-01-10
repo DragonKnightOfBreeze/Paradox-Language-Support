@@ -1,8 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtOptionValueConfigResolverImpl
-import icu.windea.pls.config.util.option.CwtOptionDataAccessor
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
@@ -17,8 +16,7 @@ import icu.windea.pls.model.CwtType
  *
  * @see CwtOptionComment
  * @see CwtValue
- * @see CwtOptionDataAccessor
- * @see CwtOptionDataAccessors
+ * @see CwtOptionDataHolder
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {

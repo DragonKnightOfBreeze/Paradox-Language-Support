@@ -29,28 +29,24 @@ class CwtConfigGroupImpl(
     override suspend fun init() {
         // 即使规则数据已全部加载完毕，也可能需要再次重新加载
         mutex.withLock {
-            initInLock()
-        }
-    }
-
-    private suspend fun initInLock() {
-        try {
-            val start = System.currentTimeMillis()
-            val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-            initializer.clear() // 清空以避免数据残留
-            dataProviders.forEach { dataProvider -> dataProvider.process(this) }
-            dataProviders.forEach { dataProvider -> dataProvider.postProcess(this) }
-            initializer.copyUserDataTo(this) // 直接一次性替换规则数据
-            initializer.clear() // 清空以避免内存泄露
-            modificationTracker.incModificationCount() // 显式增加修改计数
-            initialized.set(true) // 标记规则数据已全部加载完毕
-            val end = System.currentTimeMillis()
-            val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            if (e is CancellationException) throw e
-            logger.error(e) // 不期望在这里出现常规异常
+            try {
+                val start = System.currentTimeMillis()
+                val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+                initializer.clear() // 清空以避免数据残留
+                dataProviders.forEach { dataProvider -> dataProvider.process(this) }
+                dataProviders.forEach { dataProvider -> dataProvider.postProcess(this) }
+                initializer.copyUserDataTo(this) // 直接一次性替换规则数据
+                initializer.clear() // 清空以避免内存泄露
+                modificationTracker.incModificationCount() // 显式增加修改计数
+                initialized.set(true) // 标记规则数据已全部加载完毕
+                val end = System.currentTimeMillis()
+                val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+                logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
+            } catch (e: Exception) {
+                if (e is ProcessCanceledException) throw e
+                if (e is CancellationException) throw e
+                logger.error(e) // 不期望在这里出现常规异常
+            }
         }
     }
 

@@ -40,14 +40,122 @@ import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
-abstract class CwtConfigGroupDataHolderBase : CwtConfigGroupDataHolder, UserDataHolderBase() {
-    // region Accessors
+// region Accessor Implementations
+
+private inline val CwtConfigGroupDataHolderBase.from get() = this as UserDataHolder
+
+private object CwtConfigGroupDataKeys : KeyRegistry()
+
+private val UserDataHolder.schemas: FastList<CwtSchemaConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastList() }
+private val UserDataHolder.foldingSettings: FastMap<String, FastCustomMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.postfixTemplateSettings: FastMap<String, FastCustomMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.priorities: FastMap<String, ParadoxOverrideStrategy>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.systemScopes: FastCustomMap<@CaseInsensitive String, CwtSystemScopeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.localisationLocalesById: FastMap<String, CwtLocaleConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.localisationLocalesByCode: FastMap<String, CwtLocaleConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.types: FastMap<String, CwtTypeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.swappedTypes: FastMap<String, CwtTypeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.type2ModifiersMap: FastMap<String, FastMap<String, CwtModifierConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.declarations: FastMap<String, CwtDeclarationConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.rows: FastMap<String, CwtRowConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.enums: FastMap<String, CwtEnumConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.complexEnums: FastMap<String, CwtComplexEnumConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.dynamicValueTypes: FastMap<String, CwtDynamicValueTypeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.links: FastCustomMap<@CaseInsensitive String, CwtLinkConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.localisationLinks: FastCustomMap<@CaseInsensitive String, CwtLinkConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.localisationCommands: FastCustomMap<@CaseInsensitive String, CwtLocalisationCommandConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.localisationPromotions: FastCustomMap<@CaseInsensitive String, CwtLocalisationPromotionConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.scopes: FastCustomMap<@CaseInsensitive String, CwtScopeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.scopeAliasMap: FastCustomMap<@CaseInsensitive String, CwtScopeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.scopeGroups: FastCustomMap<@CaseInsensitive String, CwtScopeGroupConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.singleAliases: FastMap<String, CwtSingleAliasConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.aliasGroups: FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.directives: FastList<CwtDirectiveConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastList() }
+private val UserDataHolder.modifierCategories: FastMap<String, CwtModifierCategoryConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.modifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.databaseObjectTypes: FastMap<String, CwtDatabaseObjectTypeConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedScriptedVariables: FastMap<String, CwtExtendedScriptedVariableConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedDefinitions: FastMap<String, FastList<CwtExtendedDefinitionConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedGameRules: FastMap<String, CwtExtendedGameRuleConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedOnActions: FastMap<String, CwtExtendedOnActionConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedComplexEnumValues: FastMap<String, FastMap<String, CwtExtendedComplexEnumValueConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedDynamicValues: FastMap<String, FastMap<String, CwtExtendedDynamicValueConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedInlineScripts: FastMap<String, CwtExtendedInlineScriptConfig>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.extendedParameters: FastMap<String, FastList<CwtExtendedParameterConfig>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.predefinedModifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.generatedModifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.aliasKeysGroupConst: FastCustomMap<@CaseInsensitive String, MutableMap<String, String>>
+    by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
+private val UserDataHolder.aliasKeysGroupNoConst: FastMap<String, FastSet<String>>
+    by registerKey(CwtConfigGroupDataKeys) { FastMap() }
+private val UserDataHolder.aliasNamesSupportScope: FastSet<String>
+    by registerKey(CwtConfigGroupDataKeys) { FastSet() }
+private val UserDataHolder.relatedLocalisationPatterns: FastSet<Tuple2<String, String>>
+    by registerKey(CwtConfigGroupDataKeys) { FastSet() }
+private val UserDataHolder.linksModel: CwtLinksModelBase
+    by registerKey(CwtConfigGroupDataKeys) { CwtLinksModelBase() }
+private val UserDataHolder.localisationLinksModel: CwtLinksModelBase
+    by registerKey(CwtConfigGroupDataKeys) { CwtLinksModelBase() }
+private val UserDataHolder.directivesModel: CwtDirectivesModelBase
+    by registerKey(CwtConfigGroupDataKeys) { CwtDirectivesModelBase() }
+private val UserDataHolder.definitionTypesModel: CwtDefinitionTypesModelBase
+    by registerKey(CwtConfigGroupDataKeys) { CwtDefinitionTypesModelBase() }
+private val UserDataHolder.filePathExpressions: FastSet<CwtDataExpression>
+    by registerKey(CwtConfigGroupDataKeys) { FastSet() }
+private val UserDataHolder.parameterConfigs: FastSet<CwtMemberConfig<*>>
+    by registerKey(CwtConfigGroupDataKeys) { FastSet() }
+
+// endregion
+
+abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
+    override fun clear() {
+        clearUserData()
+    }
 
     override val schemas get() = from.schemas
     override val foldingSettings get() = from.foldingSettings
@@ -97,116 +205,7 @@ abstract class CwtConfigGroupDataHolderBase : CwtConfigGroupDataHolder, UserData
     override val definitionTypesModel get() = from.definitionTypesModel
     override val filePathExpressions get() = from.filePathExpressions
     override val parameterConfigs get() = from.parameterConfigs
-
-    // endregion
-
-    override fun clear() {
-        clearUserData()
-    }
 }
-
-// region Accessor Implementations
-
-private inline val CwtConfigGroupDataHolderBase.from get() = this as UserDataHolder
-
-private val UserDataHolder.schemas: FastList<CwtSchemaConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastList() }
-private val UserDataHolder.foldingSettings: FastMap<String, FastCustomMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.postfixTemplateSettings: FastMap<String, FastCustomMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.priorities: FastMap<String, ParadoxOverrideStrategy>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.systemScopes: FastCustomMap<@CaseInsensitive String, CwtSystemScopeConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.localisationLocalesById: FastMap<String, CwtLocaleConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.localisationLocalesByCode: FastMap<String, CwtLocaleConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.types: FastMap<String, CwtTypeConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.swappedTypes: FastMap<String, CwtTypeConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.type2ModifiersMap: FastMap<String, FastMap<String, CwtModifierConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.declarations: FastMap<String, CwtDeclarationConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.rows: FastMap<String, CwtRowConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.enums: FastMap<String, CwtEnumConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.complexEnums: FastMap<String, CwtComplexEnumConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.dynamicValueTypes: FastMap<String, CwtDynamicValueTypeConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.links: FastCustomMap<@CaseInsensitive String, CwtLinkConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.localisationLinks: FastCustomMap<@CaseInsensitive String, CwtLinkConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.localisationCommands: FastCustomMap<@CaseInsensitive String, CwtLocalisationCommandConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.localisationPromotions: FastCustomMap<@CaseInsensitive String, CwtLocalisationPromotionConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.scopes: FastCustomMap<@CaseInsensitive String, CwtScopeConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.scopeAliasMap: FastCustomMap<@CaseInsensitive String, CwtScopeConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.scopeGroups: FastCustomMap<@CaseInsensitive String, CwtScopeGroupConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.singleAliases: FastMap<String, CwtSingleAliasConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.aliasGroups: FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.directives: FastList<CwtDirectiveConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastList() }
-private val UserDataHolder.modifierCategories: FastMap<String, CwtModifierCategoryConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.modifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.databaseObjectTypes: FastMap<String, CwtDatabaseObjectTypeConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedScriptedVariables: FastMap<String, CwtExtendedScriptedVariableConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedDefinitions: FastMap<String, FastList<CwtExtendedDefinitionConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedGameRules: FastMap<String, CwtExtendedGameRuleConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedOnActions: FastMap<String, CwtExtendedOnActionConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedComplexEnumValues: FastMap<String, FastMap<String, CwtExtendedComplexEnumValueConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedDynamicValues: FastMap<String, FastMap<String, CwtExtendedDynamicValueConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedInlineScripts: FastMap<String, CwtExtendedInlineScriptConfig>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.extendedParameters: FastMap<String, FastList<CwtExtendedParameterConfig>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.predefinedModifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.generatedModifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.aliasKeysGroupConst: FastCustomMap<@CaseInsensitive String, MutableMap<String, String>>
-    by registerKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.aliasKeysGroupNoConst: FastMap<String, FastSet<String>>
-    by registerKey(CwtConfigGroup.Keys) { FastMap() }
-private val UserDataHolder.aliasNamesSupportScope: FastSet<String>
-    by registerKey(CwtConfigGroup.Keys) { FastSet() }
-private val UserDataHolder.relatedLocalisationPatterns: FastSet<Tuple2<String, String>>
-    by registerKey(CwtConfigGroup.Keys) { FastSet() }
-private val UserDataHolder.linksModel: CwtLinksModelBase
-    by registerKey(CwtConfigGroup.Keys) { CwtLinksModelBase() }
-private val UserDataHolder.localisationLinksModel: CwtLinksModelBase
-    by registerKey(CwtConfigGroup.Keys) { CwtLinksModelBase() }
-private val UserDataHolder.directivesModel: CwtDirectivesModelBase
-    by registerKey(CwtConfigGroup.Keys) { CwtDirectivesModelBase() }
-private val UserDataHolder.definitionTypesModel: CwtDefinitionTypesModelBase
-    by registerKey(CwtConfigGroup.Keys) { CwtDefinitionTypesModelBase() }
-private val UserDataHolder.filePathExpressions: FastSet<CwtDataExpression>
-    by registerKey(CwtConfigGroup.Keys) { FastSet() }
-private val UserDataHolder.parameterConfigs: FastSet<CwtMemberConfig<*>>
-    by registerKey(CwtConfigGroup.Keys) { FastSet() }
-
-// endregion
 
 class CwtLinksModelBase : CwtLinksModel {
     override val variable: FastList<CwtLinkConfig> = FastList()

@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.scope
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -18,7 +17,7 @@ class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeCont
         for (type in types) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findByPattern(name, element, configGroup) ?: continue
-            val result = config.config.optionData { scopeContext } ?: continue
+            val result = config.config.optionData.scopeContext ?: continue
             return result
         }
         return null

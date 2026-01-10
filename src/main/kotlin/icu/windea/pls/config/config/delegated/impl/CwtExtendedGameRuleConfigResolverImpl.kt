@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
@@ -18,7 +17,7 @@ internal class CwtExtendedGameRuleConfigResolverImpl : CwtExtendedGameRuleConfig
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData { hint }
+        val hint = config.optionData.hint
         logger.debug { "Resolved extended game rule config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedGameRuleConfigImpl(config, name, hint)
     }

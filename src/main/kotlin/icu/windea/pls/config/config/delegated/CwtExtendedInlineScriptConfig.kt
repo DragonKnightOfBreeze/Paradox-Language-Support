@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
@@ -38,8 +38,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property name 名称。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  *
- * @see CwtOptionDataAccessors.replaceScopes
- * @see CwtOptionDataAccessors.pushScope
+ * @see CwtOptionDataHolder.replaceScopes
+ * @see CwtOptionDataHolder.pushScope
  */
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey

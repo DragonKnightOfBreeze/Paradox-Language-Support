@@ -31,7 +31,6 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configContext.CwtConfigContext
@@ -980,7 +979,7 @@ object ParadoxExpressionManager {
         val gameType = config.configGroup.gameType
         if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionData { cardinality }?.isRequired() == false) return false
+        if (config.optionData.cardinality?.isRequired() == false) return false
         return true
     }
 

@@ -19,7 +19,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupSource
@@ -232,8 +231,8 @@ object CwtConfigManager {
     private fun doGetConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         if (isInternalFile(file)) return null // 排除内部规则文件
-        val configPath = getConfigPath(element)
-        if (configPath == null || configPath.isEmpty()) return null
+        val configPath = getConfigPath(element) ?: return null
+        if (configPath.isEmpty()) return null
 
         return when {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {
@@ -492,7 +491,7 @@ object CwtConfigManager {
 
     fun isRemoved(config: CwtConfig<*>): Boolean {
         if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
-        return config.config.optionData { apiStatus } == CwtApiStatus.Removed
+        return config.config.optionData.apiStatus == CwtApiStatus.Removed
     }
 
     fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {

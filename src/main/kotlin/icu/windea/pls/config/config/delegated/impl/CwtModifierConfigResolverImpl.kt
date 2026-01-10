@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -62,8 +61,7 @@ private class CwtModifierConfigImpl(
         if (categoryConfigMap.isNotEmpty()) {
             ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
-            // 没有注明categories时从scopes选项中获取
-            config.optionData { this.supportedScopes }
+            config.optionData.supportedScopes
         }
     }
 

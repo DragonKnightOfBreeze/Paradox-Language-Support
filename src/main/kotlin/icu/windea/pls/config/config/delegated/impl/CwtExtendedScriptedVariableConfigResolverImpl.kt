@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 
@@ -17,7 +16,7 @@ internal class CwtExtendedScriptedVariableConfigResolverImpl : CwtExtendedScript
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.optionData { hint }
+        val hint = config.optionData.hint
         logger.debug { "Resolved extended scripted variable config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedScriptedVariableConfigImpl(config, name, hint)
     }

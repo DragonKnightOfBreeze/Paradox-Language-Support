@@ -6,8 +6,6 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
-import icu.windea.pls.config.util.option.CwtOptionDataAccessor
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -31,12 +29,6 @@ val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float
 
 /** 将值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。*/
 val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
-
-/** 通过 [CwtOptionDataAccessor] 获取选项数据。 */
-fun <T> CwtMemberConfig<*>.optionData(accessor: CwtOptionDataAccessor<T>): T = accessor.get(this)
-
-/** 通过 [CwtOptionDataAccessor] 获取选项数据。 */
-inline fun <T> CwtMemberConfig<*>.optionData(accessorGetter: CwtOptionDataAccessors.() -> CwtOptionDataAccessor<T>): T = optionData(CwtOptionDataAccessors.accessorGetter())
 
 /** 绑定到当前属性规则的单别名规则（解析阶段填充）。*/
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(CwtMemberConfig.Keys)

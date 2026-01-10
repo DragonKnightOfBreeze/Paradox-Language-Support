@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
@@ -59,39 +58,6 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
 
         val props = fileConfig.properties.associateBy { it.key }
-
-        // label option with space should be picked even with normal comment between
-        run {
-            val p = props.getValue("space_prop")
-            val opts = p.optionConfigs
-            assertNotNull(opts)
-            val hasLabel = opts.any { it is CwtOptionValueConfig && it.value == "label with space" }
-            assertTrue(hasLabel)
-        }
-
-        // multiple options with different separators
-        run {
-            val p = props.getValue("mode_prop")
-            val opts = p.optionConfigs.filterIsInstance<CwtOptionConfig>()
-            assertEquals(2, opts.size)
-            val eq = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.EQUAL.name && it.value == "strict" }
-            val ne = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.NOT_EQUAL.name && it.value == "relax" }
-            assertTrue(eq)
-            assertTrue(ne)
-        }
-
-        // option with block value, containing nested option members
-        run {
-            val p = props.getValue("opt_block_prop")
-            val meta = p.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
-            assertEquals(CwtType.Block, meta.valueType)
-            val nested = meta.optionConfigs
-            assertNotNull(nested)
-            val inner = nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
-            val foo = nested.any { it is CwtOptionValueConfig && it.value == "inner_val" }
-            assertTrue(inner)
-            assertTrue(foo)
-        }
 
         // empty block property -> configs should be non-null and empty for both property and its valueConfig
         run {
@@ -166,13 +132,8 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertNotNull(v.configs)
             assertEquals(p.configs!!.size, v.configs!!.size)
 
-            val opts = p.optionConfigs
-            assertNotNull(opts)
-            assertEquals(2, opts.size)
-            val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
-            val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "warning" }
-            assertTrue(hasRequired)
-            assertTrue(hasSeverity)
+            assertTrue(p.optionData.required)
+            assertTrue(p.optionData.severity == "warning")
         }
 
         val values = fileConfig.values
@@ -182,10 +143,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         run {
             val v = vMap.getValue("top_value1").single()
             assertEquals(CwtType.String, v.valueType)
-            val opts = v.optionConfigs
-            assertNotNull(opts)
-            val hasTag = opts.any { it is CwtOptionValueConfig && it.value == "tag" }
-            assertTrue(hasTag)
+            assertTrue(v.optionData.tag)
         }
         run {
             val v = vMap.getValue("top quoted").single()

@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 
@@ -17,12 +16,12 @@ internal class CwtExtendedOnActionConfigResolverImpl : CwtExtendedOnActionConfig
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val eventType = config.optionData { eventType }
+        val eventType = config.optionData.eventType
         if (eventType == null) {
             logger.warn("Skipped invalid extended on action config (name: $name): Missing event_type option.".withLocationPrefix(config))
             return null
         }
-        val hint = config.optionData { hint }
+        val hint = config.optionData.hint
         logger.debug { "Resolved extended on action config (name: $name, event type: $eventType).".withLocationPrefix(config) }
         return CwtExtendedOnActionConfigImpl(config, name, eventType, hint)
     }

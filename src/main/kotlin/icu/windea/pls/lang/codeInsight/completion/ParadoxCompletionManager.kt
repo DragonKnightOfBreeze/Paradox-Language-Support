@@ -18,7 +18,6 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.inRoot
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.resolved
@@ -239,10 +238,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max` ，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData { cardinality }
+        val cardinality = config.optionData.cardinality
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData { cardinalityMaxDefine } != null -> null
+            config.optionData.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount
@@ -253,10 +252,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
-        val cardinality = config.optionData { cardinality }
+        val cardinality = config.optionData.cardinality
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.optionData { cardinalityMaxDefine } != null -> null
+            config.optionData.cardinalityMaxDefine != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount
@@ -410,7 +409,7 @@ object ParadoxCompletionManager {
         // 匹配作用域
         if (scopeMatched) {
             val supportedScopes = when {
-                config is CwtPropertyConfig -> config.optionData { supportedScopes }
+                config is CwtPropertyConfig -> config.optionData.supportedScopes
                 config is CwtAliasConfig -> config.supportedScopes
                 config is CwtLinkConfig -> config.inputScopes
                 else -> null
@@ -563,7 +562,7 @@ object ParadoxCompletionManager {
         if (pathReferenceExpressionSupport != null) {
             val tailText = getExpressionTailText(context, config)
             val fileExtensions = when (config) {
-                is CwtMemberConfig<*> -> config.optionData { fileExtensions }
+                is CwtMemberConfig<*> -> config.optionData.fileExtensions.orEmpty()
                 else -> emptySet()
             }
             // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在

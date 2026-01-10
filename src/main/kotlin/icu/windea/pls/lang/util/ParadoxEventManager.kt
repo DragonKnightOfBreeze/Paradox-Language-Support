@@ -14,7 +14,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.process
@@ -154,7 +153,7 @@ object ParadoxEventManager {
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData { pushScope } } ?: ParadoxScopeManager.anyScopeId
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeManager.anyScopeId
         }
     }
 

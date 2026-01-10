@@ -24,57 +24,51 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     override val configExpression: CwtDataExpression
 
     interface Resolver {
+        /** 由 [CwtValue] 解析为值规则。 */
+        fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
+
+        /** 基于属性型成员规则，解析出其值侧对应的值型成员规则。 */
+        fun resolveFromPropertyConfig(
+            pointer: SmartPsiElementPointer<out CwtValue>,
+            propertyConfig: CwtPropertyConfig,
+        ): CwtValueConfig
+
+        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>): Boolean
+
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
+        fun postProcess(config: CwtValueConfig)
+
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        fun postOptimize(config: CwtValueConfig)
+
+        /** 创建值规则。其中的选项数据仍然需要手动初始化。 */
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
             value: String,
             valueType: CwtType = CwtType.String,
             configs: List<CwtMemberConfig<*>>? = null,
-            optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
             propertyConfig: CwtPropertyConfig? = null,
             injectable: Boolean = false,
         ): CwtValueConfig
 
-        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>): Boolean
-
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
-        fun postProcess(config: CwtValueConfig)
-
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
-        fun postOptimize(config: CwtValueConfig)
-
-        /** 由 [CwtValue] 解析为值规则。 */
-        fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
-
+        /** 创建基于 [targetConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
         fun copy(
             targetConfig: CwtValueConfig,
             pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
             value: String = targetConfig.value,
             valueType: CwtType = targetConfig.valueType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>> = targetConfig.optionConfigs,
             propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,
         ): CwtValueConfig
 
-        /**
-         * 基于属性型成员规则，解析出其值侧对应的值型成员规则。
-         */
-        fun resolveFromPropertyConfig(
-            pointer: SmartPsiElementPointer<out CwtValue>,
-            propertyConfig: CwtPropertyConfig,
-        ): CwtValueConfig
-
-        /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。
-         */
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
         fun delegated(
             targetConfig: CwtValueConfig,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
         ): CwtValueConfig
 
-        /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的值。父规则会被重置为 `null`。
-         */
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的值。父规则会被重置为 `null`。 */
         fun delegatedWith(
             targetConfig: CwtValueConfig,
             value: String,

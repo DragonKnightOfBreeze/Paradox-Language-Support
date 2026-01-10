@@ -8,7 +8,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -35,7 +34,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val dataType = configExpression.type
                 if (dataType == CwtDataTypes.AbsoluteFilePath) return
                 if (dataType !in CwtDataTypeGroups.PathReference) return
-                val fileExtensions = config.optionData { fileExtensions }
+                val fileExtensions = config.optionData.fileExtensions.orEmpty()
                 if (fileExtensions.isEmpty()) return
                 val value = element.value
                 if (fileExtensions.any { value.endsWith(it, true) }) return

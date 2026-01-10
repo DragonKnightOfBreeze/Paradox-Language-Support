@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -41,8 +40,8 @@ private class CwtAliasConfigImpl(
     override val name: String,
     override val subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val supportedScopes get() = config.optionData { supportedScopes }
-    override val outputScope get() = config.optionData { pushScope }
+    override val supportedScopes get() = config.optionData.supportedScopes
+    override val outputScope get() = config.optionData.pushScope
     override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
     override val configExpression: CwtDataExpression get() = subNameExpression
 

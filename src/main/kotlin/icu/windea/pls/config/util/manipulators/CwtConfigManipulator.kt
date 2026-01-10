@@ -16,6 +16,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigService
@@ -23,7 +24,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.merge
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
@@ -247,16 +247,16 @@ object CwtConfigManipulator {
     // region Inline Methods
 
     @Optimized
-    fun inline(config: CwtDirectiveConfig): CwtPropertyConfig {
-        val other = config.config
+    fun inline(directiveConfig: CwtDirectiveConfig): CwtPropertyConfig {
+        val other = directiveConfig.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = other,
-            key = config.name,
-            configs = deepCopyConfigs(other)
+            key = directiveConfig.name,
+            configs = deepCopyConfigs(other),
         )
-        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
-        inlined.inlineConfig = config
+        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        mergeOptionData(inlined.optionData, other.optionData) // merge option data
+        inlined.inlineConfig = directiveConfig
         return inlined
     }
 
@@ -279,10 +279,9 @@ object CwtConfigManipulator {
             value = other.value,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
-            optionConfigs = config.optionConfigs,
         )
-        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
@@ -321,10 +320,9 @@ object CwtConfigManipulator {
             value = other.value,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
-            optionConfigs = other.optionConfigs
         )
-        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = aliasConfig
@@ -361,8 +359,8 @@ object CwtConfigManipulator {
                 else -> deepCopyConfigs(config)
             },
         )
-        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
-        inlined.configs?.forEachFast { it.parentConfig = inlined }
+        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        mergeOptionData(inlined.optionData, config.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
         inlined.aliasConfig = config.aliasConfig
@@ -371,14 +369,15 @@ object CwtConfigManipulator {
     }
 
     fun inlineWithConfigs(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
-        return CwtValueConfig.create(
+        val inlined = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = configGroup,
             value = PlsStrings.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
-            optionConfigs = config?.optionConfigs.orEmpty()
         )
+        mergeOptionData(inlined.optionData, config?.optionData) // merge option data
+        return inlined
     }
 
     // endregion
@@ -446,12 +445,13 @@ object CwtConfigManipulator {
         if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
         val expressionString = CwtConfigExpressionService.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null
-        return CwtValueConfig.create(
+        val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = config1.configGroup,
             value = expressionString,
-            optionConfigs = mergeOptions(config1.optionConfigs, config2.optionConfigs)
         )
+        mergeOptionData(merged.optionData, config1.optionData, config2.optionData) // merge option data
+        return merged
     }
 
     fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
@@ -465,9 +465,11 @@ object CwtConfigManipulator {
         return false
     }
 
-    private fun mergeOptions(options1: List<CwtOptionMemberConfig<*>>?, options2: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
-        // keep duplicate options here (no affect to features)
-        return merge(options1, options2)
+    fun mergeOptionData(optionData: CwtOptionDataHolder, vararg sources: CwtOptionDataHolder?) {
+        for (source in sources) {
+            if (source == null) continue
+            source.copyTo(optionData)
+        }
     }
 
     // endregion

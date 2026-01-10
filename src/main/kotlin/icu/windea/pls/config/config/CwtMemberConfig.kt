@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtMemberConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.CwtType
@@ -16,7 +17,7 @@ import icu.windea.pls.model.CwtType
  * @property configs 子规则列表（其中嵌套的属性与值对应的成员规则）。
  * @property properties 子属性规则列表（其中嵌套的属性对应的成员规则）。
  * @property values 子值规则列表（其中嵌套的值对应的成员规则）。
- * @property optionConfigs 附加的选项成员规则列表（来自附加的选项注释，以 `## ...` 的形式声明）。
+ * @property optionData 选项数据（来自附加的选项注释，以 `## ...` 的形式声明）。
  * @property parentConfig 父级成员规则（若存在），用于溯源与继承/推断。
  * @property valueExpression 值对应的数据表达式，用于驱动解析与校验。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
@@ -29,7 +30,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     val configs: List<CwtMemberConfig<*>>?
     val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
     val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
-    val optionConfigs: List<CwtOptionMemberConfig<*>>
+    val optionData: CwtOptionDataHolder
 
     var parentConfig: CwtMemberConfig<*>?
 
@@ -41,15 +42,13 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     interface Resolver {
         fun withConfigs(config: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean
 
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
         fun postProcess(config: CwtMemberConfig<*>)
 
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
         fun postOptimize(config: CwtMemberConfig<*>)
 
-        /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。
-         */
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
         fun <T: CwtMemberConfig<*>> delegated(
             targetConfig: T,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,

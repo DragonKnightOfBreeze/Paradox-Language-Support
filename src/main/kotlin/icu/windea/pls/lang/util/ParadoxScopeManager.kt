@@ -14,7 +14,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
@@ -307,8 +306,8 @@ object ParadoxScopeManager {
             return result
         } else {
             // 优先基于内联前的规则，如果没有，再基于内联后的规则
-            val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
-            val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
+            val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
+            val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
             val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) } ?: parentScopeContext ?: return null
             val result = scopeContext.resolveNext(pushScope)
             return result
@@ -600,8 +599,8 @@ object ParadoxScopeManager {
 
     fun getScopeContextFromConfigOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         // 优先基于内联前的规则，如果没有，再基于内联后的规则
-        val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
-        val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
+        val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
+        val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
         if (replaceScopes != null) {
             return ParadoxScopeContext.get(replaceScopes)
         } else if (pushScope != null) {

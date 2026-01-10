@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @property project 对应的项目。如果是默认项目，则不能用于访问 PSI。
  * @property gameType 对应的游戏类型。如果是 [ParadoxGameType.Core]，则为共享的规则分组。
  *
+ * @see CwtConfigGroupDataHolder
  * @see CwtConfigGroupService
  */
 interface CwtConfigGroup : CwtConfigGroupDataHolder, UserDataHolder {

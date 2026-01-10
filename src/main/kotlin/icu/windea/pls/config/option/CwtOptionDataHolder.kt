@@ -1,66 +1,55 @@
-package icu.windea.pls.config.util.option
+package icu.windea.pls.config.option
 
+import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtDataTypeGroups
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtOptionConfig
+import icu.windea.pls.config.config.CwtOptionMemberConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
+import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
-import icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastMap
-import icu.windea.pls.core.collections.FastSet
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.ep.config.CwtInjectConfigPostProcessor
+import icu.windea.pls.lang.util.ParadoxColorManager
+import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.ParadoxTagType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
- * 提供“选项数据访问器”（Option Data Accessors）的集中定义与实现。
+ * 用于访问选项数据。
  *
- * 用途与行为（重要）：
- * - 这些 accessor 以统一、类型安全、可带缓存的方式，从某个成员规则（`CwtMemberConfig`）附带的选项（`CwtOptionMemberConfig`）里提取所需的数据。
- * - 统一的调用方式为：`config.optionData { someAccessor }`。
- * - 一些 accessor 内建缓存（`create(cached = true)`），避免在解析、补全等流程中重复解析选项。
- * - 对于作用域相关的选项（如 `## replace_scopes`、`## push_scope`、`## scopes`），PLS 会做大小写与别名归一化处理（参见 `ParadoxScopeManager`）。
- * - 对于部分选项，CWTools 原版不支持或语义不同，其兼容性会在各自的 KDoc 中明确说明。
+ * 说明：
+ * - 规则数据指保存在选项注释中的元数据，以 `## ...` 的形式声明。
+ * - 仅保存有效的元数据，不支持或者无法识别的元数据会被直接舍弃。
  *
  * 参考：
  * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
  * - PLS 规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
  *
- * @see CwtOptionDataAccessor
+ * @see CwtMemberConfig
  */
-@Optimized
-object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
-    fun <T> create(cached: Boolean = false, action: CwtMemberConfig<*>.() -> T): CwtOptionDataAccessorProvider<T> {
-        return CwtOptionDataAccessorProvider(cached, action)
-    }
+interface CwtOptionDataHolder : UserDataHolder {
+    fun copyTo(target: CwtOptionDataHolder)
 
-    /**
-     * 选项标志。
-     *
-     * 成员规则上可以存在多个单独且类似标识符的选项值，用于附加布尔型标志。
-     */
-    val flags: CwtOptionDataAccessor<CwtOptionFlags> by create {
-        CwtOptionFlags.from(this)
-    }
+    // region Internal
+
+    // NOTE only reserved for internal configs
+    val optionConfigs: List<CwtOptionMemberConfig<*>>
+
+    // endregion
+
+    // region Core
 
     /**
      * API 状态。
@@ -73,9 +62,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## api_status = obsolete`
      */
-    val apiStatus: CwtOptionDataAccessor<CwtApiStatus?> by create {
-        findOption("api_status")?.stringValue?.let { CwtApiStatus.get(it) }
-    }
+    val apiStatus: CwtApiStatus?
 
     /**
      * 允许的出现次数范围（基数表达式）。
@@ -85,21 +72,11 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 适用对象：定义成员对应的规则。
      *
-     * CWTools 兼容性：兼容。默认推断逻辑为 PLS 的增强（详见 [config.md](https://windea.icu/Paradox-Language-Support/config.md)）。
+     * CWTools 兼容性：兼容。
      *
      * 示例：`## cardinality = 0..1`
      */
-    val cardinality: CwtOptionDataAccessor<CwtCardinalityExpression?> by create(cached = true) {
-        val option = findOption("cardinality")
-        if (option == null) {
-            // 如果没有注明且类型是常量或枚举值，则推断为 1..~1
-            val dataType = configExpression.type
-            if (dataType == CwtDataTypes.Constant || dataType == CwtDataTypes.EnumValue) {
-                return@create CwtCardinalityExpression.resolve("1..~1")
-            }
-        }
-        option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
-    }
+    val cardinality: CwtCardinalityExpression?
 
     /**
      * 最小基数（从 Define 预设动态获取）。
@@ -112,9 +89,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
      */
-    val cardinalityMinDefine: CwtOptionDataAccessor<String?> by create {
-        findOption("cardinality_min_define")?.stringValue
-    }
+    val cardinalityMinDefine: String?
 
     /**
      * 最大基数（从 Define 预设动态获取）。
@@ -125,9 +100,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
      */
-    val cardinalityMaxDefine: CwtOptionDataAccessor<String?> by create {
-        findOption("cardinality_max_define")?.stringValue
-    }
+    val cardinalityMaxDefine: String?
 
     /**
      * 简单结构谓词（结构化过滤）。
@@ -137,23 +110,11 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 适用对象：定义成员对应的规则，作为补充过滤条件。
      *
-     * CWTools 兼容性：PLS 扩展。用于特定的过滤逻辑。
+     * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## predicate = { scope = fleet type != country }`
      */
-    val predicate: CwtOptionDataAccessor<Map<String, ReversibleValue<String>>?> by create(cached = true) {
-        val option = findOption("predicate") ?: return@create null
-        val optionConfigs = option.optionConfigs ?: return@create null
-        if (optionConfigs.isEmpty()) return@create emptyMap()
-        val r = FastMap<String, ReversibleValue<String>>()
-        optionConfigs.forEachFast f@{ optionConfig ->
-            if (optionConfig !is CwtOptionConfig) return@f
-            val k = optionConfig.key
-            val v = ReversibleValue(optionConfig.separatorType == CwtSeparatorType.EQUAL, optionConfig.value)
-            r[k] = v
-        }
-        r.optimized()
-    }
+    val predicate: Map<String, ReversibleValue<String>>?
 
     /**
      * 替换作用域上下文（replace scopes）。
@@ -170,20 +131,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * @see ParadoxScopeManager
      */
-    val replaceScopes: CwtOptionDataAccessor<Map<String, String>?> by create(cached = true) {
-        val option = findOption("replace_scope", "replace_scopes") ?: return@create null
-        val optionConfigs = option.optionConfigs ?: return@create null
-        if (optionConfigs.isEmpty()) return@create emptyMap()
-        val r = FastMap<String, String>()
-        optionConfigs.forEachFast f@{ optionConfig ->
-            if (optionConfig !is CwtOptionConfig) return@f
-            // ignore case for both system scopes and scopes (to lowercase)
-            val k = optionConfig.key.lowercase()
-            val v = optionConfig.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
-            r[k] = v
-        }
-        r.optimized()
-    }
+    val replaceScopes: Map<String, String>?
 
     /**
      * 入栈作用域（push scope）。
@@ -199,10 +147,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * @see ParadoxScopeManager
      */
-    val pushScope: CwtOptionDataAccessor<String?> by create(cached = true) {
-        val option = findOption("push_scope")
-        option?.getOptionValue()?.let { v -> ParadoxScopeManager.getScopeId(v) }
-    }
+    val pushScope: String?
 
     /**
      * 初始的作用域上下文。
@@ -215,12 +160,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * @see ParadoxScopeManager
      */
-    val scopeContext: CwtOptionDataAccessor<ParadoxScopeContext?> by create(cached = true) {
-        val replaceScopes = optionData { replaceScopes }
-        val pushScope = optionData { pushScope }
-        val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) }
-        scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.get(it, it) }
-    }
+    val scopeContext: ParadoxScopeContext?
 
     /**
      * 支持的作用域。默认支持任意作用域。
@@ -235,12 +175,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * ## scope = { country planet }
      * ```
      */
-    val supportedScopes: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
-        // ignore case for scopes (to lowercase)
-        val option = findOption("scope", "scopes")
-        val r = option?.getOptionValueOrValues()?.mapTo(FastSet()) { ParadoxScopeManager.getScopeId(it) }
-        if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r.optimized()
-    }
+    val supportedScopes: Set<String>
 
     /**
      * 类型标识。
@@ -253,9 +188,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## type = scripted_trigger`
      */
-    val type: CwtOptionDataAccessor<String?> by create {
-        findOption("type")?.stringValue
-    }
+    val type: String?
 
     /**
      * 提示信息。
@@ -268,9 +201,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## hint = "一些提示"`
      */
-    val hint: CwtOptionDataAccessor<String?> by create {
-        findOption("hint")?.stringValue
-    }
+    val hint: String?
 
     /**
      * 事件类型。
@@ -279,13 +210,11 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 适用对象：on action 的扩展规则（[CwtExtendedOnActionConfig]）。
      *
-     * CWTools 兼容性：PLS 扩展。用于 on_action 相关的解析与显示。
+     * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## event_type = country`
      */
-    val eventType: CwtOptionDataAccessor<String?> by create {
-        findOption("event_type")?.stringValue
-    }
+    val eventType: String?
 
     /**
      * 上下文键（context key）。
@@ -297,25 +226,21 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * CWTools 兼容性：PLS 扩展。
      */
-    val contextKey: CwtOptionDataAccessor<String?> by create {
-        findOption("context_key")?.stringValue
-    }
+    val contextKey: String?
 
     /**
      * 上下文配置的聚合类型。
      *
      * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
-     * 未指定时默认 `single`。
+     * 默认为 `single`。
      *
      * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedInlineScriptConfig] 和 [CwtExtendedParameterConfig]）。
      *
-     * CWTools 兼容性：PLS 扩展。见 `inline_scripts`、`parameters` 章节。
+     * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## context_configs_type = multiple`
      */
-    val contextConfigsType: CwtOptionDataAccessor<String> by create {
-        findOption("context_configs_type")?.stringValue ?: "single"
-    }
+    val contextConfigsType: String
 
     /**
      * 分组名。
@@ -328,9 +253,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## group = ships`
      */
-    val group: CwtOptionDataAccessor<String?> by create {
-        findOption("group")?.stringValue
-    }
+    val group: String?
 
     /**
      * 类型键的过滤器（包含/排除，忽略大小写）。
@@ -347,14 +270,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * ## type_key_filter <> { ship country }
      * ```
      */
-    val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<@CaseInsensitive String>>?> by create {
-        // 值可能是 string 也可能是 stringArray
-        val option = findOption("type_key_filter") ?: return@create null
-        val values = option.getOptionValueOrValues() ?: return@create null
-        val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
-        val positive = option.separatorType == CwtSeparatorType.EQUAL
-        ReversibleValue(positive, set.optimized())
-    }
+    val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
 
     /**
      * 类型键的正则过滤器（忽略大小写）。
@@ -365,9 +281,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## type_key_regex = "^ship_.*$"`
      */
-    val typeKeyRegex: CwtOptionDataAccessor<Regex?> by create {
-        findOption("type_key_regex")?.stringValue?.toRegex(RegexOption.IGNORE_CASE)
-    }
+    val typeKeyRegex: Regex?
 
     /**
      * 类型键的前缀要求（忽略大小写）。
@@ -380,9 +294,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## starts_with = ship_`
      */
-    val startsWith: CwtOptionDataAccessor<String?> by create {
-        findOption("starts_with")?.stringValue
-    }
+    val startsWith: String?
 
     /**
      * 排除名单（only_if_not）。
@@ -395,24 +307,25 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## only_if_not = { simple complex }`
      */
-    val onlyIfNot: CwtOptionDataAccessor<Set<String>?> by create {
-        val r = findOption("only_if_not")?.getOptionValueOrValues()
-        r?.optimized()
-    }
+    val onlyIfNot: Set<String>?
 
     /**
      * 图相关的关联类型集合（graph_related_types）。
      *
-     * 用于启用并扩充类型图视图（Graph View），以便联动显示相关类型。
-     *
      * 示例：`## graph_related_types = { special_project anomaly_category }`
      *
-     * CWTools 兼容性：PLS 未实现相关功能。
+     * CWTools 兼容性：PLS 目前未使用这类选项数据。
      */
-    val graphRelatedTypes: CwtOptionDataAccessor<Set<String>?> by create {
-        val r = findOption("graph_related_types")?.getOptionValues()
-        r?.optimized()
-    }
+    val graphRelatedTypes: Set<String>?
+
+    /**
+     * （基于规则的代码检查的）严重度。
+     *
+     * 示例：`## severity = warning`
+     *
+     * CWTools 兼容性：PLS 目前未使用这类选项数据。
+     */
+    val severity: String?
 
     /**
      * 允许的文件扩展名集合（file_extensions）。
@@ -424,30 +337,21 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## file_extensions = { png dds tga }`
-     *
-     * @see icu.windea.pls.lang.inspections.script.common.IncorrectPathReferenceInspection
-     * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager.completePathReference
      */
-    val fileExtensions: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
-        val r = findOption("file_extensions")?.getOptionValueOrValues()
-        r?.optimized().orEmpty()
-    }
+    val fileExtensions: Set<String>?
 
     /**
      * 修正分类键集合（modifier_categories）。
      *
      * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
      *
-     * CWTools 兼容性：PLS 扩展。主要供插件逻辑使用。
+     * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## modifier_categories = { economic_unit planet }`
      *
-     * @see icu.windea.pls.lang.util.ParadoxModifierManager.resolveModifierCategory
+     * @see ParadoxModifierManager.resolveModifierCategory
      */
-    val modifierCategories: CwtOptionDataAccessor<Set<String>?> by create(cached = true) {
-        val r = findOption("modifier_categories")?.getOptionValues()
-        r?.optimized()
-    }
+    val modifierCategories: Set<String>?
 
     /**
      * 颜色类型（`hex` / `rgb` / `hsv` / `hsv360`）。
@@ -456,16 +360,14 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 适用对象：携带了颜色信息的定义成员对应的规则。
      *
-     * CWTools 兼容性：PLS 扩展。用于增强编辑体验（拾色器、渲染、格式化）。
+     * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## color_type = rgb`
      *
-     * @see icu.windea.pls.lang.util.ParadoxColorManager.getColorType
+     * @see ParadoxColorManager.getColorType
      */
-    val colorType: CwtOptionDataAccessor<String?> by create {
-        findOption("color_type")?.stringValue
-    }
-    
+    val colorType: String?
+
     /**
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
      *
@@ -475,9 +377,65 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## inject = some/file.cwt@some/property`
      *
-     * @see icu.windea.pls.ep.config.CwtInjectConfigPostProcessor
+     * @see CwtInjectConfigPostProcessor
      */
-    val inject: CwtOptionDataAccessor<String?> by create {
-        findOption("inject")?.stringValue
-    }
+    val inject: String?
+
+    // endregion
+
+    // region Flags
+
+    /**
+     * 用于在位置规则中，将对应位置的本地化和图片标记为必需项。
+     * 默认为 `false`。
+     *
+     * 适用对象：位置规则（[CwtLocationConfig]）。
+     *
+     * CWTools 兼容性：兼容。
+     *
+     * @see CwtLocationConfig
+     */
+    val required: Boolean
+
+    /**
+     * 用于在位置规则中，将对应位置的本地化和图片标记为主要项。
+     * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
+     * 默认为 `false`。
+     *
+     * 适用对象：位置规则（[CwtLocationConfig]）。
+     *
+     * CWTools 兼容性：兼容。
+     *
+     * @see CwtLocationConfig
+     */
+    val primary: Boolean
+
+    /**
+     * 用于在部分扩展规则中，注明规则上下文与作用域上下文将会被继承。
+     * 即，继承自对应的使用处，与其保持一致。
+     * 默认为 `false`。
+     *
+     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     *
+     * @see CwtExtendedInlineScriptConfig
+     * @see CwtExtendedParameterConfig
+     */
+    val inherit: Boolean
+
+    /**
+     * 用于将作为单独的值的成员规则标记为预定义的标签。
+     * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
+     * 默认为 `false`。
+     *
+     * 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     *
+     * @see ParadoxTagType
+     */
+    val tag: Boolean
+
+    // endregion
 }
