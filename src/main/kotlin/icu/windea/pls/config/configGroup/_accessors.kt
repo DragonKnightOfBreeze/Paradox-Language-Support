@@ -1,8 +1,7 @@
-package icu.windea.pls.config.data
+package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.util.getValue

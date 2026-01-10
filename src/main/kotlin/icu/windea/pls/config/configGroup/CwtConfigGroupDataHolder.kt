@@ -1,4 +1,4 @@
-package icu.windea.pls.config.data
+package icu.windea.pls.config.configGroup
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -32,17 +32,17 @@ import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 /**
- * 提供规则数据。
+ * 用于访问规则数据。
  *
  * @see CwtConfigGroup
+ * @see CwtConfigGroupInitializer
  */
-interface CwtDataProvider {
+interface CwtConfigGroupDataHolder {
     // region Internal
 
     val schemas: List<CwtSchemaConfig>

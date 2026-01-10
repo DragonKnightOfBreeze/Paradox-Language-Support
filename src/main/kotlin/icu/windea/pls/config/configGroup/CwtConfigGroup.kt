@@ -3,13 +3,12 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.util.UserDataHolder
-import icu.windea.pls.config.data.CwtDataProvider
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.model.ParadoxGameType
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * 规则分组。用于保存处理后的所有规则数据。
+ * 规则分组。保存了处理后的所有规则数据。
  *
  * 规则分组会在获取时就保证已经被创建，而其中的规则数据的初始化是在打开 IDE 或项目时异步进行的。
  *
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  * @see CwtConfigGroupService
  */
-interface CwtConfigGroup : CwtDataProvider, UserDataHolder {
+interface CwtConfigGroup : CwtConfigGroupDataHolder, UserDataHolder {
     val project: Project
     val gameType: ParadoxGameType
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.data
+package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
@@ -34,8 +34,6 @@ import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.FastCustomMap
 import icu.windea.pls.core.collections.FastList
@@ -48,13 +46,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
-/**
- * 用于在初始化规则分组时修改规则数据。
- *
- * @see CwtConfigGroup
- * @see CwtConfigGroupInitializer
- */
-abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
+abstract class CwtConfigGroupDataHolderBase : CwtConfigGroupDataHolder, UserDataHolderBase() {
     // region Accessors
 
     override val schemas get() = from.schemas
@@ -115,7 +107,7 @@ abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
 
 // region Accessor Implementations
 
-private inline val CwtDataProviderBase.from get() = this as UserDataHolder
+private inline val CwtConfigGroupDataHolderBase.from get() = this as UserDataHolder
 
 private val UserDataHolder.schemas: FastList<CwtSchemaConfig>
     by registerKey(CwtConfigGroup.Keys) { FastList() }

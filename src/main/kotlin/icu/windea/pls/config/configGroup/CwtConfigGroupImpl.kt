@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.SimpleModificationTracker
-import icu.windea.pls.config.data.CwtDataProviderBase
 import icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
@@ -19,7 +18,7 @@ private val logger = logger<CwtConfigGroupImpl>()
 class CwtConfigGroupImpl(
     override val project: Project,
     override val gameType: ParadoxGameType,
-) : CwtDataProviderBase(), CwtConfigGroup {
+) : CwtConfigGroupDataHolderBase(), CwtConfigGroup {
     private val mutex = Mutex()
 
     override val initialized = AtomicBoolean()

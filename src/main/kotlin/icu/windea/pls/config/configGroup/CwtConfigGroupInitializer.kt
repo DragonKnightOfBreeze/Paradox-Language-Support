@@ -2,7 +2,6 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
-import icu.windea.pls.config.data.CwtDataProviderBase
 import icu.windea.pls.model.ParadoxGameType
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -14,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class CwtConfigGroupInitializer(
     override val project: Project,
     override val gameType: ParadoxGameType,
-) : CwtDataProviderBase(), CwtConfigGroup {
+) : CwtConfigGroupDataHolderBase(), CwtConfigGroup {
     override val changed: AtomicBoolean get() = throw UnsupportedOperationException()
     override val initialized: AtomicBoolean get() = throw UnsupportedOperationException()
     override val initializer: CwtConfigGroupInitializer get() = throw UnsupportedOperationException()

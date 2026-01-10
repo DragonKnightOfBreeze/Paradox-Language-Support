@@ -10,7 +10,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.definitionScopeContextModificationTracker
+import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
