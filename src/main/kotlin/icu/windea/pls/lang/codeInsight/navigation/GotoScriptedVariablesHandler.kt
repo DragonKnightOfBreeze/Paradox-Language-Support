@@ -33,7 +33,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null
         if (!ParadoxPsiMatcher.isScriptedVariable(element)) return null
         val name = element.name?.orNull() ?: return null
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.scriptedVariables.search", name)) {
             // need read actions here if necessary
             readAction {

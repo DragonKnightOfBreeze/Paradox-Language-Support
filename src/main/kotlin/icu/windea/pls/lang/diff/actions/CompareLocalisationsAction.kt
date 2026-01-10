@@ -53,7 +53,6 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxRootInfo
 import java.awt.Color
-import java.util.*
 import javax.swing.Icon
 
 /**
@@ -125,7 +124,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = psiFile.virtualFile
         val project = psiFile.project
         val localisationName = localisation.name
-        val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
+        val localisations = mutableListOf<ParadoxLocalisationProperty>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
             readAction {
                 val selector = selector(project, file).localisation()

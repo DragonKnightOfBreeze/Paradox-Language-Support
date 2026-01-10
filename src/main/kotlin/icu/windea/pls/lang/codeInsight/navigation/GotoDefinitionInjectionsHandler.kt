@@ -19,7 +19,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import java.util.*
 
 class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -34,7 +33,7 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return null
         if (info.target.isNullOrEmpty()) return null // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return null // 排除目标定义的类型为空的情况
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjections.search", info.target)) {
             // need read actions here if necessary
             readAction {

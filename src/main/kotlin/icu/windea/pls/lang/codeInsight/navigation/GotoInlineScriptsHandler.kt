@@ -16,7 +16,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import java.util.*
 
 class GotoInlineScriptsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -31,7 +30,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.inlineScripts.search", expression)) {
             // need read actions here if necessary
             readAction {

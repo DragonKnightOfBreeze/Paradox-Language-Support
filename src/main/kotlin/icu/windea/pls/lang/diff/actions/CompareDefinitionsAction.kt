@@ -54,7 +54,6 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.awt.Color
-import java.util.*
 import javax.swing.Icon
 
 /**
@@ -126,7 +125,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val file = psiFile.virtualFile
         val project = psiFile.project
         val definitionInfo = definition.definitionInfo ?: return null
-        val definitions = Collections.synchronizedList(mutableListOf<ParadoxScriptDefinitionElement>())
+        val definitions = mutableListOf<ParadoxScriptDefinitionElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
                 val selector = selector(project, file).definition()

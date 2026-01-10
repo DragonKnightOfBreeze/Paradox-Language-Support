@@ -20,7 +20,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
-import java.util.*
 
 class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -33,7 +32,7 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null
         // if (!ParadoxPsiMatcher.isLocalisation(element)) return null // 不需要
         val type = element.type ?: return null
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.localisations.search", element.name)) {
             // need read actions here if necessary
             readAction {

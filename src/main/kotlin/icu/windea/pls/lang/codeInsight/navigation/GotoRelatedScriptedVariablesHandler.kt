@@ -16,7 +16,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import java.util.*
 
 class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -28,7 +27,7 @@ class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedScriptedVariables.search", element.name)) {
             // need read actions here if necessary
             readAction {

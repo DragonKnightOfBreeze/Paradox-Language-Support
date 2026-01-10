@@ -29,7 +29,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path.path
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.files.search", file.name)) {
             // need read actions here if necessary
             readAction {

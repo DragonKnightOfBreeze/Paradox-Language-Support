@@ -25,7 +25,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
-import java.util.*
 
 class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -41,7 +40,7 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         val definition = element.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {

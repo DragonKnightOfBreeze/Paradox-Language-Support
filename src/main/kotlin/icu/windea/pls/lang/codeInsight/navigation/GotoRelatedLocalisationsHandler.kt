@@ -36,7 +36,6 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
-import java.util.*
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -54,7 +53,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             ParadoxPsiMatcher.isScriptedVariable(element) -> {
                 val scriptedVariable = element
                 val name = scriptedVariable.name?.orNull() ?: return null
-                val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+                val targets = mutableListOf<PsiElement>()
                 runWithModalProgressBlocking<Unit>(project, PlsBundle.message("script.goto.relatedLocalisations.search.3", name)) {
                     // need read actions here if necessary
                     readAction {
@@ -71,7 +70,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
                 val localisationInfos = definitionInfo.localisations
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
-                val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+                val targets = mutableListOf<PsiElement>()
                 runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
@@ -88,7 +87,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             }
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
-                val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+                val targets = mutableListOf<PsiElement>()
                 runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name)) {
                     // need read actions here if necessary
                     readAction {

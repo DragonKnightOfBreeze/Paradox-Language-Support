@@ -24,7 +24,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
-import java.util.*
 
 class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -39,7 +38,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val definition = element.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
-        val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
+        val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitions.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
