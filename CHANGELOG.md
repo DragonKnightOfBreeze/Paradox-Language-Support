@@ -7,7 +7,7 @@
 
 ## 2.1.1-dev
 
-- [ ] #259 [Vic 3] PLS Hangs while indexing game files
+- [x] #259 [Vic 3] PLS Hangs while indexing game files
 - [ ] #253 Priorities not applied correctly
 
 ## 2.1.0
