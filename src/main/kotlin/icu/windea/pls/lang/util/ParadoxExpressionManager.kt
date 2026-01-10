@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
@@ -149,6 +147,7 @@ object ParadoxExpressionManager {
         return false
     }
 
+    @Suppress("unused")
     fun getParameterName(text: String): String? {
         // $PARAM$ - 仅限 高级插值语法 A
         if (!isParameterized(text, full = true)) return null
@@ -301,15 +300,17 @@ object ParadoxExpressionManager {
     }
 
     fun getConfigsForConfigContext(
-        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default
+        element: ParadoxScriptMember,
+        rootConfigs: List<CwtMemberConfig<*>>,
+        memberPathFromRoot: ParadoxMemberPath,
+        configGroup: CwtConfigGroup,
+        matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
     }
 
-    private fun doGetConfigsForConfigContext(
-        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int
-    ): List<CwtMemberConfig<*>> {
+    private fun doGetConfigsForConfigContext(element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int): List<CwtMemberConfig<*>> {
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
 
         var result: List<CwtMemberConfig<*>> = rootConfigs
@@ -368,7 +369,7 @@ object ParadoxExpressionManager {
                     configs.forEach f3@{ config ->
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
-                            val inlinedConfigs = inlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
+                            val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
                             if (inlinedConfigs == null) { // null (cannot or failed)
                                 addToMatchedConfigs(config)
                             } else {
@@ -416,9 +417,7 @@ object ParadoxExpressionManager {
         return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
 
-    private fun inlineConfigForConfigContext(
-        element: ParadoxScriptMember, key: String, config: CwtPropertyConfig, matchOptions: Int
-    ): List<CwtMemberConfig<*>>? {
+    private fun inlineConfigForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         val result = when (valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
@@ -434,9 +433,7 @@ object ParadoxExpressionManager {
         return result
     }
 
-    fun getConfigs(
-        element: PsiElement, orDefault: Boolean = true, matchOptions: Int = ParadoxMatchOptions.Default
-    ): List<CwtMemberConfig<*>> {
+    fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val cache = doGetConfigsCacheFromCache(memberElement)
@@ -446,10 +443,6 @@ object ParadoxExpressionManager {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
         }
-    }
-
-    private fun getConfigsCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
-        return doGetConfigsCacheFromCache(element)
     }
 
     @Optimized
@@ -696,8 +689,6 @@ object ParadoxExpressionManager {
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
 
-    private val markerPairs = "()<>{}[]".chunked(2).flatMap { listOf(it, it.reversed()) }.associate { it.take(1) to it.takeLast(1) }
-
     // endregion
 
     // region Reference Methods
@@ -792,7 +783,7 @@ object ParadoxExpressionManager {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
-        val result = ParadoxScriptExpressionService.resolve(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxScriptExpressionService.resolve(element, rangeInElement, expressionText, config, isKey, exact)
         if (result != null) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
@@ -867,18 +858,21 @@ object ParadoxExpressionManager {
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
 
+    @Suppress("unused")
     fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemScopeConfig = configGroup.systemScopes[name] ?: return null
         val resolved = systemScopeConfig.pointer.element?.bindConfig(systemScopeConfig) ?: return null
         return resolved
     }
 
+    @Suppress("unused")
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }
 
+    @Suppress("unused")
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
@@ -892,12 +886,14 @@ object ParadoxExpressionManager {
         return resolved
     }
 
+    @Suppress("unused")
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }
 
+    @Suppress("unused")
     fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.pointer.element?.bindConfig(commandConfig) ?: return null
