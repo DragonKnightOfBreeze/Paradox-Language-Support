@@ -19,6 +19,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.core.annotations.Fast
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
@@ -39,28 +40,15 @@ import kotlin.contracts.contract
 object CwtConfigManipulator {
     // region Common Methods
 
-    fun getIdentifierKey(config: CwtOptionMemberConfig<*>): String {
-        return doGetIdentifierKey(config)
-    }
-
-    private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>): String {
-        val children = config.optionConfigs
-        return buildString {
-            if (config is CwtOptionConfig) append(config.key).append('=')
-            when {
-                children == null -> append(config.value)
-                children.isEmpty() -> append("{}")
-                else -> {
-                    append('{')
-                    append(children.map { doGetIdentifierKey(it) }.sorted().joinToString("\u0000"))
-                    append('}')
-                }
-            }
-        }
-    }
-
+    @Suppress("unused")
+    @Fast
     fun getIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int = -1): String {
         return doGetIdentifierKey(config, maxDepth)
+    }
+
+    @Fast
+    fun getIdentifierKey(configs: List<CwtMemberConfig<*>>, maxDepth: Int = -1): String {
+        return doGetIdentifierKey(configs, maxDepth)
     }
 
     private fun doGetIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int, depth: Int = 0): String {
@@ -71,12 +59,49 @@ object CwtConfigManipulator {
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
-                else -> {
-                    append('{')
-                    append(children.map { doGetIdentifierKey(it, maxDepth, depth + 1) }.sorted().joinToString("\u0000"))
-                    append('}')
-                }
+                else -> append('{').append(doGetIdentifierKey(children, maxDepth, depth + 1)).append('}')
             }
+        }
+    }
+
+    private fun doGetIdentifierKey(configs: List<CwtMemberConfig<*>>, maxDepth: Int, depth: Int = 0): String {
+        val size = configs.size
+        return when (size) {
+            0 -> ""
+            1 -> doGetIdentifierKey(configs.get(0), maxDepth, depth)
+            else -> configs.mapTo(FastList(size)) { doGetIdentifierKey(it, maxDepth, depth) }.sorted().joinToString("\u0000")
+        }
+    }
+
+    @Suppress("unused")
+    @Fast
+    fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>): String {
+        return doGetIdentifierKey(optionConfig)
+    }
+
+    @Fast
+    fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
+        return doGetIdentifierKey(optionConfigs)
+    }
+
+    private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>): String {
+        val children = config.optionConfigs
+        return buildString {
+            if (config is CwtOptionConfig) append(config.key).append('=')
+            when {
+                children == null -> append(config.value)
+                children.isEmpty() -> append("{}")
+                else -> append('{').append(doGetIdentifierKey(children)).append('}')
+            }
+        }
+    }
+
+    private fun doGetIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
+        val size = optionConfigs.size
+        return when (size) {
+            0 -> ""
+            1 -> doGetIdentifierKey(optionConfigs.get(0))
+            else -> optionConfigs.mapTo(FastList(size)) { doGetIdentifierKey(it) }.sorted().joinToString("\u0000")
         }
     }
 

@@ -544,7 +544,7 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val cache = doGetChildOccurrenceMapCacheFromCache(element)
         // optimized to optimize memory
-        val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getIdentifierKey(it, maxDepth = 1) }.optimized()
+        val cacheKey = CwtConfigManipulator.getIdentifierKey(childConfigs, maxDepth = 1).optimized()
         return cache.getOrPut(cacheKey) {
             val result = doGetChildOccurrenceMap(element, configs)
             result.optimized()

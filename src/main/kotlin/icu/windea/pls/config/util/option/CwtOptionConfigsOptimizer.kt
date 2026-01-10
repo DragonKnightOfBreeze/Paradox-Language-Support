@@ -4,7 +4,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.optimizer.Optimizer
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -36,12 +35,7 @@ object CwtOptionConfigsOptimizer : Optimizer<List<CwtOptionMemberConfig<*>>, Int
     }
 
     private fun computeId(optionConfigs: List<CwtOptionMemberConfig<*>>): Int {
-        val size = optionConfigs.size
-        val key = when (size) {
-            0 -> return 0
-            1 -> CwtConfigManipulator.getIdentifierKey(optionConfigs.get(0))
-            else -> optionConfigs.mapTo(FastList(size)) { CwtConfigManipulator.getIdentifierKey(it) }.sorted().joinToString("\u0000")
-        }
+        val key = CwtConfigManipulator.getIdentifierKey(optionConfigs)
         return key2IdMap.computeIfAbsent(key) {
             val id = counter.incrementAndGet()
             id2CacheMap.put(id, optionConfigs)
