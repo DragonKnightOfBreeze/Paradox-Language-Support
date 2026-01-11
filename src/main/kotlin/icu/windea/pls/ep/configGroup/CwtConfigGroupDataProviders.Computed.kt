@@ -7,11 +7,14 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.isStatic
+import icu.windea.pls.config.config.delegated.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
@@ -166,95 +169,111 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `linksModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(initializer.linksModel) {
-                val staticLinks = initializer.links.values.filter { it.isStatic }
-                staticLinks.forEach { c ->
-                    if (c.type.forScope()) forScopeStatic += c
-                    if (c.type.forValue()) forValueStatic += c
-                }
-                val dynamicLinksSorted = initializer.links.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
-                dynamicLinksSorted.forEach { c ->
-                    if (c.type.forScope()) {
-                        if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
-                        if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
-                        if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
-                    }
-                    if (c.type.forValue()) {
-                        if (c.name == "variable") variable += c
-                        if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
-                        if (c.fromData && c.prefix != null) forValueFromDataSorted += c
-                        if (c.fromData && c.prefix == null) forValueFromDataNoPrefixSorted += c
-                    }
-                }
-            }
+            computeLinksModel(initializer, initializer.links.values)
         }
 
         // compute `localisationLinksModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(initializer.localisationLinksModel) {
-                val staticLinks = initializer.localisationLinks.values.filter { it.isStatic }
-                staticLinks.forEach { c ->
-                    if (c.type.forScope()) forScopeStatic += c
-                    if (c.type.forValue()) forValueStatic += c
-                }
-                val dynamicLinksSorted = initializer.localisationLinks.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
-                dynamicLinksSorted.forEach { c ->
-                    if (c.type.forScope()) {
-                        if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
-                        if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
-                        if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
-                    }
-                    if (c.type.forValue()) {
-                        if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
-                        if (c.fromData && c.prefix != null) forValueFromDataSorted += c
-                        if (c.fromData && c.prefix == null) forValueFromDataNoPrefixSorted += c
-                    }
-                }
-            }
+            computeLinksModel(initializer, initializer.localisationLinks.values)
         }
 
         // compute `directivesModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(initializer.directivesModel) {
-                val directives = initializer.directives
-                directives.forEach { c ->
-                    when (c.name) {
-                        "inline_script" -> inlineScript += c
-                        "definition_injection" -> definitionInjection = c
-                    }
-                }
-            }
+            computeDirectivesModel(initializer)
         }
 
         // compute `definitionTypesModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(initializer.definitionTypesModel) {
-                with(supportParameters) {
-                    for (parameterConfig in initializer.parameterConfigs) {
-                        val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
-                        val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                        val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
-                        else CwtDataExpression.resolve(aliasSubName, true)
-                        if (contextExpression.type == CwtDataTypes.Definition) {
-                            contextExpression.value?.let { this += it }
+            computeDefinitionTypeModel(initializer)
+        }
+    }
+
+    private fun computeLinksModel(initializer: CwtConfigGroupInitializer, links: Collection<CwtLinkConfig>) {
+        with(initializer.localisationLinksModel) {
+            val staticLinks = links.filter { it.isStatic }
+            staticLinks.forEach { c ->
+                if (c.type.forScope()) {
+                    forScopeStatic += c
+                }
+                if (c.type.forValue()) {
+                    forValueStatic += c
+                }
+            }
+            val dynamicLinksSorted = links.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { initializer })
+            dynamicLinksSorted.forEach { c ->
+                if (c.type.forScope()) {
+                    if (c.prefix == null) {
+                        if (c.fromData) {
+                            forScopeNoPrefixSorted += c
+                        }
+                    } else {
+                        if (c.fromData) {
+                            forScopeFromDataSorted += c
+                        }
+                        if (c.fromArgument) {
+                            forScopeFromArgumentSorted += c
+                            forScopeFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { FastList() } += c
                         }
                     }
                 }
-
-                // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
-                // based on file paths, in detail, based on file path patterns (has any same file path patterns)
-                with(mayWithTypeKeyPrefix) {
-                    val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null }
-                    val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
-                    val types1 = initializer.types.values.filter { c ->
-                        val filePathPatterns1 = c.filePathPatterns
-                        filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
+                if (c.type.forValue()) {
+                    if (c.prefix == null) {
+                        if (c.fromData) {
+                            forValueNoPrefixSorted += c
+                        }
+                    } else {
+                        if (c.fromData) {
+                            forValueFromDataSorted += c
+                        }
+                        if (c.fromArgument) {
+                            forValueFromArgumentSorted += c
+                            forValueFromArgumentSortedByPrefix.getOrPut(c.prefixFromArgument) { FastList() } += c
+                        }
                     }
-                    types1.forEach { c -> this += c.name }
                 }
+            }
+        }
+    }
+
+    private fun computeDirectivesModel(initializer: CwtConfigGroupInitializer) {
+        with(initializer.directivesModel) {
+            val directives = initializer.directives
+            directives.forEach { c ->
+                when (c.name) {
+                    "inline_script" -> inlineScript += c
+                    "definition_injection" -> definitionInjection = c
+                }
+            }
+        }
+    }
+
+    private fun computeDefinitionTypeModel(initializer: CwtConfigGroupInitializer) {
+        with(initializer.definitionTypesModel) {
+            with(supportParameters) {
+                for (parameterConfig in initializer.parameterConfigs) {
+                    val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
+                    val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+                    val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
+                    else CwtDataExpression.resolve(aliasSubName, true)
+                    if (contextExpression.type == CwtDataTypes.Definition) {
+                        contextExpression.value?.let { this += it }
+                    }
+                }
+            }
+
+            // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
+            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            with(mayWithTypeKeyPrefix) {
+                val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null }
+                val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
+                val types1 = initializer.types.values.filter { c ->
+                    val filePathPatterns1 = c.filePathPatterns
+                    filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
+                }
+                types1.forEach { c -> this += c.name }
             }
         }
     }

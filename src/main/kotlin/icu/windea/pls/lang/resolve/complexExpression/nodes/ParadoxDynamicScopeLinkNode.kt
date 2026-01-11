@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.delegated.prefixFromArgument
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.findIsInstance
 
@@ -29,12 +28,12 @@ class ParadoxDynamicScopeLinkNode(
 
             // 匹配某一前缀且使用传参格式的场合（如 `relations(root.owner)`）
             run r1@{
-                if (!text.contains('(')) return@r1
-                val linkConfigs = configGroup.linksModel.forScopeFromArgumentSorted
-                    .filter { text.startsWith(it.prefixFromArgument!! + '(') }
-                if (linkConfigs.isEmpty()) return@r1
+                val prefix = text.substringBefore('(', "")
+                if (prefix.isEmpty()) return@r1
+                val linkConfigs = configGroup.linksModel.forScopeFromArgumentSortedByPrefix[prefix]
+                if (linkConfigs.isNullOrEmpty()) return@r1
                 run r2@{
-                    val nodeText = linkConfigs.first().prefixFromArgument!!
+                    val nodeText = prefix // = linkConfigs.first().prefixFromArgument!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
@@ -68,6 +67,7 @@ class ParadoxDynamicScopeLinkNode(
                 val linkConfigs = configGroup.linksModel.forScopeFromDataSorted
                     .filter { text.startsWith(it.prefix!!) }
                 if (linkConfigs.isEmpty()) return@r1
+
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
@@ -86,7 +86,7 @@ class ParadoxDynamicScopeLinkNode(
 
             // 没有前缀且允许没有前缀的场合
             run r1@{
-                val linkConfigs = configGroup.linksModel.forScopeFromDataNoPrefixSorted
+                val linkConfigs = configGroup.linksModel.forScopeNoPrefixSorted
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxScopeLinkValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node

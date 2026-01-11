@@ -131,7 +131,7 @@ interface CwtConfigGroupDataHolder {
     val generatedModifiers: Map<@CaseInsensitive String, CwtModifierConfig>
 
     /** 常量字符串的别名的组名的映射。 */
-    val aliasKeysGroupConst: Map<@CaseInsensitive String, Map<String, String>>
+    val aliasKeysGroupConst: Map<@CaseInsensitive String, Map<@CaseInsensitive String, String>>
     /** 非常量字符串的别名的组名的映射。 */
     val aliasKeysGroupNoConst: Map<String, Set<String>>
     /** 必定支持作用域的别名规则。 */
@@ -164,13 +164,15 @@ interface CwtLinksModel {
     /** 变量对应的链接规则的列表。 */
     val variable: List<CwtLinkConfig>
     val forScopeStatic: List<CwtLinkConfig>
-    val forScopeFromArgumentSorted: List<CwtLinkConfig>
+    val forScopeNoPrefixSorted: List<CwtLinkConfig>
     val forScopeFromDataSorted: List<CwtLinkConfig>
-    val forScopeFromDataNoPrefixSorted: List<CwtLinkConfig>
+    val forScopeFromArgumentSorted: List<CwtLinkConfig>
+    val forScopeFromArgumentSortedByPrefix: Map<String, List<CwtLinkConfig>>
     val forValueStatic: List<CwtLinkConfig>
-    val forValueFromArgumentSorted: List<CwtLinkConfig>
+    val forValueNoPrefixSorted: List<CwtLinkConfig>
     val forValueFromDataSorted: List<CwtLinkConfig>
-    val forValueFromDataNoPrefixSorted: List<CwtLinkConfig>
+    val forValueFromArgumentSorted: List<CwtLinkConfig>
+    val forValueFromArgumentSortedByPrefix: Map<String, List<CwtLinkConfig>>
 }
 
 /** 用于获取符合特定条件的指令规则。 */

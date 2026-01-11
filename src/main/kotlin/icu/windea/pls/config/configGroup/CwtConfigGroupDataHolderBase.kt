@@ -129,7 +129,7 @@ private val UserDataHolder.predefinedModifiers: FastCustomMap<@CaseInsensitive S
     by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
 private val UserDataHolder.generatedModifiers: FastCustomMap<@CaseInsensitive String, CwtModifierConfig>
     by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
-private val UserDataHolder.aliasKeysGroupConst: FastCustomMap<@CaseInsensitive String, MutableMap<String, String>>
+private val UserDataHolder.aliasKeysGroupConst: FastCustomMap<@CaseInsensitive String, FastCustomMap<@CaseInsensitive String, String>>
     by registerKey(CwtConfigGroupDataKeys) { caseInsensitiveStringKeyMap() }
 private val UserDataHolder.aliasKeysGroupNoConst: FastMap<String, FastSet<String>>
     by registerKey(CwtConfigGroupDataKeys) { FastMap() }
@@ -210,13 +210,15 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
 class CwtLinksModelBase : CwtLinksModel {
     override val variable: FastList<CwtLinkConfig> = FastList()
     override val forScopeStatic: FastList<CwtLinkConfig> = FastList()
-    override val forScopeFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
+    override val forScopeNoPrefixSorted: FastList<CwtLinkConfig> = FastList()
     override val forScopeFromDataSorted: FastList<CwtLinkConfig> = FastList()
-    override val forScopeFromDataNoPrefixSorted: FastList<CwtLinkConfig> = FastList()
+    override val forScopeFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
+    override val forScopeFromArgumentSortedByPrefix: FastMap<String, FastList<CwtLinkConfig>> = FastMap()
     override val forValueStatic: FastList<CwtLinkConfig> = FastList()
-    override val forValueFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
+    override val forValueNoPrefixSorted: FastList<CwtLinkConfig> = FastList()
     override val forValueFromDataSorted: FastList<CwtLinkConfig> = FastList()
-    override val forValueFromDataNoPrefixSorted: FastList<CwtLinkConfig> = FastList()
+    override val forValueFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
+    override val forValueFromArgumentSortedByPrefix: FastMap<String, FastList<CwtLinkConfig>> = FastMap()
 }
 
 class CwtDirectivesModelBase : CwtDirectivesModel {
