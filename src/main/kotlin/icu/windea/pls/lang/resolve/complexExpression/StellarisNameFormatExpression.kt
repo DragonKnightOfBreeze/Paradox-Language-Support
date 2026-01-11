@@ -51,10 +51,6 @@ import icu.windea.pls.lang.resolve.complexExpression.impl.StellarisNameFormatExp
  *   - 当任一成对标记未闭合（如缺失 `]`、`>`、`}`），解析器会在相应包装节点内部追加空的`ParadoxErrorTokenNode`以标记不完整输入，
  *     并在必要时于当前层末尾补充一个尾随错误节点，便于高亮与补全的容错处理。
  *
- * - 校验约束：
- *   - 定义名需满足参数感知的标识符约束（`isParameterAwareIdentifier()`）。
- *   - 本地化名允许`.`、`-`、`'`，满足`isParameterAwareIdentifier('.', '-', '\'')`的检查。
- *
  * - 配置关联：
  *   - `formatName` 来自 CWT 规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
  *

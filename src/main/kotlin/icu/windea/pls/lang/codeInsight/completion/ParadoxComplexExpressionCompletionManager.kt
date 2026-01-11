@@ -664,9 +664,9 @@ object ParadoxComplexExpressionCompletionManager {
         return withState(PlsStates.incompleteComplexExpression, action)
     }
 
-    private fun isIdentifierKeyword(context: ProcessingContext, vararg extraChars: Char): Boolean {
+    private fun isIdentifierKeyword(context: ProcessingContext): Boolean {
         val keyword = context.keyword
-        return keyword.isEmpty() || keyword.isIdentifier(*extraChars)
+        return keyword.isEmpty() || keyword.isIdentifier()
     }
 
     // endregion

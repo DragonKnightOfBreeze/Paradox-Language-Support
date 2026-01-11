@@ -135,21 +135,21 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val expression = context.expression.value
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isStringType() && context.expression.type != ParadoxType.Int && context.expression.type != ParadoxType.Float) return ParadoxMatchResult.NotMatch
-        if (!expression.isParameterAwareIdentifier('.', '-')) return ParadoxMatchResult.NotMatch
+        if (!expression.isParameterAwareIdentifier(".-")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, expression, context.configExpression)
     }
 
     private fun matchLocalisation(context: Context): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier('.', '-', '\'')) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
 
     private fun matchSyncedLocalisation(context: Context): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier('.', '-', '\'')) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forSyncedLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
@@ -157,7 +157,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchInlineLocalisation(context: Context): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.quoted) return ParadoxMatchResult.FallbackMatch // "quoted_string" -> any string
-        if (!context.expression.value.isParameterAwareIdentifier('.', '-', '\'')) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
@@ -199,7 +199,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         // dynamicValue的值必须合法
         val name = ParadoxDynamicValueManager.getName(context.expression.value) ?: return ParadoxMatchResult.NotMatch
-        if (!name.isIdentifier('.')) return ParadoxMatchResult.NotMatch
+        if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
         val dynamicValueType = context.configExpression.value
         if (dynamicValueType == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.FallbackMatch
@@ -270,7 +270,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchLocalisationParameter(context: Context): ParadoxMatchResult {
         // 匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
-        if (!context.expression.value.isParameterAwareIdentifier('.', '-', '\'')) return ParadoxMatchResult.NotMatch
+        if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 

@@ -62,7 +62,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         val value = context.expressionText.unquote()
         val valueType = ParadoxTypeResolver.resolve(value)
         if (valueType != ParadoxType.String && valueType != ParadoxType.Int && valueType != ParadoxType.Float) return ParadoxMatchResult.NotMatch
-        if (!value.isIdentifier('.', '-')) return ParadoxMatchResult.NotMatch
+        if (!value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, value, context.configExpression)
     }
 

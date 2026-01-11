@@ -107,7 +107,7 @@ object ParadoxDefinitionManager {
     fun getTypeKey(element: ParadoxScriptDefinitionElement): String? {
         if (element is ParadoxScriptFile) return element.name.substringBeforeLast('.')
         val typeKey = element.name
-        if (!typeKey.isIdentifier('.', '-')) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
+        if (!typeKey.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
         if (ParadoxInlineScriptManager.isMatched(typeKey, element)) return null // 排除是内联脚本用法的情况
         return typeKey
     }

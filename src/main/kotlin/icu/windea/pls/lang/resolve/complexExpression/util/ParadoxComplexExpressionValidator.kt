@@ -42,7 +42,7 @@ object ParadoxComplexExpressionValidator {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') // 兼容点号
+                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier(".") // 兼容点号
                 else -> true
             }
         }
@@ -122,7 +122,7 @@ object ParadoxComplexExpressionValidator {
             when {
                 it is ParadoxDatabaseObjectDataNode -> {
                     when {
-                        config?.localisation != null -> it.text.isParameterAwareIdentifier('.', '-', '\'')
+                        config?.localisation != null -> it.text.isParameterAwareIdentifier(".-'")
                         else -> it.text.isParameterAwareIdentifier()
                     }
                 }
@@ -153,7 +153,7 @@ object ParadoxComplexExpressionValidator {
         val result = validateAllNodes(expression, errors) {
             when (it) {
                 is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
-                is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
+                is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")
                 else -> true
             }
         }

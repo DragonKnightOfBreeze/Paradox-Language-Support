@@ -274,7 +274,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                             var j = i + 1
                             while (j < end && !inParam(j) && isIdentifierChar(text[j])) j++
                             // treat as localisation name only if it looks like an identifier
-                            if (text.substring(i, j).isParameterAwareIdentifier('.', '-', '\'')) {
+                            if (text.substring(i, j).isParameterAwareIdentifier(".-'")) {
                                 addConstant(targetNodes, segStart, i)
                                 addLocalisation(targetNodes, i, j)
                                 i = j

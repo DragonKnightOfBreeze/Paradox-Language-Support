@@ -6,7 +6,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
@@ -68,26 +67,28 @@ inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionEl
 
 // Language Extensions
 
-fun Char.isIdentifierChar(): Boolean {
-    return StringUtil.isJavaIdentifierPart(this)
+fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
+    return StringUtil.isJavaIdentifierPart(this) || extraChars.isNotEmpty() && this in extraChars
 }
 
-fun String.isIdentifier(vararg extraChars: Char): Boolean {
-    return this.all { c -> c.isIdentifierChar() || c in extraChars }
+fun String.isIdentifier(extraChars: String = ""): Boolean {
+    if(isEmpty()) return false
+    for ((_, c) in this.withIndex()) {
+        if (c.isIdentifierChar(extraChars)) continue
+        return false
+    }
+    return true
 }
 
-fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
-    // 比较复杂的实现逻辑
-    val fullRange = TextRange.create(0, this.length)
-    val parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
-    val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
-    ranges.forEach f@{ range ->
-        for (i in range.startOffset until range.endOffset) {
-            if (i >= this.length) continue
-            val c = this[i]
-            if (c.isIdentifierChar() || c in extraChars) continue
-            return false
-        }
+fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
+    // 优化：仅在必要时获取参数范围
+    if(isEmpty()) return false
+    var parameterRanges: List<TextRange>? = null
+    for ((i, c) in this.withIndex()) {
+        if (c.isIdentifierChar(extraChars)) continue
+        if (parameterRanges == null) parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
+        if (parameterRanges.any { it.contains(i) }) continue
+        return false
     }
     return true
 }
