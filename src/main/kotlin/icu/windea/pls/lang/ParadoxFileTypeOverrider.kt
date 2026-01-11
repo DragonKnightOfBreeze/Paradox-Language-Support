@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxFileGroup
 /**
  * 文件类型重载器。
  *
- * 基于文件的扩展名以及相对于入口目录的路径，将符合的文件重载为脚本文件或本地化文件。
+ * 基于文件的扩展名以及相对于入口目录的路径，重载符合条件的文件的文件类型。
  */
 class ParadoxFileTypeOverrider : FileTypeOverrider {
     override fun getOverriddenFileType(file: VirtualFile): FileType? {
