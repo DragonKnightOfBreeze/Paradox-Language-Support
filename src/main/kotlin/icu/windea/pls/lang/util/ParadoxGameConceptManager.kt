@@ -20,6 +20,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.propertyValue
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
@@ -49,7 +50,7 @@ object ParadoxGameConceptManager {
             if (conceptText != null) return resolved to conceptText
             run r2@{
                 val tooltipOverride = resolved.findProperty("tooltip_override", inline = true)
-                    ?.propertyValue?.castOrNull<ParadoxScriptString>()
+                    ?.propertyValue<ParadoxScriptString>()
                     ?: return@r2
                 val override = tooltipOverride.references.lastOrNull()?.resolve() ?: return@r2
                 when {

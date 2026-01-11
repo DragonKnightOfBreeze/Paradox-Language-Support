@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.property
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
 /**
@@ -55,7 +55,7 @@ class ParadoxDefinitionInjectionExpressionCompletionProvider : CompletionProvide
                 if (container !is ParadoxScriptRootBlock) return // 必须位于文件顶级（就目前看来）
             }
             is ParadoxScriptPropertyKey -> {
-                val container = element.property?.parent
+                val container = element.parentProperty?.parent
                 if (container !is ParadoxScriptRootBlock) return // 属性必须位于文件顶级（就目前看来）
                 if (element.propertyValue !is ParadoxScriptBlock) return // 属性的值必须是子句
             }

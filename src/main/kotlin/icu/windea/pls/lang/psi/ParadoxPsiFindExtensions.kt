@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.parentBlock
 
 fun ParadoxScriptMemberContainer.members(): WalkingSequence<ParadoxScriptMember> {
     return ParadoxPsiSequenceBuilder.members(this)
@@ -134,7 +134,7 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
             return current.castOrNull<ParadoxScriptProperty>() as? T
         }
         ParadoxScriptValue::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptValue>() as? T
+            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue as? T
         }
     }
     return null
@@ -245,7 +245,7 @@ fun ParadoxScriptMember.findParentByPath(
         val memberPath = ParadoxMemberPath.resolve(path)
         for (subPath in memberPath.subPaths.reversed()) {
             current = when (subPath) {
-                "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
+                "-" -> current.parentBlock ?: return null
                 else -> current.findParentProperty(subPath, ignoreCase) ?: return null
             }
             ProgressManager.checkCanceled()

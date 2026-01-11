@@ -28,8 +28,8 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.parentProperty
 import javax.swing.JComponent
 
 /**
@@ -67,8 +67,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
 
                 // skip checking property if its property key may contain parameters
                 // position: (in property) property key / (standalone) left curly brace
-                val property = element.parent
-                    ?.castOrNull<ParadoxScriptProperty>()
+                val property = element.parentProperty
                 val position = property?.propertyKey
                     ?.also { if (it.text.isParameterized()) return }
                     ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }

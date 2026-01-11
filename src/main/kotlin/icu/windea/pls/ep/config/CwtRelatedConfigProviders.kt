@@ -48,7 +48,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.property
+import icu.windea.pls.script.psi.parentProperty
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
@@ -65,7 +65,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 尝试解析为定义注入目标
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
-            val property = element.property ?: return@run
+            val property = element.parentProperty ?: return@run
             val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(property) ?: return@run
             val modeConfig = definitionInjectionInfo.modeConfig
             result += modeConfig

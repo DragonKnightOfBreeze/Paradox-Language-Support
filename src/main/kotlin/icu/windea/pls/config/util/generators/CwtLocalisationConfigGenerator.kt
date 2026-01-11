@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
@@ -18,6 +17,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.propertyValue
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -115,11 +115,11 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
             val promotionsProp = rootProps.find { it.name == CONTAINER_PROMOTIONS }
             val commandsProp = rootProps.find { it.name == CONTAINER_COMMANDS }
 
-            val promotionNames = promotionsProp?.propertyValue?.castOrNull<CwtBlock>()?.children()
+            val promotionNames = promotionsProp?.propertyValue<CwtBlock>()?.children()
                 ?.filterIsInstance<CwtProperty>()
                 ?.mapTo(mutableSetOf()) { it.name }
                 .orEmpty()
-            val commandNames = commandsProp?.propertyValue?.castOrNull<CwtBlock>()?.children()
+            val commandNames = commandsProp?.propertyValue<CwtBlock>()?.children()
                 ?.filterIsInstance<CwtProperty>()
                 ?.mapTo(mutableSetOf()) { it.name }
                 .orEmpty()

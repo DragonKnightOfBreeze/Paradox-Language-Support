@@ -2,7 +2,30 @@
 
 package icu.windea.pls.cwt.psi
 
+import com.intellij.psi.util.siblings
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
+
+// region PSI Accessors
+
+val CwtExpressionElement.parentProperty: CwtProperty?
+    get() = parent?.castOrNull()
+
+val CwtMember.parentBlock: CwtBlock?
+    get() = parent?.castOrNull()
+
+val CwtPropertyKey.propertyValue: CwtValue?
+    get() = siblings(forward = true, withSelf = false).findIsInstance()
+
+val CwtValue.propertyKey: CwtPropertyKey?
+    get() = siblings(forward = false, withSelf = false).findIsInstance()
+
+inline fun <reified T : CwtValue> CwtProperty.propertyValue(): T? {
+    return propertyValue?.castOrNull<T>()
+}
+
+// endregion
 
 // region Predicates
 

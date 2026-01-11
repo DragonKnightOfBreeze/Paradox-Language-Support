@@ -5,7 +5,6 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -18,23 +17,27 @@ import java.awt.Color
 
 // region PSI Accessors
 
-val ParadoxScriptPropertyKey.property: ParadoxScriptProperty?
+val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty?
     get() = parent?.castOrNull()
+
+val ParadoxScriptMember.parentBlock: ParadoxScriptBlock?
+    get() = parent?.castOrNull()
+
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
     get() = siblings(forward = true, withSelf = false).findIsInstance()
 
 val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey?
     get() = siblings(forward = false, withSelf = false).findIsInstance()
 
+inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
+    return propertyValue?.castOrNull<T>()
+}
+
 val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?
     get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub
 
 val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
     get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
-    return findChild<T>(forward = false)
-}
 
 // endregion
 
@@ -80,7 +83,7 @@ fun ParadoxScriptExpressionElement.isDefinitionTypeKeyOrName(): Boolean {
 }
 
 fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
-    val definition = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
+    val definition = parentProperty ?: return false
     if (definition.definitionInfo != null) return true
     return false
 }
@@ -89,11 +92,11 @@ fun ParadoxScriptValue.isDefinitionName(): Boolean {
     // #131
     if (!this.isResolvableExpression()) return false
 
-    val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
+    val nameProperty = parentProperty ?: return false
     // def = def_name
     if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
-    val block = nameProperty.parent?.castOrNull<ParadoxScriptBlock>() ?: return false
-    val definition = block.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
+    val block = nameProperty.parentBlock ?: return false
+    val definition = block.parentProperty ?: return false
     // def = { name_prop = def_name }
     if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false

@@ -6,7 +6,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.psi.inline
@@ -17,6 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
 /**
@@ -35,7 +35,7 @@ class MismatchedEventIdInspection : EventInspectionBase() {
             val definitionInfo = property.definitionInfo ?: continue
             if (definitionInfo.type == "event_namespace") {
                 // 如果值不是一个字符串，作为空字符串存到缓存中
-                val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
+                val namespace = property.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
                 namespace2Events.getOrPut(namespace) { mutableListOf() }
             } else if (definitionInfo.type == ParadoxDefinitionTypes.event) {

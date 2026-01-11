@@ -21,9 +21,9 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.parentProperty
 
 /**
  * 对应的CWT规则有多个且存在冲突的表达式的代码检查。
@@ -46,8 +46,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
 
                 // skip checking property if its property key may contain parameters
                 // position: (in property) property key / (standalone) left curly brace
-                val property = element.parent
-                    ?.castOrNull<ParadoxScriptProperty>()
+                val property = element.parentProperty
                 val position = property?.propertyKey
                     ?.also { if (it.text.isParameterized()) return }
                     ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }

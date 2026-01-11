@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.property
+import icu.windea.pls.script.psi.parentProperty
 
 /**
  * 通过内嵌提示显示定义注入信息，仅包括目标类型。
@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.property
 class ParadoxDefinitionInjectionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptPropertyKey) return
-        val property = element.property ?: return
+        val property = element.parentProperty ?: return
         val definitionInjectionInfo = property.definitionInjectionInfo ?: return
         val typeConfig = definitionInjectionInfo.typeConfig ?: return
 

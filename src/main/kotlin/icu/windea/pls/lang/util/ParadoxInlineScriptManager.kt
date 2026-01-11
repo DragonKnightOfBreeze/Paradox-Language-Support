@@ -41,7 +41,6 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -50,6 +49,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.parentBlock
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.resolved
 import icu.windea.pls.script.psi.stringValue
 
@@ -174,10 +175,10 @@ object ParadoxInlineScriptManager {
     fun getUsageElement(expressionElement: PsiElement): ParadoxScriptProperty? {
         // hardcoded
         if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
-        val p1 = expressionElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
+        val p1 = expressionElement.parentProperty ?: return null
         if (isMatched(p1.name)) return p1 // NOTE 2.1.0 这里目前不验证游戏类型
         if (p1.name.equals("script", true)) {
-            val p2 = p1.parent?.castOrNull<ParadoxScriptBlock>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
+            val p2 = p1.parentBlock?.parentProperty ?: return null
             if (isMatched(p2.name)) return p2 // NOTE 2.1.0 这里目前不验证游戏类型
             return null
         }

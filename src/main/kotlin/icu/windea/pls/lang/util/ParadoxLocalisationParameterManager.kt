@@ -32,6 +32,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.propertyValue
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterManager {
@@ -68,7 +69,7 @@ object ParadoxLocalisationParameterManager {
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
-        return localisationReferencePropertyElement?.propertyValue?.castOrNull()
+        return localisationReferencePropertyElement?.propertyValue()
     }
 
     private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {

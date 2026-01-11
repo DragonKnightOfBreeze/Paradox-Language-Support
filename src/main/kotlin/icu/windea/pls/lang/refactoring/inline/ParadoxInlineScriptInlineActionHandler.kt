@@ -21,6 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.resolved
 
 class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
@@ -50,7 +51,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
-            val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
+            val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parentProperty ?: return@run
             val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
             val expressionElementReference = expressionElement.resolved()?.reference ?: return false
             val resolved = expressionElementReference.resolve() ?: return false
@@ -65,7 +66,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
-            val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
+            val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parentProperty ?: return@run
             val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
             val expressionElementReference = expressionElement.resolved()?.reference ?: return
             val resolved = expressionElementReference.resolve() ?: return

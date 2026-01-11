@@ -425,8 +425,8 @@ object ParadoxParameterManager {
     }
 
     fun getParameterizedKeyConfigs(element: PsiElement): List<CwtValueConfig> {
-        val parameterizedProperty = element
-        val propertyKey = parameterizedProperty.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return emptyList()
+        val parameterizedProperty = element.castOrNull<ParadoxScriptProperty>() ?: return emptyList()
+        val propertyKey = parameterizedProperty.propertyKey
         val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.index
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -21,6 +20,7 @@ import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.propertyValue
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -46,7 +46,7 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
         val gameType = selectGameType(psiFile) ?: return
         if (psiFile !is ParadoxScriptFile) return
         psiFile.properties().forEach f1@{ prop1 ->
-            val prop1Block = prop1.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return@f1
+            val prop1Block = prop1.propertyValue<ParadoxScriptBlock>() ?: return@f1
 
             val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f1
             val map = fileData.getOrPut(namespace) { mutableMapOf() } as MutableMap

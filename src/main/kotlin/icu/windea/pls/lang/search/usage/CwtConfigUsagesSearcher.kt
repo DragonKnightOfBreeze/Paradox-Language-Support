@@ -7,7 +7,6 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
@@ -15,6 +14,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.propertyValue
 import icu.windea.pls.cwt.psi.stringValue
 
 /**
@@ -53,8 +53,8 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
                 if (inlineName != null) extraWords.add(inlineName)
             }
             CwtConfigTypes.Link, CwtConfigTypes.LocalisationLink -> {
-                val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }
-                val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue?.orNull()
+                val prefixProperty = target.propertyValue<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }
+                val prefix = prefixProperty?.propertyValue<CwtString>()?.stringValue?.orNull()
                 if (prefix != null) extraWords.add(prefix)
             }
             else -> pass()

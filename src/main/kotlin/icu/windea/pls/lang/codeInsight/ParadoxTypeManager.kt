@@ -5,7 +5,6 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
@@ -54,7 +53,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
-import icu.windea.pls.script.psi.property
+import icu.windea.pls.script.psi.parentProperty
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
@@ -87,7 +86,7 @@ object ParadoxTypeManager {
         return when (element) {
             is ParadoxScriptScriptedVariable -> element.name
             is ParadoxScriptPropertyKey -> {
-                val definitionInfo = element.parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo ?: return null
+                val definitionInfo = element.parentProperty?.definitionInfo ?: return null
                 definitionInfo.name
             }
             is ParadoxLocalisationProperty -> element.name
@@ -157,7 +156,7 @@ object ParadoxTypeManager {
      */
     fun getDefinitionType(element: PsiElement): String? {
         if (element !is ParadoxScriptPropertyKey) return null
-        val property = element.property ?: return null
+        val property = element.parentProperty ?: return null
 
         val definitionInfo = property.definitionInfo
         if (definitionInfo != null) return definitionInfo.typesText

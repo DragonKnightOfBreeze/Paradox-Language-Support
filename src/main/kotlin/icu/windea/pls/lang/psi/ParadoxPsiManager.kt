@@ -13,7 +13,6 @@ import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.containsLineBreak
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
@@ -58,6 +57,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
+import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.resolved
 
@@ -196,8 +196,8 @@ object ParadoxPsiManager {
         if (element !is ParadoxScriptPropertyKey) return
         if (element.text.unquote().length != rangeInElement.length) return
 
-        val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-        val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
+        val property = element.parentProperty ?: return
+        val toInline = declaration.propertyValue<ParadoxScriptBlock>() ?: return
         var newText = toInline.text.trim()
         var reverse = false
         val valueElement = element.propertyValue?.resolved() ?: return
@@ -248,8 +248,8 @@ object ParadoxPsiManager {
         if (element !is ParadoxScriptPropertyKey) return
         if (element.text.unquote().length != rangeInElement.length) return
 
-        val property = element.parent?.castOrNull<ParadoxScriptProperty>() ?: return
-        val toInline = declaration.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return
+        val property = element.parentProperty ?: return
+        val toInline = declaration.propertyValue<ParadoxScriptBlock>() ?: return
         var newText = toInline.text.trim()
         val valueElement = element.propertyValue?.resolved() ?: return
         when (valueElement) {
