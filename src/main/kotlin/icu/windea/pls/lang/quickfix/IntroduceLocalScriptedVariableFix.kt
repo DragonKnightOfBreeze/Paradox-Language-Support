@@ -14,7 +14,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
+import icu.windea.pls.lang.psi.parentDefinitionOrInjection
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class IntroduceLocalScriptedVariableFix(
@@ -29,7 +30,7 @@ class IntroduceLocalScriptedVariableFix(
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement
-        val containerElmeent = element.findParentDefinitionOrInjection() ?: element.containingFile as? ParadoxScriptFile ?: return
+        val containerElmeent = element.search { parentDefinitionOrInjection() } ?: element.containingFile as? ParadoxScriptFile ?: return
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) c@{

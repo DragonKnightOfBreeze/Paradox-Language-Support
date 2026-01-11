@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UNCHECKED_CAST")
+@file:Suppress("unused")
 
 package icu.windea.pls.lang.psi
 
@@ -9,7 +9,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -21,32 +20,27 @@ import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
-import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.parentBlock
 
-fun ParadoxScriptMemberContainer.members(): WalkingSequence<ParadoxScriptMember> {
-    return ParadoxPsiSequenceBuilder.members(this)
-}
+object ParadoxPsiSearchScope
 
-fun ParadoxScriptMemberContainer.properties(): WalkingSequence<ParadoxScriptProperty> {
-    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptProperty>() }
-}
-
-fun ParadoxScriptMemberContainer.values(): WalkingSequence<ParadoxScriptValue> {
-    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptValue>() }
+@Suppress("UnusedReceiverParameter")
+inline fun <T : PsiElement, R> T.search(block: context(ParadoxPsiSearchScope) T.() -> R): R {
+    return with(ParadoxPsiSearchScope) { block() }
 }
 
 /**
  * 得到指定名字的属性。
+ *
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun PsiElement.findProperty(
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.property(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
     conditional: Boolean = false,
@@ -73,10 +67,12 @@ fun PsiElement.findProperty(
 
 /**
  * 得到符合指定条件的属性。可能为 `null`，可能是定义，可能是脚本文件。
+ *
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun PsiElement.findProperty(
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.property(
     conditional: Boolean = false,
     inline: Boolean = false,
     propertyPredicate: (String) -> Boolean
@@ -101,50 +97,10 @@ fun PsiElement.findProperty(
 }
 
 /**
- * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- * @see ParadoxMemberPath
- * @see ParadoxScriptMember
- */
-fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
-    path: String,
-    targetType: Class<T>,
-    ignoreCase: Boolean = true,
-    conditional: Boolean = false,
-    inline: Boolean = false
-): T? {
-    if (language !is ParadoxScriptLanguage) return null
-    var current: ParadoxScriptMember = this
-    if (path.isNotEmpty()) {
-        val memberPath = ParadoxMemberPath.resolve(path)
-        for (subPath in memberPath.subPaths) {
-            if (subPath == "-") {
-                return null // TODO 暂不支持
-            } else {
-                current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
-            }
-            ProgressManager.checkCanceled()
-        }
-    } else {
-        current = current.findProperty("", ignoreCase, conditional, inline) ?: return null
-    }
-    when {
-        ParadoxScriptProperty::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>() as? T
-        }
-        ParadoxScriptValue::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue as? T
-        }
-    }
-    return null
-}
-
-/**
  * 向上得到第一个定义。可能为 `null`，可能为自身。
  */
-fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
-    if (language !is ParadoxScriptLanguage) return null
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentDefinition(): ParadoxScriptDefinitionElement? {
     return parents(withSelf = true)
         .takeWhile { it !is PsiDirectory }
         .filterIsInstance<ParadoxScriptDefinitionElement>()
@@ -154,7 +110,8 @@ fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
 /**
  * 向上得到第一个定义注入。可能为 `null`，可能为自身。
  */
-fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentDefinitionInjection(): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
         .takeWhile { it !is ParadoxScriptRootBlock }
@@ -165,7 +122,8 @@ fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
 /**
  * 向上得到第一个定义或定义注入。可能为 `null`，可能为自身。
  */
-fun PsiElement.findParentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
         .takeWhile { it !is PsiDirectory }
@@ -175,10 +133,12 @@ fun PsiElement.findParentDefinitionOrInjection(): ParadoxScriptDefinitionElement
 
 /**
  * 向上得到第一个属性。可能为 `null`，可能是定义，可能是脚本文件。
+ *
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
-fun PsiElement.findParentProperty(
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentProperty(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
     fromParentBlock: Boolean = false
@@ -203,9 +163,11 @@ fun PsiElement.findParentProperty(
 
 /**
  * 向上得到第一个符合指定条件的属性。可能为 `null`，可能是定义，可能是脚本文件。
+ *
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
-fun PsiElement.findParentProperty(
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentProperty(
     fromParentBlock: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptDefinitionElement? {
@@ -228,31 +190,65 @@ fun PsiElement.findParentProperty(
 }
 
 /**
- * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
- * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
+ * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
+ *
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ *
  * @see ParadoxMemberPath
- * @see ParadoxScriptMember
- * @see ParadoxDefinitionTypeExpression
  */
-fun ParadoxScriptMember.findParentByPath(
+context(_: ParadoxPsiSearchScope)
+fun ParadoxScriptMember.propertyByPath(
+    path: String,
+    ignoreCase: Boolean = true,
+    conditional: Boolean = false,
+    inline: Boolean = false
+): ParadoxScriptProperty? {
+    // if (language !is ParadoxScriptLanguage) return null
+    var current: ParadoxScriptMember = this
+    if (path.isNotEmpty()) {
+        val memberPath = ParadoxMemberPath.resolve(path)
+        for (subPath in memberPath.subPaths) {
+            if (subPath == "-") {
+                return null // TODO 暂不支持
+            } else {
+                current = current.property(subPath, ignoreCase, conditional, inline) ?: return null
+            }
+            ProgressManager.checkCanceled()
+        }
+    } else {
+        current = current.property("", ignoreCase, conditional, inline) ?: return null
+    }
+    return current.castOrNull()
+}
+
+/**
+ * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
+ *
+ * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
+ *
+ * @see ParadoxMemberPath
+ */
+context(_: ParadoxPsiSearchScope)
+fun ParadoxScriptMember.parentByPath(
     path: String = "",
     ignoreCase: Boolean = true,
     definitionType: String? = null
 ): PsiElement? {
-    if (language !is ParadoxScriptLanguage) return null
+    // if (language !is ParadoxScriptLanguage) return null
     var current = this
     if (path.isNotEmpty()) {
         val memberPath = ParadoxMemberPath.resolve(path)
         for (subPath in memberPath.subPaths.reversed()) {
             current = when (subPath) {
                 "-" -> current.parentBlock ?: return null
-                else -> current.findParentProperty(subPath, ignoreCase) ?: return null
+                else -> current.parentProperty(subPath, ignoreCase) ?: return null
             }
             ProgressManager.checkCanceled()
         }
     }
     if (definitionType != null) {
-        val result = current.findParentProperty(null) ?: return null
+        val result = current.parentProperty(null) ?: return null
         val definitionInfo = result.definitionInfo ?: return null
         if (definitionType.isNotEmpty()) {
             if (!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null

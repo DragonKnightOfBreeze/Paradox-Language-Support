@@ -116,13 +116,13 @@ object ParadoxPsiFileManager {
             if (BitUtil.isSet(options, DefinitionOptions.BY_TYPE_KEY)) {
                 val element = expressionElement
                 if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) {
-                    return element.findParentDefinition()
+                    return element.search { parentDefinition() }
                 }
             }
             if (BitUtil.isSet(options, DefinitionOptions.BY_NAME)) {
                 val element = expressionElement
                 if (element is ParadoxScriptValue && element.isDefinitionName()) {
-                    return element.findParentDefinition()
+                    return element.search { parentDefinition() }
                 }
             }
         }

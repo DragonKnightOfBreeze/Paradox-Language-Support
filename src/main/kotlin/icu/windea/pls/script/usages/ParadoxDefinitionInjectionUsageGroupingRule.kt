@@ -9,7 +9,8 @@ import com.intellij.usages.rules.PsiElementUsage
 import com.intellij.usages.rules.SingleParentUsageGroupingRule
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.findParentDefinitionInjection
+import icu.windea.pls.lang.psi.parentDefinitionInjection
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -36,6 +37,6 @@ class ParadoxDefinitionInjectionUsageGroupingRule(
                 element = element.findElementAt(offset) ?: element
             }
         }
-        return element.findParentDefinitionInjection()
+        return element.search { parentDefinitionInjection() }
     }
 }

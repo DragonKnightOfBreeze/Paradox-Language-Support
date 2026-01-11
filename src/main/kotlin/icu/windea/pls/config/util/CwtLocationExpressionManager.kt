@@ -16,7 +16,8 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.findByPath
+import icu.windea.pls.lang.psi.propertyByPath
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -36,7 +37,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
 
 object CwtLocationExpressionManager {
@@ -66,7 +66,7 @@ object CwtLocationExpressionManager {
             return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
         }
 
-        val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+        val valueElement = definition.search { propertyByPath(location, conditional = true, inline = true) }?.propertyValue ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationAware) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
@@ -164,7 +164,7 @@ object CwtLocationExpressionManager {
             return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
         }
 
-        val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+        val valueElement = definition.search { propertyByPath(location, conditional = true, inline = true) }?.propertyValue ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationAware) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
@@ -242,6 +242,8 @@ object CwtLocationExpressionManager {
 
     private fun findByPaths(definition: ParadoxScriptDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
-        return paths.firstNotNullOfOrNull { definition.findByPath(it, ParadoxScriptValue::class.java, conditional = true, inline = true)?.stringValue() }
+        return paths.firstNotNullOfOrNull { path ->
+            definition.search { propertyByPath(path, conditional = true, inline = true) }?.propertyValue?.stringValue()
+        }
     }
 }

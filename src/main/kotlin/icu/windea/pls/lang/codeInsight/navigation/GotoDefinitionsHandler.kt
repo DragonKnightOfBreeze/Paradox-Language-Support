@@ -16,7 +16,8 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -35,7 +36,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
-        val definition = element.findParentDefinition() ?: return null
+        val definition = element.search { parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
         val targets = mutableListOf<PsiElement>()

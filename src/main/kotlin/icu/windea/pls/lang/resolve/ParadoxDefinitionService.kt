@@ -22,7 +22,8 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchUtil
-import icu.windea.pls.lang.psi.findProperty
+import icu.windea.pls.lang.psi.property
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -44,7 +45,7 @@ object ParadoxDefinitionService {
             // from property value (which should be a string)
             typeConfig.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
             // from specific property value in definition declaration (while the property name is declared by config property "name_field")
-            else -> element.findProperty(typeConfig.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+            else -> element.search { property(typeConfig.nameField) }?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
     }
 

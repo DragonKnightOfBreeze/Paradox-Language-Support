@@ -7,7 +7,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
@@ -106,6 +107,6 @@ object ParadoxSearchScopeTypes {
             }
             else -> null
         }
-        return contextElement?.findParentDefinition()
+        return contextElement?.search { parentDefinition() }
     }
 }

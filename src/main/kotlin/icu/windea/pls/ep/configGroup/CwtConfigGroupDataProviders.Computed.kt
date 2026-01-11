@@ -13,7 +13,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
-import icu.windea.pls.config.findPropertyByPath
+import icu.windea.pls.config.propertyByPath
+import icu.windea.pls.config.search
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
@@ -96,7 +97,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
                 val configPaths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey) }
                 val c0 = baseDeclarationConfig.configForDeclaration
-                val c = configPaths.firstNotNullOfOrNull { c0.findPropertyByPath(it, ignoreCase = true) } ?: continue
+                val c = configPaths.firstNotNullOfOrNull { c0.search { propertyByPath(it, ignoreCase = true) } } ?: continue
                 // read action is required here (for logging)
                 val declarationConfig = readAction { CwtDeclarationConfig.resolve(c, name = typeName) } ?: continue
                 initializer.declarations[typeName] = declarationConfig

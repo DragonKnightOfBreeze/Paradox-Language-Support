@@ -21,8 +21,9 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
-import icu.windea.pls.lang.psi.findParentDefinition
-import icu.windea.pls.lang.psi.findParentDefinitionInjection
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.parentDefinitionInjection
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -76,7 +77,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        val definition = element.findParentDefinition() ?: return null
+        val definition = element.search { parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val definitionMemberPath = definitionInfo.memberPath
         val memberPathFromRoot = definitionMemberPath.relativeTo(memberPath) ?: return null
@@ -305,7 +306,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         if (memberPath.isEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return null // 忽略游戏类型不支持的情况
-        val definitionInjection = element.findParentDefinitionInjection() ?: return null
+        val definitionInjection = element.search { parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
         val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(1)) // 去除第一个子路径
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)

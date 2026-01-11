@@ -77,10 +77,11 @@ import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.conditional
-import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
+import icu.windea.pls.lang.psi.parentByPath
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
@@ -327,7 +328,7 @@ object ParadoxExpressionManager {
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
             val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
-            val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
+            val elementToMatch = memberElement.search { parentByPath(pathToMatch.path) }?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null

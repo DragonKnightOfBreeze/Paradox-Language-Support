@@ -27,7 +27,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -110,7 +111,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             // event = { id = _ }
             // #131 won't be a number or some type else on completion
             element is ParadoxScriptString && element.isDefinitionName() -> {
-                val definition = element.findParentDefinition() ?: return
+                val definition = element.search { parentDefinition() } ?: return
                 val definitionInfo = definition.definitionInfo
                 if (definitionInfo != null) {
                     val type = definitionInfo.type

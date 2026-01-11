@@ -12,7 +12,8 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -53,7 +54,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
                 val element = findElement(file, editor.caretModel.offset)
                 val contextElement = when {
                     element == null -> null
-                    element.isDefinitionTypeKeyOrName() -> element.findParentDefinition()
+                    element.isDefinitionTypeKeyOrName() -> element.search { parentDefinition() }
                     else -> element
                 }
                 if (contextElement == null) return null

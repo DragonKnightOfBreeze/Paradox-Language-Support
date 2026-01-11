@@ -7,8 +7,9 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.findParentDefinition
-import icu.windea.pls.lang.psi.findParentDefinitionInjection
+import icu.windea.pls.lang.psi.parentDefinition
+import icu.windea.pls.lang.psi.parentDefinitionInjection
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
@@ -55,7 +56,7 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         // parentDefinitionName 作为前缀
         run {
             if (declarationInfo is ParadoxTargetInfo.Definition) return@run // 排除本身是定义的情况
-            val parentDefinition = nameSuggestionContext?.findParentDefinition() ?: return@run
+            val parentDefinition = nameSuggestionContext?.search { parentDefinition() } ?: return@run
             val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinition) ?: return@run
             if (!isSupported(parentDeclarationInfo)) return@run
             val parentDefinitionInfo = parentDefinition.definitionInfo ?: return@run
@@ -67,7 +68,7 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         // 兼容定义注入
         run {
             if (declarationInfo is ParadoxTargetInfo.DefinitionInjection) return@run // 排除本身是定义注入的情况
-            val parentDefinitionInjection = nameSuggestionContext?.findParentDefinitionInjection() ?: return@run
+            val parentDefinitionInjection = nameSuggestionContext?.search { parentDefinitionInjection() } ?: return@run
             val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinitionInjection) ?: return@run
             if (!isSupported(parentDeclarationInfo)) return@run
             val parentDefinitionInjectionInfo = parentDefinitionInjection.definitionInjectionInfo ?: return@run

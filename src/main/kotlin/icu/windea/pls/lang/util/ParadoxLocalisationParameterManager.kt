@@ -22,8 +22,9 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.parentProperty
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.search.selector.localisationParameter
@@ -75,7 +76,7 @@ object ParadoxLocalisationParameterManager {
     private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {
         val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
         if (configToUse == null) return emptyList()
-        val context = element.findParentProperty(fromParentBlock = true)
+        val context = element.search { search { parentProperty(fromParentBlock = true) } }
             ?.castOrNull<ParadoxScriptProperty>()
             ?: return emptyList()
         val result = mutableListOf<ParadoxScriptProperty>()
@@ -92,8 +93,7 @@ object ParadoxLocalisationParameterManager {
     private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {
         val configToUse = config.parentConfig?.parentConfig?.configs?.find { isLocalisationConfig(element, it) }
         if (configToUse == null) return null
-        val context = element.findParentProperty(fromParentBlock = true)
-            ?.findParentProperty(fromParentBlock = true)
+        val context = element.search { search { parentProperty(fromParentBlock = true) }?.search { parentProperty(fromParentBlock = true) } }
             ?.castOrNull<ParadoxScriptProperty>()
             ?: return null
         var result: ParadoxScriptProperty? = null

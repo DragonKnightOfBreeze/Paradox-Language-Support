@@ -17,7 +17,8 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.psi.findProperty
+import icu.windea.pls.lang.psi.property
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -130,7 +131,7 @@ object ParadoxScriptPsiImplUtil {
         if (definitionInfo == null) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            val nameProperty = element.findProperty(nameField) // 不处理内联的情况
+            val nameProperty = element.search { property(nameField) } // 不处理内联的情况
             if (nameProperty != null) {
                 val nameElement = nameProperty.propertyValue<ParadoxScriptString>()
                 nameElement?.setValue(name)

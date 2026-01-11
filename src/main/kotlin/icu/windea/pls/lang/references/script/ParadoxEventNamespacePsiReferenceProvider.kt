@@ -9,7 +9,8 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.findParentByPath
+import icu.windea.pls.lang.psi.parentByPath
+import icu.windea.pls.lang.psi.search
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -24,7 +25,7 @@ class ParadoxEventNamespacePsiReferenceProvider : PsiReferenceProvider() {
         if (element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
         if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY // 不应当带有参数
         val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY
-        val event = element.findParentByPath("id", definitionType = ParadoxDefinitionTypes.event) // 不处理内联的情况
+        val event = element.search { parentByPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
         if (event !is ParadoxScriptProperty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxEventNamespacePsiReference(element, rangeInElement, event.createPointer())
         return arrayOf(reference)
