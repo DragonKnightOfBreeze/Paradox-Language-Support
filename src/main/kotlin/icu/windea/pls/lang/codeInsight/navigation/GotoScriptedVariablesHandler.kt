@@ -20,7 +20,6 @@ import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import java.util.*
 
 class GotoScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {

@@ -12,19 +12,17 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.parentDefinitionOrInjection
+import icu.windea.pls.lang.psi.parentPropertyDefinitionOrInjection
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
@@ -35,7 +33,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         if (file.virtualFile == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        return element.search { parentDefinitionOrInjection() }?.castOrNull<ParadoxScriptProperty>() != null
+        return element.search { parentPropertyDefinitionOrInjection() } != null
     }
 
     override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {

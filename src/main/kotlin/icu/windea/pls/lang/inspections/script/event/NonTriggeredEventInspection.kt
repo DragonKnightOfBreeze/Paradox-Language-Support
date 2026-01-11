@@ -12,9 +12,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.property
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.property
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.psi.parentProperty
+import icu.windea.pls.lang.psi.parent
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -41,7 +41,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxScriptDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseType) a@{
-                val superDefinition = definitionInfo.element.search { parentProperty() }
+                val superDefinition = definitionInfo.element.search { parent() }
                 val superDefinitionInfo = superDefinition?.definitionInfo ?: return@a null
                 if (!ParadoxDefinitionTypeExpression.resolve(baseType).matches(superDefinitionInfo)) return@a null
                 superDefinition

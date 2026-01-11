@@ -43,7 +43,6 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxRootInfo
 import java.awt.Color
-import java.util.*
 import javax.swing.Icon
 
 /**

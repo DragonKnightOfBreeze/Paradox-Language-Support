@@ -33,9 +33,9 @@ inline fun <T : PsiElement, R> T.search(block: context(ParadoxPsiSearchScope) T.
 }
 
 /**
- * 得到指定名字的属性。
+ * 得到指定名字的属性。可能为 `null`，可能是定义。
  *
- * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果为空字符串且自身是脚本属性，则返回自身。
+ * @param propertyName 要查找到的属性的名字。如果为 `null`，则不指定。如果为空字符串且自身是脚本属性，则返回自身。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
@@ -66,7 +66,7 @@ fun PsiElement.property(
 }
 
 /**
- * 得到符合指定条件的属性。可能为 `null`，可能是定义，可能是脚本文件。
+ * 得到符合指定条件的属性。可能为 `null`，可能是定义。
  *
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
@@ -108,6 +108,17 @@ fun PsiElement.parentDefinition(): ParadoxScriptDefinitionElement? {
 }
 
 /**
+ * 向上得到第一个作为脚本属性的定义。可能为 `null`，可能为自身。
+ */
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentPropertyDefinition(): ParadoxScriptProperty? {
+    return parents(withSelf = true)
+        .takeWhile { it !is ParadoxScriptRootBlock }
+        .filterIsInstance<ParadoxScriptProperty>()
+        .find { it.definitionInfo != null }
+}
+
+/**
  * 向上得到第一个定义注入。可能为 `null`，可能为自身。
  */
 context(_: ParadoxPsiSearchScope)
@@ -132,13 +143,25 @@ fun PsiElement.parentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
 }
 
 /**
+ * 向上得到第一个作为脚本属性的定义或定义注入。可能为 `null`，可能为自身。
+ */
+context(_: ParadoxPsiSearchScope)
+fun PsiElement.parentPropertyDefinitionOrInjection(): ParadoxScriptProperty? {
+    if (language !is ParadoxScriptLanguage) return null
+    return parents(withSelf = true)
+        .takeWhile { it !is ParadoxScriptRootBlock }
+        .filterIsInstance<ParadoxScriptProperty>()
+        .find { it.definitionInfo != null || (it.parent is ParadoxScriptRootBlock && it.definitionInjectionInfo != null) }
+}
+
+/**
  * 向上得到第一个属性。可能为 `null`，可能是定义，可能是脚本文件。
  *
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 context(_: ParadoxPsiSearchScope)
-fun PsiElement.parentProperty(
+fun PsiElement.parent(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
     fromParentBlock: Boolean = false
@@ -167,7 +190,7 @@ fun PsiElement.parentProperty(
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 context(_: ParadoxPsiSearchScope)
-fun PsiElement.parentProperty(
+fun PsiElement.parent(
     fromParentBlock: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptDefinitionElement? {
@@ -242,13 +265,13 @@ fun ParadoxScriptMember.parentByPath(
         for (subPath in memberPath.subPaths.reversed()) {
             current = when (subPath) {
                 "-" -> current.parentBlock ?: return null
-                else -> current.parentProperty(subPath, ignoreCase) ?: return null
+                else -> current.parent(subPath, ignoreCase) ?: return null
             }
             ProgressManager.checkCanceled()
         }
     }
     if (definitionType != null) {
-        val result = current.parentProperty(null) ?: return null
+        val result = current.parent(null) ?: return null
         val definitionInfo = result.definitionInfo ?: return null
         if (definitionType.isNotEmpty()) {
             if (!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null

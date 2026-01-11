@@ -36,8 +36,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.parent
 import icu.windea.pls.lang.psi.parentDefinition
-import icu.windea.pls.lang.psi.parentProperty
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
@@ -105,7 +105,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
                 // infer context config
                 contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
                 if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-                contextReferenceElement = element.search { search { parentProperty(fromParentBlock = true) } }?.castOrNull<ParadoxScriptProperty>() ?: return null
+                contextReferenceElement = element.search { search { parent(fromParentBlock = true) } }?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -197,7 +197,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     private fun doResolveArgument(element: ParadoxScriptPropertyKey, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
-        val contextReferenceElement = element.search { search { parentProperty(fromParentBlock = true) } }?.castOrNull<ParadoxScriptProperty>() ?: return null
+        val contextReferenceElement = element.search { search { parent(fromParentBlock = true) } }?.castOrNull<ParadoxScriptProperty>() ?: return null
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
@@ -445,7 +445,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 // infer inline config
                 val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
                 inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) } ?: return null
-                contextReferenceElement = element.search { parentProperty(fromParentBlock = true) }?.castOrNull<ParadoxScriptProperty>() ?: return null
+                contextReferenceElement = element.search { parent(fromParentBlock = true) }?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             // extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
@@ -533,7 +533,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) }
         if (inlineConfig == null) return null
-        val contextReferenceElement = element.search { parentProperty(fromParentBlock = true) }?.castOrNull<ParadoxScriptProperty>() ?: return null
+        val contextReferenceElement = element.search { parent(fromParentBlock = true) }?.castOrNull<ParadoxScriptProperty>() ?: return null
         val argumentName = element.name.orNull()?.takeIf { it != "script" } ?: return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName

@@ -18,17 +18,15 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.parentDefinitionOrInjection
+import icu.windea.pls.lang.psi.parentPropertyDefinitionOrInjection
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
@@ -39,7 +37,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        return element.search { parentDefinitionOrInjection() }?.castOrNull<ParadoxScriptProperty>() != null
+        return element.search { parentPropertyDefinitionOrInjection() } != null
     }
 
     @Suppress("UnstableApiUsage")
@@ -54,7 +52,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 
         // 要求对应的字面量在定义声明内
         // 2.1.0 兼容定义注入
-        val containerElement = element.search { parentDefinitionOrInjection() }?.castOrNull<ParadoxScriptProperty>() ?: return false
+        val containerElement = element.search { parentPropertyDefinitionOrInjection() } ?: return false
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {
