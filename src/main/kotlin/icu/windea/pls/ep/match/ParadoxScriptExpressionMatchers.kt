@@ -3,7 +3,6 @@ package icu.windea.pls.ep.match
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
@@ -289,7 +288,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchStellarisNameFormatExpression(context: Context): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        if(context.config == null) return ParadoxMatchResult.NotMatch
+        if (context.config == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultProvider.forStellarisNameFormatExpression(context.configGroup, context.expression.value, context.config)
     }
 
@@ -362,10 +361,9 @@ class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: Context): ParadoxMatchResult? {
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
-        // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig
-        val memberConfig = if (context.config is CwtMemberConfig<*>) context.config.memberConfig else null
-        if (memberConfig == null) return null
-        if (!ParadoxMatchProvider.matchesByPredicate(context.element, memberConfig)) return ParadoxMatchResult.NotMatch
+        val config = context.config
+        if (config !is CwtMemberConfig<*>) return null
+        if (!ParadoxMatchProvider.matchesByPredicate(context.element, config)) return ParadoxMatchResult.NotMatch
         return null
     }
 }
