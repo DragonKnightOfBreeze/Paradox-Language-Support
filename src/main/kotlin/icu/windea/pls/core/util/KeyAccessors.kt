@@ -15,7 +15,7 @@ import kotlin.reflect.KProperty
 @Suppress("UNCHECKED_CAST")
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> T): T {
     val value = getUserData(key)
-    if (value == EMPTY_OBJECT) return null as T
+    if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = action()
     // default value is still saved if it's null
@@ -30,7 +30,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> 
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T? {
     val value = getUserData(key)
-    if (value == EMPTY_OBJECT) return null
+    if (value === EMPTY_OBJECT) return null
     if (value != null) return value
     val defaultValue = when {
         key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, THIS>).factory(this)
@@ -48,7 +48,7 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKeyWithFactory<T, THIS>): T {
     val value = getUserData(key)
-    if (value == EMPTY_OBJECT) return null as T
+    if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
     // default value is still saved if it's null
@@ -75,7 +75,7 @@ inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, propert
 @Suppress("UNCHECKED_CAST")
 fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
     val value = get(key)
-    if (value == EMPTY_OBJECT) return null
+    if (value === EMPTY_OBJECT) return null
     if (value != null) return value
     val defaultValue = when {
         key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, ProcessingContext>).factory(this)
@@ -93,7 +93,7 @@ fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
 @Suppress("UNCHECKED_CAST")
 fun <T> ProcessingContext.getOrDefault(key: RegistedKeyWithFactory<T, ProcessingContext>): T {
     val value = get(key)
-    if (value == EMPTY_OBJECT) return null as T
+    if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
     // default value is still saved if it's null

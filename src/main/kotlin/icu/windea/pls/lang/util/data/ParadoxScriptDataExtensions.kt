@@ -69,7 +69,7 @@ object ParadoxScriptDataValueProvider {
 
     private fun doGetValueFromCache(data: ParadoxScriptData, type: KType): Any? {
         val propertyValues = data.getOrPutUserData(cacheKey) { mutableMapOf() }
-        return propertyValues.getOrPut(type) { doGetValue(data, type) ?: EMPTY_OBJECT }.takeUnless { it == EMPTY_OBJECT }
+        return propertyValues.getOrPut(type) { doGetValue(data, type) ?: EMPTY_OBJECT }.takeUnless { it === EMPTY_OBJECT }
     }
 
     private fun doGetValue(data: ParadoxScriptData, type: KType): Any? {
