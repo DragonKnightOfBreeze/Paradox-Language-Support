@@ -36,6 +36,7 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.model.ParadoxGameType
@@ -76,11 +77,12 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 检查输入的字符串是否匹配内联脚本用法的键（也会检查游戏类型）。
+     * 检查输入的字符串是否匹配内联脚本用法的键（会从 [context] 选取游戏类型并检查）。
      */
-    fun isMatched(expression: String, gameType: ParadoxGameType?): Boolean {
+    fun isMatched(expression: String, context: Any?): Boolean {
+        if (context == null) return false
         if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
-        return isSupported(gameType)
+        return isSupported(selectGameType(context))
     }
 
     /**

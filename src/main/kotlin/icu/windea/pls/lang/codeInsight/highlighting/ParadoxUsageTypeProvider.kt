@@ -15,7 +15,6 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -74,7 +73,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         // 尝试解析为定义注入目标
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
-            if (!ParadoxDefinitionInjectionManager.isMatched(element.name, selectGameType(element))) return@run
+            if (!ParadoxDefinitionInjectionManager.isMatched(element.name, element)) return@run
             return ParadoxUsageTypes.DEFINITION_INJECTION_TARGET
         }
 

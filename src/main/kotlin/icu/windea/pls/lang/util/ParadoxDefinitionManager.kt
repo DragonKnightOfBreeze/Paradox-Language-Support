@@ -23,7 +23,6 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -109,7 +108,7 @@ object ParadoxDefinitionManager {
         if (element is ParadoxScriptFile) return element.name.substringBeforeLast('.')
         val typeKey = element.name
         if (!typeKey.isIdentifier('.', '-')) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
-        if (ParadoxInlineScriptManager.isMatched(typeKey, selectGameType(element))) return null // 排除是内联脚本用法的情况
+        if (ParadoxInlineScriptManager.isMatched(typeKey, element)) return null // 排除是内联脚本用法的情况
         return typeKey
     }
 

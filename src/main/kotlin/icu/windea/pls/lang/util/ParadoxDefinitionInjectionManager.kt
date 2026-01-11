@@ -24,6 +24,7 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -63,12 +64,13 @@ object ParadoxDefinitionInjectionManager {
     }
 
     /**
-     * 检查输入的字符串是否匹配定义注入的键。
+     * 检查输入的字符串是否匹配定义注入的键（会从 [context] 选取游戏类型并检查）。
      */
-    fun isMatched(expression: String, gameType: ParadoxGameType?): Boolean {
-        if (gameType == null) return false
+    fun isMatched(expression: String, context: Any?): Boolean {
+        if (context == null) return false
         val mode = expression.substringBefore(':', "")
-        return isSupported(mode, gameType)
+        if (mode.isEmpty()) return false
+        return isSupported(mode, selectGameType(context))
     }
 
     /**
