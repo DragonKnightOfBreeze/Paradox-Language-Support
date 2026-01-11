@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
+import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
@@ -169,13 +170,13 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `linksModel`
         run {
             currentCoroutineContext.ensureActive()
-            computeLinksModel(initializer, initializer.links.values)
+            computeLinksModel(initializer, initializer.linksModel, initializer.links.values)
         }
 
         // compute `localisationLinksModel`
         run {
             currentCoroutineContext.ensureActive()
-            computeLinksModel(initializer, initializer.localisationLinks.values)
+            computeLinksModel(initializer, initializer.localisationLinksModel, initializer.localisationLinks.values)
         }
 
         // compute `directivesModel`
@@ -191,8 +192,8 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    private fun computeLinksModel(initializer: CwtConfigGroupInitializer, links: Collection<CwtLinkConfig>) {
-        with(initializer.localisationLinksModel) {
+    private fun computeLinksModel(initializer: CwtConfigGroupInitializer, linksModel: CwtLinksModelBase, links: Collection<CwtLinkConfig>) {
+        with(linksModel) {
             val staticLinks = links.filter { it.isStatic }
             staticLinks.forEach { c ->
                 if (c.type.forScope()) {
