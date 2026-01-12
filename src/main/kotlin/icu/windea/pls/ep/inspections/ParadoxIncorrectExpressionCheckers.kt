@@ -22,9 +22,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.parent
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.parent
+import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
@@ -179,7 +179,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
-        val hasParameters = element.search { parent()?.parent()?.property("parameters") } != null
+        val hasParameters = element.select { parent()?.parent()?.property("parameters") } != null
         if (hasParameters) {
             if (resultTriggerConfigs.none { it.config.valueType == CwtType.Block }) {
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))

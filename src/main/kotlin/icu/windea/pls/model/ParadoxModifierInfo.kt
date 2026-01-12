@@ -25,10 +25,10 @@ data class ParadoxModifierInfo(
 
 fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierElement {
     return ParadoxModifierElement(parent, name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.syncUserData(this, it) }
+        .also { ParadoxModifierSupport.Keys.sync(this, it) }
 }
 
 fun ParadoxModifierElement.toInfo(): ParadoxModifierInfo {
     return ParadoxModifierInfo(name, gameType, project)
-        .also { ParadoxModifierSupport.Keys.syncUserData(this, it) }
+        .also { ParadoxModifierSupport.Keys.sync(this, it) }
 }

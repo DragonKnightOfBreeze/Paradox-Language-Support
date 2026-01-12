@@ -17,8 +17,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.psi.parentDefinition
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -61,7 +60,7 @@ object ParadoxComplexEnumValueManager {
         val readWriteAccess = Access.Write // write (declaration)
         val definitionElementOffset = when {
             // TODO 2.1.0+ 考虑兼容定义注入
-            complexEnumConfig.perDefinition -> element.search { parentDefinition() }?.startOffset ?: -1
+            complexEnumConfig.perDefinition -> element.select { parentDefinition() }?.startOffset ?: -1
             else -> -1
         }
         return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)

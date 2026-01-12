@@ -16,9 +16,7 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.parent
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -172,7 +170,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.search { search { parent(fromParentBlock = true) }?.property("scopes") }
+        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }
@@ -239,7 +237,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.search { search { parent(fromParentBlock = true) }?.property("scopes") }
+        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }

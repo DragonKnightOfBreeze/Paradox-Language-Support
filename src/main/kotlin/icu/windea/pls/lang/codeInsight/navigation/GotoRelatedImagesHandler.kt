@@ -21,8 +21,8 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.parentDefinition
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.parentDefinition
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -46,7 +46,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         when {
             element !is ParadoxScriptStringExpressionElement -> return null
             element.isDefinitionTypeKeyOrName() -> {
-                val definition = element.search { parentDefinition() } ?: return null
+                val definition = element.select { parentDefinition() } ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
                 val imageInfos = definitionInfo.images

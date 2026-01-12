@@ -15,8 +15,8 @@ import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -89,7 +89,7 @@ class ParadoxScriptAnnotator : Annotator {
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
             // 如果存在，高亮定义名对应的字符串（可能还有其他高亮）
-            val propertyElement = element.search { property(nameField) } // 不处理内联的情况
+            val propertyElement = element.select { property(nameField) } // 不处理内联的情况
             val nameElement = propertyElement?.propertyValue<ParadoxScriptString>()
             if (nameElement != null) {
                 val nameString = definitionInfo.name.escapeXml().or.anonymous()

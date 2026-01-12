@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.util.SyncedKeyRegistry
+import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -71,7 +71,7 @@ interface ParadoxParameterSupport {
      */
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = false
 
-    object Keys : SyncedKeyRegistry()
+    object Keys : KeyRegistryWithSync()
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")

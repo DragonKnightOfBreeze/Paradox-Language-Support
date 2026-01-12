@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.select
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiDirectory
@@ -8,10 +8,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
+import icu.windea.pls.config.select.*
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -25,13 +29,6 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.parentBlock
 
-object ParadoxPsiSearchScope
-
-@Suppress("UnusedReceiverParameter")
-inline fun <T : PsiElement, R> T.search(block: context(ParadoxPsiSearchScope) T.() -> R): R {
-    return with(ParadoxPsiSearchScope) { block() }
-}
-
 /**
  * 得到指定名字的属性。可能为 `null`，可能是定义。
  *
@@ -39,12 +36,13 @@ inline fun <T : PsiElement, R> T.search(block: context(ParadoxPsiSearchScope) T.
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.property(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
     conditional: Boolean = false,
-    inline: Boolean = false
+    inline: Boolean = false,
 ): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     if (propertyName != null && propertyName.isEmpty()) return this as? ParadoxScriptProperty
@@ -71,11 +69,11 @@ fun PsiElement.property(
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
 fun PsiElement.property(
     conditional: Boolean = false,
     inline: Boolean = false,
-    propertyPredicate: (String) -> Boolean
+    propertyPredicate: (String) -> Boolean,
 ): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     if (propertyPredicate("")) return this as? ParadoxScriptProperty
@@ -99,7 +97,8 @@ fun PsiElement.property(
 /**
  * 向上得到第一个定义。可能为 `null`，可能为自身。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parentDefinition(): ParadoxScriptDefinitionElement? {
     return parents(withSelf = true)
         .takeWhile { it !is PsiDirectory }
@@ -110,7 +109,8 @@ fun PsiElement.parentDefinition(): ParadoxScriptDefinitionElement? {
 /**
  * 向上得到第一个作为脚本属性的定义。可能为 `null`，可能为自身。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parentPropertyDefinition(): ParadoxScriptProperty? {
     return parents(withSelf = true)
         .takeWhile { it !is ParadoxScriptRootBlock }
@@ -121,7 +121,8 @@ fun PsiElement.parentPropertyDefinition(): ParadoxScriptProperty? {
 /**
  * 向上得到第一个定义注入。可能为 `null`，可能为自身。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parentDefinitionInjection(): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
@@ -133,7 +134,8 @@ fun PsiElement.parentDefinitionInjection(): ParadoxScriptProperty? {
 /**
  * 向上得到第一个定义或定义注入。可能为 `null`，可能为自身。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
@@ -145,7 +147,8 @@ fun PsiElement.parentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
 /**
  * 向上得到第一个作为脚本属性的定义或定义注入。可能为 `null`，可能为自身。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parentPropertyDefinitionOrInjection(): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
@@ -160,7 +163,8 @@ fun PsiElement.parentPropertyDefinitionOrInjection(): ParadoxScriptProperty? {
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parent(
     propertyName: String? = null,
     ignoreCase: Boolean = true,
@@ -189,7 +193,8 @@ fun PsiElement.parent(
  *
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun PsiElement.parent(
     fromParentBlock: Boolean = false,
     propertyPredicate: (String) -> Boolean
@@ -220,7 +225,8 @@ fun PsiElement.parent(
  *
  * @see ParadoxMemberPath
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun ParadoxScriptMember.propertyByPath(
     path: String,
     ignoreCase: Boolean = true,
@@ -252,7 +258,8 @@ fun ParadoxScriptMember.propertyByPath(
  *
  * @see ParadoxMemberPath
  */
-context(_: ParadoxPsiSearchScope)
+context(scope: ParadoxPsiSelectScope)
+@CwtConfigSelectDsl
 fun ParadoxScriptMember.parentByPath(
     path: String = "",
     ignoreCase: Boolean = true,

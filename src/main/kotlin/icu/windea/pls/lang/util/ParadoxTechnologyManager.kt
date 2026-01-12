@@ -22,8 +22,8 @@ import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.psi.parentByPath
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.parentByPath
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
@@ -177,7 +177,7 @@ object ParadoxTechnologyManager {
                     ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val rDefinition = refElement.search { parentByPath("prerequisites/-", definitionType = type) } ?: return@p true
+                        val rDefinition = refElement.select { parentByPath("prerequisites/-", definitionType = type) } ?: return@p true
                         if (rDefinition !is ParadoxScriptProperty) return@p true
                         val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                         if (rDefinitionInfo.name.isEmpty()) return@p true

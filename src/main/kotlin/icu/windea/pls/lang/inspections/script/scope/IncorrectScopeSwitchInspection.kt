@@ -11,8 +11,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.parentDefinitionOrInjection
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.parentDefinitionOrInjection
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
@@ -92,7 +92,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             }
 
             private fun findParentDefinitionType(element: ParadoxScriptProperty): String? {
-                val fromElement = element.search { parentDefinitionOrInjection() } ?: return null
+                val fromElement = element.select { parentDefinitionOrInjection() } ?: return null
                 ParadoxDefinitionManager.getType(fromElement)?.let { return it }
                 if (fromElement is ParadoxScriptProperty) {
                     ParadoxDefinitionInjectionManager.getType(fromElement)?.let { return it }

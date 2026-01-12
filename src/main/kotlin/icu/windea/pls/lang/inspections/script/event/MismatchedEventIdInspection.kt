@@ -9,8 +9,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -54,7 +54,7 @@ class MismatchedEventIdInspection : EventInspectionBase() {
                 val eventIdField = definitionInfo.typeConfig.nameField
                 val eventIdProperty: ParadoxScriptExpressionElement = when (eventIdField) {
                     null -> event.propertyKey
-                    else -> event.search { property(eventIdField) }?.propertyValue
+                    else -> event.select { property(eventIdField) }?.propertyValue
                 } ?: continue
                 val eventId = eventIdProperty.stringValue() ?: continue
                 if (!ParadoxEventManager.isMatchedEventId(eventId, namespace)) {

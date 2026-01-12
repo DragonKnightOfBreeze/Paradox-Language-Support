@@ -19,11 +19,11 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.Occurrence
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -114,7 +114,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 return null
             }
 
-            private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
+            private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, min, _, relaxMin) = occurrence
                 if (min != null && actual < min) {
                     val isKey = configExpression.isKey

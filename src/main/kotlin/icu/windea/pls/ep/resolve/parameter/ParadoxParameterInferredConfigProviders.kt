@@ -22,6 +22,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.util.accept
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo

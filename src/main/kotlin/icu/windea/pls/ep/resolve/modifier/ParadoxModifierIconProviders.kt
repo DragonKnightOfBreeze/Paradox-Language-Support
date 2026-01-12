@@ -6,8 +6,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.annotations.WithGameType
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -42,7 +42,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
         val selector = selector(configGroup.project, element).definition().contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).process p@{ definition ->
             ProgressManager.checkCanceled()
-            val property = definition.search { property("icon", inline = true) } ?: return@p true
+            val property = definition.select { property("icon", inline = true) } ?: return@p true
             val propertyValue = property.propertyValue ?: return@p true
             if (propertyValue !is ParadoxScriptString) return@p true
             val name = CwtTemplateExpressionManager.extract(modifierConfig.template, propertyValue.value)

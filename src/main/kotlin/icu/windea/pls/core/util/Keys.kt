@@ -1,5 +1,5 @@
-@file:Optimized
 @file:Suppress("NOTHING_TO_INLINE")
+@file:Optimized
 
 package icu.windea.pls.core.util
 
@@ -14,53 +14,67 @@ import kotlin.reflect.KProperty
 inline fun <T> createKey(name: String): Key<T> = Key.create<T>(name)
 
 @Suppress("UNCHECKED_CAST")
+fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
+    this as Key<Any>
+    val v = source.getUserData(this)
+    if (ifPresent && v == null) return
+    target.putUserData(this, v)
+}
+
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
     val keys: MutableMap<String, RegistedKey<*>> = ConcurrentHashMap()
 
-    fun getKeyName(propName: String): String {
-        return "${id}.${propName}"
-    }
-
-    fun <T> getKey(name: String): RegistedKey<T>? {
+    @Suppress("UNCHECKED_CAST")
+    fun <T> get(name: String): RegistedKey<T>? {
         return keys.get(name) as? RegistedKey<T>
     }
-}
 
-abstract class SyncedKeyRegistry : KeyRegistry() {
-    val syncedKeys: FastSet<RegistedKey<*>> = FastSet()
-
-    @Suppress("UNCHECKED_CAST")
-    fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
+    fun copy(from: UserDataHolder, to: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-        syncedKeys.forEach { to.putUserData(it as RegistedKey<Any>, from.getUserData(it)) }
+        keys.values.forEach { key -> key.copy(from, to, ifPresent) }
     }
 
-    fun <T : KeyProvider<*>> T.synced() = apply { onCreated { syncedKeys.add(it) } }
+    fun <P : KeyProvider<T>, T> P.withCallback(action: (RegistedKey<T>) -> Unit) = apply { addCallback(action) }
 }
 
-open class RegistedKey<T>(val registry: KeyRegistry, name: String) : Key<T>(name)
+abstract class KeyRegistryWithSync : KeyRegistry() {
+    val keysToSync: MutableMap<String, RegistedKey<*>> = ConcurrentHashMap()
+
+    fun sync(from: UserDataHolder, to: UserDataHolder, ifPresent: Boolean = false) {
+        // use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
+        keysToSync.values.forEach { key -> key.copy(from, to, ifPresent) }
+    }
+
+    fun <P : KeyProvider<T>, T> P.synced() = withCallback { key -> keysToSync[key.name] = key }
+}
+
+open class RegistedKey<T>(val registry: KeyRegistry, val name: String) : Key<T>(name)
 
 class RegistedKeyWithFactory<T, in THIS>(registry: KeyRegistry, name: String, val factory: THIS.() -> T) : RegistedKey<T>(registry, name)
 
 abstract class KeyProvider<T> {
-    private val onCreatedCallbacks: FastSet<(RegistedKey<T>) -> Unit> = FastSet()
+    private val callback: FastSet<(RegistedKey<T>) -> Unit> = FastSet()
 
-    protected fun finish(key: RegistedKey<T>): RegistedKey<T> {
-        onCreatedCallbacks.forEach { it(key) }
-        onCreatedCallbacks.clear()
-        return key
+    fun addCallback(action: (RegistedKey<T>) -> Unit) {
+        callback += action
     }
 
-    fun onCreated(action: (RegistedKey<T>) -> Unit) {
-        onCreatedCallbacks += action
+    protected fun getKeyName(registry: KeyRegistry, propName: String): String {
+        return "${registry.id}.${propName}"
+    }
+
+    protected fun finish(key: RegistedKey<T>): RegistedKey<T> {
+        callback.forEach { it(key) }
+        callback.clear()
+        return key
     }
 }
 
 interface KeyProviders {
     class Normal<T>(val registry: KeyRegistry) : KeyProvider<T>() {
         fun getKey(propName: String): RegistedKey<T> {
-            val name = registry.getKeyName(propName)
+            val name = getKeyName(registry, propName)
             return registry.keys.getOrPut(name) { finish(RegistedKey(registry, name)) }.cast()
         }
     }
@@ -73,7 +87,7 @@ interface KeyProviders {
 
     class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T) : KeyProvider<T>() {
         fun getKey(propName: String): RegistedKeyWithFactory<T, THIS> {
-            val name = registry.getKeyName(propName)
+            val name = getKeyName(registry, propName)
             return registry.keys.getOrPut(name) { finish(RegistedKeyWithFactory(registry, name, factory)) }.cast()
         }
     }

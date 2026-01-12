@@ -40,7 +40,7 @@ object ParadoxMatchService {
         return result ?: ParadoxMatchResult.NotMatch
     }
 
-    fun isConstantMatch(configGroup: CwtConfigGroup, expression: ParadoxScriptExpression, configExpression: CwtDataExpression): Boolean {
+    fun isConstantMatch(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         // 注意这里可能需要在同一循环中同时检查 `keyExpression` 和 `valueExpression`，因此这里需要特殊处理
         if (configExpression.isKey && expression.isKey == false) return false
         if (!configExpression.isKey && expression.isKey == true) return false

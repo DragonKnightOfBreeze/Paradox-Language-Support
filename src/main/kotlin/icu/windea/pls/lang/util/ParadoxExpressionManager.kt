@@ -32,7 +32,6 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -72,6 +71,8 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOccurrence
+import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -80,8 +81,7 @@ import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
-import icu.windea.pls.lang.psi.parentByPath
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
@@ -95,7 +95,6 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
@@ -121,7 +120,7 @@ object ParadoxExpressionManager {
 
         val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
         val cachedConfigsCache by registerKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrenceMapCache by registerKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
+        val cachedChildOccurrenceMapCache by registerKey<CachedValue<MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>(Keys)
 
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
@@ -328,7 +327,7 @@ object ParadoxExpressionManager {
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
             val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
-            val elementToMatch = memberElement.search { parentByPath(pathToMatch.path) }?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
+            val elementToMatch = memberElement.select { parentByPath(pathToMatch.path) }?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null
@@ -529,7 +528,7 @@ object ParadoxExpressionManager {
     /**
      * 得到指定的 [element] 的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
      */
-    fun getChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    fun getChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         if (configs.isEmpty()) return emptyMap()
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
@@ -544,7 +543,7 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
+    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
@@ -552,27 +551,26 @@ object ParadoxExpressionManager {
     }
 
     @Optimized
-    private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
+    private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
         return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
     }
 
-    private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         if (configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().configGroup
         // 这里需要先按优先级排序
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
-        val project = configGroup.project
         val blockElement = when (element) {
             is ParadoxScriptDefinitionElement -> element.block
             is ParadoxScriptBlockElement -> element
             else -> null
         }
         if (blockElement == null) return emptyMap()
-        val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
+        val occurrenceMap = mutableMapOf<CwtDataExpression, ParadoxMatchOccurrence>()
         for (childConfig in childConfigs) {
-            occurrenceMap[childConfig.configExpression] = childConfig.toOccurrence(element, project)
+            occurrenceMap[childConfig.configExpression] = ParadoxMatchOccurrenceService.evaluate(childConfig, element)
         }
         ProgressManager.checkCanceled()
         // 注意这里需要考虑内联和可选的情况

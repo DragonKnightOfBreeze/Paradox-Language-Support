@@ -28,8 +28,8 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.property
-import icu.windea.pls.lang.psi.search
+import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -160,7 +160,7 @@ object ParadoxInlineScriptManager {
         val v = usageElement.propertyValue ?: return null
         val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v1 != null) return v1
-        val v2 = v.search { property("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
+        val v2 = v.select { property("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v2 != null) return v2
         return null
     }

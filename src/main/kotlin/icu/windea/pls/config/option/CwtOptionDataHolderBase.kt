@@ -1,6 +1,5 @@
 package icu.windea.pls.config.option
 
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtApiStatus
@@ -10,6 +9,7 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.copy
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -90,10 +90,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val keys = userMap.keys
         for (key in keys) {
             if (key !is RegistedKey || key.registry != CwtOptionDataKeys) continue
-            val v = getUserData(key) ?: continue
-            @Suppress("UNCHECKED_CAST")
-            key as Key<Any>
-            target.putUserData(key, v)
+            key.copy(this, target, ifPresent = true)
         }
     }
 

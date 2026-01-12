@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.util.SyncedKeyRegistry
+import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -49,7 +49,7 @@ interface ParadoxModifierSupport {
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
 
-    object Keys : SyncedKeyRegistry()
+    object Keys : KeyRegistryWithSync()
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModifierSupport>("icu.windea.pls.modifierSupport")

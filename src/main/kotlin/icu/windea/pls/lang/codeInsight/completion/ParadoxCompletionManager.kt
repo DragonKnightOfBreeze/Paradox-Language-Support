@@ -78,7 +78,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.Occurrence
+import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -226,7 +226,7 @@ object ParadoxCompletionManager {
         completeCsvExpression(context, result)
     }
 
-    private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
+    private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.keyExpression
         // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
         if (expression.type == CwtDataTypes.AliasName) return true
@@ -242,7 +242,7 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    private fun shouldComplete(config: CwtValueConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
+    private fun shouldComplete(config: CwtValueConfig, occurrenceMap: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.valueExpression
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制

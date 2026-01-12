@@ -19,7 +19,6 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
@@ -411,7 +410,7 @@ object ParadoxConfigMatchService {
         if (propertyConfigs.isEmpty()) return true
         if (blockElement == null) return false
 
-        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.toOccurrence(definitionElement, configGroup.project) })
+        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(it, definitionElement) })
 
         // NOTE 这里需要兼容内联
         // NOTE propConfig.key 可能有重复，这种情况下只要有其中一个匹配即可
@@ -446,7 +445,7 @@ object ParadoxConfigMatchService {
         if (valueConfigs.isEmpty()) return true
         if (blockElement == null) return false
 
-        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.toOccurrence(blockElement, configGroup.project) })
+        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(it, blockElement) })
 
         // NOTE 这里需要兼容内联
         val matched = blockElement.values().options { inline() }.process p@{ valueElement ->
@@ -688,12 +687,12 @@ object ParadoxConfigMatchService {
 
     // region Misc Methods
 
-    fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.keyExpression.type == CwtDataTypes.AliasName && propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
+    fun isAliasEntryConfig(config: CwtPropertyConfig): Boolean {
+        return config.keyExpression.type == CwtDataTypes.AliasName && config.valueExpression.type == CwtDataTypes.AliasMatchLeft
     }
 
-    fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
-        return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
+    fun isSingleAliasEntryConfig(config: CwtPropertyConfig): Boolean {
+        return config.valueExpression.type == CwtDataTypes.SingleAliasRight
     }
 
     fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, matchOptions: Int = ParadoxMatchOptions.Default): String? {

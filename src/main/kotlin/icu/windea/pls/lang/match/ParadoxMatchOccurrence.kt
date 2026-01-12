@@ -1,6 +1,6 @@
-package icu.windea.pls.model
+package icu.windea.pls.lang.match
 
-data class Occurrence(
+data class ParadoxMatchOccurrence(
     var actual: Int,
     var min: Int?,
     var max: Int?,

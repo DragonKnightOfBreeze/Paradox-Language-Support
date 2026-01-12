@@ -1,5 +1,6 @@
 package icu.windea.pls.core.collections
 
+import com.intellij.util.containers.TreeTraversal
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -14,27 +15,27 @@ class SequenceBuildersTest {
     )
 
     @Test
-    fun breadthFirstSequence_level_order() {
-        val result = generateBreathFirstSequence(1) { n -> children[n] ?: emptyList() }.toList()
+    fun generateSequence_bfs() {
+        val result = generateSequence(TreeTraversal.PLAIN_BFS, 1) { n -> children[n] ?: emptyList() }.toList()
         assertEquals(listOf(1, 2, 3, 4, 5, 6), result)
     }
 
     @Test
-    fun depthFirstSequence_preorder() {
-        val result = generateDepthFirstSequence(1) { n -> children[n] ?: emptyList() }.toList()
+    fun generateSequence_dfs_preOrder() {
+        val result = generateSequence(TreeTraversal.PRE_ORDER_DFS, 1) { n -> children[n] ?: emptyList() }.toList()
         // Preorder: root, then each subtree in order
         assertEquals(listOf(1, 2, 4, 5, 3, 6), result)
     }
 
     @Test
-    fun breadthFirstSequence_null_seed_returns_empty() {
-        val result = generateBreathFirstSequence<Int>(null) { emptyList() }.toList()
+    fun generateSequence_bfs_null_seed_returns_empty() {
+        val result = generateSequence<Int>(TreeTraversal.PLAIN_BFS, null) { emptyList() }.toList()
         assertEquals(emptyList<Int>(), result)
     }
 
     @Test
-    fun depthFirstSequence_null_seed_returns_empty() {
-        val result = generateDepthFirstSequence<Int>(null) { emptyList() }.toList()
+    fun generateSequence_dfs_null_seed_returns_empty() {
+        val result = generateSequence<Int>(TreeTraversal.PRE_ORDER_DFS, null) { emptyList() }.toList()
         assertEquals(emptyList<Int>(), result)
     }
 }

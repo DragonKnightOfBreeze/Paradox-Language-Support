@@ -6,8 +6,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
-import icu.windea.pls.config.config.getOptionValueOrValues
-import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.FastMap
@@ -48,19 +46,19 @@ object CwtOptionDataProvider {
         val key = config.key
         when (key) {
             "api_status" -> {
-                val v = config.stringValue?.let { CwtApiStatus.get(it) } ?: return
+                val v = config.getOptionValue()?.let { CwtApiStatus.get(it) } ?: return
                 optionData.apiStatus = v
             }
             "cardinality" -> {
-                val v = config.stringValue?.let { CwtCardinalityExpression.resolve(it) } ?: return
+                val v = config.getOptionValue()?.let { CwtCardinalityExpression.resolve(it) } ?: return
                 optionData.cardinality = v
             }
             "cardinality_min_define" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.cardinalityMinDefine = v
             }
             "cardinality_max_define" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.cardinalityMaxDefine = v
             }
             "predicate" -> {
@@ -80,27 +78,27 @@ object CwtOptionDataProvider {
                 optionData.supportedScopes = r
             }
             "type" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.type = v
             }
             "hint" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.hint = v
             }
             "event_type" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.eventType = v
             }
             "context_key" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.contextKey = v
             }
             "context_configs_type" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.contextConfigsType = v
             }
             "group" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.group = v
             }
             "type_key_filter" -> {
@@ -108,11 +106,11 @@ object CwtOptionDataProvider {
                 optionData.typeKeyFilter = v
             }
             "type_key_regex" -> {
-                val v = config.stringValue?.toRegex(RegexOption.IGNORE_CASE) ?: return
+                val v = config.getOptionValue()?.toRegex(RegexOption.IGNORE_CASE) ?: return
                 optionData.typeKeyRegex = v
             }
             "starts_with" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.startsWith = v
             }
             "only_if_not" -> {
@@ -124,7 +122,7 @@ object CwtOptionDataProvider {
                 optionData.graphRelatedTypes = v
             }
             "severity" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.severity = v
             }
             "file_extensions" -> {
@@ -136,11 +134,11 @@ object CwtOptionDataProvider {
                 optionData.modifierCategories = v
             }
             "color_type" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.colorType = v
             }
             "inject" -> {
-                val v = config.stringValue ?: return
+                val v = config.getOptionValue() ?: return
                 optionData.inject = v
             }
         }
@@ -168,7 +166,7 @@ object CwtOptionDataProvider {
 
     private fun processOptionValueConfig(optionData: CwtOptionDataHolderBase, config: CwtOptionValueConfig) {
         // NOTE 2.1.1 移除 `optional` 标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
-        val flag = config.stringValue ?: return
+        val flag = config.getOptionValue() ?: return
         when (flag) {
             "required" -> optionData.required = true
             "primary" -> optionData.primary = true
@@ -199,14 +197,14 @@ object CwtOptionDataProvider {
             if (optionConfig !is CwtOptionConfig) return@f
             // ignore case for both system scopes and scopes (to lowercase)
             val k = optionConfig.key.lowercase()
-            val v = optionConfig.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
+            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
             r[k] = v
         }
         return r.optimized()
     }
 
     private fun resolvePushScope(config: CwtOptionConfig): String? {
-        return config.stringValue?.let { ParadoxScopeManager.getScopeId(it) }
+        return config.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) }
     }
 
     private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String> {
