@@ -8,8 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile

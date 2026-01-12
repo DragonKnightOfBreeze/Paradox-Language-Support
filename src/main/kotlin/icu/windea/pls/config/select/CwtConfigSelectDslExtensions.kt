@@ -130,19 +130,19 @@ fun CwtMemberContainerConfig<*>.ofPath(path: String, ignoreCase: Boolean = true,
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtMemberContainerConfig<*>>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return flatMap { it.ofPath(path, ignoreCase) }
+    return flatMap { it.ofPath(path, ignoreCase, usePattern) }
 }
 
 /** @see CwtConfigPath */
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtMemberContainerConfig<*>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return paths.asSequence().flatMap { path -> ofPath(path, ignoreCase) }
+    return paths.asSequence().flatMap { path -> ofPath(path, ignoreCase, usePattern) }
 }
 
 /** @see CwtConfigPath */
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return flatMap { it.ofPaths(paths, ignoreCase) }
+    return flatMap { it.ofPaths(paths, ignoreCase, usePattern) }
 }

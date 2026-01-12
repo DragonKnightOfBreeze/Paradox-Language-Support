@@ -1,5 +1,6 @@
 package icu.windea.pls.config.select
 
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry
 
 class CwtConfigSelectScope : UserDataHolderBase() {
