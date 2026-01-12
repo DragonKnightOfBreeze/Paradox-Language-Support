@@ -11,13 +11,14 @@ annotation class CwtConfigSelectDsl
 inline fun <R> selectScope(
     scope: CwtConfigSelectScope = CwtConfigSelectScope(),
     block: context(CwtConfigSelectScope) () -> R
-): R = with(scope) { block() }
+): R = block.invoke(scope)
 
+// NOTE 2.1.1 cannot be inline or runtime ClassCastException
 @CwtConfigSelectDsl
-inline fun <T : CwtMemberConfig<*>, R> T.select(
+fun <T : CwtMemberConfig<*>, R> T.select(
     scope: CwtConfigSelectScope = CwtConfigSelectScope(),
     block: context(CwtConfigSelectScope) T.() -> R
-): R = with(scope) { block() }
+): R = block.invoke(scope, this@select)
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl

@@ -11,13 +11,14 @@ annotation class ParadoxPsiSelectDsl
 inline fun <R> selectScope(
     scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(),
     block: context(ParadoxPsiSelectScope) () -> R
-): R = with(scope) { block() }
+): R = block.invoke(scope)
 
+// NOTE 2.1.1 cannot be inline or runtime ClassCastException
 @ParadoxPsiSelectDsl
-inline fun <T : PsiElement, R> T.select(
+fun <T : PsiElement, R> T.select(
     scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(),
     block: context(ParadoxPsiSelectScope) T.() -> R
-): R = with(scope) { block() }
+): R = block.invoke(scope, this@select)
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
