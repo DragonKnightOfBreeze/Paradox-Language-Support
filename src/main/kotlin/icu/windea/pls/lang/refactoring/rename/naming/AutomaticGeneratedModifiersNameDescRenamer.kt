@@ -15,7 +15,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -56,7 +56,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
                 val newKey = ParadoxModifierManager.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
                 result.forEach { allRenames[it] = newKey }
             }
@@ -66,7 +66,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
                 val newKey = ParadoxModifierManager.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 val result = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
                 result.forEach { allRenames[it] = newKey }
             }

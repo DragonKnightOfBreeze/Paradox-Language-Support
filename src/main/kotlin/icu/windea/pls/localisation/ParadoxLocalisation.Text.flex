@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.lexer;
 
-import java.util.*;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
@@ -231,15 +230,15 @@ TEXT_ICON_TOKEN=\w+
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
     "#" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
     }
     "#!" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
         beginNextState(); return TEXT_FORMAT_END;
     }
     "@" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return STRING_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
     }
     {PLAIN_TEXT_TOKEN} { return STRING_TOKEN; }
@@ -301,7 +300,7 @@ TEXT_ICON_TOKEN=\w+
 }
 <IN_COMMAND>{
     . {
-        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
+        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.test(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
         }

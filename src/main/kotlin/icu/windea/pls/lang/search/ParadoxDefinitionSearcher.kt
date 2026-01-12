@@ -18,6 +18,7 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -65,7 +66,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         // 如果没有默认选用的约束，且存在指定的定义类型对应的约束，则自动选用
         if (this != null) return this
         if (typeExpression == null) return null
-        return ParadoxIndexConstraint.Definition.get(typeExpression.type)
+        return ParadoxDefinitionIndexConstraint.get(typeExpression.type)
     }
 
     private fun processQueryForDefinitions(

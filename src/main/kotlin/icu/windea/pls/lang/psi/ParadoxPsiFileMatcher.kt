@@ -6,8 +6,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -34,7 +33,7 @@ object ParadoxPsiFileMatcher {
         }
         if (file !is ParadoxScriptFile) return false
         if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
-        if (smart && !checkFilePath(file, ParadoxPathMatcher.ScriptFile)) return false
+        if (smart && !checkFilePath(file, ParadoxPathConstraint.ScriptFile)) return false
         return true
     }
 
@@ -51,7 +50,7 @@ object ParadoxPsiFileMatcher {
         }
         if (file !is ParadoxLocalisationFile) return false
         if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
-        if (smart && !checkFilePath(file, ParadoxPathMatcher.LocalisationFile)) return false
+        if (smart && !checkFilePath(file, ParadoxPathConstraint.LocalisationFile)) return false
         return true
     }
 
@@ -68,7 +67,7 @@ object ParadoxPsiFileMatcher {
         }
         if (file !is ParadoxCsvFile) return false
         if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
-        if (smart && !checkFilePath(file, ParadoxPathMatcher.CsvFile)) return false
+        if (smart && !checkFilePath(file, ParadoxPathConstraint.CsvFile)) return false
         return true
     }
 
@@ -76,8 +75,8 @@ object ParadoxPsiFileMatcher {
         return if (injectable) !smart || selectRootFile(file) != null else false
     }
 
-    private fun checkFilePath(file: PsiFile, pathMatcher: ParadoxPathMatcher): Boolean {
+    private fun checkFilePath(file: PsiFile, constraint: ParadoxPathConstraint): Boolean {
         val fileInfo = file.fileInfo
-        return fileInfo != null && fileInfo.path.matches(pathMatcher)
+        return fileInfo != null && constraint.test(fileInfo.path)
     }
 }

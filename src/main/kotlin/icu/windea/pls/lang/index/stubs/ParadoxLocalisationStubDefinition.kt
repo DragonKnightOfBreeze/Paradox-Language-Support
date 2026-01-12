@@ -13,8 +13,7 @@ import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
@@ -29,7 +28,7 @@ class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
         if (PlsFileManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
-        if (!fileInfo.path.matches(ParadoxPathMatcher.LocalisationFile)) return false
+        if (!ParadoxPathConstraint.LocalisationFile.test(fileInfo.path)) return false
         return true
     }
 

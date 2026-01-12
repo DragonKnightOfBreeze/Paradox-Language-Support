@@ -15,6 +15,6 @@ object ParadoxLocalisationParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun isConceptCommand(b: PsiBuilder, l: Int): Boolean {
-        return ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(b)
+        return ParadoxSyntaxConstraint.LocalisationConceptCommand.test(b)
     }
 }

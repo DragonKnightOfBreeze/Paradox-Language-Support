@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 
@@ -56,7 +56,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
         val localisation = keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, element).localisation().contextSensitive()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             ParadoxLocalisationSearch.searchNormal(key, selector).find()
         } ?: return
 

@@ -9,7 +9,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or
 
@@ -25,7 +25,7 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 
         val name = target.name
         if (name.isEmpty()) return
-        val ignoreCase = ParadoxIndexConstraint.Localisation.entries.filter { it.ignoreCase }.any { it.supports(name) }
+        val ignoreCase = ParadoxLocalisationIndexConstraint.entries.filter { it.ignoreCase }.any { it.test(name) }
 
         // 这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope

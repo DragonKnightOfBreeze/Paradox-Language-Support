@@ -8,6 +8,10 @@ object PlsConstants {
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
+    val localisationRoots = arrayOf("localisation", "localization", "localisation_synced", "localization_synced")
+    val normalLocalisationRoots = arrayOf("localisation", "localization")
+    val syncedLocalisationRoots = arrayOf("localisation_synced", "localization_synced")
+
     val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "lines", "dlc", "settings")
     val localisationFileExtensions = arrayOf("yml")
     val csvFileExtensions = arrayOf("csv")

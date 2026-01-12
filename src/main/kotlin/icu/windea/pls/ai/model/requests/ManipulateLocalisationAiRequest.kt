@@ -31,9 +31,9 @@ abstract class ManipulateLocalisationAiRequest(
         variables["mod_name"] = fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name
         variables["file_path"] = fileInfo?.path?.path
 
-        variables["supports_concept_command"] = ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(file)
-        variables["supports_text_format"] = ParadoxSyntaxConstraint.LocalisationTextFormat.supports(file)
-        variables["supports_text_icon"] = ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)
+        variables["supports_concept_command"] = ParadoxSyntaxConstraint.LocalisationConceptCommand.test(file)
+        variables["supports_text_format"] = ParadoxSyntaxConstraint.LocalisationTextFormat.test(file)
+        variables["supports_text_icon"] = ParadoxSyntaxConstraint.LocalisationTextIcon.test(file)
 
         return variables
     }

@@ -71,7 +71,7 @@ import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -405,7 +405,7 @@ object ParadoxDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = selector(project, element).localisation().contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
@@ -414,7 +414,7 @@ object ParadoxDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = selector(project, element).localisation().contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }

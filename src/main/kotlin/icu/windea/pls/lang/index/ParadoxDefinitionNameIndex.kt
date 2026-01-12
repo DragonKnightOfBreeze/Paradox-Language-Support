@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.stubs.StringStubIndexExtension
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -15,21 +15,21 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     override fun getCacheSize() = 12 * 1024 // CACHE SIZE - 38000+ in stellaris@3.6
 
     /**
-     * @see ParadoxIndexConstraint.Definition
+     * @see ParadoxDefinitionIndexConstraint
      */
     sealed class BaseIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
         override fun getVersion() = PlsIndexVersions.ScriptStub
     }
 
     /**
-     * @see ParadoxIndexConstraint.Definition.Resource
+     * @see ParadoxDefinitionIndexConstraint.Resource
      */
     class ResourceIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForResource
     }
 
     /**
-     * @see ParadoxIndexConstraint.Definition.EconomicCategory
+     * @see ParadoxDefinitionIndexConstraint.EconomicCategory
      */
     class EconomicCategoryIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForEconomicCategory
@@ -38,7 +38,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     /**
      * 用于快速索引游戏概念的名字（其定义类型为 `game_concept`）。
      *
-     * @see ParadoxIndexConstraint.Definition.GameConcept
+     * @see ParadoxDefinitionIndexConstraint.GameConcept
      */
     class GameConceptIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForGameConcept
@@ -47,7 +47,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     /**
      * 用于快速索引文本颜色的名字（其定义类型为 `text_color`）。
      *
-     * @see ParadoxIndexConstraint.Definition.TextColor
+     * @see ParadoxDefinitionIndexConstraint.TextColor
      */
     class TextColorIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForTextColor
@@ -56,7 +56,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     /**
      * 用于快速索引文本图标的名字（其定义类型为 `text_icon`）。
      *
-     * @see ParadoxIndexConstraint.Definition.TextIcon
+     * @see ParadoxDefinitionIndexConstraint.TextIcon
      */
     class TextIconIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForTextIcon
@@ -65,7 +65,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     /**
      * 用于快速索引文本格式的名字（其定义类型为 `text_format`）。它们是忽略大小写的。
      *
-     * @see ParadoxIndexConstraint.Definition.TextFormat
+     * @see ParadoxDefinitionIndexConstraint.TextFormat
      */
     class TextFormatIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForTextFormat

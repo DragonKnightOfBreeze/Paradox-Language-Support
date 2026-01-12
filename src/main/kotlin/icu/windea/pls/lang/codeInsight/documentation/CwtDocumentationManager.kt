@@ -60,7 +60,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -224,7 +224,7 @@ object CwtDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = selector(project, contextElement).localisation().contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
@@ -233,7 +233,7 @@ object CwtDocumentationManager {
             keys.firstNotNullOfOrNull { key ->
                 val selector = selector(project, contextElement).localisation().contextSensitive()
                     .preferLocale(usedLocale)
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                    .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                 ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }

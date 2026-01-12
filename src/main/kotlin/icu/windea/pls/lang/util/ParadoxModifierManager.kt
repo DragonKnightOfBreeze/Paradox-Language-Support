@@ -50,7 +50,7 @@ import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -254,7 +254,7 @@ object ParadoxModifierManager {
         return keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, element).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
             val nameLocalisations = ParadoxLocalisationSearch.searchNormal(key, selector).findAll()
             nameLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet().orNull()
         }.orEmpty()

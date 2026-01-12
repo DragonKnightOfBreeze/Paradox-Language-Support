@@ -33,7 +33,7 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
@@ -96,7 +96,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(preferredLocale)
-                                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)
@@ -106,7 +106,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(preferredLocale)
-                                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+                                .withConstraint(ParadoxLocalisationIndexConstraint.Modifier)
                             ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)

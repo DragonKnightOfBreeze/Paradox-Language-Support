@@ -34,7 +34,7 @@ import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.stringValue
@@ -108,10 +108,10 @@ object CwtLocationExpressionManager {
         })
     }
 
-    private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxIndexConstraint.Localisation? {
+    private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationIndexConstraint? {
         return when (definitionInfo.type) {
-            ParadoxDefinitionTypes.event -> ParadoxIndexConstraint.Localisation.Event
-            ParadoxDefinitionTypes.technology -> ParadoxIndexConstraint.Localisation.Tech
+            ParadoxDefinitionTypes.event -> ParadoxLocalisationIndexConstraint.Event
+            ParadoxDefinitionTypes.technology -> ParadoxLocalisationIndexConstraint.Tech
             else -> null
         }
     }

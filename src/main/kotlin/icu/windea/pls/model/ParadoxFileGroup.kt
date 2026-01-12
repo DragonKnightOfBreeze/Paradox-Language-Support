@@ -2,9 +2,8 @@ package icu.windea.pls.model
 
 import icu.windea.pls.core.orNull
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 
 /**
  * 文件分组。
@@ -23,10 +22,10 @@ enum class ParadoxFileGroup(val id: String) {
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxFileGroup {
             return when {
-                path.matches(ParadoxPathMatcher.ModDescriptorFile) -> ModDescriptor
-                path.matches(ParadoxPathMatcher.ScriptFile) -> Script
-                path.matches(ParadoxPathMatcher.LocalisationFile) -> Localisation
-                path.matches(ParadoxPathMatcher.CsvFile) -> Csv
+                ParadoxPathConstraint.ModDescriptorFile.test(path) -> ModDescriptor
+                ParadoxPathConstraint.ScriptFile.test(path) -> Script
+                ParadoxPathConstraint.LocalisationFile.test(path) -> Localisation
+                ParadoxPathConstraint.CsvFile.test(path) -> Csv
                 else -> Other
             }
         }

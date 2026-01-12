@@ -26,7 +26,7 @@ enum class ParadoxSyntaxConstraint(
     LocalisationTextIcon(Ck3, Vic3, Eu5),  // see #137
     ;
 
-    fun supports(target: Any): Boolean {
+    fun test(target: Any): Boolean {
         val gameType = when (target) {
             is _ParadoxLocalisationTextLexer -> target.gameType
             is PsiBuilder -> selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY))

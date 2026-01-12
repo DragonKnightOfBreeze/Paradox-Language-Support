@@ -10,8 +10,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexVersions
 import icu.windea.pls.lang.util.PlsFileManager
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
 import icu.windea.pls.script.parser.ParadoxScriptParser
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -29,7 +28,7 @@ class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
         if (PlsFileManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
-        if (!fileInfo.path.matches(ParadoxPathMatcher.ScriptFile)) return false
+        if (!ParadoxPathConstraint.ScriptFile.test(fileInfo.path)) return false
         return true
     }
 

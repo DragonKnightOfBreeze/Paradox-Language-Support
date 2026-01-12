@@ -3,7 +3,6 @@
 
 package icu.windea.pls.localisation.lexer;
 
-import java.util.*;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
@@ -940,7 +939,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 46: break;
           case 2:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
             }
           // fall through
@@ -951,7 +950,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 48: break;
           case 4:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return STRING_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
             }
           // fall through
@@ -1038,7 +1037,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 65: break;
           case 21:
-            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
+            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.test(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
         }
@@ -1153,7 +1152,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 87: break;
           case 43:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
         beginNextState(); return TEXT_FORMAT_END;
             }
           // fall through

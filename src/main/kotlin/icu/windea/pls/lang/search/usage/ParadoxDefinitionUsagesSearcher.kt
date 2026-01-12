@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import kotlin.experimental.or
@@ -40,7 +40,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         if (definitionInfo == null) return
         if (definitionInfo.name.isEmpty()) return // ignore anonymous definitions
         val words = getWords(target, definitionInfo)
-        val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.supports(definitionInfo.type) }
+        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.filter { it.ignoreCase }.any { it.test(definitionInfo.type) }
 
         // 这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope

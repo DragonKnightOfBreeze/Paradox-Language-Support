@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.forLocalisationType
 
@@ -129,8 +129,8 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
             when (stub.type) {
                 ParadoxLocalisationType.Normal -> {
                     sink.occurrence(PlsIndexKeys.LocalisationName, stub.name)
-                    ParadoxIndexConstraint.Localisation.entries.forEach { constraint ->
-                        if (constraint.supports(stub.name)) {
+                    ParadoxLocalisationIndexConstraint.entries.forEach { constraint ->
+                        if (constraint.test(stub.name)) {
                             val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
                             sink.occurrence(constraint.indexKey, name)
                         }

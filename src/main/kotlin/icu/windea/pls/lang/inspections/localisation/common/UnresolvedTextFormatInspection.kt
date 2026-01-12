@@ -34,7 +34,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
-            && ParadoxSyntaxConstraint.LocalisationTextFormat.supports(file)
+            && ParadoxSyntaxConstraint.LocalisationTextFormat.test(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
