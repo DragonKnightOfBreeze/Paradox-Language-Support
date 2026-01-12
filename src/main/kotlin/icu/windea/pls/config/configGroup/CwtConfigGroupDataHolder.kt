@@ -72,7 +72,7 @@ interface CwtConfigGroupDataHolder {
 
     val rows: Map<String, CwtRowConfig>
 
-    // enumValue可以是 int、float、bool 类型，统一用字符串表示
+    // enumValue 可以是 int、float、bool 类型，统一用字符串表示
     val enums: Map<String, CwtEnumConfig>
     // 基于 enum_name 进行定位，对应的可能是 key/value
     val complexEnums: Map<String, CwtComplexEnumConfig>

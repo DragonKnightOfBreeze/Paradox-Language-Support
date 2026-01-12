@@ -1,0 +1,4 @@
+string_value = "Text"
+block_value = { k = v }
+number_value = 1.0
+boolean_value = yes
