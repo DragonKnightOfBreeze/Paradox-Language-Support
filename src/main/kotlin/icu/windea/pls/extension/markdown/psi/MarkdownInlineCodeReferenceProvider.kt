@@ -16,10 +16,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.definition
-import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.constants.PlsPatterns

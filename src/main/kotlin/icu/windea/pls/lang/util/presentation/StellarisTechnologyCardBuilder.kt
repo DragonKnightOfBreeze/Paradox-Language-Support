@@ -13,7 +13,6 @@ import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

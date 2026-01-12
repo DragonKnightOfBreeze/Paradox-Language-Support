@@ -25,7 +25,6 @@ import icu.windea.pls.lang.psi.parentDefinition
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

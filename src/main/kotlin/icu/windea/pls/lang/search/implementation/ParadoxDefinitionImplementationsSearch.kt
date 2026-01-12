@@ -9,7 +9,6 @@ import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

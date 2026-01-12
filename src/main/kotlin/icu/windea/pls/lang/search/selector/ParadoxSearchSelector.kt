@@ -25,8 +25,8 @@ class ParadoxSearchSelector<T>(
 ) : ParadoxSelector<T> {
     val selectors = mutableListOf<ParadoxSelector<T>>()
 
-    val file by lazy { selectFile(context) }
-    val rootFile by lazy { selectRootFile(file) }
+    val file = selectFile(context)
+    val rootFile = selectRootFile(file)
 
     val gameType by lazy {
         val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<T>>().lastOrNull()?.gameType

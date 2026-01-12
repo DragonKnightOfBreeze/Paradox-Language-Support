@@ -15,7 +15,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager

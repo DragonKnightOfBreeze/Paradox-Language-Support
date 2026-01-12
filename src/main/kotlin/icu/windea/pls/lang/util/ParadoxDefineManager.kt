@@ -14,7 +14,6 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo

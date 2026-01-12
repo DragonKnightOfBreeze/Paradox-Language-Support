@@ -27,7 +27,6 @@ import icu.windea.pls.lang.psi.property
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtType

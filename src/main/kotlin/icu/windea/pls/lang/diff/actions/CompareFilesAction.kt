@@ -37,7 +37,6 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager

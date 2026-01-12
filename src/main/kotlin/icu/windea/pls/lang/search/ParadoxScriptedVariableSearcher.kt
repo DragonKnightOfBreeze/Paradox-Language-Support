@@ -22,7 +22,6 @@ import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager

@@ -27,7 +27,6 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
-import icu.windea.pls.lang.search.selector.localisationParameter
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

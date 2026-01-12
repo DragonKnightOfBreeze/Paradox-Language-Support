@@ -6,7 +6,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxDefineSearch
-import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
