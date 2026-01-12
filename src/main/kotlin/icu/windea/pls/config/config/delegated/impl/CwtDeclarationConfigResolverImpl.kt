@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.processDescendants
+import icu.windea.pls.config.select.*
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
@@ -36,15 +36,14 @@ private class CwtDeclarationConfigImpl(
 
     override val subtypesUsedInDeclaration: Set<String> by lazy {
         val result = sortedSetOf<String>()
-        config.processDescendants {
-            if (it is CwtPropertyConfig) {
-                val subtypeExpression = it.key.removeSurroundingOrNull("subtype[", "]")
+        selectScope {
+            config.walkDown().asProperty().forEach { c ->
+                val subtypeExpression = c.key.removeSurroundingOrNull("subtype[", "]")
                 if (subtypeExpression != null) {
                     val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
                     resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
                 }
             }
-            true
         }
         result.optimized()
     }

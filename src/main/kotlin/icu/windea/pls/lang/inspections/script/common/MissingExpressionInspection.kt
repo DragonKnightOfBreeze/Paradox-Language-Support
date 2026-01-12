@@ -10,11 +10,9 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.overriddenProvider
-import icu.windea.pls.config.config.processParent
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.castOrNull
+import icu.windea.pls.config.select.*
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
@@ -104,12 +102,10 @@ class MissingExpressionInspection : LocalInspectionTool() {
             private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
                 configs.forEach { c1 ->
                     c1.overriddenProvider?.let { return it }
-                    val pc1 = c1.castOrNull<CwtValueConfig>()?.propertyConfig
+                    val pc1 = selectScope { c1.asValue()?.propertyConfig }
                     pc1?.overriddenProvider?.let { return it }
-                    (pc1 ?: c1).processParent { c2 ->
-                        c2.overriddenProvider?.let { return it }
-                        true
-                    }
+                    val cs = selectScope { (pc1 ?: c1).walkUp() }
+                    cs.forEach { c2 -> c2.overriddenProvider?.let { return it } }
                 }
                 return null
             }

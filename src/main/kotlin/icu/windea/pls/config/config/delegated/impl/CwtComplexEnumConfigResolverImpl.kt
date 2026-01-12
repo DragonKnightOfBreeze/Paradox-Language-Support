@@ -8,10 +8,10 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.processDescendants
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
+import icu.windea.pls.config.select.*
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
@@ -70,18 +70,13 @@ private class CwtComplexEnumConfigImpl(
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
     override val searchScopeType: String? = if (perDefinition) "definition" else null
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
-        buildList {
-            nameConfig.processDescendants {
-                when {
-                    it is CwtPropertyConfig -> {
-                        if (it.key == "enum_name" || it.stringValue == "enum_name") add(it)
-                    }
-                    it is CwtValueConfig -> {
-                        if (it.stringValue == "enum_name") add(it)
-                    }
+        selectScope {
+            nameConfig.walkDown().filter { c ->
+                when (c) {
+                    is CwtPropertyConfig -> c.key == "enum_name" || c.stringValue == "enum_name"
+                    is CwtValueConfig -> c.stringValue == "enum_name"
                 }
-                true
-            }
+            }.toList()
         }
     }
 

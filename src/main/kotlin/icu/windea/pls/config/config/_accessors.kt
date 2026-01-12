@@ -30,6 +30,19 @@ val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float
 /** 将值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。*/
 val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 
+val CwtMemberConfig<*>.isRoot: Boolean
+    get() = when (this) {
+        is CwtPropertyConfig -> this.parentConfig == null
+        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
+    }
+
+/** 如果当前成员规则对应属性的值，则返回所属的属性规则。否则返回自身。 */
+val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
+    get() = when (this) {
+        is CwtPropertyConfig -> this
+        is CwtValueConfig -> propertyConfig ?: this
+    }
+
 /** 绑定到当前属性规则的单别名规则（解析阶段填充）。*/
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
