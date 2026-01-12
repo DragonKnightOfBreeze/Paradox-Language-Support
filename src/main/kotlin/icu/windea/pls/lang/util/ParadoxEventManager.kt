@@ -30,7 +30,7 @@ import icu.windea.pls.lang.psi.parentDefinition
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -75,7 +75,7 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
+    fun getEvents(selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
@@ -210,7 +210,7 @@ object ParadoxEventManager {
     /**
      * 得到作为调用者的事件列表。
      */
-    fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
         // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -239,7 +239,7 @@ object ParadoxEventManager {
     /**
      * 得到调用的事件列表。
      */
-    fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
         // NOTE 1. 目前不兼容封装变量引用
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 

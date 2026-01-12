@@ -7,7 +7,7 @@ import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
@@ -23,7 +23,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
     class SearchParameters(
         val name: String?,
         val type: ParadoxLocalisationType,
-        override val selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+        override val selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
     ) : ParadoxSearchParameters<ParadoxLocalisationProperty>
 
     companion object {
@@ -39,7 +39,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         fun search(
             name: String?,
             type: ParadoxLocalisationType,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
@@ -50,7 +50,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun searchNormal(
             name: String?,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return search(name, ParadoxLocalisationType.Normal, selector)
         }
@@ -61,7 +61,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun searchSynced(
             name: String?,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return search(name, ParadoxLocalisationType.Synced, selector)
         }
@@ -70,7 +70,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         fun processVariants(
             type: ParadoxLocalisationType,
             prefixMatcher: PrefixMatcher,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
             val indexKey = when (type) {
@@ -83,7 +83,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun processVariantsNormal(
             prefixMatcher: PrefixMatcher,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
             return processVariants(ParadoxLocalisationType.Normal, prefixMatcher, selector, processor)
@@ -92,7 +92,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun processVariantsSynced(
             prefixMatcher: PrefixMatcher,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
+            selector: ParadoxSearchSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
             return processVariants(ParadoxLocalisationType.Synced, prefixMatcher, selector, processor)

@@ -21,7 +21,7 @@ import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.file
@@ -53,7 +53,7 @@ object CwtLocationExpressionManager {
         locationExpression: CwtLocalisationLocationExpression,
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
-        selectorBuilder: ChainedParadoxSelector<ParadoxLocalisationProperty>.() -> Unit = {}
+        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit = {}
     ): CwtLocalisationLocationExpression.ResolveResult? {
         val (location, isPlaceholder, namePaths) = locationExpression
         val project = definitionInfo.project
@@ -93,7 +93,7 @@ object CwtLocationExpressionManager {
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         project: Project,
-        selectorBuilder: ChainedParadoxSelector<ParadoxLocalisationProperty>.() -> Unit
+        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit
     ): CwtLocalisationLocationExpression.ResolveResult {
         return CwtLocalisationLocationExpression.ResolveResult(name, null, {
             val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance

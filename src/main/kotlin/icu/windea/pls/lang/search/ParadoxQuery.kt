@@ -7,15 +7,13 @@ import com.intellij.util.Query
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.thenPossible
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
-import icu.windea.pls.lang.search.selector.ParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 
 /**
  * 可对查询结果进行进一步的处理，包括排序、过滤、去重等。
  *
  * @see ParadoxSearchParameters
- * @see ParadoxSelector
- * @see ChainedParadoxSelector
+ * @see ParadoxSearchSelector
  */
 class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     private val original: Query<T>,
@@ -46,7 +44,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
                 true
             }
         }
-        return result ?: selector.defaultValue()
+        return result ?: selector.getDefaultValue()
     }
 
     override fun findFirst(): T? {

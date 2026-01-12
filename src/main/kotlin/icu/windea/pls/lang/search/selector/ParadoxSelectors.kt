@@ -121,7 +121,9 @@ class ParadoxDistinctSelector<T, K>(
     }
 }
 
-class ParadoxWithConstraintSelector<T : PsiElement>(val constraint: ParadoxIndexConstraint<T>) : ParadoxSelector<T>
+class ParadoxWithConstraintSelector<T : PsiElement>(
+    val constraint: ParadoxIndexConstraint<T>
+) : ParadoxSelector<T>
 
 class ParadoxLocaleSelector(
     val locale: CwtLocaleConfig

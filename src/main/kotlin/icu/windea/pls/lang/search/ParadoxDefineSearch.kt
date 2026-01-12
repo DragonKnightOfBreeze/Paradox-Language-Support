@@ -5,7 +5,7 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.splitToPair
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 
 /**
@@ -20,7 +20,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, Parad
     class SearchParameters(
         val namespace: String?,
         val variable: String?,
-        override val selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+        override val selector: ParadoxSearchSelector<ParadoxDefineIndexInfo>
     ) : ParadoxSearchParameters<ParadoxDefineIndexInfo>
 
     companion object {
@@ -36,7 +36,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, Parad
         fun search(
             namespace: String?,
             variable: String?,
-            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+            selector: ParadoxSearchSelector<ParadoxDefineIndexInfo>
         ): ParadoxQuery<ParadoxDefineIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
         }
@@ -46,7 +46,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, Parad
          */
         fun search(
             expression: String,
-            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+            selector: ParadoxSearchSelector<ParadoxDefineIndexInfo>
         ): ParadoxQuery<ParadoxDefineIndexInfo, SearchParameters> {
             val (namespace, variable) = expression.splitToPair('.') ?: tupleOf(expression, null)
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))

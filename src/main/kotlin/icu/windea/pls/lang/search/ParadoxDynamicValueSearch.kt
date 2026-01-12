@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 
 /**
@@ -18,7 +18,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
     class SearchParameters(
         val name: String?,
         val dynamicValueTypes: Set<String>,
-        override val selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
+        override val selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
     ) : ParadoxSearchParameters<ParadoxDynamicValueIndexInfo>
 
     companion object {
@@ -34,7 +34,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
         fun search(
             name: String?,
             dynamicValueType: String,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
+            selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
         ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, setOf(dynamicValueType), selector))
         }
@@ -46,7 +46,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
         fun search(
             name: String?,
             dynamicValueTypes: Set<String>,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
+            selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
         ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, dynamicValueTypes, selector))
         }

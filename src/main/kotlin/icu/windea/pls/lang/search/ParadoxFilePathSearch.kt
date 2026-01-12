@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
@@ -21,7 +21,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
     class SearchParameters(
         val filePath: String?,
         val configExpression: CwtDataExpression?,
-        override val selector: ChainedParadoxSelector<VirtualFile>,
+        override val selector: ParadoxSearchSelector<VirtualFile>,
         val ignoreLocale: Boolean
     ) : ParadoxSearchParameters<VirtualFile>
 
@@ -40,7 +40,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         fun search(
             filePath: String?,
             configExpression: CwtDataExpression? = null,
-            selector: ChainedParadoxSelector<VirtualFile>,
+            selector: ParadoxSearchSelector<VirtualFile>,
             ignoreLocale: Boolean = false
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, selector, ignoreLocale))
@@ -52,7 +52,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         @JvmStatic
         fun searchIcon(
             filePath: String?,
-            selector: ChainedParadoxSelector<VirtualFile>,
+            selector: ParadoxSearchSelector<VirtualFile>,
             ignoreLocale: Boolean = false
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return search(filePath, iconExpression, selector, ignoreLocale)
@@ -64,7 +64,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         @JvmStatic
         fun searchInlineScript(
             expression: String,
-            selector: ChainedParadoxSelector<VirtualFile>
+            selector: ParadoxSearchSelector<VirtualFile>
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)
         }

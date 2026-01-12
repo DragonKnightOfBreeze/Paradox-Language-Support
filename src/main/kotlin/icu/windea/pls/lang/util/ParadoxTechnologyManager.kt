@@ -26,7 +26,7 @@ import icu.windea.pls.lang.psi.parentByPath
 import icu.windea.pls.lang.psi.search
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByName
@@ -50,7 +50,7 @@ object ParadoxTechnologyManager {
         val technologyAttributes by registerKey<Set<String>>(Keys)
     }
 
-    fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
+    fun getTechnologies(selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technology, selector).findAll()
     }
 
@@ -141,7 +141,7 @@ object ParadoxTechnologyManager {
         /**
          * 得到作为前提条件的科技列表。
          */
-        fun getPreTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        fun getPreTechnologies(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
             // NOTE 1. 目前不兼容封装变量引用
 
             val name = definition.definitionInfo?.name
@@ -165,7 +165,7 @@ object ParadoxTechnologyManager {
         /**
          * 得到后续的科技列表。
          */
-        fun getPostTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        fun getPostTechnologies(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
             // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
 
             val name = definition.definitionInfo?.name

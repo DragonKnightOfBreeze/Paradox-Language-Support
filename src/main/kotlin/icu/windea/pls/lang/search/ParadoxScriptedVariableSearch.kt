@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -19,7 +19,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
     class SearchParameters(
         val name: String?,
         val type: ParadoxScriptedVariableType? = null,
-        override val selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+        override val selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
     ) : ParadoxSearchParameters<ParadoxScriptScriptedVariable>
 
     companion object {
@@ -35,7 +35,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         fun search(
             name: String?,
             type: ParadoxScriptedVariableType?,
-            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+            selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
         ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
@@ -46,7 +46,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         @JvmStatic
         fun searchLocal(
             name: String?,
-            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+            selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
         ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return search(name, ParadoxScriptedVariableType.Local, selector)
         }
@@ -57,7 +57,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         @JvmStatic
         fun searchGlobal(
             name: String?,
-            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+            selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
         ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return search(name, ParadoxScriptedVariableType.Global, selector)
         }

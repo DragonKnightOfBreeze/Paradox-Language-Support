@@ -19,17 +19,17 @@ import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
     if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
     if (searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
     if (searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
     return this
 }
@@ -37,7 +37,7 @@ fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: St
 /**
  * 首先尝试选用同一根目录下的，然后尝试选用同一文件下的。
  */
-fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
+fun <S : ParadoxSearchSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
     if (condition) {
         if (rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
         if (file != null) selectors += ParadoxPreferFileSelector(file)
@@ -45,83 +45,83 @@ fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = t
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
+fun <S : ParadoxSearchSelector<T>, T> S.filterBy(predicate: (T) -> Boolean): S {
     selectors += ParadoxFilterSelector(predicate)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
+fun <S : ParadoxSearchSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S {
     selectors += ParadoxDistinctSelector(keySelector)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
+fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
     return filterBy { element == null || !element.isSamePosition(it) }
 }
 
 @JvmName("distinctByName_scriptedVariable")
-fun <S : ChainedParadoxSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_definition")
-fun <S : ChainedParadoxSelector<ParadoxScriptDefinitionElement>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxScriptDefinitionElement>> S.distinctByName(): S {
     return distinctBy { ParadoxDefinitionManager.getName(it) }
 }
 
 @JvmName("distinctByName_localisation")
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_complexEnumValue")
-fun <S : ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_dynamicValue")
-fun <S : ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_parameter")
-fun <S : ChainedParadoxSelector<ParadoxParameterIndexInfo>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxParameterIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_localisationParameter")
-fun <S : ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
-fun <S : ChainedParadoxSelector<VirtualFile>> S.distinctByFilePath(): S {
+fun <S : ParadoxSearchSelector<VirtualFile>> S.distinctByFilePath(): S {
     return distinctBy { it.fileInfo?.path }
 }
 
-fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(): S {
+fun <S : ParadoxSearchSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(): S {
     return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
 }
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
+fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
     if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
     return this
 }
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIndexConstraint<T>? {
+fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIndexConstraint<T>? {
     return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
 }
 
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocaleConfig?): S {
+fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocaleConfig?): S {
     if (locale != null) selectors += ParadoxLocaleSelector(locale)
     return this
 }
 
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocaleConfig?, condition: Boolean = true): S {
+fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocaleConfig?, condition: Boolean = true): S {
     if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale)
     return this
 }
 
-fun <S : ChainedParadoxSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Set<String>): S {
+fun <S : ParadoxSearchSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Set<String>): S {
     if (fileExtensions.isEmpty()) return this
     return filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions }
 }

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 
 /**
@@ -18,7 +18,7 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
     class SearchParameters(
         val name: String?,
         val localisationName: String,
-        override val selector: ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>
+        override val selector: ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>
     ) : ParadoxSearchParameters<ParadoxLocalisationParameterIndexInfo>
 
     companion object {
@@ -34,7 +34,7 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
         fun search(
             name: String?,
             localisationName: String,
-            selector: ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>
+            selector: ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>
         ): ParadoxQuery<ParadoxLocalisationParameterIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, localisationName, selector))
         }

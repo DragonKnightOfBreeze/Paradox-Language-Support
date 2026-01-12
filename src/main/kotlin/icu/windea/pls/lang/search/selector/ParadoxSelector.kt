@@ -4,9 +4,9 @@ import icu.windea.pls.lang.search.ParadoxQuery
 import java.util.function.Function
 
 /**
- * 查询选择器。
+ * 选择器。
  *
- * 用于指定如何选择需要查询的目标（定义、本地化、文件等）。
+ * 用于指定如何选择目标，涉及过滤、回退、去重、排序等。
  *
  * @see ParadoxQuery
  */

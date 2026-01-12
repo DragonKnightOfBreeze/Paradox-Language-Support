@@ -14,14 +14,19 @@ import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
 /**
- * 链式的查询选择器。
+ * 查询选择器。由多个选择器（[ParadoxSelector]）组合而成。
+ *
+ * 用于获取需要的查询上下文信息（例如游戏类型、查询作用域），
+ * 以及对查询目标的最终的选择逻辑（例如是否上下文敏感、是否去重）。
  */
-class ChainedParadoxSelector<T>(
+class ParadoxSearchSelector<T>(
     val project: Project,
     val context: Any? = null
 ) : ParadoxSelector<T> {
-    val file = selectFile(context)
-    val rootFile = selectRootFile(file)
+    val selectors = mutableListOf<ParadoxSelector<T>>()
+
+    val file by lazy { selectFile(context) }
+    val rootFile by lazy { selectRootFile(file) }
 
     val gameType by lazy {
         val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<T>>().lastOrNull()?.gameType
@@ -40,7 +45,7 @@ class ChainedParadoxSelector<T>(
         ParadoxSearchScope.fromFile(project, file) ?: ParadoxSearchScope.allScope(project, file)
     }
     val scope: GlobalSearchScope by lazy {
-        // NOTE 这里需要保证适用 ParadoxFileManager.canReference()
+        // NOTE 这里需要保证适用 `ParadoxFileManager.canReference()`
         val selectorScopes = selectors.filterIsInstance<ParadoxSearchScopeAwareSelector<*>>().mapNotNull { it.getGlobalSearchScope() }
         val mergedScope = when {
             selectorScopes.isEmpty() -> defaultScope
@@ -50,11 +55,26 @@ class ChainedParadoxSelector<T>(
         mergedScope
     }
 
-    val selectors = mutableListOf<ParadoxSelector<T>>()
-
     private var defaultValue: T? = null
     private var defaultValuePriority = 0
-    private var defaultValueLock = Any()
+    private val defaultValueLock = Any()
+
+    fun getDefaultValue(): T? {
+        return defaultValue
+    }
+
+    fun resetDefaultValue() {
+        defaultValue = null
+        defaultValuePriority = 0
+    }
+
+    fun matchesGameType(result: T): Boolean {
+        // 某些情况下，可以直接认为游戏类型是匹配的
+        val scope = scope
+        if (scope is ParadoxSearchScope && scope.ensureMatchGameType()) return true
+
+        return gameType == null || gameType == selectGameType(result)
+    }
 
     override fun selectOne(target: T): Boolean {
         if (!matchesGameType(target)) return false
@@ -79,15 +99,6 @@ class ChainedParadoxSelector<T>(
             }
         }
         return finalSelectResult
-    }
-
-    fun defaultValue(): T? {
-        return defaultValue
-    }
-
-    fun resetDefaultValue() {
-        defaultValue = null
-        defaultValuePriority = 0
     }
 
     override fun select(target: T): Boolean {
@@ -118,13 +129,5 @@ class ChainedParadoxSelector<T>(
             comparator = comparator thenPossible selector.comparator()
         }
         return comparator
-    }
-
-    fun matchesGameType(result: T): Boolean {
-        // 某些情况下，可以直接认为游戏类型是匹配的
-        val scope = scope
-        if (scope is ParadoxSearchScope && scope.ensureMatchGameType()) return true
-
-        return gameType == null || gameType == selectGameType(result)
     }
 }

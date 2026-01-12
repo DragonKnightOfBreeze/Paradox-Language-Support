@@ -19,24 +19,24 @@ class ChainedParadoxSelectorHolder(
 
 fun selector(project: Project, context: Any? = null) = ChainedParadoxSelectorHolder(project, context)
 
-fun ChainedParadoxSelectorHolder.scriptedVariable() = ChainedParadoxSelector<ParadoxScriptScriptedVariable>(project, context)
+fun ChainedParadoxSelectorHolder.scriptedVariable() = ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context)
 
-fun ChainedParadoxSelectorHolder.definition() = ChainedParadoxSelector<ParadoxScriptDefinitionElement>(project, context)
+fun ChainedParadoxSelectorHolder.definition() = ParadoxSearchSelector<ParadoxScriptDefinitionElement>(project, context)
 
-fun ChainedParadoxSelectorHolder.localisation() = ChainedParadoxSelector<ParadoxLocalisationProperty>(project, context)
+fun ChainedParadoxSelectorHolder.localisation() = ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context)
 
-fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxScriptProperty>(project, context)
+fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
-fun ChainedParadoxSelectorHolder.definitionInjection() = ChainedParadoxSelector<ParadoxScriptProperty>(project, context)
+fun ChainedParadoxSelectorHolder.definitionInjection() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
-fun ChainedParadoxSelectorHolder.file() = ChainedParadoxSelector<VirtualFile>(project, context)
+fun ChainedParadoxSelectorHolder.file() = ParadoxSearchSelector<VirtualFile>(project, context)
 
-fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
+fun ChainedParadoxSelectorHolder.complexEnumValue() = ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.dynamicValue() = ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>(project, context)
+fun ChainedParadoxSelectorHolder.dynamicValue() = ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineIndexInfo>(project, context)
+fun ChainedParadoxSelectorHolder.define() = ParadoxSearchSelector<ParadoxDefineIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.parameter() = ChainedParadoxSelector<ParadoxParameterIndexInfo>(project, context)
+fun ChainedParadoxSelectorHolder.parameter() = ParadoxSearchSelector<ParadoxParameterIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.localisationParameter() = ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>(project, context)
+fun ChainedParadoxSelectorHolder.localisationParameter() = ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>(project, context)

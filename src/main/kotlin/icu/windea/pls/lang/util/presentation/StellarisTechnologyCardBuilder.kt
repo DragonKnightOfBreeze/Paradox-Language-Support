@@ -11,7 +11,7 @@ import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.util.ParadoxTextColorManager
@@ -146,7 +146,7 @@ class StellarisTechnologyCardBuilder(
         return ParadoxPresentationUtil.getIcon(sprite)
     }
 
-    private fun selector(): ChainedParadoxSelector<ParadoxScriptDefinitionElement> {
+    private fun selector(): ParadoxSearchSelector<ParadoxScriptDefinitionElement> {
         return icu.windea.pls.lang.search.selector.selector(definitionInfo.project, element).definition().contextSensitive()
     }
 }

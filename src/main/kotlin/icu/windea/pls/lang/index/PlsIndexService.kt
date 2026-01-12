@@ -17,7 +17,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
@@ -207,7 +207,7 @@ object PlsIndexService {
     inline fun <reified T : PsiElement> processVariants(
         indexKey: StubIndexKey<String, T>,
         prefixMatcher: PrefixMatcher,
-        selector: ChainedParadoxSelector<T>,
+        selector: ParadoxSearchSelector<T>,
         processor: Processor<T>
     ): Boolean {
         // 保证返回结果的名字的唯一性
@@ -217,7 +217,7 @@ object PlsIndexService {
             selector.scope,
             keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
             predicate = { element -> selector.selectOne(element) },
-            getDefaultValue = { selector.defaultValue() },
+            getDefaultValue = { selector.getDefaultValue() },
             resetDefaultValue = { selector.resetDefaultValue() },
             processor = { processor.process(it) }
         )
