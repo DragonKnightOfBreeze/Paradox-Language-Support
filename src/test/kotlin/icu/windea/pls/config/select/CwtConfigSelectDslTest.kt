@@ -24,11 +24,9 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun byPath_simple() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = fileConfig.properties.find { it.key == "k1" }!!
-        
-        val k4 = withSelectOne { k1.ofPath("k2/k3/k4") }
+        val k4 = selectScope { fileConfig.ofPath("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = withSelect { k1.ofPath("k2/k3/k4") }.toList()
+        val k4List = selectScope { fileConfig.ofPath("k1/k2/k3/k4").all() }
         Assert.assertEquals(3, k4List.size)
     }
 

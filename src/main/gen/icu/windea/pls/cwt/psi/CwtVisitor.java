@@ -49,6 +49,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull CwtProperty o) {
     visitNamedElement(o);
+    // visitMemberContainer(o);
     // visitMember(o);
   }
 
@@ -70,6 +71,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitValue(@NotNull CwtValue o) {
     visitExpressionElement(o);
+    // visitMemberContainer(o);
     // visitMember(o);
     // visitOptionMember(o);
   }

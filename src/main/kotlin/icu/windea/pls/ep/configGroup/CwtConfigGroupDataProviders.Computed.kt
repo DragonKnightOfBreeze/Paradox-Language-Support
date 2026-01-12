@@ -96,9 +96,9 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
                 val paths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey).path }
                 val rootConfig = baseDeclarationConfig.configForDeclaration
-                val c = withSelectOne { rootConfig.ofPaths(paths, ignoreCase = true) } ?: continue
+                val config = selectScope { rootConfig.ofPaths(paths, ignoreCase = true).asProperty().one() } ?: continue
                 // read action is required here (for logging)
-                val declarationConfig = readAction { CwtDeclarationConfig.resolve(c, name = typeName) } ?: continue
+                val declarationConfig = readAction { CwtDeclarationConfig.resolve(config, name = typeName) } ?: continue
                 initializer.declarations[typeName] = declarationConfig
             }
         }

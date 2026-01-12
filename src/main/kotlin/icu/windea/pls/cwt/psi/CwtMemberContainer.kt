@@ -1,13 +1,15 @@
 package icu.windea.pls.cwt.psi
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 
 /**
- * @see CwtRootBlock
- * @see CwtBlock
+ * @see CwtFile
+ * @see CwtMember
+ * @see CwtBlockElement
  */
-interface CwtMemberContainer: PsiElement {
-    val memberList: List<CwtMember>
-    val propertyList: List<CwtProperty>
-    val valueList: List<CwtValue>
+interface CwtMemberContainer : PsiElement, NavigatablePsiElement {
+    val members: List<CwtMember>? get() = null
+    val properties: List<CwtProperty>? get() = null
+    val values: List<CwtValue>? get() = null
 }

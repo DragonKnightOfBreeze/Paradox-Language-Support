@@ -317,7 +317,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
-                    val relative = PathMatcher.relative(memberPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
+                    val relative = PathMatcher.relative(memberPath.subPaths, skipConfig, ignoreCase = true, usePattern = true, useAny = true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

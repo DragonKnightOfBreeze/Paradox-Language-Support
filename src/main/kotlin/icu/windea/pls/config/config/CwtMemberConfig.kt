@@ -17,22 +17,21 @@ import icu.windea.pls.model.CwtType
  * @property configs 子规则列表（其中嵌套的属性与值对应的成员规则）。
  * @property properties 子属性规则列表（其中嵌套的属性对应的成员规则）。
  * @property values 子值规则列表（其中嵌套的值对应的成员规则）。
- * @property optionData 选项数据（来自附加的选项注释，以 `## ...` 的形式声明）。
  * @property parentConfig 父级成员规则（若存在），用于溯源与继承/推断。
+ * @property optionData 选项数据（来自附加的选项注释，以 `## ...` 的形式声明）。
  * @property valueExpression 值对应的数据表达式，用于驱动解析与校验。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
  *
  * @see CwtMember
  */
-sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
+sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T> {
     val value: String
     val valueType: CwtType
-    val configs: List<CwtMemberConfig<*>>?
-    val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
-    val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
-    val optionData: CwtOptionDataHolder
-
+    override val configs: List<CwtMemberConfig<*>>?
+    override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
+    override val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
     var parentConfig: CwtMemberConfig<*>?
+    val optionData: CwtOptionDataHolder
 
     val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
@@ -49,7 +48,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
         fun postOptimize(config: CwtMemberConfig<*>)
 
         /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun <T: CwtMemberConfig<*>> delegated(
+        fun <T : CwtMemberConfig<*>> delegated(
             targetConfig: T,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
         ): T

@@ -1,50 +1,29 @@
-@file:Suppress("unused", "RedundantWith", "UnusedReceiverParameter")
+@file:Suppress("unused", "RedundantWith", "UnusedReceiverParameter", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.config.select
 
-import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.util.KeyRegistry
 
 @DslMarker
 annotation class CwtConfigSelectDsl
 
-class CwtConfigSelectScope : UserDataHolderBase() {
-    object Keys : KeyRegistry()
-
-    operator fun plus(other: CwtConfigSelectScope) {
-        Keys.copy(other, this, ifPresent = false)
-    }
-}
-
 @CwtConfigSelectDsl
-inline fun <R> withSelect(
+inline fun <R> selectScope(
     scope: CwtConfigSelectScope = CwtConfigSelectScope(),
     block: context(CwtConfigSelectScope) () -> R
-): R {
-    return with(scope) { block() }
-}
-
-@CwtConfigSelectDsl
-inline fun <R> withSelectOne(
-    scope: CwtConfigSelectScope = CwtConfigSelectScope(),
-    block: context(CwtConfigSelectScope) () -> Sequence<R>
-): R? {
-    return with(scope) { block().firstOrNull() }
-}
+): R = with(scope) { block() }
 
 @CwtConfigSelectDsl
 inline fun <T : CwtMemberConfig<*>, R> T.select(
     scope: CwtConfigSelectScope = CwtConfigSelectScope(),
     block: context(CwtConfigSelectScope) T.() -> R
-): R {
-    return with(scope) { block() }
-}
+): R = with(scope) { block() }
 
+context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-inline fun <T : CwtMemberConfig<*>, R> T.selectOne(
-    scope: CwtConfigSelectScope = CwtConfigSelectScope(),
-    block: context(CwtConfigSelectScope) T.() -> Sequence<R>
-): R? {
-    return with(scope) { block().firstOrNull() }
-}
+inline fun <T : CwtMemberConfig<*>> Sequence<T>.one(): T? = firstOrNull()
+
+context(scope: CwtConfigSelectScope)
+@CwtConfigSelectDsl
+inline fun <T : CwtMemberConfig<*>> Sequence<T>.all(): List<T> = toList()
+

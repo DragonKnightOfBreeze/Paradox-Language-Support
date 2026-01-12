@@ -72,8 +72,18 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptMember> getMemberList() {
-    return ParadoxScriptPsiImplUtil.getMemberList(this);
+  public @NotNull List<@NotNull ParadoxScriptMember> getMembers() {
+    return ParadoxScriptPsiImplUtil.getMembers(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptProperty> getProperties() {
+    return ParadoxScriptPsiImplUtil.getProperties(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptValue> getValues() {
+    return ParadoxScriptPsiImplUtil.getValues(this);
   }
 
   @Override

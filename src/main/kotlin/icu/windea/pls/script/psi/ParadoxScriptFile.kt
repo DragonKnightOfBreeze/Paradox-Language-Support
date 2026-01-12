@@ -11,6 +11,7 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.navigation.ParadoxScriptItemPresentation
+import icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
@@ -20,10 +21,10 @@ class ParadoxScriptFile(
         val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)
     }
 
-    override val block: ParadoxScriptRootBlock? get() = findChild<ParadoxScriptRootBlock>()
-    override val memberList: List<ParadoxScriptMember> get() = block?.memberList.orEmpty()
-    override val propertyList: List<ParadoxScriptProperty> get() = block?.propertyList.orEmpty()
-    override val valueList: List<ParadoxScriptValue> get() = block?.valueList.orEmpty()
+    override val block: ParadoxScriptRootBlock? get() = findChild<_>()
+    override val members: List<ParadoxScriptMember> get() = ParadoxScriptPsiImplUtil.getMembers(this)
+    override val properties: List<ParadoxScriptProperty> get() = ParadoxScriptPsiImplUtil.getProperties(this)
+    override val values: List<ParadoxScriptValue> get() = ParadoxScriptPsiImplUtil.getValues(this)
 
     override fun getFileType() = ParadoxScriptFileType
 

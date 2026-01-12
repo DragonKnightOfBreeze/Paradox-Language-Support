@@ -104,7 +104,7 @@ object ParadoxPsiManager {
 
     private fun doGetArgumentTupleList(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
         return buildList {
-            element.propertyList.mapNotNull f@{ p ->
+            element.properties.mapNotNull f@{ p ->
                 // 对于传入参数的名字，要求不为空，且不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
                 val k = p.propertyKey.name.orNull() ?: return@f null
                 if (!PlsPatterns.argumentName.matches(k)) return@f null

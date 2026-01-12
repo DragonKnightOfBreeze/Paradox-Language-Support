@@ -11,7 +11,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
-public interface CwtProperty extends CwtNamedElement, CwtMember {
+public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMember {
 
   @NotNull
   CwtPropertyKey getPropertyKey();
@@ -30,6 +30,12 @@ public interface CwtProperty extends CwtNamedElement, CwtMember {
   @Nullable String getValue();
 
   @NotNull CwtSeparatorType getSeparatorType();
+
+  @Nullable List<@NotNull CwtMember> getMembersOrNull();
+
+  @Nullable List<@NotNull CwtProperty> getPropertiesOrNull();
+
+  @Nullable List<@NotNull CwtValue> getValuesOrNull();
 
   @NotNull GlobalSearchScope getResolveScope();
 

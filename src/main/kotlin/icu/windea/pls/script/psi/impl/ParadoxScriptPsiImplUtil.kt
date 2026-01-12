@@ -17,8 +17,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -619,8 +618,45 @@ object ParadoxScriptPsiImplUtil {
     // endregion
 
     @JvmStatic
-    fun getMemberList(element: PsiElement): List<ParadoxScriptMember> {
-        return element.findChildren<_>()
+    fun getMembersOrNull(element: PsiElement): List<ParadoxScriptMember>? {
+        return getMembersRoot(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getPropertiesOrNull(element: PsiElement): List<ParadoxScriptProperty>? {
+        return getMembersRoot(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getValuesOrNull(element: PsiElement): List<ParadoxScriptValue>? {
+        return getMembersRoot(element)?.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getMembers(element: PsiElement): List<ParadoxScriptMember> {
+        return getMembersOrNull(element).orEmpty()
+    }
+
+    @JvmStatic
+    fun getProperties(element: PsiElement): List<ParadoxScriptProperty> {
+        return getPropertiesOrNull(element).orEmpty()
+    }
+
+    @JvmStatic
+    fun getValues(element: PsiElement): List<ParadoxScriptValue> {
+        return getValuesOrNull(element).orEmpty()
+    }
+
+    private fun getMembersRoot(element: PsiElement): PsiElement? {
+        val root = when (element) {
+            is ParadoxScriptFile -> element.block
+            is ParadoxScriptProperty -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()
+            is ParadoxScriptValue -> element.castOrNull<ParadoxScriptBlock>()
+            is ParadoxScriptParameterCondition -> element
+            else -> null
+        }
+        if (root == null) return null
+        return root
     }
 
     @JvmStatic

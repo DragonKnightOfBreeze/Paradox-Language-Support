@@ -93,7 +93,7 @@ object ParadoxTextColorManager {
         val name = definition.name
         if (name.singleOrNull()?.let { isId(it) } != true) return null
         val gameType = selectGameType(definition) ?: return null
-        val rgbList = definition.block?.valueList?.mapNotNull { it.intValue() } ?: return null
+        val rgbList = definition.block?.values?.mapNotNull { it.intValue() } ?: return null
         val value = ParadoxTextColorInfo(definition.createPointer(), name, gameType, rgbList[0], rgbList[1], rgbList[2])
         return value
     }

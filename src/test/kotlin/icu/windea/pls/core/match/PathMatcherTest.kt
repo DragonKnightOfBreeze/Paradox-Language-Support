@@ -7,22 +7,22 @@ class PathMatcherTest {
     // matches(String, String)
     @Test
     fun matches_string_exact_and_ignoreCase() {
-        Assert.assertTrue(PathMatcher.matches("foo", "foo", ignoreCase = false))
-        Assert.assertFalse(PathMatcher.matches("Foo", "foo", ignoreCase = false))
+        Assert.assertTrue(PathMatcher.matches("foo", "foo"))
+        Assert.assertFalse(PathMatcher.matches("Foo", "foo"))
         Assert.assertTrue(PathMatcher.matches("Foo", "foo", ignoreCase = true))
     }
 
     @Test
     fun matches_string_any_and_pattern() {
         // useAny
-        Assert.assertFalse(PathMatcher.matches("bar", "any", ignoreCase = false, useAny = false))
-        Assert.assertTrue(PathMatcher.matches("bar", "any", ignoreCase = false, useAny = true))
+        Assert.assertFalse(PathMatcher.matches("bar", "any"))
+        Assert.assertTrue(PathMatcher.matches("bar", "any", useAny = true))
         // usePattern
-        Assert.assertTrue(PathMatcher.matches("foo_bar", "foo_*", ignoreCase = false, usePattern = true))
-        Assert.assertFalse(PathMatcher.matches("foo_bar", "FOO_*", ignoreCase = false, usePattern = true))
+        Assert.assertTrue(PathMatcher.matches("foo_bar", "foo_*", usePattern = true))
+        Assert.assertFalse(PathMatcher.matches("foo_bar", "FOO_*", usePattern = true))
         Assert.assertTrue(PathMatcher.matches("foo_bar", "FOO_*", ignoreCase = true, usePattern = true))
-        Assert.assertTrue(PathMatcher.matches("x", "?", ignoreCase = false, usePattern = true))
-        Assert.assertFalse(PathMatcher.matches("xy", "?", ignoreCase = false, usePattern = true))
+        Assert.assertTrue(PathMatcher.matches("x", "?", usePattern = true))
+        Assert.assertFalse(PathMatcher.matches("xy", "?", usePattern = true))
     }
 
     // matches(List<String>, List<String>)
@@ -34,18 +34,18 @@ class PathMatcherTest {
         val p = listOf("foo", "b*")
         val any = listOf("foo", "any")
 
-        Assert.assertTrue(PathMatcher.matches(a, b, ignoreCase = false))
-        Assert.assertFalse(PathMatcher.matches(a, c, ignoreCase = false))
+        Assert.assertTrue(PathMatcher.matches(a, b))
+        Assert.assertFalse(PathMatcher.matches(a, c))
 
         // pattern on second segment
-        Assert.assertTrue(PathMatcher.matches(a, p, ignoreCase = false, usePattern = true))
+        Assert.assertTrue(PathMatcher.matches(a, p, usePattern = true))
         // any on second segment
-        Assert.assertFalse(PathMatcher.matches(a, any, ignoreCase = false, useAny = false))
-        Assert.assertTrue(PathMatcher.matches(a, any, ignoreCase = false, useAny = true))
+        Assert.assertFalse(PathMatcher.matches(a, any))
+        Assert.assertTrue(PathMatcher.matches(a, any, useAny = true))
 
         // ignoreCase across list
         val upper = listOf("Foo", "Bar")
-        Assert.assertFalse(PathMatcher.matches(upper, b, ignoreCase = false))
+        Assert.assertFalse(PathMatcher.matches(upper, b))
         Assert.assertTrue(PathMatcher.matches(upper, b, ignoreCase = true))
     }
 

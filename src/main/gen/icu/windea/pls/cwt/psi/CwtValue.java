@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMember {
+public interface CwtValue extends CwtExpressionElement, CwtMemberContainer, CwtMember, CwtOptionMember {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

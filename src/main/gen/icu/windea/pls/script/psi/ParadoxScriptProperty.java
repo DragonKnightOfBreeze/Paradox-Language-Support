@@ -13,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMember, ParadoxScriptDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMemberContainer, ParadoxScriptMember, ParadoxScriptDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();
@@ -38,6 +38,12 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @NotNull IElementType getIElementType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
+
+  @Nullable List<@NotNull ParadoxScriptMember> getMembersOrNull();
+
+  @Nullable List<@NotNull ParadoxScriptProperty> getPropertiesOrNull();
+
+  @Nullable List<@NotNull ParadoxScriptValue> getValuesOrNull();
 
   @NotNull GlobalSearchScope getResolveScope();
 

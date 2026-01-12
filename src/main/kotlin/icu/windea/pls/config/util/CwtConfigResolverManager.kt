@@ -186,10 +186,10 @@ object CwtConfigResolverManager {
             } else {
                 if (r.isEmpty()) {
                     r = fileConfig.properties
-                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, useAny = true, usePattern = true) }
+                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
                 } else {
                     r = r.flatMap { it.properties.orEmpty() }
-                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, useAny = true, usePattern = true) }
+                        .filter { PathMatcher.matches(it.key, p, ignoreCase = true, usePattern = true) }
                 }
             }
             if (r.isEmpty()) return emptyList()

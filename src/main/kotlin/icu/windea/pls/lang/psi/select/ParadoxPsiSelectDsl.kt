@@ -1,4 +1,4 @@
-@file:Suppress("unused", "RedundantWith", "UnusedReceiverParameter")
+@file:Suppress("unused", "RedundantWith", "UnusedReceiverParameter", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.lang.psi.select
 
@@ -7,49 +7,22 @@ import com.intellij.psi.PsiElement
 @DslMarker
 annotation class ParadoxPsiSelectDsl
 
-class ParadoxPsiSelectScope private constructor(
-    val ignoreCase: Boolean = false
-) {
-    companion object {
-        @JvmStatic
-        fun from(ignoreCase: Boolean = false): ParadoxPsiSelectScope {
-            return ParadoxPsiSelectScope(ignoreCase)
-        }
-    }
-}
-
 @ParadoxPsiSelectDsl
-inline fun <R> withSelect(
-    ignoreCase: Boolean = false,
-    block: context(ParadoxPsiSelectScope) () -> R,
-): R {
-    val scope = ParadoxPsiSelectScope.from(ignoreCase)
-    return with(scope) { block() }
-}
-
-@ParadoxPsiSelectDsl
-inline fun <R> withSelectOne(
-    ignoreCase: Boolean = false,
-    block: context(ParadoxPsiSelectScope) () -> Iterable<R>,
-): R? {
-    val scope = ParadoxPsiSelectScope.from(ignoreCase)
-    return with(scope) { block().firstOrNull() }
-}
+inline fun <R> selectScope(
+    scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(),
+    block: context(ParadoxPsiSelectScope) () -> R
+): R = with(scope) { block() }
 
 @ParadoxPsiSelectDsl
 inline fun <T : PsiElement, R> T.select(
-    ignoreCase: Boolean = false,
-    block: context(ParadoxPsiSelectScope) T.() -> R,
-): R {
-    val scope = ParadoxPsiSelectScope.from(ignoreCase)
-    return with(scope) { block() }
-}
+    scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(),
+    block: context(ParadoxPsiSelectScope) T.() -> R
+): R = with(scope) { block() }
 
+context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-inline fun <T : PsiElement, R> T.selectOne(
-    ignoreCase: Boolean = false,
-    block: context(ParadoxPsiSelectScope) T.() -> Iterable<R>,
-): R? {
-    val scope = ParadoxPsiSelectScope.from(ignoreCase)
-    return with(scope) { block().firstOrNull() }
-}
+inline fun <T : PsiElement> Sequence<T>.one(): T? = firstOrNull()
+
+context(scope: ParadoxPsiSelectScope)
+@ParadoxPsiSelectDsl
+inline fun <T : PsiElement> Sequence<T>.all(): List<T> = toList()

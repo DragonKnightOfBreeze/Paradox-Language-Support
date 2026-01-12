@@ -271,7 +271,7 @@ object ParadoxConfigMatchService {
             } else {
                 if (memberPath.isEmpty()) return false
                 val input = memberPath.subPaths.dropLast(1)
-                val result = skipRootKeyConfig.any { PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
+                val result = skipRootKeyConfig.any { PathMatcher.matches(input, it, ignoreCase = true, usePattern = true, useAny = true) }
                 if (!result) return false
             }
         }
