@@ -278,7 +278,7 @@ types = {
 - Missing any required property will cause the type to be skipped (a log entry will be emitted).
 - `path` and `path_pattern` can be used together; `path_strict` enforces strict matching.
 - `skip_root_key` is a multi-group setting: if any group matches the sequence of top-level keys in the file, the matcher can skip them and continue to match the definition key.
-- Subtype matching is order-sensitive; place more specific rules earlier.
+- Subtype matching is order-sensitive; place more specific configs earlier.
 
 #### Alias Configs and Single Alias Configs {#config-alias}
 
@@ -387,11 +387,12 @@ enums = {
 
 **Complex Enum**:
 
-Fields and implementation (`CwtComplexEnumConfigResolverImpl`):
-- File sources: `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` (the prefix `game/` is removed; extension should not contain dot).
-- `start_from_root`: whether to query anchors from the top of the file (instead of top-level properties).
-- `per_definition`: (PLS extension) whether to limit the equivalence of complex enum values with same name and type to the definition level (instead of the file level).
-- `name` subsection: describes how to locate value anchors in matched files; the implementation collects all properties or values named `enum_name` (as `enumNameConfigs`).
+**Matching Logic**:
+- The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
+- `path` and `path_extension` are normalized during resolving.
+- `start_from_root`: Whether to start searching for anchors from the top of the file (rather than from top-level properties).
+- `per_definition`: (PLS extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
+- `name` subsection: Describes how to locate value anchors within matching files; the implementation collects all properties or values named `enum_name` within it as anchors (`enumNameConfigs`).
 
 **Parsing flow (brief)**:
 1. Simple: parse `enum[...]` and its value list; build a case-insensitive value set and mapping (`CwtEnumConfigResolverImpl`).
@@ -415,7 +416,6 @@ enums = {
 **Notes**:
 - Simple enums currently support constant values only; if you write a template expression, it will not be parsed as a template.
 - A complex enum without a `name` subsection or without any `enum_name` anchors found in matched files will result in an empty enum.
-- Path fields can be used in combination; `path_strict` enables strict matching; `path_extension` should not include a leading dot (write `txt`).
 
 #### Dynamic Value Type Configs {#config-dynamic-value}
 
@@ -461,9 +461,6 @@ values = {
   - Dynamic link: declares `data_source` and/or `prefix`/`from_*`, and can carry dynamic data (e.g., `modifier:x`, `relations(x)`, `var:x`).
 
 - **Fields and semantics (implementation)**:
-  - `type`: `scope` | `value` | `both` (default `scope`).
-  - `from_data`: whether to read dynamic data from the text (format `prefix:data`).
-  - `from_argument`: whether to read dynamic data from function arguments (format `func(arg)`).
   - `type`：link type (`scope`/`value`/`both`, default to `scope`).
   - `from_data`：whether to read dynamic data from text data (format `prefix:data`).
   - `from_argument`：whether to read dynamic data from arguments (format `func(arg)`).
@@ -639,7 +636,7 @@ modifier_categories = {
 - **Parsing flow (implementation summary)**:
   - Command (`CwtLocalisationCommandConfigResolverImpl`): parse name (case-insensitive) and `supported_scopes`.
   - Promotion (`CwtLocalisationPromotionConfigResolverImpl`): parse name (case-insensitive, match localisation link name) and `supported_scopes`.
-  - In localisation texts, after switching scope via a localisation link, use the promotion rules to determine which command fields are valid.
+  - In localisation texts, after switching scope via a localisation link, use the promotion configs to determine which command fields are valid.
 
 **Example**:
 
@@ -672,15 +669,15 @@ localisation_links = {
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl -->
 
-- **Purpose**: configure name/description/required localisation keys and main images/splitting rules for a definition type, for UI, navigation, and hints.
+- **Purpose**: configure name/description/required localisation keys and main images/splitting configs for a definition type, for UI, navigation, and hints.
 - **Path location**:
   - Localisation: `types/type[{type}]/localisation`
   - Images: `types/type[{type}]/images`
 
 - **Fields and semantics**:
-  - Both share the same structure: pairs of "subtype expression + location rules" (`locationConfigs`).
-  - At runtime, filter and merge by the actual set of definition subtypes to obtain the final rule list (`getConfigs(subtypes)`).
-  - For location rules, see "Location and Row Matching" → `CwtLocationConfig`. Common options:
+  - Both share the same structure: pairs of "subtype expression + location configs" (`locationConfigs`).
+  - At runtime, filter and merge by the actual set of definition subtypes to obtain the final config list (`getConfigs(subtypes)`).
+  - For location configs, see "Location and Row Matching" → `CwtLocationConfig`. Common options:
     - `required`: whether this item is mandatory (report hint/error if missing).
     - `primary`: whether this item is the primary one (e.g., for main icon/name).
   - For location expressions, see "Config Expressions → Location Expression".
@@ -727,26 +724,26 @@ database_object_types = {
 }
 ```
 
-#### Location Configs and Row Configs {#config-location-row}
+#### Location Configs {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
+
+- **Purpose**: Declares the location key and location expression for resources such as images/localization.
+- **Path Location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
+
+#### Row Configs {#config-row}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl -->
 
-- **Purpose**:
-  - `Location` rules: declare resource keys and location expressions for images/localisation, etc.
-  - `Row` rules: declare column names and value shapes for CSV rows for completion/inspections.
+- **Purpose**: Declares column names and value types for CSV rows, used for completion/validation.
+- **Path Location**: `rows/row[{name}]`.
 
-- **Location rules (CwtLocationConfig)**:
-  - Applicable places: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
-  - Fields: `key` (resource name), `value` (location expression string), `required`, `primary`.
-  - Location expressions: see "Config Expressions → Location Expressions".
-
-- **Row rules (CwtRowConfig)**:
-  - Path location: `rows/row[{name}]`.
-  - Inherits file-matching capabilities (similar to types): `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`.
-  - Fields: `columns` (columnName -> columnRule), `end_column` (end column name; once matched, remaining tail columns are optional).
+**Matching Logic**:
+- The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
+- `path` and `path_extension` are normalized during parsing.
+- `columns` (column name → column config), `end_column` (termination column name, columns after a match are considered optional trailing columns).
 
 **Example**:
 
@@ -1006,7 +1003,7 @@ on_actions = {
   - `name`: inline script name or its matching pattern.
   - `context_configs_type: string = single | multiple` (default `single`): aggregation shape of context configs.
     - `single`: take value (`value`) as the context config.
-    - `multiple`: take child rules list (`configs`) as the context configs.
+    - `multiple`: take child configs list (`configs`) as the context configs.
   - Scope context (options):
     - `replace_scopes`: rewrite system scope mappings.
     - `push_scope`: declare output scope.
@@ -1015,7 +1012,7 @@ on_actions = {
   - Name source: use key if it is a property; otherwise use the value (`CwtExtendedInlineScriptConfigResolverImpl`).
   - Container config: if it is a property node, first apply `inlineSingleAlias(...)` to its value (supports root-level single alias) to get the container config (`getContainerConfig()`).
   - Context configs:
-    - If `context_configs_type = multiple`, take the container config's child rules; otherwise take the container config's value rule.
+    - If `context_configs_type = multiple`, take the container config's child configs; otherwise take the container config's value config.
     - Wrap into a consumable "context configs container" via `inlineWithConfigs(...)` (`getContextConfigs()` returns a single-element list).
 
 **Format**:
@@ -1091,8 +1088,8 @@ inline_scripts = {
   - `context_key: string` (required): context key (e.g., `scripted_trigger@X`) used to locate the source of the parameter's context configs.
   - `context_configs_type: string = single | multiple` (default `single`): aggregation shape of context configs.
     - `single`: take value (`value`) as the context config.
-    - `multiple`: take child rules list (`configs`) as the context configs.
-  - `inherit: boolean = no`: whether to inherit context (rules and scopes) from the use site.
+    - `multiple`: take child configs list (`configs`) as the context configs.
+  - `inherit: boolean = no`: whether to inherit context (configs and scopes) from the use site.
   - Scope context (options):
     - `replace_scopes`: rewrite system scope mapping.
     - `push_scope`: declare output scope.
@@ -1474,7 +1471,7 @@ Defaults and constraints:
 
 - **No whitespace**: any whitespace makes it invalid (empty expression returned).
 - **Segment decision**: a single segment (pure constant or single dynamic) is not considered a template (empty expression returned).
-- **Matching strategy**: only scan dynamic rules with both prefix and suffix; use "leftmost earliest" splitting.
+- **Matching strategy**: only scan dynamic configs with both prefix and suffix; use "leftmost earliest" splitting.
 - **Segment types**: each segment delegates to data expression parsing; unmatched segments degrade to Constant.
 - **Reference counting**: only non-Constant segments are counted as "reference segments" for subsequent reference/navigation.
 
@@ -1489,7 +1486,7 @@ value[gui_element_name]:localisation # value[gui_element_name] + ":" + localisat
 ```
 
 **Notes**:
-- When constants are adjacent to segments that look like rule names, prefer correct recognition of dynamic rules to avoid treating "symbol + rule name" as a single constant.
+- When constants are adjacent to segments that look like config names, prefer correct recognition of dynamic configs to avoid treating "symbol + config name" as a single constant.
 - If whitespace is needed, use a more appropriate matching method (e.g., ANT/regex).
 
 ### Cardinality Expression {#config-expression-cardinality}

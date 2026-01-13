@@ -103,7 +103,7 @@ priorities = {
 
 - **用途**：声明“定义条目”的结构，用于补全、检查与快速文档等。
 - **路径定位**：`{name}`，其中 `{name}` 为规则名称（即“定义类型”）。顶级属性若键为合法标识符且未被其他规则匹配，回退尝试解析为声明规则。
-- **依赖上下文**：由 `CwtDeclarationConfigContextProvider` 构造声明上下文（含定义名、类型、子类型）。Game Rule/On Action 可通过扩展配置改写上下文。
+- **依赖上下文**：由 `CwtDeclarationConfigContextProvider` 构造声明上下文（含定义名、类型、子类型）。Game rule/On Action 可通过扩展配置改写上下文。
 
 - **解析流程（实现摘要）**：
   1. 解析名称：若键不是合法标识符则忽略（`CwtDeclarationConfigResolverImpl`）。
@@ -218,7 +218,7 @@ directive[inline_script] = {
 
 - **文件匹配与来源**：
   - `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
-  - 路径会移除前缀 `game/` 并规范化分隔符；`path_extension` 不含点（例如 `.txt` → `txt`）。
+  - `path` 和 `path_extension` 会在解析时进行规范化处理。
   - `type_per_file` 表示“一文件一类型实例”。
 
 - **类型键（definition key）约束**：
@@ -387,8 +387,9 @@ enums = {
 
 **复杂枚举（Complex Enum）**：
 
-字段与实现（`CwtComplexEnumConfigResolverImpl`）：
-- 文件来源：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`（路径会移除前缀 `game/`，扩展名不含点）。
+**匹配逻辑**：
+- `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
+- `path` 和 `path_extension` 会在解析时进行规范化处理。
 - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
 - `per_definition`：（PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
 - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
@@ -415,7 +416,6 @@ enums = {
 **注意事项**：
 - 简单枚举当前仅支持常量值；若填写模板表达式，将不会被按模板解析。
 - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
-- 路径字段支持组合使用；`path_strict` 会启用严格匹配；`path_extension` 请勿包含前导点（应写作 `txt`）。
 
 #### 动态值类型规则 {#config-dynamic-value}
 
@@ -724,26 +724,26 @@ database_object_types = {
 }
 ```
 
-#### 位置规则与行规则 {#config-location-row}
+#### 位置规则 {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
+
+- **用途**：声明图片/本地化等资源的定位键与位置表达式。
+- **路径定位**：`types/type[{type}]/localisation/{key}` 和 `types/type[{type}]/images/{key}`。
+
+#### 行规则 {#config-row}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl -->
 
-- **用途**：
-  - `位置规则（Location）`：声明图片/本地化等资源的定位键与位置表达式。
-  - `行规则（Row）`：为 CSV 行声明列名与取值形态，用于补全/检查。
+- **用途**：为 CSV 行声明列名与取值形态，用于补全/检查。
+- **路径定位**：`rows/row[{name}]`。
 
-- **位置规则（CwtLocationConfig）**：
-  - 适用位置：`types/type[{type}]/localisation/{key}` 与 `types/type[{type}]/images/{key}`。
-  - 字段：`key`（资源名）、`value`（位置表达式字符串）、`required`、`primary`。
-  - 位置表达式详见“规则表达式 → 位置表达式”。
-
-- **行规则（CwtRowConfig）**：
-  - 路径定位：`rows/row[{name}]`。
-  - 继承文件匹配能力（与类型类似）：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`。
-  - 字段：`columns`（列名→列规则），`end_column`（终止列名，匹配到后视为可省略的尾列）。
+**匹配逻辑**：
+- `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
+- `path` 和 `path_extension` 会在解析时进行规范化处理。
+- `columns`（列名→列规则），`end_column`（终止列名，匹配到后视为可省略的尾列）。
 
 **示例**：
 
