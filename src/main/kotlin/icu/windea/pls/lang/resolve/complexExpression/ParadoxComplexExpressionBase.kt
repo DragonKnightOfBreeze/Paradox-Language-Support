@@ -4,9 +4,9 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNodeBase
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
+import icu.windea.pls.lang.resolve.complexExpression.util.accept
 
 abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase(), ParadoxComplexExpression {
     fun finishResolving() {

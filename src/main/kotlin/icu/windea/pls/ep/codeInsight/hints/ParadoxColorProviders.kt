@@ -12,6 +12,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
@@ -25,7 +26,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.isValidExpression
-import icu.windea.pls.lang.psi.resolved
 import java.awt.Color
 
 /**

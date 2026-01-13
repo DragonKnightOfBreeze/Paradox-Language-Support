@@ -7,6 +7,7 @@ import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.value
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer.*
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -17,7 +18,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.value
 
 /**
  * 用于将脚本成员结构渲染为纯文本。

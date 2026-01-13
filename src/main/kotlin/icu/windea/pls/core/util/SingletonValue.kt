@@ -4,7 +4,6 @@ package icu.windea.pls.core.util
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.core.annotations.Optimized
 
 /** 单值包装器：提供从单值到集合/序列的便捷转换。*/
 @JvmInline

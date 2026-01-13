@@ -12,6 +12,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -21,7 +22,6 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.resolved
 
 object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)

@@ -9,8 +9,8 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.WalkingContext
+import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
