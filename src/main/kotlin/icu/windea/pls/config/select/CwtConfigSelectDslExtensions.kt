@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtMemberContainerConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.properties
-import icu.windea.pls.config.selectValue
+import icu.windea.pls.config.selectLiteralValue
 import icu.windea.pls.config.values
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.generateSequenceFromSeeds
@@ -103,25 +103,25 @@ fun Sequence<CwtPropertyConfig>.ofKeys(keys: Collection<String>, ignoreCase: Boo
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun <T : CwtMemberConfig<*>> T.ofValue(value: String, ignoreCase: Boolean = true): T? {
-    return takeIf { selectValue().equals(value, ignoreCase) }
+    return takeIf { selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun <T : CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { it.selectValue().equals(value, ignoreCase) }
+    return filter { it.selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun <T : CwtMemberConfig<*>> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T? {
-    return takeIf { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
+    return takeIf { it.selectLiteralValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
+    return filter { it.selectLiteralValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 /** @see CwtConfigPath */

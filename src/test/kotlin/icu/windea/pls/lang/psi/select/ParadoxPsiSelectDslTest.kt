@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.psi.select
 
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.startOffset
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.containers.TreeTraversal
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
@@ -227,10 +227,10 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         Assert.assertNull(vTextSensitive)
 
         val list1 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).all() }
-        Assert.assertEquals(3, list1.size)
+        Assert.assertEquals(3, list1.size) // include properties with literal values
 
         val list2 = selectScope { file.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).all() }
-        Assert.assertEquals(3, list2.size)
+        Assert.assertEquals(3, list2.size) // exclude properties with block-like values
     }
 
     @Test

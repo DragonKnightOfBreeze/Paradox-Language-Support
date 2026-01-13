@@ -18,7 +18,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.selectValue
+import icu.windea.pls.lang.psi.selectLiteralValue
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxMemberPath
@@ -143,19 +143,6 @@ context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun Sequence<ParadoxScriptProperty>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<ParadoxScriptProperty> {
     return filter { property -> keys.any { key -> PathMatcher.matches(property.name, key, ignoreCase, usePattern) } }
-}
-
-private fun ParadoxScriptMember.selectLiteralValue(): String? {
-    return when (this) {
-        is ParadoxScriptProperty -> {
-            when (this.propertyValue) {
-                is ParadoxScriptBlock -> null
-                is ParadoxScriptRootBlock -> null
-                else -> this.selectValue()
-            }
-        }
-        else -> this.selectValue()
-    }
 }
 
 context(scope: ParadoxPsiSelectScope)

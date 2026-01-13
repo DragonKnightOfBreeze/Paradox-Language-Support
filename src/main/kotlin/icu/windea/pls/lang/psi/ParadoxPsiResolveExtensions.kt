@@ -53,9 +53,9 @@ fun <T : ParadoxScriptExpressionElement> T.resolved(): ParadoxScriptExpressionEl
 
 // Value Resolve Extensions
 
-fun ParadoxScriptMember.selectValue(): String? {
+fun ParadoxScriptMember.selectLiteralValue(): String? {
     return when (this) {
-        is ParadoxScriptProperty -> this.value
+        is ParadoxScriptProperty -> this.propertyValue?.selectLiteralValue()
         is ParadoxScriptBoolean -> this.value
         is ParadoxScriptInt -> this.value
         is ParadoxScriptFloat -> this.value
