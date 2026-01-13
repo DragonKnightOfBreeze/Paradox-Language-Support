@@ -1,25 +1,43 @@
 package icu.windea.pls.cwt.psi.impl
 
-import com.intellij.navigation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.util.Iconable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.ResolveScopeManager
-import com.intellij.psi.impl.source.resolve.reference.*
-import com.intellij.psi.search.*
-import com.intellij.psi.tree.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.navigation.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.elementType
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.unquote
+import icu.windea.pls.cwt.navigation.CwtItemPresentation
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtDocComment
+import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtOptionComment
+import icu.windea.pls.cwt.psi.CwtOptionKey
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtPsiUtil
+import icu.windea.pls.cwt.psi.CwtRootBlock
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import javax.swing.*
+import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.constants.PlsStrings
+import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
@@ -28,6 +46,16 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
         return PlsStrings.blockFolder
+    }
+
+    @JvmStatic
+    fun getMembersRoot(element: CwtRootBlock): CwtRootBlock {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtRootBlock): List<CwtMember> {
+        return getMembersRoot(element).findChildren<_>()
     }
 
     // endregion
@@ -129,6 +157,16 @@ object CwtPsiImplUtil {
             }
         }
         return CwtSeparatorType.EQUAL
+    }
+
+    @JvmStatic
+    fun getMembersRoot(element: CwtProperty): CwtBlock? {
+        return element.propertyValue?.castOrNull<CwtBlock>()
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtProperty): List<CwtMember>? {
+        return getMembersRoot(element)?.findChildren<_>()
     }
 
     // endregion
@@ -238,6 +276,16 @@ object CwtPsiImplUtil {
         return PlsStrings.blockFolder
     }
 
+    @JvmStatic
+    fun getMembersRoot(element: CwtBlock): CwtBlock {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtBlock): List<CwtMember> {
+        return getMembersRoot(element).findChildren<_>()
+    }
+
     // endregion
 
     // region CwtDocComment
@@ -264,34 +312,6 @@ object CwtPsiImplUtil {
     }
 
     // endregion
-
-    @JvmStatic
-    fun getMembersRoot(element: CwtMemberContainer): CwtMemberContainer? {
-        return when (element) {
-            is CwtBlockElement -> element
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    @JvmStatic
-    fun getMembersRootOrNull(element: CwtMemberContainer): CwtMemberContainer? {
-        return when (element) {
-            is CwtFile -> element.block
-            is CwtProperty -> element.propertyValue?.castOrNull<CwtBlock>()
-            is CwtValue -> element.castOrNull<CwtBlock>()
-            else -> null
-        }
-    }
-
-    @JvmStatic
-    fun getMembers(element: CwtMemberContainer): List<CwtMember> {
-        return getMembersOrNull(element).orEmpty()
-    }
-
-    @JvmStatic
-    fun getMembersOrNull(element: CwtMemberContainer): List<CwtMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
-    }
 
     @JvmStatic
     fun getComponents(element: PsiElement): List<PsiElement> {

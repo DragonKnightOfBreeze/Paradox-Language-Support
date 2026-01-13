@@ -39,6 +39,16 @@ object ParadoxScriptPsiImplUtil {
         return PlsStrings.blockFolder
     }
 
+    @JvmStatic
+    fun getMembersRoot(element: ParadoxScriptRootBlock): ParadoxScriptRootBlock {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptRootBlock): List<ParadoxScriptMember> {
+        return getMembersRoot(element).findChildren<_>()
+    }
+
     // endregion
 
     // region ParadoxScriptScriptedVariable
@@ -188,6 +198,16 @@ object ParadoxScriptPsiImplUtil {
         return true
     }
 
+    @JvmStatic
+    fun getMembersRoot(element: ParadoxScriptProperty): ParadoxScriptBlock? {
+        return element.propertyValue.castOrNull()
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptProperty): List<ParadoxScriptMember>? {
+        return getMembersRoot(element)?.findChildren<_>()
+    }
+
     // endregion
 
     // region ParadoxScriptPropertyKey
@@ -321,6 +341,16 @@ object ParadoxScriptPsiImplUtil {
         return PlsStrings.blockFolder
     }
 
+    @JvmStatic
+    fun getMembersRoot(element: ParadoxScriptBlock): ParadoxScriptBlock {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptBlock): List<ParadoxScriptMember> {
+        return getMembersRoot(element).findChildren<_>()
+    }
+
     // endregion
 
     // region ParadoxScriptValue
@@ -359,28 +389,36 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getConditionExpression(element: ParadoxScriptParameterCondition): String? {
         val conditionExpression = element.parameterConditionExpression ?: return null
-        var builder: StringBuilder? = null
+        val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it.elementType == NOT_EQUAL_SIGN -> {
-                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
-                    builderToUse.append("!")
-                    true
-                }
                 it is ParadoxScriptParameterConditionParameter -> {
-                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
-                    builderToUse.append(it.name)
+                    builder.append(it.name)
                     false
+                }
+                it.elementType == NOT_EQUAL_SIGN -> {
+                    builder.append("!")
+                    true
                 }
                 else -> true
             }
         }
-        return builder?.toString()?.optimized() // optimized to optimize memory
+        return builder.toString().optimized() // optimized to optimize memory
     }
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
         return element.conditionExpression?.let { PlsStrings.parameterConditionFolder(it) }
+    }
+
+    @JvmStatic
+    fun getMembersRoot(element: ParadoxScriptParameterCondition): ParadoxScriptParameterCondition {
+        return element
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptParameterCondition): List<ParadoxScriptMember> {
+        return getMembersRoot(element).findChildren<_>()
     }
 
     // endregion
@@ -395,23 +433,21 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getConditionExpression(element: ParadoxScriptInlineParameterCondition): String? {
         val conditionExpression = element.parameterConditionExpression ?: return null
-        var builder: StringBuilder? = null
+        val builder = StringBuilder()
         conditionExpression.processChild {
             when {
-                it.elementType == NOT_EQUAL_SIGN -> {
-                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
-                    builderToUse.append("!")
-                    true
-                }
                 it is ParadoxScriptParameterConditionParameter -> {
-                    val builderToUse = builder ?: StringBuilder().apply { builder = this }
-                    builderToUse.append(it.name)
+                    builder.append(it.name)
                     false
+                }
+                it.elementType == NOT_EQUAL_SIGN -> {
+                    builder.append("!")
+                    true
                 }
                 else -> true
             }
         }
-        return builder?.toString()?.optimized() // optimized to optimize memory
+        return builder.toString().optimized() // optimized to optimize memory
     }
 
     @JvmStatic
@@ -615,36 +651,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     // endregion
-
-    @JvmStatic
-    fun getMemberRoot(element: ParadoxScriptMemberContainer): ParadoxScriptMemberContainer {
-        return when (element) {
-            is ParadoxScriptBlockElement -> element
-            is ParadoxScriptParameterCondition -> element
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    @JvmStatic
-    fun getMemberRootOrNull(element: ParadoxScriptMemberContainer): ParadoxScriptMemberContainer? {
-        return when (element) {
-            is ParadoxScriptFile -> element.block
-            is ParadoxScriptProperty -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()
-            is ParadoxScriptValue -> element.castOrNull<ParadoxScriptBlock>()
-            is ParadoxScriptParameterCondition -> element
-            else -> null
-        }
-    }
-
-    @JvmStatic
-    fun getMembers(element: ParadoxScriptMemberContainer): List<ParadoxScriptMember> {
-        return getMemberRoot(element).findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getMembersOrNull(element: ParadoxScriptMemberContainer): List<ParadoxScriptMember>? {
-        return getMemberRootOrNull(element)?.findChildren<_>()
-    }
 
     @JvmStatic
     fun getComponents(element: PsiElement): List<PsiElement> {

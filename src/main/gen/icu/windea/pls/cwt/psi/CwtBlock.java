@@ -37,7 +37,7 @@ public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
 
   @NotNull CwtValue setValue(@NotNull String value);
 
-  @Nullable CwtMemberContainer getMembersRoot();
+  @NotNull CwtBlock getMembersRoot();
 
   @NotNull List<@NotNull CwtMember> getMembers();
 

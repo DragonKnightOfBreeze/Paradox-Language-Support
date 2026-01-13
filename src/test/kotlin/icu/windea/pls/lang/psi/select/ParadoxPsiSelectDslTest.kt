@@ -49,7 +49,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         val file = configureScriptFile("script/syntax/code_settings.test.txt")
 
         val settings = selectScope { file.properties().ofKey("settings").one() }!!
-        val stringProp = selectScope { settings.properties().ofPath("string_value").one() }
+        val stringProp = selectScope { settings.ofPath("string_value").one() }
         Assert.assertNotNull(stringProp)
         Assert.assertEquals("string_value", stringProp!!.name)
 

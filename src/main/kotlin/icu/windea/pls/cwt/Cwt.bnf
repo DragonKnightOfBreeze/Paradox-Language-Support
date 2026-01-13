@@ -55,7 +55,7 @@ property ::= property_key property_separator property_value {
   methods=[
     propertyKey="property_key" propertyValue="value"
     getIcon getName setName getNameIdentifier getValue getSeparatorType
-    getMembersRootOrNull getMembersOrNull
+    getMembersRoot getMembers
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {

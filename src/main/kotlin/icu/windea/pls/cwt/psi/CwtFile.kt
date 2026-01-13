@@ -4,10 +4,10 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.tree.IFileElementType
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.findChildren
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
-import icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil
 import icu.windea.pls.lang.psi.PlsPsiManager
 
 class CwtFile(
@@ -19,7 +19,8 @@ class CwtFile(
     }
 
     val block: CwtRootBlock? get() = findChild<_>()
-    override val members: List<CwtMember> get() = CwtPsiImplUtil.getMembers(this)
+    override val membersRoot: CwtRootBlock? get() = findChild<_>()
+    override val members: List<CwtMember> get() = membersRoot?.findChildren<CwtMember>().orEmpty()
 
     override fun getFileType() = CwtFileType
 

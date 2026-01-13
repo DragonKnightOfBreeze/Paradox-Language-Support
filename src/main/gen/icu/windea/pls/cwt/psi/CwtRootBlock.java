@@ -24,7 +24,7 @@ public interface CwtRootBlock extends CwtBlockElement {
 
   @NotNull String getValue();
 
-  @Nullable CwtMemberContainer getMembersRoot();
+  @NotNull CwtRootBlock getMembersRoot();
 
   @NotNull List<@NotNull CwtMember> getMembers();
 

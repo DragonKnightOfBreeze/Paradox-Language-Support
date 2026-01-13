@@ -72,8 +72,8 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @NotNull ParadoxScriptMemberContainer getMemberRoot() {
-    return ParadoxScriptPsiImplUtil.getMemberRoot(this);
+  public @NotNull ParadoxScriptParameterCondition getMembersRoot() {
+    return ParadoxScriptPsiImplUtil.getMembersRoot(this);
   }
 
   @Override

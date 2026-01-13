@@ -239,10 +239,11 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
         val vTextSensitive = selectConfigScope { fileConfig.properties().ofValue("text", ignoreCase = false).one() }
         Assert.assertNull(vTextSensitive)
 
-        val list = selectConfigScope {
-            fileConfig.properties().ofValues(listOf("Text", "{...}", "1.0", "yes"), ignoreCase = true).all()
-        }
-        Assert.assertEquals(4, list.size)
+        val list1 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes"), ignoreCase = true).all() }
+        Assert.assertEquals(3, list1.size) // include properties with literal values
+
+        val list2 = selectConfigScope { fileConfig.properties().ofValues(listOf("Text", "1.0", "yes", "{...}"), ignoreCase = true).all() }
+        Assert.assertEquals(3, list2.size) // exclude properties with block-like values
     }
 
     private fun resolveFileConfig(path: String): CwtFileConfig {

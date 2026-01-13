@@ -24,7 +24,7 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement {
 
   @NotNull String getValue();
 
-  @NotNull ParadoxScriptMemberContainer getMemberRoot();
+  @NotNull ParadoxScriptRootBlock getMembersRoot();
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
