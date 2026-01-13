@@ -3,9 +3,9 @@ package icu.windea.pls.lang.util.data
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.psi.conditional
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.select.conditional
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.members
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptFile

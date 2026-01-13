@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.psi.select.parent
+import icu.windea.pls.lang.psi.select.parentOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -38,7 +38,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         ProgressManager.checkCanceled()
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if (!stringElement.isBlockMember()) return emptyList()
-        val parentProperty = stringElement.select { parent() } ?: return emptyList()
+        val parentProperty = stringElement.select { parentOld() } ?: return emptyList()
         val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup

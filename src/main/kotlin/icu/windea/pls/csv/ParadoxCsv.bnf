@@ -36,7 +36,7 @@ row ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
-  methods=[getIcon]
+  methods=[getIcon getComponents]
 }
 private column_items ::= column column_item * {
   pin=1

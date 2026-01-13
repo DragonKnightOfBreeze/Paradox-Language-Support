@@ -159,7 +159,7 @@ object ParadoxInlineScriptManager {
         val v = usageElement.propertyValue ?: return null
         val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v1 != null) return v1
-        val v2 = v.select { property("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
+        val v2 = v.select { propertyOld("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v2 != null) return v2
         return null
     }

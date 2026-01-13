@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.generateSequenceFromSeeds
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.model.paths.CwtConfigPath
 
@@ -23,24 +22,6 @@ context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtMemberContainerConfig<*>.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS): Sequence<CwtMemberConfig<*>> {
     return generateSequenceFromSeeds(traversal, configs) { it.configs.orEmpty() }
-}
-
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun CwtMemberContainerConfig<*>.members(): Sequence<CwtMemberConfig<*>> {
-    return configs?.orNull()?.asSequence().orEmpty()
-}
-
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun CwtMemberContainerConfig<*>.values(): Sequence<CwtMemberConfig<*>> {
-    return values?.orNull()?.asSequence().orEmpty()
-}
-
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun CwtMemberContainerConfig<*>.properties(): Sequence<CwtPropertyConfig> {
-    return properties?.orNull()?.asSequence().orEmpty()
 }
 
 context(scope: CwtConfigSelectScope)

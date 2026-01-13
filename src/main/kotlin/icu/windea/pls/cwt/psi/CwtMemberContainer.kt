@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement
  * @see CwtBlockElement
  */
 interface CwtMemberContainer : PsiElement, NavigatablePsiElement {
+    val membersRoot: CwtMemberContainer? get() = null
     val members: List<CwtMember>? get() = null
-    val properties: List<CwtProperty>? get() = null
-    val values: List<CwtValue>? get() = null
 }

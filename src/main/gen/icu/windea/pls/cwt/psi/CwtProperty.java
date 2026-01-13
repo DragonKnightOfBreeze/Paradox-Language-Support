@@ -31,11 +31,9 @@ public interface CwtProperty extends CwtNamedElement, CwtMemberContainer, CwtMem
 
   @NotNull CwtSeparatorType getSeparatorType();
 
+  @Nullable CwtMemberContainer getMembersRootOrNull();
+
   @Nullable List<@NotNull CwtMember> getMembersOrNull();
-
-  @Nullable List<@NotNull CwtProperty> getPropertiesOrNull();
-
-  @Nullable List<@NotNull CwtValue> getValuesOrNull();
 
   @NotNull GlobalSearchScope getResolveScope();
 

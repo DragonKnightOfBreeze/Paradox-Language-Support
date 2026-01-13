@@ -31,9 +31,9 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.psi.conditional
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.select.conditional
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression

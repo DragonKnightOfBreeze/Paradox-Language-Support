@@ -23,8 +23,6 @@ class ParadoxScriptFile(
 
     override val block: ParadoxScriptRootBlock? get() = findChild<_>()
     override val members: List<ParadoxScriptMember> get() = ParadoxScriptPsiImplUtil.getMembers(this)
-    override val properties: List<ParadoxScriptProperty> get() = ParadoxScriptPsiImplUtil.getProperties(this)
-    override val values: List<ParadoxScriptValue> get() = ParadoxScriptPsiImplUtil.getValues(this)
 
     override fun getFileType() = ParadoxScriptFileType
 

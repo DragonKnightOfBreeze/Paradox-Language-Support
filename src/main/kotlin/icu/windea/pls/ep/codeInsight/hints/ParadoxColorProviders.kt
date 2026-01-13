@@ -173,7 +173,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
-        return element.values
+        return element.valueList
             .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
             ?.map { it.resolved() ?: return null }
             ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }

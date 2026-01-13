@@ -6,8 +6,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -29,7 +29,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) return@f
-            val nameElement = if (nameField == null) element.propertyKey else element.select { property(nameField) }?.propertyValue
+            val nameElement = if (nameField == null) element.propertyKey else element.select { propertyOld(nameField) }?.propertyValue
             if (nameElement == null) return@f // 忽略
             holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
         }

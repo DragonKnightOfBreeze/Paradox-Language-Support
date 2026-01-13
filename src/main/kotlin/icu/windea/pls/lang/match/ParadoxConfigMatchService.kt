@@ -36,9 +36,9 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.withOperator
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.values
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.select.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants

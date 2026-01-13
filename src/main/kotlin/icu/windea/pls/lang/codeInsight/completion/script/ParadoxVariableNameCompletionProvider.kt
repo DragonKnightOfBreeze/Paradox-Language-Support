@@ -23,7 +23,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.select.parent
+import icu.windea.pls.lang.psi.select.parentOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -42,7 +42,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if (element.text.isParameterized()) return
         if (!element.isBlockMember()) return
-        val parentProperty = element.select { parent() } ?: return
+        val parentProperty = element.select { parentOld() } ?: return
         val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup

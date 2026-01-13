@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.properties
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import kotlinx.coroutines.Dispatchers

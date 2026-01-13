@@ -7,9 +7,9 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.lang.psi.conditional
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.select.conditional
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.members
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer.*
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock

@@ -23,8 +23,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath

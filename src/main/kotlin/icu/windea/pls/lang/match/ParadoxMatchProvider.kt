@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.util.withOperator
-import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.propertyOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -70,7 +70,7 @@ object ParadoxMatchProvider {
             if (predicate.isNullOrEmpty()) return@run
             val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
             predicate.forEach f@{ (pk, pv) ->
-                val p1 = parentBlock.select { property(pk, inline = true) }
+                val p1 = parentBlock.select { propertyOld(pk, inline = true) }
                 val pv1 = p1?.propertyValue?.stringValue()
                 val pr = pv.withOperator { it == pv1 }
                 if (!pr) return false

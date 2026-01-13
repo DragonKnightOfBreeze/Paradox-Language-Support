@@ -12,9 +12,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.select.propertyOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -57,7 +57,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             val definitionInfo = element.definitionInfo ?: return
             val block = element.block ?: return
             val nameField = definitionInfo.typeConfig.nameField
-            val insertAfterElement = if (nameField == null) null else element.select { property(nameField) }
+            val insertAfterElement = if (nameField == null) null else element.select { propertyOld(nameField) }
             val textToInsert = "is_triggered_only = yes"
             block.addAfter(ParadoxScriptElementFactory.createProperty(project, textToInsert), insertAfterElement)
             block.addAfter(ParadoxScriptElementFactory.createLine(project), insertAfterElement)

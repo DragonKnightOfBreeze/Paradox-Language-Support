@@ -266,44 +266,31 @@ object CwtPsiImplUtil {
     // endregion
 
     @JvmStatic
-    fun getMembersOrNull(element: PsiElement): List<CwtMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+    fun getMembersRoot(element: CwtMemberContainer): CwtMemberContainer? {
+        return when (element) {
+            is CwtBlockElement -> element
+            else -> throw IllegalArgumentException()
+        }
     }
 
     @JvmStatic
-    fun getPropertiesOrNull(element: PsiElement): List<CwtProperty>? {
-        return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getValuesOrNull(element: PsiElement): List<CwtValue>? {
-        return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getMembers(element: PsiElement): List<CwtMember> {
-        return getMembersOrNull(element).orEmpty()
-    }
-
-    @JvmStatic
-    fun getProperties(element: PsiElement): List<CwtProperty> {
-        return getPropertiesOrNull(element).orEmpty()
-    }
-
-    @JvmStatic
-    fun getValues(element: PsiElement): List<CwtValue> {
-        return getValuesOrNull(element).orEmpty()
-    }
-
-    private fun getMembersRoot(element: PsiElement): PsiElement? {
-        val root = when (element) {
+    fun getMembersRootOrNull(element: CwtMemberContainer): CwtMemberContainer? {
+        return when (element) {
             is CwtFile -> element.block
             is CwtProperty -> element.propertyValue?.castOrNull<CwtBlock>()
             is CwtValue -> element.castOrNull<CwtBlock>()
             else -> null
         }
-        if (root == null) return null
-        return root
+    }
+
+    @JvmStatic
+    fun getMembers(element: CwtMemberContainer): List<CwtMember> {
+        return getMembersOrNull(element).orEmpty()
+    }
+
+    @JvmStatic
+    fun getMembersOrNull(element: CwtMemberContainer): List<CwtMember>? {
+        return getMembersRoot(element)?.findChildren<_>()
     }
 
     @JvmStatic

@@ -60,7 +60,7 @@ object ParadoxComplexEnumValueManager {
         val readWriteAccess = Access.Write // write (declaration)
         val definitionElementOffset = when {
             // TODO 2.1.0+ 考虑兼容定义注入
-            complexEnumConfig.perDefinition -> element.select { parentDefinition() }?.startOffset ?: -1
+            complexEnumConfig.perDefinition -> element.select { parentDefinitionOld() }?.startOffset ?: -1
             else -> -1
         }
         return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)

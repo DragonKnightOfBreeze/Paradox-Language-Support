@@ -19,7 +19,7 @@ import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.select.members
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock

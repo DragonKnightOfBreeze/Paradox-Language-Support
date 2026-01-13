@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.psi.select.ParadoxPsiSequenceBuilder
 import java.util.function.Supplier
 
 /**

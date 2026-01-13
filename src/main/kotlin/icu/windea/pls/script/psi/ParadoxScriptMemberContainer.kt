@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptParameterCondition
  */
 interface ParadoxScriptMemberContainer : PsiElement, NavigatablePsiElement {
+    val membersRoot: ParadoxScriptMemberContainer? get() = null
     val members: List<ParadoxScriptMember>? get() = null
-    val properties: List<ParadoxScriptProperty>? get() = null
-    val values: List<ParadoxScriptValue>? get() = null
 }

@@ -100,18 +100,13 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
+  public @Nullable ParadoxScriptMemberContainer getMemberRootOrNull() {
+    return ParadoxScriptPsiImplUtil.getMemberRootOrNull(this);
+  }
+
+  @Override
   public @Nullable List<@NotNull ParadoxScriptMember> getMembersOrNull() {
     return ParadoxScriptPsiImplUtil.getMembersOrNull(this);
-  }
-
-  @Override
-  public @Nullable List<@NotNull ParadoxScriptProperty> getPropertiesOrNull() {
-    return ParadoxScriptPsiImplUtil.getPropertiesOrNull(this);
-  }
-
-  @Override
-  public @Nullable List<@NotNull ParadoxScriptValue> getValuesOrNull() {
-    return ParadoxScriptPsiImplUtil.getValuesOrNull(this);
   }
 
   @Override

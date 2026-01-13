@@ -88,18 +88,13 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
+  public @Nullable CwtMemberContainer getMembersRoot() {
+    return CwtPsiImplUtil.getMembersRoot(this);
+  }
+
+  @Override
   public @NotNull List<@NotNull CwtMember> getMembers() {
     return CwtPsiImplUtil.getMembers(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull CwtProperty> getProperties() {
-    return CwtPsiImplUtil.getProperties(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull CwtValue> getValues() {
-    return CwtPsiImplUtil.getValues(this);
   }
 
   @Override

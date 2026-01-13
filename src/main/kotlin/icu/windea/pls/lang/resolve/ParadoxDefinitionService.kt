@@ -22,7 +22,7 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchUtil
-import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.propertyOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -45,7 +45,7 @@ object ParadoxDefinitionService {
             // from property value (which should be a string)
             typeConfig.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
             // from specific property value in definition declaration (while the property name is declared by config property "name_field")
-            else -> element.select { property(typeConfig.nameField) }?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+            else -> element.select { propertyOld(typeConfig.nameField) }?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
     }
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.select
 
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
@@ -38,10 +38,9 @@ object ParadoxPsiSequenceBuilder {
     }
 
     private fun builderMembers(element: ParadoxScriptMemberContainer, options: WalkingSequenceOptions): Sequence<ParadoxScriptMember> {
-        val nextElement = if (element is ParadoxScriptFile) element.block else element
-        if (nextElement == null) return emptySequence()
+        val rootElement = element.membersRoot ?: return emptySequence()
         return sequence {
-            yieldMembers(nextElement, options)
+            this.yieldMembers(rootElement, options)
         }
     }
 
@@ -56,7 +55,7 @@ object ParadoxPsiSequenceBuilder {
 
     private suspend fun SequenceScope<ParadoxScriptMember>.yieldMember(element: ParadoxScriptMember, options: WalkingSequenceOptions) {
         yield(element)
-        if (options.inline) yieldInlineMember(element, options)
+        if (options.inline) this@yieldMember.yieldInlineMember(element, options)
     }
 
     private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember, options: WalkingSequenceOptions) {
@@ -112,11 +111,11 @@ object ParadoxPsiSequenceBuilder {
         return sequence {
             val locale = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
             if (locale != null) {
-                yieldSelectedOf(locale, options)
+                this.yieldSelectedOf(locale, options)
             } else {
                 val selectionStart = editor.selectionModel.selectionStart
                 val selectionEnd = editor.selectionModel.selectionEnd
-                yieldSelectedBetween(file, options, selectionStart, selectionEnd)
+                this.yieldSelectedBetween(file, options, selectionStart, selectionEnd)
             }
         }
     }
@@ -171,8 +170,8 @@ object ParadoxPsiSequenceBuilder {
             val set = mutableSetOf<ParadoxCsvRow>()
             val allCarets = editor.caretModel.allCarets.let { if (options.forward) it else it.reversed() }
             for (caret in allCarets) {
-                val startRow = yieldStartRow(file, options, caret, set)
-                yieldEndRow(file, options, caret, startRow, set)
+                val startRow = this.yieldStartRow(file, options, caret, set)
+                this.yieldEndRow(file, options, caret, startRow, set)
             }
         }
     }
@@ -214,8 +213,8 @@ object ParadoxPsiSequenceBuilder {
             val set = mutableSetOf<ParadoxCsvColumn>()
             val allCarets = editor.caretModel.allCarets.let { if (options.forward) it else it.reversed() }
             for (caret in allCarets) {
-                val startColumn = yieldStartColumn(file, options, caret, set)
-                yieldEndColumn(file, options, caret, startColumn, set)
+                val startColumn = this.yieldStartColumn(file, options, caret, set)
+                this.yieldEndColumn(file, options, caret, startColumn, set)
             }
         }
     }

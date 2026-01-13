@@ -6,8 +6,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.inline
+import icu.windea.pls.lang.psi.select.properties
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**

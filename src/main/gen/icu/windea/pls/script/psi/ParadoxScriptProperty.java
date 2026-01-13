@@ -39,11 +39,9 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 
+  @Nullable ParadoxScriptMemberContainer getMemberRootOrNull();
+
   @Nullable List<@NotNull ParadoxScriptMember> getMembersOrNull();
-
-  @Nullable List<@NotNull ParadoxScriptProperty> getPropertiesOrNull();
-
-  @Nullable List<@NotNull ParadoxScriptValue> getValuesOrNull();
 
   @NotNull GlobalSearchScope getResolveScope();
 

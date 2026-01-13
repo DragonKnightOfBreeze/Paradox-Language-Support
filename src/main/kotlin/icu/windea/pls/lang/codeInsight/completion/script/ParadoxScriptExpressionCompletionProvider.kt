@@ -17,7 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
-import icu.windea.pls.lang.psi.select.parent
+import icu.windea.pls.lang.psi.select.parentOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -79,7 +79,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         }
         if (mayBePropertyValue) {
             // 向上得到property
-            val propertyElement = element.select { parent() } as? ParadoxScriptProperty
+            val propertyElement = element.select { parentOld() } as? ParadoxScriptProperty
             if (propertyElement != null) {
                 ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
             }

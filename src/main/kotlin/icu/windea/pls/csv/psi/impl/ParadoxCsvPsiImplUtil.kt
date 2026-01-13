@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
@@ -68,6 +69,15 @@ object ParadoxCsvPsiImplUtil {
     }
 
     // endregion
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { isComponent(it) }
+    }
+
+    private fun isComponent(element: PsiElement): Boolean {
+        return element is ParadoxCsvColumn
+    }
 
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

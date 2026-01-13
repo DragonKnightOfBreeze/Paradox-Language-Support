@@ -13,6 +13,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.psi.select.values
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
@@ -89,11 +90,12 @@ object ParadoxTextColorManager {
 
     private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
-        // 要求输入的name必须是单个字母或数字
+        // 要求输入的名字必须是单个字母或数字
         val name = definition.name
         if (name.singleOrNull()?.let { isId(it) } != true) return null
         val gameType = selectGameType(definition) ?: return null
-        val rgbList = definition.block?.values?.mapNotNull { it.intValue() } ?: return null
+        val rgbList = definition.values().mapNotNull { it.intValue() }.toList()
+        if (rgbList.size != 3) return null
         val value = ParadoxTextColorInfo(definition.createPointer(), name, gameType, rgbList[0], rgbList[1], rgbList[2])
         return value
     }

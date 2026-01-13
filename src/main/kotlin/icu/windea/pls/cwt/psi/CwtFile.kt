@@ -20,8 +20,6 @@ class CwtFile(
 
     val block: CwtRootBlock? get() = findChild<_>()
     override val members: List<CwtMember> get() = CwtPsiImplUtil.getMembers(this)
-    override val properties: List<CwtProperty> get() = CwtPsiImplUtil.getProperties(this)
-    override val values: List<CwtValue> get() = CwtPsiImplUtil.getValues(this)
 
     override fun getFileType() = CwtFileType
 

@@ -48,8 +48,8 @@ class WalkingSequenceOptionsBuilder(
     inline operator fun plus(other: WalkingSequenceOptionsBuilder) = this
 }
 
-/** 是否从前往后搜索。 */
+/** 是否从前往后搜索。默认为 `true`。 */
 var WalkingSequenceOptions.forward: Boolean by registerKey(WalkingSequenceOptions.Keys) { true }
 
 /** @see WalkingSequenceOptions.forward */
-inline infix fun WalkingSequenceOptionsBuilder.forward(value: Boolean = true) = apply { options.forward = value }
+inline infix fun WalkingSequenceOptionsBuilder.forward(value: Boolean? = null) = apply { value?.let { options.forward = it } }

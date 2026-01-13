@@ -130,7 +130,7 @@ object ParadoxScriptPsiImplUtil {
         if (definitionInfo == null) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            val nameProperty = element.select { property(nameField) } // 不处理内联的情况
+            val nameProperty = element.select { propertyOld(nameField) } // 不处理内联的情况
             if (nameProperty != null) {
                 val nameElement = nameProperty.propertyValue<ParadoxScriptString>()
                 nameElement?.setValue(name)
@@ -618,45 +618,33 @@ object ParadoxScriptPsiImplUtil {
     // endregion
 
     @JvmStatic
-    fun getMembersOrNull(element: PsiElement): List<ParadoxScriptMember>? {
-        return getMembersRoot(element)?.findChildren<_>()
+    fun getMemberRoot(element: ParadoxScriptMemberContainer): ParadoxScriptMemberContainer {
+        return when (element) {
+            is ParadoxScriptBlockElement -> element
+            is ParadoxScriptParameterCondition -> element
+            else -> throw IllegalArgumentException()
+        }
     }
 
     @JvmStatic
-    fun getPropertiesOrNull(element: PsiElement): List<ParadoxScriptProperty>? {
-        return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getValuesOrNull(element: PsiElement): List<ParadoxScriptValue>? {
-        return getMembersRoot(element)?.findChildren<_>()
-    }
-
-    @JvmStatic
-    fun getMembers(element: PsiElement): List<ParadoxScriptMember> {
-        return getMembersOrNull(element).orEmpty()
-    }
-
-    @JvmStatic
-    fun getProperties(element: PsiElement): List<ParadoxScriptProperty> {
-        return getPropertiesOrNull(element).orEmpty()
-    }
-
-    @JvmStatic
-    fun getValues(element: PsiElement): List<ParadoxScriptValue> {
-        return getValuesOrNull(element).orEmpty()
-    }
-
-    private fun getMembersRoot(element: PsiElement): PsiElement? {
-        val root = when (element) {
+    fun getMemberRootOrNull(element: ParadoxScriptMemberContainer): ParadoxScriptMemberContainer? {
+        return when (element) {
             is ParadoxScriptFile -> element.block
             is ParadoxScriptProperty -> element.propertyValue?.castOrNull<ParadoxScriptBlock>()
             is ParadoxScriptValue -> element.castOrNull<ParadoxScriptBlock>()
             is ParadoxScriptParameterCondition -> element
             else -> null
         }
-        if (root == null) return null
-        return root
+    }
+
+    @JvmStatic
+    fun getMembers(element: ParadoxScriptMemberContainer): List<ParadoxScriptMember> {
+        return getMemberRoot(element).findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getMembersOrNull(element: ParadoxScriptMemberContainer): List<ParadoxScriptMember>? {
+        return getMemberRootOrNull(element)?.findChildren<_>()
     }
 
     @JvmStatic

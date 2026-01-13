@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.lang.psi.select.property
+import icu.windea.pls.lang.psi.select.propertyOld
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -13,7 +13,7 @@ object ParadoxScriptedModifierManager {
      */
     fun resolveModifierCategory(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig> {
         val configGroup = definitionInfo.configGroup
-        val value = definition.select { property("category", inline = true) }?.propertyValue?.stringValue()
+        val value = definition.select { propertyOld("category", inline = true) }?.propertyValue?.stringValue()
         return ParadoxModifierManager.resolveModifierCategory(value, configGroup)
     }
 }
