@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
@@ -67,8 +68,8 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 允许的出现次数范围（基数表达式）。
      *
-     * 指定后续规则项的匹配次数上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
-     * 若未显式指定且该成员为“常量类型”，PLS 默认推断为 `1..~1`（必须出现一次，超过仅作弱警告）。
+     * 指定后续规则项的匹配次数的上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
+     * 如果未显式指定，且该定义成员为常量类型，则默认推断为 `1..~1`（必须出现一次，超过仅作弱警告）。
      *
      * 适用对象：定义成员对应的规则。
      *
@@ -79,7 +80,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     val cardinality: CwtCardinalityExpression?
 
     /**
-     * 最小基数（从 Define 预设动态获取）。
+     * 最小基数，从定值（define）动态获取。
      *
      * 通过字符串路径（如 `NGameplay/ETHOS_MIN_POINTS`）动态指定最小次数。
      *
@@ -92,7 +93,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     val cardinalityMinDefine: String?
 
     /**
-     * 最大基数（从 Define 预设动态获取）。
+     * 最大基数，从定值（define）动态获取。
      *
      * 适用对象：定义成员对应的规则。
      *
@@ -120,8 +121,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 替换作用域上下文（replace scopes）。
      *
      * 将当前上下文的 `this/root/from/...` 映射到指定的作用域 ID。
-     * 支持键名 `replace_scope` 与 `replace_scopes`，二者等价。
-     * 值中的作用域会被 PLS 归一化（大小写与别名）。
+     * 支持键名 `replace_scope` 和 `replace_scopes`，二者等价。
+     * 值中的作用域会被 PLS 归一化（大小写和别名）。
      *
      * 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
      *
@@ -152,7 +153,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 初始的作用域上下文。
      *
-     * 来自 [replaceScopes] 与 [pushScope]，经过计算得到。用于后续表达式匹配、补全与校验。
+     * 来自 [replaceScopes] 和 [pushScope]，经过计算得到。用于后续表达式匹配、补全和校验。
      *
      * 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
      *
@@ -165,7 +166,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 支持的作用域。默认支持任意作用域。
      *
-     * 适用对象：触发器（trigger）与效果（effect）对应的别名规则（[CwtAliasConfig]）。
+     * 适用对象：触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
      *
      * CWTools 兼容性：兼容。PLS 会做作用域 ID 归一化。
      *
@@ -174,6 +175,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      * ## scope = country
      * ## scope = { country planet }
      * ```
+     *
+     * @see ParadoxScopeManager
      */
     val supportedScopes: Set<String>
 
@@ -260,7 +263,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 要求类型键必须匹配可选值，可以取反，可以指定多个可选值。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
+     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * CWTools 兼容性：兼容。
      *
@@ -275,7 +278,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 类型键的正则过滤器（忽略大小写）。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
+     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      *
@@ -288,7 +291,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 要求类型键必须以指定前缀开始。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
+     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
      * CWTools 兼容性：兼容。
      *
@@ -332,11 +335,13 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于约束路径引用，从而提供代码检查与过滤代码补全。
      *
-     * 适用对象：值为路径引用（参见 [CwtDataTypeGroups.PathReference]）的成员规则（[CwtMemberConfig]）。
+     * 适用对象：值为路径引用的成员规则（[CwtMemberConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## file_extensions = { png dds tga }`
+     *
+     * @see CwtDataTypeGroups.PathReference
      */
     val fileExtensions: Set<String>?
 
@@ -349,7 +354,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## modifier_categories = { economic_unit planet }`
      *
-     * @see ParadoxModifierManager.resolveModifierCategory
+     * @see ParadoxModifierManager
      */
     val modifierCategories: Set<String>?
 
@@ -364,7 +369,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## color_type = rgb`
      *
-     * @see ParadoxColorManager.getColorType
+     * @see ParadoxColorManager
      */
     val colorType: String?
 
@@ -386,21 +391,17 @@ interface CwtOptionDataHolder : UserDataHolder {
     // region Flags
 
     /**
-     * 用于在位置规则中，将对应位置的本地化和图片标记为必需项。
-     * 默认为 `false`。
+     * 将对应位置的本地化和图片标记为必需项。
      *
      * 适用对象：位置规则（[CwtLocationConfig]）。
      *
      * CWTools 兼容性：兼容。
-     *
-     * @see CwtLocationConfig
      */
     val required: Boolean
 
     /**
-     * 用于在位置规则中，将对应位置的本地化和图片标记为主要项。
+     * 将对应位置的本地化和图片标记为主要项。
      * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
-     * 默认为 `false`。
      *
      * 适用对象：位置规则（[CwtLocationConfig]）。
      *
@@ -411,23 +412,18 @@ interface CwtOptionDataHolder : UserDataHolder {
     val primary: Boolean
 
     /**
-     * 用于在部分扩展规则中，注明规则上下文与作用域上下文将会被继承。
+     * 注明规则上下文和作用域上下文将会被继承。
      * 即，继承自对应的使用处，与其保持一致。
-     * 默认为 `false`。
      *
-     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
-     *
-     * @see CwtExtendedInlineScriptConfig
-     * @see CwtExtendedParameterConfig
      */
     val inherit: Boolean
 
     /**
-     * 用于将作为单独的值的成员规则标记为预定义的标签。
-     * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
-     * 默认为 `false`。
+     * 将匹配的单独的值标记为预定义的标签。
+     * 脚本文件中的对应的值会启用特殊的语义高亮和文档注释。
      *
      * 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
      *
@@ -436,6 +432,24 @@ interface CwtOptionDataHolder : UserDataHolder {
      * @see ParadoxTagType
      */
     val tag: Boolean
+
+    /**
+     * 将复杂枚举的枚举值标记为忽略大小写。
+     *
+     * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     */
+    val caseInsensitive: Boolean
+
+    /**
+     * 将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
+     *
+     * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     */
+    val perDefinition: Boolean
 
     // endregion
 }

@@ -82,6 +82,10 @@ private var UserDataHolder.inherit: Boolean?
     by registerKey(CwtOptionDataKeys)
 private var UserDataHolder.tag: Boolean?
     by registerKey(CwtOptionDataKeys)
+private var UserDataHolder.caseInsensitive: Boolean?
+    by registerKey(CwtOptionDataKeys)
+private var UserDataHolder.perDefinition: Boolean?
+    by registerKey(CwtOptionDataKeys)
 
 // endregion
 
@@ -184,4 +188,10 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     override var tag: Boolean
         get() = from.tag ?: false
         set(value) = run { from.tag = value }
+    override var caseInsensitive: Boolean
+        get() = from.caseInsensitive ?: false
+        set(value) = run { from.caseInsensitive = value }
+    override var perDefinition: Boolean
+        get() = from.perDefinition ?: false
+        set(value) = run { from.perDefinition = value }
 }

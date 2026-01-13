@@ -391,7 +391,8 @@ enums = {
 - The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
 - `path` and `path_extension` are normalized during resolving.
 - `start_from_root`: Whether to start searching for anchors from the top of the file (rather than from top-level properties).
-- `per_definition`: (PLS extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
+- `## case_insensitive`: (PLS extension) Whether to mark complex enum values as case-insensitive.
+- `## per_definition`: (PLS extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
 - `name` subsection: Describes how to locate value anchors within matching files; the implementation collects all properties or values named `enum_name` within it as anchors (`enumNameConfigs`).
 
 **Parsing flow (brief)**:
@@ -416,6 +417,7 @@ enums = {
 **Notes**:
 - Simple enums currently support constant values only; if you write a template expression, it will not be parsed as a template.
 - A complex enum without a `name` subsection or without any `enum_name` anchors found in matched files will result in an empty enum.
+- Simple enum values are case-insensitive by default, and complex enum values are case-sensitive by default.
 
 #### Dynamic Value Type Configs {#config-dynamic-value}
 

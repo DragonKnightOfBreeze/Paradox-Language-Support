@@ -8,8 +8,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
-import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -33,8 +31,8 @@ class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver
             logger.debug { "Resolved dynamic value type config with empty values (name: $name).".withLocationPrefix(config) }
             return CwtDynamicValueTypeConfigImpl(config, name, emptySet(), emptyMap())
         }
-        val values = caseInsensitiveStringSet() // ignore case
-        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // ignore case
+        val values = mutableSetOf<String>()
+        val valueConfigMap = mutableMapOf<String, CwtValueConfig>()
         for (propertyConfigValue in valueElements) {
             val v = propertyConfigValue.value.optimized()
             values.add(v)

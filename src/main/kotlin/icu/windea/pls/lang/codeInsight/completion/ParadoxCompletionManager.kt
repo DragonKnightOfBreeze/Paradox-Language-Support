@@ -627,6 +627,7 @@ object ParadoxCompletionManager {
                 val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, info.readWriteAccess, info.gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
                     .withPriority(PlsCompletionPriorities.complexEnumValue)
                     .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                     .withPatchableTailText(tailText)

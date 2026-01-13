@@ -6,6 +6,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -76,7 +77,7 @@ fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName():
 
 @JvmName("distinctByName_complexEnumValue")
 fun <S : ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
+    return distinctBy { it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } } // # 261
 }
 
 @JvmName("distinctByName_dynamicValue")

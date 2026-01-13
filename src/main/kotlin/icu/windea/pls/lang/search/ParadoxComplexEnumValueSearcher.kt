@@ -37,7 +37,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         consumer: Processor<in ParadoxComplexEnumValueIndexInfo>
     ): Boolean {
         if (queryParameters.enumName != info.enumName) return true
-        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        if (queryParameters.name != null && !queryParameters.name.equals(info.name, info.caseInsensitive)) return true // # 261
         info.virtualFile = file
         return consumer.process(info)
     }

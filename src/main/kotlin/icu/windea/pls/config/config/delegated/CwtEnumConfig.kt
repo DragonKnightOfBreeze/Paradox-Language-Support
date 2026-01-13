@@ -12,6 +12,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 简单枚举规则。
  *
  * 用于描述拥有一组固定的可选项（即枚举值）的简单枚举。
+ * 其枚举值默认忽略大小写。
  *
  * 路径定位：`enums/enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
  *

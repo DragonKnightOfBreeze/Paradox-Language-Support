@@ -88,6 +88,8 @@ enums = {
     enum[$enum$] = {
         $scalar
     }
+    ## case_insensitive
+    ## per_definition
     complex_enum[$complex_enum$] = {
         path = $scalar
         path_file = $scalar
@@ -95,7 +97,6 @@ enums = {
         path_strict = $bool
         path_pattern = $scalar
         start_from_root = $bool
-        per_definition = $bool
         name = $any
     }
 }

@@ -46,11 +46,11 @@ class ParadoxLocalisationParameterElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxLocalisationParameterElement &&
-            name == other.name &&
-            localisationName == other.localisationName &&
-            project == other.project &&
-            gameType == other.gameType
+        return other is ParadoxLocalisationParameterElement
+            && name == other.name
+            && localisationName == other.localisationName
+            && project == other.project
+            && gameType == other.gameType
     }
 
     override fun hashCode(): Int {

@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
@@ -27,16 +26,16 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * ```
  *
  * @property name 名称（动态值类型）。
- * @property values 可选项集合（忽略大小写）。
+ * @property values 可选项集合（不忽略大小写）。
  * @property valueConfigMap 可选项到对应的值规则的映射。
  */
 interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("value[$]")
     val name: String
     @FromProperty("values: template_expression[]")
-    val values: Set<@CaseInsensitive String>
+    val values: Set<String>
 
-    val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
+    val valueConfigMap: Map<String, CwtValueConfig>
 
     interface Resolver {
         /** 由属性规则解析为动态值类型规则。 */

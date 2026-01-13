@@ -172,6 +172,8 @@ object CwtOptionDataProvider {
             "primary" -> optionData.primary = true
             "inherit" -> optionData.primary = true
             "tag" -> optionData.tag = true
+            "case_insensitive" -> optionData.caseInsensitive = true
+            "per_definition" -> optionData.perDefinition = true
         }
     }
 

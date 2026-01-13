@@ -53,11 +53,11 @@ class ParadoxParameterElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxParameterElement &&
-            name == other.name &&
-            contextKey == other.contextKey &&
-            project == other.project &&
-            gameType == other.gameType
+        return other is ParadoxParameterElement
+            && name == other.name
+            && contextKey == other.contextKey
+            && project == other.project
+            && gameType == other.gameType
     }
 
     override fun hashCode(): Int {

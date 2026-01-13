@@ -391,7 +391,8 @@ enums = {
 - `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
 - `path` 和 `path_extension` 会在解析时进行规范化处理。
 - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
-- `per_definition`：（PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
+- `## case_insensitive`：（PLS 扩展）是否将复杂枚举值标记为忽略大小写。
+- `## per_definition`：（PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
 - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
 
 **解析流程（简要）**：
@@ -416,6 +417,7 @@ enums = {
 **注意事项**：
 - 简单枚举当前仅支持常量值；若填写模板表达式，将不会被按模板解析。
 - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
+- 简单枚举值默认忽略大小写，复杂枚举值默认不忽略大小写。
 
 #### 动态值类型规则 {#config-dynamic-value}
 

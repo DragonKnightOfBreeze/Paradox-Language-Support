@@ -47,10 +47,10 @@ class CwtMemberConfigElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is CwtMemberConfigElement &&
-            config == other.config &&
-            project == other.project &&
-            gameType == other.gameType
+        return other is CwtMemberConfigElement
+            && config == other.config
+            && project == other.project
+            && gameType == other.gameType
     }
 
     override fun hashCode(): Int {

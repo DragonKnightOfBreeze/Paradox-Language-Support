@@ -40,7 +40,8 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfi
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
-        val perDefinition = propGroup.getOne("per_definition")?.booleanValue ?: false
+        val caseInsensitive = config.optionData.caseInsensitive
+        val perDefinition = config.optionData.perDefinition
         val nameConfig = propGroup.getOne("name")
 
         if (nameConfig == null) {
@@ -51,7 +52,7 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfi
         return CwtComplexEnumConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
-            startFromRoot, perDefinition, nameConfig
+            startFromRoot, caseInsensitive, perDefinition, nameConfig
         )
     }
 }
@@ -65,6 +66,7 @@ private class CwtComplexEnumConfigImpl(
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
     override val startFromRoot: Boolean,
+    override val caseInsensitive: Boolean,
     override val perDefinition: Boolean,
     override val nameConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtComplexEnumConfig {

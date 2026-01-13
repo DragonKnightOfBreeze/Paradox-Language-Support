@@ -54,11 +54,11 @@ class ParadoxDynamicValueElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxDynamicValueElement &&
-            name == other.name &&
-            dynamicValueTypes.any { it in other.dynamicValueTypes } &&
-            project == other.project &&
-            gameType == other.gameType
+        return other is ParadoxDynamicValueElement
+            && name == other.name
+            && dynamicValueTypes.any { it in other.dynamicValueTypes }
+            && project == other.project
+            && gameType == other.gameType
     }
 
     override fun hashCode(): Int {

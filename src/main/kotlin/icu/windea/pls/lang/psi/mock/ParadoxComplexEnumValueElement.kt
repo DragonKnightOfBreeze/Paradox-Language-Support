@@ -24,15 +24,15 @@ class ParadoxComplexEnumValueElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
-    val config: CwtComplexEnumConfig? by lazy {
-        PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
-    }
-    val searchScopeType: ParadoxSearchScopeType by lazy {
-        when {
+    val config: CwtComplexEnumConfig?
+        get() = PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
+    val caseInsensitive: Boolean
+        get() = config?.caseInsensitive ?: false
+    val searchScopeType: ParadoxSearchScopeType
+        get() = when {
             config?.perDefinition == true -> ParadoxSearchScopeTypes.Definition
             else -> ParadoxSearchScopeTypes.All
         }
-    }
 
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.EnumValue
@@ -55,12 +55,12 @@ class ParadoxComplexEnumValueElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxComplexEnumValueElement &&
-            name == other.name &&
-            enumName == other.enumName &&
-            project == other.project &&
-            gameType == other.gameType &&
-            searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent)
+        return other is ParadoxComplexEnumValueElement
+            && name.equals(other.name, caseInsensitive) // # 261
+            && enumName == other.enumName
+            && project == other.project
+            && gameType == other.gameType
+            && searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent)
     }
 
     override fun hashCode(): Int {
