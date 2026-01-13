@@ -17,6 +17,12 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.selectValue
+import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage

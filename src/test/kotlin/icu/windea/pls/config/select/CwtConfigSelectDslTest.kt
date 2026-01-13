@@ -5,6 +5,9 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.members
+import icu.windea.pls.config.properties
+import icu.windea.pls.config.values
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.markIntegrationTest

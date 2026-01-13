@@ -21,7 +21,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.select.resolved
+import icu.windea.pls.lang.psi.resolved
 
 object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)

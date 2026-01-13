@@ -37,10 +37,10 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.select.floatValue
-import icu.windea.pls.lang.psi.select.intValue
-import icu.windea.pls.lang.psi.select.resolved
-import icu.windea.pls.lang.psi.select.stringValue
+import icu.windea.pls.lang.psi.floatValue
+import icu.windea.pls.lang.psi.intValue
+import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.psi.stringValue
 
 class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {

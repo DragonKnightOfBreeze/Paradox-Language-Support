@@ -22,7 +22,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.parent
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService

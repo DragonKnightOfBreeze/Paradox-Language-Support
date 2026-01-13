@@ -5,7 +5,7 @@ import icu.windea.pls.lang.psi.select.property
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.select.stringValue
+import icu.windea.pls.lang.psi.stringValue
 
 object ParadoxScriptedModifierManager {
     /**

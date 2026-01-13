@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package icu.windea.pls.lang.psi.select
+package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.collections.WalkingContext
 import icu.windea.pls.core.collections.WalkingContextBuilder

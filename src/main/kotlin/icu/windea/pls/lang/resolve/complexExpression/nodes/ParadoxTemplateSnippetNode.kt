@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.select.resolved
+import icu.windea.pls.lang.psi.resolved
 
 /**
  * @see ParadoxTemplateExpression

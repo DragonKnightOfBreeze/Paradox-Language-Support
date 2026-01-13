@@ -17,7 +17,7 @@ import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.select.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager

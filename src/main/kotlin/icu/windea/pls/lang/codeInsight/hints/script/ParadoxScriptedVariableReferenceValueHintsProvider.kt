@@ -7,7 +7,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.select.resolved
+import icu.windea.pls.lang.psi.resolved
 
 /**
  * 通过内嵌提示显示封装变量引用的解析结果（如果可以解析）。默认不启用。

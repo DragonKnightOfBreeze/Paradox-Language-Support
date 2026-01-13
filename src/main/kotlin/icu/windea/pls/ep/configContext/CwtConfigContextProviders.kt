@@ -22,7 +22,6 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.parentDefinition
 import icu.windea.pls.lang.psi.select.parentDefinitionInjection
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.selectFile

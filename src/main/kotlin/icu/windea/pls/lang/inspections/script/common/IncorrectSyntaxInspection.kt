@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath

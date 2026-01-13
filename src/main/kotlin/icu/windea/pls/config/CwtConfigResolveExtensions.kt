@@ -1,4 +1,4 @@
-package icu.windea.pls.config.select
+package icu.windea.pls.config
 
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig

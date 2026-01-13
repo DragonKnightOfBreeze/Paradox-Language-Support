@@ -37,7 +37,7 @@ import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.select.resolved
+import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -77,9 +77,10 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.select.members
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.select.parentOfPath
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference

@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.isValidExpression
-import icu.windea.pls.lang.psi.select.resolved
+import icu.windea.pls.lang.psi.resolved
 import java.awt.Color
 
 /**

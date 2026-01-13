@@ -8,7 +8,7 @@ import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale

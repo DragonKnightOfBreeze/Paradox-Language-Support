@@ -5,7 +5,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.markIntegrationTest

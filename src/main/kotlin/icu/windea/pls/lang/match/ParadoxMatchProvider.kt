@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.lang.psi.select.stringValue
+import icu.windea.pls.lang.psi.stringValue
 
 object ParadoxMatchProvider {
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {

@@ -22,7 +22,9 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.select.asProperty
+import icu.windea.pls.lang.psi.select.parentDefinitionOrInjection
+import icu.windea.pls.lang.psi.select.selectScope
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory

@@ -11,10 +11,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.context
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.select.inline
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.property
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

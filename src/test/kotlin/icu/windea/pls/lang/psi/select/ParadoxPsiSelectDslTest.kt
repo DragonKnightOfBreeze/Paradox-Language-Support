@@ -2,6 +2,7 @@ package icu.windea.pls.lang.psi.select
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
@@ -19,9 +20,9 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     fun setup() = markIntegrationTest()
 
     @Test
-    fun property_and_ofKey() {
+    fun ofKey() {
         val file = configureScriptFile("script/syntax/code_settings.test.txt")
-        val settings = selectScope { file.property("settings") }
+        val settings = selectScope { file.properties().ofKey("settings").one() }
         Assert.assertNotNull(settings)
 
         val stringProps = selectScope { settings!!.properties().ofKey("string_value").all() }
@@ -31,7 +32,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofValue_and_ofValues_normalization() {
         val file = configureScriptFile("script/syntax/code_settings.test.txt")
-        val settings = selectScope { file.property("settings") }!!
+        val settings = selectScope { file.properties().ofKey("settings").one() }!!
 
         val fooProps = selectScope { settings.properties().ofValue("Foo").all() }
         Assert.assertEquals(1, fooProps.size)
@@ -46,6 +47,12 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofPath_basic() {
         val file = configureScriptFile("script/syntax/code_settings.test.txt")
+
+        val settings = selectScope { file.properties().ofKey("settings").one() }!!
+        val stringProp = selectScope { settings.properties().ofPath("string_value").one() }
+        Assert.assertNotNull(stringProp)
+        Assert.assertEquals("string_value", stringProp!!.name)
+
         val stringProps = selectScope { file.ofPath("settings/string_value").asProperty().all() }
         Assert.assertEquals(2, stringProps.size)
     }
@@ -62,15 +69,6 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         val settings = selectScope { value.parentOfKey("settings") }
         Assert.assertNotNull(settings)
         Assert.assertEquals("settings", settings!!.name)
-    }
-
-    @Test
-    fun propertyByPath_basic() {
-        val file = configureScriptFile("script/syntax/code_settings.test.txt")
-        val settings = selectScope { file.property("settings") }!!
-        val stringProp = selectScope { settings.propertyByPath("string_value") }
-        Assert.assertNotNull(stringProp)
-        Assert.assertEquals("string_value", stringProp!!.name)
     }
 
     private fun configureScriptFile(path: String): ParadoxScriptFile {

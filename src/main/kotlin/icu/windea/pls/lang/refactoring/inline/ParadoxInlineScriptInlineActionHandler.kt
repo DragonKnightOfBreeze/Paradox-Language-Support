@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.parentProperty
-import icu.windea.pls.lang.psi.select.resolved
+import icu.windea.pls.lang.psi.resolved
 
 class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.inlineScript")

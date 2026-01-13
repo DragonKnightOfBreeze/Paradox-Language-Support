@@ -17,7 +17,8 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.select.parentDefinition
+import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale

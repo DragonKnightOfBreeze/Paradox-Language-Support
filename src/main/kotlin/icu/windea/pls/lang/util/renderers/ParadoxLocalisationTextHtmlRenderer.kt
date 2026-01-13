@@ -22,8 +22,8 @@ import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.mock.MockPsiElement
-import icu.windea.pls.lang.psi.select.resolveLocalisation
-import icu.windea.pls.lang.psi.select.resolveScriptedVariable
+import icu.windea.pls.lang.psi.resolveLocalisation
+import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager

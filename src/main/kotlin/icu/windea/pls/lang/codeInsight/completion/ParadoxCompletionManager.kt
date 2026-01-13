@@ -20,7 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configContext.inRoot
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.select.resolved
+import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull

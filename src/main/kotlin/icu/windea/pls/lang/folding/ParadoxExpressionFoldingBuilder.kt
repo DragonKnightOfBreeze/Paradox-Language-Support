@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.annotations.WithInternalConfig
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.ParadoxScriptLanguage

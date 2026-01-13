@@ -36,7 +36,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.parent
 import icu.windea.pls.lang.psi.select.parentDefinition
 import icu.windea.pls.lang.psi.select.select

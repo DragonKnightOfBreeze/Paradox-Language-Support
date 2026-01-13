@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.select
+package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor

@@ -11,7 +11,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber

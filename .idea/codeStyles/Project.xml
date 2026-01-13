@@ -46,8 +46,9 @@
           <package name="com.intellij.ui.dsl" alias="false" withSubpackages="true" />
           <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
           <package name="io.ktor" alias="false" withSubpackages="true" />
-          <package name="icu.windea.pls.lang.psi.select" alias="false" withSubpackages="true" />
           <package name="icu.windea.pls.config.select" alias="false" withSubpackages="true" />
+          <package name="icu.windea.pls.lang.psi.select" alias="false" withSubpackages="true" />
+          <package name="icu.windea.pls.lang.resolve.complexExpression.dsl" alias="false" withSubpackages="true" />
         </value>
       </option>
       <option name="LINE_BREAK_AFTER_MULTILINE_WHEN_ENTRY" value="false" />
