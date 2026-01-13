@@ -22,6 +22,7 @@ object ParadoxScriptExpressionService {
      * @see ParadoxScriptExpressionSupport.annotate
      */
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        // NOTE recursion guard is required here
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
         withRecursionGuard {
@@ -39,6 +40,7 @@ object ParadoxScriptExpressionService {
      * @see ParadoxScriptExpressionSupport.resolve
      */
     fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+        // NOTE recursion guard is required here
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
         return withRecursionGuard {
@@ -57,6 +59,7 @@ object ParadoxScriptExpressionService {
      * @see ParadoxScriptExpressionSupport.multiResolve
      */
     fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+        // NOTE recursion guard is required here
         val configExpression = config.configExpression ?: return emptySet()
         val gameType = config.configGroup.gameType
         return withRecursionGuard {
@@ -75,6 +78,7 @@ object ParadoxScriptExpressionService {
      * @see ParadoxScriptExpressionSupport.getReferences
      */
     fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+        // NOTE recursion guard is required here
         val configExpression = config.configExpression ?: return null
         val gameType = config.configGroup.gameType
         return withRecursionGuard {
@@ -93,6 +97,7 @@ object ParadoxScriptExpressionService {
      * @see ParadoxScriptExpressionSupport.complete
      */
     fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        // NOTE recursion guard is required here
         val config = context.config ?: return
         val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType

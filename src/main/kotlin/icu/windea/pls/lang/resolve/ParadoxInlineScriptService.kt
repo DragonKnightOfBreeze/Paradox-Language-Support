@@ -17,8 +17,16 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.parentBlock
 import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.stringValue
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 object ParadoxInlineScriptService {
+    @OptIn(ExperimentalContracts::class)
+    private fun canBeExpressionElement(v1: PsiElement): Boolean {
+        contract { returns(true) implies (v1 is ParadoxScriptValue) }
+        return v1 is ParadoxScriptString || v1 is ParadoxScriptScriptedVariableReference
+    }
+
     /**
      * 从内联脚本用法对应的 PSI，得到内联脚本表达式对应的 PSI。
      *
@@ -29,9 +37,9 @@ object ParadoxInlineScriptService {
         // hardcoded
         if (!ParadoxInlineScriptManager.isMatched(usageElement.name)) return null // NOTE 2.1.0 这里目前不验证游戏类型
         val v1 = usageElement.propertyValue ?: return null
-        if (v1 is ParadoxScriptString || v1 is ParadoxScriptScriptedVariableReference) return v1
-        val v2 = selectScope { v1.properties().ofKey("script").one() }?.propertyValue
-        if (v2 is ParadoxScriptString || v2 is ParadoxScriptProperty) return v2
+        if (canBeExpressionElement(v1)) return v1
+        val v2 = selectScope { v1.properties().ofKey("script").one() }?.propertyValue ?: return null
+        if (canBeExpressionElement(v2)) return v2
         return null
     }
 
@@ -43,7 +51,7 @@ object ParadoxInlineScriptService {
      */
     fun getUsageElement(expressionElement: PsiElement): ParadoxScriptProperty? {
         // hardcoded
-        if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
+        if (!canBeExpressionElement(expressionElement)) return null
         val p1 = expressionElement.parentProperty ?: return null
         if (ParadoxInlineScriptManager.isMatched(p1.name)) return p1 // NOTE 2.1.0 这里目前不验证游戏类型
         if (!p1.name.equals("script", true)) return null

@@ -61,7 +61,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             var inInlineMath = false
 
             override fun visitElement(element: PsiElement) {
-                // 兼容向下内联的情况（即使内联后为自身）
+                // 兼容向下内联的情况（即使内联后为自身，或者出现递归）
                 if (element is ParadoxScriptMember) {
                     val inlined = ParadoxInlineService.getInlinedElement(element)
                     if (inlined != null) {
@@ -69,6 +69,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                         return
                     }
                 }
+
                 when {
                     element is ParadoxScriptedVariableReference -> {
                         addDescriptor(element) // scripted_variable

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.findParentInFile
 import com.intellij.psi.util.parentOfType
@@ -13,6 +14,7 @@ import icu.windea.pls.core.collections.WalkingContext
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.core.findElementAt
+import icu.windea.pls.core.withContextRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
@@ -32,41 +34,57 @@ object ParadoxPsiSequenceBuilder {
     // region Paradox Script
 
     fun members(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
-        val options = WalkingContext()
-        val delegate = builderMembers(element, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { builderMembers(element) }
+        return WalkingSequence(delegate, context)
     }
 
-    private fun builderMembers(element: ParadoxScriptMemberContainer, options: WalkingContext): Sequence<ParadoxScriptMember> {
+    context(context: WalkingContext)
+    private fun builderMembers(element: ParadoxScriptMemberContainer): Sequence<ParadoxScriptMember> {
         val rootElement = element.membersRoot ?: return emptySequence()
         return sequence {
-            this.yieldMembers(rootElement, options)
+            yieldMembers(rootElement)
         }
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContainer, options: WalkingContext) {
-        element.children(options.forward).forEach { child ->
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContainer) {
+        element.children(context.forward).forEach { child ->
             when (child) {
-                is ParadoxScriptMember -> yieldMember(child, options)
-                is ParadoxScriptParameterCondition -> if (options.conditional) yieldMembers(child, options)
+                is ParadoxScriptMember -> yieldMember(child)
+                is ParadoxScriptParameterCondition -> if (context.conditional) yieldConditionalMembers(child)
             }
         }
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMember(element: ParadoxScriptMember, options: WalkingContext) {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMember(element: ParadoxScriptMember) {
+        ProgressManager.checkCanceled()
         yield(element)
-        if (options.inline) this@yieldMember.yieldInlineMember(element, options)
+        if (context.inline) yieldInlineMember(element)
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember, options: WalkingContext) {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldConditionalMembers(element: ParadoxScriptParameterCondition) {
+        ProgressManager.checkCanceled()
+        yieldMembers(element)
+    }
+
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember) {
+        ProgressManager.checkCanceled()
+        // NOTE context recursion guard is required here (again)
         val inlined = ParadoxInlineService.getInlinedElement(element) ?: return
-        if (inlined is ParadoxScriptFile) {
-            val nextElement = inlined.block
-            if (nextElement == null) return
-            yieldMembers(nextElement, options)
-            return
+        withContextRecursionGuard(context, "ParadoxPsiSequenceBuilder.yieldInlineMember") {
+            withRecursionCheck(inlined) {
+                if (inlined is ParadoxScriptFile) {
+                    val rootElement = inlined.membersRoot ?: return
+                    yieldMembers(rootElement)
+                    return
+                }
+                yieldMember(inlined)
+            }
         }
-        yieldMember(inlined, options)
     }
 
     // endregion
@@ -74,58 +92,66 @@ object ParadoxPsiSequenceBuilder {
     // region Paradox Localisation
 
     fun localisations(file: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
-        val options = WalkingContext()
-        val delegate = buildLocalisations(file, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { buildLocalisations(file) }
+        return WalkingSequence(delegate, context)
     }
 
     fun localisations(propertyList: ParadoxLocalisationPropertyList): WalkingSequence<ParadoxLocalisationProperty> {
-        val options = WalkingContext()
-        val delegate = buildLocalisations(propertyList, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { buildLocalisations(propertyList) }
+        return WalkingSequence(delegate, context)
     }
 
     fun selectedLocalisations(editor: Editor, file: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
-        val options = WalkingContext()
-        val delegate = buildSelectedLocalisations(file, editor, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { buildSelectedLocalisations(file, editor) }
+        return WalkingSequence(delegate, context)
     }
 
-    private fun buildLocalisations(file: PsiFile, options: WalkingContext): Sequence<ParadoxLocalisationProperty> {
+    context(context: WalkingContext)
+    private fun buildLocalisations(file: PsiFile): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
         return sequence {
-            file.children(options.forward).filterIsInstance<ParadoxLocalisationPropertyList>().forEach { propertyList ->
-                propertyList.children(options.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
+            file.children(context.forward).filterIsInstance<ParadoxLocalisationPropertyList>().forEach { propertyList ->
+                ProgressManager.checkCanceled()
+                propertyList.children(context.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
             }
         }
     }
 
-    private fun buildLocalisations(propertyList: ParadoxLocalisationPropertyList, options: WalkingContext): Sequence<ParadoxLocalisationProperty> {
+    context(context: WalkingContext)
+    private fun buildLocalisations(propertyList: ParadoxLocalisationPropertyList): Sequence<ParadoxLocalisationProperty> {
         return sequence {
-            propertyList.children(options.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
+            propertyList.children(context.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
         }
     }
 
-    private fun buildSelectedLocalisations(file: PsiFile, editor: Editor, options: WalkingContext): Sequence<ParadoxLocalisationProperty> {
+    context(context: WalkingContext)
+    private fun buildSelectedLocalisations(file: PsiFile, editor: Editor): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
         return sequence {
             val locale = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
             if (locale != null) {
-                this.yieldSelectedOf(locale, options)
+                yieldSelectedOf(locale)
             } else {
                 val selectionStart = editor.selectionModel.selectionStart
                 val selectionEnd = editor.selectionModel.selectionEnd
-                this.yieldSelectedBetween(file, options, selectionStart, selectionEnd)
+                yieldSelectedBetween(file, selectionStart, selectionEnd)
             }
         }
     }
 
-    private suspend fun SequenceScope<ParadoxLocalisationProperty>.yieldSelectedOf(locale: ParadoxLocalisationLocale, options: WalkingContext) {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxLocalisationProperty>.yieldSelectedOf(locale: ParadoxLocalisationLocale) {
+        ProgressManager.checkCanceled()
         val propertyList = locale.parent?.castOrNull<ParadoxLocalisationPropertyList>() ?: return
-        propertyList.children(options.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
+        propertyList.children(context.forward).filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
     }
 
-    private suspend fun SequenceScope<ParadoxLocalisationProperty>.yieldSelectedBetween(file: PsiFile, options: WalkingContext, start: Int, end: Int) {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxLocalisationProperty>.yieldSelectedBetween(file: PsiFile, start: Int, end: Int) {
+        ProgressManager.checkCanceled()
         if (start == end) {
             val originalElement = file.findElementAt(start)
             val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return
@@ -144,7 +170,7 @@ object ParadoxPsiSequenceBuilder {
         val listElement = startElement?.parent ?: endElement?.parent ?: return
         val firstElement = startElement ?: listElement.firstChild ?: return
         val forwardFirst = if (endElement == null) true else firstElement.startOffset <= endElement.startOffset
-        val forward = if (options.forward) forwardFirst else !forwardFirst
+        val forward = if (context.forward) forwardFirst else !forwardFirst
         firstElement.siblings(forward = forward, withSelf = true).forEach {
             if (it is ParadoxLocalisationProperty) yield(it)
             if (it == endElement) return
@@ -159,34 +185,40 @@ object ParadoxPsiSequenceBuilder {
      * 包含选取范围涉及到的所有行。
      */
     fun selectedRows(editor: Editor, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
-        val options = WalkingContext()
-        val delegate = buildSelectedRows(file, editor, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { buildSelectedRows(file, editor) }
+        return WalkingSequence(delegate, context)
     }
 
-    private fun buildSelectedRows(file: PsiFile, editor: Editor, options: WalkingContext): Sequence<ParadoxCsvRow> {
+    context(context: WalkingContext)
+    private fun buildSelectedRows(file: PsiFile, editor: Editor): Sequence<ParadoxCsvRow> {
         if (file !is ParadoxCsvFile) return emptySequence()
         return sequence {
             val set = mutableSetOf<ParadoxCsvRow>()
-            val allCarets = editor.caretModel.allCarets.let { if (options.forward) it else it.reversed() }
+            val allCarets = editor.caretModel.allCarets.let { if (context.forward) it else it.reversed() }
             for (caret in allCarets) {
-                val startRow = this.yieldStartRow(file, options, caret, set)
-                this.yieldEndRow(file, options, caret, startRow, set)
+                ProgressManager.checkCanceled()
+                val startRow = yieldStartRow(file, caret, set)
+                yieldEndRow(file, caret, startRow, set)
             }
         }
     }
 
-    private suspend fun SequenceScope<ParadoxCsvRow>.yieldStartRow(file: ParadoxCsvFile, options: WalkingContext, caret: Caret, set: MutableSet<ParadoxCsvRow>): ParadoxCsvRow? {
-        val offset = if (options.forward) caret.selectionStart else caret.selectionEnd
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxCsvRow>.yieldStartRow(file: ParadoxCsvFile, caret: Caret, set: MutableSet<ParadoxCsvRow>): ParadoxCsvRow? {
+        ProgressManager.checkCanceled()
+        val offset = if (context.forward) caret.selectionStart else caret.selectionEnd
         val row = file.findElementAt(offset) { it.parentOfType<ParadoxCsvRow>(withSelf = true) }
         if (row == null) return null
         if (set.add(row)) yield(row)
         return row
     }
 
-    private suspend fun SequenceScope<ParadoxCsvRow>.yieldEndRow(file: ParadoxCsvFile, options: WalkingContext, caret: Caret, previous: ParadoxCsvRow?, set: MutableSet<ParadoxCsvRow>): ParadoxCsvRow? {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxCsvRow>.yieldEndRow(file: ParadoxCsvFile, caret: Caret, previous: ParadoxCsvRow?, set: MutableSet<ParadoxCsvRow>): ParadoxCsvRow? {
+        ProgressManager.checkCanceled()
         if (caret.selectionStart == caret.selectionEnd) return null
-        val forward = options.forward
+        val forward = context.forward
         val offset = if (forward) caret.selectionEnd else caret.selectionStart
         val row = file.findElementAt(offset) { it.parentOfType<ParadoxCsvRow>(withSelf = true) }?.takeIf { it != previous }
         if (row == null) return null
@@ -202,34 +234,40 @@ object ParadoxPsiSequenceBuilder {
      * 包含选取范围涉及到的，索引在选取开始与选取结束各自对应的列的索引区间中的所有列。
      */
     fun selectedColumns(editor: Editor, file: PsiFile): WalkingSequence<ParadoxCsvColumn> {
-        val options = WalkingContext()
-        val delegate = buildSelectedColumns(file, editor, options)
-        return WalkingSequence(delegate, options)
+        val context = WalkingContext()
+        val delegate = with(context) { buildSelectedColumns(file, editor) }
+        return WalkingSequence(delegate, context)
     }
 
-    private fun buildSelectedColumns(file: PsiFile, editor: Editor, options: WalkingContext): Sequence<ParadoxCsvColumn> {
+    context(context: WalkingContext)
+    private fun buildSelectedColumns(file: PsiFile, editor: Editor): Sequence<ParadoxCsvColumn> {
         if (file !is ParadoxCsvFile) return emptySequence()
         return sequence {
             val set = mutableSetOf<ParadoxCsvColumn>()
-            val allCarets = editor.caretModel.allCarets.let { if (options.forward) it else it.reversed() }
+            val allCarets = editor.caretModel.allCarets.let { if (context.forward) it else it.reversed() }
             for (caret in allCarets) {
-                val startColumn = this.yieldStartColumn(file, options, caret, set)
-                this.yieldEndColumn(file, options, caret, startColumn, set)
+                ProgressManager.checkCanceled()
+                val startColumn = yieldStartColumn(file, caret, set)
+                yieldEndColumn(file, caret, startColumn, set)
             }
         }
     }
 
-    private suspend fun SequenceScope<ParadoxCsvColumn>.yieldStartColumn(file: ParadoxCsvFile, options: WalkingContext, caret: Caret, set: MutableSet<ParadoxCsvColumn>): ParadoxCsvColumn? {
-        val offset = if (options.forward) caret.selectionStart else caret.selectionEnd
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxCsvColumn>.yieldStartColumn(file: ParadoxCsvFile, caret: Caret, set: MutableSet<ParadoxCsvColumn>): ParadoxCsvColumn? {
+        ProgressManager.checkCanceled()
+        val offset = if (context.forward) caret.selectionStart else caret.selectionEnd
         val column = file.findElementAt(offset) { it.parentOfType<ParadoxCsvColumn>(withSelf = true) }
         if (column == null) return null
         if (set.add(column)) yield(column)
         return column
     }
 
-    private suspend fun SequenceScope<ParadoxCsvColumn>.yieldEndColumn(file: ParadoxCsvFile, options: WalkingContext, caret: Caret, previous: ParadoxCsvColumn?, set: MutableSet<ParadoxCsvColumn>): ParadoxCsvColumn? {
+    context(context: WalkingContext)
+    private suspend fun SequenceScope<ParadoxCsvColumn>.yieldEndColumn(file: ParadoxCsvFile, caret: Caret, previous: ParadoxCsvColumn?, set: MutableSet<ParadoxCsvColumn>): ParadoxCsvColumn? {
+        ProgressManager.checkCanceled()
         if (caret.selectionStart == caret.selectionEnd) return null
-        val forward = options.forward
+        val forward = context.forward
         val offset = if (forward) caret.selectionEnd else caret.selectionStart
         val column = file.findElementAt(offset) { it.parentOfType<ParadoxCsvColumn>(withSelf = true) }?.takeIf { it != previous }
         if (column == null) return null

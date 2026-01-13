@@ -247,6 +247,132 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         Assert.assertTrue(membersConditionalTrue.any { it is ParadoxScriptProperty && it.name == "parameter_condition" })
     }
 
+    @Test
+    fun walkUp_propertyChain() {
+        val file = configureScriptFile("features/select/select_test_1.test.txt")
+        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
+
+        val keys = selectScope {
+            k4.walkUp().asProperty().map { it.name }.toList()
+        }
+        Assert.assertEquals(listOf("k4", "k3", "k2", "k1"), keys)
+    }
+
+    @Test
+    fun parentMemberContainer_orSelf() {
+        val file = configureScriptFile("features/select/select_test_1.test.txt")
+        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
+
+        val parentContainer = selectScope { k4.parentMemberContainer(orSelf = false) }
+        Assert.assertNotNull(parentContainer)
+        Assert.assertTrue(parentContainer!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "k4" })
+
+        val fileAsSelf = selectScope { file.parentMemberContainer(orSelf = true) }
+        Assert.assertNotNull(fileAsSelf)
+
+        val fileNoSelf = selectScope { file.parentMemberContainer(orSelf = false) }
+        Assert.assertNull(fileNoSelf)
+    }
+
+    @Test
+    fun parentMemberContainer_insideParameterCondition() {
+        val file = configureScriptFile("features/select/select_conditional.test.txt")
+        val settings = selectScope { file.ofPath("settings").asProperty().one() }!!
+        val parameterConditionProperty = selectScope {
+            settings.members(conditional = true)
+                .asProperty()
+                .ofKey("parameter_condition", ignoreCase = true, usePattern = false)
+                .one()
+        }!!
+
+        val container = selectScope { parameterConditionProperty.parentMemberContainer(orSelf = false) }
+        Assert.assertNotNull(container)
+        Assert.assertTrue(container!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "parameter_condition" })
+    }
+
+    @Test
+    fun parentOfKey_basic_and_fromBlock() {
+        val file = configureScriptFile("features/select/select_test_1.test.txt")
+        val k4Value = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one()!!.propertyValue }!!
+
+        val nearest = selectScope { k4Value.parentOfKey(propertyName = null) }
+        Assert.assertNotNull(nearest)
+        Assert.assertEquals("k4", nearest!!.name)
+
+        val parentK3 = selectScope { k4Value.parentOfKey(propertyName = "k3") }
+        Assert.assertNotNull(parentK3)
+        Assert.assertEquals("k3", parentK3!!.name)
+
+        val parentK3FromBlock = selectScope { k4Value.parentOfKey(propertyName = "k3", fromBlock = true) }
+        Assert.assertNotNull(parentK3FromBlock)
+        Assert.assertEquals("k3", parentK3FromBlock!!.name)
+
+        val notExists = selectScope { k4Value.parentOfKey(propertyName = "not_exists") }
+        Assert.assertNotNull(notExists)
+        Assert.assertTrue(notExists is ParadoxScriptFile)
+    }
+
+    @Test
+    fun parentOfKey_shouldStopAtNonPropertyValueBlock() {
+        val file = configureScriptFile("features/select/select_blocks.test.txt")
+        val aValue = selectScope { file.ofPath("list/-/a").asProperty().one()!!.propertyValue }!!
+
+        val stopped = selectScope { aValue.parentOfKey(propertyName = "list") }
+        Assert.assertNull(stopped)
+    }
+
+    @Test
+    fun parentOfKey_shouldReturnFileWhenReachedPsiFile() {
+        val file = configureScriptFile("features/select/select_test_1.test.txt")
+        val k1 = selectScope { file.ofPath("k1").asProperty().one() }!!
+
+        val result = selectScope { k1.parentOfKey(propertyName = "not_exists") }
+        Assert.assertNotNull(result)
+        Assert.assertTrue(result is ParadoxScriptFile)
+    }
+
+    @Test
+    fun parentOfPath_basic_and_edgeCases() {
+        val file = configureScriptFile("features/select/select_test_1.test.txt")
+        val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
+
+        val self = selectScope { k4.parentOfPath("") }
+        Assert.assertEquals(k4, self)
+
+        val parentK3 = selectScope { k4.parentOfPath("k3") }
+        Assert.assertNotNull(parentK3)
+        Assert.assertTrue(parentK3 is ParadoxScriptProperty)
+        Assert.assertEquals("k3", (parentK3 as ParadoxScriptProperty).name)
+
+        val parentBlock = selectScope { k4.parentOfPath("-") }
+        Assert.assertNotNull(parentBlock)
+        Assert.assertFalse(parentBlock is ParadoxScriptProperty)
+
+        val invalid = selectScope { k4.parentOfPath("not_exists") }
+        Assert.assertNotNull(invalid)
+        Assert.assertTrue(invalid is ParadoxScriptFile)
+
+        val file2 = configureScriptFile("features/select/select_blocks.test.txt")
+        val a = selectScope { file2.ofPath("list/-/a").asProperty().one() }!!
+        val invalidShouldBeNull = selectScope { a.parentOfPath("list") }
+        Assert.assertNull(invalidShouldBeNull)
+
+        val definitionTypeRequired = selectScope { k4.parentOfPath("", definitionType = "") }
+        Assert.assertNull(definitionTypeRequired)
+    }
+
+    @Test
+    fun upwardQueries_nonScriptLanguage_shouldReturnNull() {
+        myFixture.configureByText("a.java", "class A {}")
+        val file = myFixture.file
+
+        val container = selectScope { file.parentMemberContainer(orSelf = true) }
+        Assert.assertNull(container)
+
+        val definition = selectScope { file.parentOfKey(propertyName = null) }
+        Assert.assertNull(definition)
+    }
+
     private fun configureScriptFile(path: String): ParadoxScriptFile {
         myFixture.configureByFile(path)
         return myFixture.file as ParadoxScriptFile

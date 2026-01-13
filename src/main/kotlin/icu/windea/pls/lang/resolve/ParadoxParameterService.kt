@@ -110,6 +110,7 @@ object ParadoxParameterService {
      * @see ParadoxParameterInferredConfigProvider.getContextConfigs
      */
     fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
+        // NOTE recursion guard is required here
         val gameType = parameterContextInfo.gameType
         return withRecursionGuard {
             ParadoxParameterInferredConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
