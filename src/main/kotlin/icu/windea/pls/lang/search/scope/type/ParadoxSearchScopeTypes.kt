@@ -7,8 +7,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
@@ -97,16 +96,18 @@ object ParadoxSearchScopeTypes {
     }.also { map.put(it.id, it) }
 
     private fun findRootDefinition(project: Project, context: Any?): ParadoxScriptDefinitionElement? {
-        // TODO 2.1.0+ 考虑兼容定义注入
         val contextElement = when {
             context is PsiElement -> context
-            context is ParadoxComplexEnumValueIndexInfo -> {
-                if (context.definitionElementOffset < 0) return null
-                val file = context.virtualFile
-                file?.toPsiFile(project)?.findElementAt(context.definitionElementOffset)
-            }
-            else -> null
+            context is ParadoxComplexEnumValueIndexInfo -> findContextElement(project, context) ?: return null
+            else -> return null
         }
-        return contextElement?.select { parentDefinition() }
+        // TODO 2.1.0+ 考虑兼容定义注入
+        return selectScope { contextElement.parentDefinition() }
+    }
+
+    private fun findContextElement(project: Project, context: ParadoxComplexEnumValueIndexInfo): PsiElement? {
+        if (context.definitionElementOffset < 0) return null
+        val file = context.virtualFile
+        return file?.toPsiFile(project)?.findElementAt(context.definitionElementOffset)
     }
 }

@@ -26,8 +26,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
@@ -224,7 +223,7 @@ object ParadoxEventManager {
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                     ProgressManager.checkCanceled()
                     val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                    val rDefinition = refElement.select { parentDefinition() } ?: return@p true
+                    val rDefinition = selectScope { refElement.parentDefinition().asProperty() } ?: return@p true
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if (rDefinitionInfo.name.isEmpty()) return@p true
                     if (rDefinitionInfo.type != ParadoxDefinitionTypes.event) return@p true

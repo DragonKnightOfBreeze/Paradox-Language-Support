@@ -23,12 +23,12 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.select.parent
-import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
+import org.jetbrains.kotlin.analysis.utils.printer.parentOfType
 
 /**
  * 提供变量名的代码补全。（在effect子句中）
@@ -42,8 +42,8 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
         if (element.text.isParameterized()) return
         if (!element.isBlockMember()) return
-        val parentProperty = element.select { parent() } ?: return
-        val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+        val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return
+        val configs = ParadoxExpressionManager.getConfigs(parentMember, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup
         context.configGroup = configGroup

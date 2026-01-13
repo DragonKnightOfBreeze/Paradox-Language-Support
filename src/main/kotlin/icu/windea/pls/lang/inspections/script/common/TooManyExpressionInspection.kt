@@ -13,7 +13,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.select.asValue
-import icu.windea.pls.config.select.selectScope
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.select.walkUp
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
@@ -104,9 +104,9 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {
                 configs.forEach { c1 ->
                     c1.overriddenProvider?.let { return it }
-                    val pc1 = selectScope { c1.asValue()?.propertyConfig }
+                    val pc1 = selectConfigScope { c1.asValue()?.propertyConfig }
                     pc1?.overriddenProvider?.let { return it }
-                    val cs = selectScope { (pc1 ?: c1).walkUp() }
+                    val cs = selectConfigScope { (pc1 ?: c1).walkUp() }
                     cs.forEach { c2 -> c2.overriddenProvider?.let { return it } }
                 }
                 return null

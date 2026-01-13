@@ -22,8 +22,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -65,7 +64,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             }
             element !is ParadoxScriptStringExpressionElement -> return null
             element.isDefinitionTypeKeyOrName() -> {
-                val definition = element.select { parentDefinition() } ?: return null
+                val definition = selectScope { element.parentDefinition() } ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
                 val localisationInfos = definitionInfo.localisations

@@ -2,6 +2,7 @@ package icu.windea.pls.ep.resolve
 
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -19,7 +20,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     override fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptFile? {
         // 排除为空或者带参数的情况
         if (element !is ParadoxScriptProperty) return null
-        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return withRecursionGuard {
             withRecursionCheck(inlineScriptExpression) a@{

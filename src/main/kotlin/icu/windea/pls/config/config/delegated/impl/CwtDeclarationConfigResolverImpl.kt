@@ -6,7 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.select.asProperty
-import icu.windea.pls.config.select.selectScope
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.select.walkDown
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -38,7 +38,7 @@ private class CwtDeclarationConfigImpl(
 
     override val subtypesUsedInDeclaration: Set<String> by lazy {
         val result = sortedSetOf<String>()
-        selectScope {
+        selectConfigScope {
             config.walkDown().asProperty().forEach { c ->
                 val subtypeExpression = c.key.removeSurroundingOrNull("subtype[", "]")
                 if (subtypeExpression != null) {

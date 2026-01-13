@@ -21,9 +21,8 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.psi.resolveLocalisation
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -274,7 +273,7 @@ object ParadoxTypeManager {
                 if (element is ParadoxScriptPropertyKey) {
                     return findTypeDeclarations(element.parent)
                 } else if (element is ParadoxScriptValue && element.isDefinitionName()) {
-                    val definition = element.select { parentDefinition() }
+                    val definition = selectScope { element.parentDefinition() }
                     if (definition is ParadoxScriptProperty) return findTypeDeclarations(definition)
                 }
 

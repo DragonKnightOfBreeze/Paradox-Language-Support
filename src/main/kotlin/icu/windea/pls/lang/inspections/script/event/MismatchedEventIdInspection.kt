@@ -8,12 +8,10 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -34,7 +32,7 @@ class MismatchedEventIdInspection : EventInspectionBase() {
         for (property in properties) {
             ProgressManager.checkCanceled()
             val definitionInfo = property.definitionInfo ?: continue
-            if (definitionInfo.type == "event_namespace") {
+            if (definitionInfo.type == ParadoxDefinitionTypes.eventNamespace) {
                 // 如果值不是一个字符串，作为空字符串存到缓存中
                 val namespace = property.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
@@ -51,14 +49,11 @@ class MismatchedEventIdInspection : EventInspectionBase() {
             if (events.isEmpty()) continue
             for (event in events) {
                 val definitionInfo = event.definitionInfo ?: continue
-                val eventIdField = definitionInfo.typeConfig.nameField
-                val eventIdProperty: ParadoxScriptExpressionElement = when (eventIdField) {
-                    null -> event.propertyKey
-                    else -> event.select { property(eventIdField) }?.propertyValue
-                } ?: continue
-                val eventId = eventIdProperty.stringValue() ?: continue
+                val nameField = definitionInfo.typeConfig.nameField
+                val nameElement = selectScope { event.nameElement(nameField) } ?: continue
+                val eventId = nameElement.stringValue() ?: continue
                 if (!ParadoxEventManager.isMatchedEventId(eventId, namespace)) {
-                    holder.registerProblem(eventIdProperty, PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace))
+                    holder.registerProblem(nameElement, PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace))
                 }
             }
         }

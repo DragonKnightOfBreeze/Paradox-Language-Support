@@ -14,8 +14,7 @@ import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.select.parentOfPath
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -32,7 +31,7 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
-        val event = element.select { parentOfPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
+        val event = selectScope { element.parentOfPath("id", definitionType = ParadoxDefinitionTypes.event) } // 不处理内联的情况
         if (event !is ParadoxScriptProperty) return
 
         ParadoxCompletionManager.initializeContext(parameters, context)

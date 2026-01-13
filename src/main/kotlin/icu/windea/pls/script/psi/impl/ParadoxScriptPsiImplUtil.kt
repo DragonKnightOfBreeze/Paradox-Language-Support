@@ -18,8 +18,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.select.*
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -132,10 +130,9 @@ object ParadoxScriptPsiImplUtil {
         if (definitionInfo == null) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            val nameProperty = element.select { property(nameField) } // 不处理内联的情况
-            if (nameProperty != null) {
-                val nameElement = nameProperty.propertyValue<ParadoxScriptString>()
-                nameElement?.setValue(name)
+            val nameFieldElement = selectScope { element.nameFieldElement(nameField) }
+            if (nameFieldElement != null) {
+                nameFieldElement.setValue(name)
                 return element
             } else {
                 throw IncorrectOperationException()

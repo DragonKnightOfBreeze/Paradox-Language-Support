@@ -16,6 +16,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -152,14 +153,14 @@ object ParadoxScriptStubManager {
 
     private fun createInlineScriptUsageStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub.InlineScriptUsage? {
         // 排除为空或者带参数的情况
-        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(psi).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(psi).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return ParadoxScriptPropertyStub.createInlineScriptUsage(parentStub, name, inlineScriptExpression)
     }
 
     private fun createInlineScriptUsageStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub.InlineScriptUsage? {
         // 排除为空或者带参数的情况
-        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(tree, node).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(tree, node).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return ParadoxScriptPropertyStub.createInlineScriptUsage(parentStub, name, inlineScriptExpression)
     }

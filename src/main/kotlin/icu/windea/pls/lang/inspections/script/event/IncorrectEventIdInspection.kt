@@ -7,8 +7,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -23,14 +22,14 @@ class IncorrectEventIdInspection : EventInspectionBase() {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file.properties(inline = true).forEach f@{ element ->
-            val definitionInfo = element.definitionInfo ?: return@f
-            if (definitionInfo.type != ParadoxDefinitionTypes.event) return@f
+        val elements = file.properties(inline = true)
+        for (element in elements) {
+            val definitionInfo = element.definitionInfo ?: continue
+            if (definitionInfo.type != ParadoxDefinitionTypes.event) continue
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
-            if (ParadoxEventManager.isValidEventId(eventId)) return@f
-            val nameElement = if (nameField == null) element.propertyKey else element.select { property(nameField) }?.propertyValue
-            if (nameElement == null) return@f // 忽略
+            if (ParadoxEventManager.isValidEventId(eventId)) continue
+            val nameElement = selectScope { element.nameElement(nameField) } ?: continue
             holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
         }
 

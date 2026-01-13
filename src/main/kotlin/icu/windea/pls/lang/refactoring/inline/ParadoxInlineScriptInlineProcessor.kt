@@ -25,6 +25,7 @@ import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -55,7 +56,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
         ReferencesSearch.search(element, myRefactoringScope, true).process p@{ reference ->
             ProgressManager.checkCanceled()
-            if (ParadoxInlineScriptManager.getUsageElement(reference.element) == null) return@p true
+            if (ParadoxInlineScriptService.getUsageElement(reference.element) == null) return@p true
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()

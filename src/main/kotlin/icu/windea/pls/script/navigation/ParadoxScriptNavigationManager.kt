@@ -10,9 +10,9 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -123,7 +123,7 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 内联脚本表达式
                     if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
-                    return ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true)
+                    return ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {
                     // 定义的类型信息和本地化后的名字

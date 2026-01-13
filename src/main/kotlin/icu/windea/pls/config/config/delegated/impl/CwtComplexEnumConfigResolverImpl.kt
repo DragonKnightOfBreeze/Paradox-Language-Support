@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.select.selectScope
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.select.walkDown
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
@@ -71,7 +71,7 @@ private class CwtComplexEnumConfigImpl(
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
     override val searchScopeType: String? = if (perDefinition) "definition" else null
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
-        selectScope {
+        selectConfigScope {
             nameConfig.walkDown().filter { c ->
                 when (c) {
                     is CwtPropertyConfig -> c.key == "enum_name" || c.stringValue == "enum_name"

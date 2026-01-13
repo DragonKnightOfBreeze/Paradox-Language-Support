@@ -16,8 +16,8 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.select.propertyByPath
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -35,6 +35,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
 
 object CwtLocationExpressionManager {
@@ -57,14 +58,14 @@ object CwtLocationExpressionManager {
         val project = definitionInfo.project
 
         if (isPlaceholder) {
-            val nameText = findByPaths(definition, namePaths) ?: definitionInfo.name
+            val nameText = findValueByPaths(definition, namePaths) ?: definitionInfo.name
             if (nameText.isEmpty()) return null
             val name = resolvePlaceholder(locationExpression, nameText)
             if (name.isNullOrEmpty()) return null
             return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
         }
 
-        val valueElement = definition.select { propertyByPath(location, conditional = true, inline = true) }?.propertyValue ?: return null
+        val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationAware) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
@@ -126,12 +127,12 @@ object CwtLocationExpressionManager {
 
         val nextFrameInfo = when {
             definitionInfo.type == ParadoxDefinitionTypes.sprite -> ParadoxSpriteManager.getFrameInfo(definition)
-            else -> findByPaths(definition, framePaths)?.toIntOrNull()?.let { ImageFrameInfo.of(it) }
+            else -> findValueByPaths(definition, framePaths)?.toIntOrNull()?.let { ImageFrameInfo.of(it) }
         }
         val newFrameInfo = ImageFrameInfo.merge(frameInfo, nextFrameInfo)
 
         if (isPlaceholder) {
-            val nameText = findByPaths(definition, namePaths) ?: definitionInfo.name
+            val nameText = findValueByPaths(definition, namePaths) ?: definitionInfo.name
             if (nameText.isEmpty()) return null
             if (location.startsWith("GFX_")) {
                 val spriteName = resolvePlaceholder(locationExpression, nameText)
@@ -162,7 +163,7 @@ object CwtLocationExpressionManager {
             return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
         }
 
-        val valueElement = definition.select { propertyByPath(location, conditional = true, inline = true) }?.propertyValue ?: return null
+        val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationAware) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
@@ -238,10 +239,15 @@ object CwtLocationExpressionManager {
         return CwtImageLocationExpression.ResolveResult("", null, message)
     }
 
-    private fun findByPaths(definition: ParadoxScriptDefinitionElement, paths: Set<String>?): String? {
+    private fun findValueElementByPath(definition: ParadoxScriptDefinitionElement, path: String): ParadoxScriptValue? {
+        if (path.isEmpty()) return null
+        val properties = selectScope { definition.properties(conditional = true, inline = true).ofPath(path).asProperty() }
+        return properties.firstNotNullOfOrNull { it.propertyValue }
+    }
+
+    private fun findValueByPaths(definition: ParadoxScriptDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
-        return paths.firstNotNullOfOrNull { path ->
-            definition.select { propertyByPath(path, conditional = true, inline = true) }?.propertyValue?.stringValue()
-        }
+        val properties = selectScope { definition.properties(conditional = true, inline = true).ofPaths(paths).asProperty() }
+        return properties.firstNotNullOfOrNull { it.propertyValue?.stringValue() }
     }
 }

@@ -16,9 +16,8 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.select.parent
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -28,8 +27,8 @@ import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptValue
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -169,10 +168,10 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
             ?.parentConfig
             ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
         if (effectConfig == null) return null
-        val scopesConfig = effectConfig.configs
-            ?.find { it is CwtPropertyConfig && it.key == "scopes" }
+        if (element !is ParadoxScriptString) return -1
+        val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
+        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }
@@ -236,10 +235,10 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
             ?.parentConfig
             ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
         if (effectConfig == null) return null
-        val scopesConfig = effectConfig.configs
-            ?.find { it is CwtPropertyConfig && it.key == "scopes" }
+        if (element !is ParadoxScriptString) return -1
+        val scopesConfig = effectConfig.configs?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
+        val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }

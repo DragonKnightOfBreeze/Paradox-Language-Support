@@ -13,6 +13,8 @@ import com.intellij.refactoring.util.CommonRefactoringUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configContext.inlineScriptHasRecursion
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -22,7 +24,6 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.parentProperty
-import icu.windea.pls.lang.psi.resolved
 
 class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.inlineScript")
@@ -35,7 +36,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (element.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@run
             val usageElement = element.parentOfType<ParadoxScriptProperty>() ?: return@run
-            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
+            val expressionElement = ParadoxInlineScriptService.getExpressionElement(usageElement) ?: return@run
             val expressionElementReference = expressionElement.resolved()?.reference ?: return false
             val resolved = expressionElementReference.resolve() ?: return false
             return canInlineElement(resolved)
@@ -52,12 +53,12 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
             val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parentProperty ?: return@run
-            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
+            val expressionElement = ParadoxInlineScriptService.getExpressionElement(usageElement) ?: return@run
             val expressionElementReference = expressionElement.resolved()?.reference ?: return false
             val resolved = expressionElementReference.resolve() ?: return false
             return canInlineElement(resolved)
         }
-        if (reference != null && ParadoxInlineScriptManager.getUsageElement(reference.element) == null) return false
+        if (reference != null && ParadoxInlineScriptService.getUsageElement(reference.element) == null) return false
         return canInlineElement(element)
     }
 
@@ -67,7 +68,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
             val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parentProperty ?: return@run
-            val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
+            val expressionElement = ParadoxInlineScriptService.getExpressionElement(usageElement) ?: return@run
             val expressionElementReference = expressionElement.resolved()?.reference ?: return
             val resolved = expressionElementReference.resolve() ?: return
             return performInline(project, editor, resolved.castOrNull() ?: return, expressionElementReference)

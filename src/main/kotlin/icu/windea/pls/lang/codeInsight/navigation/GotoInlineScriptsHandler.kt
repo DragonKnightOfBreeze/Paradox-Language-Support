@@ -13,6 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -29,7 +30,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
-        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
+        val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = mutableListOf<PsiElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.inlineScripts.search", expression)) {
             // need read actions here if necessary
@@ -50,14 +51,14 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         if (sourceElement !is ParadoxScriptProperty) return ""
-        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
+        val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
         return PlsBundle.message("script.goto.inlineScripts.chooseTitle", expression.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         if (sourceElement !is ParadoxScriptProperty) return ""
-        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
+        val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(sourceElement, resolve = true)
         if (expression.isNullOrEmpty()) return ""
         return PlsBundle.message("script.goto.inlineScripts.findUsagesTitle", expression.escapeXml())
     }

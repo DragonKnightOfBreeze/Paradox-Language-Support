@@ -9,8 +9,6 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
@@ -23,8 +21,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.parent
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.search.selector.selector
@@ -75,34 +72,16 @@ object ParadoxLocalisationParameterManager {
     private fun findParameterPropertiesFromLocalisationProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): List<ParadoxScriptProperty> {
         val configToUse = config.parentConfig?.configs?.firstNotNullOfOrNull { c -> c.configs?.find { isParameterConfig(element, it) } }
         if (configToUse == null) return emptyList()
-        val context = element.select { parent(fromParentBlock = true) }
-            ?.castOrNull<ParadoxScriptProperty>()
-            ?: return emptyList()
-        val result = mutableListOf<ParadoxScriptProperty>()
-        context.block?.properties()?.forEach f1@{ p1 ->
-            p1.block?.properties()?.forEach f2@{ p2 ->
-                if (isMatchedProperty(p2, configToUse)) {
-                    result.add(p2)
-                }
-            }
-        }
+        val context = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return emptyList()
+        val result = context.properties().flatMap { it.properties() }.filter { isMatchedProperty(it, configToUse) }.toList()
         return result
     }
 
     private fun findLocalisationPropertyFromParameterProperty(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxScriptProperty? {
         val configToUse = config.parentConfig?.parentConfig?.configs?.find { isLocalisationConfig(element, it) }
         if (configToUse == null) return null
-        val context = element.select { parent(fromParentBlock = true)?.parent(fromParentBlock = true) }
-            ?.castOrNull<ParadoxScriptProperty>()
-            ?: return null
-        var result: ParadoxScriptProperty? = null
-        context.block?.properties()?.process p@{ p ->
-            if (isMatchedProperty(p, configToUse)) {
-                result = p
-                return@p false
-            }
-            true
-        }
+        val context = selectScope { element.parentOfKey(fromBlock = true)?.parentOfKey(fromBlock = true).asProperty() } ?: return null
+        val result = context.properties().find { isMatchedProperty(it, configToUse) }
         return result
     }
 

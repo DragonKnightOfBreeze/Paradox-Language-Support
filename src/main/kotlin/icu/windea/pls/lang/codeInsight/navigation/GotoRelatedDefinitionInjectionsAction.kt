@@ -10,8 +10,7 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.select.parentDefinition
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -41,7 +40,7 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         if (!element.isDefinitionTypeKeyOrName()) return
-        val definition = element.select { parentDefinition() } ?: return
+        val definition = selectScope { element.parentDefinition() } ?: return
         val definitionInfo = definition.definitionInfo ?: return
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
         presentation.isEnabled = true

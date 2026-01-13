@@ -10,8 +10,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.util.withOperator
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.lang.psi.stringValue
 
 object ParadoxMatchProvider {
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
@@ -70,7 +70,7 @@ object ParadoxMatchProvider {
             if (predicate.isNullOrEmpty()) return@run
             val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
             predicate.forEach f@{ (pk, pv) ->
-                val p1 = parentBlock.select { property(pk, inline = true) }
+                val p1 = selectScope { parentBlock.properties(inline = true).ofKey(pk).one() }
                 val pv1 = p1?.propertyValue?.stringValue()
                 val pr = pv.withOperator { it == pv1 }
                 if (!pr) return false

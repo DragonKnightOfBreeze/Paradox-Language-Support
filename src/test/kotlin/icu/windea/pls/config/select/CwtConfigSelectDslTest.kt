@@ -28,20 +28,20 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun byPath_simple() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4 = selectScope { fileConfig.ofPath("k1/k2/k3/k4").one() }
+        val k4 = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").one() }
         Assert.assertNotNull(k4)
-        val k4List = selectScope { fileConfig.ofPath("k1/k2/k3/k4").all() }
+        val k4List = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").all() }
         Assert.assertEquals(3, k4List.size)
     }
 
     @Test
     fun walkUp_propertyChain() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4 = selectScope {
+        val k4 = selectConfigScope {
             fileConfig.ofPath("k1/k2/k3/k4").asProperty().one()
         }!!
 
-        val keys = selectScope {
+        val keys = selectConfigScope {
             k4.walkUp().asProperty().map { it.key }.toList()
         }
         Assert.assertEquals(listOf("k4", "k3", "k2", "k1"), keys)
@@ -50,9 +50,9 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkDown_containsAllDescendants() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
 
-        val descendants = selectScope { k1.walkDown().toList() }
+        val descendants = selectConfigScope { k1.walkDown().toList() }
         Assert.assertEquals(10, descendants.size)
 
         val k3Count = descendants.count { it is icu.windea.pls.config.config.CwtPropertyConfig && it.key == "k3" }
@@ -64,16 +64,16 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun members_properties_values_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
 
-        val members = selectScope { k1.members().all() }
+        val members = selectConfigScope { k1.members().all() }
         Assert.assertEquals(3, members.size)
 
-        val values = selectScope { k1.values().asValue().all() }
+        val values = selectConfigScope { k1.values().asValue().all() }
         Assert.assertEquals(2, values.size)
         Assert.assertEquals(listOf("v1", "v1"), values.map { it.value })
 
-        val properties = selectScope { k1.properties().all() }
+        val properties = selectConfigScope { k1.properties().all() }
         Assert.assertEquals(1, properties.size)
         Assert.assertEquals("k2", properties.single().key)
     }
@@ -81,10 +81,10 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun asBlock_and_dashPathSegment() {
         val fileConfig = resolveFileConfig("features/select/select_blocks.test.cwt")
-        val block = selectScope { fileConfig.values().asBlock().one() }
+        val block = selectConfigScope { fileConfig.values().asBlock().one() }
         Assert.assertNotNull(block)
 
-        val a = selectScope { fileConfig.ofPath("-/a").asProperty().one() }
+        val a = selectConfigScope { fileConfig.ofPath("-/a").asProperty().one() }
         Assert.assertNotNull(a)
         Assert.assertEquals("a", a!!.key)
     }
@@ -92,26 +92,26 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun asBlock_emptyResult() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val block = selectScope { fileConfig.values().asBlock().one() }
+        val block = selectConfigScope { fileConfig.values().asBlock().one() }
         Assert.assertNull(block)
     }
 
     @Test
     fun ofKey_ignoreCase_and_usePattern() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k2 = selectScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
 
-        val k3IgnoreCase = selectScope {
+        val k3IgnoreCase = selectConfigScope {
             k2.properties().ofKey("K3", ignoreCase = true, usePattern = false).all()
         }
         Assert.assertEquals(3, k3IgnoreCase.size)
 
-        val k3CaseSensitive = selectScope {
+        val k3CaseSensitive = selectConfigScope {
             k2.properties().ofKey("K3", ignoreCase = false, usePattern = false).all()
         }
         Assert.assertEquals(0, k3CaseSensitive.size)
 
-        val k3ByPattern = selectScope {
+        val k3ByPattern = selectConfigScope {
             k2.properties().ofKey("k*", ignoreCase = false, usePattern = true).all()
         }
         Assert.assertEquals(3, k3ByPattern.size)
@@ -120,9 +120,9 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofKeys_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k2 = selectScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
 
-        val k3List = selectScope {
+        val k3List = selectConfigScope {
             k2.properties().ofKeys(listOf("k3", "not_exists"), ignoreCase = true, usePattern = false).all()
         }
         Assert.assertEquals(3, k3List.size)
@@ -132,25 +132,25 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     fun ofPath_usePattern_and_emptyPath() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
 
-        val k4ListByPattern = selectScope {
+        val k4ListByPattern = selectConfigScope {
             fileConfig.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = true).asProperty().all()
         }
         Assert.assertEquals(3, k4ListByPattern.size)
         Assert.assertTrue(k4ListByPattern.all { it.key == "k4" })
 
-        val k4ListByLiteral = selectScope {
+        val k4ListByLiteral = selectConfigScope {
             fileConfig.ofPath("k1/*/k3/k4", ignoreCase = false, usePattern = false).all()
         }
         Assert.assertEquals(0, k4ListByLiteral.size)
 
-        val empty = selectScope { fileConfig.ofPath("").all() }
+        val empty = selectConfigScope { fileConfig.ofPath("").all() }
         Assert.assertTrue(empty.isEmpty())
     }
 
     @Test
     fun ofPaths_basic() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val list = selectScope {
+        val list = selectConfigScope {
             fileConfig.ofPaths(listOf("k1/k2/k3/k4", "k1/k2/k3")).asProperty().all()
         }
         val k4Count = list.count { it.key == "k4" }
@@ -162,10 +162,10 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofPath_duplicateKeyOrderIsStable() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k4List = selectScope { fileConfig.ofPath("k1/k2/k3/k4").asProperty().all() }
+        val k4List = selectConfigScope { fileConfig.ofPath("k1/k2/k3/k4").asProperty().all() }
         Assert.assertEquals(3, k4List.size)
 
-        val k3Paths = selectScope {
+        val k3Paths = selectConfigScope {
             k4List.mapNotNull { it.parentConfig.asProperty()?.key }
         }
         Assert.assertEquals(listOf("k3", "k3", "k3"), k3Paths)
@@ -174,7 +174,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofPath_usePattern_notMatchedShouldBeEmpty() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val result = selectScope {
+        val result = selectConfigScope {
             fileConfig.ofPath("k1/*/kx/k4", ignoreCase = false, usePattern = true).all()
         }
         Assert.assertTrue(result.isEmpty())
@@ -183,7 +183,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun ofPaths_shouldIgnoreEmptyOrInvalidPath() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val list = selectScope {
+        val list = selectConfigScope {
             fileConfig.ofPaths(listOf("", "not_exists", "k1/k2/k3/k4"), ignoreCase = false, usePattern = false)
                 .asProperty()
                 .all()
@@ -195,15 +195,15 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun sequenceOfContainers_ofPath_and_ofPaths() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectScope { fileConfig.ofPath("k1").asProperty().one() }!!
-        val k2 = selectScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k2 = selectConfigScope { fileConfig.ofPath("k1/k2").asProperty().one() }!!
 
-        val k4FromContainers = selectScope {
+        val k4FromContainers = selectConfigScope {
             sequenceOf(k1, k2).ofPath("k3/k4").asProperty().all()
         }
         Assert.assertEquals(3, k4FromContainers.size)
 
-        val listFromContainers = selectScope {
+        val listFromContainers = selectConfigScope {
             sequenceOf(k1, k2).ofPaths(listOf("k3", "k3/k4")).asProperty().all()
         }
         Assert.assertEquals(6, listFromContainers.size)
@@ -212,10 +212,10 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     @Test
     fun walkDown_withTraversalParameter() {
         val fileConfig = resolveFileConfig("features/select/select_test_1.test.cwt")
-        val k1 = selectScope { fileConfig.ofPath("k1").asProperty().one() }!!
+        val k1 = selectConfigScope { fileConfig.ofPath("k1").asProperty().one() }!!
 
-        val preOrder = selectScope { k1.walkDown(TreeTraversal.PRE_ORDER_DFS).toList() }
-        val postOrder = selectScope { k1.walkDown(TreeTraversal.POST_ORDER_DFS).toList() }
+        val preOrder = selectConfigScope { k1.walkDown(TreeTraversal.PRE_ORDER_DFS).toList() }
+        val postOrder = selectConfigScope { k1.walkDown(TreeTraversal.POST_ORDER_DFS).toList() }
         Assert.assertEquals(preOrder.size, postOrder.size)
         Assert.assertNotEquals(preOrder.map { it.toString() }, postOrder.map { it.toString() })
     }
@@ -224,22 +224,22 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     fun ofValue_and_ofValues_valueNormalization() {
         val fileConfig = resolveFileConfig("features/select/select_values.test.cwt")
 
-        val stringProp = selectScope { fileConfig.properties().ofKey("string_value").one() }!!
-        val blockProp = selectScope { fileConfig.properties().ofKey("block_value").one() }!!
-        val numberProp = selectScope { fileConfig.properties().ofKey("number_value").one() }!!
-        val booleanProp = selectScope { fileConfig.properties().ofKey("boolean_value").one() }!!
+        val stringProp = selectConfigScope { fileConfig.properties().ofKey("string_value").one() }!!
+        val blockProp = selectConfigScope { fileConfig.properties().ofKey("block_value").one() }!!
+        val numberProp = selectConfigScope { fileConfig.properties().ofKey("number_value").one() }!!
+        val booleanProp = selectConfigScope { fileConfig.properties().ofKey("boolean_value").one() }!!
 
         Assert.assertEquals("Text", stringProp.value)
         Assert.assertEquals("{...}", blockProp.value)
         Assert.assertEquals("1.0", numberProp.value)
         Assert.assertEquals("yes", booleanProp.value)
 
-        val vText = selectScope { fileConfig.properties().ofValue("text", ignoreCase = true).one() }
+        val vText = selectConfigScope { fileConfig.properties().ofValue("text", ignoreCase = true).one() }
         Assert.assertNotNull(vText)
-        val vTextSensitive = selectScope { fileConfig.properties().ofValue("text", ignoreCase = false).one() }
+        val vTextSensitive = selectConfigScope { fileConfig.properties().ofValue("text", ignoreCase = false).one() }
         Assert.assertNull(vTextSensitive)
 
-        val list = selectScope {
+        val list = selectConfigScope {
             fileConfig.properties().ofValues(listOf("Text", "{...}", "1.0", "yes"), ignoreCase = true).all()
         }
         Assert.assertEquals(4, list.size)

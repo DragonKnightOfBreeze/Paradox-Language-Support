@@ -1,11 +1,8 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.lang.LighterAST
-import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
@@ -27,10 +24,6 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -42,16 +35,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpre
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.parentBlock
-import icu.windea.pls.script.psi.parentProperty
-import icu.windea.pls.script.psi.stringValue
 
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
@@ -146,76 +130,6 @@ object ParadoxInlineScriptManager {
             processor(file)
             true
         }
-    }
-
-    /**
-     * 从内联脚本用法对应的 PSI，得到内联脚本表达式对应的 PSI。
-     *
-     * - `inline_script = "some/expression"` -> `"some/expression"`
-     * - `inline_script = { script = "some/expression" }` -> `"some/expression"`
-     */
-    fun getExpressionElement(usageElement: ParadoxScriptProperty): ParadoxScriptValue? {
-        // hardcoded
-        if (!isMatched(usageElement.name)) return null // NOTE 2.1.0 这里目前不验证游戏类型
-        val v = usageElement.propertyValue ?: return null
-        val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
-        if (v1 != null) return v1
-        val v2 = v.select { property("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
-        if (v2 != null) return v2
-        return null
-    }
-
-    /**
-     * 从内联脚本表达式对应的 PSI，得到内联脚本用法对应的 PSI。
-     *
-     * - `"some/expression"` -> `inline_script = "some/expression"`
-     * - `"some/expression"` -> `inline_script = { script = "some/expression" }`
-     */
-    fun getUsageElement(expressionElement: PsiElement): ParadoxScriptProperty? {
-        // hardcoded
-        if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
-        val p1 = expressionElement.parentProperty ?: return null
-        if (isMatched(p1.name)) return p1 // NOTE 2.1.0 这里目前不验证游戏类型
-        if (p1.name.equals("script", true)) {
-            val p2 = p1.parentBlock?.parentProperty ?: return null
-            if (isMatched(p2.name)) return p2 // NOTE 2.1.0 这里目前不验证游戏类型
-            return null
-        }
-        return null
-    }
-
-    /**
-     * 从内联脚本用法对应的 PSI，得到对应的内联脚本表达式。
-     *
-     * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否尝试解析。
-     */
-    fun getInlineScriptExpressionFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): String? {
-        val expressionElement = getExpressionElement(usageElement)?.let { if (resolve) it.resolved() else it }
-        if (expressionElement !is ParadoxScriptString) return null
-        return expressionElement.stringValue.orNull()
-    }
-
-    /**
-     * 从内联脚本用法对应的 Lighter AST，得到对应的内联脚本表达式。
-     */
-    fun getInlineScriptExpressionFromUsageElement(tree: LighterAST, node: LighterASTNode): String? {
-        val v1 = ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
-        if (v1 != null) return v1
-        val v2 = ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, "script")
-            ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
-        if (v2 != null) return v2
-        return null
-    }
-
-    /**
-     * 从内联脚本用法对应的 PSI，得到对应的传入参数的键值映射。
-     *
-     * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
-     */
-    @Suppress("unused")
-    fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
-        val v = usageElement.block ?: return emptyMap()
-        return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
     }
 
     /**

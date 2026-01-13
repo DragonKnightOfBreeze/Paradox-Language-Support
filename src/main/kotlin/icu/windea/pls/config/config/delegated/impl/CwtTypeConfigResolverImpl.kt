@@ -48,18 +48,18 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val baseType = propGroup.getOne("base_type")?.stringValue
         val nameField = propGroup.getOne("name_field")?.stringValue
-        val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
         val nameFromFile = propGroup.getOne("name_from_file")?.booleanValue ?: false
         val typePerFile = propGroup.getOne("type_per_file")?.booleanValue ?: false
-        val unique = propGroup.getOne("unique")?.booleanValue ?: false
-        val severity = propGroup.getOne("severity")?.stringValue
         val skipRootKey = propGroup.getAll("skip_root_key").map { prop ->
             // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
             prop.stringValue?.let { listOf(it) } ?: prop.values?.mapNotNull { it.stringValue }?.optimized().orEmpty()
         }
+        val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
         val typeKeyFilter = config.optionData.typeKeyFilter
         val typeKeyRegex = config.optionData.typeKeyRegex
         val startsWith = config.optionData.startsWith
+        val unique = propGroup.getOne("unique")?.booleanValue ?: false
+        val severity = propGroup.getOne("severity")?.stringValue
         val graphRelatedTypes = config.optionData.graphRelatedTypes
         val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
@@ -69,9 +69,10 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
         return CwtTypeConfigImpl(
             config, name, baseType,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
-            nameField, typeKeyPrefix, nameFromFile, typePerFile, unique, severity,
-            skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
-            graphRelatedTypes, subtypes, localisation, images
+            nameField, nameFromFile, typePerFile,
+            skipRootKey, typeKeyPrefix, typeKeyFilter, typeKeyRegex, startsWith,
+            unique, severity, graphRelatedTypes,
+            subtypes, localisation, images
         )
     }
 }
@@ -86,15 +87,15 @@ private class CwtTypeConfigImpl(
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
     override val nameField: String?,
-    override val typeKeyPrefix: String?,
     override val nameFromFile: Boolean,
     override val typePerFile: Boolean,
-    override val unique: Boolean,
-    override val severity: String?,
     override val skipRootKey: List<List<String>>,
+    override val typeKeyPrefix: String?,
     override val typeKeyFilter: ReversibleValue<Set<String>>?,
     override val typeKeyRegex: Regex?,
     override val startsWith: String?,
+    override val unique: Boolean,
+    override val severity: String?,
     override val graphRelatedTypes: Set<String>?,
     override val subtypes: Map<String, CwtSubtypeConfig>,
     override val localisation: CwtTypeLocalisationConfig?,
@@ -102,9 +103,9 @@ private class CwtTypeConfigImpl(
 ) : UserDataHolderBase(), CwtTypeConfig {
     override val possibleTypeKeys: Set<String> by lazy {
         caseInsensitiveStringSet().apply {
-                typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
-                subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
-            }.optimized()
+            typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
+            subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
+        }.optimized()
     }
 
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {

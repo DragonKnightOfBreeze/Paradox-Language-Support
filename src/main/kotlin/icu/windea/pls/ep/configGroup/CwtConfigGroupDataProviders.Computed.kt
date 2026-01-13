@@ -16,7 +16,7 @@ import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.select.asProperty
 import icu.windea.pls.config.select.ofPaths
 import icu.windea.pls.config.select.one
-import icu.windea.pls.config.select.selectScope
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
@@ -99,7 +99,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
                 val paths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey).path }
                 val rootConfig = baseDeclarationConfig.configForDeclaration
-                val config = selectScope { rootConfig.ofPaths(paths, ignoreCase = true).asProperty().one() } ?: continue
+                val config = selectConfigScope { rootConfig.ofPaths(paths, ignoreCase = true).asProperty().one() } ?: continue
                 // read action is required here (for logging)
                 val declarationConfig = readAction { CwtDeclarationConfig.resolve(config, name = typeName) } ?: continue
                 initializer.declarations[typeName] = declarationConfig

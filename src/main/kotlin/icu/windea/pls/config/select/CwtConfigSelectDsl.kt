@@ -25,15 +25,15 @@ class CwtConfigSelectContext : UserDataHolderBase() {
 }
 
 @CwtConfigSelectDsl
-fun <R> selectScope(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) () -> R): R {
+fun <R> selectConfigScope(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) () -> R): R {
     return block.invoke(scope)
 }
 
 // NOTE 2.1.1 cannot be inline or runtime ClassCastException
-@CwtConfigSelectDsl
-fun <T : CwtMemberConfig<*>, R> T.select(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) T.() -> R): R {
-    return block.invoke(scope, this@select)
-}
+// @CwtConfigSelectDsl
+// fun <T : CwtMemberConfig<*>, R> T.selectConfig(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) T.() -> R): R {
+//     return block.invoke(scope, this@selectConfig)
+// }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl

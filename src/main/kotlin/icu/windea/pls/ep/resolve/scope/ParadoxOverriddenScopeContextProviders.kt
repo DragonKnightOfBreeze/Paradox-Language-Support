@@ -11,14 +11,14 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.stringValue
 
 class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
     // 重载 `switch = {...}` 中对应的规则为 `scalar` 的属性以及属性 `default` 对应的作用域上下文
@@ -36,7 +36,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
             .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断目标属性的 `scopeContext`
-        val triggerProperty = containerProperty.select { property(inline = true) { it in Constants.TRIGGER_KEYS } } ?: return null
+        val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKeys(Constants.TRIGGER_KEYS).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
@@ -48,8 +48,8 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
     object Constants {
         const val CASE_KEY = "scalar"
         const val DEFAULT_KEY = "default"
-        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+        val TRIGGER_KEYS = listOf("trigger", "on_trigger")
+        val CONTEXT_NAMES = listOf("switch", "inverted_switch")
     }
 }
 
@@ -71,7 +71,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             ?: return null
         if (finalConfig.key == Constants.TRIGGER_KEY) {
             // 基于 `trigger_scope` 的值得到最终的 `scopeContext`，然后推断属性 `trigger` 的值的 `scopeContext`
-            val triggerScopeProperty = containerProperty.select { property(Constants.TRIGGER_SCOPE_KEY, inline = true) } ?: return null
+            val triggerScopeProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.TRIGGER_SCOPE_KEY).one() } ?: return null
             val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(triggerScopeProperty) ?: return null
             val pv = triggerScopeProperty.propertyValue ?: return null
             val expressionString = pv.value
@@ -80,7 +80,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             return ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
         }
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断属性 `parameters` 的 `scopeContext`
-        val triggerProperty = containerProperty.select { property(Constants.TRIGGER_KEY, inline = true) } ?: return null
+        val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.TRIGGER_KEY).one() } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = finalConfig.configGroup
@@ -93,6 +93,6 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         const val TRIGGER_KEY = "trigger"
         const val TRIGGER_SCOPE_KEY = "trigger_scope"
         const val PARAMETERS_KEY = "parameters"
-        val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
+        val CONTEXT_NAMES = listOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 }

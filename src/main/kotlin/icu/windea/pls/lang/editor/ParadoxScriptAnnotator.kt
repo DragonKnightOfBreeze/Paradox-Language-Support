@@ -9,14 +9,14 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.select.property
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -32,7 +32,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
-import icu.windea.pls.script.psi.propertyValue
 
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -87,10 +86,9 @@ class ParadoxScriptAnnotator : Annotator {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY).create()
         }
         val nameField = definitionInfo.typeConfig.nameField
-        if (nameField != null) {
+        if (nameField.isNotNullOrEmpty()) {
             // 如果存在，高亮定义名对应的字符串（可能还有其他高亮）
-            val propertyElement = element.select { property(nameField) } // 不处理内联的情况
-            val nameElement = propertyElement?.propertyValue<ParadoxScriptString>()
+            val nameElement = selectScope { element.nameFieldElement(nameField) }
             if (nameElement != null) {
                 val nameString = definitionInfo.name.escapeXml().or.anonymous()
                 val typesString = definitionInfo.typesText

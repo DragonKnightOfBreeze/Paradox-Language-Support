@@ -16,6 +16,8 @@ import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.model.paths.CwtConfigPath
 
+// region Walks
+
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtMemberConfig<*>.walkUp(): Sequence<CwtMemberConfig<*>> {
@@ -27,6 +29,10 @@ context(scope: CwtConfigSelectScope)
 fun CwtMemberContainerConfig<*>.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS): Sequence<CwtMemberConfig<*>> {
     return generateSequenceFromSeeds(traversal, configs) { it.configs.orEmpty() }
 }
+
+// endregion
+
+// region Casts
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
@@ -64,30 +70,34 @@ fun Sequence<CwtMemberConfig<*>>.asBlock(): Sequence<CwtValueConfig> {
     return filter { it.configs != null }.filterIsInstance<CwtValueConfig>()
 }
 
+// endregion
+
+// region Queries
+
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtPropertyConfig.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig? {
-    if (key.isEmpty()) return this
+    if (key.isEmpty()) return null
     return takeIf { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtPropertyConfig>.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig> {
-    if (key.isEmpty()) return this
+    if (key.isEmpty()) return emptySequence()
     return filter { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtPropertyConfig.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig? {
-    return takeIf { keys.any { key -> key.isEmpty() || PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
+    return takeIf { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtPropertyConfig>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig> {
-    return filter { keys.any { key -> key.isEmpty() || PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
+    return filter { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
 }
 
 context(scope: CwtConfigSelectScope)
@@ -145,10 +155,7 @@ fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ign
 context(scope: CwtConfigSelectScope)
 private fun CwtMemberContainerConfig<*>.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
     ProgressManager.checkCanceled()
-    if (path.isEmpty()) {
-        if (this is CwtMemberConfig<*>) return sequenceOf(this)
-        throw UnsupportedOperationException()
-    }
+    if (path.isEmpty()) return emptySequence()
     var current: Sequence<CwtMemberConfig<*>>? = null
     val expect = CwtConfigPath.resolve(path)
     for (subPath in expect) {
@@ -168,3 +175,4 @@ private fun CwtMemberContainerConfig<*>.ofPathInternal(path: String, ignoreCase:
     return current.orEmpty()
 }
 
+// endregion

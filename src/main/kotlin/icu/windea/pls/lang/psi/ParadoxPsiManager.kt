@@ -31,7 +31,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
@@ -286,7 +286,7 @@ object ParadoxPsiManager {
         if (element !is ParadoxScriptValue) return
 
         var newText = declaration.text.trim()
-        val usageElement = ParadoxInlineScriptManager.getUsageElement(element) ?: return
+        val usageElement = ParadoxInlineScriptService.getUsageElement(element) ?: return
         val valueElement = usageElement.propertyValue?.resolved() ?: return
         when (valueElement) {
             is ParadoxScriptString -> pass()

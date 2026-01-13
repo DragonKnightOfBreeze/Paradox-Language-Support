@@ -12,6 +12,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -33,7 +34,7 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
-        val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element) ?: return
+        val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element) ?: return
         val icon = PlsIcons.Gutter.InlineScripts
         val prefix = PlsStrings.inlineScriptPrefix
         val tooltip = "$prefix <b>${expression.escapeXml()}"
