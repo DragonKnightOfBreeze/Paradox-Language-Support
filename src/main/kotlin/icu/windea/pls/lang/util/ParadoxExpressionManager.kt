@@ -37,7 +37,7 @@ import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolved
+import icu.windea.pls.config.select.resolved
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -47,7 +47,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
@@ -78,8 +77,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.select.conditional
-import icu.windea.pls.lang.psi.select.inline
 import icu.windea.pls.lang.psi.select.members
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.psi.select.*
@@ -328,7 +325,7 @@ object ParadoxExpressionManager {
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
             val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
-            val elementToMatch = memberElement.select { parentByPathOld(pathToMatch.path) }?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
+            val elementToMatch = memberElement.select { parentOfPath(pathToMatch.path) }?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null

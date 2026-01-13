@@ -170,7 +170,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parentOld(fromParentBlock = true)?.propertyOld("scopes") }
+        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }
@@ -237,7 +237,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
         if (scopesConfig == null) return -1
-        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parentOld(fromParentBlock = true)?.propertyOld("scopes") }
+        val scopesElement = element.takeIf { it is ParadoxScriptValue }?.select { parent(fromParentBlock = true)?.property("scopes") }
         if (scopesElement == null) return -1
         return scopesElement.startOffset
     }

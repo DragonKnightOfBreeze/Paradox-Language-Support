@@ -130,7 +130,7 @@ object ParadoxScriptPsiImplUtil {
         if (definitionInfo == null) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            val nameProperty = element.select { propertyOld(nameField) } // 不处理内联的情况
+            val nameProperty = element.select { property(nameField) } // 不处理内联的情况
             if (nameProperty != null) {
                 val nameElement = nameProperty.propertyValue<ParadoxScriptString>()
                 nameElement?.setValue(name)

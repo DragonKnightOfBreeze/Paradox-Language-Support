@@ -21,7 +21,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.resolveValue
+import icu.windea.pls.lang.psi.select.resolved
 
 object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
@@ -58,12 +58,12 @@ object ParadoxDefineManager {
     fun getDefineValue(defineInfo: ParadoxDefineIndexInfo, project: Project): Any? {
         val defineProperty = getDefineElement(defineInfo, project) ?: return null
         val definePropertyValue = defineProperty.propertyValue ?: return null
-        return definePropertyValue.resolveValue()
+        return definePropertyValue.resolved()
     }
 
     fun getDefineValue(define: ParadoxScriptProperty): Any? {
         val definePropertyValue = define.propertyValue ?: return null
-        return definePropertyValue.resolveValue()
+        return definePropertyValue.resolved()
     }
 
     fun isDefineFile(file: VirtualFile): Boolean {

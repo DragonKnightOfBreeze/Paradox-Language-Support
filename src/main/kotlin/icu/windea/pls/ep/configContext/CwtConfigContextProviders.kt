@@ -21,8 +21,9 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
-import icu.windea.pls.lang.psi.select.parentDefinitionOld
-import icu.windea.pls.lang.psi.select.parentDefinitionInjectionOld
+import icu.windea.pls.lang.psi.select.parentDefinition
+import icu.windea.pls.lang.psi.select.parentDefinition
+import icu.windea.pls.lang.psi.select.parentDefinitionInjection
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -77,7 +78,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
-        val definition = element.select { parentDefinitionOld() } ?: return null
+        val definition = element.select { parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val definitionMemberPath = definitionInfo.memberPath
         val memberPathFromRoot = definitionMemberPath.relativeTo(memberPath) ?: return null
@@ -306,7 +307,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val gameType = fileInfo.rootInfo.gameType
         if (memberPath.isEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return null // 忽略游戏类型不支持的情况
-        val definitionInjection = element.select { parentDefinitionInjectionOld() } ?: return null
+        val definitionInjection = element.select { parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
         val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(1)) // 去除第一个子路径
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)

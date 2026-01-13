@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.value
+import icu.windea.pls.lang.psi.select.value
 
 /**
  * 用于将脚本成员结构渲染为纯文本。

@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.select
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberContainerConfig
@@ -26,8 +27,8 @@ fun CwtMemberContainerConfig<*>.walkDown(traversal: TreeTraversal = TreeTraversa
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun CwtMemberConfig<*>.asProperty(): CwtPropertyConfig? {
-    return this.castOrNull()
+fun CwtMemberConfig<*>?.asProperty(): CwtPropertyConfig? {
+    return this?.castOrNull()
 }
 
 context(scope: CwtConfigSelectScope)
@@ -38,8 +39,8 @@ fun Sequence<CwtMemberConfig<*>>.asProperty(): Sequence<CwtPropertyConfig> {
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun CwtMemberConfig<*>.asValue(): CwtValueConfig? {
-    return this.castOrNull()
+fun CwtMemberConfig<*>?.asValue(): CwtValueConfig? {
+    return this?.castOrNull()
 }
 
 context(scope: CwtConfigSelectScope)
@@ -50,8 +51,8 @@ fun Sequence<CwtMemberConfig<*>>.asValue(): Sequence<CwtValueConfig> {
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun CwtMemberConfig<*>.asBlock(): CwtValueConfig? {
-    return takeIf { it.configs != null }?.castOrNull()
+fun CwtMemberConfig<*>?.asBlock(): CwtValueConfig? {
+    return this?.takeIf { it.configs != null }?.castOrNull()
 }
 
 context(scope: CwtConfigSelectScope)
@@ -63,59 +64,92 @@ fun Sequence<CwtMemberConfig<*>>.asBlock(): Sequence<CwtValueConfig> {
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtPropertyConfig.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig? {
+    if (key.isEmpty()) return this
     return takeIf { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtPropertyConfig>.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig> {
+    if (key.isEmpty()) return this
     return filter { PathMatcher.matches(it.key, key, ignoreCase, usePattern) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtPropertyConfig.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): CwtPropertyConfig? {
-    return takeIf { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
+    return takeIf { keys.any { key -> key.isEmpty() || PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun Sequence<CwtPropertyConfig>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtPropertyConfig> {
-    return filter { keys.any { key -> PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
+    return filter { keys.any { key -> key.isEmpty() || PathMatcher.matches(it.key, key, ignoreCase, usePattern) } }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun <T: CwtMemberConfig<*>> T.ofValue(value: String, ignoreCase: Boolean = true): T? {
-    return takeIf { it.value.equals(value, ignoreCase) }
+fun <T : CwtMemberConfig<*>> T.ofValue(value: String, ignoreCase: Boolean = true): T? {
+    return takeIf { selectValue().equals(value, ignoreCase) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun <T: CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { it.value.equals(value, ignoreCase) }
+fun <T : CwtMemberConfig<*>> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T> {
+    return filter { it.selectValue().equals(value, ignoreCase) }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun <T: CwtMemberConfig<*>> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T? {
-    return takeIf { values.any { value -> it.value.equals(value, ignoreCase) } }
+fun <T : CwtMemberConfig<*>> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T? {
+    return takeIf { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-fun <T: CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { values.any { value -> it.value.equals(value, ignoreCase) } }
+fun <T : CwtMemberConfig<*>> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T> {
+    return filter { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 /** @see CwtConfigPath */
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
 fun CwtMemberContainerConfig<*>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    val subPaths = CwtConfigPath.resolve(path).subPaths
-    if (subPaths.isEmpty()) return emptySequence()
+    return ofPathInternal(path, ignoreCase, usePattern)
+}
+
+/** @see CwtConfigPath */
+context(scope: CwtConfigSelectScope)
+@CwtConfigSelectDsl
+fun Sequence<CwtMemberContainerConfig<*>>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
+    return flatMap { it.ofPathInternal(path, ignoreCase, usePattern) }
+}
+
+/** @see CwtConfigPath */
+context(scope: CwtConfigSelectScope)
+@CwtConfigSelectDsl
+fun CwtMemberContainerConfig<*>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
+    return paths.asSequence().flatMap { path -> ofPathInternal(path, ignoreCase, usePattern) }
+}
+
+/** @see CwtConfigPath */
+context(scope: CwtConfigSelectScope)
+@CwtConfigSelectDsl
+fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
+    return flatMap { paths.asSequence().flatMap { path -> it.ofPathInternal(path, ignoreCase, usePattern) } }
+}
+
+context(scope: CwtConfigSelectScope)
+private fun CwtMemberContainerConfig<*>.ofPathInternal(path: String, ignoreCase: Boolean, usePattern: Boolean): Sequence<CwtMemberConfig<*>> {
+    ProgressManager.checkCanceled()
+    if (path.isEmpty()) {
+        if (this is CwtMemberConfig<*>) return sequenceOf(this)
+        throw UnsupportedOperationException()
+    }
     var current: Sequence<CwtMemberConfig<*>>? = null
-    for (subPath in subPaths) {
+    val expect = CwtConfigPath.resolve(path)
+    for (subPath in expect) {
+        ProgressManager.checkCanceled()
         if (current == null) {
             current = when (subPath) {
                 "-" -> values()
@@ -131,23 +165,3 @@ fun CwtMemberContainerConfig<*>.ofPath(path: String, ignoreCase: Boolean = true,
     return current.orEmpty()
 }
 
-/** @see CwtConfigPath */
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun Sequence<CwtMemberContainerConfig<*>>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return flatMap { it.ofPath(path, ignoreCase, usePattern) }
-}
-
-/** @see CwtConfigPath */
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun CwtMemberContainerConfig<*>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return paths.asSequence().flatMap { path -> ofPath(path, ignoreCase, usePattern) }
-}
-
-/** @see CwtConfigPath */
-context(scope: CwtConfigSelectScope)
-@CwtConfigSelectDsl
-fun Sequence<CwtMemberContainerConfig<*>>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<CwtMemberConfig<*>> {
-    return flatMap { it.ofPaths(paths, ignoreCase, usePattern) }
-}

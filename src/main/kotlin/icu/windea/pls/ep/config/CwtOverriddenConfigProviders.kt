@@ -16,13 +16,13 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.config.CwtTriggerWithParametersAwareOverriddenConfigProvider.Constants.CONTEXT_NAME_1
-import icu.windea.pls.lang.psi.select.propertyOld
+import icu.windea.pls.lang.psi.select.property
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.stringValue
+import icu.windea.pls.lang.psi.select.stringValue
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     // 重载 `switch = {...}` 中匹配 `scalar` 的属性的键对应的规则
@@ -39,7 +39,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in Constants.TRIGGER_KEYS && it.value == Constants.TRIGGER_VALUE } ?: return emptyList()
         val triggerConfigKey = triggerConfig.castOrNull<CwtPropertyConfig>()?.key ?: return emptyList()
         val triggerProperty = contextElement.parentOfType<ParadoxScriptBlock>(withSelf = false)
-            ?.select { propertyOld(triggerConfigKey, inline = true) }
+            ?.select { property(triggerConfigKey, inline = true) }
             ?: return emptyList()
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return emptyList()
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
@@ -78,7 +78,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
             .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return emptyList()
-        val triggerProperty = contextProperty.select { propertyOld(Constants.TRIGGER_KEY, inline = true) } ?: return emptyList()
+        val triggerProperty = contextProperty.select { property(Constants.TRIGGER_KEY, inline = true) } ?: return emptyList()
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return emptyList()
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return emptyList() // must be a predefined trigger
         val configGroup = config.configGroup

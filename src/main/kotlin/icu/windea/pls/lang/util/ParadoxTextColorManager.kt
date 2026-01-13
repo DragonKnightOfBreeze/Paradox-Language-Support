@@ -27,7 +27,7 @@ import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.intValue
+import icu.windea.pls.lang.psi.select.intValue
 
 object ParadoxTextColorManager {
     object Keys : KeyRegistry() {

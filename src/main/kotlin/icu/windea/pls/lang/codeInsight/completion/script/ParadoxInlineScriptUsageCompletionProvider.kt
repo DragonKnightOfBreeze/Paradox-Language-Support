@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.resolved
+import icu.windea.pls.lang.psi.select.resolved
 
 /**
  * 提供内联脚本用法的代码补全。

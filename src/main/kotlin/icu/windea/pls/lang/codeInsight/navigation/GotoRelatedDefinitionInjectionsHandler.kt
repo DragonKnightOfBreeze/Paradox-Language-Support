@@ -15,7 +15,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.select.parentDefinitionOld
+import icu.windea.pls.lang.psi.select.parentDefinition
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -37,7 +37,7 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         if (!element.isDefinitionTypeKeyOrName()) return null
-        val definition = element.select { parentDefinitionOld() } ?: return null
+        val definition = element.select { parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
         val targets = mutableListOf<PsiElement>()

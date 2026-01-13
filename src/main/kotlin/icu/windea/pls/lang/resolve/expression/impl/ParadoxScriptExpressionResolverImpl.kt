@@ -6,6 +6,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchUtil
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
@@ -79,7 +80,7 @@ private class ParadoxScriptExpressionLazyImpl(
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
         if (ParadoxMatchUtil.skipIndex(matchOptions)) return@lazy null
-        element.resolved()?.scriptedVariableValue
+        element.resolved()
     }
 
     override val value: String get() = valueElement?.value ?: PlsStrings.unknown

@@ -64,7 +64,7 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
 }
 
 /**
- * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的CWT规则。
+ * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: Int = ParadoxMatchOptions.Default): Boolean {
     return ParadoxExpressionManager.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
@@ -104,114 +104,16 @@ fun ParadoxScriptValue.isDefinitionName(): Boolean {
 
 // endregion
 
-// region Value Manipulations
+// region Value Accessors
 
-val ParadoxScriptBoolean.booleanValue: Boolean
-    get() = this.value.toBooleanYesNo()
+val ParadoxScriptBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
 
-val ParadoxScriptInt.intValue: Int
-    get() = this.value.toIntOrNull() ?: 0
+val ParadoxScriptInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
 
-val ParadoxScriptFloat.floatValue: Float
-    get() = this.value.toFloatOrNull() ?: 0f
+val ParadoxScriptFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
 
-val ParadoxScriptString.stringValue: String
-    get() = this.value
+val ParadoxScriptString.stringValue: String get() = this.value
 
-val ParadoxScriptColor.colorValue: Color?
-    get() = this.color
-
-fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return resolved.value
-}
-
-fun ParadoxScriptExpressionElement.booleanValue(valid: Boolean = false): Boolean? {
-    if (this !is ParadoxScriptValue) return null
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptBoolean -> resolved.booleanValue
-        else -> null
-    }
-}
-
-fun ParadoxScriptExpressionElement.intValue(valid: Boolean = false): Int? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptPropertyKey -> resolved.value.toIntOrNull()
-        is ParadoxScriptInt -> resolved.intValue
-        is ParadoxScriptFloat -> resolved.floatValue.toInt()
-        is ParadoxScriptString -> resolved.value.toIntOrNull()
-        else -> null
-    }
-}
-
-fun ParadoxScriptExpressionElement.floatValue(valid: Boolean = false): Float? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptPropertyKey -> resolved.value.toFloatOrNull()
-        is ParadoxScriptInt -> resolved.intValue.toFloat()
-        is ParadoxScriptFloat -> resolved.floatValue
-        is ParadoxScriptString -> resolved.value.toFloatOrNull()
-        else -> null
-    }
-}
-
-fun ParadoxScriptExpressionElement.stringValue(valid: Boolean = false): String? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptPropertyKey -> resolved.value
-        is ParadoxScriptString -> resolved.value
-        is ParadoxScriptInt -> resolved.value
-        is ParadoxScriptFloat -> resolved.value
-        else -> null
-    }
-}
-
-fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
-    if (valid && !this.isValidExpression()) return null
-    return when (this) {
-        is ParadoxScriptColor -> this.color
-        else -> null
-    }
-}
-
-fun ParadoxScriptValue.resolveValue(valid: Boolean = false): Any? {
-    if (valid && !this.isValidExpression()) return null
-    return when (this) {
-        is ParadoxScriptBoolean -> this.booleanValue
-        is ParadoxScriptInt -> this.intValue
-        is ParadoxScriptFloat -> this.floatValue
-        is ParadoxScriptString -> this.stringValue
-        is ParadoxScriptColor -> this.color
-        is ParadoxScriptScriptedVariableReference -> this.resolved()?.scriptedVariableValue?.resolveValue()
-        is ParadoxScriptBlock -> null // unsupported
-        else -> null // unsupported
-    }
-}
-
-fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
-    return when (this) {
-        is ParadoxScriptScriptedVariableReference -> this.resolved()?.scriptedVariableValue
-        else -> this
-    }
-}
-
-// fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
-//    if (valid && !this.isValidExpression()) return null
-//    val resolved = this.resolved() ?: return null
-//    return when (resolved) {
-//        is ParadoxScriptPropertyKey -> resolved.text
-//        is ParadoxScriptString -> resolved.text
-//        is ParadoxScriptInt -> resolved.value
-//        is ParadoxScriptFloat -> resolved.value
-//        else -> null
-//    }
-// }
+val ParadoxScriptColor.colorValue: Color? get() = this.color
 
 // endregion

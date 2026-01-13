@@ -27,7 +27,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) return@f
-            val nameElement = if (nameField == null) element.propertyKey else element.select { propertyOld(nameField) }?.propertyValue
+            val nameElement = if (nameField == null) element.propertyKey else element.select { property(nameField) }?.propertyValue
             if (nameElement == null) return@f // 忽略
             holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
         }

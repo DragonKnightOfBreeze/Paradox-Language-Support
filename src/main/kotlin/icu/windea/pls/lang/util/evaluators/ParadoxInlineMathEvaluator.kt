@@ -11,6 +11,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
@@ -47,12 +48,12 @@ class ParadoxInlineMathEvaluator {
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull() ?: return // = expression
-                        val resolvedValue = when {
+                        val resolved = when {
                             DumbService.isDumb(tokenElement.project) -> null
-                            else -> element.resolved()?.scriptedVariableValue
+                            else -> element.resolved()
                         }
-                        val defaultValue = resolvedValue?.text.orEmpty()
-                        result[expression] = Argument(expression, id, defaultValue, resolvedValue)
+                        val defaultValue = resolved?.text.orEmpty()
+                        result[expression] = Argument(expression, id, defaultValue, resolved)
                         // if (id != expression) result[id] = Argument(id, id, defaultValue)
                     }
                 }

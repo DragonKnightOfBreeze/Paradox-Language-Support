@@ -5,6 +5,7 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -20,6 +21,7 @@ import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -51,6 +53,17 @@ object ParadoxPsiMatcher {
             returns(true) implies (element is ParadoxScriptDefinitionElement)
         }
         return element is ParadoxScriptDefinitionElement && element.definitionInfo != null // 定义名可以为空（即匿名）
+    }
+
+    /**
+     * 是否是（可以获取定义注入信息的）定义注入。
+     */
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinitionInjection(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxScriptProperty && element.parent is ParadoxScriptRootBlock && element.definitionInjectionInfo != null
     }
 
     /**

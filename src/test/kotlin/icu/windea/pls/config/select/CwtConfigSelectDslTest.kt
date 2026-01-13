@@ -163,7 +163,7 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
         Assert.assertEquals(3, k4List.size)
 
         val k3Paths = selectScope {
-            k4List.mapNotNull { it.parentConfig?.asProperty()?.key }
+            k4List.mapNotNull { it.parentConfig.asProperty()?.key }
         }
         Assert.assertEquals(listOf("k3", "k3", "k3"), k3Paths)
     }

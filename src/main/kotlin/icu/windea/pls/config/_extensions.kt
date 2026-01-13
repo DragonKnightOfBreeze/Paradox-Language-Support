@@ -4,10 +4,7 @@ package icu.windea.pls.config
 
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
-import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionService
@@ -17,28 +14,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.cwt.psi.CwtMember
-
-/**
- * 解析为被内联的CWT规则，或者返回自身。
- */
-@Suppress("UNCHECKED_CAST")
-fun <T : CwtConfig<*>> T.resolved(): T {
-    return when {
-        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config ?: this
-        else -> this
-    } as T
-}
-
-/**
- * 解析为被内联的规则，或者返回null。
- */
-@Suppress("UNCHECKED_CAST")
-fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
-    return when {
-        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config
-        else -> this
-    } as? T
-}
 
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 

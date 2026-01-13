@@ -12,7 +12,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.select.parentDefinitionOld
+import icu.windea.pls.lang.psi.select.parentDefinition
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsSettings
@@ -71,7 +71,7 @@ class ParadoxCallerHierarchyTreeStructure(
         when (referenceElement.language) {
             is ParadoxScriptLanguage -> {
                 if (!settings.showDefinitionsInCallHierarchy) return // 不显示
-                val definition = referenceElement.select { parentDefinitionOld() } ?: return
+                val definition = referenceElement.select { parentDefinition() } ?: return
                 val definitionInfo = definition.definitionInfo ?: return
                 ProgressManager.checkCanceled()
                 if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return // 不显示

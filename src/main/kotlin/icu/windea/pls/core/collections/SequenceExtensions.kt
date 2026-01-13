@@ -3,12 +3,12 @@
 package icu.windea.pls.core.collections
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为序列。 */
-inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> Boolean): Sequence<R> {
+inline fun <reified R> Sequence<*>.filterIsInstance(crossinline predicate: (R) -> Boolean): Sequence<R> {
     return filter { it is R && predicate(it) } as Sequence<R>
 }
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */
-inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, noinline predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, crossinline predicate: (R) -> Boolean): C {
     for (element in this) if (element is R && predicate(element)) destination.add(element)
     return destination
 }

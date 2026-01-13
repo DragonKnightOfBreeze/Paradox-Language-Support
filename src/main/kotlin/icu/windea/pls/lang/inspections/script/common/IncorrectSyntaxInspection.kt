@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -62,8 +63,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
                     element is ParadoxScriptFloat -> true
                     element is ParadoxScriptScriptedVariableReference -> {
                         val resolved = element.resolved() ?: return true
-                        val resolvedValueElement = resolved.scriptedVariableValue ?: return true
-                        canResolveToNumber(resolvedValueElement)
+                        canResolveToNumber(resolved)
                     }
                     element is ParadoxScriptString -> true // scalar, parametric
                     element is ParadoxScriptInlineMath -> true

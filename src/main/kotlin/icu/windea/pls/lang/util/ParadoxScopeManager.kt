@@ -16,8 +16,8 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.resolved
-import icu.windea.pls.config.resolvedOrNull
+import icu.windea.pls.config.select.resolved
+import icu.windea.pls.config.select.resolvedOrNull
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.orNull

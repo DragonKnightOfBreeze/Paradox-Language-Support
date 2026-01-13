@@ -581,7 +581,7 @@ inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement)
 }
 
 @JvmName("findChildrenByType")
-inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, noinline predicate: (T) -> Boolean = { true }): List<T> {
+inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, crossinline predicate: (T) -> Boolean = { true }): List<T> {
     return children(forward).filterIsInstance<T>(predicate).toList()
 }
 

@@ -14,7 +14,7 @@ import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.select.parentDefinitionOld
+import icu.windea.pls.lang.psi.select.parentDefinition
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -118,13 +118,13 @@ object ParadoxPsiFileManager {
             if (BitUtil.isSet(options, DefinitionOptions.BY_TYPE_KEY)) {
                 val element = expressionElement
                 if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) {
-                    return element.select { parentDefinitionOld() }
+                    return element.select { parentDefinition() }
                 }
             }
             if (BitUtil.isSet(options, DefinitionOptions.BY_NAME)) {
                 val element = expressionElement
                 if (element is ParadoxScriptValue && element.isDefinitionName()) {
-                    return element.select { parentDefinitionOld() }
+                    return element.select { parentDefinition() }
                 }
             }
         }

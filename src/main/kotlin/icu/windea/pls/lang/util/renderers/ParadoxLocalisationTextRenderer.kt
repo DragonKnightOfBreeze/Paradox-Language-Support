@@ -3,8 +3,8 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.resolveLocalisation
-import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.psi.select.resolveLocalisation
+import icu.windea.pls.lang.psi.select.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager

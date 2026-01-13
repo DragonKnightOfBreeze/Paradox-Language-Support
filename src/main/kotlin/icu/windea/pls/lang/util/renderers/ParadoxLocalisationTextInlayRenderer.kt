@@ -19,8 +19,8 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.psi.mock.MockPsiElement
-import icu.windea.pls.lang.resolveLocalisation
-import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.psi.select.resolveLocalisation
+import icu.windea.pls.lang.psi.select.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager

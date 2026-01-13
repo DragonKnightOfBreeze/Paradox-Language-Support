@@ -31,6 +31,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -59,7 +60,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.resolved
 
 object ParadoxPsiManager {
     object Keys : KeyRegistry() {

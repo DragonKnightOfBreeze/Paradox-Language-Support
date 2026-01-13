@@ -49,7 +49,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.parentBlock
 import icu.windea.pls.script.psi.parentProperty
-import icu.windea.pls.script.psi.resolved
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxInlineScriptManager {
@@ -159,7 +158,7 @@ object ParadoxInlineScriptManager {
         val v = usageElement.propertyValue ?: return null
         val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v1 != null) return v1
-        val v2 = v.select { propertyOld("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
+        val v2 = v.select { property("script") }?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v2 != null) return v2
         return null
     }

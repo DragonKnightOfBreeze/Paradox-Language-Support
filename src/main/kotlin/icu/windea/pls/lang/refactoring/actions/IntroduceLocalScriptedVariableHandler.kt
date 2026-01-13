@@ -22,8 +22,7 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.select.parentPropertyDefinitionOrInjectionOld
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -37,7 +36,8 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        return element.select { parentPropertyDefinitionOrInjectionOld() } != null
+        val containerElement = selectScope { element.parentDefinitionOrInjection().asProperty() }
+        return containerElement != null
     }
 
     @Suppress("UnstableApiUsage")
@@ -52,7 +52,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 
         // 要求对应的字面量在定义声明内
         // 2.1.0 兼容定义注入
-        val containerElement = element.select { parentPropertyDefinitionOrInjectionOld() } ?: return false
+        val containerElement = selectScope { element.parentDefinitionOrInjection().asProperty() } ?: return false
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {

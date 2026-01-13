@@ -7,7 +7,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.psi.select.propertyOld
+import icu.windea.pls.lang.psi.select.property
 import icu.windea.pls.lang.psi.select.select
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -49,7 +49,7 @@ object ParadoxGameConceptManager {
             val resolved = element.reference?.resolve() ?: return@r1
             if (conceptText != null) return resolved to conceptText
             run r2@{
-                val tooltipOverride = resolved.select { propertyOld("tooltip_override", inline = true) }
+                val tooltipOverride = resolved.select { property("tooltip_override", inline = true) }
                     ?.propertyValue<ParadoxScriptString>()
                     ?: return@r2
                 val override = tooltipOverride.references.lastOrNull()?.resolve() ?: return@r2

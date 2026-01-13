@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.lang.resolveLocalisation
+import icu.windea.pls.lang.psi.select.resolveLocalisation
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys

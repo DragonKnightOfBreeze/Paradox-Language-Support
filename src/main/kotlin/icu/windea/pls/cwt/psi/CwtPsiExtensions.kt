@@ -59,18 +59,14 @@ fun CwtExpressionElement.isExpression(): Boolean {
 
 // endregion
 
-// region Value Manipulations
+// region Value Accessors
 
-val CwtBoolean.booleanValue: Boolean
-    get() = this.value.toBooleanYesNo()
+val CwtBoolean.booleanValue: Boolean get() = this.value.toBooleanYesNo()
 
-val CwtInt.intValue: Int
-    get() = this.value.toIntOrNull() ?: 0
+val CwtInt.intValue: Int get() = this.value.toIntOrNull() ?: 0
 
-val CwtFloat.floatValue: Float
-    get() = this.value.toFloatOrNull() ?: 0f
+val CwtFloat.floatValue: Float get() = this.value.toFloatOrNull() ?: 0f
 
-val CwtString.stringValue: String
-    get() = this.value
+val CwtString.stringValue: String get() = this.value
 
 // endregion

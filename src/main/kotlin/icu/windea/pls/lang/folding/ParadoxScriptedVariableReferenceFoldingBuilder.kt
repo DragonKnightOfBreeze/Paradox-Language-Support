@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
@@ -52,9 +53,9 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
             }
 
             private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
-                val referenceValue = element.resolved()?.scriptedVariableValue ?: return
-                val resolvedValue = referenceValue.value
-                val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, resolvedValue)
+                val resolved = element.resolved() ?: return
+                val value = resolved.value
+                val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, value)
                 allDescriptors.add(descriptor)
             }
 

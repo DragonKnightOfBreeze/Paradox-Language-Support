@@ -13,9 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.select.parentDefinitionInjectionOld
-import icu.windea.pls.lang.psi.select.parentPropertyDefinitionOld
-import icu.windea.pls.lang.psi.select.select
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -53,7 +51,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 add(SuppressForFileFix(toolId, fileName))
             }
             run {
-                val definition = element.select { parentPropertyDefinitionOld() } ?: return@run
+                val definition = selectScope { element.parentDefinition().asProperty() } ?: return@run
                 val definitionInfo = definition.definitionInfo ?: return@run
                 val name = definitionInfo.name
                 val containerPointer = definition.createPointer<PsiElement>(file)
@@ -61,7 +59,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
             }
             run {
                 // 2.1.0 兼容定义注入
-                val definitionInjection = element.select { parentDefinitionInjectionOld() } ?: return@run
+                val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return@run
                 val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return@run
                 val name = definitionInjectionInfo.expression
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
