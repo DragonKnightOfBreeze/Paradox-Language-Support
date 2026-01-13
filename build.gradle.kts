@@ -55,6 +55,8 @@ dependencies {
         plugin("cn.yiiguxing.plugin.translate:3.8.0")
     }
 
+    // kotlin test junit - https://kotlinlang.org
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     // junit - https://github.com/junit-team/junit4
     testImplementation("junit:junit:4.13.2")
     // opentest4j - https://github.com/ota4j-team/opentest4j
