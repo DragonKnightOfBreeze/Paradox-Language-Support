@@ -145,28 +145,41 @@ fun Sequence<ParadoxScriptProperty>.ofKeys(keys: Collection<String>, ignoreCase:
     return filter { property -> keys.any { key -> PathMatcher.matches(property.name, key, ignoreCase, usePattern) } }
 }
 
+private fun ParadoxScriptMember.selectLiteralValue(): String? {
+    return when (this) {
+        is ParadoxScriptProperty -> {
+            when (this.propertyValue) {
+                is ParadoxScriptBlock -> null
+                is ParadoxScriptRootBlock -> null
+                else -> this.selectValue()
+            }
+        }
+        else -> this.selectValue()
+    }
+}
+
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> T.ofValue(value: String, ignoreCase: Boolean = true): T? {
-    return takeIf { selectValue().equals(value, ignoreCase) }
+    return takeIf { selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { it.selectValue().equals(value, ignoreCase) }
+    return filter { it.selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T? {
-    return takeIf { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
+    return takeIf { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T> {
-    return filter { it.selectValue().let { v -> v != null || values.any { value -> v.equals(value, ignoreCase) } } }
+    return filter { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 /** @see ParadoxMemberPath */

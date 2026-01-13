@@ -1,0 +1,1 @@
+settings = { a = b [[!PARAM] parameter_condition = $PARAM$ ] c }
