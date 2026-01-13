@@ -23,8 +23,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.select.inline
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -335,7 +334,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties().options { inline() }.forEach f@{
+                            scopesBlockElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
@@ -485,7 +484,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties().options { inline() }.forEach f@{
+                            scopesBlockElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f

@@ -36,9 +36,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.withOperator
-import icu.windea.pls.lang.psi.select.inline
-import icu.windea.pls.lang.psi.select.properties
-import icu.windea.pls.lang.psi.select.values
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
@@ -414,7 +412,7 @@ object ParadoxConfigMatchService {
 
         // NOTE 这里需要兼容内联
         // NOTE propConfig.key 可能有重复，这种情况下只要有其中一个匹配即可
-        val matched = blockElement.properties().options { inline() }.all p@{ propertyElement ->
+        val matched = blockElement.properties(inline = true).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
@@ -448,7 +446,7 @@ object ParadoxConfigMatchService {
         val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(it, blockElement) })
 
         // NOTE 这里需要兼容内联
-        val matched = blockElement.values().options { inline() }.process p@{ valueElement ->
+        val matched = blockElement.values(inline = true).process p@{ valueElement ->
             // 如果没有匹配的规则则忽略
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
@@ -586,7 +584,7 @@ object ParadoxConfigMatchService {
                 c is CwtPropertyConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.properties().options { inline() }.none { propElement ->
+                    val notMatched = parentBlockElement.properties(inline = true).none { propElement ->
                         matchesPropertyForComplexEnum(propElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -594,7 +592,7 @@ object ParadoxConfigMatchService {
                 c is CwtValueConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.values().options { inline() }.none { valueElement ->
+                    val notMatched = parentBlockElement.values(inline = true).none { valueElement ->
                         matchesValueForComplexEnum(valueElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -650,14 +648,14 @@ object ParadoxConfigMatchService {
     private fun matchesBlockForComplexEnum(blockElement: ParadoxScriptBlockElement, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         config.properties?.forEach { propConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.properties().options { inline() }.none { propElement ->
+            val notMatched = blockElement.properties(inline = true).none { propElement ->
                 matchesPropertyForComplexEnum(propElement, propConfig, complexEnumConfig)
             }
             if (notMatched) return false
         }
         config.values?.forEach { valueConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.values().options { inline() }.none { valueElement ->
+            val notMatched = blockElement.values(inline = true).none { valueElement ->
                 matchesValueForComplexEnum(valueElement, valueConfig, complexEnumConfig)
             }
             if (notMatched) return false

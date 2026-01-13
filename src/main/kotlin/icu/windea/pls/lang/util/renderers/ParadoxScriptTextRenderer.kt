@@ -2,21 +2,17 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.lang.psi.select.conditional
-import icu.windea.pls.lang.psi.select.inline
-import icu.windea.pls.lang.psi.select.members
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer.*
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -62,7 +58,7 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
 
     context(context: Context)
     private fun renderFile(element: ParadoxScriptFile) {
-        val members = getMembers(element)
+        val members = element.members(conditional, inline)
         val m = OnceMarker()
         for (member in members) {
             if (m.mark()) renderBlankBetweenMembers()
@@ -102,7 +98,7 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
     private fun renderValue(element: ParadoxScriptValue) {
         if (element is ParadoxScriptBlock && renderInBlock) {
             renderLeftBracket()
-            val members = getMembers(element)
+            val members = element.members(conditional, inline)
             val m = OnceMarker()
             for (member in members) {
                 if (!m.get()) renderBlankAfterLeftBracket()
@@ -169,10 +165,5 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
             multiline -> context.builder.appendLine()
             else -> context.builder.append(" ")
         }
-    }
-
-    context(_: Context)
-    private fun getMembers(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
-        return element.members().options { conditional(conditional) + inline(inline) }
     }
 }

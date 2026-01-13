@@ -6,6 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.select.inline
 import icu.windea.pls.lang.psi.select.properties
@@ -28,7 +29,7 @@ import icu.windea.pls.script.psi.stringValue
 class MismatchedEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
-        val properties = file.properties().options { inline() }
+        val properties = file.properties(inline = true)
         val namespace2Events = mutableMapOf<String, MutableList<ParadoxScriptProperty>>()
         var nextNamespace = ""
         for (property in properties) {

@@ -8,9 +8,7 @@ import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.lang.psi.select.conditional
-import icu.windea.pls.lang.psi.select.inline
-import icu.windea.pls.lang.psi.select.properties
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -54,7 +52,7 @@ object ParadoxPresentationUtil {
 
     fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
         val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
-        definition.block?.properties()?.options { conditional() + inline() }?.forEach {
+        definition.block?.properties(conditional = true, inline = true)?.forEach {
             if (it.name.lowercase() in keys) properties.add(it)
         }
         return properties

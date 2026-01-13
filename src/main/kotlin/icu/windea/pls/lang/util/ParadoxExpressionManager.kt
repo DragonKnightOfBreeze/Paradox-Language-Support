@@ -47,6 +47,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
@@ -574,7 +575,7 @@ object ParadoxExpressionManager {
         }
         ProgressManager.checkCanceled()
         // 注意这里需要考虑内联和可选的情况
-        blockElement.members().options { conditional() + inline() }.forEach f@{ data ->
+        blockElement.members(conditional = true, inline = true).forEach f@{ data ->
             val expression = when (data) {
                 is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
                 is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)

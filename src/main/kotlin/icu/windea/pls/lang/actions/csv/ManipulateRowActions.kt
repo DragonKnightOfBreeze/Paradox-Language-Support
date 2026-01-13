@@ -14,6 +14,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
@@ -25,7 +26,7 @@ import java.util.function.Supplier
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
     override fun findElements(e: AnActionEvent, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
-        return super.findElements(e, file).options { forward(above) }
+        return super.findElements(e, file).context { forward(above) }
     }
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>) {
@@ -54,7 +55,7 @@ class InsertRowBelowAction : InsertRowActionBase(above = false)
 
 sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
     override fun findElements(e: AnActionEvent, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
-        return super.findElements(e, file).options { forward(above) }
+        return super.findElements(e, file).context { forward(above) }
     }
 
     override fun isEnabled(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Boolean {

@@ -2,10 +2,10 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.select.ParadoxPsiSequenceBuilder
-import icu.windea.pls.lang.psi.select.conditional
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.markIntegrationTest
@@ -46,7 +46,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/walking/walking_test_1.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val names = ParadoxPsiSequenceBuilder.localisations(file)
-            .options { forward(false) }
+            .context { forward(false) }
             .map { it.name }
             .toList()
         Assert.assertEquals(listOf("K5", "K4", "K3", "K2", "K1"), names)
@@ -113,7 +113,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
         }
         run {
             val names = ParadoxPsiSequenceBuilder.members(file)
-                .options { conditional(true) }
+                .context { conditional(true) }
                 .map { it.text.trim() }
                 .toList()
             Assert.assertEquals(5, names.size)
@@ -122,10 +122,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
         }
         run {
             val names = ParadoxPsiSequenceBuilder.members(file)
-                .options {
-                    conditional(true)
-                    forward(false)
-                }
+                .context { conditional(true) + forward(false) }
                 .map { it.text.trim() }
                 .toList()
             Assert.assertEquals(listOf("e = 5", "d = 4", "c = 3", "b = 2", "a = 1"), names)
@@ -181,7 +178,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
             editor.caretModel.moveToOffset(start)
             editor.selectionModel.setSelection(start, end)
             val rows = ParadoxPsiSequenceBuilder.selectedRows(editor, file)
-                .options { forward(false) }
+                .context { forward(false) }
                 .map { it.text.trim() }
                 .toList()
             Assert.assertEquals(3, rows.size)

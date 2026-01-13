@@ -11,6 +11,7 @@ import com.intellij.psi.util.parents
 import com.intellij.util.containers.TreeTraversal
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.generateSequenceFromSeeds
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -55,7 +56,7 @@ fun PsiElement.propertyOld(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options { conditional(conditional) + inline(inline) }?.process {
+    block?.properties()?.context { conditional(conditional) + inline(inline) }?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -88,7 +89,7 @@ fun PsiElement.propertyOld(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options { conditional(conditional) + inline(inline) }?.process {
+    block?.properties()?.context { conditional(conditional) + inline(inline) }?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false

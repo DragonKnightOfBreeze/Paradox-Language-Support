@@ -21,13 +21,11 @@ class CwtConfigSelectContext : UserDataHolderBase() {
         return this
     }
 
-    operator fun <T> plus(value: T): T {
-        return value
-    }
+    inline operator fun <T> plus(value: T): T = value
 }
 
 @CwtConfigSelectDsl
-inline fun <R> selectScope(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) () -> R): R {
+fun <R> selectScope(scope: CwtConfigSelectScope = CwtConfigSelectScope(), block: context(CwtConfigSelectScope) () -> R): R {
     return block.invoke(scope)
 }
 
@@ -39,15 +37,11 @@ fun <T : CwtMemberConfig<*>, R> T.select(scope: CwtConfigSelectScope = CwtConfig
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-inline fun currentContext(): CwtConfigSelectContext {
-    return scope.context
-}
+inline fun currentContext(): CwtConfigSelectContext = scope.context
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl
-inline fun updateContext(block: () -> CwtConfigSelectContext): CwtConfigSelectContext {
-    return scope.context + block()
-}
+inline fun updateContext(block: () -> CwtConfigSelectContext): CwtConfigSelectContext = scope.context + block()
 
 context(scope: CwtConfigSelectScope)
 @CwtConfigSelectDsl

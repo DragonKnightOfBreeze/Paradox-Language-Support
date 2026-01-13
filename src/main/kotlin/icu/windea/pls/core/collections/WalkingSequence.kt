@@ -10,46 +10,54 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 
 /**
- * 一种特殊的序列，可在 [options] 中携带额外的元数据，并在遍历时使用。这些元数据可用于定制遍历逻辑。
+ * 一种特殊的带有上下文的序列。
  */
 class WalkingSequence<T>(
-    val options: WalkingSequenceOptions = WalkingSequenceOptions(),
     private val delegate: Sequence<T> = emptySequence(),
-) : Sequence<T> by delegate {
-    /**
-     * 构建 [WalkingSequence] 的选项。
-     */
-    inline fun options(block: WalkingSequenceOptionsBuilder.() -> Unit): WalkingSequence<T> {
-        WalkingSequenceOptionsBuilder(options).block()
+    val context: WalkingContext = WalkingContext()
+) : Sequence<T> by delegate
+
+/**
+ * [WalkingSequence] 的上下文。
+ *
+ * 可携带额外的元数据，并在遍历时使用。这些元数据可用于定制遍历逻辑。
+ */
+class WalkingContext : UserDataHolderBase() {
+    object Keys : KeyRegistry()
+
+    operator fun plus(other: WalkingContext): WalkingContext {
+        Keys.copy(other, this)
         return this
     }
 
-    /**
-     * 对 [WalkingSequence] 进行转换。
-     */
-    inline fun <R> transform(block: Sequence<T>.() -> Sequence<R>): WalkingSequence<R> {
-        return WalkingSequence(options, block(this))
-    }
+    inline operator fun <T> plus(value: T): T = value
 }
 
 /**
- * [WalkingSequence] 的选项。可携带额外的元数据，并在遍历时使用。
+ * [WalkingContext] 的构建器。
  */
-class WalkingSequenceOptions : UserDataHolderBase() {
-    object Keys : KeyRegistry()
+@JvmInline
+value class WalkingContextBuilder(val context: WalkingContext) {
+    inline operator fun <T> plus(value: T): T = value
 }
 
 /**
- * [WalkingSequenceOptions] 的构建器。
+ * 对 [WalkingSequence] 进行转换。上下文会被保留。
  */
-class WalkingSequenceOptionsBuilder(
-    val options: WalkingSequenceOptions = WalkingSequenceOptions()
-) {
-    inline operator fun plus(other: WalkingSequenceOptionsBuilder) = this
+inline fun <T, R> WalkingSequence<T>.transform(block: Sequence<T>.() -> Sequence<R>): WalkingSequence<R> {
+    return WalkingSequence(block(this), context)
+}
+
+/**
+ * 更新 [WalkingSequence] 的上下文。
+ */
+inline fun <T> WalkingSequence<T>.context(block: WalkingContextBuilder.() -> Unit): WalkingSequence<T> {
+    block(WalkingContextBuilder(context))
+    return this
 }
 
 /** 是否从前往后搜索。默认为 `true`。 */
-var WalkingSequenceOptions.forward: Boolean by registerKey(WalkingSequenceOptions.Keys) { true }
+var WalkingContext.forward: Boolean by registerKey(WalkingContext.Keys) { true }
 
-/** @see WalkingSequenceOptions.forward */
-inline infix fun WalkingSequenceOptionsBuilder.forward(value: Boolean? = null) = apply { value?.let { options.forward = it } }
+/** @see WalkingContext.forward */
+inline infix fun WalkingContextBuilder.forward(value: Boolean? = true) = apply { value?.let { context.forward = it } }

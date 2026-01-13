@@ -21,13 +21,11 @@ class ParadoxPsiSelectContext : UserDataHolderBase() {
         return this
     }
 
-    operator fun <T> plus(value: T): T {
-        return value
-    }
+    inline operator fun <T> plus(value: T): T = value
 }
 
 @ParadoxPsiSelectDsl
-inline fun <R> selectScope(scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(), block: context(ParadoxPsiSelectScope) () -> R): R {
+fun <R> selectScope(scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(), block: context(ParadoxPsiSelectScope) () -> R): R {
     return block.invoke(scope)
 }
 
@@ -39,15 +37,11 @@ fun <T : PsiElement, R> T.select(scope: ParadoxPsiSelectScope = ParadoxPsiSelect
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-inline fun currentContext(): ParadoxPsiSelectContext {
-    return scope.context
-}
+inline fun currentContext(): ParadoxPsiSelectContext = scope.context
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-inline fun updateContext(block: () -> ParadoxPsiSelectContext): ParadoxPsiSelectContext {
-    return scope.context + block()
-}
+inline fun updateContext(block: () -> ParadoxPsiSelectContext): ParadoxPsiSelectContext = scope.context + block()
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl

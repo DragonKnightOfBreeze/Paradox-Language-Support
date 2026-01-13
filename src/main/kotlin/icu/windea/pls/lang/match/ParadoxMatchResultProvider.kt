@@ -20,6 +20,7 @@ import icu.windea.pls.core.cache.CancelableCache
 import icu.windea.pls.core.cache.NestedCache
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
+import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.KeyRegistry
@@ -104,7 +105,7 @@ object ParadoxMatchResultProvider {
             // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）
             // 如果子句中包含对应的任意子句规则中的任意必须的属性键（忽略大小写），则认为匹配
             val actualKeys = mutableSetOf<String>()
-            blockElement.members().options { conditional() + inline() }.forEach {
+            blockElement.members(conditional = true, inline = true).forEach {
                 if (it is ParadoxScriptProperty) actualKeys.add(it.name)
             }
             actualKeys.any { it in keys }
