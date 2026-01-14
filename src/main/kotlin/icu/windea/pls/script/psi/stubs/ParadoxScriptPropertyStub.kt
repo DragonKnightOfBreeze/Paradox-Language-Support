@@ -5,7 +5,6 @@ import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -25,7 +24,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property definitionType 定义的类型。
      * @property definitionSubtypes 定义的子类型。可以为 `null`，表示需延后解析。
      * @property typeKey 定义的类型键。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property memberPath 定义的元素路径（不含参数）。
+     * @property rootKeys 定义的一组顶级键（不含参数）。
      *
      */
     interface Definition : ParadoxScriptPropertyStub {
@@ -33,7 +32,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         val definitionType: String
         val definitionSubtypes: List<String>?
         val typeKey: String
-        val memberPath: ParadoxMemberPath
+        val rootKeys: List<String>
     }
 
     /**
@@ -102,7 +101,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionName: String?,
         override val definitionType: String,
         override val definitionSubtypes: List<String>?,
-        override val memberPath: ParadoxMemberPath,
+        override val rootKeys: List<String>,
     ) : Base(parent), Definition {
         override val typeKey get() = name
 
@@ -177,9 +176,9 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             definitionName: String?,
             definitionType: String,
             definitionSubtypes: List<String>?,
-            memberPath: ParadoxMemberPath,
+            rootKeys: List<String>,
         ): Definition {
-            return DefinitionImpl(parent, name, definitionName, definitionType, definitionSubtypes, memberPath)
+            return DefinitionImpl(parent, name, definitionName, definitionType, definitionSubtypes, rootKeys)
         }
 
         fun createInlineScriptUsage(

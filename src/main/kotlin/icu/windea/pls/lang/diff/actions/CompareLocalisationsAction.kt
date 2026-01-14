@@ -58,7 +58,7 @@ import javax.swing.Icon
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
  *
  * - 忽略直接位于游戏或模组入口目录下的文件。
- * - TODO 按照覆盖方式进行排序。
+ * - 按照覆盖方式进行排序。
  */
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {

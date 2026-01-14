@@ -267,8 +267,8 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
             // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
             // based on file paths, in detail, based on file path patterns (has any same file path patterns)
-            with(mayWithTypeKeyPrefix) {
-                val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null }
+            with(typeKeyPrefixAware) {
+                val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }
                 val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
                 val types1 = initializer.types.values.filter { c ->
                     val filePathPatterns1 = c.filePathPatterns

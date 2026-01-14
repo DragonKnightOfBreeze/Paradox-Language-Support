@@ -34,6 +34,7 @@ import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.anonymous
@@ -59,7 +60,7 @@ import javax.swing.Icon
  * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
  *
  * - 忽略直接位于游戏或模组入口目录下的文件。
- * - TODO 按照覆盖方式进行排序。
+ * - 按照覆盖方式进行排序。
  */
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
@@ -206,9 +207,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val text = definition.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
-        val memberPath = definition.definitionInfo?.memberPath
-        if (memberPath != null && memberPath.length > 1) {
-            ParadoxAnalysisInjector.injectRootKeys(tempFile, memberPath.subPaths.dropLast(1))
+        val rootKeys = definition.definitionInfo?.rootKeys
+        if (rootKeys.isNotNullOrEmpty()) {
+            ParadoxAnalysisInjector.injectRootKeys(tempFile, rootKeys)
         }
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)

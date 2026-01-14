@@ -83,12 +83,13 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
-                val memberPath = ParadoxMemberService.getPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
-                if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
-                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefixes(element).firstOrNull() }
+                val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return
+                if (rootKeys.any { it.isParameterized() }) return // 忽略带参数的情况
+                val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, memberPath, null, typeKeyPrefix)) continue
+                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, rootKeys, typeKeyPrefix)) continue
                     val type = typeConfig.name
                     val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
 

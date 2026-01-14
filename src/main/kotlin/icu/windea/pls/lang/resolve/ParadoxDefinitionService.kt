@@ -63,7 +63,7 @@ object ParadoxDefinitionService {
         val subtypesConfig = definitionInfo.typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, definitionInfo.typeKey, subtypeConfig, result, definitionInfo.configGroup, matchOptions)) {
+            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, subtypeConfig, result, definitionInfo.typeKey, matchOptions)) {
                 result += subtypeConfig
             }
         }

@@ -103,14 +103,15 @@ object ParadoxCompletionManager {
     }
 
     fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
-        if (configContext == null) return
+        val contextElement = context.contextElement ?: return
+        val configContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.inRoot()) {
-            val memberPath = ParadoxMemberService.getPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
+            val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth) ?: return
             if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
-            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxMemberService.getKeyPrefixes(it).firstOrNull() } }
+            val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
             context.isKey = true
             completeKey(context, result, memberPath, typeKeyPrefix)
             return
@@ -136,7 +137,7 @@ object ParadoxCompletionManager {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrenceMap)) {
-                    val overriddenConfigs = CwtConfigService.getOverriddenConfigs(context.contextElement!!, config)
+                    val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
@@ -153,8 +154,8 @@ object ParadoxCompletionManager {
     }
 
     fun addValueCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
-        if (configContext == null) return
+        val contextElement = context.contextElement ?: return
+        val configContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return
 
         if (!configContext.inRoot()) return
 
@@ -177,7 +178,7 @@ object ParadoxCompletionManager {
 
         for (config in configs) {
             if (shouldComplete(config, occurrenceMap)) {
-                val overriddenConfigs = CwtConfigService.getOverriddenConfigs(context.contextElement!!, config)
+                val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig
@@ -192,8 +193,7 @@ object ParadoxCompletionManager {
     }
 
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionManager.getConfigContext(element)
-        if (configContext == null) return
+        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
 
         if (!configContext.inRoot()) return
 
@@ -298,11 +298,11 @@ object ParadoxCompletionManager {
                 val typeKeyPrefix = typeConfig.typeKeyPrefix
                 if (typeKeyPrefix == null) return@run
                 if (rootKeyPrefix.value != null) return@run // avoid complete prefix again after an existing prefix
-                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) return@run
+                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path)) return@run
                 infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
             }
 
-            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
+            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, typeKeyPrefix = rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {
                 if (memberPath.isEmpty()) {

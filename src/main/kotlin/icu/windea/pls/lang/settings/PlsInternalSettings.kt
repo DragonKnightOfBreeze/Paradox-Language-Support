@@ -48,9 +48,9 @@ class PlsInternalSettings {
     val itemLimit get() = Registry.intValue("pls.settings.itemLimit", 5)
 
     /**
-     * 定义相对于脚本文件的最大深度（用于优化性能）。
+     * 定义相对于脚本文件的最大深度（用于优化性能）。从0开始。
      */
-    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 5)
+    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 4)
 
     /**
      * 默认的封装变量的名字（执行重构与生成操作时会用到）。

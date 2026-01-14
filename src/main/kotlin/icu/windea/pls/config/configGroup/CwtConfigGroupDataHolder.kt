@@ -192,5 +192,5 @@ interface CwtDefinitionTypesModel {
     /** 支持参数的定义类型。 */
     val supportParameters: Set<String>
     /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
-    val mayWithTypeKeyPrefix: Set<String>
+    val typeKeyPrefixAware: Set<String>
 }
