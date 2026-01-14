@@ -1,12 +1,15 @@
 package icu.windea.pls.model
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.castOrNull
@@ -34,10 +37,10 @@ class ParadoxDefinitionInfo(
     val typeKey: String,
     val rootKeys: List<String>,
 ) : UserDataHolderBase() {
-    val configGroup get() = typeConfig.configGroup
-    val gameType get() = configGroup.gameType
-    val project get() = configGroup.project
-    val declarationConfig get() = configGroup.declarations.get(type)
+    val configGroup: CwtConfigGroup get() = typeConfig.configGroup
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
+    val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
 
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
     private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()

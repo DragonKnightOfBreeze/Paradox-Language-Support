@@ -86,7 +86,7 @@ object CwtConfigService {
      */
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
-        val memberPath = ParadoxMemberService.getPath(element) ?: return null
+        val memberPath = ParadoxMemberService.getPath(element)?.normalize() ?: return null
         val gameType = selectGameType(file)
         return CwtConfigContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null

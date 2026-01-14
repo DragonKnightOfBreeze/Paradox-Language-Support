@@ -9,7 +9,6 @@ import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.definitionInfo
 import icu.windea.pls.config.configContext.definitionInjectionInfo
 import icu.windea.pls.config.configContext.inlineScriptExpression
-import icu.windea.pls.config.configContext.memberPathFromRoot
 import icu.windea.pls.config.configContext.parameterElement
 import icu.windea.pls.config.configContext.parameterValueQuoted
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -50,7 +49,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, memberPath, gameType, configGroup)
+        val configContext = CwtConfigContext(element, memberPath, null, configGroup)
         return configContext
     }
 
@@ -78,11 +77,10 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val definitionMemberPath = definitionInfo.memberPath
-        val memberPathFromRoot = definitionMemberPath.relativeTo(memberPath) ?: return null
+        val memberPathFromRoot = definitionMemberPath.relativeTo(memberPath)?.normalize() ?: return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, memberPath.normalize(), gameType, configGroup)
+        val configContext = CwtConfigContext(element, memberPath, memberPathFromRoot, configGroup)
         configContext.definitionInfo = definitionInfo
-        configContext.memberPathFromRoot = memberPathFromRoot.normalize()
         return configContext
     }
 
@@ -124,22 +122,19 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
  * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
+    // 兼容适用语言注入功能的 `VirtualFileWindow`
+    // 兼容通过编辑代码碎片的意图操作打开的 `LightVirtualFile`
+
     override fun getContext(element: ParadoxScriptMember, memberPath: ParadoxMemberPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
-        // 兼容适用语言注入功能的 VirtualFileWindow
-        // 兼容通过编辑代码碎片的意图操作打开的 LightVirtualFile
-
-        val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file)
-        if (injectionInfo == null) return null
-
+        val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val gameType = selectGameType(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, null, memberPath.normalize(), gameType, configGroup)
+        val configContext = CwtConfigContext(element, memberPath, memberPath, configGroup)
         configContext.parameterElement = parameterElement
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
-        configContext.memberPathFromRoot = configContext.memberPath
         return configContext
     }
 
@@ -184,23 +179,21 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本用法可以在定义声明之外
+    // 注意这里的 `fileInfo` 可以为 `null`（例如，在内联脚本参数的多行参数值中）
 
     override fun getContext(element: ParadoxScriptMember, memberPath: ParadoxMemberPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
-
-        val vFile = selectFile(file) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        if (!ParadoxInlineScriptManager.isSupported(gameType)) return null
 
         // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
         val rootIndex = memberPath.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) }
         if (rootIndex == -1) return null
 
-        val fileInfo = vFile.fileInfo // 注意这里的 fileInfo 可以为 null（例如，在内联脚本参数的多行参数值中）
-        val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(rootIndex + 1))
+        val vFile = selectFile(file) ?: return null
+        val gameType = selectGameType(vFile) ?: return null
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return null
+        val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(rootIndex + 1)).normalize()
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, memberPath.normalize(), gameType, configGroup)
-        configContext.memberPathFromRoot = memberPathFromRoot.normalize()
+        val configContext = CwtConfigContext(element, memberPath, memberPathFromRoot, configGroup)
         return configContext
     }
 
@@ -237,16 +230,12 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 
         val vFile = selectFile(file) ?: return null
         if (PlsFileManager.isInjectedFile(vFile)) return null // ignored for injected psi
-
-        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
-        if (inlineScriptExpression == null) return null
-
-        val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
+        val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, memberPath.normalize(), gameType, configGroup)
+        val configContext = CwtConfigContext(element, memberPath, memberPath, configGroup)
         configContext.inlineScriptExpression = inlineScriptExpression
-        configContext.memberPathFromRoot = configContext.memberPath
         return configContext
     }
 
@@ -306,11 +295,11 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return null // 忽略游戏类型不支持的情况
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
-        val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(1)) // 去除第一个子路径
+
+        val memberPathFromRoot = ParadoxMemberPath.resolve(memberPath.subPaths.drop(1)).normalize() // 去除第一个子路径
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, memberPath.normalize(), gameType, configGroup)
+        val configContext = CwtConfigContext(element, memberPath, memberPathFromRoot, configGroup)
         configContext.definitionInjectionInfo = definitionInjectionInfo
-        configContext.memberPathFromRoot = memberPathFromRoot.normalize()
         return configContext
     }
 

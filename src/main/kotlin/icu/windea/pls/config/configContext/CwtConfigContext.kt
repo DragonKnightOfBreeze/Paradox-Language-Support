@@ -1,6 +1,7 @@
 package icu.windea.pls.config.configContext
 
 import com.github.benmanes.caffeine.cache.Cache
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.jetbrains.rd.util.*
@@ -30,17 +31,23 @@ import java.util.concurrent.*
  *
  * 用于后续获取对应的上下文规则（即所有可能的规则）以及匹配的规则，从而提供各种高级语言功能。例如代码高亮、引用解析、代码补全。
  *
- * 可以获取规则上下文不意味着可以获取对应的上下文规则。
+ * 规则上下文不一定存在对应的上下文规则。
+ * 如果一个规则上下文开始存在对应的上下文规则，并且需要在子上下文中展开，则视作根上下文。
+ *
+ * @param memberPath 相对于所在文件的成员路径。
+ * @param memberPathFromRoot 相对于根上下文的成员路径。
  *
  * @see CwtConfigContextProvider
  */
 class CwtConfigContext(
     val element: ParadoxScriptMember, // use element directly here
-    val fileInfo: ParadoxFileInfo?,
     val memberPath: ParadoxMemberPath?,
-    val gameType: ParadoxGameType,
+    val memberPathFromRoot: ParadoxMemberPath?,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
+
     lateinit var provider: CwtConfigContextProvider
 
     fun getConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
@@ -48,7 +55,7 @@ class CwtConfigContext(
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
         val cached = withRecursionGuard {
-            withRecursionCheck(cachedKey) action@{
+            withRecursionCheck(cachedKey) {
                 try {
                     PlsStates.dynamicContextConfigs.set(false)
                     // use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
