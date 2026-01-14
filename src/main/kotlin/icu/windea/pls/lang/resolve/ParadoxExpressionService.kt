@@ -67,7 +67,6 @@ object ParadoxExpressionService {
             val isFullParameterized = subPath.isParameterized(full = true)
             val matchesKey = isPropertyValue || subPaths.lastIndex - i > 0
             val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
-            val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
             val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
@@ -79,55 +78,7 @@ object ParadoxExpressionService {
                 ParadoxParameterManager.getParameterizedKeyConfigs(elementToMatch)
             }
 
-            run r1@{
-                ProgressManager.checkCanceled()
-                result.forEach f2@{ parentConfig ->
-                    val configs = parentConfig.configs
-                    if (configs.isNullOrEmpty()) return@f2
-
-                    val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                    val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-
-                    fun addToMatchedConfigs(config: CwtMemberConfig<*>) {
-                        if (config is CwtPropertyConfig) {
-                            val m = matchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
-                            when (m) {
-                                null -> nextResult += config
-                                true -> exactMatchedConfigs += config
-                                false -> relaxMatchedConfigs += config
-                            }
-                        } else if (config is CwtValueConfig) {
-                            nextResult += config
-                        }
-                    }
-
-                    fun collectMatchedConfigs() {
-                        if (exactMatchedConfigs.isNotEmpty()) {
-                            nextResult += exactMatchedConfigs
-                        } else if (relaxMatchedConfigs.size == 1) {
-                            nextResult += relaxMatchedConfigs
-                        }
-                    }
-
-                    configs.forEach f3@{ config ->
-                        if (config is CwtPropertyConfig) {
-                            if (subPath == "-") return@f3
-                            val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
-                            if (inlinedConfigs == null) { // null (cannot or failed)
-                                addToMatchedConfigs(config)
-                            } else {
-                                inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
-                            }
-                        } else if (config is CwtValueConfig) {
-                            if (subPath != "-") return@f3
-                            addToMatchedConfigs(config)
-                        }
-                    }
-
-                    collectMatchedConfigs()
-                }
-            }
-
+            val nextResult = flattenConfigsForConfigContextSubPath(result, subPath, parameterizedKeyConfigs)
             result = nextResult
 
             run r1@{
@@ -148,6 +99,61 @@ object ParadoxExpressionService {
         }
 
         return result
+    }
+
+    private fun flattenConfigsForConfigContextSubPath(
+        parentConfigs: List<CwtMemberConfig<*>>,
+        subPath: String,
+        parameterizedKeyConfigs: List<CwtValueConfig>?
+    ): List<CwtMemberConfig<*>> {
+        val nextResult = mutableListOf<CwtMemberConfig<*>>()
+        ProgressManager.checkCanceled()
+        parentConfigs.forEach f2@{ parentConfig ->
+            val configs = parentConfig.configs
+            if (configs.isNullOrEmpty()) return@f2
+
+            val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+            val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+
+            fun addToMatchedConfigs(config: CwtMemberConfig<*>) {
+                if (config is CwtPropertyConfig) {
+                    val m = matchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
+                    when (m) {
+                        null -> nextResult += config
+                        true -> exactMatchedConfigs += config
+                        false -> relaxMatchedConfigs += config
+                    }
+                } else if (config is CwtValueConfig) {
+                    nextResult += config
+                }
+            }
+
+            fun collectMatchedConfigs() {
+                if (exactMatchedConfigs.isNotEmpty()) {
+                    nextResult += exactMatchedConfigs
+                } else if (relaxMatchedConfigs.size == 1) {
+                    nextResult += relaxMatchedConfigs
+                }
+            }
+
+            configs.forEach f3@{ config ->
+                if (config is CwtPropertyConfig) {
+                    if (subPath == "-") return@f3
+                    val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
+                    if (inlinedConfigs == null) { // null (cannot or failed)
+                        addToMatchedConfigs(config)
+                    } else {
+                        inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
+                    }
+                } else if (config is CwtValueConfig) {
+                    if (subPath != "-") return@f3
+                    addToMatchedConfigs(config)
+                }
+            }
+
+            collectMatchedConfigs()
+        }
+        return nextResult
     }
 
     private fun matchParameterizedKeyConfigs(configs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
