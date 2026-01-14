@@ -307,7 +307,13 @@ object ParadoxExpressionManager {
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
     }
 
-    private fun doGetConfigsForConfigContext(element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, memberPathFromRoot: ParadoxMemberPath, configGroup: CwtConfigGroup, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetConfigsForConfigContext(
+        element: ParadoxScriptMember,
+        rootConfigs: List<CwtMemberConfig<*>>,
+        memberPathFromRoot: ParadoxMemberPath,
+        configGroup: CwtConfigGroup,
+        matchOptions: Int
+    ): List<CwtMemberConfig<*>> {
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
 
         var result: List<CwtMemberConfig<*>> = rootConfigs

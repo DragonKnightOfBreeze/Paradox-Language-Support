@@ -60,7 +60,7 @@ object ParadoxCsvExpressionService {
      */
     fun complete(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config?.castOrNull<CwtValueConfig>() ?: return
-        val configExpression = config.configExpression ?: return
+        val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
             if (!ep.supports(config, configExpression)) return@f
