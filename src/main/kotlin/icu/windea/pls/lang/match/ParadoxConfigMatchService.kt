@@ -395,7 +395,7 @@ object ParadoxConfigMatchService {
         // NOTE 这里需要兼容内联
         // NOTE propConfig.key 可能有重复，这种情况下只要有其中一个匹配即可
 
-        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(it, definition) })
+        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(definition, it) })
         val configGroup = propertyConfigs.first().configGroup
         val matched = definition.properties(inline = true).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
@@ -426,7 +426,7 @@ object ParadoxConfigMatchService {
 
         // NOTE 这里需要兼容内联
 
-        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(it, block) })
+        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
         val configGroup = valueConfigs.first().configGroup
         val matched = block.values(inline = true).process p@{ valueElement ->
             // 如果没有匹配的规则则忽略

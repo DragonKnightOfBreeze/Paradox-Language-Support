@@ -574,7 +574,7 @@ object ParadoxExpressionManager {
         if (blockElement == null) return emptyMap()
         val occurrenceMap = mutableMapOf<CwtDataExpression, ParadoxMatchOccurrence>()
         for (childConfig in childConfigs) {
-            occurrenceMap[childConfig.configExpression] = ParadoxMatchOccurrenceService.evaluate(childConfig, element)
+            occurrenceMap[childConfig.configExpression] = ParadoxMatchOccurrenceService.evaluate(element, childConfig)
         }
         ProgressManager.checkCanceled()
         // 注意这里需要考虑内联和可选的情况
