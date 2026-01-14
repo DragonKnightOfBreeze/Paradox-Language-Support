@@ -176,4 +176,112 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
         assertNull(inlined)
     }
+
+    @Test
+    fun inline_multipleUsages_shouldNotInterfere() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_a.txt")
+        myFixture.configureByText("inline_script_a.txt", "ka = va")
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_b.txt")
+        myFixture.configureByText("inline_script_b.txt", "kb = vb")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_multiple.txt")
+        myFixture.configureByText(
+            "test_inline_multiple.txt",
+            "inline_script = test/inline_script_a inline_script = test/inline_script_b"
+        )
+
+        val file = myFixture.file as ParadoxScriptFile
+        val ka = selectScope { file.ofPath("ka", inline = true).asProperty().one() }
+        assertNotNull(ka)
+        assertEquals("va", ka!!.value)
+
+        val kb = selectScope { file.ofPath("kb", inline = true).asProperty().one() }
+        assertNotNull(kb)
+        assertEquals("vb", kb!!.value)
+    }
+
+    @Test
+    fun inline_shouldOnlyMatchInlineScriptPropertyName() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_name.txt")
+        myFixture.configureByText("inline_script_name.txt", "k0 = v0")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_name.txt")
+        myFixture.configureByText(
+            "test_inline_name.txt",
+            "not_inline_script = test/inline_script_name"
+        )
+
+        val file = myFixture.file as ParadoxScriptFile
+        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        assertNull(inlined)
+    }
+
+    @Test
+    fun inline_blockUsage_scriptKey_ignoreCase() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_case.txt")
+        myFixture.configureByText("inline_script_case.txt", "k0 = v0")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_case.txt")
+        myFixture.configureByText(
+            "test_inline_case.txt",
+            "inline_script = { SCRIPT = test/inline_script_case }"
+        )
+
+        val file = myFixture.file as ParadoxScriptFile
+        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        assertNotNull(inlined)
+        assertEquals("v0", inlined!!.value)
+    }
+
+    @Test
+    fun inline_parameterizedExpression_shouldBeIgnoredSafely() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_param.txt")
+        myFixture.configureByText("inline_script_param.txt", "k0 = v0")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_param.txt")
+        myFixture.configureByText(
+            "test_inline_param.txt",
+            "inline_script = test/inline_script_param\$PARAM\$"
+        )
+
+        val file = myFixture.file as ParadoxScriptFile
+        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        assertNull(inlined)
+    }
+
+    @Test
+    fun inline_emptyInlineScriptFile_shouldBeIgnoredSafely() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_empty.txt")
+        myFixture.configureByText("inline_script_empty.txt", "")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_empty.txt")
+        myFixture.configureByText(
+            "test_inline_empty.txt",
+            "inline_script = test/inline_script_empty k1 = v1"
+        )
+
+        val file = myFixture.file as ParadoxScriptFile
+        val k1 = selectScope { file.ofPath("k1").asProperty().one() }
+        assertNotNull(k1)
+
+        val inlined = selectScope { file.ofPath("k0", inline = true).asProperty().one() }
+        assertNull(inlined)
+    }
+
+    @Test
+    fun inline_mutualRecursion_shouldBeIgnoredSafely() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_a_rec.txt")
+        myFixture.configureByText("inline_script_a_rec.txt", "inline_script = test/inline_script_b_rec ka = va")
+        markFileInfo(ParadoxGameType.Stellaris, "common/inline_scripts/test/inline_script_b_rec.txt")
+        myFixture.configureByText("inline_script_b_rec.txt", "inline_script = test/inline_script_a_rec kb = vb")
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_mutual_rec.txt")
+        myFixture.configureByText("test_inline_mutual_rec.txt", "inline_script = test/inline_script_a_rec")
+
+        val file = myFixture.file as ParadoxScriptFile
+        val ka = selectScope { file.ofPath("ka", inline = true).asProperty().all() }
+        val kb = selectScope { file.ofPath("kb", inline = true).asProperty().all() }
+        assertEquals(1, ka.size)
+        assertEquals(1, kb.size)
+    }
 }
