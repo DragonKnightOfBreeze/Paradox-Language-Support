@@ -78,10 +78,10 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
             private fun doCheck(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if (skipCheck(element, configs)) return
-                val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(element, configs)
-                if (occurrenceMap.isEmpty()) return
+                val occurrences = ParadoxExpressionManager.getChildOccurrences(element, configs)
+                if (occurrences.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
-                occurrenceMap.forEach { (configExpression, occurrence) ->
+                occurrences.forEach { (configExpression, occurrence) ->
                     if (overriddenProvider != null && overriddenProvider.skipTooManyExpressionCheck(configs, configExpression)) return@forEach
                     val r = doCheckOccurrence(element, position, occurrence, configExpression)
                     if (!r) return

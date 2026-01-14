@@ -395,7 +395,7 @@ object ParadoxConfigMatchService {
         // NOTE 这里需要兼容内联
         // NOTE propConfig.key 可能有重复，这种情况下只要有其中一个匹配即可
 
-        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(definition, it) })
+        val occurrences = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { ParadoxMatchOccurrenceService.evaluate(definition, it) })
         val configGroup = propertyConfigs.first().configGroup
         val matched = definition.properties(inline = true).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
@@ -410,14 +410,14 @@ object ParadoxConfigMatchService {
 
             val matched = propConfigs.any { propConfig ->
                 val matched = matchesPropertyForSubtype(definition, propertyElement, propConfig, matchOptions)
-                if (matched) occurrenceMap.get(propConfig.key)?.let { it.actual++ }
+                if (matched) occurrences.get(propConfig.key)?.let { it.actual++ }
                 matched
             }
             matched
         }
         if (!matched) return false
 
-        return occurrenceMap.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(relax = true) }
     }
 
     private fun matchesValuesForSubtype(block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, matchOptions: Int): Boolean {
@@ -426,7 +426,7 @@ object ParadoxConfigMatchService {
 
         // NOTE 这里需要兼容内联
 
-        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
+        val occurrences = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { ParadoxMatchOccurrenceService.evaluate(block, it) })
         val configGroup = valueConfigs.first().configGroup
         val matched = block.values(inline = true).process p@{ valueElement ->
             // 如果没有匹配的规则则忽略
@@ -434,14 +434,14 @@ object ParadoxConfigMatchService {
             val matched = valueConfigs.any { config ->
                 val configExpression = config.valueExpression
                 val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, configExpression, config, configGroup, matchOptions).get(matchOptions)
-                if (matched) occurrenceMap.get(config.value)?.let { it.actual++ }
+                if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }
             matched
         }
         if (!matched) return false
 
-        return occurrenceMap.values.all { it.isValid(relax = true) }
+        return occurrences.values.all { it.isValid(relax = true) }
     }
 
     private fun matchesSingleAliasForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {

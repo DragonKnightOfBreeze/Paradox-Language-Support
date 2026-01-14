@@ -129,14 +129,14 @@ object ParadoxCompletionManager {
             }
         }
         if (configs.isEmpty()) return
-        val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrences = ParadoxExpressionManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = true
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
 
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
-                if (shouldComplete(config, occurrenceMap)) {
+                if (shouldComplete(config, occurrences)) {
                     val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
@@ -171,13 +171,13 @@ object ParadoxCompletionManager {
             }
         }
         if (configs.isEmpty()) return
-        val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
+        val occurrences = ParadoxExpressionManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = false
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
 
         for (config in configs) {
-            if (shouldComplete(config, occurrenceMap)) {
+            if (shouldComplete(config, occurrences)) {
                 val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
@@ -226,11 +226,11 @@ object ParadoxCompletionManager {
         completeCsvExpression(context, result)
     }
 
-    private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    private fun shouldComplete(config: CwtPropertyConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.keyExpression
         // 如果类型是 `aliasName`，则无论 `cardinality` 如何定义，都应该提供补全（某些规则文件未正确编写）
         if (expression.type == CwtDataTypes.AliasName) return true
-        val actualCount = occurrenceMap[expression]?.actual ?: 0
+        val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max` ，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
         val cardinality = config.optionData.cardinality
@@ -242,9 +242,9 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    private fun shouldComplete(config: CwtValueConfig, occurrenceMap: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
+    private fun shouldComplete(config: CwtValueConfig, occurrences: Map<CwtDataExpression, ParadoxMatchOccurrence>): Boolean {
         val expression = config.valueExpression
-        val actualCount = occurrenceMap[expression]?.actual ?: 0
+        val actualCount = occurrences[expression]?.actual ?: 0
         // 如果写明了 `cardinality`，则为 `cardinality.max`，否则如果类型为常量，则为1，否则为 `null`，`null` 表示没有限制
         // 如果上限是动态的值（如，基于 `define` 的值），也不作限制
         val cardinality = config.optionData.cardinality

@@ -22,10 +22,10 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -107,7 +107,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = declarationConfig.singleton.list()
         val configGroup = context.configGroup
         val contextElement = context.element
-        val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val configs = ParadoxExpressionService.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return configs
     }
 }
@@ -162,7 +162,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         if (rootConfigs.isEmpty()) return emptyList()
         if (memberPathFromRoot.isEmpty()) return rootConfigs
-        val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val configs = ParadoxExpressionService.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return configs
     }
 
@@ -218,7 +218,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val inlineConfigs = configGroup.directivesModel.inlineScript.orNull() ?: return null
         val contextElement = context.element
         val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
-        val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val configs = ParadoxExpressionService.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return configs
     }
 }
@@ -271,7 +271,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, contextElement, context, matchOptions)
         if (rootConfigs.isEmpty()) return emptyList()
         if (memberPathFromRoot.isEmpty()) return rootConfigs
-        val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val configs = ParadoxExpressionService.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return configs
     }
 
@@ -333,7 +333,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val declarationConfig = ParadoxDefinitionInjectionManager.getDeclaration(contextElement, definitionInjectionInfo) ?: return null
         val rootConfigs = declarationConfig.singleton.list()
         val configGroup = context.configGroup
-        val configs = ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val configs = ParadoxExpressionService.getConfigsForConfigContext(contextElement, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
         return configs
     }
 }
