@@ -1,4 +1,4 @@
-package icu.windea.pls.inject
+package icu.windea.pls.inject.support
 
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
@@ -7,10 +7,11 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.InlinedDelegateField
 import icu.windea.pls.inject.annotations.InlinedDelegateFields
-import icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport
 import javassist.ClassClassPath
 import javassist.ClassPool
 import org.junit.Assert.*
@@ -18,7 +19,7 @@ import org.junit.Test
 
 class InlinedDelegateFieldCodeInjectorSupportTest {
     @Suppress("unused")
-    class Model : UserDataHolderBase() {
+     class Model : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
             val value by registerKey<Int>(this)
@@ -29,7 +30,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     }
 
     @Suppress("unused")
-    class Model2 : UserDataHolderBase() {
+     class Model2 : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
             val value by registerKey<Int, UserDataHolder>(this) { 0 }
@@ -40,7 +41,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     }
 
     @Suppress("unused")
-    class ModelFail : UserDataHolderBase() {
+     class ModelFail : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
         }
@@ -51,15 +52,15 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     }
 
     @InlinedDelegateField(value = "name")
-    @InjectionTarget("icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$Model")
+    @InjectionTarget("icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Model")
     private class Injector : CodeInjectorBase()
 
     @InlinedDelegateFields
-    @InjectionTarget("icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$Model2")
+    @InjectionTarget("icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Model2")
     private class Injector2 : CodeInjectorBase()
 
     @InlinedDelegateField(value = "name")
-    @InjectionTarget("icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$ModelFail")
+    @InjectionTarget("icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$ModelFail")
     private class InjectorFail : CodeInjectorBase()
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
@@ -70,7 +71,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
     @Test
     fun testInlineDelegateField() {
-        val targetClassName = "icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$Model"
+        val targetClassName = "icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Model"
 
         val originalClass = Class.forName(targetClassName, false, javaClass.classLoader)
         assertTrue(originalClass.declaredFields.any { it.name == "name\$delegate" })
@@ -104,7 +105,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
     @Test
     fun testInlineDelegateField_inferFailed_skipped() {
-        val targetClassName = "icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$ModelFail"
+        val targetClassName = "icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$ModelFail"
 
         val originalClass = Class.forName(targetClassName, false, javaClass.classLoader)
         assertTrue(originalClass.declaredFields.any { it.name == "name\$delegate" })
@@ -137,7 +138,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
     @Test
     fun testInlineDelegateFields_inlineAll() {
-        val targetClassName = "icu.windea.pls.inject.InlinedDelegateFieldCodeInjectorSupportTest\$Model2"
+        val targetClassName = "icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Model2"
 
         val originalClass = Class.forName(targetClassName, false, javaClass.classLoader)
         assertTrue(originalClass.declaredFields.any { it.name == "name\$delegate" })

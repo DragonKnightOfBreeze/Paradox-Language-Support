@@ -34,7 +34,7 @@ fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKey<T>): T? {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
-    if (key is RegistedKeyWithDefault) return key.defaultValue
+    if (key is RegistedKeyWithDefault) return key.default
     if (key !is RegistedKeyWithFactory<*, *>) return null
     key as RegistedKeyWithFactory<T, THIS>
     val computed = key.factory(this)
@@ -49,9 +49,9 @@ fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKey<T>): T? {
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKeyWithDefault<T>): T {
     val value = getUserData(key)
-    if (value === EMPTY_OBJECT) return key.defaultValue
+    if (value === EMPTY_OBJECT) return key.default
     if (value != null) return value
-    return key.defaultValue
+    return key.default
 }
 
 /**
@@ -88,7 +88,7 @@ fun <T> ProcessingContext.getOrPut(key: RegistedKey<T>): T? {
     val value = get(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
-    if (key is RegistedKeyWithDefault) return key.defaultValue
+    if (key is RegistedKeyWithDefault) return key.default
     if (key !is RegistedKeyWithFactory<*, *>) return null
     key as RegistedKeyWithFactory<T, ProcessingContext>
     val computed = key.factory(this)
@@ -103,9 +103,9 @@ fun <T> ProcessingContext.getOrPut(key: RegistedKey<T>): T? {
 @Suppress("UNCHECKED_CAST")
 fun <T> ProcessingContext.getOrPut(key: RegistedKeyWithDefault<T>): T {
     val value = get(key)
-    if (value === EMPTY_OBJECT) return key.defaultValue
+    if (value === EMPTY_OBJECT) return key.default
     if (value != null) return value
-    return key.defaultValue
+    return key.default
 }
 
 /**

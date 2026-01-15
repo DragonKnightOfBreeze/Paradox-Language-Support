@@ -1,6 +1,9 @@
-package icu.windea.pls.inject
+package icu.windea.pls.inject.injectors
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.inject.CodeInjector
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
@@ -17,16 +20,49 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class CodeInjectorsTest : BasePlatformTestCase() {
     private companion object {
-        const val TARGET_BEFORE = "icu.windea.pls.inject.CodeInjectorsTest\$TargetBefore"
-        const val TARGET_BODY = "icu.windea.pls.inject.CodeInjectorsTest\$TargetBody"
-        const val TARGET_AFTER = "icu.windea.pls.inject.CodeInjectorsTest\$TargetAfter"
-        const val TARGET_AFTER_FINALLY = "icu.windea.pls.inject.CodeInjectorsTest\$TargetAfterFinally"
-        const val TARGET_STATIC = "icu.windea.pls.inject.CodeInjectorsTest\$TargetStatic"
-        const val TARGET_PLUGIN_ID_SKIP = "icu.windea.pls.inject.CodeInjectorsTest\$TargetPluginIdSkip"
-        const val TARGET_INTERNAL_TO_STRING_MODEL = "icu.windea.pls.inject.CodeInjectorsTest\$InternalToStringModel"
-        const val TARGET_FIELD_CACHE_MODEL = "icu.windea.pls.inject.CodeInjectorsTest\$FieldCacheModel"
-        const val TARGET_OPTIMIZED_FIELD_MODEL = "icu.windea.pls.inject.CodeInjectorsTest\$OptimizedFieldModel"
+        const val TARGET_BEFORE = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetBefore"
+        const val TARGET_BODY = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetBody"
+        const val TARGET_AFTER = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetAfter"
+        const val TARGET_AFTER_FINALLY = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetAfterFinally"
+        const val TARGET_STATIC = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetStatic"
+        const val TARGET_PLUGIN_ID_SKIP = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetPluginIdSkip"
+        const val TARGET_INTERNAL_TO_STRING_MODEL = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$InternalToStringModel"
+        const val TARGET_FIELD_CACHE_MODEL = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$FieldCacheModel"
+        const val TARGET_OPTIMIZED_FIELD_MODEL = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$OptimizedFieldModel"
     }
+
+    private class InternalToStringModel(private val v: Int) {
+        override fun toString(): String = "V:$v"
+    }
+
+    private class FieldCacheModel {
+        private var computeCount: Int = 0
+
+        fun compute(): Int {
+            computeCount++
+            return computeCount
+        }
+
+        fun cleanUp() {
+        }
+
+        fun getComputeCount(): Int = computeCount
+    }
+
+    private open class OptimizedFieldOldType {
+        open fun kind(): String = "old"
+    }
+
+    private class OptimizedFieldNewType : OptimizedFieldOldType() {
+        override fun kind(): String = "new"
+    }
+
+    private class OptimizedFieldModel {
+        private var value: OptimizedFieldOldType = OptimizedFieldOldType()
+
+        fun getKind(): String = value.kind()
+    }
+
 
     override fun setUp() {
         super.setUp()
@@ -295,37 +331,5 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
         val field = clazz.getDeclaredField("value")
         assertEquals(OptimizedFieldNewType::class.java.name, field.type.name)
-    }
-
-    private class InternalToStringModel(private val v: Int) {
-        override fun toString(): String = "V:$v"
-    }
-
-    private class FieldCacheModel {
-        private var computeCount: Int = 0
-
-        fun compute(): Int {
-            computeCount++
-            return computeCount
-        }
-
-        fun cleanUp() {
-        }
-
-        fun getComputeCount(): Int = computeCount
-    }
-
-    private open class OptimizedFieldOldType {
-        open fun kind(): String = "old"
-    }
-
-    private class OptimizedFieldNewType : OptimizedFieldOldType() {
-        override fun kind(): String = "new"
-    }
-
-    private class OptimizedFieldModel {
-        private var value: OptimizedFieldOldType = OptimizedFieldOldType()
-
-        fun getKind(): String = value.kind()
     }
 }

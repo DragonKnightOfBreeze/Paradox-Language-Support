@@ -1,8 +1,9 @@
-package icu.windea.pls.inject
+package icu.windea.pls.inject.support
 
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectionTarget
-import icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport
 import javassist.ClassClassPath
 import javassist.ClassPool
 import org.junit.Assert.*
@@ -24,7 +25,7 @@ class FieldCacheCodeInjectorSupportTest {
     }
 
     @FieldCache("getAndInc", cleanUp = "cleanUp")
-    @InjectionTarget("icu.windea.pls.inject.FieldCacheCodeInjectorSupportTest\$Model")
+    @InjectionTarget("icu.windea.pls.inject.support.FieldCacheCodeInjectorSupportTest\$Model")
     private class Injector : CodeInjectorBase()
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
@@ -35,7 +36,7 @@ class FieldCacheCodeInjectorSupportTest {
 
     @Test
     fun testFieldCache_andCleanup() {
-        val targetClassName = "icu.windea.pls.inject.FieldCacheCodeInjectorSupportTest\$Model"
+        val targetClassName = "icu.windea.pls.inject.support.FieldCacheCodeInjectorSupportTest\$Model"
 
         val pool = ClassPool.getDefault()
         pool.appendClassPath(ClassClassPath(javaClass))

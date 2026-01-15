@@ -101,6 +101,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
 
     // region Accessors
 
+    // see: icu.windea.pls.inject.injectors.ext.InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase
+
     final override val schemas by Keys.schemas
     final override val foldingSettings by Keys.foldingSettings
     final override val postfixTemplateSettings by Keys.postfixTemplateSettings

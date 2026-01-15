@@ -156,7 +156,7 @@ class KeysTest {
         val registry = Registry()
         val k = registry.k
         assertEquals(registry.id + ".k", k.name)
-        assertEquals("d", k.defaultValue)
+        assertEquals("d", k.default)
         assertSame(k, registry.k)
     }
 
@@ -169,7 +169,7 @@ class KeysTest {
         val registry = Registry()
         val k = registry.k
         assertEquals("named.key", k.name)
-        assertEquals("d", k.defaultValue)
+        assertEquals("d", k.default)
         assertSame(k, registry.k)
     }
 
@@ -200,8 +200,8 @@ class KeysTest {
         assertEquals("KeysTest.namedDefaultKey", namedDefaultKey.name)
         assertEquals("KeysTest.namedFactoryKey", namedFactoryKey.name)
 
-        assertEquals("d1", defaultKey.defaultValue)
-        assertEquals("d2", namedDefaultKey.defaultValue)
+        assertEquals("d1", defaultKey.default)
+        assertEquals("d2", namedDefaultKey.default)
 
         assertSame(nullableKey, registry.nullableKey)
         assertSame(defaultKey, registry.defaultKey)
