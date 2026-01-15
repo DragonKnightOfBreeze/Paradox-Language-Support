@@ -82,10 +82,10 @@ interface KeyProviders {
         }
     }
 
-    class WithDefault<T>(registry: KeyRegistry, val default: T) : KeyProvider<T>(registry) {
+    class WithDefault<T>(registry: KeyRegistry, val defaultValue: T) : KeyProvider<T>(registry) {
         fun getKey(propName: String): RegistedKeyWithDefault<T> {
             val name = getKeyName(propName)
-            return register(name) { RegistedKeyWithDefault(registry, name, default) }
+            return register(name) { RegistedKeyWithDefault(registry, name, defaultValue) }
         }
     }
 
@@ -102,9 +102,9 @@ interface KeyProviders {
         }
     }
 
-    class NamedWithDefault<T>(registry: KeyRegistry, val name: String, val default: T) : KeyProvider<T>(registry) {
+    class NamedWithDefault<T>(registry: KeyRegistry, val name: String, val defaultValue: T) : KeyProvider<T>(registry) {
         fun getKey(): RegistedKeyWithDefault<T> {
-            return register(name) { RegistedKeyWithDefault(registry, name, default) }
+            return register(name) { RegistedKeyWithDefault(registry, name, defaultValue) }
         }
     }
 

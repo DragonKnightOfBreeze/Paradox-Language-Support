@@ -9,86 +9,109 @@ import icu.windea.pls.core.EMPTY_OBJECT
 import kotlin.reflect.KProperty
 
 /**
- * 获取用户数据，如果不存在则通过 [action] 获取默认值并保存。
- * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
+ * 获取用户数据，如果不存在则通过 [action] 计算并保存。
+ *
+ * 兼容计算后的值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> T): T {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
-    val defaultValue = action()
+    val computed = action()
     // default value is still saved if it's null
-    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
-    return defaultValue
+    putUserData(key as Key<Any>, computed ?: EMPTY_OBJECT)
+    return computed
 }
 
 /**
- * 获取用户数据，如果不存在则尝试从 [key] 获取默认值并保存。
- * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
+ * 获取用户数据，如果不存在则尝试从 [key] 获取默认值或计算并保存。
+ *
+ * 兼容计算后的值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKey<T>): T? {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
-    val defaultValue = when {
-        key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, THIS>).factory(this)
-        else -> return null
-    }
+    if (key is RegistedKeyWithDefault) return key.defaultValue
+    if (key !is RegistedKeyWithFactory<*, *>) return null
+    key as RegistedKeyWithFactory<T, THIS>
+    val computed = key.factory(this)
     // default value is still saved if it's null
-    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
-    return defaultValue
+    putUserData(key as Key<Any>, computed ?: EMPTY_OBJECT)
+    return computed
 }
 
 /**
- * 获取用户数据，如果不存在则从 [key] 获取默认值并保存。
- * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
+ * 获取用户数据，如果不存在则尝试从 [key] 获取默认值并保存。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKeyWithDefault<T>): T {
+    val value = getUserData(key)
+    if (value === EMPTY_OBJECT) return key.defaultValue
+    if (value != null) return value
+    return key.defaultValue
+}
+
+/**
+ * 获取用户数据，如果不存在则从 [key] 计算并保存。
+ *
+ * 兼容计算后的值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKeyWithFactory<T, THIS>): T {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
-    val defaultValue = key.factory(this)
+    val computed = key.factory(this)
     // default value is still saved if it's null
-    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
-    return defaultValue
+    putUserData(key as Key<Any>, computed ?: EMPTY_OBJECT)
+    return computed
 }
 
-inline operator fun <T> RegistedKey<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? {
-    return thisRef.getOrPutUserData(this)
-}
+inline operator fun <T> RegistedKey<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getOrPutUserData(this)
 
-inline operator fun <T, THIS : UserDataHolder> RegistedKeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
-    return thisRef.getOrPutUserData(this)
-}
+inline operator fun <T> RegistedKeyWithDefault<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T = thisRef.getOrPutUserData(this)
 
-inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) {
-    thisRef.putUserData(this, value)
-}
+inline operator fun <T, THIS : UserDataHolder> RegistedKeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T = thisRef.getOrPutUserData(this)
+
+inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
 
 /**
- * 获取用户数据，如果不存在则尝试从 [key] 获取默认值并保存。
- * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
+ * 获取上下文数据，如果不存在则尝试从 [key] 获取默认值或计算并保存。
+ *
+ * 兼容计算后的值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> ProcessingContext.getOrPut(key: RegistedKey<T>): T? {
     val value = get(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
-    val defaultValue = when {
-        key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, ProcessingContext>).factory(this)
-        else -> return null
-    }
+    if (key is RegistedKeyWithDefault) return key.defaultValue
+    if (key !is RegistedKeyWithFactory<*, *>) return null
+    key as RegistedKeyWithFactory<T, ProcessingContext>
+    val computed = key.factory(this)
     // default value is still saved if it's null
-    put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
-    return defaultValue
+    put(key as Key<Any>, computed ?: EMPTY_OBJECT)
+    return computed
 }
 
 /**
- * 获取用户数据，如果不存在则从 [key] 获取默认值并保存。
- * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
+ * 获取上下文数据，如果不存在则尝试从 [key] 获取默认值并保存。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> ProcessingContext.getOrPut(key: RegistedKeyWithDefault<T>): T {
+    val value = get(key)
+    if (value === EMPTY_OBJECT) return key.defaultValue
+    if (value != null) return value
+    return key.defaultValue
+}
+
+/**
+ * 获取上下文数据，如果不存在则从 [key] 计算并保存。
+ *
+ * 兼容计算后的值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> ProcessingContext.getOrPut(key: RegistedKeyWithFactory<T, ProcessingContext>): T {
@@ -101,14 +124,10 @@ fun <T> ProcessingContext.getOrPut(key: RegistedKeyWithFactory<T, ProcessingCont
     return defaultValue
 }
 
-inline operator fun <T> RegistedKey<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? {
-    return thisRef.getOrPut(this)
-}
+inline operator fun <T> RegistedKey<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrPut(this)
 
-inline operator fun <T> RegistedKeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
-    return thisRef.getOrPut(this)
-}
+inline operator fun <T> RegistedKeyWithDefault<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrPut(this)
 
-inline operator fun <T> RegistedKey<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) {
-    thisRef.put(this, value)
-}
+inline operator fun <T> RegistedKeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T = thisRef.getOrPut(this)
+
+inline operator fun <T> RegistedKey<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
