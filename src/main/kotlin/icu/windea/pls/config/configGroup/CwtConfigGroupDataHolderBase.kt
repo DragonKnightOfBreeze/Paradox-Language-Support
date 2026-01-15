@@ -153,58 +153,58 @@ private val UserDataHolder.parameterConfigs: FastSet<CwtMemberConfig<*>>
 // endregion
 
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
-    override fun clear() {
+    final override fun clear() {
         clearUserData()
     }
 
-    override val schemas get() = from.schemas
-    override val foldingSettings get() = from.foldingSettings
-    override val postfixTemplateSettings get() = from.postfixTemplateSettings
-    override val priorities get() = from.priorities
-    override val systemScopes get() = from.systemScopes
-    override val localisationLocalesById get() = from.localisationLocalesById
-    override val localisationLocalesByCode get() = from.localisationLocalesByCode
-    override val types get() = from.types
-    override val swappedTypes get() = from.swappedTypes
-    override val type2ModifiersMap get() = from.type2ModifiersMap
-    override val declarations get() = from.declarations
-    override val rows get() = from.rows
-    override val enums get() = from.enums
-    override val complexEnums get() = from.complexEnums
-    override val dynamicValueTypes get() = from.dynamicValueTypes
-    override val links get() = from.links
-    override val localisationLinks get() = from.localisationLinks
-    override val localisationCommands get() = from.localisationCommands
-    override val localisationPromotions get() = from.localisationPromotions
-    override val scopes get() = from.scopes
-    override val scopeAliasMap get() = from.scopeAliasMap
-    override val scopeGroups get() = from.scopeGroups
-    override val singleAliases get() = from.singleAliases
-    override val aliasGroups get() = from.aliasGroups
-    override val directives get() = from.directives
-    override val modifierCategories get() = from.modifierCategories
-    override val modifiers get() = from.modifiers
-    override val databaseObjectTypes get() = from.databaseObjectTypes
-    override val extendedScriptedVariables get() = from.extendedScriptedVariables
-    override val extendedDefinitions get() = from.extendedDefinitions
-    override val extendedGameRules get() = from.extendedGameRules
-    override val extendedOnActions get() = from.extendedOnActions
-    override val extendedComplexEnumValues get() = from.extendedComplexEnumValues
-    override val extendedDynamicValues get() = from.extendedDynamicValues
-    override val extendedInlineScripts get() = from.extendedInlineScripts
-    override val extendedParameters get() = from.extendedParameters
-    override val predefinedModifiers get() = from.predefinedModifiers
-    override val generatedModifiers get() = from.generatedModifiers
-    override val aliasKeysGroupConst get() = from.aliasKeysGroupConst
-    override val aliasKeysGroupNoConst get() = from.aliasKeysGroupNoConst
-    override val aliasNamesSupportScope get() = from.aliasNamesSupportScope
-    override val relatedLocalisationPatterns get() = from.relatedLocalisationPatterns
-    override val linksModel get() = from.linksModel
-    override val localisationLinksModel get() = from.localisationLinksModel
-    override val directivesModel get() = from.directivesModel
-    override val definitionTypesModel get() = from.definitionTypesModel
-    override val filePathExpressions get() = from.filePathExpressions
-    override val parameterConfigs get() = from.parameterConfigs
+    final override val schemas get() = from.schemas
+    final override val foldingSettings get() = from.foldingSettings
+    final override val postfixTemplateSettings get() = from.postfixTemplateSettings
+    final override val priorities get() = from.priorities
+    final override val systemScopes get() = from.systemScopes
+    final override val localisationLocalesById get() = from.localisationLocalesById
+    final override val localisationLocalesByCode get() = from.localisationLocalesByCode
+    final override val types get() = from.types
+    final override val swappedTypes get() = from.swappedTypes
+    final override val type2ModifiersMap get() = from.type2ModifiersMap
+    final override val declarations get() = from.declarations
+    final override val rows get() = from.rows
+    final override val enums get() = from.enums
+    final override val complexEnums get() = from.complexEnums
+    final override val dynamicValueTypes get() = from.dynamicValueTypes
+    final override val links get() = from.links
+    final override val localisationLinks get() = from.localisationLinks
+    final override val localisationCommands get() = from.localisationCommands
+    final override val localisationPromotions get() = from.localisationPromotions
+    final override val scopes get() = from.scopes
+    final override val scopeAliasMap get() = from.scopeAliasMap
+    final override val scopeGroups get() = from.scopeGroups
+    final override val singleAliases get() = from.singleAliases
+    final override val aliasGroups get() = from.aliasGroups
+    final override val directives get() = from.directives
+    final override val modifierCategories get() = from.modifierCategories
+    final override val modifiers get() = from.modifiers
+    final override val databaseObjectTypes get() = from.databaseObjectTypes
+    final override val extendedScriptedVariables get() = from.extendedScriptedVariables
+    final override val extendedDefinitions get() = from.extendedDefinitions
+    final override val extendedGameRules get() = from.extendedGameRules
+    final override val extendedOnActions get() = from.extendedOnActions
+    final override val extendedComplexEnumValues get() = from.extendedComplexEnumValues
+    final override val extendedDynamicValues get() = from.extendedDynamicValues
+    final override val extendedInlineScripts get() = from.extendedInlineScripts
+    final override val extendedParameters get() = from.extendedParameters
+    final override val predefinedModifiers get() = from.predefinedModifiers
+    final override val generatedModifiers get() = from.generatedModifiers
+    final override val aliasKeysGroupConst get() = from.aliasKeysGroupConst
+    final override val aliasKeysGroupNoConst get() = from.aliasKeysGroupNoConst
+    final override val aliasNamesSupportScope get() = from.aliasNamesSupportScope
+    final override val relatedLocalisationPatterns get() = from.relatedLocalisationPatterns
+    final override val linksModel get() = from.linksModel
+    final override val localisationLinksModel get() = from.localisationLinksModel
+    final override val directivesModel get() = from.directivesModel
+    final override val definitionTypesModel get() = from.definitionTypesModel
+    final override val filePathExpressions get() = from.filePathExpressions
+    final override val parameterConfigs get() = from.parameterConfigs
 }
 
 class CwtLinksModelBase : CwtLinksModel {

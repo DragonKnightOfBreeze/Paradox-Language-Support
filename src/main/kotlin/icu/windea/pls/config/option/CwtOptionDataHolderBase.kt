@@ -90,7 +90,7 @@ private var UserDataHolder.perDefinition: Boolean?
 // endregion
 
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
-    override fun copyTo(target: CwtOptionDataHolder) {
+    final override fun copyTo(target: CwtOptionDataHolder) {
         val keys = userMap.keys
         for (key in keys) {
             if (key !is RegistedKey || key.registry != CwtOptionDataKeys) continue
@@ -98,100 +98,100 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         }
     }
 
-    override var optionConfigs: List<CwtOptionMemberConfig<*>>
+    final override var optionConfigs: List<CwtOptionMemberConfig<*>>
         get() = from.optionConfigs ?: emptyList()
         set(value) = run { from.optionConfigs = value }
-    override var apiStatus: CwtApiStatus?
+    final override var apiStatus: CwtApiStatus?
         get() = from.apiStatus
         set(value) = run { from.apiStatus = value }
-    override var cardinality: CwtCardinalityExpression?
+    final override var cardinality: CwtCardinalityExpression?
         get() = from.cardinality
         set(value) = run { from.cardinality = value }
-    override var cardinalityMinDefine: String?
+    final override var cardinalityMinDefine: String?
         get() = from.cardinalityMinDefine
         set(value) = run { from.cardinalityMinDefine = value }
-    override var cardinalityMaxDefine: String?
+    final override var cardinalityMaxDefine: String?
         get() = from.cardinalityMaxDefine
         set(value) = run { from.cardinalityMaxDefine = value }
-    override var predicate: Map<String, ReversibleValue<String>>?
+    final override var predicate: Map<String, ReversibleValue<String>>?
         get() = from.predicate
         set(value) = run { from.predicate = value }
-    override var replaceScopes: Map<String, String>?
+    final override var replaceScopes: Map<String, String>?
         get() = from.replaceScopes
         set(value) = run { from.replaceScopes = value }
-    override var pushScope: String?
+    final override var pushScope: String?
         get() = from.pushScope
         set(value) = run { from.pushScope = value }
-    override var scopeContext: ParadoxScopeContext?
+    final override var scopeContext: ParadoxScopeContext?
         get() = from.scopeContext
         set(value) = run { from.scopeContext = value }
-    override var supportedScopes: Set<String>
+    final override var supportedScopes: Set<String>
         get() = from.supportedScopes.orEmpty()
         set(value) = run { from.supportedScopes = value }
-    override var type: String?
+    final override var type: String?
         get() = from.type
         set(value) = run { from.type = value }
-    override var hint: String?
+    final override var hint: String?
         get() = from.hint
         set(value) = run { from.hint = value }
-    override var eventType: String?
+    final override var eventType: String?
         get() = from.eventType
         set(value) = run { from.eventType = value }
-    override var contextKey: String?
+    final override var contextKey: String?
         get() = from.contextKey
         set(value) = run { from.contextKey = value }
-    override var contextConfigsType: String
+    final override var contextConfigsType: String
         get() = from.contextConfigsType ?: "single"
         set(value) = run { from.contextConfigsType = value }
-    override var group: String?
+    final override var group: String?
         get() = from.group
         set(value) = run { from.group = value }
-    override var typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
+    final override var typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
         get() = from.typeKeyFilter
         set(value) = run { from.typeKeyFilter = value }
-    override var typeKeyRegex: Regex?
+    final override var typeKeyRegex: Regex?
         get() = from.typeKeyRegex
         set(value) = run { from.typeKeyRegex = value }
-    override var startsWith: String?
+    final override var startsWith: String?
         get() = from.startsWith
         set(value) = run { from.startsWith = value }
-    override var onlyIfNot: Set<String>?
+    final override var onlyIfNot: Set<String>?
         get() = from.onlyIfNot
         set(value) = run { from.onlyIfNot = value }
-    override var graphRelatedTypes: Set<String>?
+    final override var graphRelatedTypes: Set<String>?
         get() = from.graphRelatedTypes
         set(value) = run { from.graphRelatedTypes = value }
-    override var severity: String?
+    final override var severity: String?
         get() = from.severity
         set(value) = run { from.severity = value }
-    override var fileExtensions: Set<String>?
+    final override var fileExtensions: Set<String>?
         get() = from.fileExtensions
         set(value) = run { from.fileExtensions = value }
-    override var modifierCategories: Set<String>?
+    final override var modifierCategories: Set<String>?
         get() = from.modifierCategories
         set(value) = run { from.modifierCategories = value }
-    override var colorType: String?
+    final override var colorType: String?
         get() = from.colorType
         set(value) = run { from.colorType = value }
-    override var inject: String?
+    final override var inject: String?
         get() = from.inject
         set(value) = run { from.inject = value }
-    override var required: Boolean
+    final override var required: Boolean
         get() = from.required ?: false
         set(value) = run { from.required = value }
-    override var primary: Boolean
+    final override var primary: Boolean
         get() = from.primary ?: false
         set(value) = run { from.primary = value }
-    override var inherit: Boolean
+    final override var inherit: Boolean
         get() = from.inherit ?: false
         set(value) = run { from.inherit = value }
-    override var tag: Boolean
+    final override var tag: Boolean
         get() = from.tag ?: false
         set(value) = run { from.tag = value }
-    override var caseInsensitive: Boolean
+    final override var caseInsensitive: Boolean
         get() = from.caseInsensitive ?: false
         set(value) = run { from.caseInsensitive = value }
-    override var perDefinition: Boolean
+    final override var perDefinition: Boolean
         get() = from.perDefinition ?: false
         set(value) = run { from.perDefinition = value }
 }
