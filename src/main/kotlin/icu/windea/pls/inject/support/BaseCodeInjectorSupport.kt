@@ -6,10 +6,10 @@ import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.CtClass
 import javassist.CtMethod
 import javassist.Modifier
-import java.lang.reflect.Method
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.findAnnotation
@@ -22,15 +22,6 @@ import kotlin.reflect.jvm.javaMethod
  */
 class BaseCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
-
-    data class InjectMethodInfo(
-        val method: Method,
-        val name: String,
-        val pointer: InjectMethod.Pointer,
-        val static: Boolean,
-        val hasReceiver: Boolean,
-        val hasReturnValue: Boolean,
-    )
 
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return

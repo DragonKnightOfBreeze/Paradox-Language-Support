@@ -9,6 +9,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
+import icu.windea.pls.inject.model.InjectionTargetInfo
 import kotlin.reflect.full.findAnnotation
 
 /**
@@ -19,16 +20,16 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     override val id: String = javaClass.name
 
     final override fun inject() {
-        val codeInjectorInfo = getCodeInjectorInfo() ?: return
+        val injectionTargetInfo = getInjectionTargetInfo() ?: return
 
-        val pluginId = codeInjectorInfo.injectPluginId
+        val pluginId = injectionTargetInfo.injectPluginId
         val enabledPlugin = pluginId.orNull()?.let { PluginId.findId(it) }
             ?.let { PluginManager.getInstance().findEnabledPlugin(it) }
         // skip if plugin of specied plugin id is not enabled
         if (pluginId.isNotEmpty() && enabledPlugin == null) return
 
         val classPool = CodeInjectorScope.classPool ?: return
-        val injectTargetName = codeInjectorInfo.injectTargetName
+        val injectTargetName = injectionTargetInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
         putUserData(CodeInjectorScope.targetClassKey, targetClass)
 
@@ -47,7 +48,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         putUserData(CodeInjectorScope.targetClassKey, null)
     }
 
-    private fun getCodeInjectorInfo(): CodeInjectorInfo? {
+    private fun getInjectionTargetInfo(): InjectionTargetInfo? {
         val injectionTarget = this::class.findAnnotation<InjectionTarget>()
         if (injectionTarget == null) {
             thisLogger().error("Code injector $id is not annotated with @InjectionTarget")
@@ -55,7 +56,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         }
         val injectTargetName = injectionTarget.value
         val injectPluginId = injectionTarget.pluginId
-        return CodeInjectorInfo(this, injectTargetName, injectPluginId)
+        return InjectionTargetInfo(this, injectTargetName, injectPluginId)
     }
 
     private fun applyCodeInjectorSupports() {
