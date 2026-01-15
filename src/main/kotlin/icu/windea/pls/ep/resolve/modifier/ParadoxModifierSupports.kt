@@ -26,7 +26,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport.Keys.synced
+import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
@@ -66,9 +66,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // region Extensions
 
-val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).synced()
-val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).synced()
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.templateExpression by registerKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).withSync()
+val ParadoxModifierSupport.Keys.economicCategoryInfo by registerKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).withSync()
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by registerKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).withSync()
 
 var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
