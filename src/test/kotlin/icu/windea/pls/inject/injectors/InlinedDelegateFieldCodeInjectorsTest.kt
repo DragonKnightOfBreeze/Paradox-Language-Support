@@ -24,6 +24,8 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
 
     override fun setUp() {
         super.setUp()
+        // The injector framework relies on a shared ClassPool. In tests, we explicitly initialize/reset it.
+        // to avoid leaking modified CtClass instances across different test classes.
         CodeInjectorScope.classPool = CodeInjectorScope.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
         CodeInjectorScope.codeInjectors.clear()
     }
@@ -55,7 +57,10 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
         val pool = CodeInjectorScope.classPool ?: error("ClassPool is not initialized")
         val injectedBytecode = mutableMapOf<String, ByteArray>()
 
-        // 方案A：不调用 CtClass.toClass()，只在 CtClass 上应用 supports 并导出字节码，然后用隔离的 ClassLoader 加载。
+        // NOTE: We must NOT call `CtClass.toClass()` here.
+        // The JVM does not allow redefining an already-loaded class within the same ClassLoader.
+        // In a full test run, these production classes may have been loaded by other tests first.
+        // Instead, we apply supports on CtClass and load the modified bytecode in an isolated ClassLoader.
         for (injector in injectors) {
             val injectionTarget = injector.javaClass.getAnnotation(InjectionTarget::class.java) ?: continue
             val targetClassName = injectionTarget.value
@@ -73,6 +78,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             injector.putUserData(CodeInjectorScope.targetClassKey, null)
         }
 
+        // Isolated loader for injected bytecode (no global side effects).
         val loader = ByteArrayClassLoader(classLoader)
         val injectedOptionBaseClass = loader.define(optionBaseClassName, injectedBytecode.getValue(optionBaseClassName))
         val injectedConfigGroupBaseClass = loader.define(configGroupBaseClassName, injectedBytecode.getValue(configGroupBaseClassName))
@@ -87,7 +93,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             assertFalse("Expected no delegated fields in $configGroupBaseClassName after injection", hasDelegateField)
         }
 
-        // verify subclasses can be loaded/instantiated and accessors work
+        // Verify basic accessor behavior via subclasses defined in the same isolated loader.
         run {
             val modelClassName = "icu.windea.pls.inject.injectors.InlinedDelegateFieldCodeInjectorsTest\$OptionDataModel_Injected"
             val ctModelClass = pool.makeClass(modelClassName)

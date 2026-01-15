@@ -37,6 +37,7 @@ class OptimizedFieldCodeInjectorSupportTest {
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
         fun define(name: String, bytes: ByteArray): Class<*> {
+            // Load the modified class in an isolated loader so we don't redefine an already-loaded class.
             return defineClass(name, bytes, 0, bytes.size)
         }
     }
@@ -48,8 +49,12 @@ class OptimizedFieldCodeInjectorSupportTest {
         val pool = ClassPool.getDefault()
         pool.appendClassPath(ClassClassPath(javaClass))
         val ctClass = pool.get(targetClassName)
+        // CtClass loaded from ClassPool may be frozen depending on how it was obtained.
+        // We defrost it explicitly because we are going to mutate bytecode.
         ctClass.defrost()
 
+        // OptimizedFieldCodeInjectorSupport reads CodeInjectorScope.classPool during transformations.
+        // In production this is set by CodeInjectorService; in tests we set/reset it explicitly.
         CodeInjectorScope.classPool = pool
         try {
             val injector = Injector()
@@ -57,6 +62,7 @@ class OptimizedFieldCodeInjectorSupportTest {
 
             OptimizedFieldCodeInjectorSupport().apply(injector)
 
+            // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
             val bytecode = ctClass.toBytecode()
             ctClass.detach()
 

@@ -25,6 +25,8 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
             val value by registerKey<Int>(this)
         }
 
+        // Kotlin generates instance fields like `name$delegate` for delegated properties.
+        // InlinedDelegateFieldCodeInjectorSupport removes those fields and replaces reads with static expressions.
         var name by Keys.name
         var value by Keys.value
     }
@@ -36,6 +38,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
             val value by registerKey<Int, UserDataHolder>(this) { 0 }
         }
 
+        // This model has multiple delegated properties so we can test `@InlinedDelegateFields` (inline-all mode).
         var name by Keys.name
         var value by Keys.value
     }
@@ -48,6 +51,8 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
         private fun nameDelegate() = Keys.name
 
+        // Delegate expression is not a simple static expression in this pattern.
+        // The support should fail to infer and skip inlining (this is expected).
         var name by nameDelegate()
     }
 
@@ -65,6 +70,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
         fun define(name: String, bytes: ByteArray): Class<*> {
+            // Load the modified class in an isolated loader so we don't redefine an already-loaded class.
             return defineClass(name, bytes, 0, bytes.size)
         }
     }
@@ -86,6 +92,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
+        // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
         val bytecode = ctClass.toBytecode()
         ctClass.detach()
 
@@ -120,6 +127,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
+        // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
         val bytecode = ctClass.toBytecode()
         ctClass.detach()
 
@@ -154,6 +162,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
+        // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
         val bytecode = ctClass.toBytecode()
         ctClass.detach()
 

@@ -20,6 +20,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class CodeInjectorsTest : BasePlatformTestCase() {
     private companion object {
+        // NOTE: Annotation arguments must be compile-time constants.
+        // Also note that nested classes use '$' in JVM internal names.
         const val TARGET_BEFORE = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetBefore"
         const val TARGET_BODY = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetBody"
         const val TARGET_AFTER = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetAfter"
@@ -66,6 +68,8 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     override fun setUp() {
         super.setUp()
+        // CodeInjectorBase uses CodeInjectorScope.classPool. We reset it per test to avoid cross-test pollution.
+        // ClassClassPath(javaClass) ensures Javassist can resolve test classes created/used in this test.
         CodeInjectorScope.classPool = CodeInjectorScope.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
         CodeInjectorScope.codeInjectors.clear()
     }
@@ -84,11 +88,14 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         val ctClass = pool.makeClass(className)
         ctClass.addConstructor(CtNewConstructor.defaultConstructor(ctClass))
         methods.forEach { ctClass.addMethod(CtNewMethod.make(it, ctClass)) }
+        // Prevent pruning so that CtClass is fully materialized for later transformations.
         ctClass.stopPruning(true)
         return ctClass
     }
 
     private fun findLoadedClass(classLoader: ClassLoader, className: String): Class<*>? {
+        // We use reflection to check if the target class has already been loaded.
+        // If it is already loaded, CtClass.toClass() will fail because classes cannot be defined twice.
         val m = ClassLoader::class.java.getDeclaredMethod("findLoadedClass", String::class.java)
         m.isAccessible = true
         return m.invoke(classLoader, className) as? Class<*>
@@ -100,6 +107,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_baseSupport_before_continueInvocation() {
+        // Build a target class dynamically so we don't touch any production/platform classes.
         makeTargetClass(
             TARGET_BEFORE,
             listOf(
@@ -107,6 +115,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
             )
         )
 
+        // pluginId is required here to force CodeInjectorBase to define the modified class in the plugin classloader.
         @InjectionTarget(TARGET_BEFORE, pluginId = "icu.windea.pls")
         class Injector : CodeInjectorBase() {
             @InjectMethod(value = "sum", pointer = InjectMethod.Pointer.BEFORE)
@@ -129,6 +138,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_baseSupport_body_replace() {
+        // Pointer.BODY replaces the whole method body (i.e., the original implementation is not executed).
         makeTargetClass(
             TARGET_BODY,
             listOf(
@@ -156,6 +166,8 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_baseSupport_after_useReturnValue() {
+        // `Pointer.AFTER` runs after the original method body and can override the return value.
+        // The original return value is passed to the injection method as an extra parameter.
         makeTargetClass(
             TARGET_AFTER,
             listOf(
@@ -183,6 +195,8 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_baseSupport_afterFinally_useReturnValue() {
+        // Pointer.AFTER_FINALLY is implemented via a try/finally-style pattern.
+        // It also provides the original return value to the injection method.
         makeTargetClass(
             TARGET_AFTER_FINALLY,
             listOf(
@@ -210,6 +224,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_baseSupport_staticMethod() {
+        // Static target methods require static = true so that the generated call site uses a null receiver.
         makeTargetClass(
             TARGET_STATIC,
             listOf(
@@ -236,6 +251,8 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_injector_pluginId_notEnabled_skip() {
+        // If pluginId is specified but the plugin is not enabled, CodeInjectorBase.inject() will skip injection.
+        // This test verifies that the target class is not defined/loaded as a side effect.
         makeTargetClass(
             TARGET_PLUGIN_ID_SKIP,
             listOf(
@@ -262,7 +279,8 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_inject_internalModel_toString_after() {
-        // 不要对任何生产类（平台/插件）做注入，以免污染全局行为影响其它测试。
+        // Do NOT inject any production classes (platform or plugin) in tests.
+        // Redefining a real class would globally change its behavior and may break unrelated tests.
         if (findLoadedClass(this::class.java.classLoader, TARGET_INTERNAL_TO_STRING_MODEL) != null) return
 
         @InjectionTarget(TARGET_INTERNAL_TO_STRING_MODEL)
@@ -285,6 +303,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_fieldCache_support_cache_and_cleanup() {
+        // FieldCacheCodeInjectorSupport injects a cache field and reuses it until cleanUp is called.
         if (findLoadedClass(this::class.java.classLoader, TARGET_FIELD_CACHE_MODEL) != null) return
 
         @InjectionTarget(TARGET_FIELD_CACHE_MODEL)
@@ -313,6 +332,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
 
     @Test
     fun test_optimizedField_support_replaceType_and_init() {
+        // OptimizedFieldCodeInjectorSupport can replace a field type and update its initialization logic.
         if (findLoadedClass(this::class.java.classLoader, TARGET_OPTIMIZED_FIELD_MODEL) != null) return
 
         @InjectionTarget(TARGET_OPTIMIZED_FIELD_MODEL)

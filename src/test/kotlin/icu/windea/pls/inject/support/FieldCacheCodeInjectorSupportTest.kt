@@ -30,6 +30,7 @@ class FieldCacheCodeInjectorSupportTest {
 
     private class ByteArrayClassLoader(parent: ClassLoader) : ClassLoader(parent) {
         fun define(name: String, bytes: ByteArray): Class<*> {
+            // Load the modified class in an isolated loader so we don't redefine an already-loaded class.
             return defineClass(name, bytes, 0, bytes.size)
         }
     }
@@ -44,10 +45,12 @@ class FieldCacheCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = Injector()
+        // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorScope.targetClassKey`.
         injector.putUserData(CodeInjectorScope.targetClassKey, ctClass)
 
         FieldCacheCodeInjectorSupport().apply(injector)
 
+        // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
         val bytecode = ctClass.toBytecode()
         ctClass.detach()
 
