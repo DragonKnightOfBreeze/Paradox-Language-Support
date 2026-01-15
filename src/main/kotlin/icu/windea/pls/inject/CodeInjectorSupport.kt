@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 
 /**
  * 用于支持额外的代码注入器策略。
+ *
  * @see CodeInjector
  * @see CodeInjectorBase
  */

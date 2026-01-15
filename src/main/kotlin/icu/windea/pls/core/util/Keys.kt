@@ -10,6 +10,10 @@ import kotlin.reflect.KProperty
 
 inline fun <T> createKey(name: String): Key<T> = Key.create<T>(name)
 
+fun Key<*>.clear(target: UserDataHolder) {
+    target.putUserData(this, null)
+}
+
 @Suppress("UNCHECKED_CAST")
 fun Key<*>.copy(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
     this as Key<Any>
@@ -22,23 +26,36 @@ abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
     val keys: MutableMap<String, RegistedKey<*>> = ConcurrentHashMap()
 
+    fun getKeyName(shortName: String): String {
+        return "${id}.${shortName}"
+    }
+
     @Suppress("UNCHECKED_CAST")
-    fun <T> get(name: String): RegistedKey<T>? {
+    fun <T> getKey(name: String): RegistedKey<T> {
+        return keys.get(name) as RegistedKey<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getKeyOrNull(name: String): RegistedKey<T>? {
         return keys.get(name) as? RegistedKey<T>
     }
 
-    fun copy(from: UserDataHolder, to: UserDataHolder, ifPresent: Boolean = false) {
+    fun clear(target: UserDataHolder) {
+        keys.values.forEach { key -> key.clear(target) }
+    }
+
+    fun copy(source: UserDataHolder, to: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        keys.values.forEach { key -> key.copy(from, to, ifPresent) }
+        keys.values.forEach { key -> key.copy(source, to, ifPresent) }
     }
 }
 
 abstract class KeyRegistryWithSync : KeyRegistry() {
     val keysToSync: MutableMap<String, RegistedKey<*>> = ConcurrentHashMap()
 
-    fun sync(from: UserDataHolder, to: UserDataHolder, ifPresent: Boolean = false) {
+    fun sync(source: UserDataHolder, target: UserDataHolder, ifPresent: Boolean = false) {
         // use optimized method rather than `UserDataHolderBase.copyUserDataTo` to reduce memory usage
-        keysToSync.values.forEach { key -> key.copy(from, to, ifPresent) }
+        keysToSync.values.forEach { key -> key.copy(source, target, ifPresent) }
     }
 }
 
@@ -53,10 +70,6 @@ abstract class KeyProvider<T>(val registry: KeyRegistry) {
 
     fun addCallback(action: (RegistedKey<T>) -> Unit) {
         callback += action
-    }
-
-    protected fun getKeyName(propName: String): String {
-        return "${registry.id}.${propName}"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -76,22 +89,22 @@ fun <P : KeyProvider<T>, T> P.withSync() = withCallback { key -> if (registry is
 
 interface KeyProviders {
     class Normal<T>(registry: KeyRegistry) : KeyProvider<T>(registry) {
-        fun getKey(propName: String): RegistedKey<T> {
-            val name = getKeyName(propName)
+        fun getKey(shortName: String): RegistedKey<T> {
+            val name = registry.getKeyName(shortName)
             return register(name) { RegistedKey(registry, name) }
         }
     }
 
     class WithDefault<T>(registry: KeyRegistry, val defaultValue: T) : KeyProvider<T>(registry) {
-        fun getKey(propName: String): RegistedKeyWithDefault<T> {
-            val name = getKeyName(propName)
+        fun getKey(shortName: String): RegistedKeyWithDefault<T> {
+            val name = registry.getKeyName(shortName)
             return register(name) { RegistedKeyWithDefault(registry, name, defaultValue) }
         }
     }
 
     class WithFactory<T, THIS>(registry: KeyRegistry, val factory: THIS.() -> T) : KeyProvider<T>(registry) {
-        fun getKey(propName: String): RegistedKeyWithFactory<T, THIS> {
-            val name = getKeyName(propName)
+        fun getKey(shortName: String): RegistedKeyWithFactory<T, THIS> {
+            val name = registry.getKeyName(shortName)
             return register(name) { RegistedKeyWithFactory(registry, name, factory) }
         }
     }

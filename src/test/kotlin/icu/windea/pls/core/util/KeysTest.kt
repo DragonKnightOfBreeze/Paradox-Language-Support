@@ -23,6 +23,16 @@ class KeysTest {
     }
 
     @Test
+    fun testKeyClear() {
+        val target = Obj()
+
+        val k = createKey<String>("k")
+        target.putUserData(k, "v")
+        k.clear(target)
+        assertEquals("v", target.getUserData(k))
+    }
+
+    @Test
     fun testKeyCopy_basic() {
         val source = Obj()
         val target = Obj()
@@ -77,7 +87,7 @@ class KeysTest {
         val keyA2 = registry.keyA
         assertSame(keyA, keyA2)
 
-        val fetched = registry.get<String?>(expectedName)
+        val fetched = registry.getKeyOrNull<String?>(expectedName)
         assertSame(keyA, fetched)
     }
 

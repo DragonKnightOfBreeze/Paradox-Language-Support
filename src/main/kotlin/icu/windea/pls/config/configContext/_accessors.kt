@@ -9,12 +9,10 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
-import icu.windea.pls.model.paths.ParadoxMemberPath
 
 // region CwtConfigContext Accessors
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.memberPathFromRoot: ParadoxMemberPath? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterElement: ParadoxParameterElement? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterValueQuoted: Boolean? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptExpression: String? by registerKey(CwtConfigContext.Keys)

@@ -15,4 +15,3 @@ interface CodeInjector : UserDataHolder {
         val EP_NAME = ExtensionPointName<CodeInjector>("icu.windea.pls.inject.codeInjector")
     }
 }
-

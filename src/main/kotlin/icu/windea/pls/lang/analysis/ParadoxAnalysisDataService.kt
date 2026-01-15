@@ -75,16 +75,7 @@ class ParadoxAnalysisDataService : Disposable {
         // 避免内存泄露
         markedRootInfo = null
         markedFileInfo = null
-        for (file in trackedFiles.keys) {
-            file.cachedRootInfo = null
-            file.cachedFileInfo = null
-            file.cachedLocaleConfig = null
-            file.injectedRootInfo = null
-            file.injectedFileInfo = null
-            file.injectedLocaleConfig = null
-            file.injectedRootKeys = null
-            file.sliceInfos = null
-        }
+        trackedFiles.keys.forEach { file -> Keys.clear(file) }
     }
 
     companion object {
