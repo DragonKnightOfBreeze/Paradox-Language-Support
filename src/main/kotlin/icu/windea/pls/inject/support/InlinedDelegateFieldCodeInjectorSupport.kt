@@ -49,67 +49,64 @@ class InlinedDelegateFieldCodeInjectorSupport : CodeInjectorSupport {
         if (candidates.isEmpty()) return
 
         for ((propertyName, explicitExpression) in candidates) {
-            applyForOne(targetClass, propertyName, explicitExpression)
-        }
-    }
+            val delegateFieldName = "${propertyName}\$delegate"
+            val delegateExpression = explicitExpression ?: inferDelegateExpression(targetClass, delegateFieldName)
+            if (delegateExpression == null) {
+                logger.warn("Cannot infer delegate expression for field $delegateFieldName in ${targetClass.name}, skipped")
+                return
+            }
 
-    private fun applyForOne(targetClass: CtClass, propertyName: String, explicitExpression: String?) {
-        val delegateFieldName = "${propertyName}\$delegate"
-        val delegateExpression = explicitExpression ?: inferDelegateExpression(targetClass, delegateFieldName)
-        if (delegateExpression == null) {
-            logger.warn("Cannot infer delegate expression for field $delegateFieldName in ${targetClass.name}, skipped")
-            return
-        }
+            val field = runCatching { targetClass.getDeclaredField(delegateFieldName) }.getOrNull()
+            if (field == null) {
+                logger.warn("Delegate field $delegateFieldName not found in ${targetClass.name}")
+                return
+            }
+            if (javassist.Modifier.isStatic(field.modifiers)) {
+                logger.warn("Skip inlining delegate field $delegateFieldName in ${targetClass.name}: static field")
+                return
+            }
 
-        val field = runCatching { targetClass.getDeclaredField(delegateFieldName) }.getOrNull()
-        if (field == null) {
-            logger.warn("Delegate field $delegateFieldName not found in ${targetClass.name}")
-            return
-        }
-        if (javassist.Modifier.isStatic(field.modifiers)) {
-            logger.warn("Skip inlining delegate field $delegateFieldName in ${targetClass.name}: static field")
-            return
-        }
-
-        val editor = object : ExprEditor() {
-            override fun edit(f: FieldAccess) {
-                if (f.className == targetClass.name && f.fieldName == delegateFieldName && !f.isStatic) {
-                    when {
-                        f.isReader -> {
-                            // 用静态委托表达式替换字段读取。
-                            // 使用 ($r) 进行返回类型兼容转换。
-                            f.replace("{ \$_ = (\$r) ($delegateExpression); }")
-                        }
-                        f.isWriter -> {
-                            // 删除对该字段的写入（通常发生在构造函数中）。
-                            // 这里忽略写入即可。
-                            f.replace("{ }")
+            val editor = object : ExprEditor() {
+                override fun edit(f: FieldAccess) {
+                    if (f.className == targetClass.name && f.fieldName == delegateFieldName && !f.isStatic) {
+                        when {
+                            f.isReader -> {
+                                // 用静态委托表达式替换字段读取。
+                                // 使用 ($r) 进行返回类型兼容转换。
+                                f.replace("{ \$_ = (\$r) ($delegateExpression); }")
+                            }
+                            f.isWriter -> {
+                                // 删除对该字段的写入（通常发生在构造函数中）。
+                                // 这里忽略写入即可。
+                                f.replace("{ }")
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // 先替换所有字段访问，再移除字段本体。
-        for (constructor in targetClass.declaredConstructors) {
-            runCatching {
-                constructor.instrument(editor)
-            }.onFailure { e ->
-                logger.warn("Failed to instrument constructor ${constructor.name} in ${targetClass.name} for field $delegateFieldName: ${e.message}", e)
+            // 先替换所有字段访问，再移除字段本体。
+            for (constructor in targetClass.declaredConstructors) {
+                runCatching {
+                    constructor.instrument(editor)
+                }.onFailure { e ->
+                    logger.warn("Failed to instrument constructor ${constructor.name} in ${targetClass.name} for field $delegateFieldName: ${e.message}", e)
+                }
             }
-        }
-        for (method in targetClass.declaredMethods) {
-            runCatching {
-                method.instrument(editor)
-            }.onFailure { e ->
-                logger.warn("Failed to instrument method ${method.name} in ${targetClass.name} for field $delegateFieldName: ${e.message}", e)
+            for (method in targetClass.declaredMethods) {
+                runCatching {
+                    method.instrument(editor)
+                }.onFailure { e ->
+                    logger.warn("Failed to instrument method ${method.name} in ${targetClass.name} for field $delegateFieldName: ${e.message}", e)
+                }
             }
-        }
 
-        runCatching {
-            targetClass.removeField(field)
-        }.onFailure { e ->
-            logger.warn("Failed to remove field $delegateFieldName in ${targetClass.name}: ${e.message}", e)
+            runCatching {
+                targetClass.removeField(field)
+            }.onFailure { e ->
+                logger.warn("Failed to remove field $delegateFieldName in ${targetClass.name}: ${e.message}", e)
+            }
+
         }
     }
 

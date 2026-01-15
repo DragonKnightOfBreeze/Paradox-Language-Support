@@ -5,6 +5,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.util.application
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.staticProperty
 import javassist.ClassPool
 
@@ -22,6 +24,10 @@ class CodeInjectorService : Disposable {
     }
 
     fun init() {
+        if (!PlsFacade.isUnitTestMode()) {
+            application.putUserData(CodeInjectorScope.applyInjectionMethodKey, CodeInjectorScope.javaClass.methods.first { it.name == "applyInjection" })
+        }
+
         CodeInjectorScope.classPool = CodeInjectorScope.getClassPool()
 
         val codeInjectors = CodeInjectorScope.codeInjectors
@@ -45,6 +51,10 @@ class CodeInjectorService : Disposable {
     }
 
     override fun dispose() {
+        if (!PlsFacade.isUnitTestMode()) {
+            application.putUserData(CodeInjectorScope.applyInjectionMethodKey, null)
+        }
+
         // 避免内存泄露
         CodeInjectorScope.classPool = null
         CodeInjectorScope.codeInjectors.clear()

@@ -1,14 +1,20 @@
 package icu.windea.pls.inject
 
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool
 import javassist.CtClass
 import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
 @Suppress("unused")
 object CodeInjectorScope {
+    // keys for `Application`
+    @JvmField val applyInjectionMethodKey = createKey<Method>("APPLY_INJECTION_METHOD_BY_WINDEA")
+
+    // keys for `CodeInjector`
     @JvmField val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
     @JvmField val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
 
@@ -18,7 +24,7 @@ object CodeInjectorScope {
 
     @PublishedApi
     @JvmStatic
-    internal  fun getClassPool(): ClassPool {
+    internal fun getClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         classPool.appendClassPath(ClassClassPath(javaClass))
         val classPathList = System.getProperty("java.class.path")
@@ -30,11 +36,10 @@ object CodeInjectorScope {
                 // ignored
             }
         }
-        classPool.importPackage("java.util")
-        classPool.importPackage("icu.windea.pls.inject")
         return classPool
     }
 
+    @Throws(InvocationTargetException::class)
     @PublishedApi
     @JvmStatic
     internal fun applyInjection(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
@@ -66,8 +71,11 @@ object CodeInjectorScope {
         if (finalArgsSize != actualArgsSize) throw IllegalStateException("FInal args size != actual args size ($finalArgsSize != ${actualArgsSize})")
         try {
             return method.invoke(codeInjector, *finalArgs)
-        } catch (e: Exception) {
-            if (e is InvocationTargetException) throw e
+        } catch (e: InvocationTargetException) {
+            if (!PlsFacade.isUnitTestMode()) {
+                val cause = e.cause
+                if (cause is InvocationTargetException) throw cause
+            }
             throw e
         }
     }

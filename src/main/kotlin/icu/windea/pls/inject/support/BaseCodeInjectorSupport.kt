@@ -1,13 +1,16 @@
 package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.model.InjectMethodInfo
+import javassist.ClassPool
 import javassist.CtClass
+import javassist.CtField
 import javassist.CtMethod
 import javassist.Modifier
 import kotlin.reflect.full.declaredFunctions
@@ -23,7 +26,17 @@ import kotlin.reflect.jvm.javaMethod
 class BaseCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
+    private val applyInjectionMethodId get() = CodeInjectorScope.applyInjectionMethodKey.toString()
+    private val continueInvocationExceptionId get() = CodeInjectorScope.continueInvocationException.message
+
     override fun apply(codeInjector: CodeInjector) {
+        val classPool = CodeInjectorScope.classPool ?: return
+        classPool.importPackage("java.util")
+        classPool.importPackage("java.lang.reflect")
+        classPool.importPackage("com.intellij.openapi.application")
+        classPool.importPackage("com.intellij.openapi.util")
+        classPool.importPackage("icu.windea.pls.inject")
+
         val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
 
         val functions = codeInjector::class.declaredFunctions
@@ -46,29 +59,54 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         if (injectMethodInfos.isEmpty()) return
         codeInjector.putUserData(CodeInjectorScope.injectMethodInfosKey, injectMethodInfos)
 
-        injectMethods(codeInjector, targetClass, injectMethodInfos)
-    }
+        if (!PlsFacade.isUnitTestMode()) {
+            val code = "private static volatile Method __applyInjectionMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName(\"$applyInjectionMethodId\"));"
+            targetClass.addField(CtField.make(code, targetClass))
+        }
 
-    private fun injectMethods(codeInjector: CodeInjector, targetClass: CtClass, injectMethodInfos: Map<String, InjectMethodInfo>) {
-        injectMethodInfos.forEach f@{ (methodId, injectMethodInfo) ->
-            val targetMethod = findTargetMethod(targetClass, injectMethodInfo)
+        for ((methodId, injectMethodInfo) in injectMethodInfos) {
+            val targetMethod = findTargetMethod(injectMethodInfo, targetClass, classPool)
             if (targetMethod == null) {
                 logger.warn("Inject method ${injectMethodInfo.method.name} cannot be applied to any method of ${targetClass.name}")
-                return@f
+                continue
             }
 
-            val code = getInjectedCode(codeInjector, methodId, injectMethodInfo, targetMethod)
-
-            when (injectMethodInfo.pointer) {
-                InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
-                InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(code)
-                InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
-                InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
+            val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
+            val returnValueArg = when (injectMethodInfo.pointer) {
+                InjectMethod.Pointer.AFTER, InjectMethod.Pointer.AFTER_FINALLY -> "\$_"
+                else -> "null"
             }
+
+            // 需要兼容以下异常：
+            // - java.lang.reflect.InvocationTargetException
+            // - com.intellij.openapi.progress.ProcessCanceledException
+            // - icu.windea.pls.inject.ContinueInvocationException
+
+            val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
+            val expr = when {
+                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorScope.applyInjection($exprArgs)"
+                else -> "(\$r) __applyInjectionMethod__.invoke(null, $exprArgs)"
+            }
+            val throwExpr = when (injectMethodInfo.pointer) {
+                InjectMethod.Pointer.BEFORE -> "if (!\"$continueInvocationExceptionId\".equals(__cause__.getMessage())) throw __cause__;"
+                else -> "throw __cause__;"
+            }
+            val injectedCode = """
+            {
+                try {
+                    return $expr;
+                } catch(InvocationTargetException __e__) {
+                    Throwable __cause__ = __e__.getCause();
+                    if (__cause__ == null) throw __e__;
+                    $throwExpr
+                }
+            }
+            """.trimIndent()
+            applyInjectedCode(injectMethodInfo, targetMethod, injectedCode)
         }
     }
 
-    private fun findTargetMethod(targetClass: CtClass, injectMethodInfo: InjectMethodInfo): CtMethod? {
+    private fun findTargetMethod(injectMethodInfo: InjectMethodInfo, targetClass: CtClass, classPool: ClassPool): CtMethod? {
         val methodName = injectMethodInfo.name
         var argSize = injectMethodInfo.method.parameterCount
         if (injectMethodInfo.hasReceiver) argSize--
@@ -83,7 +121,6 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         }
         run {
             if (ctMethods.size <= 1) return@run
-            val classPool = CodeInjectorScope.classPool ?: return@run
             ctMethods = ctMethods.filter { ctMethod ->
                 val size = ctMethod.parameterTypes.size
                 for (i in 0 until size) {
@@ -107,35 +144,12 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         return ctMethods.firstOrNull()
     }
 
-    private fun getInjectedCode(codeInjector: CodeInjector, methodId: String, injectMethodInfo: InjectMethodInfo, targetMethod: CtMethod): String {
-        val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-        val returnValueArg = when (injectMethodInfo.pointer) {
-            InjectMethod.Pointer.AFTER, InjectMethod.Pointer.AFTER_FINALLY -> "\$_"
-            else -> "null"
+    private fun applyInjectedCode(injectMethodInfo: InjectMethodInfo, targetMethod: CtMethod, code: String) {
+        when (injectMethodInfo.pointer) {
+            InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
+            InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(code)
+            InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
+            InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
         }
-
-        // 需要兼容以下异常：
-        // - java.lang.reflect.InvocationTargetException
-        // - com.intellij.openapi.progress.ProcessCanceledException
-        // - icu.windea.pls.inject.ContinueInvocationException
-
-        val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
-        val expr = "(\$r) CodeInjectorScope.applyInjection($exprArgs)"
-        val throwExpr = when (injectMethodInfo.pointer) {
-            InjectMethod.Pointer.BEFORE -> "if (!\"CONTINUE_INVOCATION_BY_WINDEA\".equals(__cause__.getMessage())) throw __cause__;"
-            else -> "throw __cause__;"
-        }
-        val code = """
-            {
-                try {
-                    return $expr;
-                } catch(java.lang.reflect.InvocationTargetException __e__) {
-                    Throwable __cause__ = __e__.getCause();
-                    if (__cause__ == null) throw __e__;
-                    $throwExpr
-                }
-            }
-            """.trimIndent()
-        return code
     }
 }

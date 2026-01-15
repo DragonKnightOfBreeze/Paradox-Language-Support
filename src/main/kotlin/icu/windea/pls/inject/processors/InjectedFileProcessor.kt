@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 
 /**
- * 用于在创建或者重新解析注入的PSI文件时，进行额外的处理。
+ * 用于在创建或者重新解析注入的 PSI 文件时，进行额外的处理。
  *
  * @see icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector
  */
