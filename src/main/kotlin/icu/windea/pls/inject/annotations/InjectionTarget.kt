@@ -14,7 +14,7 @@ import icu.windea.pls.inject.CodeInjectorBase
  */
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)
-annotation class InjectTarget(
+annotation class InjectionTarget(
     val value: String,
     val pluginId: String = ""
 )

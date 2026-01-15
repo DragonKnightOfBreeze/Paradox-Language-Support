@@ -1,11 +1,10 @@
 package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.util.application
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorService
+import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.annotations.InjectOptimizedField
+import icu.windea.pls.inject.annotations.OptimizedField
 import javassist.CtField
 import javassist.Modifier
 import javassist.expr.ExprEditor
@@ -14,7 +13,7 @@ import javassist.expr.MethodCall
 import kotlin.reflect.full.findAnnotations
 
 /**
- * 为基于 [InjectOptimizedField] 的代码注入器提供支持。
+ * 为基于 [OptimizedField] 的代码注入器提供支持。
  *
  * 这里代码注入器可以修改指定成员字段的类型和初始化逻辑，从而优化性能或内存占用。
  */
@@ -22,11 +21,11 @@ class OptimizedFieldCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val infos = codeInjector::class.findAnnotations<InjectOptimizedField>()
+        val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
+        val infos = codeInjector::class.findAnnotations<OptimizedField>()
         if (infos.isEmpty()) return
 
-        val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return
+        val classPool = CodeInjectorScope.classPool ?: return
 
         for (info in infos) {
             val fieldName = info.value
@@ -66,7 +65,6 @@ class OptimizedFieldCodeInjectorSupport : CodeInjectorSupport {
                 logger.warn("Skip optimizing field $fieldName in ${targetClass.name}: $typeName is not assignable to $oldTypeName and field is not private")
                 continue
             }
-
 
             // 修改字段类型和初始化逻辑
             val fieldCode = "$typeName $fieldName = new $initTypeName();"
@@ -126,7 +124,5 @@ class OptimizedFieldCodeInjectorSupport : CodeInjectorSupport {
                 }
             }
         }
-
-        targetClass.writeFile("D:\\Documents\\Projects\\__Pinned\\Paradox-Language-Support\\tmp")
     }
 }

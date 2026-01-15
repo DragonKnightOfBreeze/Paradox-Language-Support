@@ -5,19 +5,18 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.util.application
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import kotlin.reflect.full.findAnnotation
 
 /**
- * @see InjectTarget
+ * @see InjectionTarget
  * @see InjectMethod
  */
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
-    final override val id: String = javaClass.name
+    override val id: String = javaClass.name
 
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
@@ -28,10 +27,10 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         // skip if plugin of specied plugin id is not enabled
         if (pluginId.isNotEmpty() && enabledPlugin == null) return
 
-        val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return
+        val classPool = CodeInjectorScope.classPool ?: return
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
-        putUserData(CodeInjectorService.targetClassKey, targetClass)
+        putUserData(CodeInjectorScope.targetClassKey, targetClass)
 
         applyCodeInjectorSupports()
 
@@ -45,30 +44,26 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         targetClass.detach()
 
         // clean up
-        putUserData(CodeInjectorService.targetClassKey, null)
+        putUserData(CodeInjectorScope.targetClassKey, null)
     }
 
     private fun getCodeInjectorInfo(): CodeInjectorInfo? {
-        val injectTarget = this::class.findAnnotation<InjectTarget>()
-        if (injectTarget == null) {
-            thisLogger().error("Code injector $id is not annotated with @InjectTarget")
+        val injectionTarget = this::class.findAnnotation<InjectionTarget>()
+        if (injectionTarget == null) {
+            thisLogger().error("Code injector $id is not annotated with @InjectionTarget")
             return null
         }
-        val injectTargetName = injectTarget.value
-        val injectPluginId = injectTarget.pluginId
+        val injectTargetName = injectionTarget.value
+        val injectPluginId = injectionTarget.pluginId
         return CodeInjectorInfo(this, injectTargetName, injectPluginId)
     }
 
     private fun applyCodeInjectorSupports() {
-        CodeInjectorSupport.EP_NAME.extensionList.forEach { ep ->
-            ep.apply(this)
-        }
+        CodeInjectorSupport.EP_NAME.extensionList.forEach { ep -> ep.apply(this) }
     }
-
-    private val continueInvocationException by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
 
     /**
      * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
      */
-    protected fun continueInvocation(): Nothing = throw continueInvocationException
+    protected fun continueInvocation(): Nothing = throw CodeInjectorScope.continueInvocationException
 }

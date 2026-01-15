@@ -29,7 +29,7 @@ class KeysTest {
         val k = createKey<String>("k")
         target.putUserData(k, "v")
         k.clear(target)
-        assertEquals("v", target.getUserData(k))
+        assertNull(target.getUserData(k))
     }
 
     @Test

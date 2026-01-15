@@ -40,7 +40,7 @@ class KeyAccessorsTest {
         Assert.assertEquals(1, count)
 
         Assert.assertEquals(null, obj.getUserData(k2))
-        Assert.assertEquals(null, obj.getOrPutUserData(k2) { count++; null })
+        Assert.assertEquals(null, obj.getOrPutUserData<String?>(k2) { count++; null })
         Assert.assertEquals(2, count)
         Assert.assertEquals(null, obj.getOrPutUserData<String?>(k2) { count++; "value" })
         Assert.assertEquals(2, count)

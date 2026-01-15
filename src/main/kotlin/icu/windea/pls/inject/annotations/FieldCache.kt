@@ -3,7 +3,7 @@ package icu.windea.pls.inject.annotations
 import icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport
 
 /**
- * 注入的字段缓存的信息。
+ * 要适用的字段缓存的信息。
  *
  * 调用目标方法时，如果对应字段的值不为空值，则直接返回对应字段的值，否则执行原始方法的代码并将结果缓存到对应字段中。
  * 这些方法必须没有任何参数且拥有返回值。
@@ -16,7 +16,7 @@ import icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport
  */
 @Target(AnnotationTarget.CLASS)
 @Repeatable
-annotation class InjectFieldCache(
+annotation class FieldCache(
     val value: String,
     val cleanUp: String = ""
 )

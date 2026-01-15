@@ -2,9 +2,9 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorService
+import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.annotations.InjectFieldCache
+import icu.windea.pls.inject.annotations.FieldCache
 import javassist.CtClass
 import javassist.CtField
 import javassist.CtMethod
@@ -12,7 +12,7 @@ import javassist.CtPrimitiveType
 import kotlin.reflect.full.findAnnotations
 
 /**
- * 为基于 [InjectFieldCache] 的代码注入器提供支持。
+ * 为基于 [FieldCache] 的代码注入器提供支持。
  *
  * 这类代码注入器可以通过注入的字段缓存访问器方法的返回值，并指定可选的清理方法。
  */
@@ -20,8 +20,8 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val infos = codeInjector::class.findAnnotations<InjectFieldCache>()
+        val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
+        val infos = codeInjector::class.findAnnotations<FieldCache>()
         if (infos.isEmpty()) return
 
         val methodNamesGroup = mutableMapOf<String, MutableSet<String>>()

@@ -9,7 +9,7 @@ import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -17,7 +17,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  * @see com.intellij.openapi.fileChooser.tree.FileRenderer
  * @see com.intellij.openapi.fileChooser.tree.FileRenderer.customize
  */
-@InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
+@InjectionTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : CodeInjectorBase() {
     // 渲染文件节点时，为游戏或模组目录提供提供额外的信息文本
 

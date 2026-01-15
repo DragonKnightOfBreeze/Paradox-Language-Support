@@ -9,13 +9,13 @@ import icu.windea.pls.core.memberProperty
 import icu.windea.pls.cwt.editor.CwtCommenter
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 
 /**
  * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler
  * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler.isLineCommented
  */
-@InjectTarget("com.intellij.codeInsight.generation.CommentByLineCommentHandler")
+@InjectionTarget("com.intellij.codeInsight.generation.CommentByLineCommentHandler")
 class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
     // 用于兼容 CWT 语言的各种注释（行注释 `# ...`，选项注释 `## ...`，文档注释 `### ...`）
 

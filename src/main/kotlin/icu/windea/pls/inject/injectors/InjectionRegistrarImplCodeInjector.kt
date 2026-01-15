@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 
 /**
@@ -16,7 +16,7 @@ import icu.windea.pls.inject.processors.InjectedFileProcessor
  * @see com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl.cacheEverything
  * @see icu.windea.pls.inject.processors.InjectedFileProcessor
  */
-@InjectTarget("com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl")
+@InjectionTarget("com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl")
 class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
     // 用于在创建或者重新解析注入的PSI文件时，进行额外的处理
 

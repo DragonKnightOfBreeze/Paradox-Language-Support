@@ -3,7 +3,7 @@ package icu.windea.pls.inject.annotations
 import kotlin.reflect.KClass
 
 /**
- * 注入的优化后的成员字段的信息。
+ * 要优化的成员字段的信息。
  *
  * @property value 目标字段的名字。
  * @property type 要替换成的字段类型。如果是非私有字段，则必须兼容原始类型（相同或是其子类型）。
@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.CLASS)
 @Repeatable
-annotation class InjectOptimizedField(
+annotation class OptimizedField(
     val value: String,
     val type: KClass<*>,
     val initType: KClass<*>,

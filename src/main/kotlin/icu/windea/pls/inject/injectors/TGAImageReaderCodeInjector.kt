@@ -3,7 +3,7 @@ package icu.windea.pls.inject.injectors
 import icu.windea.pls.core.memberProperty
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.integrations.images.PlsImageManager
 import java.awt.image.BufferedImage
 import javax.imageio.ImageReadParam
@@ -14,7 +14,7 @@ import javax.imageio.stream.ImageInputStream
  * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader
  * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader.read
  */
-@InjectTarget("com.twelvemonkeys.imageio.plugins.tga.TGAImageReader", pluginId = "icu.windea.pls")
+@InjectionTarget("com.twelvemonkeys.imageio.plugins.tga.TGAImageReader", pluginId = "icu.windea.pls")
 class TGAImageReaderCodeInjector : CodeInjectorBase() {
     private val Any.imageInput: ImageInputStream? by memberProperty("imageInput", null)
 

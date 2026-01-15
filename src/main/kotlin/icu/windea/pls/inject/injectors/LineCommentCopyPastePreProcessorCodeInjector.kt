@@ -16,13 +16,13 @@ import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import icu.windea.pls.cwt.editor.CwtCommenter
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 
 /**
  * @see com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor
  * @see com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor.preprocessOnPaste
  */
-@InjectTarget("com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor")
+@InjectionTarget("com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor")
 class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
     // 用于兼容 CWT 语言的各种注释（行注释 `# ...`，选项注释 `## ...`，文档注释 `### ...`）
 

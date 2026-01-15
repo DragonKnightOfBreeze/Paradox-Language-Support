@@ -10,8 +10,9 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport"/>
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">

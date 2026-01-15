@@ -6,13 +6,13 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.text.StringSearcher
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 
 /**
  * @see com.intellij.psi.impl.search.LowLevelSearchUtil
  * @see com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
  */
-@InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
+@InjectionTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     // 重写 IDE 底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
 

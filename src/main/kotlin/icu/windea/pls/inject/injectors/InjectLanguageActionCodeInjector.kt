@@ -10,10 +10,10 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.staticFunction
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
-@InjectTarget("org.intellij.plugins.intelliLang.inject.InjectLanguageAction", pluginId = "org.intellij.intelliLang")
+@InjectionTarget("org.intellij.plugins.intelliLang.inject.InjectLanguageAction", pluginId = "org.intellij.intelliLang")
 class InjectLanguageActionCodeInjector : CodeInjectorBase() {
     // https://github.com/JetBrains/intellij-community/pull/3366
 

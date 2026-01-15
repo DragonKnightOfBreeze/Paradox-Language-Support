@@ -9,14 +9,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.references.paths.ParadoxPathReference
 
 /**
  * @see com.intellij.openapi.paths.PathReferenceManagerImpl
  * @see com.intellij.openapi.paths.PathReferenceManagerImpl.createReferences
  */
-@InjectTarget("com.intellij.openapi.paths.PathReferenceManagerImpl")
+@InjectionTarget("com.intellij.openapi.paths.PathReferenceManagerImpl")
 class PathReferenceManagerImplCodeInjector : CodeInjectorBase() {
     // 如果解析得到的路径引用中包含 `ParadoxPathReference`，则仅保留它
 
