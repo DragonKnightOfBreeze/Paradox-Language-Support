@@ -6,10 +6,10 @@ import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
-import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.CtClass
 import javassist.CtMethod
 import javassist.Modifier
+import java.lang.reflect.Method
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.findAnnotation
@@ -22,6 +22,15 @@ import kotlin.reflect.jvm.javaMethod
  */
 class BaseCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
+
+    data class InjectMethodInfo(
+        val method: Method,
+        val name: String,
+        val pointer: InjectMethod.Pointer,
+        val static: Boolean,
+        val hasReceiver: Boolean,
+        val hasReturnValue: Boolean,
+    )
 
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
@@ -129,7 +138,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             {
                 try {
                     return $expr;
-                } catch(InvocationTargetException __e__) {
+                } catch(java.lang.reflect.InvocationTargetException __e__) {
                     Throwable __cause__ = __e__.getCause();
                     if (__cause__ == null) throw __e__;
                     $throwExpr

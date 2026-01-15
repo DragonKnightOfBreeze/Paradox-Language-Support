@@ -1,7 +1,7 @@
 package icu.windea.pls.inject
 
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.inject.model.InjectMethodInfo
+import icu.windea.pls.inject.support.BaseCodeInjectorSupport
 import javassist.ClassClassPath
 import javassist.ClassPool
 import javassist.CtClass
@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException
 @Suppress("unused")
 object CodeInjectorScope {
     @JvmField val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
-    @JvmField val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
+    @JvmField val injectMethodInfosKey = createKey<Map<String, BaseCodeInjectorSupport.InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
 
     @PublishedApi @JvmField @Volatile internal var classPool: ClassPool? = null
     @PublishedApi @JvmField internal val codeInjectors: MutableMap<String, CodeInjector> = mutableMapOf()
@@ -67,7 +67,7 @@ object CodeInjectorScope {
         try {
             return method.invoke(codeInjector, *finalArgs)
         } catch (e: Exception) {
-            if (e is InvocationTargetException) throw e.targetException
+            if (e is InvocationTargetException) throw e
             throw e
         }
     }

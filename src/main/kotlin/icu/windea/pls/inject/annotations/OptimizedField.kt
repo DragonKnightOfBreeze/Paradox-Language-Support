@@ -1,5 +1,6 @@
 package icu.windea.pls.inject.annotations
 
+import icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport
 import kotlin.reflect.KClass
 
 /**
@@ -8,6 +9,8 @@ import kotlin.reflect.KClass
  * @property value 目标字段的名字。
  * @property type 要替换成的字段类型。如果是非私有字段，则必须兼容原始类型（相同或是其子类型）。
  * @property initType 要用于重新初始化字段的类型。必须兼容 [type]（相同或是其子类型）。
+ *
+ * @see OptimizedFieldCodeInjectorSupport
  */
 @Target(AnnotationTarget.CLASS)
 @Repeatable

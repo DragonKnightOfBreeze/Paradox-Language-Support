@@ -8,7 +8,6 @@ import icu.windea.pls.inject.annotations.FieldCache
 import javassist.CtClass
 import javassist.CtField
 import javassist.CtMethod
-import javassist.CtPrimitiveType
 import kotlin.reflect.full.findAnnotations
 
 /**
@@ -54,16 +53,15 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
                 }
 
                 val fieldName = "__${methodName}__"
-                val returnTypeName = if (returnType is CtPrimitiveType) returnType.wrapperName else returnType.name
                 if (targetClass.declaredFields.find { it.name == "__EMPTY_OBJECT__" } == null) {
                     val emptyObjectField = CtField.make("private static final Object __EMPTY_OBJECT__ = new Object();", targetClass)
                     targetClass.addField(emptyObjectField)
                 }
                 val field = CtField.make("private volatile Object ${fieldName} = __EMPTY_OBJECT__;", targetClass)
                 targetClass.addField(field)
-                val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return (${returnTypeName}) ${fieldName}; } }"
+                val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return (\$r) ${fieldName}; } }"
                 method.insertBefore(code1)
-                val code2 = "{ ${fieldName} = \$_; }"
+                val code2 = "{ ${fieldName} = (\$w)\$_; }"
                 method.insertAfter(code2)
             }
 

@@ -11,7 +11,7 @@ import icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport
  * 注意：这是一种字节码层面的优化，只适用于委托表达式可安全视为“静态且无副作用”的场景。
  *
  * @property value 属性名（将自动映射到字段名 `${value}$delegate`）。
- * @property delegateExpression 用于替换字段读取的委托表达式（Javassist 源码片段）。
+ * @property delegateExpression 用于替换字段读取的委托表达式（Javassist 源码片段）。如果为空字符串，则尝试从构造函数/初始化逻辑中自动推导。
  *
  * @see InlinedDelegateFieldCodeInjectorSupport
  */
@@ -19,5 +19,5 @@ import icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport
 @Repeatable
 annotation class InlinedDelegateField(
     val value: String,
-    val delegateExpression: String,
+    val delegateExpression: String = "",
 )
