@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.PlsStates
@@ -74,7 +75,7 @@ object CwtOptionDataProvider {
                 optionData.pushScope = v
             }
             "scope", "scopes" -> {
-                val r = resolveSupportedScopes(config)
+                val r = resolveSupportedScopes(config) ?: return
                 optionData.supportedScopes = r
             }
             "type" -> {
@@ -209,16 +210,16 @@ object CwtOptionDataProvider {
         return config.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) }
     }
 
-    private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String> {
-        val v = config.getOptionValueOrValues()?.mapTo(FastSet()) { ParadoxScopeManager.getScopeId(it) }
-        val r = if (v.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else v.optimized()
-        return r
+    private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String>? {
+        val values = config.getOptionValueOrValues()?.orNull() ?: return null
+        val r = values.mapTo(FastSet()) { ParadoxScopeManager.getScopeId(it) }
+        return r.optimized()
     }
 
     private fun resolveTypeKeyFilter(config: CwtOptionConfig): ReversibleValue<Set<@CaseInsensitive String>>? {
         val values = config.getOptionValueOrValues() ?: return null
-        val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val operator = config.separatorType == CwtSeparatorType.EQUAL
+        val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val r = ReversibleValue(operator, set.optimized())
         return r
     }

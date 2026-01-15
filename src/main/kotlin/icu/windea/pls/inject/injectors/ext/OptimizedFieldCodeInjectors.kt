@@ -1,8 +1,8 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject.injectors.ext
 
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.annotations.OptimizedField
 import icu.windea.pls.inject.annotations.InjectionTarget
+import icu.windea.pls.inject.annotations.OptimizedField
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
 
 interface OptimizedFieldCodeInjectors {

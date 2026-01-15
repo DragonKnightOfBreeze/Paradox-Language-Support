@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors.psi
+package icu.windea.pls.inject.injectors.ext
 
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.FieldCache

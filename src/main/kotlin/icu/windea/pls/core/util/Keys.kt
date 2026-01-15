@@ -61,7 +61,7 @@ abstract class KeyRegistryWithSync : KeyRegistry() {
 
 open class RegistedKey<T>(val registry: KeyRegistry, val name: String) : Key<T>(name)
 
-class RegistedKeyWithDefault<T>(registry: KeyRegistry, name: String, val defaultValue: T) : RegistedKey<T>(registry, name)
+class RegistedKeyWithDefault<T>(registry: KeyRegistry, name: String, val default: T) : RegistedKey<T>(registry, name)
 
 class RegistedKeyWithFactory<T, in THIS>(registry: KeyRegistry, name: String, val factory: THIS.() -> T) : RegistedKey<T>(registry, name)
 
@@ -95,10 +95,10 @@ interface KeyProviders {
         }
     }
 
-    class WithDefault<T>(registry: KeyRegistry, val defaultValue: T) : KeyProvider<T>(registry) {
+    class WithDefault<T>(registry: KeyRegistry, val default: T) : KeyProvider<T>(registry) {
         fun getKey(shortName: String): RegistedKeyWithDefault<T> {
             val name = registry.getKeyName(shortName)
-            return register(name) { RegistedKeyWithDefault(registry, name, defaultValue) }
+            return register(name) { RegistedKeyWithDefault(registry, name, default) }
         }
     }
 
@@ -115,9 +115,9 @@ interface KeyProviders {
         }
     }
 
-    class NamedWithDefault<T>(registry: KeyRegistry, val name: String, val defaultValue: T) : KeyProvider<T>(registry) {
+    class NamedWithDefault<T>(registry: KeyRegistry, val name: String, val default: T) : KeyProvider<T>(registry) {
         fun getKey(): RegistedKeyWithDefault<T> {
-            return register(name) { RegistedKeyWithDefault(registry, name, defaultValue) }
+            return register(name) { RegistedKeyWithDefault(registry, name, default) }
         }
     }
 

@@ -164,7 +164,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     val scopeContext: ParadoxScopeContext?
 
     /**
-     * 支持的作用域。默认支持任意作用域。
+     * 允许的作用域（类型）的集合。默认支持任意作用域。
      *
      * 适用对象：触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
      *
