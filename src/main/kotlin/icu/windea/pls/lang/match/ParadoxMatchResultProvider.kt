@@ -24,7 +24,7 @@ import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.RegistedKeyWithFactory
-import icu.windea.pls.core.util.getUserDataOrDefault
+import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -113,7 +113,7 @@ object ParadoxMatchResultProvider {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(rootFile))
-        val cache = configGroup.getUserDataOrDefault(key).value.get(rootFile)
+        val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
         return cache.get(cacheKey) { ParadoxMatchResult.LazyIndexAwareMatch(predicate) }
     }
 

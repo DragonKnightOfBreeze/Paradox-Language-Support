@@ -28,7 +28,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> 
  * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T? {
+fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKey<T>): T? {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
@@ -46,7 +46,7 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T
  * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKeyWithFactory<T, THIS>): T {
+fun <T, THIS : UserDataHolder> THIS.getOrPutUserData(key: RegistedKeyWithFactory<T, THIS>): T {
     val value = getUserData(key)
     if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
@@ -57,11 +57,11 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKeyWithFac
 }
 
 inline operator fun <T> RegistedKey<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? {
-    return thisRef.getUserDataOrDefault(this)
+    return thisRef.getOrPutUserData(this)
 }
 
 inline operator fun <T, THIS : UserDataHolder> RegistedKeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
-    return thisRef.getUserDataOrDefault(this)
+    return thisRef.getOrPutUserData(this)
 }
 
 inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) {
@@ -73,7 +73,7 @@ inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, propert
  * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
+fun <T> ProcessingContext.getOrPut(key: RegistedKey<T>): T? {
     val value = get(key)
     if (value === EMPTY_OBJECT) return null
     if (value != null) return value
@@ -91,7 +91,7 @@ fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
  * 兼容默认值为 `null` 的情况，此时使用 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> ProcessingContext.getOrDefault(key: RegistedKeyWithFactory<T, ProcessingContext>): T {
+fun <T> ProcessingContext.getOrPut(key: RegistedKeyWithFactory<T, ProcessingContext>): T {
     val value = get(key)
     if (value === EMPTY_OBJECT) return null as T
     if (value != null) return value
@@ -102,11 +102,11 @@ fun <T> ProcessingContext.getOrDefault(key: RegistedKeyWithFactory<T, Processing
 }
 
 inline operator fun <T> RegistedKey<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? {
-    return thisRef.getOrDefault(this)
+    return thisRef.getOrPut(this)
 }
 
 inline operator fun <T> RegistedKeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
-    return thisRef.getOrDefault(this)
+    return thisRef.getOrPut(this)
 }
 
 inline operator fun <T> RegistedKey<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) {
