@@ -19,6 +19,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -99,7 +100,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
                         val matchOptions = ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope
-                        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = matchOptions)
+                        val configs = ParadoxConfigManager.getConfigs(element, matchOptions = matchOptions)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEach { ep ->

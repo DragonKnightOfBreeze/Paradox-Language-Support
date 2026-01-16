@@ -25,7 +25,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.JComponent
@@ -64,7 +64,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val text = element.text
                 if (text.isParameterized()) return // skip if expression is parameterized
-                val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return // match or single
+                val valueConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return // match or single
                 if (isIgnoredByConfigs(element, valueConfig)) return
                 val configExpression = valueConfig.configExpression
                 val location = element

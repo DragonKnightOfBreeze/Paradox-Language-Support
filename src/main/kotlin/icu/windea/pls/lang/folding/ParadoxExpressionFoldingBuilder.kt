@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.annotations.WithInternalConfig
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -47,7 +47,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
             }
 
             private fun visitProperty(element: ParadoxScriptProperty) {
-                val configs = ParadoxExpressionManager.getConfigs(element)
+                val configs = ParadoxConfigManager.getConfigs(element)
                 if (configs.isEmpty()) return  // must match
                 val propertyKey = element.name.lowercase()
                 val settings = settingsMap.get(propertyKey) ?: return

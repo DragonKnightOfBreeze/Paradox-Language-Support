@@ -5,9 +5,9 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.configContext.inlineScriptHasRecursion
+import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
 import icu.windea.pls.lang.quickfix.GotoInlineScriptUsagesFix
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 class RecursiveInlineScriptUsageInspection : InlineScriptInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
-        val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
+        val configContext = ParadoxConfigManager.getConfigContext(file) ?: return null
         if (configContext.inlineScriptHasRecursion != true) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)

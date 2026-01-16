@@ -10,7 +10,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -48,7 +48,7 @@ class ParadoxParameterContextInfo(
                 val expressionElement = parentElement?.castOrNull<ParadoxScriptStringExpressionElement>()
                 if (expressionElement == null) return emptyList()
                 if (!expressionElement.value.isParameterized(full = true)) return emptyList()
-                val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs()
+                val expressionContextConfigs = ParadoxConfigManager.getConfigContext(expressionElement)?.getConfigs()
                 return expressionContextConfigs.orEmpty()
             }
 
@@ -61,11 +61,11 @@ class ParadoxParameterContextInfo(
                 if (expressionElement == null) return emptyList()
                 return when {
                     expressionElement is ParadoxScriptPropertyKey -> {
-                        val configs = ParadoxExpressionManager.getConfigs(expressionElement)
+                        val configs = ParadoxConfigManager.getConfigs(expressionElement)
                         configs.filterIsInstance<CwtPropertyConfig>()
                     }
                     expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
-                        val configs = ParadoxExpressionManager.getConfigs(expressionElement)
+                        val configs = ParadoxConfigManager.getConfigs(expressionElement)
                         configs.filterIsInstance<CwtValueConfig>()
                     }
                     else -> {

@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -28,7 +28,7 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
     override fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
-                val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+                val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
                 val value = element.value
                 resolveByConfig(value, null, configGroup, config)
             }

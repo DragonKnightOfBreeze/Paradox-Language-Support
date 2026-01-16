@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
@@ -78,13 +77,13 @@ object ParadoxDefinitionService {
         val configGroup = definitionInfo.configGroup
         val declarationConfig = configGroup.declarations.get(definitionInfo.type) ?: return null
         val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
-        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
     fun resolveDeclaration(element: PsiElement, configGroup: CwtConfigGroup, type: String, subtypes: List<String>? = null): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
-        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

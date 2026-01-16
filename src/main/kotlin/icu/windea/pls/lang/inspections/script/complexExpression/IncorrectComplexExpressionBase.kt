@@ -13,7 +13,7 @@ import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -45,7 +45,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     }
 
     protected open fun resolveComplexExpression(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
         val value = element.value
         return ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config)

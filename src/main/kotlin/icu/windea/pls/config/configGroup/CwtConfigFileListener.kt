@@ -9,8 +9,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
-import icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
 /**

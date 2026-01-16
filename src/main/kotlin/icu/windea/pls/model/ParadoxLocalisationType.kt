@@ -52,4 +52,3 @@ enum class ParadoxLocalisationType(val id: String) {
         }
     }
 }
-

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -45,7 +45,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptBoolean) return
 
                 // 得到完全匹配的CWT规则
-                val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxConfigManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
 
                 // 开始检查
                 PlsInspectionService.checkIncorrectExpression(element, config, holder)

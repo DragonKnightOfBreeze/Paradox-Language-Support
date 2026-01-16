@@ -18,10 +18,9 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.configContext.inRoot
+import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.resolved
-import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -56,6 +55,7 @@ import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -71,8 +71,8 @@ import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -104,7 +104,7 @@ object ParadoxCompletionManager {
 
     fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
         val contextElement = context.contextElement ?: return
-        val configContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return
+        val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.inRoot()) {
@@ -119,7 +119,7 @@ object ParadoxCompletionManager {
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
-        val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -129,7 +129,7 @@ object ParadoxCompletionManager {
             }
         }
         if (configs.isEmpty()) return
-        val occurrences = ParadoxExpressionManager.getChildOccurrences(memberElement, parentConfigs)
+        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = true
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
@@ -137,7 +137,7 @@ object ParadoxCompletionManager {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrences)) {
-                    val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
+                    val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
@@ -155,13 +155,13 @@ object ParadoxCompletionManager {
 
     fun addValueCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
         val contextElement = context.contextElement ?: return
-        val configContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return
+        val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
         if (!configContext.inRoot()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
-        val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -171,14 +171,14 @@ object ParadoxCompletionManager {
             }
         }
         if (configs.isEmpty()) return
-        val occurrences = ParadoxExpressionManager.getChildOccurrences(memberElement, parentConfigs)
+        val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = false
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
 
         for (config in configs) {
             if (shouldComplete(config, occurrences)) {
-                val overriddenConfigs = CwtConfigService.getOverriddenConfigs(contextElement, config)
+                val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(contextElement, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig
@@ -193,7 +193,7 @@ object ParadoxCompletionManager {
     }
 
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
-        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
+        val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
 
         if (!configContext.inRoot()) return
 

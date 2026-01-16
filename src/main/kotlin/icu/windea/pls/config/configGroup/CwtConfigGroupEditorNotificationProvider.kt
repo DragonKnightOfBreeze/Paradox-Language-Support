@@ -10,7 +10,7 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import java.util.function.Function
 import javax.swing.JComponent
 

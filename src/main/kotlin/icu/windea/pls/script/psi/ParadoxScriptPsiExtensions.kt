@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl
 import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
@@ -67,7 +67,7 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
  * 判断当前字符串表达式是否在顶层或者子句中或者作为属性的值，并且拥有唯一匹配的规则。
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: Int = ParadoxMatchOptions.Default): Boolean {
-    return ParadoxExpressionManager.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
+    return ParadoxConfigManager.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
 }
 
 fun ParadoxScriptExpressionElement.isResolvableExpression(): Boolean {

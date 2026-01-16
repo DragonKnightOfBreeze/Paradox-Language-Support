@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
 class CwtConfigGameElementNode(
     project: Project,

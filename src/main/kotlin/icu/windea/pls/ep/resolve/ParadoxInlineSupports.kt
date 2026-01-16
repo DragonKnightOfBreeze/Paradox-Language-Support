@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve
 
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -19,7 +19,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         if (element !is ParadoxScriptProperty) return null
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
-        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return null
+        val configContext = ParadoxConfigManager.getConfigContext(element) ?: return null
         val project = configContext.configGroup.project
         return ParadoxInlineScriptManager.getInlineScriptFile(inlineScriptExpression, project, element)
     }

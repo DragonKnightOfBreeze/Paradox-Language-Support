@@ -4,7 +4,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

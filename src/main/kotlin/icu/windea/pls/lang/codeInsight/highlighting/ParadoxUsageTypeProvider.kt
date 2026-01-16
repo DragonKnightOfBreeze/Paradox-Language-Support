@@ -15,9 +15,9 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
@@ -86,7 +86,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             return ParadoxUsageTypes.COMPLEX_ENUM_VALUE
         }
 
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         val configExpression = config.configExpression
         val dataType = configExpression.type
         // in invocation expression

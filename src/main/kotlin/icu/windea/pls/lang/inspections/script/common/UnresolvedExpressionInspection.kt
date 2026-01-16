@@ -18,10 +18,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.config.configContext.inRoot
-import icu.windea.pls.config.configContext.isRootForDefinition
-import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.lang.resolve.CwtConfigContext
+import icu.windea.pls.lang.resolve.inRoot
+import icu.windea.pls.lang.resolve.isRootForDefinition
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.codeInsight.expression
@@ -30,11 +29,12 @@ import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.tagType
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -96,13 +96,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
 
                 // skip if config context not exists
-                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
+                val configContext = ParadoxConfigManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
                 if (!configContext.inRoot() || configContext.isRootForDefinition()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
-                val configs = ParadoxExpressionManager.getConfigs(element)
+                val configs = ParadoxConfigManager.getConfigs(element)
                 if (configs.isNotEmpty()) return continueCheck(configs)
 
                 val expectedConfigs = getExpectedConfigs(element)
@@ -129,13 +129,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
 
                 // skip if config context not exists
-                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
+                val configContext = ParadoxConfigManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
                 if (!configContext.inRoot()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
-                val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
+                val configs = ParadoxConfigManager.getConfigs(element, orDefault = false)
                 if (configs.isNotEmpty()) return continueCheck(configs)
                 // skip check value if it is a special tag and there are no matched configs
                 if (element.tagType != null) return false
@@ -160,14 +160,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
                 // 这里使用合并后的子规则，即使parentProperty可以精确匹配
                 val parentMemberElement = element.parentOfType<ParadoxScriptMember>() ?: return emptyList()
-                val parentConfigContext = ParadoxExpressionManager.getConfigContext(parentMemberElement) ?: return emptyList()
+                val parentConfigContext = ParadoxConfigManager.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
                     val contextConfigs = parentConfigContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
                         contextConfig.configs?.forEach f1@{ c1 ->
                             val c = c1 as? CwtPropertyConfig ?: return@f1
                             // 优先使用重载后的规则
-                            val overriddenConfigs = CwtConfigService.getOverriddenConfigs(element, c)
+                            val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, c)
                             if (overriddenConfigs.isNotEmpty()) {
                                 addAll(overriddenConfigs)
                             } else {
@@ -183,7 +183,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
                         val c = contextConfig as? CwtValueConfig ?: return@f
-                        val overriddenConfigs = CwtConfigService.getOverriddenConfigs(element, c)
+                        val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(element, c)
                         if (overriddenConfigs.isNotEmpty()) {
                             addAll(overriddenConfigs)
                         } else {

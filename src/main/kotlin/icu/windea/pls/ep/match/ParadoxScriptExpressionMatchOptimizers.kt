@@ -2,10 +2,11 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxType
@@ -76,7 +77,7 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
         val result = mutableListOf<CwtMemberConfig<*>>()
         var hasOverride = false
         for (config in configs) {
-            val overriddenConfigs = CwtConfigService.getOverriddenConfigs(context.element, config)
+            val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.element, config)
             if (overriddenConfigs.isEmpty()) {
                 result += config
                 continue

@@ -26,6 +26,7 @@ import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxSpriteManager
@@ -66,7 +67,7 @@ object CwtLocationExpressionManager {
         }
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
-        val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
+        val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationAware) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
         }
@@ -164,7 +165,7 @@ object CwtLocationExpressionManager {
         }
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
-        val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = true).firstOrNull() as? CwtValueConfig ?: return null
+        val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationAware) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
         }

@@ -19,7 +19,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -48,7 +48,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val name = element.name
         if (name.isEmpty()) return
         if (name.isParameterized()) return
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         if (config.configExpression.type != CwtDataTypes.Modifier) return
         val configGroup = config.configGroup
         val project = configGroup.project

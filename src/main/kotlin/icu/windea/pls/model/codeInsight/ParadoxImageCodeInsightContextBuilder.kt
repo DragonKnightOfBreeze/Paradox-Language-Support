@@ -16,7 +16,7 @@ import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -103,7 +103,7 @@ object ParadoxImageCodeInsightContextBuilder {
     ): ParadoxImageCodeInsightContext? {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return null
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         fromModifier(element, config, fromInspection = fromInspection)?.let { return it }
         return null
     }

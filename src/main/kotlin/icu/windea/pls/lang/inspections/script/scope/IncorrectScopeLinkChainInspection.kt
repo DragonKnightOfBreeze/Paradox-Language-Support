@@ -21,6 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.resolve.complexExpression.util.accept
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -38,7 +39,7 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
+                val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.configExpression.type
                 val value = element.value
                 val complexExpression = when {

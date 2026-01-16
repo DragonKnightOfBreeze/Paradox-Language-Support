@@ -15,7 +15,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -37,7 +37,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
 
             private fun visitMemberElement(element: ParadoxScriptMember) {
-                val configs = ParadoxExpressionManager.getConfigs(element)
+                val configs = ParadoxConfigManager.getConfigs(element)
                 val config = configs.firstOrNull() ?: return
                 if (!ParadoxScopeManager.isScopeContextSupported(element)) return
                 val parentMember = ParadoxScopeManager.findParentMember(element, withSelf = false) ?: return

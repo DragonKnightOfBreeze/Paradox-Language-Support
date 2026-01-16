@@ -11,7 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
 class CwtConfigFilesViewProjectNode(

@@ -4,7 +4,7 @@ import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.impl.CwtDataExpressionResolverImpl
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 
 /**
  * 数据表达式。

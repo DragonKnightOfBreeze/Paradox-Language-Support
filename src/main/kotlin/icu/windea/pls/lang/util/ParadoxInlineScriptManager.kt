@@ -7,9 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.config.configContext.inlineScriptHasConflict
-import icu.windea.pls.config.configContext.inlineScriptHasRecursion
+import icu.windea.pls.lang.resolve.CwtConfigContext
+import icu.windea.pls.lang.resolve.inlineScriptHasConflict
+import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
@@ -173,7 +173,7 @@ object ParadoxInlineScriptManager {
         ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
             if (!isMatched(p.name)) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
-            val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true
+            val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
             if (fastInference && usageConfigs.isNotNullOrEmpty()) {
                 result.set(usageConfigs)

@@ -5,13 +5,13 @@ package icu.windea.pls.config.configExpression.impl
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.util.CwtConfigExpressionService
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ep.configExpression.CwtRuleBasedDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtRuleBasedDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {

@@ -5,14 +5,14 @@ package icu.windea.pls.config.config
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxTagType
 

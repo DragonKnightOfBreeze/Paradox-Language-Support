@@ -14,14 +14,14 @@ import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.select.*
 import icu.windea.pls.core.findChild
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -54,9 +54,9 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
             override fun visitFile(file: PsiFile) {
                 if (file !is ParadoxScriptFile) return
-                val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return
+                val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxExpressionManager.getConfigs(file, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+                val configs = ParadoxConfigManager.getConfigs(file, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
                 doCheck(file, file, configs)
             }
 
@@ -70,15 +70,15 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.also { if (it.text.isParameterized()) return }
                     ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
                     ?: return
-                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
+                val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+                val configs = ParadoxConfigManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
                 doCheck(element, position, configs)
             }
 
             private fun doCheck(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if (skipCheck(element, configs)) return
-                val occurrences = ParadoxExpressionManager.getChildOccurrences(element, configs)
+                val occurrences = ParadoxConfigManager.getChildOccurrences(element, configs)
                 if (occurrences.isEmpty()) return
                 val overriddenProvider = getOverriddenProvider(configs)
                 occurrences.forEach { (configExpression, occurrence) ->

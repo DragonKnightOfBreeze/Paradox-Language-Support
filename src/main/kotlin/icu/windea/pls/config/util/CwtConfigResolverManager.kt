@@ -16,8 +16,9 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
@@ -35,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.model.CwtMemberType
+import icu.windea.pls.model.CwtMembersType
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {
@@ -117,21 +118,38 @@ object CwtConfigResolverManager {
         return optionConfigs.optimized() // optimized to optimize memory
     }
 
-    @Optimized
-    fun checkMemberType(configs: List<CwtMemberConfig<*>>?, noConfigs: Boolean = configs.isNullOrEmpty()): CwtMemberType {
-        if (noConfigs) return CwtMemberType.NONE
-        var result = CwtMemberType.NONE
-        configs?.forEachFast { c ->
+    fun getMembersType(configs: List<CwtMemberConfig<*>>): CwtMembersType {
+        if (configs.isEmpty()) return CwtMembersType.NONE
+        var result = CwtMembersType.NONE
+        for ((_, c) in configs.withIndex()) {
             val r = when (c) {
-                is CwtPropertyConfig -> CwtMemberType.PROPERTY
-                is CwtValueConfig -> CwtMemberType.VALUE
+                is CwtPropertyConfig -> CwtMembersType.PROPERTY
+                is CwtValueConfig -> CwtMembersType.VALUE
             }
             when {
-                result == CwtMemberType.NONE -> result = r
-                result != r -> return CwtMemberType.MIXED
+                result == CwtMembersType.NONE -> result = r
+                result != r -> return CwtMembersType.MIXED
             }
         }
         return result
+    }
+
+    fun getProperties(configs: List<CwtMemberConfig<*>>, membersType: CwtMembersType): List<CwtPropertyConfig> {
+        if (configs.isEmpty()) return emptyList()
+        return when (membersType) {
+            CwtMembersType.PROPERTY -> configs.cast()
+            CwtMembersType.MIXED -> configs.filterIsInstanceFast()
+            else -> emptyList()
+        }
+    }
+
+    fun getValues(configs: List<CwtMemberConfig<*>>, membersType: CwtMembersType): List<CwtValueConfig> {
+        if (configs.isEmpty()) return emptyList()
+        return when (membersType) {
+            CwtMembersType.VALUE -> configs.cast()
+            CwtMembersType.MIXED -> configs.filterIsInstanceFast()
+            else -> emptyList()
+        }
     }
 
     fun collectFromConfigExpression(config: CwtConfig<*>, configExpression: CwtDataExpression) {

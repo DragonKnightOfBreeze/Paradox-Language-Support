@@ -8,7 +8,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.ep.config.CwtInjectedConfigProvider
+import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import org.junit.Test

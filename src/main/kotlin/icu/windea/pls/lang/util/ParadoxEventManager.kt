@@ -191,7 +191,7 @@ object ParadoxEventManager {
                 val value = element.value
                 if (result.contains(value)) return
                 if (!isValidEventId(value)) return // 排除非法的事件ID
-                val configs = ParadoxExpressionManager.getConfigs(element)
+                val configs = ParadoxConfigManager.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
                 if (isEventConfig) {
                     result.add(value)

@@ -2,7 +2,7 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.SimpleModificationTracker
-import icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupDataProvider
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex

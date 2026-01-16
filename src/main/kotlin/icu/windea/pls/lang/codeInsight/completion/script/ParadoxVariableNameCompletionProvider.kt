@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.completion.script
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -24,11 +25,11 @@ import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
-import org.jetbrains.kotlin.analysis.utils.printer.parentOfType
 
 /**
  * 提供变量名的代码补全。（在effect子句中）
@@ -43,7 +44,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         if (element.text.isParameterized()) return
         if (!element.isBlockMember()) return
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return
-        val configs = ParadoxExpressionManager.getConfigs(parentMember, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+        val configs = ParadoxConfigManager.getConfigs(parentMember, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup
         context.configGroup = configGroup

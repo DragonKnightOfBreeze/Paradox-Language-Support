@@ -20,7 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.ReversibleValue
-import icu.windea.pls.ep.config.CwtInjectConfigPostProcessor
+import icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor
 import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager

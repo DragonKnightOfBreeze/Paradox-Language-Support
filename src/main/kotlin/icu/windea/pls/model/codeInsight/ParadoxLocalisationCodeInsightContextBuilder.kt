@@ -19,7 +19,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -177,7 +177,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         if (!element.isExpression()) return null
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return null
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         fromModifier(element, config, locales, fromInspection = fromInspection)?.let { return it }
         if (forReference) {
             fromReference(element, config, locales, fromInspection = fromInspection)?.let { return it }

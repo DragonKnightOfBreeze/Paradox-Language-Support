@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import javax.swing.Icon
 
 /**

@@ -17,7 +17,7 @@ import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -52,7 +52,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
                     ?: return
                 val expression = property?.expression ?: element.expression
-                val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+                val configs = ParadoxConfigManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
                 doCheck(element, position, configs, expression)
             }
 

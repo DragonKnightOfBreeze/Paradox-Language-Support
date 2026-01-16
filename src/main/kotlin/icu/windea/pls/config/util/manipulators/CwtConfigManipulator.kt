@@ -13,13 +13,13 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigExpressionService
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList

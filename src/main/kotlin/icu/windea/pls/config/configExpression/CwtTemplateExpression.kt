@@ -32,7 +32,7 @@ import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolver
  * @property referenceExpressions 过滤后的引用片段（即非 [Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
- * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+ * @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
  */
 interface CwtTemplateExpression : CwtConfigExpression {
     val snippetExpressions: List<CwtDataExpression>

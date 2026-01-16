@@ -6,7 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.config.configContext.parameterValueQuoted
+import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -17,6 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -53,7 +54,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
 
         // 兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
 
-        val parameterValueQuoted = ParadoxExpressionManager.getConfigContext(file)?.parameterValueQuoted
+        val parameterValueQuoted = ParadoxConfigManager.getConfigContext(file)?.parameterValueQuoted
         val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())

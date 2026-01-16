@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
@@ -13,12 +14,11 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
-import org.jetbrains.kotlin.analysis.utils.printer.parentOfType
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider
@@ -39,7 +39,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val element = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if (!element.isBlockMember()) return emptyList()
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return emptyList()
-        val configs = ParadoxExpressionManager.getConfigs(parentMember, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+        val configs = ParadoxConfigManager.getConfigs(parentMember, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, isKey = true)

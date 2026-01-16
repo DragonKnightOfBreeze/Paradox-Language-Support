@@ -5,8 +5,8 @@ package icu.windea.pls.config.configExpression.impl
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.model.constants.PlsStrings

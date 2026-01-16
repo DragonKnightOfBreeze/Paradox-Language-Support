@@ -12,7 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -37,7 +37,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 if (!shouldVisit(element)) return
 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
-                val contextConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
+                val contextConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
                 val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, contextConfig) ?: return
                 if (contextReferenceInfo.contextName.isParameterized()) return // skip if context name is parameterized
                 val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }

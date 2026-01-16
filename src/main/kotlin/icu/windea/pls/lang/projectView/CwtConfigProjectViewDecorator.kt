@@ -6,7 +6,7 @@ import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.SyntheticLibraryElementNode
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
 /**
  * 在项目视图中为规则目录提供特定的图标和额外的信息文本。

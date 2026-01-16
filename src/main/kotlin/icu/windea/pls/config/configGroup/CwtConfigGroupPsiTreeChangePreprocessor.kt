@@ -4,8 +4,8 @@ import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
 /**

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
@@ -43,7 +43,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!element.isExpression()) return
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         val type = config.configExpression.type
         if (type != CwtDataTypes.Modifier) return
         val name = element.value

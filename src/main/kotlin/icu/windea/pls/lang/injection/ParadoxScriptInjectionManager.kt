@@ -24,7 +24,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -133,7 +133,7 @@ object ParadoxScriptInjectionManager {
 
         val text = host.text
         if (!shouldApplyLocalisationTextInjection(text)) return
-        val configs = ParadoxExpressionManager.getConfigs(host)
+        val configs = ParadoxConfigManager.getConfigs(host)
         if (!shouldApplyLocalisationTextInjection(configs)) return
 
         val rangeInsideHost = TextRange.from(1, text.length - 1) // 不包含括起的双引号

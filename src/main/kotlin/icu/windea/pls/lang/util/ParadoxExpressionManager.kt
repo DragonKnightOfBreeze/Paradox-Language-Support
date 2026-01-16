@@ -15,7 +15,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
@@ -31,17 +30,12 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
-import icu.windea.pls.config.util.CwtConfigService
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collectReferences
-import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
@@ -49,7 +43,6 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
@@ -67,7 +60,6 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -75,7 +67,6 @@ import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
-import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -90,7 +81,6 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
@@ -98,14 +88,8 @@ import icu.windea.pls.script.psi.isExpression
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
-
-        val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by registerKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrencesCache by registerKey<CachedValue<MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>(Keys)
-
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
-
         val inBlockKeys by registerKey<Set<String>>(Keys)
     }
 
@@ -260,70 +244,6 @@ object ParadoxExpressionManager {
 
     // endregion
 
-    // region Core Methods
-
-    fun getConfigContext(element: PsiElement): CwtConfigContext? {
-        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return null
-        return doGetConfigContextFromCache(memberElement)
-    }
-
-    private fun doGetConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
-            ProgressManager.checkCanceled()
-            val value = CwtConfigService.getConfigContext(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
-    }
-
-    fun getConfigs(element: PsiElement, orDefault: Boolean = true, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
-        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        ProgressManager.checkCanceled()
-        val cache = doGetConfigsCacheFromCache(memberElement)
-        val cacheKey = "${orDefault.toInt()},${matchOptions}".optimized() // optimized to optimize memory
-        return cache.getOrPut(cacheKey) { ParadoxExpressionService.getConfigs(memberElement, orDefault, matchOptions).optimized() }
-    }
-
-    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
-            val value = doGetConfigsCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
-    }
-
-    @Optimized
-    private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
-        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
-        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
-    }
-
-    /**
-     * 得到指定的 [element] 的作为值的子句中的子属性/子值的出现次数信息（先合并子规则）。
-     */
-    fun getChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
-        if (configs.isEmpty()) return emptyMap()
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }
-        if (childConfigs.isEmpty()) return emptyMap()
-        ProgressManager.checkCanceled()
-        val cache = doGetChildOccurrencesCacheFromCache(element)
-        val cacheKey = CwtConfigManipulator.getIdentifierKey(childConfigs, maxDepth = 1).optimized() // optimized to optimize memory
-        return cache.getOrPut(cacheKey) { ParadoxExpressionService.getChildOccurrences(element, configs).optimized() }
-    }
-
-    private fun doGetChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
-            val value = doGetChildOccurrencesCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
-    }
-
-    @Optimized
-    private fun doGetChildOccurrencesCache(): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
-        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
-        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
-    }
-
-    // endregion
-
     // region Annotate Methods
 
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -462,7 +382,7 @@ object ParadoxExpressionManager {
         val isKey = element is ParadoxScriptPropertyKey
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val matchOptions = if (processMergedIndex) ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope else ParadoxMatchOptions.Default
-        val configs = getConfigs(element, orDefault = isKey, matchOptions = matchOptions)
+        val configs = ParadoxConfigManager.getConfigs(element, isKey, matchOptions)
         val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) // unquoted text
         val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)

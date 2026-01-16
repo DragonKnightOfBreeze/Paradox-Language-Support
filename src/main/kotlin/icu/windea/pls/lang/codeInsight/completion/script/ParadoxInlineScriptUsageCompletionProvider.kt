@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
-import icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider
+import icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.expressionOffset
@@ -23,6 +23,7 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -66,7 +67,7 @@ class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<Completion
         }
 
         // inline script usage cannot be nested directly
-        val configContext = ParadoxExpressionManager.getConfigContext(element)
+        val configContext = ParadoxConfigManager.getConfigContext(element)
         if (configContext != null && configContext.provider is CwtInlineScriptUsageConfigContextProvider) return
 
         val quoted = element.text.isLeftQuoted()

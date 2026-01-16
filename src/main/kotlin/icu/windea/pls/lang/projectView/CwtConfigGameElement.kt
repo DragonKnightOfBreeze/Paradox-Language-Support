@@ -3,7 +3,7 @@ package icu.windea.pls.lang.projectView
 import com.intellij.ide.projectView.RootsProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 

@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
  *
  * 基于语言注入功能为参数值对应的脚本片段提供高级语言功能。
  *
- * @see icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider
+ * @see icu.windea.pls.ep.resolve.config.CwtParameterValueConfigContextProvider
  */
 @WithGameTypeEP
 interface ParadoxParameterInferredConfigProvider {

@@ -16,10 +16,9 @@ import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProvider
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
@@ -30,7 +29,7 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
-import icu.windea.pls.model.CwtMemberType
+import icu.windea.pls.model.CwtMembersType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
@@ -64,7 +63,7 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverSco
     override fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>): Boolean {
         if (config is CwtValueConfigImplWithConfigs) {
             config.configs = configs.optimized() // optimized to optimize memory
-            config.memberType = CwtConfigResolverManager.checkMemberType(configs)
+            config.memberType = CwtMembersType.UNSET
             return true
         }
         return false
@@ -147,8 +146,7 @@ private abstract class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueC
     override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast<CwtValueConfig>()
     override val optionData: CwtOptionDataHolder get() = this
 
-    @Volatile
-    override var parentConfig: CwtMemberConfig<*>? = null
+    @Volatile override var parentConfig: CwtMemberConfig<*>? = null
 
     override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
     override val configExpression: CwtDataExpression get() = valueExpression
@@ -186,22 +184,21 @@ private open class CwtValueConfigImplWithConfigs(
     configGroup: CwtConfigGroup,
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
-    var memberType: CwtMemberType = CwtMemberType.MIXED
-
     override val value: String get() = blockValue
     override val valueType: CwtType get() = CwtType.Block
-    override var configs: List<CwtMemberConfig<*>> = emptyList()
+
+    @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
+    @Volatile var memberType: CwtMembersType = CwtMembersType.UNSET
+
     override val properties: List<CwtPropertyConfig>
-        get() = when (memberType) {
-            CwtMemberType.PROPERTY -> configs.cast()
-            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
-            else -> emptyList()
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getProperties(configs, memberType)
         }
     override val values: List<CwtValueConfig>
-        get() = when (memberType) {
-            CwtMemberType.VALUE -> configs.cast()
-            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
-            else -> emptyList()
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getValues(configs, memberType)
         }
 }
 

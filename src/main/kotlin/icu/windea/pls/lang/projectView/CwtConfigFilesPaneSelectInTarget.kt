@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.util.PsiUtilCore
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 
 class CwtConfigFilesPaneSelectInTarget(private val project: Project) : ProjectViewSelectInTarget(project) {
     override fun canSelect(file: PsiFileSystemItem?): Boolean {

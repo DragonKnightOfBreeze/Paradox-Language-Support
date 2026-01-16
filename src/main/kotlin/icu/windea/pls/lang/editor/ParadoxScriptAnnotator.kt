@@ -15,10 +15,12 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tagType
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -70,7 +72,7 @@ class ParadoxScriptAnnotator : Annotator {
         if (annotateComplexEnumValue(element, holder)) return
 
         val isKey = element is ParadoxScriptPropertyKey
-        val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
+        val config = ParadoxConfigManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
             // 如果不是字符串，除非是定义引用，否则不作高亮
             if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return

@@ -23,8 +23,8 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
@@ -185,7 +185,7 @@ object ParadoxTypeManager {
     fun getConfigExpression(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
-                val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+                val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
                 when (element) {
                     is ParadoxScriptPropertyKey -> {
                         if (config !is CwtPropertyConfig) return null

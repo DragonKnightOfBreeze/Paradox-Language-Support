@@ -15,12 +15,10 @@ import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.model.CwtMemberType
+import icu.windea.pls.model.CwtMembersType
 
 internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
@@ -44,7 +42,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
     override fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean {
         if (config is CwtFileConfigImplWithConfigs) {
             config.configs = configs.optimized() // optimized to optimize memory
-            config.memberType = CwtConfigResolverManager.checkMemberType(configs)
+            config.memberType = CwtMembersType.UNSET
             return true
         }
         return false
@@ -95,18 +93,17 @@ private open class CwtFileConfigImplWithConfigs(
     name: String,
     path: String,
 ) : CwtFileConfigImplBase(pointer, configGroup, name, path) {
-    override var configs: List<CwtMemberConfig<*>> = emptyList()
-    var memberType: CwtMemberType = CwtMemberType.MIXED
+    @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
+    @Volatile var memberType: CwtMembersType = CwtMembersType.UNSET
+
     override val properties: List<CwtPropertyConfig>
-        get() = when (memberType) {
-            CwtMemberType.PROPERTY -> configs.cast()
-            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
-            else -> emptyList()
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getProperties(configs, memberType)
         }
     override val values: List<CwtValueConfig>
-        get() = when (memberType) {
-            CwtMemberType.VALUE -> configs.cast()
-            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
-            else -> emptyList()
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getValues(configs, memberType)
         }
 }

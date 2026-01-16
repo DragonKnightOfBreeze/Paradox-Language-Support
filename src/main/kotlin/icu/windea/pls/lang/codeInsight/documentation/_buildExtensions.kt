@@ -16,7 +16,7 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile

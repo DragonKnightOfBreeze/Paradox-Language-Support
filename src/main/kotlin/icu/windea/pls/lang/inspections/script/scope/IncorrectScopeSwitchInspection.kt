@@ -17,9 +17,9 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLink
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import javax.swing.JComponent
@@ -38,7 +38,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             }
 
             private fun visitScriptProperty(element: ParadoxScriptProperty) {
-                val configs = ParadoxExpressionManager.getConfigs(element)
+                val configs = ParadoxConfigManager.getConfigs(element)
                 val config = configs.firstOrNull()
                 if (config == null) return
                 val definitionType by lazy { findParentDefinitionType(element) }

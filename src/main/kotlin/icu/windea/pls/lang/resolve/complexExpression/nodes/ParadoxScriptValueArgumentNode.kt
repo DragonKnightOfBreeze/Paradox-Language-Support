@@ -9,6 +9,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
@@ -47,7 +48,7 @@ class ParadoxScriptValueArgumentNode(
         }
 
         override fun resolve(): ParadoxParameterElement? {
-            val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
             return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
         }
 
