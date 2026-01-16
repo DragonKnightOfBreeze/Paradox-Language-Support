@@ -96,11 +96,11 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     append("[")
     append(rootInfo.qualifiedName.escapeXml())
     append("]")
+    append(" ")
     grayed {
         // 相关链接
         // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
         val rootUri = rootInfo.rootFile.toNioPath().toUri().toString()
-        append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
 
         val steamId = rootInfo.steamId
@@ -127,9 +127,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     append("[").append(fileInfo.path.path.escapeXml()).append("]")
     val entryName = fileInfo.entry
     if (entryName.isNotEmpty()) {
-        grayed {
-            append(" of ").append(entryName.escapeXml())
-        }
+        grayed { append(" of ").append(entryName.escapeXml()) }
     }
     appendBr()
 
@@ -155,8 +153,9 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     append("[").append(gameType.title).append(" Config]")
     val hintMessage = fileProvider.getHintMessage()
     if (hintMessage.isNotNullOrEmpty()) {
+        append(" ")
         grayed {
-            append(" ").append(hintMessage)
+            append(hintMessage)
         }
     }
     appendBr()

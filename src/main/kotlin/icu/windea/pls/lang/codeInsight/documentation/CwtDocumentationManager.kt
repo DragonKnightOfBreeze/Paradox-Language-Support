@@ -191,9 +191,8 @@ object CwtDocumentationManager {
                 }
             }
             if (byName != null) {
-                grayed {
-                    append(" by ").append(byName.escapeXml().or.anonymous())
-                }
+                appendBr().appendIndent() // 2.1.1 文本可能过长，因此这里换行并缩进
+                grayed { append("by ").append(byName.escapeXml().or.anonymous()) }
             }
 
             if (configGroup != null) {
