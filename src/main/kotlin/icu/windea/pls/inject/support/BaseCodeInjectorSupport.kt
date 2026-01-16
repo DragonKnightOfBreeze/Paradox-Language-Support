@@ -85,7 +85,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
             val expr = when {
                 PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorScope.applyInjection($exprArgs)"
-                else -> "(\$r) __applyInjectionMethod__.invoke(null, $exprArgs)"
+                else -> "(\$r) __applyInjectionMethod__.invoke(null, new Object[] { $exprArgs })"
             }
             val throwExpr = when (injectMethodInfo.pointer) {
                 InjectMethod.Pointer.BEFORE -> "if (!\"$continueInvocationExceptionId\".equals(__cause__.getMessage())) throw __cause__;"

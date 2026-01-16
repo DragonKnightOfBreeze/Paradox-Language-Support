@@ -73,8 +73,7 @@ object CodeInjectorScope {
             return method.invoke(codeInjector, *finalArgs)
         } catch (e: InvocationTargetException) {
             if (!PlsFacade.isUnitTestMode()) {
-                val cause = e.cause
-                if (cause is InvocationTargetException) throw cause
+                throw e.targetException ?: e
             }
             throw e
         }
