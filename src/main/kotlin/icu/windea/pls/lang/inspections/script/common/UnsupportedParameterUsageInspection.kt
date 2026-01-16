@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -19,6 +20,9 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
  */
 class UnsupportedParameterUsageInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求规则数据已全部加载完毕
+        if (!PlsInspectionUtil.isConfigGroupInitialized(file)) return false
+
         if (selectRootFile(file) == null) return false
         return true
     }
