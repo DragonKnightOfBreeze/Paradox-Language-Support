@@ -7,6 +7,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.CwtConfigContext
+import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -23,11 +24,11 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMember, file: PsiFile, memberPathFromFile: ParadoxMemberPath): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext?
 
-    fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions? = null): String?
+    fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
 
-    fun getConfigs(context: CwtConfigContext, matchOptions: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>?
+    fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>?
 
     fun skipMissingExpressionCheck(context: CwtConfigContext) = false
 

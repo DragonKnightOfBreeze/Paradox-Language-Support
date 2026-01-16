@@ -152,20 +152,20 @@ object ParadoxInlineScriptManager {
         }
     }
 
-    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         val fromConfig = doGetInferredContextConfigsFromConfig(expression, contextElement, context, options)
         if (fromConfig.isNotEmpty()) return fromConfig
 
         return doGetInferredContextConfigsFromUsages(expression, contextElement, context, options)
     }
 
-    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         val configGroup = context.configGroup
         val config = configGroup.extendedInlineScripts.findByPattern(expression, contextElement, configGroup, options) ?: return emptyList()
         return config.getContextConfigs()
     }
 
-    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         // infer & merge
         val fastInference = PlsSettings.getInstance().state.inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()

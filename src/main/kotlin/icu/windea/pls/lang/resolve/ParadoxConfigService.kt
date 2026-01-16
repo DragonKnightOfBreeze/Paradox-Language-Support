@@ -51,6 +51,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -116,10 +117,11 @@ object ParadoxConfigService {
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element)?.normalize() ?: return null
+        val memberRole = ParadoxMemberRole.resolve(element)
         val gameType = selectGameType(file)
         return CwtConfigContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getContext(element, file, memberPathFromFile)?.also { it.provider = ep }
+            ep.getContext(element, file, memberPathFromFile, memberRole)?.also { it.provider = ep }
         }
     }
 
@@ -169,12 +171,12 @@ object ParadoxConfigService {
         return cached
     }
 
-    // fun getContextConfigs(context: CwtConfigContext, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, matchOptions: Int = 0): List<CwtMemberConfig<*>> {
-    //     val result = doGetConfigsForConfigContext(element, parentConfigs, subPath, matchOptions)
+    // fun getContextConfigs(context: CwtConfigContext, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, options: Int = 0): List<CwtMemberConfig<*>> {
+    //     val result = doGetConfigsForConfigContext(element, parentConfigs, subPath, options)
     //     return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     // }
     //
-    // private fun doGetConfigsForConfigContext(element: ParadoxScriptMember, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+    // private fun doGetConfigsForConfigContext(element: ParadoxScriptMember, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, options: Int): List<CwtMemberConfig<*>> {
     //     ProgressManager.checkCanceled()
     //     if (parentConfigs.isEmpty()) return emptyList() // 忽略
     //     val memberRole = ParadoxMemberRole.resolve(element)
@@ -198,9 +200,9 @@ object ParadoxConfigService {
         rootConfigs: List<CwtMemberConfig<*>>,
         memberPathFromRoot: ParadoxMemberPath,
         configGroup: CwtConfigGroup,
-        matchOptions: ParadoxMatchOptions? = null,
+        options: ParadoxMatchOptions? = null,
     ): List<CwtMemberConfig<*>> {
-        val result = doGetConfigsForConfigContext(element, rootConfigs, memberPathFromRoot, configGroup, matchOptions)
+        val result = doGetConfigsForConfigContext(element, rootConfigs, memberPathFromRoot, configGroup, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     }
 
@@ -336,7 +338,7 @@ object ParadoxConfigService {
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     }
 
-    private fun doGetConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+    private fun doGetConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val configContext = ParadoxConfigManager.getConfigContext(element)
         if (configContext == null) return emptyList()

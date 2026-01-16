@@ -22,7 +22,7 @@ object ParadoxMatchPipeline {
 
     fun filter(
         candidates: List<ParadoxMatchCandidate>,
-        matchOptions: ParadoxMatchOptions? = null
+        options: ParadoxMatchOptions? = null
     ): List<CwtMemberConfig<*>> {
         // 首先尝试直接的精确匹配，如果有结果，则直接返回
         // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
@@ -38,8 +38,8 @@ object ParadoxMatchPipeline {
 
         val matched = mutableListOf<ParadoxMatchCandidate>()
 
-        addLazyMatchedConfigs(matched, candidates, matchOptions) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-        addLazyMatchedConfigs(matched, candidates, matchOptions) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
+        addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
+        addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
 
         candidates.filterTo(matched) p@{
             if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@p false // 已经匹配过
@@ -47,7 +47,7 @@ object ParadoxMatchPipeline {
             if (it.result is ParadoxMatchResult.LazySimpleMatch) return@p true // 直接认为是匹配的
             if (it.result is ParadoxMatchResult.PartialMatch) return@p false // 之后再匹配
             if (it.result is ParadoxMatchResult.FallbackMatch) return@p false // 之后再匹配
-            it.result.get(matchOptions)
+            it.result.get(options)
         }
         if (matched.isNotEmpty()) return matched.map { it.value }
 
@@ -63,7 +63,7 @@ object ParadoxMatchPipeline {
     private fun addLazyMatchedConfigs(
         matched: MutableList<ParadoxMatchCandidate>,
         candidates: List<ParadoxMatchCandidate>,
-        matchOptions: ParadoxMatchOptions? = null,
+        options: ParadoxMatchOptions? = null,
         predicate: (ParadoxMatchCandidate) -> Boolean
     ) {
         val lazyMatched = candidates.filter(predicate)
@@ -72,7 +72,7 @@ object ParadoxMatchPipeline {
             matched += lazyMatched.first()
         } else if (lazyMatchedSize > 1) {
             val oldMatchedSize = matched.size
-            lazyMatched.filterTo(matched) { it.result.get(matchOptions) }
+            lazyMatched.filterTo(matched) { it.result.get(options) }
             if (oldMatchedSize == matched.size) matched += lazyMatched.first()
         }
     }

@@ -388,7 +388,7 @@ object ParadoxConfigMatchService {
         return true
     }
 
-    private fun matchesPropertiesForSubtype(definition: ParadoxScriptDefinitionElement, block: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>, matchOptions: ParadoxMatchOptions?): Boolean {
+    private fun matchesPropertiesForSubtype(definition: ParadoxScriptDefinitionElement, block: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>, options: ParadoxMatchOptions?): Boolean {
         if (propertyConfigs.isEmpty()) return true
         if (block == null) return false
 
@@ -399,17 +399,17 @@ object ParadoxConfigMatchService {
         val configGroup = propertyConfigs.first().configGroup
         val matched = definition.properties(inline = true).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
-            val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
+            val expression = ParadoxScriptExpression.resolve(keyElement, options)
             val propConfigs = propertyConfigs.filter { config ->
                 val configExpression = config.keyExpression
-                ParadoxMatchService.matchScriptExpression(keyElement, expression, configExpression, config, configGroup, matchOptions).get(matchOptions)
+                ParadoxMatchService.matchScriptExpression(keyElement, expression, configExpression, config, configGroup, options).get(options)
             }
 
             // 如果没有匹配的规则则忽略
             if (propConfigs.isEmpty()) return@p true
 
             val matched = propConfigs.any { propConfig ->
-                val matched = matchesPropertyForSubtype(definition, propertyElement, propConfig, matchOptions)
+                val matched = matchesPropertyForSubtype(definition, propertyElement, propConfig, options)
                 if (matched) occurrences.get(propConfig.key)?.let { it.actual++ }
                 matched
             }
@@ -420,7 +420,7 @@ object ParadoxConfigMatchService {
         return occurrences.values.all { it.isValid(relax = true) }
     }
 
-    private fun matchesValuesForSubtype(block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, options: ParadoxMatchOptions? = null): Boolean {
+    private fun matchesValuesForSubtype(block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, options: ParadoxMatchOptions?): Boolean {
         if (valueConfigs.isEmpty()) return true
         if (block == null) return false
 

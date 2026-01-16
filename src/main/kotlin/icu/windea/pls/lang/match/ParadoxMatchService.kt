@@ -19,9 +19,9 @@ object ParadoxMatchService {
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
-        matchOptions: ParadoxMatchOptions? = null,
+        options: ParadoxMatchOptions? = null,
     ): ParadoxMatchResult {
-        val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, matchOptions)
+        val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, options)
         val result = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(context) }
         return result ?: ParadoxMatchResult.NotMatch
     }

@@ -63,12 +63,12 @@ class ParadoxDefinitionInfo(
     val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { doGetPrimaryLocalisations() }
     val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
 
-    fun getSubtypeConfigs(matchOptions: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        return doGetSubtypeConfigs(matchOptions)
+    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+        return doGetSubtypeConfigs(options)
     }
 
-    fun getDeclaration(matchOptions: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        return doGetDeclaration(matchOptions)
+    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        return doGetDeclaration(options)
     }
 
     private fun doGetName(): String {
@@ -85,21 +85,21 @@ class ParadoxDefinitionInfo(
         return result.optimized() // optimized to optimize memory
     }
 
-    private fun doGetSubtypeConfigs(matchOptions: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
+    private fun doGetSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         if (typeConfig.subtypes.isEmpty()) return emptyList()
         val cache = subtypeConfigsCache
-        val cacheKey = matchOptions.orDefault().toHashString().optimized() // optimized to optimize memory
+        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
         val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
+            ParadoxDefinitionService.resolveSubtypeConfigs(this, options)
         }
         return result.optimized()
     }
 
-    private fun doGetDeclaration(matchOptions: ParadoxMatchOptions?): CwtPropertyConfig? {
+    private fun doGetDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val cache = declarationConfigsCache
-        val cacheKey = matchOptions.orDefault().toHashString().optimized() // optimized to optimize memory
+        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
         val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveDeclaration(element, this, matchOptions) ?: EMPTY_OBJECT
+            ParadoxDefinitionService.resolveDeclaration(element, this, options) ?: EMPTY_OBJECT
         }
         return result.castOrNull()
     }
