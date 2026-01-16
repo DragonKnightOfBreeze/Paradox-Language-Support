@@ -44,6 +44,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastMap
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
@@ -86,7 +87,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val allInternalFiles = mutableListOf<Tuple2<String, VirtualFile>>()
         val allFiles = mutableListOf<Tuple3<String, VirtualFile, CwtConfigGroupSource>>()
         readAction {
-            fileProvidersAndRootDirectories.all { (fileProvider, rootDirectory) ->
+            fileProvidersAndRootDirectories.process { (fileProvider, rootDirectory) ->
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
@@ -108,42 +109,38 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         currentCoroutineContext.ensureActive()
         val internalFileConfigs = mutableMapOf<String, CwtFileConfig>()
         val fileConfigs = mutableMapOf<String, CwtFileConfig>()
-        readAction {
-            try {
-                withState(PlsStates.resolveForInternalConfigs) {
-                    for ((filePath, file) in allInternalFiles) {
-                        if (internalFileConfigs.containsKey(filePath)) continue
-                        currentCoroutineContext.ensureActive()
-                        CwtConfigResolverManager.setLocation(filePath, configGroup)
-                        val fileConfig = resolveFileConfig(configGroup, file, filePath) ?: continue
-                        internalFileConfigs[filePath] = fileConfig
-                    }
-                }
-                for ((filePath, file) in allFiles) {
-                    if (fileConfigs.containsKey(filePath)) continue
+        try {
+            withState(PlsStates.resolveForInternalConfigs) {
+                for ((filePath, file) in allInternalFiles) {
+                    if (internalFileConfigs.containsKey(filePath)) continue
                     currentCoroutineContext.ensureActive()
                     CwtConfigResolverManager.setLocation(filePath, configGroup)
-                    val fileConfig = resolveFileConfig(configGroup, file, filePath) ?: continue
-                    fileConfigs[filePath] = fileConfig
+                    val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
+                    internalFileConfigs[filePath] = fileConfig
                 }
-            } finally {
-                CwtConfigResolverManager.resetLocation()
             }
+            for ((filePath, file) in allFiles) {
+                if (fileConfigs.containsKey(filePath)) continue
+                currentCoroutineContext.ensureActive()
+                CwtConfigResolverManager.setLocation(filePath, configGroup)
+                val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
+                fileConfigs[filePath] = fileConfig
+            }
+        } finally {
+            CwtConfigResolverManager.resetLocation()
         }
 
         CwtConfigResolverManager.getFileConfigs(configGroup).putAll(fileConfigs)
         CwtConfigResolverManager.getPostProcessActions(configGroup).forEach { it.run() }
 
         currentCoroutineContext.ensureActive()
-        readAction {
-            for (fileConfig in internalFileConfigs.values) {
-                currentCoroutineContext.ensureActive()
-                processInternalFile(fileConfig)
-            }
-            for (fileConfig in fileConfigs.values) {
-                currentCoroutineContext.ensureActive()
-                processFile(fileConfig)
-            }
+        for (fileConfig in internalFileConfigs.values) {
+            currentCoroutineContext.ensureActive()
+            readAction { processInternalFile(fileConfig) }
+        }
+        for (fileConfig in fileConfigs.values) {
+            currentCoroutineContext.ensureActive()
+            readAction { processFile(fileConfig) }
         }
     }
 
