@@ -226,7 +226,6 @@ object ParadoxConfigService {
                     }
                 }
             } else {
-                // TODO 2.1.1 似乎需要匹配 `parentConfig`，之前一直写错了？
                 val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
 
                 matchedParentConfigs.forEach f1@{ parentConfig ->
@@ -244,6 +243,8 @@ object ParadoxConfigService {
                             else -> inlinedConfigs
                         }
 
+                        // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
+                        // 如果存在精确匹配的规则，则仅使用那些规则；否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
                         matchedConfigs.forEach { matchedConfig ->
                             if (matchedConfig is CwtPropertyConfig) {
                                 val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
@@ -256,12 +257,12 @@ object ParadoxConfigService {
                                 this += matchedConfig
                             }
                         }
+                    }
 
-                        if (exactMatchedConfigs.isNotEmpty()) {
-                            addAll(exactMatchedConfigs)
-                        } else if (relaxMatchedConfigs.size == 1) {
-                            this += relaxMatchedConfigs.single()
-                        }
+                    if (exactMatchedConfigs.isNotEmpty()) {
+                        addAll(exactMatchedConfigs)
+                    } else if (relaxMatchedConfigs.size == 1) {
+                        this += relaxMatchedConfigs.single()
                     }
                 }
             }

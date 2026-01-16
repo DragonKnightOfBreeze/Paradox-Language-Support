@@ -41,7 +41,7 @@ class ParadoxParameterContextInfo(
         val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterManager.getParameterElement(it) }
 
         /**
-         * 获取此参数对应的脚本表达式所对应的上下文规则列表。
+         * 获取此参数对应的脚本表达式所对应的上下文规则列表。此参数需要整个作为一个脚本表达式。
          */
         val expressionContextConfigs: List<CwtMemberConfig<*>>
             get() {
