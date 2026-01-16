@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
@@ -41,7 +41,7 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
         for (info in infos) {
             ProgressManager.checkCanceled()
             val modifierName = info.name
-            val newModifierName = CwtTemplateExpressionManager.extract(info.config.template, newName)
+            val newModifierName = CwtConfigExpressionManager.extract(info.config.template, newName)
             val modifierElement = ParadoxModifierElement(element, modifierName, definitionInfo.gameType, definitionInfo.project)
             modifierElement.canRename = true
             allRenames[modifierElement] = newModifierName

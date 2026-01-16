@@ -7,7 +7,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.enabledTool
 import icu.windea.pls.core.getInspectionToolState
@@ -60,14 +61,14 @@ object ParadoxImageCodeInsightContextBuilder {
         for (info in definitionInfo.images) {
             ProgressManager.checkCanceled()
             val expression = info.locationExpression
-            val resolved = CwtLocationExpressionManager.resolve(expression, definition, definitionInfo)
+            val resolved = ParadoxConfigExpressionService.resolve(expression, definition, definitionInfo)
             val type = when {
                 info.required -> ParadoxImageCodeInsightInfo.Type.Required
                 info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
                 else -> ParadoxImageCodeInsightInfo.Type.Optional
             }
             val name = resolved?.nameOrFilePath
-            val gfxName = CwtLocationExpressionManager.resolvePlaceholder(expression, definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
+            val gfxName = CwtConfigExpressionManager.resolvePlaceholder(expression, definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
             val check = when {
                 info.required -> true
                 (inspection == null || inspection.checkPrimaryForDefinitions) && (info.primary || info.primaryByInference) -> true

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
@@ -94,13 +94,13 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
     private suspend fun generateHint(outputPath: String, namesFromScripts: Set<String>, configInfo: GameRuleConfigInfo): Hint {
         val addedNames = namesFromScripts
             .filter { name -> name !in configInfo.names }
-            .filter { name -> configInfo.templates.none { CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .filter { name -> configInfo.templates.none { CwtConfigExpressionManager.toRegex(it).matches(name) } }
             .toSet()
         val removedNames = configInfo.names
             .filter { name -> name !in namesFromScripts }
             .toSet()
         val unmatchedTemplates = configInfo.templates
-            .filter { namesFromScripts.none { name -> CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .filter { namesFromScripts.none { name -> CwtConfigExpressionManager.toRegex(it).matches(name) } }
             .toSet()
 
         // 删除未知静态名并生成文本

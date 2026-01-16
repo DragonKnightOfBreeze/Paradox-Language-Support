@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -8,7 +8,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
-import icu.windea.pls.config.configExpression.CwtLocationExpression
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
@@ -39,29 +39,20 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
 
-object CwtLocationExpressionManager {
-    fun resolvePlaceholder(locationExpression: CwtLocationExpression, name: String): String? {
-        if (!locationExpression.isPlaceholder) return null
-        val r = buildString { for (c in locationExpression.location) if (c == '$') append(name) else append(c) }
-        return when {
-            locationExpression is CwtLocalisationLocationExpression && locationExpression.forceUpperCase -> r.uppercase()
-            else -> r
-        }
-    }
-
+object ParadoxConfigExpressionService {
     fun resolve(
         locationExpression: CwtLocalisationLocationExpression,
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit = {}
-    ): CwtLocalisationLocationExpression.ResolveResult? {
+    ): CwtLocalisationLocationResolveResult? {
         val (location, isPlaceholder, namePaths) = locationExpression
         val project = definitionInfo.project
 
         if (isPlaceholder) {
             val nameText = findValueByPaths(definition, namePaths) ?: definitionInfo.name
             if (nameText.isEmpty()) return null
-            val name = resolvePlaceholder(locationExpression, nameText)
+            val name = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
             if (name.isNullOrEmpty()) return null
             return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
         }
@@ -84,8 +75,8 @@ object CwtLocationExpressionManager {
         return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
     }
 
-    private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationExpression.ResolveResult {
-        return CwtLocalisationLocationExpression.ResolveResult("", message)
+    private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationResolveResult {
+        return CwtLocalisationLocationResolveResult("", message)
     }
 
     private fun createLocalisationResolveResult(
@@ -94,8 +85,8 @@ object CwtLocationExpressionManager {
         definitionInfo: ParadoxDefinitionInfo,
         project: Project,
         selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit
-    ): CwtLocalisationLocationExpression.ResolveResult {
-        return CwtLocalisationLocationExpression.ResolveResult(name, null, {
+    ): CwtLocalisationLocationResolveResult {
+        return CwtLocalisationLocationResolveResult(name, null, {
             val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
             val selector = selector(project, definition).localisation().contextSensitive()
                 .withConstraint(constraint)
@@ -122,7 +113,7 @@ object CwtLocationExpressionManager {
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: ImageFrameInfo? = null,
         toFile: Boolean = false
-    ): CwtImageLocationExpression.ResolveResult? {
+    ): CwtImageLocationResolveResult? {
         val (location, isPlaceholder, namePaths, framePaths) = locationExpression
         val project = definitionInfo.project
 
@@ -136,7 +127,7 @@ object CwtLocationExpressionManager {
             val nameText = findValueByPaths(definition, namePaths) ?: definitionInfo.name
             if (nameText.isEmpty()) return null
             if (location.startsWith("GFX_")) {
-                val spriteName = resolvePlaceholder(locationExpression, nameText)
+                val spriteName = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
                     val definitionSelector = selector(project, definition).definition().contextSensitive()
@@ -159,7 +150,7 @@ object CwtLocationExpressionManager {
                 return createImageResolveResult(spriteName, newFrameInfo, definition, project)
             }
 
-            val filePath = resolvePlaceholder(locationExpression, nameText)
+            val filePath = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
             if (filePath.isNullOrEmpty()) return null
             return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
         }
@@ -211,8 +202,8 @@ object CwtLocationExpressionManager {
         frameInfo: ImageFrameInfo?,
         definition: ParadoxScriptDefinitionElement,
         project: Project
-    ): CwtImageLocationExpression.ResolveResult {
-        return CwtImageLocationExpression.ResolveResult(spriteName, frameInfo, null, {
+    ): CwtImageLocationResolveResult {
+        return CwtImageLocationResolveResult(spriteName, frameInfo, null, {
             val selector = selector(project, definition).definition().contextSensitive()
             ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
@@ -226,8 +217,8 @@ object CwtLocationExpressionManager {
         frameInfo: ImageFrameInfo?,
         definition: ParadoxScriptDefinitionElement,
         project: Project
-    ): CwtImageLocationExpression.ResolveResult {
-        return CwtImageLocationExpression.ResolveResult(filePath, frameInfo, null, {
+    ): CwtImageLocationResolveResult {
+        return CwtImageLocationResolveResult(filePath, frameInfo, null, {
             val selector = selector(project, definition).file().contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
         }, {
@@ -236,8 +227,8 @@ object CwtLocationExpressionManager {
         })
     }
 
-    private fun createImageResolveResult(message: String): CwtImageLocationExpression.ResolveResult {
-        return CwtImageLocationExpression.ResolveResult("", null, message)
+    private fun createImageResolveResult(message: String): CwtImageLocationResolveResult {
+        return CwtImageLocationResolveResult("", null, message)
     }
 
     private fun findValueElementByPath(definition: ParadoxScriptDefinitionElement, path: String): ParadoxScriptValue? {

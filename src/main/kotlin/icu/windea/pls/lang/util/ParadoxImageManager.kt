@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.util.io.fileSizeSafe
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
@@ -130,7 +130,7 @@ object ParadoxImageManager {
         // 兼容 `definition` 不是 `sprite` 的情况
         val resolved = runReadActionSmartly {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
-                CwtLocationExpressionManager.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
+                ParadoxConfigExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
         } ?: return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null

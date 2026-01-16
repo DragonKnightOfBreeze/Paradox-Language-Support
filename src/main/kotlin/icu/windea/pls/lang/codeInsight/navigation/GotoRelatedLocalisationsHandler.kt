@@ -11,7 +11,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
@@ -75,7 +75,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
                         readAction {
-                            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
+                            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
                             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                                 targets.addAll(resolveResult.elements)
                             }

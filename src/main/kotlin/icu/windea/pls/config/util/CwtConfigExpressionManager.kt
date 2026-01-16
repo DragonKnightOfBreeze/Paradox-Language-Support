@@ -1,20 +1,24 @@
 package icu.windea.pls.config.util
 
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
-import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
-object CwtTemplateExpressionManager {
+object CwtConfigExpressionManager {
+    fun resolvePlaceholder(locationExpression: CwtLocationExpression, name: String): String? {
+        if (!locationExpression.isPlaceholder) return null
+        val r = buildString { for (c in locationExpression.location) if (c == '$') append(name) else append(c) }
+        return when {
+            locationExpression is CwtLocalisationLocationExpression && locationExpression.forceUpperCase -> r.uppercase()
+            else -> r
+        }
+    }
+
     fun extract(templateExpression: CwtTemplateExpression, referenceName: String): String {
         if (templateExpression.referenceExpressions.size != 1) throw IllegalStateException()
         return buildString {
@@ -71,32 +75,5 @@ object CwtTemplateExpressionManager {
         } else {
             append("(.*?)")
         }
-    }
-
-    fun matches(
-        element: PsiElement,
-        text: String,
-        templateExpression: CwtTemplateExpression,
-        configGroup: CwtConfigGroup,
-        options: ParadoxMatchOptions? = null,
-    ): Boolean {
-        val snippetExpressions = templateExpression.snippetExpressions
-        if (snippetExpressions.isEmpty()) return false
-        val expressionString = text.unquote()
-        val regex = toRegex(templateExpression)
-        val matchResult = regex.matchEntire(expressionString) ?: return false
-        if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
-        var i = 1
-        for (snippetExpression in snippetExpressions) {
-            ProgressManager.checkCanceled()
-            if (snippetExpression.type != CwtDataTypes.Constant) {
-                val matchGroup = matchResult.groups.get(i++) ?: return false
-                val referenceName = matchGroup.value
-                val expression = ParadoxScriptExpression.resolve(referenceName, false)
-                val matched = ParadoxMatchService.matchScriptExpression(element, expression, snippetExpression, null, configGroup, options).get(options)
-                if (!matched) return false
-            }
-        }
-        return true
     }
 }

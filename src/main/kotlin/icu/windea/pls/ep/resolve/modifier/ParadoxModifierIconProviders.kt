@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.modifier
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.properties
@@ -45,7 +45,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
             val property = selectScope { definition.properties(inline = true).ofKey("icon").one() } ?: return@p true
             val propertyValue = property.propertyValue ?: return@p true
             if (propertyValue !is ParadoxScriptString) return@p true
-            val name = CwtTemplateExpressionManager.extract(modifierConfig.template, propertyValue.value)
+            val name = CwtConfigExpressionManager.extract(modifierConfig.template, propertyValue.value)
             registry += "gfx/interface/icons/modifiers/mod_${name}"
             true
         }

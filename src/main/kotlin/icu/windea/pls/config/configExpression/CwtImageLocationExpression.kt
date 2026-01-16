@@ -1,8 +1,6 @@
 package icu.windea.pls.config.configExpression
 
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.impl.CwtImageLocationExpressionResolverImpl
-import icu.windea.pls.images.ImageFrameInfo
 
 /**
  * 图片位置表达式。
@@ -37,17 +35,6 @@ interface CwtImageLocationExpression : CwtLocationExpression {
 
     operator fun component3() = namePaths
     operator fun component4() = framePaths
-
-    class ResolveResult(
-        val nameOrFilePath: String,
-        val frameInfo: ImageFrameInfo? = null,
-        val message: String? = null,
-        resolveAction: () -> PsiElement? = { null },
-        resolveAllAction: () -> Collection<PsiElement> = { emptySet() },
-    ) {
-        val element: PsiElement? by lazy { resolveAction() }
-        val elements: Collection<PsiElement> by lazy { resolveAllAction() }
-    }
 
     interface Resolver {
         fun resolveEmpty(): CwtImageLocationExpression

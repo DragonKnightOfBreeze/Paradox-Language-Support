@@ -204,7 +204,7 @@ object ParadoxConfigService {
         val parentMember = member.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isBlockMember() } ?: return emptyList()
         val parentProperty = parentMember.castOrNull<ParadoxScriptProperty>()
 
-        // 从位于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从位于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
+        // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
         val parentConfigs = parentContext.getConfigs(options)
         if (parentConfigs.isEmpty()) return emptyList() // 忽略

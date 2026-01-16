@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
@@ -114,11 +114,11 @@ object ParadoxDefinitionService {
     fun resolveModifiers(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.ModifierInfo> {
         val result = buildList {
             definitionInfo.configGroup.type2ModifiersMap.get(definitionInfo.type)?.forEach { (_, v) ->
-                this += ParadoxDefinitionInfo.ModifierInfo(CwtTemplateExpressionManager.extract(v.template, definitionInfo.name), v)
+                this += ParadoxDefinitionInfo.ModifierInfo(CwtConfigExpressionManager.extract(v.template, definitionInfo.name), v)
             }
             for (subtype in definitionInfo.subtypes) {
                 definitionInfo.configGroup.type2ModifiersMap.get("${definitionInfo.type}.$subtype")?.forEach { (_, v) ->
-                    this += ParadoxDefinitionInfo.ModifierInfo(CwtTemplateExpressionManager.extract(v.template, definitionInfo.name), v)
+                    this += ParadoxDefinitionInfo.ModifierInfo(CwtConfigExpressionManager.extract(v.template, definitionInfo.name), v)
                 }
             }
         }

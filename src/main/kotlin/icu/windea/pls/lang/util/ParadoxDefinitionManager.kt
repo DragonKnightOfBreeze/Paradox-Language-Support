@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
@@ -161,7 +161,7 @@ object ParadoxDefinitionManager {
         if (primaryLocalisations.isEmpty()) return null // 没有或者CWT规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val key = resolveResult?.name ?: continue
             return key
         }
@@ -189,7 +189,7 @@ object ParadoxDefinitionManager {
         if (primaryLocalisations.isEmpty()) return null // 没有或者CWT规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val localisation = resolveResult?.element ?: continue
             return localisation
         }
@@ -218,7 +218,7 @@ object ParadoxDefinitionManager {
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val localisations = resolveResult?.elements ?: continue
             result.addAll(localisations)
         }
@@ -245,7 +245,7 @@ object ParadoxDefinitionManager {
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者CWT规则不完善
         for (primaryImage in primaryImages) {
-            val resolved = CwtLocationExpressionManager.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
             val file = resolved?.element?.castOrNull<PsiFile>()
             if (file == null) continue
             element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)

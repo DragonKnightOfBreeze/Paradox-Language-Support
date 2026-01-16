@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.orNull
@@ -87,7 +87,7 @@ object ParadoxLocalisationManager {
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2
                 definitionInfo.localisations.forEach f3@{ l ->
-                    val resolved = CwtLocationExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
+                    val resolved = CwtConfigExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
                     if (resolved != name) return@f3
                     result += definition
                     return@f2

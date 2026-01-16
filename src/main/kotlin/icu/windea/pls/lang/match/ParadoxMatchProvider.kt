@@ -8,7 +8,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
@@ -53,7 +52,7 @@ object ParadoxMatchProvider {
     }
 
     fun matchesTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, templateExpression: String): Boolean {
-        return CwtTemplateExpressionManager.matches(element, expression, CwtTemplateExpression.resolve(templateExpression), configGroup)
+        return ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, expression, CwtTemplateExpression.resolve(templateExpression))
     }
 
     /**

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -140,13 +140,13 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
             .filterValues { info -> !isForceIgnoredModifier(info, gameType) }
         val missingNames = filteredInfos.keys
             .filter { name -> name !in configInfo.names }
-            .filter { name -> configInfo.templates.none { CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .filter { name -> configInfo.templates.none { CwtConfigExpressionManager.toRegex(it).matches(name) } }
             .toSet()
         val unknownNames = configInfo.names
             .filter { name -> name !in filteredInfos.keys }
             .toSet()
         val unmatchedTemplates = configInfo.templates
-            .filter { filteredInfos.keys.none { name -> CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .filter { filteredInfos.keys.none { name -> CwtConfigExpressionManager.toRegex(it).matches(name) } }
             .toSet()
 
         // 删除未知项并生成文本（不删除通过模板匹配的项）

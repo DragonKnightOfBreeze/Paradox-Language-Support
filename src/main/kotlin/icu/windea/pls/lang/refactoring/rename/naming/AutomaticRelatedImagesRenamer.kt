@@ -5,7 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -39,8 +40,8 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
         val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val resolveResult = CwtLocationExpressionManager.resolve(info.locationExpression, element, definitionInfo) ?: continue
-            val rename = CwtLocationExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
+            val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
+            val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
             val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
             resolveResult.elements.forEach { allRenames[it] = finalRename }
         }

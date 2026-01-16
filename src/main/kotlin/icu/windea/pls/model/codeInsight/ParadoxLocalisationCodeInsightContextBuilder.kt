@@ -8,7 +8,7 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.enabledTool
 import icu.windea.pls.core.getInspectionToolState
@@ -93,7 +93,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val expression = info.locationExpression
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val resolveResult = CwtLocationExpressionManager.resolve(expression, element, definitionInfo) { locale(locale)}
+                val resolveResult = ParadoxConfigExpressionService.resolve(expression, element, definitionInfo) { locale(locale)}
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary

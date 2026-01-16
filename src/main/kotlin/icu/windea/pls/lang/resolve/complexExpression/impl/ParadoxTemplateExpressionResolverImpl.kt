@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -29,7 +29,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         if (!incomplete && text.isEmpty()) return null
 
         // 这里需要允许部分匹配
-        val (_, matchResult) = CwtTemplateExpressionManager.toMatchedRegex(templateExpression, text, incomplete) ?: return null
+        val (_, matchResult) = CwtConfigExpressionManager.toMatchedRegex(templateExpression, text, incomplete) ?: return null
 
         val matchGroups = matchResult.groups.drop(1)
         if (matchGroups.isEmpty()) return null

@@ -13,7 +13,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
@@ -43,6 +42,7 @@ import icu.windea.pls.lang.codeInsight.documentation.appendBr
 import icu.windea.pls.lang.codeInsight.documentation.appendIndent
 import icu.windea.pls.lang.codeInsight.documentation.appendPsiLink
 import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
@@ -148,7 +148,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
-            CwtTemplateExpressionManager.matches(element, modifierName, config.template, configGroup)
+            ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, modifierName, config.template)
         }
     }
 

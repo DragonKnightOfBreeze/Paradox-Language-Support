@@ -8,7 +8,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.codeInsight.documentation.buildSections
@@ -658,7 +658,7 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in localisationInfos) {
             if (sectionKeys.contains(key)) continue
-            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
                 map[key] = resolveResult.message.escapeXml()
             } else if (resolveResult.element != null) {
@@ -695,7 +695,7 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in imagesInfos) {
             if (sectionKeys.contains(key)) continue
-            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
                 map[key] = resolveResult.message.escapeXml()
             } else if (resolveResult.element != null) {

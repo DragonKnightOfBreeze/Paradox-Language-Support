@@ -1,7 +1,6 @@
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.configExpression.impl.CwtLocalisationLocationExpressionResolverImpl
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 本地化位置表达式。
@@ -35,16 +34,6 @@ interface CwtLocalisationLocationExpression : CwtLocationExpression {
 
     operator fun component3() = namePaths
     operator fun component4() = forceUpperCase
-
-    class ResolveResult(
-        val name: String,
-        val message: String? = null,
-        resolveAction: () -> ParadoxLocalisationProperty? = { null },
-        resolveAllAction: () -> Collection<ParadoxLocalisationProperty> = { emptySet() },
-    ) {
-        val element: ParadoxLocalisationProperty? by lazy { resolveAction() }
-        val elements: Collection<ParadoxLocalisationProperty> by lazy { resolveAllAction() }
-    }
 
     interface Resolver {
         fun resolveEmpty(): CwtLocalisationLocationExpression
