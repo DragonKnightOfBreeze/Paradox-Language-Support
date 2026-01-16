@@ -5,9 +5,9 @@ package icu.windea.pls.config
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.normalizePath

@@ -13,6 +13,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
@@ -51,11 +52,11 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): String? {
         return null
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         return null
     }
 }
@@ -82,7 +83,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): String? {
         val gameTypeId = context.gameType.id
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null // TODO 2.0.6+ 这里存在一定的耗时，需要考虑优化
@@ -93,7 +94,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         return "b@$gameTypeId#${matchOptions}#${memberRole.ordinal}#${declarationKey}:${memberPath}"
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
 
         val memberPath = context.memberPath ?: return null
@@ -135,7 +136,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): String? {
         val gameTypeId = context.gameType.id
         val parameterElement = context.parameterElement ?: return null // null -> unexpected
         val memberPath = context.memberPath ?: return null // null -> unexpected
@@ -143,7 +144,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         return "is@$gameTypeId#${matchOptions}#${memberRole.ordinal}#${parameterElement.contextKey}@${parameterElement.name}:${memberPath}"
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
 
         val parameterElement = context.parameterElement ?: return null
@@ -153,7 +154,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         if (rootConfigs.isEmpty()) return emptyList()
         if (memberPath.isEmpty()) return rootConfigs
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, matchOptions)
+        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
         return configs
     }
 
@@ -193,20 +194,20 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
         val gameTypeId = context.gameType.id
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = ParadoxMemberRole.resolve(context.element)
-        return "isu@$gameTypeId#${matchOptions}#${memberRole.ordinal}:${memberPath}"
+        return "isu@$gameTypeId#${options}#${memberRole.ordinal}:${memberPath}"
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         val memberPath = context.memberPath ?: return null
         val configGroup = context.configGroup
         val inlineConfigs = configGroup.directivesModel.inlineScript.orNull() ?: return null
         val element = context.element
         val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, matchOptions)
+        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
         return configs
     }
 }
@@ -234,7 +235,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): String? {
         val gameTypeId = context.gameType.id
         val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
         val memberPath = context.memberPath ?: return null // null -> unexpected
@@ -242,7 +243,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         return "is@$gameTypeId#${matchOptions}#${memberRole.ordinal}#${inlineScriptExpression}:${memberPath}"
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
 
         // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
@@ -251,10 +252,10 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
         val element = context.element
         val configGroup = context.configGroup
-        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, matchOptions)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, options)
         if (rootConfigs.isEmpty()) return emptyList()
         if (memberPath.isEmpty()) return rootConfigs
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, matchOptions)
+        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
         return configs
     }
 
@@ -297,7 +298,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
+    override fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions?): String? {
         val gameTypeId = context.gameType.id
         val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
         val targetKey = definitionInjectionInfo.type + "@" + definitionInjectionInfo.target
@@ -306,7 +307,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         return "b@$gameTypeId#${matchOptions}#${memberRole.ordinal}#${targetKey}:${memberPath}"
     }
 
-    override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
 
         val memberPath = context.memberPath ?: return null
@@ -315,7 +316,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val declarationConfig = ParadoxDefinitionInjectionManager.getDeclaration(element, definitionInjectionInfo) ?: return null
         val rootConfigs = declarationConfig.singleton.list()
         val configGroup = context.configGroup
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, matchOptions)
+        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
         return configs
     }
 }

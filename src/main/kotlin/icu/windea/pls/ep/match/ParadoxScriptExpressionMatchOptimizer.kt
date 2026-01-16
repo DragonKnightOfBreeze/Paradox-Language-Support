@@ -41,7 +41,7 @@ interface ParadoxScriptExpressionMatchOptimizer {
         val element: PsiElement,
         val expression: ParadoxScriptExpression,
         val configGroup: CwtConfigGroup,
-        val options: Int = ParadoxMatchOptions.Default,
+        val options: ParadoxMatchOptions? = null,
     ) {
         val project get() = configGroup.project
     }

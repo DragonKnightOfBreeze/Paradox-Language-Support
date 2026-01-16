@@ -2,7 +2,6 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -47,14 +46,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         for (filteredConfigs in filteredGroup) {
             for (filteredConfig in filteredConfigs) {
                 val valueConfig = filteredConfig.valueConfig ?: continue
-                val matchResult = ParadoxMatchService.matchScriptExpression(
-                    blockElement,
-                    blockExpression,
-                    valueConfig.configExpression,
-                    valueConfig,
-                    context.configGroup,
-                    context.options
-                )
+                val matchResult = ParadoxMatchService.matchScriptExpression(blockElement, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)
                 if (!matchResult.get(context.options)) {
                     configsToRemove += filteredConfig
                 }
@@ -84,14 +76,7 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
             }
             hasOverride = true
             for (overriddenConfig in overriddenConfigs) {
-                val matchResult = ParadoxMatchService.matchScriptExpression(
-                    context.element,
-                    context.expression,
-                    overriddenConfig.configExpression,
-                    overriddenConfig,
-                    context.configGroup,
-                    context.options
-                )
+                val matchResult = ParadoxMatchService.matchScriptExpression(context.element, context.expression, overriddenConfig.configExpression, overriddenConfig, context.configGroup, context.options)
                 if (matchResult.get(context.options)) {
                     result += overriddenConfig
                 }

@@ -6,12 +6,12 @@ import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.lang.resolve.gameRuleConfig
-import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
+import icu.windea.pls.lang.resolve.gameRuleConfig
+import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 /**

@@ -48,7 +48,7 @@ interface ParadoxScriptExpressionMatcher {
         val configExpression: CwtDataExpression,
         val config: CwtConfig<*>?,
         val configGroup: CwtConfigGroup,
-        val options: Int = ParadoxMatchOptions.Default,
+        val options: ParadoxMatchOptions? = null,
     ) {
         val dataType get() = configExpression.type
         val project get() = configGroup.project

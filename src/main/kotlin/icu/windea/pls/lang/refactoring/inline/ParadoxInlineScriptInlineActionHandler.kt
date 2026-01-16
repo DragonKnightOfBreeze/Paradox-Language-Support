@@ -11,10 +11,10 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
+import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager

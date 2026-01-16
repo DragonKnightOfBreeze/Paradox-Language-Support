@@ -19,7 +19,7 @@ import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchUtil
+import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -58,25 +58,25 @@ object ParadoxDefinitionService {
         }
     }
 
-    fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
+    fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val subtypesConfig = definitionInfo.typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, subtypeConfig, result, definitionInfo.typeKey, matchOptions)) {
+            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, subtypeConfig, result, definitionInfo.typeKey, options)) {
                 result += subtypeConfig
             }
         }
         // to avoid to rely on non-indexed file data (like super definition) when indexing (through this may loss some information)
-        if (!ParadoxMatchUtil.skipIndex(matchOptions)) {
+        if (!ParadoxMatchOptionsUtil.skipIndex(options)) {
             processSubtypeConfigsFromInherit(definitionInfo, result)
         }
         return result.distinctBy { it.name } // it's necessary to distinct by name
     }
 
-    fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
+    fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
         val configGroup = definitionInfo.configGroup
         val declarationConfig = configGroup.declarations.get(definitionInfo.type) ?: return null
-        val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
+        val subtypes = resolveSubtypeConfigs(definitionInfo, options).map { it.name }.optimized() // optimized to optimize memory
         val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }

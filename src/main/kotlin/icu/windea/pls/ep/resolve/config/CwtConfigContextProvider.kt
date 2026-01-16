@@ -25,9 +25,9 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 interface CwtConfigContextProvider {
     fun getContext(element: ParadoxScriptMember, file: PsiFile, memberPathFromFile: ParadoxMemberPath): CwtConfigContext?
 
-    fun getCacheKey(context: CwtConfigContext, matchOptions: Int = ParadoxMatchOptions.Default): String?
+    fun getCacheKey(context: CwtConfigContext, matchOptions: ParadoxMatchOptions? = null): String?
 
-    fun getConfigs(context: CwtConfigContext, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>>?
+    fun getConfigs(context: CwtConfigContext, matchOptions: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>>?
 
     fun skipMissingExpressionCheck(context: CwtConfigContext) = false
 

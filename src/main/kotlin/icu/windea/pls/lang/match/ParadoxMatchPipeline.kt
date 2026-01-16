@@ -7,10 +7,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
-    inline fun <T : CwtMemberConfig<*>> collectCandidates(
-        configs: List<T>,
-        matchResultProvider: (T) -> ParadoxMatchResult?
-    ): List<ParadoxMatchCandidate> {
+    inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult?): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = buildList {
             for (config in configs) {
@@ -25,7 +22,7 @@ object ParadoxMatchPipeline {
 
     fun filter(
         candidates: List<ParadoxMatchCandidate>,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        matchOptions: ParadoxMatchOptions? = null
     ): List<CwtMemberConfig<*>> {
         // 首先尝试直接的精确匹配，如果有结果，则直接返回
         // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
@@ -66,7 +63,7 @@ object ParadoxMatchPipeline {
     private fun addLazyMatchedConfigs(
         matched: MutableList<ParadoxMatchCandidate>,
         candidates: List<ParadoxMatchCandidate>,
-        matchOptions: Int,
+        matchOptions: ParadoxMatchOptions? = null,
         predicate: (ParadoxMatchCandidate) -> Boolean
     ) {
         val lazyMatched = candidates.filter(predicate)
@@ -84,14 +81,14 @@ object ParadoxMatchPipeline {
         element: PsiElement,
         expression: ParadoxScriptExpression,
         configs: List<CwtMemberConfig<*>>,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        options: ParadoxMatchOptions? = null
     ): List<CwtMemberConfig<*>> {
         // 进行后续优化
 
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         var result = configs
-        val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, matchOptions)
+        val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, options)
         for (optimizer in ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList) {
             val optimized = optimizer.optimize(result, context)
             if (optimized == null) continue

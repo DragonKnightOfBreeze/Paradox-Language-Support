@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 
 object ParadoxDefinitionInjectionService {

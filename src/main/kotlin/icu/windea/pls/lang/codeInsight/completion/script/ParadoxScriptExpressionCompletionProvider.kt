@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -17,6 +16,7 @@ import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
+import icu.windea.pls.lang.resolve.parameterValueQuoted
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement

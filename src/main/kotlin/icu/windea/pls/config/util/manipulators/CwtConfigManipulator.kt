@@ -2,6 +2,7 @@ package icu.windea.pls.config.util.manipulators
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
@@ -13,13 +14,11 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
+import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
@@ -31,6 +30,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings

@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 

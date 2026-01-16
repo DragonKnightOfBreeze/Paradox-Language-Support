@@ -99,8 +99,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     if (definitionInfoStack.isEmpty()) return@run
                     if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
-                        val matchOptions = ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope
-                        val configs = ParadoxConfigManager.getConfigs(element, matchOptions = matchOptions)
+                        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions.DUMB)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEach { ep ->
@@ -117,7 +116,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
                     definitionInfoStack.removeLastOrNull()
                 }
-                if(element is ParadoxScriptStringExpressionElement) {
+                if (element is ParadoxScriptStringExpressionElement) {
                     // clean up expression references cache
                     ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
                 }

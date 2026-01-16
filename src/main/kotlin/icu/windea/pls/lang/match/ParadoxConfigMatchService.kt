@@ -281,7 +281,7 @@ object ParadoxConfigMatchService {
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: List<CwtSubtypeConfig>,
         typeKey: String,
-        matchOptions: Int = ParadoxMatchOptions.Default,
+        options: ParadoxMatchOptions? = null,
     ): Boolean {
         val fastResult = matchesSubtypeFast(subtypeConfig, subtypeConfigs, typeKey)
         if (fastResult != null) return fastResult
@@ -289,8 +289,8 @@ object ParadoxConfigMatchService {
         // 根据 config 对 property 进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
-        val finalMatchOptions = matchOptions or ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope
-        return matchesDefinitionForSubtype(element, elementConfig, finalMatchOptions)
+        val finalOptions = options.orDefault().copy(skipIndex = true, skipScope = true)
+        return matchesDefinitionForSubtype(element, elementConfig, finalOptions)
     }
 
     fun matchesSubtypeFast(
@@ -333,25 +333,25 @@ object ParadoxConfigMatchService {
         return null // 需要进一步匹配
     }
 
-    private fun matchesDefinitionForSubtype(definition: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
+    private fun matchesDefinitionForSubtype(definition: ParadoxScriptDefinitionElement, propertyConfig: CwtPropertyConfig, options: ParadoxMatchOptions): Boolean {
         // 这里不能基于内联后的声明结构，否则可能会导致SOE
         // 也不要参数条件表达式中的声明结构判断，
         val childValueConfigs = propertyConfig.values.orEmpty()
         if (childValueConfigs.isNotEmpty()) {
             // 匹配值列表
             val blockElement = definition.block
-            if (!matchesValuesForSubtype(blockElement, childValueConfigs, matchOptions)) return false // 继续匹配
+            if (!matchesValuesForSubtype(blockElement, childValueConfigs, options)) return false // 继续匹配
         }
         val childPropertyConfigs = propertyConfig.properties.orEmpty()
         if (childPropertyConfigs.isNotEmpty()) {
             // 匹配属性列表
             val blockElement = definition.block
-            if (!matchesPropertiesForSubtype(definition, blockElement, childPropertyConfigs, matchOptions)) return false // 继续匹配
+            if (!matchesPropertiesForSubtype(definition, blockElement, childPropertyConfigs, options)) return false // 继续匹配
         }
         return true
     }
 
-    private fun matchesPropertyForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
+    private fun matchesPropertyForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, options: ParadoxMatchOptions?): Boolean {
         val propValue = property.propertyValue
 
         // 对于 propertyValue 同样这样判断（可能脚本没有写完）
@@ -364,31 +364,31 @@ object ParadoxConfigMatchService {
             }
             // 匹配值
             propertyConfig.stringValue != null -> {
-                val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
+                val expression = ParadoxScriptExpression.resolve(propValue, options)
                 val configExpression = propertyConfig.valueExpression
                 val configGroup = propertyConfig.configGroup
-                return ParadoxMatchService.matchScriptExpression(propValue, expression, configExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
+                return ParadoxMatchService.matchScriptExpression(propValue, expression, configExpression, propertyConfig, configGroup, options).get(options)
             }
             // 匹配 single_alias
             isSingleAliasEntryConfig(propertyConfig) -> {
-                return matchesSingleAliasForSubtype(definition, property, propertyConfig, matchOptions)
+                return matchesSingleAliasForSubtype(definition, property, propertyConfig, options)
             }
             // 匹配 alias
             isAliasEntryConfig(propertyConfig) -> {
-                return matchesAliasForSubtype(definition, property, propertyConfig, matchOptions)
+                return matchesAliasForSubtype(definition, property, propertyConfig, options)
             }
             propertyConfig.configs.orEmpty().isNotEmpty() -> {
                 val blockElement = property.block
                 // 匹配值列表
-                if (!matchesValuesForSubtype(blockElement, propertyConfig.values.orEmpty(), matchOptions)) return false
+                if (!matchesValuesForSubtype(blockElement, propertyConfig.values.orEmpty(), options)) return false
                 // 匹配属性列表
-                if (!matchesPropertiesForSubtype(definition, blockElement, propertyConfig.properties.orEmpty(), matchOptions)) return false
+                if (!matchesPropertiesForSubtype(definition, blockElement, propertyConfig.properties.orEmpty(), options)) return false
             }
         }
         return true
     }
 
-    private fun matchesPropertiesForSubtype(definition: ParadoxScriptDefinitionElement, block: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>, matchOptions: Int): Boolean {
+    private fun matchesPropertiesForSubtype(definition: ParadoxScriptDefinitionElement, block: ParadoxScriptBlockElement?, propertyConfigs: List<CwtPropertyConfig>, matchOptions: ParadoxMatchOptions?): Boolean {
         if (propertyConfigs.isEmpty()) return true
         if (block == null) return false
 
@@ -420,7 +420,7 @@ object ParadoxConfigMatchService {
         return occurrences.values.all { it.isValid(relax = true) }
     }
 
-    private fun matchesValuesForSubtype(block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, matchOptions: Int): Boolean {
+    private fun matchesValuesForSubtype(block: ParadoxScriptBlockElement?, valueConfigs: List<CwtValueConfig>, options: ParadoxMatchOptions? = null): Boolean {
         if (valueConfigs.isEmpty()) return true
         if (block == null) return false
 
@@ -430,10 +430,10 @@ object ParadoxConfigMatchService {
         val configGroup = valueConfigs.first().configGroup
         val matched = block.values(inline = true).process p@{ valueElement ->
             // 如果没有匹配的规则则忽略
-            val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
+            val expression = ParadoxScriptExpression.resolve(valueElement, options)
             val matched = valueConfigs.any { config ->
                 val configExpression = config.valueExpression
-                val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, configExpression, config, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, configExpression, config, configGroup, options).get(options)
                 if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }
@@ -444,24 +444,24 @@ object ParadoxConfigMatchService {
         return occurrences.values.all { it.isValid(relax = true) }
     }
 
-    private fun matchesSingleAliasForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
+    private fun matchesSingleAliasForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, options: ParadoxMatchOptions?): Boolean {
         val configGroup = propertyConfig.configGroup
         val singleAliasName = propertyConfig.valueExpression.value ?: return false
         val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
-        return matchesPropertyForSubtype(definition, property, singleAlias.config, matchOptions)
+        return matchesPropertyForSubtype(definition, property, singleAlias.config, options)
     }
 
-    private fun matchesAliasForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
+    private fun matchesAliasForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, options: ParadoxMatchOptions?): Boolean {
         // aliasName 和 aliasSubName 需要匹配
         val configGroup = propertyConfig.configGroup
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = property.name
         val quoted = property.propertyKey.text.isLeftQuoted()
-        val aliasSubName = getMatchedAliasKey(configGroup, aliasName, key, property, quoted, matchOptions) ?: return false
+        val aliasSubName = getMatchedAliasKey(configGroup, aliasName, key, property, quoted, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->
-            matchesPropertyForSubtype(definition, property, alias.config, matchOptions)
+            matchesPropertyForSubtype(definition, property, alias.config, options)
         }
     }
 
@@ -657,12 +657,12 @@ object ParadoxConfigMatchService {
         return config.valueExpression.type == CwtDataTypes.SingleAliasRight
     }
 
-    fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, matchOptions: Int = ParadoxMatchOptions.Default): String? {
+    fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, options).get(options) }
     }
 
     fun canApplyForInjection(typeConfig: CwtTypeConfig): Boolean {

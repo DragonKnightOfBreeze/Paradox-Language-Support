@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -16,7 +17,6 @@ import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProvider
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceFast

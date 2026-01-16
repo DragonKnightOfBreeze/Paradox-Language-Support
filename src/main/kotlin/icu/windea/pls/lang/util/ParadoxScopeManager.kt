@@ -199,7 +199,7 @@ object ParadoxScopeManager {
 
         // child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
         // or root config in config tree is "alias[X:xxx] = ..." and "alias[X:scope_field]" is valid
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
         configs.forEach { config ->
             val configGroup = config.configGroup
             if (config.configExpression.type == CwtDataTypes.AliasKeysField) return true
@@ -290,7 +290,7 @@ object ParadoxScopeManager {
 
         val parentMember = findParentMember(element, withSelf = false)
         val parentScopeContext = if (parentMember != null) getSwitchedScopeContext(parentMember) else null
-        val configs = ParadoxConfigManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
         val config = configs.firstOrNull() ?: return null
 
         val overriddenScopeContext = ParadoxScopeService.getOverriddenScopeContext(element, config, parentScopeContext)

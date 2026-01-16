@@ -12,10 +12,10 @@ fun String.matchesByPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxMatchOptions.Default,
+    options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): Boolean {
-    return ParadoxPatternMatchService.matches(this, key, contextElement, configGroup, matchOptions, fromIndex)
+    return ParadoxPatternMatchService.matches(this, key, contextElement, configGroup, options, fromIndex)
 }
 
 /**
@@ -25,10 +25,10 @@ fun <V> Map<String, V>.findByPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxMatchOptions.Default,
+    options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): V? {
-    return ParadoxPatternMatchService.find(this, key, contextElement, configGroup, matchOptions, fromIndex)
+    return ParadoxPatternMatchService.find(this, key, contextElement, configGroup, options, fromIndex)
 }
 
 /**
@@ -38,8 +38,8 @@ fun <V> Map<String, V>.filterByPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxMatchOptions.Default,
+    options: ParadoxMatchOptions? = null,
     fromIndex: Int = 0,
 ): List<V> {
-    return ParadoxPatternMatchService.filter(this, key, contextElement, configGroup, matchOptions, fromIndex)
+    return ParadoxPatternMatchService.filter(this, key, contextElement, configGroup, options, fromIndex)
 }

@@ -23,7 +23,7 @@ object ParadoxPatternMatchService {
         key: String,
         contextElement: PsiElement,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default,
+        options: ParadoxMatchOptions? = null,
         fromIndex: Int = 0,
     ): Boolean {
         if (text == key) return true
@@ -38,13 +38,13 @@ object ParadoxPatternMatchService {
         val configExpression = CwtDataExpression.resolve(pattern0, true)
         if (configExpression.expressionString.isEmpty()) return false
         val expression = ParadoxScriptExpression.resolve(key)
-        val matchContext = ParadoxScriptExpressionMatcher.Context(contextElement, expression, configExpression, null, configGroup, matchOptions)
+        val matchContext = ParadoxScriptExpressionMatcher.Context(contextElement, expression, configExpression, null, configGroup, options)
         val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ep.isPatternAware()) return@f null
             ep.match(matchContext)
         }
         if (matchResult == null) return false
-        return matchResult.get(matchOptions)
+        return matchResult.get(options)
     }
 
     /**
@@ -60,12 +60,12 @@ object ParadoxPatternMatchService {
         key: String,
         contextElement: PsiElement,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default,
+        options: ParadoxMatchOptions? = null,
         fromIndex: Int = 0,
     ): V? {
         val fastResult = map.get(key)
         if (fastResult != null) return fastResult
-        return map.entries.find { (k) -> matches(k, key, contextElement, configGroup, matchOptions, fromIndex) }?.value
+        return map.entries.find { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }?.value
     }
 
     /**
@@ -81,11 +81,11 @@ object ParadoxPatternMatchService {
         key: String,
         contextElement: PsiElement,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default,
+        options: ParadoxMatchOptions? = null,
         fromIndex: Int = 0,
     ): List<V> {
         val fastResult = map.get(key)
         if (fastResult != null) return fastResult.singleton.list()
-        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, matchOptions, fromIndex) }.map { it.value }
+        return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.map { it.value }
     }
 }

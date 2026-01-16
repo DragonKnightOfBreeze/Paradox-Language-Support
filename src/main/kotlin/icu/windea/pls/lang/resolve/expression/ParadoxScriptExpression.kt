@@ -30,7 +30,7 @@ interface ParadoxScriptExpression {
         fun resolveBlock(): ParadoxScriptExpression
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression
         fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression
-        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxMatchOptions.Default): ParadoxScriptExpression
+        fun resolve(element: ParadoxScriptExpressionElement, options: ParadoxMatchOptions? = null): ParadoxScriptExpression
     }
 
     companion object : Resolver by ParadoxScriptExpressionResolverImpl()

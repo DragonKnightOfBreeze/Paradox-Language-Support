@@ -78,7 +78,7 @@ object CwtTemplateExpressionManager {
         text: String,
         templateExpression: CwtTemplateExpression,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        options: ParadoxMatchOptions? = null,
     ): Boolean {
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return false
@@ -93,7 +93,7 @@ object CwtTemplateExpressionManager {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxScriptExpression.resolve(referenceName, false)
-                val matched = ParadoxMatchService.matchScriptExpression(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxMatchService.matchScriptExpression(element, expression, snippetExpression, null, configGroup, options).get(options)
                 if (!matched) return false
             }
         }

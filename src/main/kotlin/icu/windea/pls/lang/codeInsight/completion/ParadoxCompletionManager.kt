@@ -18,7 +18,6 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -49,13 +48,14 @@ import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
-import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -118,8 +118,7 @@ object ParadoxCompletionManager {
         }
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -160,8 +159,7 @@ object ParadoxCompletionManager {
         if (!configContext.inRoot()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, matchOptions = matchOptions)
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->

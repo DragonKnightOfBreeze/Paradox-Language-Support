@@ -9,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -29,7 +30,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
                 // 得到完全匹配的CWT规则
-                val config = ParadoxConfigManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
+                val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
                 val configExpression = config.configExpression
                 val dataType = configExpression.type
                 if (dataType == CwtDataTypes.AbsoluteFilePath) return

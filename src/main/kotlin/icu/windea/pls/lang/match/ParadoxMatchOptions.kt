@@ -1,20 +1,38 @@
 package icu.windea.pls.lang.match
 
+import kotlin.experimental.or
+
 /**
  * 匹配选项。
+ *
+ * @property fallback 如果无法进一步匹配，则会使用回退后的匹配到的规则。默认为 `true`。
+ * @property acceptDefinition 允许匹配定义自身，即其声明对应的脚本属性。
+ * @property relax 对于 [ParadoxMatchResult.LazySimpleMatch] 和 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
+ * @property skipIndex 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，匹配结果直接返回 `true`。
+ * @property skipScope 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，匹配结果直接返回 `true`。
  */
-object ParadoxMatchOptions {
-    /** 默认的匹配方式，先尝试通过 [ParadoxMatchResult.ExactMatch] 进行匹配，然后再尝试通过其他匹配方式进行匹配。 */
-    const val Default = 0x00
-    /** 对于 [ParadoxMatchResult.LazySimpleMatch] 和 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。 */
-    const val Relax = 0x01
-    /** 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，匹配结果直接返回 `true`。 */
-    const val SkipIndex = 0x02
-    /** 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，匹配结果直接返回 `true`。 */
-    const val SkipScope = 0x04
+data class ParadoxMatchOptions(
+    val fallback: Boolean = true,
+    val acceptDefinition: Boolean = false,
+    val relax: Boolean = false,
+    val skipIndex: Boolean = false,
+    val skipScope: Boolean = false,
+) {
+    fun toHashString(): String {
+        var mask: Byte = 0
+        if (fallback) mask = mask or 1
+        if (acceptDefinition) mask = mask or 2
+        if (relax) mask = mask or 4
+        if (skipIndex) mask = mask or 8
+        if (skipScope) mask = mask or 16
+        return mask.toString()
+    }
 
-    // /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
-    // const val Fast = 0x08
-    /** 允许匹配定义自身（当要匹配表达式的是一个键时）。 */
-    const val AcceptDefinition = 0x10
+    companion object {
+        val DEFAULT = ParadoxMatchOptions()
+        val DUMB = ParadoxMatchOptions(skipIndex = true, skipScope = true)
+    }
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxMatchOptions?.orDefault() = this ?: ParadoxMatchOptions.DEFAULT

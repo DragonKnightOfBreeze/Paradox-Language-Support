@@ -5,7 +5,8 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxMatchUtil
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -32,10 +33,10 @@ internal class ParadoxScriptExpressionResolverImpl : ParadoxScriptExpression.Res
         return ParadoxScriptExpressionImpl(text.unquote(), ParadoxTypeResolver.resolve(text), text.isLeftQuoted(), isKey)
     }
 
-    override fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int): ParadoxScriptExpression {
+    override fun resolve(element: ParadoxScriptExpressionElement, options: ParadoxMatchOptions?): ParadoxScriptExpression {
         return when (element) {
             is ParadoxScriptBlock -> blockExpression
-            is ParadoxScriptScriptedVariableReference -> ParadoxScriptExpressionLazyImpl(element, matchOptions, false)
+            is ParadoxScriptScriptedVariableReference -> ParadoxScriptExpressionLazyImpl(element, options, false)
             else -> ParadoxScriptExpressionImpl(element.value, element.type, element.text.isLeftQuoted(), element is ParadoxScriptPropertyKey)
         }
     }
@@ -74,12 +75,12 @@ private class ParadoxScriptExpressionImpl(
 
 private class ParadoxScriptExpressionLazyImpl(
     private val element: ParadoxScriptScriptedVariableReference,
-    private val matchOptions: Int,
+    private val options: ParadoxMatchOptions?,
     override val isKey: Boolean?
 ) : ParadoxScriptExpressionBase() {
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
-        if (ParadoxMatchUtil.skipIndex(matchOptions)) return@lazy null
+        if (ParadoxMatchOptionsUtil.skipIndex(options)) return@lazy null
         element.resolved()
     }
 

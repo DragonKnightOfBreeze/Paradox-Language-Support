@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.match
 
-import com.intellij.util.BitUtil
 import icu.windea.pls.core.runCatchingCancelable
 
 /**
@@ -9,26 +8,26 @@ import icu.windea.pls.core.runCatchingCancelable
  * @see ParadoxMatchService
  */
 sealed class ParadoxMatchResult {
-    abstract fun get(options: Int = ParadoxMatchOptions.Default): Boolean
+    abstract fun get(options: ParadoxMatchOptions? = null): Boolean
 
     data object NotMatch : ParadoxMatchResult() {
-        override fun get(options: Int) = false
+        override fun get(options: ParadoxMatchOptions?) = false
     }
 
     data object ExactMatch : ParadoxMatchResult() {
-        override fun get(options: Int) = true
+        override fun get(options: ParadoxMatchOptions?) = true
     }
 
     data object FallbackMatch : ParadoxMatchResult() {
-        override fun get(options: Int) = true
+        override fun get(options: ParadoxMatchOptions?) = true
     }
 
     data object PartialMatch : ParadoxMatchResult() {
-        override fun get(options: Int) = true
+        override fun get(options: ParadoxMatchOptions?) = true
     }
 
     data object ParameterizedMatch : ParadoxMatchResult() {
-        override fun get(options: Int) = true
+        override fun get(options: ParadoxMatchOptions?) = true
     }
 
     sealed class LazyMatch(predicate: () -> Boolean) : ParadoxMatchResult() {
@@ -36,7 +35,7 @@ sealed class ParadoxMatchResult {
         @Volatile
         private var value: Any = predicate
 
-        override fun get(options: Int): Boolean {
+        override fun get(options: ParadoxMatchOptions?): Boolean {
             if (skip(options)) return true
             if (value is Boolean) return value as Boolean
             val r = doGetCatching()
@@ -44,12 +43,12 @@ sealed class ParadoxMatchResult {
             return r
         }
 
-        private fun skip(options: Int): Boolean {
+        private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazySimpleMatch -> BitUtil.isSet(options, ParadoxMatchOptions.Relax)
-                this is LazyBlockAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.Relax)
-                this is LazyIndexAwareMatch -> ParadoxMatchUtil.skipIndex(options)
-                this is LazyScopeAwareMatch -> ParadoxMatchUtil.skipScope(options)
+                this is LazySimpleMatch -> ParadoxMatchOptionsUtil.relax(options)
+                this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options)
+                this is LazyIndexAwareMatch -> ParadoxMatchOptionsUtil.skipIndex(options)
+                this is LazyScopeAwareMatch -> ParadoxMatchOptionsUtil.skipScope(options)
                 else -> false
             }
         }

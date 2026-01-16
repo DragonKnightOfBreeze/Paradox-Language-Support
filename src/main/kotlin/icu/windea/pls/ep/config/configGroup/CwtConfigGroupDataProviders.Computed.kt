@@ -26,7 +26,6 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlin.collections.iterator
 
 /**
  * 用于初始化规则分组中需要经过计算的那些数据。

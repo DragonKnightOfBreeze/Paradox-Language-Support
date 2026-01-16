@@ -42,8 +42,8 @@ class CwtConfigContext(
 
     lateinit var provider: CwtConfigContextProvider
 
-    fun getConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
-        return ParadoxConfigService.getConfigsForConfigContext(this, matchOptions)
+    fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }
 
     fun skipMissingExpressionCheck(): Boolean {

@@ -4,9 +4,9 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 
 /**
  * 提供声明规则的上下文。

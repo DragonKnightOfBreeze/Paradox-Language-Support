@@ -56,7 +56,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 if (file !is ParadoxScriptFile) return
                 val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(file, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(acceptDefinition = true))
                 doCheck(file, file, configs)
             }
 
@@ -72,7 +72,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?: return
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
                 doCheck(element, position, configs)
             }
 

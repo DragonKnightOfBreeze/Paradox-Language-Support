@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -48,7 +49,7 @@ class ParadoxScriptValueArgumentNode(
         }
 
         override fun resolve(): ParadoxParameterElement? {
-            val config = ParadoxConfigManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
+            val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return null
             return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
         }
 

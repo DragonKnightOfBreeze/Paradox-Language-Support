@@ -18,19 +18,20 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.lang.resolve.inRoot
-import icu.windea.pls.lang.resolve.isRootForDefinition
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.inRoot
+import icu.windea.pls.lang.resolve.isRootForDefinition
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.tagType
@@ -135,7 +136,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
-                val configs = ParadoxConfigManager.getConfigs(element, orDefault = false)
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false))
                 if (configs.isNotEmpty()) return continueCheck(configs)
                 // skip check value if it is a special tag and there are no matched configs
                 if (element.tagType != null) return false

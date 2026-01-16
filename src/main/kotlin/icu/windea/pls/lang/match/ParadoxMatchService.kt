@@ -19,7 +19,7 @@ object ParadoxMatchService {
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        matchOptions: ParadoxMatchOptions? = null,
     ): ParadoxMatchResult {
         val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, matchOptions)
         val result = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(context) }
