@@ -12,7 +12,7 @@ import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.emptyPointer
 
-class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver, CwtConfigResolverScope {
+internal class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? = doResolve(config)

@@ -20,7 +20,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfigResolverScope {
+internal class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)

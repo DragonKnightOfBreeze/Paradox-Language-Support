@@ -33,7 +33,7 @@ import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
 
-class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverScope {
+internal class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {

@@ -14,7 +14,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
-class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver, CwtConfigResolverScope {
+internal class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(config, name)

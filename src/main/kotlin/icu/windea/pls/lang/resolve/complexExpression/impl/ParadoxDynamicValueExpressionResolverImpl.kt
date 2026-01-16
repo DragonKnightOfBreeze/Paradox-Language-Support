@@ -19,7 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
-class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
+internal class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
     override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
         return resolve(text, range, configGroup, config.singleton.list())
     }

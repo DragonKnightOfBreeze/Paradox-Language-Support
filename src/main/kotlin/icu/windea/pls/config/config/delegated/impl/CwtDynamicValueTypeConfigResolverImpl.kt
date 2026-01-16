@@ -12,7 +12,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverScope {
+internal class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
     // TODO a dynamic value can also be a template expression
