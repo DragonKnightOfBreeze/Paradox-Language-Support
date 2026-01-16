@@ -6,6 +6,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parents
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -24,6 +25,7 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
@@ -52,13 +54,13 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxMemberRole
-import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.property
 
 object ParadoxConfigService {
     @Optimized
@@ -171,135 +173,129 @@ object ParadoxConfigService {
         return cached
     }
 
-    // fun getContextConfigs(context: CwtConfigContext, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, options: Int = 0): List<CwtMemberConfig<*>> {
-    //     val result = doGetConfigsForConfigContext(element, parentConfigs, subPath, options)
-    //     return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
-    // }
-    //
-    // private fun doGetConfigsForConfigContext(element: ParadoxScriptMember, parentConfigs: List<CwtMemberConfig<*>>, subPath: String, options: Int): List<CwtMemberConfig<*>> {
-    //     ProgressManager.checkCanceled()
-    //     if (parentConfigs.isEmpty()) return emptyList() // 忽略
-    //     val memberRole = ParadoxMemberRole.resolve(element)
-    //     if (memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
-    //     var current = parentConfigs.asSequence()
-    //
-    //     // 根据 `subPath` 打平规则
-    //     val expect = subPath
-    //
-    //
-    //     // 如果 `element` 是属性值，则需要再次转换为属性值对应的规则
-    //     if (memberRole == ParadoxMemberRole.PropertyValue) {
-    //         current = current.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
-    //     }
-    //
-    //     return current.toList()
-    // }
+    fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        if (rootConfigs.isEmpty()) return emptyList()
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
+            return rootConfigs.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
+        }
+        return rootConfigs
+    }
 
-    fun getConfigsForConfigContext(
-        element: ParadoxScriptMember,
-        rootConfigs: List<CwtMemberConfig<*>>,
-        memberPathFromRoot: ParadoxMemberPath,
-        configGroup: CwtConfigGroup,
-        options: ParadoxMatchOptions? = null,
-    ): List<CwtMemberConfig<*>> {
-        val result = doGetConfigsForConfigContext(element, rootConfigs, memberPathFromRoot, configGroup, options)
+    fun getFlattenedConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
+        val result = flattenConfigsForConfigContext(context, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
     }
 
-    private fun doGetConfigsForConfigContext(
-        element: ParadoxScriptMember,
-        rootConfigs: List<CwtMemberConfig<*>>,
-        memberPathFromRoot: ParadoxMemberPath,
-        configGroup: CwtConfigGroup,
-        options: ParadoxMatchOptions?,
-    ): List<CwtMemberConfig<*>> {
-        val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
+    private fun flattenConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        ProgressManager.checkCanceled()
 
-        var result: List<CwtMemberConfig<*>> = rootConfigs
+        if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
+        val memberPath = context.memberPath ?: return emptyList() // 忽略
+        if (memberPath.isEmpty()) return emptyList() // 忽略
+        val subPath = memberPath.subPaths.last()
+        val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
 
-        val subPaths = memberPathFromRoot.subPaths
-        subPaths.forEachIndexed f1@{ i, subPath ->
-            val matchesKey = isPropertyValue || subPaths.lastIndex - i > 0
-            val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
+        val configGroup = context.configGroup
+        val element = context.element
+        val property = element.property
+        val member = property ?: element
+        val parentMember = member.parents(withSelf = false).findIsInstance<ParadoxScriptMember> { it is ParadoxScriptFile || it.isBlockMember() } ?: return emptyList()
+        val parentProperty = parentMember.castOrNull<ParadoxScriptProperty>()
 
-            val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
-            val pathToMatch = ParadoxMemberPath.resolve(subPaths.drop(i).dropLast(1))
-            val elementToMatch = selectScope { memberElement.parentOfPath(pathToMatch.path)?.asMember() } ?: return emptyList()
-            val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(elementToMatch, expression) }
+        // 从位于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从位于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
+        val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
+        val parentConfigs = parentContext.getConfigs(options)
+        if (parentConfigs.isEmpty()) return emptyList() // 忽略
 
-            val nextResult1 = mutableListOf<CwtMemberConfig<*>>()
-            ProgressManager.checkCanceled()
-            result.forEach f2@{ parentConfig ->
-                val configs = parentConfig.configs
-                if (configs.isNullOrEmpty()) return@f2
-
-                val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-                val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
-
-                fun addToMatchedConfigs(config: CwtMemberConfig<*>) {
-                    if (config is CwtPropertyConfig) {
-                        val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
-                        when (m) {
-                            null -> nextResult1 += config
-                            true -> exactMatchedConfigs += config
-                            false -> relaxMatchedConfigs += config
-                        }
-                    } else if (config is CwtValueConfig) {
-                        nextResult1 += config
-                    }
-                }
-
-                fun collectMatchedConfigs() {
-                    if (exactMatchedConfigs.isNotEmpty()) {
-                        nextResult1 += exactMatchedConfigs
-                    } else if (relaxMatchedConfigs.size == 1) {
-                        nextResult1 += relaxMatchedConfigs
-                    }
-                }
-
-                configs.forEach f3@{ config ->
-                    if (config is CwtPropertyConfig) {
-                        if (subPath == "-") return@f3
-                        val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
-                        if (inlinedConfigs == null) { // null (cannot or failed)
-                            addToMatchedConfigs(config)
-                        } else {
-                            inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
-                        }
-                    } else if (config is CwtValueConfig) {
-                        if (subPath != "-") return@f3
-                        addToMatchedConfigs(config)
-                    }
-                }
-
-                collectMatchedConfigs()
+        var result = buildList {
+            // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
+            val parentSubPath = parentProperty?.name
+            val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, isKey = true) }
+            val matchedParentConfigs = when {
+                parentProperty != null && parentExpression != null -> matchConfigsForConfigContext(parentProperty, parentExpression, parentConfigs, configGroup, options)
+                else -> parentConfigs
             }
-            val nextResult = nextResult1
-            result = nextResult
 
-            run r1@{
-                if (subPath == "-") return@r1 // #196
-                if (!matchesKey) return@r1
-                ProgressManager.checkCanceled()
-                val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
-                    ParadoxMatchService.matchScriptExpression(elementToMatch, expression, config.configExpression, config, configGroup, options)
+            // 按照 `subPath` 打平规则，并进行必要的处理
+            if (subPath == "-") {
+                matchedParentConfigs.forEach f1@{ parentConfig ->
+                    val configs = parentConfig.values
+                    if (configs.isNullOrEmpty()) return@f1
+                    configs.forEach { config ->
+                        this += config
+                    }
                 }
-                val filteredResult = ParadoxMatchPipeline.filter(candidates, options)
-                val optimizedResult = ParadoxMatchPipeline.optimize(elementToMatch, expression, filteredResult, options)
-                result = optimizedResult
+            } else {
+                // TODO 2.1.1 似乎需要匹配 `parentConfig`，之前一直写错了？
+                val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
+
+                matchedParentConfigs.forEach f1@{ parentConfig ->
+                    val configs = parentConfig.properties
+                    if (configs.isNullOrEmpty()) return@f1
+
+                    val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+                    val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+
+                    configs.forEach { config ->
+                        // 打平后需要首先进行必要的内联
+                        val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
+                        val matchedConfigs = when {
+                            inlinedConfigs == null -> listOf(config)
+                            else -> inlinedConfigs
+                        }
+
+                        matchedConfigs.forEach { matchedConfig ->
+                            if (matchedConfig is CwtPropertyConfig) {
+                                val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
+                                when (m) {
+                                    null -> this += config
+                                    true -> exactMatchedConfigs += config
+                                    false -> relaxMatchedConfigs += config
+                                }
+                            } else {
+                                this += matchedConfig
+                            }
+                        }
+
+                        if (exactMatchedConfigs.isNotEmpty()) {
+                            addAll(exactMatchedConfigs)
+                        } else if (relaxMatchedConfigs.size == 1) {
+                            this += relaxMatchedConfigs.single()
+                        }
+                    }
+                }
             }
         }
 
-        if (isPropertyValue) {
+        // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
+        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
+            result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             result = result.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
         return result
     }
 
-    private fun getParameterizedKeyConfigs(element: ParadoxScriptMember, expression: ParadoxScriptExpression): List<CwtValueConfig>? {
+    private fun matchConfigsForConfigContext(
+        element: PsiElement,
+        expression: ParadoxScriptExpression,
+        configs: List<CwtMemberConfig<*>>,
+        configGroup: CwtConfigGroup,
+        options: ParadoxMatchOptions?
+    ): List<CwtMemberConfig<*>> {
+        ProgressManager.checkCanceled()
+        val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
+            ParadoxMatchService.matchScriptExpression(element, expression, config.configExpression, config, configGroup, options)
+        }
+        val filteredResult = ParadoxMatchPipeline.filter(candidates, options)
+        val optimizedResult = ParadoxMatchPipeline.optimize(element, expression, filteredResult, options)
+        return optimizedResult
+    }
+
+    private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxScriptExpression): List<CwtValueConfig>? {
         // 脚本表达式必须带参数（目前来说，如果不是整个作为参数，则直接返回空列表）
 
+        if (element == null) return null
         if (!expression.isParameterized()) return null
         if (!expression.isFullParameterized()) return emptyList()
         return ParadoxParameterManager.getParameterizedKeyConfigs(element)

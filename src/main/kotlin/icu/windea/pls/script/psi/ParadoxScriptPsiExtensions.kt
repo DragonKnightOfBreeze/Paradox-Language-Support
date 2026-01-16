@@ -24,6 +24,13 @@ val ParadoxScriptExpressionElement.parentProperty: ParadoxScriptProperty?
 val ParadoxScriptMember.parentBlock: ParadoxScriptBlock?
     get() = parent?.castOrNull()
 
+val ParadoxScriptMember.property: ParadoxScriptProperty?
+    get() = when (this) {
+        is ParadoxScriptProperty -> this
+        is ParadoxScriptValue -> this.parent?.castOrNull()
+        else -> null
+    }
+
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
     get() = siblings(forward = true, withSelf = false).findIsInstance()
 

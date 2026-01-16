@@ -29,7 +29,6 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
@@ -111,7 +110,7 @@ object ParadoxParameterManager {
         if (direct) {
             val oldText = element.text
             var newText = oldText
-            args.forEach { (k,v) ->
+            args.forEach { (k, v) ->
                 newText = newText.replace("$$k$", v.unquote())
             }
             return newText
@@ -398,7 +397,7 @@ object ParadoxParameterManager {
             ProgressManager.checkCanceled()
             val contextInfo = ParadoxParameterService.getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo).orNull()
-            if(fastInference && contextConfigs.isNotNullOrEmpty()) {
+            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
                 result.set(contextConfigs)
                 return@p false
             }
@@ -415,7 +414,7 @@ object ParadoxParameterManager {
         parameterInfos.process p@{ parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = ParadoxParameterService.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            if(fastInference && contextConfigs.isNotNullOrEmpty()) {
+            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
                 result.set(contextConfigs)
                 return@p false
             }
@@ -424,9 +423,8 @@ object ParadoxParameterManager {
         return result.get().orEmpty()
     }
 
-    fun getParameterizedKeyConfigs(element: PsiElement): List<CwtValueConfig> {
-        val parameterizedProperty = element.castOrNull<ParadoxScriptProperty>() ?: return emptyList()
-        val propertyKey = parameterizedProperty.propertyKey
+    fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
+        val propertyKey = element.propertyKey
         val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)

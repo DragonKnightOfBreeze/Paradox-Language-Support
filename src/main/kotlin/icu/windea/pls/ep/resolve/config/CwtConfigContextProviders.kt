@@ -101,12 +101,10 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
 
         val memberPath = context.memberPath ?: return null
         val definitionInfo = context.definitionInfo ?: return null
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val declarationConfig = definitionInfo.getDeclaration(options) ?: return null
         val rootConfigs = declarationConfig.singleton.list()
-        val configGroup = context.configGroup
-        val element = context.element
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
-        return configs
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
 
@@ -152,13 +150,9 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
 
         val parameterElement = context.parameterElement ?: return null
         val memberPath = context.memberPath ?: return null
-        val element = context.element
-        val configGroup = context.configGroup
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
-        if (rootConfigs.isEmpty()) return emptyList()
-        if (memberPath.isEmpty()) return rootConfigs
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
-        return configs
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
     // skip `MissingExpressionInspection` and `TooManyExpressionInspection` at root level
@@ -207,12 +201,10 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         val memberPath = context.memberPath ?: return null
-        val configGroup = context.configGroup
-        val inlineConfigs = configGroup.directivesModel.inlineScript.orNull() ?: return null
-        val element = context.element
+        val inlineConfigs = context.configGroup.directivesModel.inlineScript.orNull() ?: return null
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
-        return configs
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
 
@@ -223,6 +215,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
  * - 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
 class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
+    // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
     override fun getContext(element: ParadoxScriptMember, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
@@ -251,17 +244,11 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
 
-        // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
-
         val memberPath = context.memberPath ?: return null
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        val element = context.element
-        val configGroup = context.configGroup
-        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, element, context, options)
-        if (rootConfigs.isEmpty()) return emptyList()
-        if (memberPath.isEmpty()) return rootConfigs
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
-        return configs
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, context.element, context, options)
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 
     // skip `MissingExpressionInspection` and `TooManyExpressionInspection` at root level
@@ -318,11 +305,9 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
 
         val memberPath = context.memberPath ?: return null
         val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
-        val element = context.element
-        val declarationConfig = ParadoxDefinitionInjectionManager.getDeclaration(element, definitionInjectionInfo) ?: return null
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val declarationConfig = ParadoxDefinitionInjectionManager.getDeclaration(context.element, definitionInjectionInfo) ?: return null
         val rootConfigs = declarationConfig.singleton.list()
-        val configGroup = context.configGroup
-        val configs = ParadoxConfigService.getConfigsForConfigContext(element, rootConfigs, memberPath, configGroup, options)
-        return configs
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
