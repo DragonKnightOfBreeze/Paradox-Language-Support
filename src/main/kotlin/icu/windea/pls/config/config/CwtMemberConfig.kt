@@ -39,6 +39,12 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     override fun toString(): String
 
     interface Resolver {
+        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
+        fun <T : CwtMemberConfig<*>> delegated(
+            targetConfig: T,
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
+        ): T
+
         fun withConfigs(config: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean
 
         /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
@@ -46,12 +52,6 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
 
         /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
         fun postOptimize(config: CwtMemberConfig<*>)
-
-        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun <T : CwtMemberConfig<*>> delegated(
-            targetConfig: T,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-        ): T
     }
 
     object Keys : KeyRegistry()

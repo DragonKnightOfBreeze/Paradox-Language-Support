@@ -194,6 +194,8 @@ object ParadoxConfigService {
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
         val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
+        val parentSubPath = memberPath.subPaths.getOrNull(memberPath.subPaths.lastIndex - 1)
+        val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, isKey = true) }
 
         val configGroup = context.configGroup
         val element = context.element
@@ -209,8 +211,6 @@ object ParadoxConfigService {
 
         var result = buildList {
             // `parentConfigs` 是上下文规则，因此如果 `parentSubPath` 对应一个脚本属性，需要先进行一次匹配
-            val parentSubPath = parentProperty?.name
-            val parentExpression = parentSubPath?.let { ParadoxScriptExpression.resolve(it, quoted = false, isKey = true) }
             val matchedParentConfigs = when {
                 parentProperty != null && parentExpression != null -> matchConfigsForConfigContext(parentProperty, parentExpression, parentConfigs, configGroup, options)
                 else -> parentConfigs
@@ -248,9 +248,9 @@ object ParadoxConfigService {
                             if (matchedConfig is CwtPropertyConfig) {
                                 val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
                                 when (m) {
-                                    null -> this += config
-                                    true -> exactMatchedConfigs += config
-                                    false -> relaxMatchedConfigs += config
+                                    null -> this += matchedConfig
+                                    true -> exactMatchedConfigs += matchedConfig
+                                    false -> relaxMatchedConfigs += matchedConfig
                                 }
                             } else {
                                 this += matchedConfig

@@ -41,14 +41,6 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         /** 由 [CwtProperty] 解析为属性规则。 */
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
 
-        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
-
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
-        fun postProcess(config: CwtPropertyConfig)
-
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
-        fun postOptimize(config: CwtPropertyConfig)
-
         /** 创建属性规则。其中的选项数据仍然需要手动初始化。 */
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -84,6 +76,14 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             key: String,
             value: String,
         ): CwtPropertyConfig
+
+        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
+
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
+        fun postProcess(config: CwtPropertyConfig)
+
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        fun postOptimize(config: CwtPropertyConfig)
     }
 
     companion object : Resolver by CwtPropertyConfigResolverImpl()

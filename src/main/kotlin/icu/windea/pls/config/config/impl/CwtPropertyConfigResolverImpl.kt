@@ -22,7 +22,6 @@ import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
@@ -65,35 +64,6 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         return config
     }
 
-    override fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean {
-        if (config is CwtPropertyConfigImplWithConfigs) {
-            config.configs = configs.optimized() // optimized to optimize memory
-            config.memberType = CwtMembersType.UNSET
-            return true
-        }
-        return false
-    }
-
-    override fun postProcess(config: CwtPropertyConfig) {
-        // bind parent config
-        config.configs?.forEachFast { it.parentConfig = config }
-        // run post processors
-        CwtConfigService.postProcess(config)
-        // collect information
-        CwtConfigResolverManager.collectFromConfigExpression(config, config.keyExpression)
-        CwtConfigResolverManager.collectFromConfigExpression(config, config.valueExpression)
-    }
-
-    override fun postOptimize(config: CwtPropertyConfig) {
-        // optimize child configs
-        when (config) {
-            is CwtPropertyConfigImplWithConfigs -> config.configs = config.configs.optimized()
-            is CwtPropertyConfigDelegateWithConfigs -> config.configs = config.configs.optimized()
-        }
-        // bind parent config
-        config.configs?.forEachFast { it.parentConfig = config }
-    }
-
     override fun create(
         pointer: SmartPsiElementPointer<out CwtProperty>,
         configGroup: CwtConfigGroup,
@@ -107,9 +77,9 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         val withConfigs = configs != null && (injectable || configs.isNotEmpty()) // 2.0.6 NOTE configs may be injectable
         val config = when (withConfigs) {
             true -> CwtPropertyConfigImplWithConfigs(pointer, configGroup, key, separatorType)
+                .also { it.configs = configs.optimized() } // optimized to optimize memory
             else -> CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType)
         }
-        if (withConfigs) withConfigs(config, configs)
         return config
     }
 
@@ -130,11 +100,13 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         targetConfig: CwtPropertyConfig,
         configs: List<CwtMemberConfig<*>>?,
     ): CwtPropertyConfig {
-        val withConfig = configs != null // 2.0.6 NOTE configs may be injectable
-        return when (withConfig) {
-            true -> CwtPropertyConfigDelegateWithConfigs(targetConfig, configs)
+        val withConfigs = configs != null // 2.0.6 NOTE configs may be injectable
+        val config = when (withConfigs) {
+            true -> CwtPropertyConfigDelegateWithConfigs(targetConfig)
+                .also { it.configs = configs } // do not do optimization here
             else -> CwtPropertyConfigDelegate(targetConfig)
         }
+        return config
     }
 
     override fun delegatedWith(
@@ -144,6 +116,47 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
     ): CwtPropertyConfig {
         return CwtPropertyConfigDelegateWithKeyAndValue(targetConfig, key, value)
     }
+
+    override fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean {
+        return when (config) {
+            is CwtPropertyConfigImplWithConfigs -> {
+                config.configs = configs.optimized() // optimized to optimize memory
+                true
+            }
+            is CwtPropertyConfigDelegateWithConfigs -> {
+                config.configs = configs.optimized() // optimized to optimize memory
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun postProcess(config: CwtPropertyConfig) {
+        // optimize child configs
+        if (config is CwtPropertyConfigImplWithConfigs) {
+            config.memberType = CwtMembersType.UNSET
+        }
+        // bind parent config
+        config.configs?.forEachFast { it.parentConfig = config }
+        // run post processors
+        CwtConfigService.postProcess(config)
+        // collect information
+        CwtConfigResolverManager.collectFromConfigExpression(config, config.keyExpression)
+        CwtConfigResolverManager.collectFromConfigExpression(config, config.valueExpression)
+    }
+
+    override fun postOptimize(config: CwtPropertyConfig) {
+        // optimize child configs
+        if (config is CwtPropertyConfigImplWithConfigs) {
+            config.configs = config.configs.optimized()
+            config.memberType = CwtMembersType.UNSET
+        } else if (config is CwtPropertyConfigDelegateWithConfigs) {
+            config.configs = config.configs.optimized()
+            config.memberType = CwtMembersType.UNSET
+        }
+        // bind parent config
+        config.configs?.forEachFast { it.parentConfig = config }
+    }
 }
 
 private const val blockValue = PlsStrings.blockFolder
@@ -151,8 +164,6 @@ private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtT
 
 // 12 + 3 * 4 = 24 -> 24
 private abstract class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPropertyConfig {
-    override val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstanceFast<CwtPropertyConfig>()
-    override val values: List<CwtValueConfig>? get() = configs?.filterIsInstanceFast<CwtValueConfig>()
     override val optionData: CwtOptionDataHolder get() = this
 
     @Volatile override var parentConfig: CwtMemberConfig<*>? = null
@@ -226,7 +237,7 @@ private open class CwtPropertyConfigImplWithConfigs(
     override val valueType: CwtType get() = CwtType.Block
 
     @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
-    @Volatile var memberType: CwtMembersType = CwtMembersType.UNSET
+    @Volatile var memberType: CwtMembersType = CwtMembersType.MIXED
 
     override val properties: List<CwtPropertyConfig>
         get() {
@@ -251,8 +262,6 @@ private open class CwtPropertyConfigDelegate(
     override val valueType: CwtType get() = delegate.valueType
     override val separatorType: CwtSeparatorType get() = delegate.separatorType
     override val configs: List<CwtMemberConfig<*>>? get() = delegate.configs
-    override val properties: List<CwtPropertyConfig>? get() = delegate.properties
-    override val values: List<CwtValueConfig>? get() = delegate.values
     override val optionData: CwtOptionDataHolder get() = delegate.optionData
 
     override val keyExpression: CwtDataExpression get() = delegate.keyExpression
@@ -262,13 +271,26 @@ private open class CwtPropertyConfigDelegate(
     override fun <T> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
 }
 
-// 12 + 5 * 4 = 32 -> 32
+// 12 + 6 * 4 = 36 -> 40
 private class CwtPropertyConfigDelegateWithConfigs(
-    delegate: CwtPropertyConfig,
-    override var configs: List<CwtMemberConfig<*>>,
+    delegate: CwtPropertyConfig
 ) : CwtPropertyConfigDelegate(delegate) {
     override val value: String get() = blockValue
     override val valueType: CwtType get() = CwtType.Block
+
+    @Volatile override var configs: List<CwtMemberConfig<*>> = emptyList()
+    @Volatile var memberType: CwtMembersType = CwtMembersType.MIXED
+
+    override val properties: List<CwtPropertyConfig>
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getProperties(configs, memberType)
+        }
+    override val values: List<CwtValueConfig>
+        get() {
+            if (memberType == CwtMembersType.UNSET) memberType = CwtConfigResolverManager.getMembersType(configs)
+            return CwtConfigResolverManager.getValues(configs, memberType)
+        }
 }
 
 // 12 + 6 * 4 = 26 -> 40
