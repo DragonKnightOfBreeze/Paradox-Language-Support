@@ -155,7 +155,7 @@ object CwtDocumentationManager {
             val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
 
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
-            val byName = if (shortName == name) null else name
+            val byName = if (shortName == name) null else name.orNull()
             val prefix = when {
                 referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
@@ -186,13 +186,13 @@ object CwtDocumentationManager {
                         val typeLink = ReferenceLinkType.CwtConfig.createLink(configType.category, typeName, gameType)
                         append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
                     } else {
-                        append(": ").append(typeName)
+                        append(": ").append(typeName.escapeXml())
                     }
                 }
             }
             if (byName != null) {
                 appendBr().appendIndent() // 2.1.1 文本可能过长，因此这里换行并缩进
-                grayed { append("by ").append(byName.escapeXml().or.anonymous()) }
+                grayed { append("by ").append(byName.escapeXml()) }
             }
 
             if (configGroup != null) {

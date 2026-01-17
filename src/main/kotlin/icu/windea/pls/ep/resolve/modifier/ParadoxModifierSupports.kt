@@ -233,7 +233,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
-            append(PlsBundle.message("byTemplate")).append(" ")
+            append(PlsBundle.message("fromTemplate")).append(" ")
             val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
@@ -322,9 +322,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             append(PlsStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
+            append(" ")
             grayed {
-                append(" ")
-                append(PlsBundle.message("byTemplate"))
+                append(PlsBundle.message("fromTemplate"))
                 append(" ")
                 val key = modifier.config.name
                 val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, key, gameType)
@@ -470,16 +470,16 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
             appendPsiLink(modifierLink.escapeXml(), modifierInfo.name.escapeXml())
             if (modifierInfo.resource != null) {
+                append(" ")
                 grayed {
-                    append(" ")
                     append(PlsBundle.message("fromResource"))
                     append(" ")
                     val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
                 }
             } else {
+                append(" ")
                 grayed {
-                    append(" ")
                     append(PlsBundle.message("forAiBudget"))
                 }
             }
