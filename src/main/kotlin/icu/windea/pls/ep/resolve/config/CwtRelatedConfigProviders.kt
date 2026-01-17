@@ -4,7 +4,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -104,7 +104,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                 val name = element.value
                 val configExpression = config.configExpression
                 when {
-                    configExpression.type in CwtDataTypeGroups.DynamicValue -> {
+                    configExpression.type in CwtDataTypeSets.DynamicValue -> {
                         val type = configExpression.value
                         if (type != null) {
                             configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }

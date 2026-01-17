@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -43,14 +43,14 @@ class ParadoxScopeLinkValueNode(
 
             fun resolveSingle(coreText: String, coreRange: TextRange, cfgs: List<CwtLinkConfig>) {
                 run {
-                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
+                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
                     if (configs.isEmpty()) return@run
                     val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs) ?: return@run
                     nodes += node
                     return
                 }
                 run {
-                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
+                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeSets.ScopeField }
                     if (configs.isEmpty()) return@run
                     val node = ParadoxScopeFieldExpression.resolve(coreText, coreRange, configGroup) ?: return@run
                     nodes += node

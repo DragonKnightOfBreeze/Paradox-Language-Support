@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -234,11 +234,11 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 }
 
 /**
- * @see CwtDataTypeGroups.PathReference
+ * @see CwtDataTypeSets.PathReference
  */
 class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeGroups.PathReference
+        return dataType in CwtDataTypeSets.PathReference
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -442,7 +442,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
             else -> null
         } ?: return false
         val type = aliasConfig.configExpression.type
-        if (type !in CwtDataTypeGroups.ConstantLike) return false
+        if (type !in CwtDataTypeSets.ConstantAware) return false
         val aliasName = aliasConfig.name
         val attributesKey = when {
             aliasName == "modifier" -> ParadoxScriptAttributesKeys.MODIFIER_KEY

@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -83,7 +83,7 @@ class ParadoxDynamicValueNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             // text may contain parameters
-            if (configs.any { c -> c.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+            if (configs.any { c -> c.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }

@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parentsOfType
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -104,8 +104,8 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
                     when {
                         valueExpression.type == CwtDataTypes.Int -> return true
                         valueExpression.type == CwtDataTypes.Float -> return true
-                        valueExpression.type in CwtDataTypeGroups.ValueField -> return true
-                        valueExpression.type in CwtDataTypeGroups.VariableField -> return true
+                        valueExpression.type in CwtDataTypeSets.ValueField -> return true
+                        valueExpression.type in CwtDataTypeSets.VariableField -> return true
                     }
                 }
             }

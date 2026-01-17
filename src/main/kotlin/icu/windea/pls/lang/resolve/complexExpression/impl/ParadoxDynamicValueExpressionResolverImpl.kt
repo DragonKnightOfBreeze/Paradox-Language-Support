@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression.impl
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
@@ -25,7 +25,7 @@ internal class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueEx
     }
 
     override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-        if (configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+        if (configs.any { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }) return null
 
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null

@@ -147,7 +147,7 @@ object ParadoxConfigService {
             withRecursionCheck(cachedKey) {
                 try {
                     PlsStates.dynamicContextConfigs.set(false)
-                    // use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
+                    // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
                         val result = provider.getConfigs(context, options)
                         result?.optimized().orEmpty()

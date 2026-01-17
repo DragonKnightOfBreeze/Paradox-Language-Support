@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScopeFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * 作用域字段表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypeGroups.ScopeField]。
+ * - 对应的规则数据类型为 [CwtDataTypeSets.ScopeField]。
  *
  * 示例：
  * ```

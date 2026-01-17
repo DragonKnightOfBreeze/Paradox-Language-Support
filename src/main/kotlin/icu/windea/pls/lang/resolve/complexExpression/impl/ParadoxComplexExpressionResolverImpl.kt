@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataType
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -58,10 +58,10 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
     override fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
         return when {
             dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(text, range, configGroup, config ?: return null)
-            dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(text, range, configGroup, config ?: return null)
-            dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(text, range, configGroup)
-            dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(text, range, configGroup)
-            dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(text, range, configGroup)
+            dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(text, range, configGroup, config ?: return null)
+            dataType in CwtDataTypeSets.ScopeField -> ParadoxScopeFieldExpression.resolve(text, range, configGroup)
+            dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(text, range, configGroup)
+            dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.DefineReference -> ParadoxDefineReferenceExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.StellarisNameFormat -> StellarisNameFormatExpression.resolve(text, range, configGroup, config ?: return null)

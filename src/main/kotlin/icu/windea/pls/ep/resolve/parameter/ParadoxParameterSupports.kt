@@ -11,7 +11,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -338,7 +338,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
                 expressionElementConfig = ParadoxConfigManager.getConfigs(expressionElement).firstOrNull() ?: return null
             }
         }
-        if (expressionElementConfig.configExpression.type !in CwtDataTypeGroups.ValueField) return null
+        if (expressionElementConfig.configExpression.type !in CwtDataTypeSets.ValueField) return null
         val configGroup = expressionElementConfig.configGroup
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -373,7 +373,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if (rangeInElement == null) return null
         if (config !is CwtMemberConfig<*>) return null
-        if (config.configExpression.type !in CwtDataTypeGroups.ValueField) return null
+        if (config.configExpression.type !in CwtDataTypeSets.ValueField) return null
         val expressionString = element.value
         if (!expressionString.contains("value:")) return null // 快速判断
         val configGroup = config.configGroup

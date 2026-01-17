@@ -1,6 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
@@ -14,7 +14,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
  * 用于为对应的参数（parameter）提供额外的提示信息（如文档注释），以及指定规则上下文与作用域上下文。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
  * - 参数是指特定类型的定义（如封装触发器，scripted trigger）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *

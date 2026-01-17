@@ -2,7 +2,7 @@ package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtApiStatus
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -341,7 +341,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## file_extensions = { png dds tga }`
      *
-     * @see CwtDataTypeGroups.PathReference
+     * @see CwtDataTypeSets.PathReference
      */
     val fileExtensions: Set<String>?
 

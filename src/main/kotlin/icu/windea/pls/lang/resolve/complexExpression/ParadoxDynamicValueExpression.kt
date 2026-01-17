@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxDynamicValueExpressionResolverImpl
@@ -12,7 +12,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
  * 动态值表达式。
  *
  * 说明：
- * - 对应的规则数据类型为 [CwtDataTypeGroups.DynamicValue]。
+ * - 对应的规则数据类型为 [CwtDataTypeSets.DynamicValue]。
  *
  * 示例：
  * ```

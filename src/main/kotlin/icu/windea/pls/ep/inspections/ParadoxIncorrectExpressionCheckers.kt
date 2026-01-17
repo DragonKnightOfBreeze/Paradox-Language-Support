@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -46,7 +46,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type !in CwtDataTypeGroups.Int) return // for int only
+        if (configExpression.type !in CwtDataTypeSets.Int) return // for int only
         val intRange = configExpression.intRange ?: return
         val intValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
@@ -63,7 +63,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type !in CwtDataTypeGroups.Float) return // for int and float
+        if (configExpression.type !in CwtDataTypeSets.Float) return // for int and float
         val floatRange = configExpression.floatRange ?: return
         val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()

@@ -5,7 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -153,7 +153,7 @@ object ParadoxScriptInjectionManager {
         return configs.any { config ->
             if (config !is CwtValueConfig) return@any false
             val dataType = config.configExpression.type
-            dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeGroups.LocalisationAware
+            dataType == CwtDataTypes.Scalar || dataType in CwtDataTypeSets.LocalisationAware
         }
     }
 

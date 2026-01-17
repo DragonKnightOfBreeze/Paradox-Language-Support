@@ -2,7 +2,7 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -77,7 +77,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
+                    dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 }
                 is ParadoxLocalisationTextColorPsiReference -> true // <text_color>
                 is ParadoxLocalisationIconPsiReference -> true // <sprite>, etc.
@@ -111,7 +111,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                    dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
                 }
                 is ParadoxLocalisationParameterPsiReference -> true
                 else -> false
@@ -130,7 +130,7 @@ enum class ParadoxResolveConstraint {
                     // also for synced_localisation
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.LocalisationReference || dataType == CwtDataTypes.AliasKeysField
+                    dataType in CwtDataTypeSets.LocalisationReference || dataType == CwtDataTypes.AliasKeysField
                 }
                 else -> Localisation.canResolve(reference)
             }
@@ -224,7 +224,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
+                    dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 }
                 else -> false
             }

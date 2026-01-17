@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
@@ -59,7 +59,7 @@ object ParadoxConfigExpressionService {
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationAware) {
+        if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
@@ -157,7 +157,7 @@ object ParadoxConfigExpressionService {
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationAware) {
+        if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {

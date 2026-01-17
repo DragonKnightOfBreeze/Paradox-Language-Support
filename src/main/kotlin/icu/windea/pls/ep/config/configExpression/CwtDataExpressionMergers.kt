@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.config.configExpression
 
+import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.CwtDataTypeGroups as TypeGroups
-import icu.windea.pls.config.CwtDataTypes as Types
 
 class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
     override fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
@@ -11,10 +11,10 @@ class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
     }
 
     private fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        if (e1.type == Types.Constant && e2.type == Types.Constant && e1.expressionString.equals(e2.expressionString, true)) {
+        if (e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant && e1.expressionString.equals(e2.expressionString, true)) {
             return e1.expressionString.lowercase()
         }
-        if (e1.type == Types.Constant || e2.type == Types.Constant) {
+        if (e1.type == CwtDataTypes.Constant || e2.type == CwtDataTypes.Constant) {
             return null
         }
         return mergeExpressionStringTo(e1, e2, configGroup) ?: mergeExpressionStringTo(e2, e1, configGroup)
@@ -23,43 +23,42 @@ class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
     @Suppress("UNUSED_PARAMETER")
     private fun mergeExpressionStringTo(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
         when {
-            e1.type == Types.Any -> {
+            e1.type == CwtDataTypes.Any -> {
                 return e2.expressionString
             }
-            e1.type == Types.Scalar -> when {
-                e2.type == Types.Block -> return null
-                e2.type == Types.ColorField -> return null
+            e1.type == CwtDataTypes.Scalar -> when {
+                e2.type == CwtDataTypes.Block -> return null
+                e2.type == CwtDataTypes.ColorField -> return null
                 else -> return e2.expressionString
             }
-            e1.type == Types.Int -> when {
-                e2.type == Types.Float -> return "int"
-                e2.type == Types.ValueField || e2.type == Types.VariableField -> return "int"
-                e2.type == Types.IntValueField || e2.type == Types.IntVariableField -> return "int"
+            e1.type == CwtDataTypes.Int -> when {
+                e2.type == CwtDataTypes.Float -> return "int"
+                e2.type == CwtDataTypes.ValueField || e2.type == CwtDataTypes.VariableField -> return "int"
+                e2.type == CwtDataTypes.IntValueField || e2.type == CwtDataTypes.IntVariableField -> return "int"
             }
-            e1.type == Types.Float -> when {
-                e2.type == Types.ValueField || e2.type == Types.VariableField -> return "float"
+            e1.type == CwtDataTypes.Float -> when {
+                e2.type == CwtDataTypes.ValueField || e2.type == CwtDataTypes.VariableField -> return "float"
             }
-            e1.type in TypeGroups.ScopeField -> when {
-                e2.type == Types.ScopeField -> return e1.expressionString
-                e2.type == Types.Scope && e2.value == null -> return e1.expressionString
+            e1.type in CwtDataTypeSets.ScopeField -> when {
+                e2.type == CwtDataTypes.ScopeField -> return e1.expressionString
+                e2.type == CwtDataTypes.Scope && e2.value == null -> return e1.expressionString
             }
-            e1.type in TypeGroups.DynamicValue -> when {
-                e2.type in TypeGroups.DynamicValue -> return if (e1.value != null && e1.value == e2.value) "dynamic_value[${e1.value}]" else null
-                e2.type in TypeGroups.ValueField -> return if(e1.value != null) "dynamic_value[${e1.value}]" else null
-                e2.type in TypeGroups.VariableField -> return if (e1.value == "variable") "dynamic_value[${e1.value}]" else null
+            e1.type in CwtDataTypeSets.DynamicValue -> when {
+                e2.type in CwtDataTypeSets.DynamicValue -> return if (e1.value != null && e1.value == e2.value) "dynamic_value[${e1.value}]" else null
+                e2.type in CwtDataTypeSets.ValueField -> return if (e1.value != null) "dynamic_value[${e1.value}]" else null
+                e2.type in CwtDataTypeSets.VariableField -> return if (e1.value == "variable") "dynamic_value[${e1.value}]" else null
             }
-            e1.type == Types.VariableField -> when {
-                e2.type in TypeGroups.ValueField -> return "variable_field"
+            e1.type == CwtDataTypes.VariableField -> when {
+                e2.type in CwtDataTypeSets.ValueField -> return "variable_field"
             }
-            e1.type == Types.IntVariableField -> when {
-                e2.type in TypeGroups.ValueField -> return "int_variable_field"
+            e1.type == CwtDataTypes.IntVariableField -> when {
+                e2.type in CwtDataTypeSets.ValueField -> return "int_variable_field"
             }
-            e1.type == Types.IntValueField -> when {
-                e2.type == Types.ValueField -> return "int_value_field"
+            e1.type == CwtDataTypes.IntValueField -> when {
+                e2.type == CwtDataTypes.ValueField -> return "int_value_field"
             }
-            // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/95
-            // 目前并不需要这段逻辑，因为此时规则已被内联
-            // e1.type in TypeGroups.AliasNameLike -> {
+            // #95 目前并不需要这段逻辑，因为此时规则已被内联
+            // e1.type in CwtDataTypeSets.AliasNameLike -> {
             //    val aliasName = e1.value ?: return null
             //    val aliasConfigs = configGroup.aliasGroups[aliasName].orNull() ?: return null
             //    aliasConfigs.keys.forEach { aliasSubName ->

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -27,8 +27,8 @@ class ParadoxDataSourceNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
-    private val linkConfigsDynamicValue = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
-    private val linkConfigsNotDynamicValue = linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
+    private val linkConfigsDynamicValue = linkConfigs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
+    private val linkConfigsNotDynamicValue = linkConfigs.filter { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -58,7 +58,7 @@ class ParadoxDataSourceNode(
         if (text.isParameterized()) return null
         val configExpressions = linkConfigs.mapNotNullTo(mutableSetOf()) { it.configExpression }
         // 忽略不是引用或者是dynamicValue的情况
-        if (configExpressions.any { !it.type.isReference || it.type in CwtDataTypeGroups.DynamicValue }) return null
+        if (configExpressions.any { !it.type.isReference || it.type in CwtDataTypeSets.DynamicValue }) return null
         // 排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
@@ -80,8 +80,8 @@ class ParadoxDataSourceNode(
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
-        private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
-        private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
+        private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeSets.DynamicValue }
+        private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeSets.DynamicValue }
 
         override fun handleElementRename(newElementName: String): PsiElement {
             return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
@@ -146,9 +146,9 @@ class ParadoxDataSourceNode(
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
             val dataTypes = node.linkConfigs.mapNotNull { it.configExpression?.type }
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> dataTypes.any { it in CwtDataTypeGroups.DefinitionAware || it == CwtDataTypes.AliasKeysField }
+                ParadoxResolveConstraint.Definition -> dataTypes.any { it in CwtDataTypeSets.DefinitionAware || it == CwtDataTypes.AliasKeysField }
                 ParadoxResolveConstraint.ComplexEnumValue -> dataTypes.any { it == CwtDataTypes.EnumValue || it == CwtDataTypes.AliasKeysField }
-                ParadoxResolveConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeGroups.DynamicValue || it == CwtDataTypes.AliasKeysField }
+                ParadoxResolveConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeSets.DynamicValue || it == CwtDataTypes.AliasKeysField }
                 else -> false
             }
         }

@@ -13,7 +13,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -204,7 +204,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isExcluded(memberConfigs: List<CwtMemberConfig<*>>): Boolean {
-                return memberConfigs.all { it.configExpression.type in CwtDataTypeGroups.PathReference }
+                return memberConfigs.all { it.configExpression.type in CwtDataTypeSets.PathReference }
             }
 
             private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
@@ -212,7 +212,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val value = element.value
                 for (memberConfig in expectedConfigs) {
                     val configExpression = memberConfig.configExpression
-                    if (configExpression.type in CwtDataTypeGroups.DefinitionAware) {
+                    if (configExpression.type in CwtDataTypeSets.DefinitionAware) {
                         val definitionType = configExpression.value ?: continue
                         val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
                         val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
@@ -257,7 +257,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         run {
             // localisation reference -> expression can be a string literal instead  -> use weaker highlight type
             if (element !is ParadoxScriptStringExpressionElement) return@run
-            val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeGroups.LocalisationReference }
+            val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeSets.LocalisationReference }
             if (r) return PlsInspectionUtil.getWeakerHighlightType()
         }
         return ProblemHighlightType.GENERIC_ERROR_OR_WARNING

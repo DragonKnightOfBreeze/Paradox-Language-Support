@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.match
 
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -94,12 +94,12 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.SyncedLocalisation, CwtDataTypes.SuffixAwareSyncedLocalisation -> matchSyncedLocalisation(context)
             CwtDataTypes.InlineLocalisation -> matchInlineLocalisation(context)
             CwtDataTypes.AbsoluteFilePath -> matchAbsoluteFilePath(context)
-            in CwtDataTypeGroups.PathReference -> matchPathReference(context)
+            in CwtDataTypeSets.PathReference -> matchPathReference(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
-            in CwtDataTypeGroups.DynamicValue -> matchDynamicValue(context)
-            in CwtDataTypeGroups.ScopeField -> matchScopeFieldExpression(context)
-            in CwtDataTypeGroups.ValueField -> matchValueFieldExpression(context)
-            in CwtDataTypeGroups.VariableField -> matchVariableFieldExpression(context)
+            in CwtDataTypeSets.DynamicValue -> matchDynamicValue(context)
+            in CwtDataTypeSets.ScopeField -> matchScopeFieldExpression(context)
+            in CwtDataTypeSets.ValueField -> matchValueFieldExpression(context)
+            in CwtDataTypeSets.VariableField -> matchVariableFieldExpression(context)
             CwtDataTypes.Modifier -> matchModifier(context)
             CwtDataTypes.SingleAliasRight -> ParadoxMatchResult.NotMatch // 不在这里处理
             CwtDataTypes.AliasKeysField -> matchAliasName(context)

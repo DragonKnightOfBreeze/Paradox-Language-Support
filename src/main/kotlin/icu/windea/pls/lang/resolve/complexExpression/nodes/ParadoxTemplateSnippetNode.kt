@@ -6,7 +6,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -107,7 +107,7 @@ class ParadoxTemplateSnippetNode(
         private fun doResolve(): PsiElement? {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return null
-            if (config.configExpression.type in CwtDataTypeGroups.DynamicValue) {
+            if (config.configExpression.type in CwtDataTypeSets.DynamicValue) {
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved
             }
@@ -118,7 +118,7 @@ class ParadoxTemplateSnippetNode(
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
-            if (config.configExpression.type in CwtDataTypeGroups.DynamicValue) {
+            if (config.configExpression.type in CwtDataTypeSets.DynamicValue) {
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved.createResults()
             }
@@ -129,10 +129,10 @@ class ParadoxTemplateSnippetNode(
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
             val dataType = config.configExpression.type
             return when (constraint) {
-                ParadoxResolveConstraint.Definition -> dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                ParadoxResolveConstraint.Localisation -> dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.Definition -> dataType in CwtDataTypeSets.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.Localisation -> dataType in CwtDataTypeSets.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
                 ParadoxResolveConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                ParadoxResolveConstraint.DynamicValue -> dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.DynamicValue -> dataType in CwtDataTypeSets.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 else -> false
             }
         }

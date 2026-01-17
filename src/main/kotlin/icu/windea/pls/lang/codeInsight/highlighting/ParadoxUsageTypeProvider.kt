@@ -5,7 +5,7 @@ import com.intellij.usages.PsiElementUsageTarget
 import com.intellij.usages.UsageTarget
 import com.intellij.usages.impl.rules.UsageType
 import com.intellij.usages.impl.rules.UsageTypeProviderEx
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -94,7 +94,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             return ParadoxUsageTypes.PARAMETER_REFERENCE_4
         }
         // in script value expression
-        if (dataType in CwtDataTypeGroups.ValueField) {
+        if (dataType in CwtDataTypeSets.ValueField) {
             val targetElement = targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
             if (targetElement is ParadoxParameterElement) {
                 return ParadoxUsageTypes.PARAMETER_REFERENCE_5

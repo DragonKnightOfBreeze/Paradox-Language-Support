@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.expression
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataType
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
@@ -36,12 +36,12 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSup
 }
 
 /**
- * @see CwtDataTypeGroups.DynamicValue
+ * @see CwtDataTypeSets.DynamicValue
  * @see ParadoxDynamicValueExpression
  */
 class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeGroups.DynamicValue
+        return dataType in CwtDataTypeSets.DynamicValue
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -50,12 +50,12 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressio
 }
 
 /**
- * @see CwtDataTypeGroups.ScopeField
+ * @see CwtDataTypeSets.ScopeField
  * @see ParadoxScopeFieldExpression
  */
 class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeGroups.ScopeField
+        return dataType in CwtDataTypeSets.ScopeField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -81,12 +81,12 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
 }
 
 /**
- * @see CwtDataTypeGroups.ValueField
+ * @see CwtDataTypeSets.ValueField
  * @see ParadoxValueFieldExpression
  */
 class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeGroups.ValueField
+        return dataType in CwtDataTypeSets.ValueField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -106,12 +106,12 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionS
 }
 
 /**
- * @see CwtDataTypeGroups.VariableField
+ * @see CwtDataTypeSets.VariableField
  * @see ParadoxVariableFieldExpression
  */
 class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType in CwtDataTypeGroups.VariableField
+        return dataType in CwtDataTypeSets.VariableField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

@@ -11,7 +11,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.JBColor
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -203,7 +203,7 @@ private fun getPatchedIcon(icon: Icon?, config: CwtConfig<*>?): Icon? {
         is CwtAliasConfig -> {
             val aliasConfig = config
             val type = aliasConfig.configExpression.type
-            if (type !in CwtDataTypeGroups.ConstantLike) return icon
+            if (type !in CwtDataTypeSets.ConstantAware) return icon
             val aliasName = aliasConfig.name
             return when {
                 aliasName == "modifier" -> PlsIcons.Nodes.Modifier

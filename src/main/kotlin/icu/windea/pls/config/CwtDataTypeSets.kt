@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-object CwtDataTypeGroups {
+object CwtDataTypeSets {
     val Int = arrayOf(
         CwtDataTypes.Int,
         CwtDataTypes.IntValueField,
@@ -42,23 +42,10 @@ object CwtDataTypeGroups {
         CwtDataTypes.VariableField,
     )
 
-    val ConstantLike = arrayOf(
+    val ConstantAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
     )
-    // val AliasNameLike = arrayOf(
-    //     CwtDataTypes.AliasName,
-    //     CwtDataTypes.AliasKeysField,
-    // )
-    // val KeyReference = arrayOf(
-    //     CwtDataTypes.Bool,
-    //     CwtDataTypes.Int,
-    //     CwtDataTypes.Float,
-    //     CwtDataTypes.Scalar,
-    //     CwtDataTypes.Constant,
-    //     CwtDataTypes.Any,
-    // )
-
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel,
@@ -76,6 +63,11 @@ object CwtDataTypeGroups {
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
+    )
+    @Suppress("unused")
+    val AliasNameAware = arrayOf(
+        CwtDataTypes.AliasName,
+        CwtDataTypes.AliasKeysField,
     )
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,

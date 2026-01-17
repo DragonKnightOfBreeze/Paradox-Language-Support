@@ -6,7 +6,7 @@ package icu.windea.pls.config
  * 用于描述脚本文件中的表达式（键或值）的取值形态，可为常量、模式、基本数据类型、引用、复杂表达式等情况。
  *
  * @see CwtDataTypes
- * @see CwtDataTypeGroups
+ * @see CwtDataTypeSets
  */
 data class CwtDataType(
     val id: String,

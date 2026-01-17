@@ -7,7 +7,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -509,13 +509,13 @@ object ParadoxScopeManager {
         if (dataType == null) return inputScopeContext
         when {
             // hidden:event_target:xxx = {...}
-            dataType in CwtDataTypeGroups.ScopeField -> {
+            dataType in CwtDataTypeSets.ScopeField -> {
                 val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
                     ?: return getUnknownScopeContext(inputScopeContext)
                 return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext)
             }
             // event_target:xxx = {...}
-            dataType in CwtDataTypeGroups.DynamicValue -> {
+            dataType in CwtDataTypeSets.DynamicValue -> {
                 val dynamicValueExpression = node.valueNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
                     ?: return getUnknownScopeContext(inputScopeContext)
                 val configGroup = dynamicValueExpression.configGroup

@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.index.ParadoxFilePathIndex
 
@@ -11,7 +11,7 @@ import icu.windea.pls.lang.index.ParadoxFilePathIndex
  *
  * 用于实现如何匹配、解析脚本文件中使用的路径表达式，以及如何基于文件路径索引进行代码补全等功能。
  *
- * @see CwtDataTypeGroups.PathReference
+ * @see CwtDataTypeSets.PathReference
  * @see ParadoxFilePathIndex
  */
 interface ParadoxPathReferenceExpressionSupport {

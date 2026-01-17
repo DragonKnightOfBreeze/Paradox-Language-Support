@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -43,10 +43,10 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
                 val dataType = config.configExpression.type
                 val value = element.value
                 val complexExpression = when {
-                    dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, null, configGroup, config)
-                    dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(value, null, configGroup)
-                    dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(value, null, configGroup)
-                    dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(value, null, configGroup)
+                    dataType in CwtDataTypeSets.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, null, configGroup, config)
+                    dataType in CwtDataTypeSets.ScopeField -> ParadoxScopeFieldExpression.resolve(value, null, configGroup)
+                    dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(value, null, configGroup)
+                    dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(value, null, configGroup)
                     else -> null
                 }
                 if (complexExpression == null) return

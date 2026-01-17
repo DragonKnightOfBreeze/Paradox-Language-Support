@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.list
@@ -16,7 +16,7 @@ object ParadoxPatternMatchService {
      * @param key 要与通配符进行匹配的键。
      * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
      *
-     * @see CwtDataTypeGroups.PatternAware
+     * @see CwtDataTypeSets.PatternAware
      */
     fun matches(
         text: String,
@@ -53,7 +53,7 @@ object ParadoxPatternMatchService {
      * @param key 要与通配符进行匹配的键。
      * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
      *
-     * @see CwtDataTypeGroups.PatternAware
+     * @see CwtDataTypeSets.PatternAware
      */
     fun <V> find(
         map: Map<String, V>,
@@ -74,7 +74,7 @@ object ParadoxPatternMatchService {
      * @param key 要与通配符进行匹配的键。
      * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
      *
-     * @see CwtDataTypeGroups.PatternAware
+     * @see CwtDataTypeSets.PatternAware
      */
     fun <V> filter(
         map: Map<String, V>,
