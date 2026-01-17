@@ -17,6 +17,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
@@ -434,14 +435,14 @@ object CwtConfigManipulator {
     @Suppress("unused")
     fun mergeConfig(config1: CwtMemberConfig<*>, config2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
         if (config1 === config2) return config1 // reference equality
-        if (config1.pointer == config2.pointer) return config1 // value equality (should be)
+        if (config1 isSamePointer config2) return config1 // pointer equality
         if (getDistinctKey(config1) == getDistinctKey(config2)) return config1 // distinct key equality
         return null
     }
 
     fun mergeValueConfig(config1: CwtValueConfig, config2: CwtValueConfig): CwtValueConfig? {
         if (config1 === config2) return config1 // reference equality
-        if (config1.pointer == config2.pointer) return config1 // value equality (should be)
+        if (config1 isSamePointer config2) return config1 // pointer equality
         if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
         val expressionString = CwtConfigExpressionService.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null

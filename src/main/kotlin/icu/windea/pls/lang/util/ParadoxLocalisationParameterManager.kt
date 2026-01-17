@@ -9,6 +9,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
@@ -88,9 +89,7 @@ object ParadoxLocalisationParameterManager {
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if (element is ParadoxScriptProperty) {
             val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
-            if (configs.any { it.pointer == config.pointer }) {
-                return true
-            }
+            if (configs.any { it isSamePointer config }) return true
         }
         return false
     }

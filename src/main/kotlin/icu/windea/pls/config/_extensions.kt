@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config
 
+import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
@@ -10,6 +11,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
+import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
@@ -28,6 +30,15 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
         val configGroup = configGroupProvider(it)
         CwtConfigExpressionService.getPriority(expression, configGroup)
     }
+}
+
+/**
+ * 判断两个规则对象是否指向同一 [PsiElement]。
+ */
+infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
+    if (this == null || other == null) return false
+    // NOTE 2.1.1 reference equals can be used here & empty pointers are never same
+    return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
 }
 
 fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {

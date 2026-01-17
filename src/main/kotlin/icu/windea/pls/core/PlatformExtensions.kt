@@ -567,8 +567,7 @@ private fun doCollectReferences(sourceReference: PsiReference, result: MutableLi
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
     if (this == other) return true
     if (this == null || other == null) return false
-    return startOffset == other.startOffset
-        && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
+    return startOffset == other.startOffset && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
 @JvmName("findChildByType")
