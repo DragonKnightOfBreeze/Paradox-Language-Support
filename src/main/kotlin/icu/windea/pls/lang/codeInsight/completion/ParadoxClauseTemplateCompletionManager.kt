@@ -18,6 +18,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
@@ -33,7 +34,6 @@ import icu.windea.pls.lang.ui.clause.ElementsInfo
 import icu.windea.pls.lang.ui.clause.ExpandClauseTemplateDialog
 import icu.windea.pls.lang.ui.clause.PropertyDescriptor
 import icu.windea.pls.lang.ui.clause.ValueDescriptor
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -47,7 +47,7 @@ object ParadoxClauseTemplateCompletionManager {
     fun buildLookupElement(context: ProcessingContext, config: CwtConfig<*>, lookupElement: LookupElementBuilder): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
-        val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
+        val entryConfigs = CwtConfigManager.getEntryConfigs(config)
         val insertHandler = getExpandInsertHandler(context, entryConfigs)
         if (insertHandler == null) return null
         val extraTailText = buildString {
@@ -65,7 +65,7 @@ object ParadoxClauseTemplateCompletionManager {
     fun buildBlockLookupElement(context: ProcessingContext, config: CwtConfig<*>): LookupElementBuilder? {
         if (!PlsSettings.getInstance().state.completion.completeWithClauseTemplate) return null
 
-        val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
+        val entryConfigs = CwtConfigManager.getEntryConfigs(config)
         val insertHandler = getExpandInsertHandler(context, entryConfigs) ?: return null
         val extraTailText = blockFolderText
         val result = LookupElementBuilder.create("")
@@ -98,7 +98,7 @@ object ParadoxClauseTemplateCompletionManager {
         }
         if (constantConfigGroupList.isEmpty()) return null
         val config = context.config!!
-        val propertyName = ParadoxExpressionManager.getEntryName(config)
+        val propertyName = CwtConfigManager.getEntryName(config)
 
         val params = PlsInsertHandlers.Params(quoted = context.quoted, isKey = context.isKey, insertCurlyBraces = true)
 

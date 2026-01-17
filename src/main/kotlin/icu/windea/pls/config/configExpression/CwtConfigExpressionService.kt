@@ -12,7 +12,7 @@ import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.config.configExpression.CwtRuleBasedDataExpressionResolver
 
 object CwtConfigExpressionService {
-    private val CwtConfigGroup.dataExpressionPriorityCache by registerKey(CwtDataExpression.Keys) {
+    private val CwtConfigGroup.dataExpressionPriorityCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder("expireAfterAccess=30m").build<String, Double>().cancelable()
     }
 

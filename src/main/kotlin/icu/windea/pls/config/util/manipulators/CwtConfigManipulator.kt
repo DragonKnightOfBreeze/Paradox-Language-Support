@@ -20,26 +20,38 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 object CwtConfigManipulator {
-    // region Common Methods
+    object Keys : KeyRegistry() {
+        val inBlockKeys by registerKey<Set<String>>(this)
+    }
+
+    // region Key Methods
 
     @Suppress("unused")
     @Optimized
@@ -80,6 +92,7 @@ object CwtConfigManipulator {
         return doGetIdentifierKey(optionConfig)
     }
 
+    @Suppress("unused")
     @Optimized
     fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
         return doGetIdentifierKey(optionConfigs)
@@ -133,6 +146,48 @@ object CwtConfigManipulator {
                 }
             }
         }
+    }
+
+    @Optimized
+    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
+        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
+    }
+
+    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): MutableSet<@CaseInsensitive String> {
+        val keys = caseInsensitiveStringSet()
+        config.configs?.forEachFast {
+            if (it is CwtPropertyConfig && isInBlockKey(it)) {
+                keys.add(it.key)
+            }
+        }
+        when (config) {
+            is CwtPropertyConfig -> {
+                val propertyConfig = config
+                propertyConfig.parentConfig?.configs?.forEachFast { c ->
+                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
+                        c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                    }
+                }
+            }
+            is CwtValueConfig -> {
+                val propertyConfig = config.propertyConfig
+                propertyConfig?.parentConfig?.configs?.forEachFast { c ->
+                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
+                        c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                    }
+                }
+            }
+        }
+
+        return keys
+    }
+
+    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
+        val gameType = config.configGroup.gameType
+        if (config.keyExpression.type != CwtDataTypes.Constant) return false
+        if (config.optionData.cardinality?.isRequired() == false) return false
+        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
+        return true
     }
 
     // endregion
@@ -457,18 +512,18 @@ object CwtConfigManipulator {
 
     fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
         if (configs.isEmpty()) return false
-        for (config in configs) {
+        configs.forEachFast f@{ config ->
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtConfigExpressionService.merge(e1, e2, config.configGroup) ?: continue // merged
+            val e3 = CwtConfigExpressionService.merge(e1, e2, config.configGroup) ?: return@f // merged
             if (e3 == e2.expressionString) return true
         }
         return false
     }
 
     fun mergeOptionData(optionData: CwtOptionDataHolder, vararg sources: CwtOptionDataHolder?) {
-        for (source in sources) {
-            if (source == null) continue
+        sources.forEach f@{ source ->
+            if (source == null) return@f
             source.copyTo(optionData)
         }
     }

@@ -64,7 +64,7 @@ import icu.windea.pls.script.psi.property
 
 object ParadoxConfigService {
     @Optimized
-    private val CwtConfigGroup.configsCache by registerKey(CwtConfigContext.Keys) {
+    private val CwtConfigGroup.configsCache by registerKey(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
             // use soft values to optimize memory
@@ -75,7 +75,7 @@ object ParadoxConfigService {
     }
 
     @Optimized
-    private val CwtConfigGroup.declarationConfigCache by registerKey(CwtDeclarationConfigContext.Keys) {
+    private val CwtConfigGroup.declarationConfigCache by registerKey(CwtConfigGroup.Keys) {
         createCachedValue(project) {
             // cacheKey -> declarationConfig
             // use soft values to optimize memory

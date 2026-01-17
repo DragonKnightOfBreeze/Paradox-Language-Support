@@ -40,7 +40,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -95,16 +94,7 @@ object ParadoxMatchResultProvider {
             return ParadoxMatchResult.FallbackMatch
         }
 
-        return ParadoxMatchResult.LazyBlockAwareMatch p@{
-            val keys = ParadoxExpressionManager.getInBlockKeys(config)
-            if (keys.isEmpty()) return@p true
-
-            // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）
-            // 如果子句中包含对应的任意子句规则中的任意必须的属性键（忽略大小写），则认为匹配
-            blockElement.members(conditional = true, inline = true).any {
-                if (it is ParadoxScriptProperty) it.name in keys else false
-            }
-        }
+        return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
     fun getCached(element: PsiElement, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {

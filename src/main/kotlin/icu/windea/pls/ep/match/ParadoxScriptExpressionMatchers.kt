@@ -12,13 +12,13 @@ import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
@@ -249,7 +249,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val aliasName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxConfigMatchService.getMatchedAliasKey(context.configGroup, aliasName, context.expression.value, context.element, context.expression.quoted, context.options) ?: return ParadoxMatchResult.NotMatch
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(context.element, context.configGroup, aliasName, context.expression.value, context.expression.quoted, context.options) ?: return ParadoxMatchResult.NotMatch
         return ParadoxMatchService.matchScriptExpression(context.element, context.expression, CwtDataExpression.resolve(aliasSubName, true), null, context.configGroup, context.options)
     }
 

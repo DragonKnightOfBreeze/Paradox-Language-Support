@@ -16,6 +16,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.resolved
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
@@ -29,7 +30,6 @@ import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
@@ -70,7 +70,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -81,7 +81,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression?.value ?: return emptySet()
@@ -121,7 +121,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -130,7 +130,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
@@ -168,7 +168,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val name = fullNames.singleOrNull() ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
@@ -177,7 +177,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val fullNames = ParadoxExpressionManager.getFullNamesFromSuffixAware(expressionText, config)
+        val fullNames = CwtConfigManager.getFullNamesFromSuffixAware(config, expressionText)
         val configGroup = config.configGroup
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
@@ -377,7 +377,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val configExpression = config.configExpression
         val aliasName = configExpression?.value ?: return
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-        val aliasSubName = ParadoxConfigMatchService.getMatchedAliasKey(configGroup, aliasName, expressionText, element, false) ?: return
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, false) ?: return
         val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
         ParadoxScriptExpressionService.annotate(element, rangeInElement, expressionText, holder, aliasConfig)
     }
@@ -386,7 +386,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val aliasSubName = ParadoxConfigMatchService.getMatchedAliasKey(configGroup, aliasName, expressionText, element, element.text.isLeftQuoted())
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
         return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey, exact)
     }
@@ -395,7 +395,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasName = config.configExpression?.value ?: return emptySet()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
-        val aliasSubName = ParadoxConfigMatchService.getMatchedAliasKey(configGroup, aliasName, expressionText, element, element.text.isLeftQuoted())
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
         return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
     }

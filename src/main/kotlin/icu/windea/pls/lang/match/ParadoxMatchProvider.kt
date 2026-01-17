@@ -8,7 +8,10 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
@@ -19,9 +22,22 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxMatchProvider {
+    fun matchesBlock(element: ParadoxScriptBlock, config: CwtMemberConfig<*>): Boolean {
+        val keys = CwtConfigManipulator.getInBlockKeys(config)
+        if (keys.isEmpty()) return true
+
+        // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）
+        // 如果子句中包含对应的任意子句规则中的任意必须的属性键（忽略大小写），则认为匹配
+        return element.members(conditional = true, inline = true).any {
+            if (it is ParadoxScriptProperty) it.name in keys else false
+        }
+    }
+
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
         val selector = selector(project, element).definition()
         return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null

@@ -16,10 +16,17 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupSource
 import icu.windea.pls.core.executeCommand
@@ -38,8 +45,11 @@ import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
@@ -494,6 +504,59 @@ object CwtConfigManager {
         return config.config.optionData.apiStatus == CwtApiStatus.Removed
     }
 
+    fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
+        if (constKey != null) return setOf(constKey)
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
+        return keys
+    }
+
+    fun getEntryName(config: CwtConfig<*>): String? {
+        return when {
+            config is CwtPropertyConfig -> config.key
+            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig!!)
+            config is CwtValueConfig -> null
+            config is CwtAliasConfig -> config.subName
+            else -> null
+        }
+    }
+
+    fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
+        val configGroup = config.configGroup
+        return when (config) {
+            is CwtPropertyConfig -> {
+                config.inlineConfig?.let { return getEntryConfigs(it) }
+                config.aliasConfig?.let { return getEntryConfigs(it) }
+                config.singleAliasConfig?.let { return getEntryConfigs(it) }
+                config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
+                config.singleton.list()
+            }
+            is CwtValueConfig -> {
+                config.propertyConfig?.let { return getEntryConfigs(it) }
+                config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
+                config.singleton.list()
+            }
+            is CwtSingleAliasConfig -> {
+                config.config.singleton.listOrEmpty()
+            }
+            is CwtAliasConfig -> {
+                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
+            }
+            is CwtDirectiveConfig -> {
+                config.config.singleton.listOrEmpty()
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
+    fun getFullNamesFromSuffixAware(config: CwtConfig<*>, name: String): List<String> {
+        val suffixes = config.configExpression?.suffixes
+        if (suffixes.isNullOrEmpty()) return listOf(name)
+        return suffixes.map { name + it }
+    }
+
     fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
         val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
         val result = mutableSetOf<String>()
@@ -544,12 +607,5 @@ object CwtConfigManager {
                 }
             }
         }
-    }
-
-    fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return setOf(constKey)
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
-        return keys
     }
 }

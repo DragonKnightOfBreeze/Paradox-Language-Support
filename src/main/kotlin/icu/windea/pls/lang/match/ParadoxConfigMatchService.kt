@@ -19,7 +19,6 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
@@ -39,6 +38,7 @@ import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
@@ -457,7 +457,7 @@ object ParadoxConfigMatchService {
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = property.name
         val quoted = property.propertyKey.text.isLeftQuoted()
-        val aliasSubName = getMatchedAliasKey(configGroup, aliasName, key, property, quoted, options) ?: return false
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(property, configGroup, aliasName, key, quoted, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->
@@ -655,14 +655,6 @@ object ParadoxConfigMatchService {
 
     fun isSingleAliasEntryConfig(config: CwtPropertyConfig): Boolean {
         return config.valueExpression.type == CwtDataTypes.SingleAliasRight
-    }
-
-    fun getMatchedAliasKey(configGroup: CwtConfigGroup, aliasName: String, key: String, element: PsiElement, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, options).get(options) }
     }
 
     fun canApplyForInjection(typeConfig: CwtTypeConfig): Boolean {

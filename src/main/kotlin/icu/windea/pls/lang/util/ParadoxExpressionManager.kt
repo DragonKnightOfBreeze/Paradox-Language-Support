@@ -17,38 +17,23 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.isStatic
-import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collectReferences
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setOrEmpty
@@ -61,6 +46,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -72,6 +58,7 @@ import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -90,7 +77,6 @@ object ParadoxExpressionManager {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
-        val inBlockKeys by registerKey<Set<String>>(Keys)
     }
 
     // region Common Methods
@@ -544,90 +530,12 @@ object ParadoxExpressionManager {
 
     // region Misc Methods
 
-    fun getEntryName(config: CwtConfig<*>): String? {
-        return when {
-            config is CwtPropertyConfig -> config.key
-            config is CwtValueConfig && config.propertyConfig != null -> getEntryName(config.propertyConfig!!)
-            config is CwtValueConfig -> null
-            config is CwtAliasConfig -> config.subName
-            else -> null
-        }
-    }
-
-    fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
-        val configGroup = config.configGroup
-        return when (config) {
-            is CwtPropertyConfig -> {
-                config.inlineConfig?.let { return getEntryConfigs(it) }
-                config.aliasConfig?.let { return getEntryConfigs(it) }
-                config.singleAliasConfig?.let { return getEntryConfigs(it) }
-                config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
-                config.singleton.list()
-            }
-            is CwtValueConfig -> {
-                config.propertyConfig?.let { return getEntryConfigs(it) }
-                config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
-                config.singleton.list()
-            }
-            is CwtSingleAliasConfig -> {
-                config.config.singleton.listOrEmpty()
-            }
-            is CwtAliasConfig -> {
-                configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
-            }
-            is CwtDirectiveConfig -> {
-                config.config.singleton.listOrEmpty()
-            }
-            else -> {
-                emptyList()
-            }
-        }
-    }
-
-    fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
-    }
-
-    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): MutableSet<@CaseInsensitive String> {
-        val keys = caseInsensitiveStringSet()
-        config.configs?.forEach {
-            if (it is CwtPropertyConfig && isInBlockKey(it)) {
-                keys.add(it.key)
-            }
-        }
-        when (config) {
-            is CwtPropertyConfig -> {
-                val propertyConfig = config
-                propertyConfig.parentConfig?.configs?.forEach { c ->
-                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
-                        c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                    }
-                }
-            }
-            is CwtValueConfig -> {
-                val propertyConfig = config.propertyConfig
-                propertyConfig?.parentConfig?.configs?.forEach { c ->
-                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
-                        c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                    }
-                }
-            }
-        }
-        return keys
-    }
-
-    private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        val gameType = config.configGroup.gameType
-        if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.optionData.cardinality?.isRequired() == false) return false
-        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
-        return true
-    }
-
-    fun getFullNamesFromSuffixAware(name: String, config: CwtConfig<*>): List<String> {
-        val suffixes = config.configExpression?.suffixes
-        if (suffixes.isNullOrEmpty()) return listOf(name)
-        return suffixes.map { name + it }
+    fun getMatchedAliasKey(element: PsiElement, configGroup: CwtConfigGroup, aliasName: String, key: String, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
+        if (constKey != null) return constKey
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
+        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
+        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, options).get(options) }
     }
 
     // endregion
