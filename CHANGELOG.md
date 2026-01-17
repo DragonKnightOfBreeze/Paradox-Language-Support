@@ -6,7 +6,7 @@
 
 - [x] #259 [Vic 3] PLS Hangs while indexing game files
 - [x] #261 Case Insensitive Enums
-- [ ] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
+- [x] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.0

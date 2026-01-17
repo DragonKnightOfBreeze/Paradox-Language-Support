@@ -100,7 +100,7 @@ object ParadoxMatchPipeline {
     }
 
     private fun markDynamicAfterOptimized() {
-        // see icu.windea.pls.lang.resolve.CwtConfigContext.getConfigs
+        // see: icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
         val s = PlsStates.dynamicContextConfigs
         if (s.get() == null) return
         s.set(true)
