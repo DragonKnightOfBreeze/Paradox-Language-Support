@@ -18,7 +18,7 @@ import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
+import icu.windea.pls.lang.ui.settings.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function

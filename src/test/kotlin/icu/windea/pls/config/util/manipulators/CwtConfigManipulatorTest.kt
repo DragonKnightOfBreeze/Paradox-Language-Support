@@ -5,12 +5,12 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert.*

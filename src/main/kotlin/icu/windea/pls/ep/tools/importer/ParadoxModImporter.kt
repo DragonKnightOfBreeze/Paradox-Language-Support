@@ -15,7 +15,7 @@ import javax.swing.Icon
  * @property icon 用于 UI 展示的图标。
  * @property text 用于 UI 展示的文本。
  *
- * @see icu.windea.pls.lang.ui.tools.ParadoxModDependenciesImportPopup
+ * @see icu.windea.pls.lang.ui.settings.ParadoxModDependenciesImportPopup
  */
 interface ParadoxModImporter {
     val icon: Icon? get() = null

@@ -1,0 +1,58 @@
+<idea-plugin>
+  <actions>
+    <group id="Pls.ConfigGeneration">
+      <action id="Pls.Generation.GenerateTriggerConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Trigger"/>
+      <action id="Pls.Generation.GenerateEffectConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Effect"/>
+      <action id="Pls.Generation.GenerateLocalisationConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Localisation"/>
+      <action id="Pls.Generation.GenerateModifierConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Modifier"/>
+      <action id="Pls.Generation.GenerateModifierCategoryConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$ModifierCategory"/>
+      <action id="Pls.Generation.GenerateGameRuleConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$GameRule"/>
+      <action id="Pls.Generation.GenerateOnActionConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$OnAction"/>
+    </group>
+
+    <group id="Pls.LaunchGame">
+      <action id="Pls.LaunchGame.InSteam" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteam" icon="AllIcons.Actions.Execute">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"/>
+        <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenModSettings" anchor="after"/>
+      </action>
+      <action id="Pls.LaunchGame.InSteam.WithExit" class="icu.windea.pls.tools.actions.LaunchGameActions$InSteamWithExit" icon="AllIcons.Actions.Execute"/>
+    </group>
+
+    <group id="Pls.Tools" popup="true">
+      <reference ref="Pls.OpenGameSettings"/>
+      <reference ref="Pls.OpenModSettings"/>
+      <reference ref="Pls.SyncConfigGroupFromRemote"/>
+
+      <reference ref="Pls.LaunchGame.InSteam"/> <!--put the most commonly used launch strategy outside-->
+      <group id="Pls.Tools.LaunchGame" popup="true">
+        <reference ref="Pls.LaunchGame"/>
+      </group>
+
+      <group id="Pls.Tools.OpenPathOrUrl" popup="true">
+        <reference ref="Pls.OpenPath"/>
+        <reference ref="Pls.OpenUrl"/>
+      </group>
+      <group id="Pls.Tools.CopyPathOrUrl" popup="true">
+        <reference ref="Pls.CopyPath"/>
+        <reference ref="Pls.CopyUrl"/>
+      </group>
+      <group id="Pls.Tools.Manipulation" popup="true">
+        <reference ref="Pls.LocalisationManipulation"/>
+        <reference ref="Pls.TableManipulation"/>
+      </group>
+      <group id="Pls.Tools.Generation" popup="true">
+        <reference ref="Pls.LocalisationGeneration"/>
+      </group>
+
+      <group id="Pls.Tools.ConfigGeneration" popup="true">
+        <reference ref="Pls.ConfigGeneration"/>
+      </group>
+
+      <add-to-group group-id="ToolsMenu"/>
+      <add-to-group group-id="EditorPopupMenu"/>
+      <add-to-group group-id="ProjectViewPopupMenu"/>
+      <add-to-group group-id="Images.EditorPopupMenu"/>
+      <add-to-group group-id="Pls.Images.EditorPopupMenu"/>
+    </group>
+  </actions>
+</idea-plugin>
