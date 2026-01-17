@@ -140,9 +140,13 @@ object ParadoxConfigService {
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val provider = context.provider
+        val cachedKey = provider.getCacheKey(context, options) ?: return emptyList()
+        if (context.dynamic) {
+            // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
+            context.dynamicCache[cachedKey]?.let { return it }
+        }
         val rootFile = selectRootFile(context.element) ?: return emptyList()
         val cache = context.configGroup.configsCache.value.get(rootFile)
-        val cachedKey = provider.getCacheKey(context, options) ?: return emptyList()
         val cached = withRecursionGuard {
             withRecursionCheck(cachedKey) {
                 try {
@@ -153,19 +157,27 @@ object ParadoxConfigService {
                         result?.optimized().orEmpty()
                     }
                 } finally {
-                    // use uncached result if result context configs are dynamic (e.g., based on script context)
-                    if (PlsStates.dynamicContextConfigs.get() == true) cache.invalidate(cachedKey)
+                    if (PlsStates.dynamicContextConfigs.get() == true) {
+                        // mark as dynamic
+                        context.dynamic = true
+                        // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
+                        cache.invalidate(cachedKey)
+                    }
                     PlsStates.dynamicContextConfigs.remove()
                 }
             }
         } ?: emptyList() // unexpected recursion, return empty list
+        if (context.dynamic) {
+            // NOTE 2.1.1 store dynamic result into in-config-context cache
+            context.dynamicCache[cachedKey] = cached
+        }
         return cached
     }
 
     fun getConfigForDeclarationConfigContext(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val provider = context.provider
-        val cache = context.configGroup.declarationConfigCache.value
         val cacheKey = provider.getCacheKey(context, declarationConfig)
+        val cache = context.configGroup.declarationConfigCache.value
         val cached = cache.get(cacheKey) {
             val result = provider.getConfig(context, declarationConfig)
             result.apply { declarationConfigCacheKey = cacheKey }
