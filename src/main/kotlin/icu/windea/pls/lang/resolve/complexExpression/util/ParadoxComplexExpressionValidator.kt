@@ -196,17 +196,25 @@ object ParadoxComplexExpressionValidator {
 
     private fun processLinkedExpression(expression: ParadoxLinkedExpression, element: ParadoxExpressionElement?, errors: MutableList<ParadoxComplexExpressionError>) {
         // 如果链式表达式使用包含前缀的嵌套的链式表达式和前缀作为其传参，则需要用双引号括起
-        if (element != null && element.text.let { !it.isLeftQuoted() || !it.isRightQuoted() }) {
-            val r = expression.linkNodes.process p@{ linkNode ->
-                val prefixNode = linkNode.nodes.getOrNull(0)?.takeIf { it is ParadoxLinkPrefixNode }
-                if (prefixNode == null) return@p true
-                val leftParNode = linkNode.nodes.getOrNull(1)?.takeIf { it is ParadoxMarkerNode && it.text == "(" }
-                if (leftParNode == null) return@p true
-                val valueNode = linkNode.nodes.getOrNull(2)?.takeIf { it is ParadoxLinkValueNode }
-                if (valueNode == null) return@p true
-                ":" !in valueNode.text
-            }
-            if (!r) errors += ErrorBuilder.notQuotedNestedWithPrefixes(expression.rangeInExpression)
+        checkQuotes(element, expression, errors)
+    }
+
+    private fun checkQuotes(
+        element: ParadoxExpressionElement?,
+        expression: ParadoxLinkedExpression,
+        errors: MutableList<ParadoxComplexExpressionError>
+    ) {
+        if (expression is ParadoxCommandExpression) return // 2.1.1 目前直接跳过
+        if (element == null || !element.text.let { !it.isLeftQuoted() || !it.isRightQuoted() }) return
+        val r = expression.linkNodes.process p@{ linkNode ->
+            val prefixNode = linkNode.nodes.getOrNull(0)?.takeIf { it is ParadoxLinkPrefixNode }
+            if (prefixNode == null) return@p true
+            val leftParNode = linkNode.nodes.getOrNull(1)?.takeIf { it is ParadoxMarkerNode && it.text == "(" }
+            if (leftParNode == null) return@p true
+            val valueNode = linkNode.nodes.getOrNull(2)?.takeIf { it is ParadoxLinkValueNode }
+            if (valueNode == null) return@p true
+            ":" !in valueNode.text
         }
+        if (!r) errors += ErrorBuilder.notQuotedNestedWithPrefixes(expression.rangeInExpression)
     }
 }
