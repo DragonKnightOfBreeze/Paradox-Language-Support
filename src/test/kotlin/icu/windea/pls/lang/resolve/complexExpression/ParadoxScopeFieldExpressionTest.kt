@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
@@ -55,7 +55,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxSystemScopeNode>("root", 0..4)
         }
         exp.check(dsl)
@@ -66,7 +66,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.owner"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxScopeLinkNode>("owner", 5..10)
@@ -79,7 +79,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "event_target:some_target"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicScopeLinkNode>("event_target:some_target", 0..24) {
                 node<ParadoxScopeLinkPrefixNode>("event_target:", 0..13)
                 node<ParadoxScopeLinkValueNode>("some_target", 13..24) {
@@ -97,7 +97,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.owner@x.y"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxScopeLinkNode>("owner@x.y", 5..14)
@@ -110,7 +110,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.owner|x.y"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxScopeLinkNode>("owner|x.y", 5..14)
@@ -123,7 +123,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("", 0..0) {
             node<ParadoxErrorScopeLinkNode>("", 0..0)
         }
         exp.check(dsl)
@@ -134,7 +134,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root, some_building)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building)", 0..36) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building)", 0..36) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building)", 5..36) {
@@ -159,7 +159,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root, some_building,)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building,)", 0..37) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building,)", 0..37) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building,)", 5..37) {
@@ -185,7 +185,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root)", 0..21) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root)", 0..21) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_scope(root)", 5..21) {
@@ -207,7 +207,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root,)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root,)", 0..22) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(root,)", 0..22) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_scope(root,)", 5..22) {
@@ -230,7 +230,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(, some_building)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_building)", 0..32) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_building)", 0..32) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_scope(, some_building)", 5..32) {
@@ -253,7 +253,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_literal_scope('foo bar', some_variable)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_literal_scope('foo bar', some_variable)", 0..49) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("root.test_literal_scope('foo bar', some_variable)", 0..49) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicScopeLinkNode>("test_literal_scope('foo bar', some_variable)", 5..49) {
@@ -278,7 +278,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "colonial_charter_utility(scope:target|scope:some)"
         val exp = parse(s, gameType = ParadoxGameType.Vic3)!! // ensure `scope:` is available
         println(exp.render())
-        val dsl = buildExpression<ParadoxScopeFieldExpression>("colonial_charter_utility(scope:target|scope:some)", 0..49) {
+        val dsl = buildComplexExpression<ParadoxScopeFieldExpression>("colonial_charter_utility(scope:target|scope:some)", 0..49) {
             node<ParadoxDynamicScopeLinkNode>("colonial_charter_utility(scope:target|scope:some)", 0..49) {
                 node<ParadoxScopeLinkPrefixNode>("colonial_charter_utility", 0..24)
                 node<ParadoxMarkerNode>("(", 24..25)

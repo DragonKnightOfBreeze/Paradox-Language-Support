@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
@@ -47,7 +47,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDefineReferenceExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0..s.length) {
             node<ParadoxDefinePrefixNode>("define:", 0..7)
             node<ParadoxDefineNamespaceNode>("NPortrait", 7..16)
             node<ParadoxMarkerNode>("|", 16..17)
@@ -61,7 +61,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDefineReferenceExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0..0) {
             node<ParadoxErrorTokenNode>("", 0..0)
         }
         exp.check(dsl)

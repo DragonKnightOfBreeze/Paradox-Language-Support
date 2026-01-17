@@ -20,17 +20,15 @@ data class ParadoxComplexExpressionDslNode(
     val nodes: MutableList<ParadoxComplexExpressionDslNode>
 )
 
-object ParadoxComplexExpressionDslBuilder {
-    @ParadoxComplexExpressionDsl
-    inline fun <reified T : ParadoxComplexExpression> buildExpression(
-        text: String,
-        rangeInExpression: IntRange,
-        block: ParadoxComplexExpressionDslNode.() -> Unit = {}
-    ): ParadoxComplexExpressionDslNode {
-        val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
-        block(node)
-        return node
-    }
+@ParadoxComplexExpressionDsl
+inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
+    text: String,
+    rangeInExpression: IntRange,
+    block: ParadoxComplexExpressionDslNode.() -> Unit = {}
+): ParadoxComplexExpressionDslNode {
+    val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
+    block(node)
+    return node
 }
 
 @ParadoxComplexExpressionDsl

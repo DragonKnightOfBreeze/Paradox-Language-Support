@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
@@ -43,7 +43,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxScopeLinkNode>("owner", 5..10)
@@ -58,7 +58,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.owner|x.y"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDataSourceNode>("owner|x.y", 5..14)
@@ -71,7 +71,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxVariableFieldExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxVariableFieldExpression>("", 0..0) {
             node<ParadoxDataSourceNode>("", 0..0)
         }
         exp.check(dsl)

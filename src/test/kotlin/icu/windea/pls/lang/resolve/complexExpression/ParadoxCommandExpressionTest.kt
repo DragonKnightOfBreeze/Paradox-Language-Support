@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldPrefixNode
@@ -60,7 +59,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.GetName"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxPredefinedCommandFieldNode>("GetName", 5..12)
@@ -73,7 +72,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxCommandScopeNode>("Owner", 5..10)
@@ -99,7 +98,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root."
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandFieldNode>("", 5..5) {
@@ -116,7 +115,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.Var"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandFieldNode>("Var", 5..8) {
@@ -133,7 +132,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.GetName&L"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxCommandScopeLinkNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxCommandFieldNode>("GetName", 5..12)
@@ -148,7 +147,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.GetName::UPPER"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxCommandScopeLinkNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxCommandFieldNode>("GetName", 5..12)
@@ -163,7 +162,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("", 0..0) {
             node<ParadoxDynamicCommandFieldNode>("", 0..0) {
                 node<ParadoxCommandFieldValueNode>("", 0..0) {
                     node<ParadoxDataSourceNode>("", 0..0)
@@ -178,7 +177,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestScope(root, some_building).TestCommand(some_flag, some_job)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building).TestCommand(some_flag, some_job)", 0..68) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building).TestCommand(some_flag, some_job)", 0..68) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, some_building)", 5..35) {
@@ -213,7 +212,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)", 0..70) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)", 0..70) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, some_building,)", 5..36) {
@@ -250,7 +249,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestScope(some_building).TestCommand(some_job)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(some_building).TestCommand(some_job)", 0..51) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(some_building).TestCommand(some_job)", 0..51) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestScope(some_building)", 5..29) {
@@ -279,7 +278,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestScope(root, ).TestCommand(some_flag, )"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, ).TestCommand(some_flag, )", 0..47) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(root, ).TestCommand(some_flag, )", 0..47) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, )", 5..22) {
@@ -312,7 +311,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestScope(, some_building).TestCommand(, some_job)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(, some_building).TestCommand(, some_job)", 0..55) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestScope(, some_building).TestCommand(, some_job)", 0..55) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestScope(, some_building)", 5..31) {
@@ -347,7 +346,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         val s = "Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)", 0..80) {
+        val dsl = buildComplexExpression<ParadoxCommandExpression>("Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)", 0..80) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicCommandScopeLinkNode>("TestLiteralScope('foo bar', some_variable)", 5..47) {

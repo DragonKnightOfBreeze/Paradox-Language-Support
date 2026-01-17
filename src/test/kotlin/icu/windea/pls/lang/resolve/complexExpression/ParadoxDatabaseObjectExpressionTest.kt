@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
@@ -44,7 +44,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val s = "civic:some_civic"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0..5)
             node<ParadoxMarkerNode>(":", 5..6)
             node<ParadoxDatabaseObjectNode>("some_civic", 6..16) {
@@ -59,7 +59,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0..5)
             node<ParadoxMarkerNode>(":", 5..6)
             node<ParadoxDatabaseObjectNode>("some_civic", 6..16) {
@@ -78,7 +78,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         val s = "job:job_soldier"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("job", 0..3)
             node<ParadoxMarkerNode>(":", 3..4)
             node<ParadoxDatabaseObjectNode>("job_soldier", 4..15) {
@@ -93,7 +93,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxDatabaseObjectExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxDatabaseObjectExpression>("", 0..0) {
             node<ParadoxDatabaseObjectTypeNode>("", 0..0)
         }
         exp.check(dsl)

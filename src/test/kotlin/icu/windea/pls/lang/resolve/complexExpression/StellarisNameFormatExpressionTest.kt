@@ -5,7 +5,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandNode
@@ -57,7 +57,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<eater_adj> {<patron_noun>}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..29) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<eater_adj>", 1..12) {
@@ -86,7 +86,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..58) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("AofB", 1..5)
@@ -120,7 +120,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<home_planet> Fleet}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>("{<home_planet> Fleet}", 0..21) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>("{<home_planet> Fleet}", 0..21) {
             node<StellarisNameFormatClosureNode>("{<home_planet> Fleet}", 0..21) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<home_planet>", 1..14) {
@@ -141,7 +141,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<union_adj> Council}"
         val exp = parse(s, formatName = "federation")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>("{<union_adj> Council}", 0..21) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>("{<union_adj> Council}", 0..21) {
             node<StellarisNameFormatClosureNode>("{<union_adj> Council}", 0..21) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<union_adj>", 1..12) {
@@ -162,7 +162,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", formatName = "empire", incomplete = false))
         val exp = parse("", formatName = "empire", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>("", 0..0)
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>("", 0..0) { }
         exp.check(dsl)
     }
 
@@ -173,7 +173,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>("{}", 0..2) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxMarkerNode>("}", 1..2)
@@ -187,7 +187,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{alpha}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..7) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("alpha", 1..6)
@@ -202,7 +202,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<x> y}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..7) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<x>", 1..4) {
@@ -223,7 +223,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root.GetName]}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..16) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxCommandNode>("[Root.GetName]", 1..15) {
@@ -246,7 +246,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{X{<Y> [Root.GetName]}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..23) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("X", 1..2)
@@ -282,7 +282,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<abc"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..5) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<abc", 1..5) {
@@ -302,7 +302,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root."
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..7) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxCommandNode>("[Root.", 1..7) {
@@ -328,7 +328,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{Alpha Beta}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..12) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("Alpha", 1..6)
@@ -345,7 +345,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "   { <x> y  }   "
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<ParadoxBlankNode>("   ", 0..3)
             node<StellarisNameFormatClosureNode>("{ <x> y  }", 3..13) {
                 node<ParadoxMarkerNode>("{", 3..4)
@@ -370,7 +370,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "foo { <x> y  } <bar> "
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<ParadoxErrorTokenNode>("foo", 0..3)
             node<ParadoxBlankNode>(" ", 3..4)
             node<StellarisNameFormatClosureNode>("{ <x> y  }", 4..14) {
@@ -398,7 +398,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "<x> y} "
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<ParadoxErrorTokenNode>("<x> y}", 0..6)
             node<ParadoxBlankNode>(" ", 6..7)
         }
@@ -410,7 +410,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x> y}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..6) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("x", 1..2)
@@ -428,7 +428,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<x>> y}}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>("{<x>> y}", 0..8) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<x>", 1..4) {
@@ -451,7 +451,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[]}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..4) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxCommandNode>("[]", 1..3) {
@@ -470,7 +470,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<>}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..4) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<>", 1..3) {
@@ -489,7 +489,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{<abc y}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..8) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNamePartNode>("<abc", 1..5) {
@@ -510,7 +510,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{[Root. y}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>("{[Root. y}", 0..10) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxCommandNode>("[Root.", 1..7) {
@@ -539,7 +539,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x] y}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..6) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("x", 1..2)
@@ -557,7 +557,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x}y"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>("{x}", 0..3) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("x", 1..2)
@@ -573,7 +573,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{ }"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..3) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<ParadoxBlankNode>(" ", 1..2)
@@ -588,7 +588,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         val s = "{x[Root.GetName]}"
         val exp = parse(s, formatName = "empire")!!
         println(exp.render())
-        val dsl = buildExpression<StellarisNameFormatExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<StellarisNameFormatExpression>(s, 0..s.length) {
             node<StellarisNameFormatClosureNode>(s, 0..17) {
                 node<ParadoxMarkerNode>("{", 0..1)
                 node<StellarisNameFormatLocalisationNode>("x", 1..2)

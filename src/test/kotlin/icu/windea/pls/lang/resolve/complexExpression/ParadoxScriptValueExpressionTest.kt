@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
+import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
@@ -45,7 +45,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_sv"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
         }
         exp.check(dsl)
@@ -56,7 +56,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
             node<ParadoxMarkerNode>("|", 7..8)
             node<ParadoxScriptValueArgumentNode>("PARAM", 8..13)
@@ -72,7 +72,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         val s = "some_sv|"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScriptValueExpression>("some_sv|", 0..s.length) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("some_sv|", 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
             node<ParadoxMarkerNode>("|", 7..8)
         }
@@ -84,7 +84,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildExpression<ParadoxScriptValueExpression>("", 0..0) {
+        val dsl = buildComplexExpression<ParadoxScriptValueExpression>("", 0..0) {
             node<ParadoxScriptValueNode>("", 0..0)
         }
         exp.check(dsl)

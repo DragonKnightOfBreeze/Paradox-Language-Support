@@ -7,6 +7,7 @@ object ParadoxComplexExpressionDslRenderer {
     data class Options(
         val trimEmptyNodes: Boolean = false,
     )
+
     /**
      * 将已解析的复杂表达式节点渲染为用于测试的 DSL 代码片段。
      *
