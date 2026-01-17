@@ -8,21 +8,40 @@ package icu.windea.pls.config
  * @see CwtDataTypes
  * @see CwtDataTypeSets
  */
-data class CwtDataType(
+@Suppress("unused")
+class CwtDataType private constructor(
     val id: String,
     val isReference: Boolean = false,
     val isPatternAware: Boolean = false,
     val isSuffixAware: Boolean = false,
 ) {
-    override fun equals(other: Any?): Boolean {
-        return this === other || (other is CwtDataType && id == other.id)
+    // NOTE 2.1.1 为了优化性能，这里直接使用引用相等
+    // override fun equals(other: Any?) = super.equals(other)
+    //
+    // override fun hashCode() = super.hashCode()
+
+    override fun toString() = "CwtDataType(id=$id)"
+
+    class Builder(
+        private val id: String,
+        private var isReference: Boolean = false,
+        private var isPatternAware: Boolean = false,
+        private var isSuffixAware: Boolean = false,
+    ) {
+        fun reference() = apply { isReference = true }
+        fun patternAware() = apply { isPatternAware = true }
+        fun suffixAware() = apply { isSuffixAware = true }
+
+        fun build(): CwtDataType = CwtDataType(id, isReference, isPatternAware, isSuffixAware).also { _entries[id] = it }
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    companion object {
+        private val _entries = mutableMapOf<String, CwtDataType>()
 
-    override fun toString(): String {
-        return "CwtDataType($id)"
+        @JvmStatic
+        val entries: Map<String, CwtDataType> get() = _entries
+
+        @JvmStatic
+        fun builder(id: String): Builder = Builder(id)
     }
 }

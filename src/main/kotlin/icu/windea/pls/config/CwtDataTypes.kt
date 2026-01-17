@@ -3,73 +3,74 @@ package icu.windea.pls.config
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 
+@Suppress("unused")
 object CwtDataTypes {
-    val Any = CwtDataType("Any")
-    val Bool = CwtDataType("Bool")
-    val Int = CwtDataType("Int")
-    val Float = CwtDataType("Float")
-    val Scalar = CwtDataType("Scalar")
-    val ColorField = CwtDataType("ColorField")
-    val Block = CwtDataType("Block")
+    val Any = CwtDataType.builder("Any").build()
+    val Bool = CwtDataType.builder("Bool").build()
+    val Int = CwtDataType.builder("Int").build()
+    val Float = CwtDataType.builder("Float").build()
+    val Scalar = CwtDataType.builder("Scalar").build()
+    val ColorField = CwtDataType.builder("ColorField").build()
+    val Block = CwtDataType.builder("Block").build()
 
-    val PercentageField = CwtDataType("PercentageField")
-    val DateField = CwtDataType("DateField")
-    val Definition = CwtDataType("Definition", isReference = true)
-    val Localisation = CwtDataType("Localisation", isReference = true)
-    val SyncedLocalisation = CwtDataType("SyncedLocalisation", isReference = true)
-    val InlineLocalisation = CwtDataType("InlineLocalisation", isReference = true)
-    val AbsoluteFilePath = CwtDataType("AbsoluteFilePath", isReference = true)
-    val Icon = CwtDataType("Icon", isReference = true)
-    val FilePath = CwtDataType("FilePath", isReference = true)
-    val FileName = CwtDataType("FileName", isReference = true)
-    val EnumValue = CwtDataType("EnumValue", isReference = true)
-    val Value = CwtDataType("Value", isReference = true)
-    val ValueSet = CwtDataType("ValueSet", isReference = true)
-    val DynamicValue = CwtDataType("DynamicValue", isReference = true)
-    val ScopeField = CwtDataType("ScopeField", isReference = true)
-    val Scope = CwtDataType("Scope", isReference = true)
-    val ScopeGroup = CwtDataType("ScopeGroup", isReference = true)
-    val ValueField = CwtDataType("ValueField", isReference = true)
-    val IntValueField = CwtDataType("IntValueField", isReference = true)
-    val VariableField = CwtDataType("VariableField", isReference = true)
-    val IntVariableField = CwtDataType("IntVariableField", isReference = true)
-    val Modifier = CwtDataType("Modifier", isReference = true)
-    val SingleAliasRight = CwtDataType("SingleAliasRight", isReference = true)
-    val AliasName = CwtDataType("AliasName", isReference = true)
-    val AliasKeysField = CwtDataType("AliasKeysField", isReference = true)
-    val AliasMatchLeft = CwtDataType("AliasMatchLeft", isReference = true)
+    val PercentageField = CwtDataType.builder("PercentageField").build()
+    val DateField = CwtDataType.builder("DateField").build()
+    val Definition = CwtDataType.builder("Definition").reference().build()
+    val Localisation = CwtDataType.builder("Localisation").reference().build()
+    val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference().build()
+    val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference().build()
+    val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build()
+    val Icon = CwtDataType.builder("Icon").reference().build()
+    val FilePath = CwtDataType.builder("FilePath").reference().build()
+    val FileName = CwtDataType.builder("FileName").reference().build()
+    val EnumValue = CwtDataType.builder("EnumValue").reference().build()
+    val Value = CwtDataType.builder("Value").reference().build()
+    val ValueSet = CwtDataType.builder("ValueSet").reference().build()
+    val DynamicValue = CwtDataType.builder("DynamicValue").reference().build()
+    val ScopeField = CwtDataType.builder("ScopeField").reference().build()
+    val Scope = CwtDataType.builder("Scope").reference().build()
+    val ScopeGroup = CwtDataType.builder("ScopeGroup").reference().build()
+    val ValueField = CwtDataType.builder("ValueField").reference().build()
+    val IntValueField = CwtDataType.builder("IntValueField").reference().build()
+    val VariableField = CwtDataType.builder("VariableField").reference().build()
+    val IntVariableField = CwtDataType.builder("IntVariableField").reference().build()
+    val Modifier = CwtDataType.builder("Modifier").reference().build()
+    val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
+    val AliasName = CwtDataType.builder("AliasName").reference().build()
+    val AliasKeysField = CwtDataType.builder("AliasKeysField").reference().build()
+    val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
 
-    val Parameter = CwtDataType("Parameter", isReference = true)
-    val ParameterValue = CwtDataType("ParameterValue", isReference = true)
-    val LocalisationParameter = CwtDataType("LocalisationParameter", isReference = true)
+    val Parameter = CwtDataType.builder("Parameter").reference().build()
+    val ParameterValue = CwtDataType.builder("ParameterValue").reference().build()
+    val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build()
 
     // e.g., civic:xxx:xxx
     /** @since 1.3.9 */
     // @WithGameType(ParadoxGameType.Stellaris) // not limited yet
-    val DatabaseObject = CwtDataType("DatabaseObject", isReference = true)
+    val DatabaseObject = CwtDataType.builder("DatabaseObject").reference().build()
     // e.g., define:NPortrait|GRACEFUL_AGING_START
     /** @since 1.3.25 */
     // @WithGameType(ParadoxGameType.Vic3) // not limited yet
-    val DefineReference = CwtDataType("DefineReference", isReference = true)
+    val DefineReference = CwtDataType.builder("DefineReference").reference().build()
     @WithGameType(ParadoxGameType.Stellaris)
-    val StellarisNameFormat = CwtDataType("StellarisNameFormat", isReference = true)
+    val StellarisNameFormat = CwtDataType.builder("StellarisNameFormat").reference().build()
 
     // effects in .shader files
-    val ShaderEffect = CwtDataType("ShaderEffect"/*, isReference = true*/)
+    val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/).build()
     @WithGameType(ParadoxGameType.Stellaris)
-    val TechnologyWithLevel = CwtDataType("TechnologyWithLevel", isReference = true)
+    val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build()
 
     // Pattern Aware Data Types
 
-    val Constant = CwtDataType("Constant", isPatternAware = true)
+    val Constant = CwtDataType.builder("Constant").patternAware().build()
     // e.g., a_<b>_enum[c]_value[d]
-    val TemplateExpression = CwtDataType("TemplateExpression", isPatternAware = true)
+    val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware().build()
     // e.g., /foo/bar?/*
     /** @since 1.3.6 */
-    val Ant = CwtDataType("Ant", isPatternAware = true)
+    val Ant = CwtDataType.builder("Ant").patternAware().build()
     // e.g., foo.*bar
     /** @since 1.3.6 */
-    val Regex = CwtDataType("Regex", isPatternAware = true)
+    val Regex = CwtDataType.builder("Regex").patternAware().build()
 
     // Suffix Aware Data Types
 
@@ -77,11 +78,11 @@ object CwtDataTypes {
 
     // #162, #193
     /** @since 2.0.5 */
-    val SuffixAwareDefinition = CwtDataType("SuffixAwareDefinition", isSuffixAware = true)
+    val SuffixAwareDefinition = CwtDataType.builder("SuffixAwareDefinition").suffixAware().build()
     // #162, #193
     /** @since 2.0.5 */
-    val SuffixAwareLocalisation = CwtDataType("SuffixAwareLocalisation", isSuffixAware = true)
+    val SuffixAwareLocalisation = CwtDataType.builder("SuffixAwareLocalisation").suffixAware().build()
     // #162, #193
     /** @since 2.0.5 */
-    val SuffixAwareSyncedLocalisation = CwtDataType("SuffixAwareLocalisationSynced", isSuffixAware = true)
+    val SuffixAwareSyncedLocalisation = CwtDataType.builder("SuffixAwareLocalisationSynced").suffixAware().build()
 }

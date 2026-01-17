@@ -1,5 +1,6 @@
 package icu.windea.pls.config
 
+@Suppress("unused")
 object CwtDataTypeSets {
     val Int = arrayOf(
         CwtDataTypes.Int,
@@ -64,7 +65,6 @@ object CwtDataTypeSets {
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
     )
-    @Suppress("unused")
     val AliasNameAware = arrayOf(
         CwtDataTypes.AliasName,
         CwtDataTypes.AliasKeysField,
@@ -75,7 +75,6 @@ object CwtDataTypeSets {
         CwtDataTypes.Ant,
         CwtDataTypes.Regex,
     )
-    @Suppress("unused")
     val SuffixAware = arrayOf(
         CwtDataTypes.SuffixAwareDefinition,
         CwtDataTypes.SuffixAwareLocalisation,
