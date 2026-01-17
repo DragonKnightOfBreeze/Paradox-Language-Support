@@ -19,8 +19,9 @@ object ParadoxComplexExpressionDslChecker {
     private fun matches(node: ParadoxComplexExpressionNode, dslNode: ParadoxComplexExpressionDslNode): Boolean {
         if (!dslNode.type.isSuperclassOf(node::class)) return false
         if (dslNode.text != node.text) return false
-        if (dslNode.rangeInExpression.first != node.rangeInExpression.startOffset) return false
-        if (dslNode.rangeInExpression.last != node.rangeInExpression.endOffset) return false
+        val (startOffset, endOffset) = dslNode.rangeInExpression
+        if (startOffset != node.rangeInExpression.startOffset) return false
+        if (endOffset != node.rangeInExpression.endOffset) return false
         return true
     }
 
@@ -33,7 +34,8 @@ object ParadoxComplexExpressionDslChecker {
     }
 
     private fun ParadoxComplexExpressionDslNode.render(): String {
-        return "${type.simpleName}: ${text} (${rangeInExpression.first}, ${rangeInExpression.last})"
+        val (startOffset, endOffset) = rangeInExpression
+        return "${type.simpleName}: ${text} (${startOffset}, ${endOffset})"
     }
 
     private fun ParadoxComplexExpressionNode.render(): String {

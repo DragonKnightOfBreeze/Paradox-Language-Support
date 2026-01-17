@@ -4,7 +4,6 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.dsl.buildComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
@@ -47,11 +46,11 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0..s.length) {
-            node<ParadoxDefinePrefixNode>("define:", 0..7)
-            node<ParadoxDefineNamespaceNode>("NPortrait", 7..16)
-            node<ParadoxMarkerNode>("|", 16..17)
-            node<ParadoxDefineVariableNode>("GRACEFUL_AGING_START", 17..37)
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0 to s.length) {
+            node<ParadoxDefinePrefixNode>("define:", 0 to 7)
+            node<ParadoxDefineNamespaceNode>("NPortrait", 7 to 16)
+            node<ParadoxMarkerNode>("|", 16 to 17)
+            node<ParadoxDefineVariableNode>("GRACEFUL_AGING_START", 17 to 37)
         }
         exp.check(dsl)
     }
@@ -61,8 +60,8 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         println(exp.render())
-        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0..0) {
-            node<ParadoxErrorTokenNode>("", 0..0)
+        val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>("", 0 to 0) {
+            node<ParadoxErrorTokenNode>("", 0 to 0)
         }
         exp.check(dsl)
     }

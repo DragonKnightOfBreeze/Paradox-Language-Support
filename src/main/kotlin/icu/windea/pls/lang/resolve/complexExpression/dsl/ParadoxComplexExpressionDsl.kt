@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.resolve.complexExpression.dsl
 
+import icu.windea.pls.core.util.TypedTuple2
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import kotlin.reflect.KClass
@@ -16,14 +17,14 @@ annotation class ParadoxComplexExpressionDsl
 data class ParadoxComplexExpressionDslNode(
     val type: KClass<out ParadoxComplexExpressionNode>,
     val text: String,
-    val rangeInExpression: IntRange,
+    val rangeInExpression: TypedTuple2<Int>,
     val nodes: MutableList<ParadoxComplexExpressionDslNode>
 )
 
 @ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
     text: String,
-    rangeInExpression: IntRange,
+    rangeInExpression: TypedTuple2<Int>,
     block: ParadoxComplexExpressionDslNode.() -> Unit = {}
 ): ParadoxComplexExpressionDslNode {
     val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
@@ -34,7 +35,7 @@ inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
 @ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpression> ParadoxComplexExpressionDslNode.expression(
     text: String,
-    rangeInExpression: IntRange,
+    rangeInExpression: TypedTuple2<Int>,
     block: ParadoxComplexExpressionDslNode.() -> Unit = {}
 ): ParadoxComplexExpressionDslNode {
     val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
@@ -46,7 +47,7 @@ inline fun <reified T : ParadoxComplexExpression> ParadoxComplexExpressionDslNod
 @ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpressionNode> ParadoxComplexExpressionDslNode.node(
     text: String,
-    rangeInExpression: IntRange,
+    rangeInExpression: TypedTuple2<Int>,
     block: ParadoxComplexExpressionDslNode.() -> Unit = {}
 ): ParadoxComplexExpressionDslNode {
     val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
