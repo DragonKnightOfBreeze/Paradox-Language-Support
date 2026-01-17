@@ -163,7 +163,7 @@ object CwtConfigManipulator {
             is CwtPropertyConfig -> {
                 val propertyConfig = config
                 propertyConfig.parentConfig?.configs?.forEachFast { c ->
-                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
+                    if (!c.isSamePointer(propertyConfig) && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
                         c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                     }
                 }
@@ -171,7 +171,7 @@ object CwtConfigManipulator {
             is CwtValueConfig -> {
                 val propertyConfig = config.propertyConfig
                 propertyConfig?.parentConfig?.configs?.forEachFast { c ->
-                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
+                    if (!c.isSamePointer(propertyConfig) && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
                         c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                     }
                 }
