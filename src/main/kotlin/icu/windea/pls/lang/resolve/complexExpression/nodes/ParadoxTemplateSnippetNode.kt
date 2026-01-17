@@ -13,7 +13,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
@@ -38,7 +37,7 @@ class ParadoxTemplateSnippetNode(
     override val configGroup: CwtConfigGroup,
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
-    val config = CwtValueConfig.create(emptyPointer(), configGroup, configExpression.expressionString)
+    val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null

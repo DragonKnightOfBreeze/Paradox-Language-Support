@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
@@ -157,7 +158,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val created = CwtPropertyConfig.create(
                 baseCfg.pointer, baseCfg.configGroup,
-                baseCfg.key, baseCfg.value, baseCfg.valueType, baseCfg.separatorType,
+                baseCfg.keyExpression, baseCfg.valueExpression, baseCfg.valueType, baseCfg.separatorType,
                 null,
             )
             assertEquals(baseCfg.key, created.key)
@@ -173,8 +174,8 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val copied = CwtPropertyConfig.copy(
                 baseCfg,
-                key = baseCfg.key + "_c",
-                value = baseCfg.value,
+                keyExpression = CwtDataExpression.resolveKey(baseCfg.key + "_c"),
+                valueExpression = baseCfg.valueExpression,
                 valueType = baseCfg.valueType,
                 separatorType = CwtSeparatorType.EQUAL,
                 configs = baseCfg.configs,

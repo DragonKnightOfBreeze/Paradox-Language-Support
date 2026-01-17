@@ -141,7 +141,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         run {
             val created = CwtValueConfig.create(
                 baseCfg.pointer, baseCfg.configGroup,
-                baseCfg.value, baseCfg.valueType,
+                baseCfg.valueExpression, baseCfg.valueType,
                 null,
             )
             assertEquals(baseCfg.value, created.value)
@@ -156,7 +156,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         run {
             val copied = CwtValueConfig.copy(
                 baseCfg,
-                value = baseCfg.value,
+                valueExpression = baseCfg.valueExpression,
                 valueType = baseCfg.valueType,
                 configs = baseCfg.configs,
                 propertyConfig = baseCfg.propertyConfig

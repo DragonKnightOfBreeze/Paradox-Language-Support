@@ -35,8 +35,10 @@ interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
     interface Resolver {
         fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression
         fun resolveEmpty(isKey: Boolean): CwtDataExpression
-        fun resolveBlock(): CwtDataExpression
         fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression
+        fun resolveKey(expressionString: String): CwtDataExpression
+        fun resolveValue(expressionString: String): CwtDataExpression
+        fun resolveBlock(): CwtDataExpression
         fun resolveTemplate(expressionString: String): CwtDataExpression
     }
 

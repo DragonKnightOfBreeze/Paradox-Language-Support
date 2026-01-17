@@ -3,7 +3,6 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.filePathPatterns
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -12,7 +11,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 
 val CwtConfigGroup.mockVariableConfig: CwtValueConfig
     by registerKey(CwtConfigGroup.Keys) {
-        CwtValueConfig.create(emptyPointer(), this, "value[variable]")
+        CwtValueConfig.createMock(this, "value[variable]")
     }
 
 val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker

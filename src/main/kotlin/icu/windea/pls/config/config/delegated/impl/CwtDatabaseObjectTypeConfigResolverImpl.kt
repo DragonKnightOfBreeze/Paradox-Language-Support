@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getOne
-import icu.windea.pls.core.emptyPointer
 
 internal class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
@@ -45,13 +44,13 @@ private class CwtDatabaseObjectTypeConfigImpl(
     override val localisation: String?
 ) : UserDataHolderBase(), CwtDatabaseObjectTypeConfig {
     override fun getConfigForType(isBase: Boolean): CwtValueConfig? {
-        val configExpression = when {
+        val expressionString = when {
             localisation != null -> "localisation"
             isBase -> type?.let { "<$it>" }
             else -> swapType?.let { "<$it>" }
         }
-        if (configExpression == null) return null
-        return CwtValueConfig.create(emptyPointer(), this.configGroup, configExpression)
+        if (expressionString == null) return null
+        return CwtValueConfig.createMock(configGroup, expressionString)
     }
 
     override fun toString() = "CwtDatabaseObjectTypeConfigImpl(name='$name')"

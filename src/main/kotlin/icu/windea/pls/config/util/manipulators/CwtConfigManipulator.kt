@@ -42,7 +42,6 @@ import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStrings
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -307,7 +306,7 @@ object CwtConfigManipulator {
         val other = directiveConfig.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = other,
-            key = directiveConfig.name,
+            keyExpression = CwtDataExpression.resolveKey(directiveConfig.name),
             configs = deepCopyConfigs(other),
         )
         CwtPropertyConfig.postOptimize(inlined) // do post optimization
@@ -332,7 +331,7 @@ object CwtConfigManipulator {
         val other = singleAliasConfig.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
-            value = other.value,
+            valueExpression = other.valueExpression,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
         )
@@ -372,8 +371,8 @@ object CwtConfigManipulator {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
-            key = aliasConfig.subName,
-            value = other.value,
+            keyExpression = aliasConfig.subNameExpression,
+            valueExpression = other.valueExpression,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
         )
@@ -394,15 +393,15 @@ object CwtConfigManipulator {
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
-            key = when (inlineMode) {
-                CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                CwtConfigInlineMode.VALUE_TO_KEY -> otherConfig.value
-                else -> config.key
+            keyExpression = when (inlineMode) {
+                CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.keyExpression else return null
+                CwtConfigInlineMode.VALUE_TO_KEY -> CwtDataExpression.resolveKey(otherConfig.value)
+                else -> config.keyExpression
             },
-            value = when (inlineMode) {
-                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.value
-                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                else -> config.value
+            valueExpression = when (inlineMode) {
+                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) CwtDataExpression.resolveValue(otherConfig.key) else return null
+                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueExpression
+                else -> config.valueExpression
             },
             valueType = when (inlineMode) {
                 CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueType
@@ -428,7 +427,7 @@ object CwtConfigManipulator {
         val inlined = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = configGroup,
-            value = PlsStrings.blockFolder,
+            valueExpresssion = CwtDataExpression.resolveBlock(),
             valueType = CwtType.Block,
             configs = configs,
         )
@@ -504,7 +503,7 @@ object CwtConfigManipulator {
         val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = config1.configGroup,
-            value = expressionString,
+            valueExpresssion = CwtDataExpression.resolveValue(expressionString),
         )
         mergeOptionData(merged.optionData, config1.optionData, config2.optionData) // merge option data
         return merged

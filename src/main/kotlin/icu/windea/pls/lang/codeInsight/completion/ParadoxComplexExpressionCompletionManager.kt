@@ -14,7 +14,6 @@ import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.listOrEmpty
@@ -115,7 +114,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, node.text)
+                    context.config = CwtValueConfig.createMock(configGroup, node.text)
                     context.configs = emptyList()
                     ParadoxCompletionManager.completeConstant(context, resultToUse)
                     break
@@ -612,7 +611,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (leftAngle >= 0) {
                 val innerStart = leftAngle + 1
                 val keywordToUse = exprText.substring(innerStart, caret)
-                val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "<${type}>")
+                val cfg = CwtValueConfig.createMock(config.configGroup, "<${type}>")
                 val bakConfig = context.config
                 val bakKeyword = context.keyword
                 val bakKeywordOffset = context.keywordOffset
@@ -640,7 +639,7 @@ object ParadoxComplexExpressionCompletionManager {
             var start = caret
             while (start > 0 && isLocChar(exprText[start - 1])) start--
             val keywordToUse = exprText.substring(start, caret)
-            val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "localisation")
+            val cfg = CwtValueConfig.createMock(config.configGroup, "localisation")
             val bakConfig = context.config
             val bakKeyword = context.keyword
             val bakKeywordOffset = context.keywordOffset

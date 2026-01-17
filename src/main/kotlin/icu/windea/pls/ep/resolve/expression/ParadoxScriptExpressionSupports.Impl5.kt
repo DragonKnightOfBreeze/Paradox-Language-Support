@@ -10,7 +10,6 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.annotations.WithGameType
@@ -79,7 +78,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val offset = separatorIndex
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
         if (range1.isEmpty) return null
-        val config1 = CwtValueConfig.create(emptyPointer(), config.configGroup, typeExpression)
+        val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
         val reference = ParadoxScriptExpressionPsiReference(element, range1, config1, null)
         return arrayOf(reference)
     }
@@ -96,7 +95,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val configs = context.configs
         val isKey = context.isKey
 
-        val config1 = CwtValueConfig.create(emptyPointer(), config.configGroup, typeExpression)
+        val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
         context.config = config1
         context.configs = emptySet()
         context.isKey = null

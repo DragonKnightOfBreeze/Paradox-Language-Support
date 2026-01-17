@@ -37,18 +37,21 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
-            value: String,
+            valueExpresssion: CwtDataExpression,
             valueType: CwtType = CwtType.String,
             configs: List<CwtMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null,
             injectable: Boolean = false,
         ): CwtValueConfig
 
+        /** 创建基于指定的字符串字面量的模拟的值规则。使用空指针。 */
+        fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig
+
         /** 创建基于 [targetConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
         fun copy(
             targetConfig: CwtValueConfig,
             pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
-            value: String = targetConfig.value,
+            valueExpression: CwtDataExpression = targetConfig.valueExpression,
             valueType: CwtType = targetConfig.valueType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
             propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,

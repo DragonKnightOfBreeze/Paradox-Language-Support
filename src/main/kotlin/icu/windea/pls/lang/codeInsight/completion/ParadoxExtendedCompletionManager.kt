@@ -7,7 +7,6 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -46,7 +45,7 @@ object ParadoxExtendedCompletionManager {
         val contextConfig = context.config ?: return
         val configGroup = contextConfig.configGroup
         val config = when (contextConfig) {
-            is CwtPropertyConfig -> CwtValueConfig.create(emptyPointer(), configGroup, "<${contextConfig.key}>")
+            is CwtPropertyConfig -> CwtValueConfig.createMock(configGroup, "<${contextConfig.key}>")
             else -> contextConfig
         }
         val typeExpression = config.configExpression?.value ?: return

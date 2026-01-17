@@ -30,13 +30,17 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
 
     override fun resolveEmpty(isKey: Boolean): CwtDataExpression = if (isKey) emptyKeyExpression else emptyValueExpression
 
-    override fun resolveBlock(): CwtDataExpression = blockExpression
-
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
         if (expressionString.isEmpty()) return if (isKey) emptyKeyExpression else emptyValueExpression
         val cache = if (isKey) cacheForKey else cacheForValue
         return cache.get(expressionString)
     }
+
+    override fun resolveKey(expressionString: String): CwtDataExpression = resolve(expressionString, true)
+
+    override fun resolveValue(expressionString: String): CwtDataExpression = resolve(expressionString, false)
+
+    override fun resolveBlock(): CwtDataExpression = blockExpression
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression {
         if (expressionString.isEmpty()) return emptyValueExpression

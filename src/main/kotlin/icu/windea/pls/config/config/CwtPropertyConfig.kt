@@ -15,9 +15,9 @@ import icu.windea.pls.model.CwtType
  * 对应 CWT 规则文件中的一个属性（`k = v` 或 `k = {...}`）。
  *
  * @property key 属性键（去除首尾的双引号）。
- * @property separatorType 分隔符类型。
  * @property value 属性值（去除首尾的双引号）。
  * @property valueType 属性值的类型，用于驱动解析与校验。
+ * @property separatorType 分隔符类型。
  * @property valueConfig 属性值对应的值规则。懒加载，且在属性值无法解析时返回 null。
  * @property keyExpression 属性键对应的数据表达式，用于驱动解析与校验。
  * @property valueExpression 属性值对应的数据表达式，用于驱动解析与校验。
@@ -27,9 +27,9 @@ import icu.windea.pls.model.CwtType
  */
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val key: String
-    val separatorType: CwtSeparatorType
     override val value: String
     override val valueType: CwtType
+    val separatorType: CwtSeparatorType
 
     val valueConfig: CwtValueConfig?
 
@@ -45,8 +45,8 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
             configGroup: CwtConfigGroup,
-            key: String,
-            value: String,
+            keyExpression: CwtDataExpression,
+            valueExpression: CwtDataExpression,
             valueType: CwtType = CwtType.String,
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
@@ -57,8 +57,8 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         fun copy(
             targetConfig: CwtPropertyConfig,
             pointer: SmartPsiElementPointer<out CwtProperty> = targetConfig.pointer,
-            key: String = targetConfig.key,
-            value: String = targetConfig.value,
+            keyExpression: CwtDataExpression = targetConfig.keyExpression,
+            valueExpression: CwtDataExpression = targetConfig.valueExpression,
             valueType: CwtType = targetConfig.valueType,
             separatorType: CwtSeparatorType = targetConfig.separatorType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
