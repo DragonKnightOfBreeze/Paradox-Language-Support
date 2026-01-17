@@ -599,7 +599,7 @@ object ParadoxExpressionManager {
             is CwtPropertyConfig -> {
                 val propertyConfig = config
                 propertyConfig.parentConfig?.configs?.forEach { c ->
-                    if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
                         c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                     }
                 }
@@ -607,7 +607,7 @@ object ParadoxExpressionManager {
             is CwtValueConfig -> {
                 val propertyConfig = config.propertyConfig
                 propertyConfig?.parentConfig?.configs?.forEach { c ->
-                    if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                    if (c.pointer != propertyConfig.pointer && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
                         c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                     }
                 }
@@ -618,9 +618,9 @@ object ParadoxExpressionManager {
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         val gameType = config.configGroup.gameType
-        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
         if (config.optionData.cardinality?.isRequired() == false) return false
+        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         return true
     }
 
