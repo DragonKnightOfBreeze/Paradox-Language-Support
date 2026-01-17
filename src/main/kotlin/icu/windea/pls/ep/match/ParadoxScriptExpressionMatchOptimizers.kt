@@ -1,5 +1,3 @@
-@file:Optimized
-
 package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -23,6 +21,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
         return false
     }
 
+    @Optimized
     override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizer.Context): List<CwtMemberConfig<*>>? {
         if (configs.size <= 1) return null
         if (context.expression.type != ParadoxType.String) return null
@@ -39,6 +38,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
         return true
     }
 
+    @Optimized
     override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizer.Context): List<CwtMemberConfig<*>>? {
         if (configs.isEmpty()) return null
         val filtered = configs.filterFast { it.valueType == CwtType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
@@ -68,6 +68,7 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
         return true
     }
 
+    @Optimized
     override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizer.Context): List<CwtMemberConfig<*>>? {
         if (configs.isEmpty()) return null
         val result = FastList<CwtMemberConfig<*>>()

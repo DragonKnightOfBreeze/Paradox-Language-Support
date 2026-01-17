@@ -10,7 +10,7 @@ object ParadoxMatchPipeline {
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult?): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = buildList {
-            for (config in configs) {
+            for ((_, config) in configs.withIndex()) {
                 val matchResult = matchResultProvider(config)
                 if (matchResult == null || matchResult == ParadoxMatchResult.NotMatch) continue
                 val matchCandidate = ParadoxMatchCandidate(config, matchResult)
@@ -89,7 +89,8 @@ object ParadoxMatchPipeline {
         val configGroup = configs.first().configGroup
         var result = configs
         val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, options)
-        for (optimizer in ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList) {
+        val optimizers = ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList
+        for ((_, optimizer) in optimizers.withIndex()) {
             val optimized = optimizer.optimize(result, context)
             if (optimized == null) continue
             if (optimizer.isDynamic(context)) markDynamicAfterOptimized()

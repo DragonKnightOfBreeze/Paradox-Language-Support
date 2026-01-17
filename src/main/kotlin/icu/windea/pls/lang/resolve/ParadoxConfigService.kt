@@ -25,7 +25,9 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
@@ -85,28 +87,32 @@ object ParadoxConfigService {
     }
 
     /**
-     * @see icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider.getOverriddenConfigs
+     * @see CwtOverriddenConfigProvider.getOverriddenConfigs
      */
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         val gameType = config.configGroup.gameType
-        return CwtOverriddenConfigProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getOverriddenConfigs(contextElement, config).orNull()
+        val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
+        for ((_, ep) in eps.withIndex()) {
+            if (!PlsAnnotationManager.check(ep, gameType)) continue
+            val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
                     it.overriddenProvider = ep
                 }
-        }.orEmpty()
+            if (r != null) return r
+        }
+        return emptyList()
     }
 
     /**
-     * @see icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider.getRelatedConfigs
+     * @see CwtRelatedConfigProvider.getRelatedConfigs
      */
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         val gameType = selectGameType(file) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
-        CwtRelatedConfigProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+        val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
+        for ((_, ep) in eps.withIndex()) {
+            if (!PlsAnnotationManager.check(ep, gameType)) continue
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
@@ -114,28 +120,34 @@ object ParadoxConfigService {
     }
 
     /**
-     * @see icu.windea.pls.ep.resolve.config.CwtConfigContextProvider.getContext
+     * @see CwtConfigContextProvider.getContext
      */
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element)?.normalize() ?: return null
         val memberRole = ParadoxMemberRole.resolve(element)
         val gameType = selectGameType(file)
-        return CwtConfigContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getContext(element, file, memberPathFromFile, memberRole)?.also { it.provider = ep }
+        val eps = CwtConfigContextProvider.EP_NAME.extensionList
+        for ((_, ep) in eps.withIndex()) {
+            if (!PlsAnnotationManager.check(ep, gameType)) continue
+            val r = ep.getContext(element, file, memberPathFromFile, memberRole)?.also { it.provider = ep }
+            if (r != null) return r
         }
+        return null
     }
 
     /**
-     * @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider.getContext
+     * @see CwtDeclarationConfigContextProvider.getContext
      */
     fun getDeclarationConfigContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
-        return CwtDeclarationConfigContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
+        val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
+        for ((_, ep) in eps.withIndex()) {
+            if (!PlsAnnotationManager.check(ep, gameType)) continue
+            val r = ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
+            if (r != null) return r
         }
+        return null
     }
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
@@ -230,24 +242,24 @@ object ParadoxConfigService {
 
             // 按照 `subPath` 打平规则，并进行必要的处理
             if (subPath == "-") {
-                matchedParentConfigs.forEach f1@{ parentConfig ->
+                for ((_, parentConfig) in matchedParentConfigs.withIndex()) {
                     val configs = parentConfig.values
-                    if (configs.isNullOrEmpty()) return@f1
-                    configs.forEach { config ->
+                    if (configs.isNullOrEmpty()) continue
+                    for ((_, config) in configs.withIndex()) {
                         this += config
                     }
                 }
             } else {
                 val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
 
-                matchedParentConfigs.forEach f1@{ parentConfig ->
+                for ((_, parentConfig) in matchedParentConfigs.withIndex()) {
                     val configs = parentConfig.properties
-                    if (configs.isNullOrEmpty()) return@f1
+                    if (configs.isNullOrEmpty()) continue
 
                     val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
                     val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
 
-                    configs.forEach { config ->
+                    for ((_, config) in configs.withIndex()) {
                         // 打平后需要首先进行必要的内联
                         val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
                         val matchedConfigs = when {
@@ -257,7 +269,7 @@ object ParadoxConfigService {
 
                         // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
                         // 如果存在精确匹配的规则，则仅使用那些规则；否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
-                        matchedConfigs.forEach { matchedConfig ->
+                        for ((_, matchedConfig) in matchedConfigs.withIndex()) {
                             if (matchedConfig is CwtPropertyConfig) {
                                 val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
                                 when (m) {
@@ -342,6 +354,7 @@ object ParadoxConfigService {
         return result
     }
 
+    @Optimized
     fun getConfigs(element: ParadoxScriptMember, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = doGetConfigs(element, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
@@ -366,7 +379,7 @@ object ParadoxConfigService {
         when (element) {
             is ParadoxScriptProperty -> {
                 // 匹配属性
-                val result = contextConfigs.filterIsInstance<CwtPropertyConfig>()
+                val result = contextConfigs.filterIsInstanceFast<CwtPropertyConfig>()
                 if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
@@ -387,12 +400,12 @@ object ParadoxConfigService {
                 }
                 if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，则需要考虑回退
                 val finalResult = ParadoxMatchPipeline.filter(candidates, options)
-                if (finalResult.isEmpty() && fallback) return candidates.map { it.value } // 如果无结果，则需要考虑回退
+                if (finalResult.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
                 return finalResult // 返回最终匹配的规则
             }
             else -> {
                 // 匹配文件或单独的值
-                val result = contextConfigs.filterIsInstance<CwtValueConfig>()
+                val result = contextConfigs.filterIsInstanceFast<CwtValueConfig>()
                 if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
@@ -408,7 +421,7 @@ object ParadoxConfigService {
                 if (candidates.isEmpty() && fallback) return result // 如果无结果，则需要考虑回退
                 val finalResult = ParadoxMatchPipeline.filter(candidates, options)
                     .let { ParadoxMatchPipeline.optimize(element, valueExpression, it, options) }
-                if (finalResult.isEmpty() && fallback) return candidates.map { it.value } // 如果无结果，则需要考虑回退
+                if (finalResult.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
                 return finalResult // 返回最终匹配的规则
             }
         }

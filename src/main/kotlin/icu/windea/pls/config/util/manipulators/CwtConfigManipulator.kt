@@ -511,18 +511,18 @@ object CwtConfigManipulator {
 
     fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
         if (configs.isEmpty()) return false
-        configs.forEachFast f@{ config ->
+        for ((_, config) in configs.withIndex()) {
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtConfigExpressionService.merge(e1, e2, config.configGroup) ?: return@f // merged
+            val e3 = CwtConfigExpressionService.merge(e1, e2, config.configGroup) ?: continue // merged
             if (e3 == e2.expressionString) return true
         }
         return false
     }
 
     fun mergeOptionData(optionData: CwtOptionDataHolder, vararg sources: CwtOptionDataHolder?) {
-        sources.forEach f@{ source ->
-            if (source == null) return@f
+        for ((_, source) in sources.withIndex()) {
+            if (source == null) continue
             source.copyTo(optionData)
         }
     }

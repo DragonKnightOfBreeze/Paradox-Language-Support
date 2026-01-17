@@ -4,11 +4,6 @@ package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.annotations.Fast
 
-// @Fast
-// inline fun <T, R> List<T>.ifNotEmpty(transform: List<T>.() -> List<R>): List<R> {
-//     return if (isEmpty()) emptyList() else transform(this)
-// }
-
 /** @see kotlin.collections.forEach */
 @Fast
 inline fun <T> List<T>.forEachFast(action: (T) -> Unit) {
@@ -45,6 +40,15 @@ inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
     }
 }
 
+/** @see kotlin.collections.map */
+@Fast
+inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
+    if (isEmpty()) return emptyList()
+    val destination = FastList<R>(size)
+    forEachFast { e -> destination.add(transform(e)) }
+    return destination
+}
+
 /** @see kotlin.collections.filter */
 @Fast
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
@@ -53,7 +57,6 @@ inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     forEachFast { e -> if (predicate(e)) destination.add(e) }
     return destination
 }
-
 
 /** @see kotlin.collections.filterIsInstance */
 @Fast
