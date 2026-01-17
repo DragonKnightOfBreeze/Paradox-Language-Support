@@ -11,7 +11,6 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
@@ -182,8 +181,8 @@ object CwtOptionDataProvider {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
         val r = FastMap<String, ReversibleValue<String>>()
-        optionConfigs.forEachFast f@{ optionConfig ->
-            if (optionConfig !is CwtOptionConfig) return@f
+        for ((_, optionConfig) in optionConfigs.withIndex()) {
+            if (optionConfig !is CwtOptionConfig) continue
             val k = optionConfig.key
             val o = optionConfig.separatorType == CwtSeparatorType.EQUAL
             val v = ReversibleValue(o, optionConfig.value)
@@ -196,11 +195,11 @@ object CwtOptionDataProvider {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
         val r = FastMap<String, String>()
-        optionConfigs.forEachFast f@{ optionConfig ->
-            if (optionConfig !is CwtOptionConfig) return@f
+        for ((_, optionConfig) in optionConfigs.withIndex()) {
+            if (optionConfig !is CwtOptionConfig) continue
             // ignore case for both system scopes and scopes (to lowercase)
             val k = optionConfig.key.lowercase()
-            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
+            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
             r[k] = v
         }
         return r.optimized()

@@ -45,6 +45,16 @@ inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
     }
 }
 
+/** @see kotlin.collections.filter */
+@Fast
+inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
+    if (isEmpty()) return emptyList()
+    val destination = FastList<T>()
+    forEachFast { e -> if (predicate(e)) destination.add(e) }
+    return destination
+}
+
+
 /** @see kotlin.collections.filterIsInstance */
 @Fast
 inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
