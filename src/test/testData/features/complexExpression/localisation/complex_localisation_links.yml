@@ -1,0 +1,9 @@
+# https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137#issuecomment-3764035476
+
+l_english:
+ loc_key: "The technology is [GetTechnology('standing_army').GetName]."
+
+ loc_key: "I am passing the output of one function as a string into the other [GetTechnology(Scope.GetFlagName).GetName]."
+
+ loc_key: "The concept is [Concept('concept_country', 'some_other_loc_key')], some more text."
+ some_other_loc_key: "Countries"

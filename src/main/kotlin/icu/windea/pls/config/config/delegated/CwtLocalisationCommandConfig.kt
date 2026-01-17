@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl
@@ -37,6 +38,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
  *
  * @see CwtLocalisationPromotionConfig
  * @see ParadoxCommandExpression
+ * @see CwtDataTypes.DatabaseObject
  */
 interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

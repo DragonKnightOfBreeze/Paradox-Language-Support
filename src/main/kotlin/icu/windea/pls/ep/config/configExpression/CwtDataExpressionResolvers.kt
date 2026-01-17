@@ -95,6 +95,7 @@ class CwtCoreDataExpressionResolver : CwtRuleBasedDataExpressionResolver() {
         rule(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() },
         rule(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() },
 
+        rule(CwtDataTypes.Command, "\$command"),
         rule(CwtDataTypes.DatabaseObject, "\$database_object"),
         rule(CwtDataTypes.DefineReference, "\$define_reference"),
         rule(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() },

@@ -5,9 +5,11 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxVariableFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 
 /**
  * 变量字段表达式。
@@ -15,6 +17,17 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValue
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypeSets.ValueField]。
  * - 作为 [ParadoxValueFieldExpression] 的子集。相较之下，仅支持调用变量。
+ * - 由零个或多个作用域链接节点（[ParadoxScopeLinkNode]）以及一个数据源节点（[ParadoxDataSourceNode]）组成。之间用点号分隔。
+ * - 作用域链接节点可以是静态链接（[ParadoxSystemScopeNode] 和 [ParadoxScopeNode]）、动态链接（[ParadoxDynamicScopeLinkNode]）或者带参数的链接（[ParadoxParameterizedScopeLinkNode]）。
+ * - 数据源节点的数据类型固定为 `value[variable]`。
+ * - 动态链接可能是前缀形式（`prefix:ds`），也可能是传参形式（`prefix(x)`）。其中可能嵌套其他复杂表达式。
+ * - 对于传参形式的动态链接，兼容多个传参（`prefix(x,y)`）和字面量传参（`prefix('s')`）。传入链式表达式时，需要整个用双引号括起。
+ *
+ * [ParadoxDynamicScopeLinkNode] 的数据源的解析优先级：
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ScopeField]，则解析为 [ParadoxScopeFieldExpression]。
+ * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ValueField]，则解析为 [ParadoxValueFieldExpression]。
+ * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
  * 示例：
  * ```
@@ -30,24 +43,9 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValue
  * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
  * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
  * private scope_link_arg ::= scope_link_value
- * scope_link_value ::= scope_link | dynamic_value_expression | data_source
- * variable ::= data_source
+ * scope_link_value ::= dynamic_value_expression | scope_field_expression | value_field_expression | data_source
+ * private variable ::= data_source
  * ```
- *
- * ### 语法与结构
- *
- * #### 整体形态
- * - 由零个或多个“作用域链接”与一个“变量数据源”按 `.` 相连：`scope_link ('.' scope_link)* '.' variable`；也可仅含变量。
- * - 分段规则：按 `.` 切分；忽略参数文本与括号内的点；当进入括号后，仅在配对的 `)` 之后恢复 `.` 分段；`@` 和 `|` 在顶层作为屏障（其后不再继续 `.` 分段）。
- * - 在相邻节点之间会插入 `.` 运算符节点（[ParadoxOperatorNode]）。
- *
- * #### 节点组成
- * - 作用域链接：参见 [ParadoxScopeLinkNode]。
- * - 变量节点：末段解析为 [ParadoxDataSourceNode]，其数据源限定为 `linksOfVariable` 提供的变量链接配置。
- *
- * #### 备注
- * - 纯数字文本（整数/浮点）与带一元运算符前缀的参数会被解析器直接排除（非变量场景）。
- * - 若作用域链接段使用了带参数的动态链接（如 `prefix(x)`），支持其不是末段（例如：`prefix(x).owner.variable`）；参数的多项、空白与单引号字面量行为参见 [ParadoxScopeFieldExpression] 与 [ParadoxScopeLinkValueNode]。
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

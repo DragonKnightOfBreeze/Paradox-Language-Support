@@ -33,6 +33,7 @@ object CwtDataTypes {
     val DateField = CwtDataType.builder("DateField")
         .withPriority(90.0)
         .build()
+
     val Definition = CwtDataType.builder("Definition").reference()
         .withPriority(70.0)
         .build()
@@ -45,6 +46,10 @@ object CwtDataTypes {
     val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference()
         .withPriority(60.0)
         .build()
+    val Modifier = CwtDataType.builder("Modifier").reference()
+        .withPriority(75.0) // higher than Definition
+        .build()
+
     val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference()
         .withPriority(70.0)
         .build()
@@ -57,6 +62,7 @@ object CwtDataTypes {
     val FileName = CwtDataType.builder("FileName").reference()
         .withPriority(70.0)
         .build()
+
     val EnumValue = CwtDataType.builder("EnumValue").reference()
         .withPriority { configExpression, configGroup ->
             val enumName = configExpression.value ?: return@withPriority 0.0 // unexpected
@@ -74,6 +80,7 @@ object CwtDataTypes {
     val DynamicValue = CwtDataType.builder("DynamicValue").reference()
         .withPriority(40.0)
         .build()
+
     val ScopeField = CwtDataType.builder("ScopeField").reference()
         .withPriority(50.0)
         .build()
@@ -95,9 +102,6 @@ object CwtDataTypes {
     val IntVariableField = CwtDataType.builder("IntVariableField").reference()
         .withPriority(45.0)
         .build()
-    val Modifier = CwtDataType.builder("Modifier").reference()
-        .withPriority(75.0) // higher than Definition
-        .build()
 
     val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
     val AliasName = CwtDataType.builder("AliasName").reference().build()
@@ -114,6 +118,11 @@ object CwtDataTypes {
         .withPriority(10.0)
         .build()
 
+    // e.g., Root.GetName
+    /** @since 2.1.1 */
+    val Command = CwtDataType.builder("Command").reference()
+        .withPriority(45.0)
+        .build()
     // e.g., civic:xxx:xxx
     /** @since 1.3.9 */
     // @WithGameType(ParadoxGameType.Stellaris) // not limited yet

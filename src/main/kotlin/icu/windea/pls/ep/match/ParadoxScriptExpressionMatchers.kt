@@ -108,6 +108,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.Parameter -> matchParameter(context)
             CwtDataTypes.ParameterValue -> matchParameterValue(context)
             CwtDataTypes.LocalisationParameter -> matchLocalisationParameter(context)
+            CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
             CwtDataTypes.DatabaseObject -> matchDatabaseObjectExpression(context)
             CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)
             CwtDataTypes.StellarisNameFormat -> matchStellarisNameFormatExpression(context)

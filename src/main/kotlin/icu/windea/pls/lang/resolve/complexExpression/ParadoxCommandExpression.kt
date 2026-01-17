@@ -1,20 +1,41 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxCommandExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
  * （本地化）命令表达式。
+ *
+ * 说明：
+ * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。目前不支持用来匹配脚本表达式。
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
+ * - 由零个或多个命令作用域链接节点（[ParadoxCommandScopeLinkNode]）以及一个命令字段节点（[ParadoxCommandFieldNode]）组成。之间用点号分隔。之后可能还有其他额外的后缀节点。
+ * - 命令作用域链接节点可以是静态链接（[ParadoxSystemCommandScopeNode] 和 [ParadoxCommandScopeNode]）、动态链接（[ParadoxDynamicCommandScopeLinkNode]）或者带参数的链接（[ParadoxParameterizedCommandScopeLinkNode]）。
+ * - 值字段链接节点可以是静态链接（[ParadoxPredefinedCommandFieldNode]）、动态链接（[ParadoxDynamicCommandFieldNode]）或者带参数的链接（[ParadoxParameterizedCommandFieldNode]）。
+ * - 动态链接可能是前缀形式（`Prefix:DS`），也可能是传参形式（`Prefix(X)`）。其中可能嵌套其他复杂表达式。
+ * - 对于传参形式的动态链接，兼容多个传参（`Prefix(X,Y)`）和字面量传参（`Prefix('s')`）。
+ *
+ * [ParadoxDynamicCommandScopeLinkNode] 的数据源的解析优先级：
+ * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
+ * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
+ *
+ * [ParadoxDynamicCommandFieldNode] 的数据源的解析优先级：
+ * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
+ * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
+ *
  * 示例：
  * ```
  * Root.GetName
@@ -40,22 +61,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * command_field_value ::= data_source
  * command_suffix ::= "&" SUFFIX | "::" SUFFIX
  * ```
- *
- * ### 语法与结构
- *
- * #### 整体形态
- * - 由一个或多个“命令作用域链接”与一个“命令字段”按 `.` 相连，之后可选带后缀：
- * - 分段规则：按 `.` 切分；忽略参数文本与括号内的点；当进入括号后，仅在配对的 `)` 之后恢复 `.` 分段。
- *
- * #### 节点组成
- * - 作用域链接段：[ParadoxCommandScopeLinkNode]（按 `.` 切分的前若干段）。
- * - 字段段：[ParadoxCommandFieldNode]（最后一段）。
- * - 点分隔符：`.`（[ParadoxOperatorNode]，插入在相邻段之间）。
- * - 后缀：由分隔符（[ParadoxMarkerNode] 的 `&` 或 `::`）与 [ParadoxCommandSuffixNode] 组成（可选）。
- *
- * #### 动态命令作用域链接的括号参数
- * - 允许不是链接中的最后一个节点（例如：`Relations(x).GetName`）。
- * - 允许多个参数，使用逗号分隔并兼容多余空白；空白会被保留为 [ParadoxBlankNode]；单引号包裹的参数将作为字面量并以字符串样式高亮，详见 [ParadoxCommandScopeLinkValueNode]。
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
     interface Resolver {

@@ -1,0 +1,40 @@
+# https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137#issuecomment-3764035476
+
+# Localization does not know the concept of a type key (like `<technology>` so it treats data sources from it as a string always).
+# Examples:
+# loc_key: "The technology is [GetTechnology('standing_army').GetName]."
+
+localisation_links = {
+    GetTechnology = {
+        type = scope
+        output_scope = Technology
+        data_source = <technology> # string representing the technology key
+        from_argument = yes
+        input_scopes = { any }
+        prefix = GetTechnology
+    }
+    GetName = {
+        type = value # ? its a string
+        output_scope = value # ? its a string
+        input_scopes = { Technology }
+    }
+}
+
+# Here I am passing the string from another function as an input to `GetTechnology` which is also possible.
+# Examples:
+# loc_key: "I am passing the output of one function as a string into the other [GetTechnology(Scope.GetFlagName).GetName]."
+
+# Examples:
+# loc_key: "The concept is [Concept('concept_country', 'some_other_loc_key')], some more text."
+# some_other_loc_key: "Countries"
+
+localisation_links = {
+    concept_complex = {
+        type = value # ? its a string
+        output_scope = value # ? its a string
+        from_argument = yes
+        data_source = <game_concept>
+        data_source = localisation
+        prefix = Concept
+    }
+}

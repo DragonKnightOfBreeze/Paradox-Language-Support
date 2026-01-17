@@ -1016,6 +1016,7 @@ object ParadoxComplexExpressionCompletionManager {
         when (argNode) {
             is ParadoxDynamicValueExpression -> completeDynamicValueExpression(context, result)
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
+            is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
             else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
         }
 
@@ -1123,6 +1124,7 @@ object ParadoxComplexExpressionCompletionManager {
         when (argNode) {
             is ParadoxDynamicValueExpression -> completeDynamicValueExpression(context, result)
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
+            is ParadoxValueFieldExpression -> completeValueFieldExpression(context, result)
             is ParadoxScriptValueExpression -> completeScriptValueExpression(context, result)
             else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
         }
@@ -1335,6 +1337,7 @@ object ParadoxComplexExpressionCompletionManager {
         val configGroup = context.configGroup!!
         val config = context.config
         val configs = context.configs
+        val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
         val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forScope() && it.prefix == prefix }
@@ -1343,10 +1346,14 @@ object ParadoxComplexExpressionCompletionManager {
         context.config = null
         context.configs = linkConfigs
 
-        completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+        when (argNode) {
+            is ParadoxCommandExpression -> completeCommandExpression(context, result)
+            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+        }
 
         context.config = config
         context.configs = configs
+        context.scopeContext = scopeContext
         context.argumentIndex = argIndex
     }
 
@@ -1463,6 +1470,7 @@ object ParadoxComplexExpressionCompletionManager {
         val configGroup = context.configGroup!!
         val config = context.config
         val configs = context.configs
+        val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
         val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forValue() && it.prefix == prefix }
@@ -1471,10 +1479,14 @@ object ParadoxComplexExpressionCompletionManager {
         context.config = null
         context.configs = linkConfigs
 
-        completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+        when (argNode) {
+            is ParadoxCommandExpression -> completeCommandExpression(context, result)
+            else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
+        }
 
         context.config = config
         context.configs = configs
+        context.scopeContext = scopeContext
         context.argumentIndex = argIndex
     }
 
