@@ -37,6 +37,7 @@
         <reference ref="Pls.CopyUrl"/>
       </group>
       <group id="Pls.Tools.Manipulation" popup="true">
+        <reference ref="Pls.ScriptManipulation"/>
         <reference ref="Pls.LocalisationManipulation"/>
         <reference ref="Pls.TableManipulation"/>
       </group>

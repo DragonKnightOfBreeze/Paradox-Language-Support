@@ -572,16 +572,23 @@
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
 
+    <group id="Pls.ScriptManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
     <group id="Pls.LocalisationManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
-    <group id="Pls.LocalisationGenerationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
     <group id="Pls.TableManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+    <group id="Pls.LocalisationGenerationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
 
     <group id="Pls.EditorContextMenuGroup">
-      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode" />
       <separator/>
+      <reference ref="Pls.ScriptManipulationContextMenuGroup"/>
       <reference ref="Pls.LocalisationManipulationContextMenuGroup"/>
-      <reference ref="Pls.LocalisationGenerationContextMenuGroup"/>
       <reference ref="Pls.TableManipulationContextMenuGroup"/>
+      <reference ref="Pls.LocalisationGenerationContextMenuGroup"/>
+      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode" />
+    </group>
+
+    <group id="Pls.ScriptManipulation">
+      <action id="Pls.Manipulation.EvaluateInlineMath" class="icu.windea.pls.lang.actions.script.EvaluateInlineMathAction"/>
+      <add-to-group group-id="Pls.ScriptManipulationContextMenuGroup"/>
     </group>
 
     <group id="Pls.LocalisationManipulation">
@@ -589,11 +596,6 @@
       <action id="Pls.Manipulation.ReplaceLocalisationWithTranslation" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
       <action id="Pls.Manipulation.ReplaceLocalisationWithTranslationFromLocale" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationWithTranslationFromLocaleAction"/>
       <add-to-group group-id="Pls.LocalisationManipulationContextMenuGroup"/>
-    </group>
-
-    <group id="Pls.LocalisationGeneration">
-      <action id="Pls.Generation.GenerateLocalisationFile" class="icu.windea.pls.lang.actions.localisation.GenerateLocalisationFileAction"/>
-      <add-to-group group-id="Pls.LocalisationGenerationContextMenuGroup"/>
     </group>
 
     <group id="Pls.TableManipulation">
@@ -611,6 +613,11 @@
       <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
       <action id="Pls.Manipulation.RemoveRow" class="icu.windea.pls.lang.actions.csv.RemoveRowAction" icon="AllIcons.Actions.GC"/>
       <add-to-group group-id="Pls.TableManipulationContextMenuGroup"/>
+    </group>
+
+    <group id="Pls.LocalisationGeneration">
+      <action id="Pls.Generation.GenerateLocalisationFile" class="icu.windea.pls.lang.actions.localisation.GenerateLocalisationFileAction"/>
+      <add-to-group group-id="Pls.LocalisationGenerationContextMenuGroup"/>
     </group>
 
     <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.settings.OpenSettingsActions$Game" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">

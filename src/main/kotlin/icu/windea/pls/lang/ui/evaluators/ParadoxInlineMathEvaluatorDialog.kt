@@ -55,8 +55,6 @@ class ParadoxInlineMathEvaluatorDialog(
 
     override fun createCenterPanel(): DialogPanel {
         val expressionText = getExpressionText(element)
-        val inlineMathPrefix = "@[ "
-        val inlineMathSuffix = " ]"
         val inlineMathText = inlineMathPrefix + expressionText + inlineMathSuffix
         val expressionDocument = EditorFactory.getInstance().createDocument(inlineMathText)
         val expressionField = EditorTextField(expressionDocument, project, ParadoxScriptFileType, true, true).apply {
@@ -188,6 +186,9 @@ class ParadoxInlineMathEvaluatorDialog(
     )
 
     companion object {
+        private const val inlineMathPrefix = "@[ "
+        private const val inlineMathSuffix = " ]"
+
         private const val PREFERRED_DIALOG_WIDTH = 600
         private const val PREFERRED_TEXT_WIDTH = 200
         private const val PREFERRED_ARGUMENT_SIZE = 5
