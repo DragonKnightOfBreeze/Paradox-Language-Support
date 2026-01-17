@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
-import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.emptyPointer
@@ -28,7 +28,7 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
     return sortedByDescending s@{
         val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
         val configGroup = configGroupProvider(it)
-        CwtConfigExpressionService.getPriority(expression, configGroup)
+        CwtConfigExpressionManager.getPriority(expression, configGroup)
     }
 }
 

@@ -2,7 +2,6 @@ package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionPriorityProvider
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.config.configExpression.CwtRuleBasedDataExpressionResolver
 
@@ -44,16 +43,5 @@ object CwtConfigExpressionService {
             if (r != null) return r
         }
         return null
-    }
-
-    /**
-     * @see CwtDataExpressionPriorityProvider.getPriority
-     */
-    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        CwtDataExpressionPriorityProvider.EP_NAME.extensionList.forEach f@{ ep ->
-            val r = ep.getPriority(configExpression, configGroup)
-            if (r > 0) return r
-        }
-        return 0.0
     }
 }

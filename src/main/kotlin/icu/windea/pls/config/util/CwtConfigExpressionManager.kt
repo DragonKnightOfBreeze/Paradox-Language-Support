@@ -5,11 +5,17 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.util.Tuple2
 
 object CwtConfigExpressionManager {
+    fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
+        val dataType = configExpression.type
+        return dataType.priority ?: dataType.priorityProvider?.invoke(configExpression, configGroup) ?: 0.0
+    }
+
     fun resolvePlaceholder(locationExpression: CwtLocationExpression, name: String): String? {
         if (!locationExpression.isPlaceholder) return null
         val r = buildString { for (c in locationExpression.location) if (c == '$') append(name) else append(c) }
