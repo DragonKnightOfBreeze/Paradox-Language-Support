@@ -55,7 +55,7 @@ object ParadoxConfigManager {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         ProgressManager.checkCanceled()
         val cache = doGetConfigsCacheFromCache(memberElement)
-        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
+        val cacheKey = options.orDefault().toHashString(forMatched = true).optimized() // optimized to optimize memory
         return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
     }
 

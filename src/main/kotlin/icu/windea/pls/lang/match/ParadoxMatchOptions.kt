@@ -18,10 +18,15 @@ data class ParadoxMatchOptions(
     val skipIndex: Boolean = false,
     val skipScope: Boolean = false,
 ) {
-    fun toHashString(): String {
+    /**
+     * 转化为用于构建缓存键的哈希字符串。
+     *
+     * @param forMatched 用于提高缓存命中率。
+     */
+    fun toHashString(forMatched: Boolean = false): String {
         var mask: Byte = 0
-        if (fallback) mask = mask or 1
-        if (acceptDefinition) mask = mask or 2
+        if (fallback && forMatched) mask = mask or 1
+        if (acceptDefinition && forMatched) mask = mask or 2
         if (relax) mask = mask or 4
         if (skipIndex) mask = mask or 8
         if (skipScope) mask = mask or 16
