@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.memberConfig
-import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.resolve.onActionConfig
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
@@ -45,7 +44,6 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
     override fun keepOrigin(config: CwtMemberConfig<*>) = false
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
 class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
     // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则它也可以匹配 `<technology_with_level>`
     // https://github.com/cwtools/cwtools-vscode/issues/58
@@ -53,6 +51,11 @@ class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInj
     private val logger = thisLogger()
     private val expressions = listOf("<technology>", "<technology.repeatable>")
     private val injectedExpressions = listOf("<technology_with_level>")
+
+    override fun supports(parentConfig: CwtMemberConfig<*>): Boolean {
+        val gameType = parentConfig.configGroup.gameType
+        return gameType == ParadoxGameType.Stellaris
+    }
 
     override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         if (expressionString !in expressions) return null

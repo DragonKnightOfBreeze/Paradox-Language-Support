@@ -6,7 +6,7 @@
 
 - [x] #259 [Vic 3] PLS Hangs while indexing game files
 - [x] #261 Case Insensitive Enums
-- [ ] 优化：继续完善对链式的复杂表达式的支持 / OP: Continue to optimize support for linked complex expressions
+- [x] 优化：继续完善对链式的复杂表达式的支持 / OP: Continue to optimize support for linked complex expressions
 - [x] 优化：优化索引时的性能，将耗时降低到旧版本的 25% / OP: Optimize performance during indexing, reduce time to 27% of the old version
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 

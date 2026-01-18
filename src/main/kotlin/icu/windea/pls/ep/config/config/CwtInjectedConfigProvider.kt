@@ -2,7 +2,6 @@ package icu.windea.pls.ep.config.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
  * 用于基于上下文注入规则。
@@ -11,8 +10,9 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
  * - 基于规则的上下文，有时需要在特定位置注入规则。
  * - 这里得到的规则可能覆盖原始的规则，并且一般与其使用相同的文件位置。
  */
-@WithGameTypeEP
 interface CwtInjectedConfigProvider {
+    fun supports(parentConfig: CwtMemberConfig<*>): Boolean = true
+
     /**
      * 注入规则。
      *
