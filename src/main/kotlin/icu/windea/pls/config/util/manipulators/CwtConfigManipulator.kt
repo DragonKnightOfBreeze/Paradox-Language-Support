@@ -319,10 +319,10 @@ object CwtConfigManipulator {
 
     @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
-        val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
         val singleAliasName = valueExpression.value ?: return null
+        val configGroup = config.configGroup
         val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
         return inlineSingleAlias(config, singleAliasConfig)
     }
@@ -348,10 +348,10 @@ object CwtConfigManipulator {
 
     @Optimized
     fun inlineAlias(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
-        val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.AliasMatchLeft) return null
         val aliasName = valueExpression.value ?: return null
+        val configGroup = config.configGroup
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasKeys = CwtConfigManager.getAliasKeys(configGroup, aliasName, key)
         if (aliasKeys.isEmpty()) return emptyList()
