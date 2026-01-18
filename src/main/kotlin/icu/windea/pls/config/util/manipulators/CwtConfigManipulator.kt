@@ -257,8 +257,8 @@ object CwtConfigManipulator {
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
-        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
         result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
+        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则（即使这里得到的结果是空列表）
         return result // 这里需要直接返回可变列表
     }
 
@@ -286,8 +286,8 @@ object CwtConfigManipulator {
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
-        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
         result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
+        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则（即使这里得到的结果是空列表）
         return result // 这里需要直接返回可变列表
     }
 
