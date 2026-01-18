@@ -184,6 +184,11 @@ private open class CwtValueConfigImplWithConfigs(
 
     override val valueExpression: CwtDataExpression get() = CwtDataExpression.resolveBlock()
 
+    override fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
+        this.configs = configs.optimized() // optimized to optimize memory
+        return true
+    }
+
     override fun postProcess() {
         // optimize child configs
         this.membersType = CwtMembersType.UNSET
@@ -251,6 +256,11 @@ private class CwtValueConfigDelegateWithConfigs(
             if (membersType == CwtMembersType.UNSET) membersType = CwtConfigResolverManager.getMembersType(configs)
             return CwtConfigResolverManager.getValues(configs, membersType)
         }
+
+    override fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
+        this.configs = configs.optimized() // optimized to optimize memory
+        return true
+    }
 
     override fun postOptimize() {
         // optimize child configs
