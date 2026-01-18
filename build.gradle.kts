@@ -69,8 +69,8 @@ dependencies {
     }
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
-    implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
-    implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")
+    implementation("com.twelvemonkeys.imageio:imageio-dds:3.13.0")
+    implementation("com.twelvemonkeys.imageio:imageio-tga:3.13.0")
 
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
@@ -78,22 +78,22 @@ dependencies {
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.8.0") {
+    implementation("dev.langchain4j:langchain4j:1.10.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.8.0") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.10.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.8.0") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.10.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.8.0") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.10.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
@@ -102,7 +102,7 @@ dependencies {
     // 持久化
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    runtimeOnly("org.xerial:sqlite-jdbc:3.51.0.0")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.51.1.0")
     // ktorm - https://www.ktorm.org/
     implementation("org.ktorm:ktorm-core:4.1.1") {
         exclude(group = "org.jetbrains.kotlin")
@@ -119,8 +119,8 @@ dependencies {
     // 目前仅用作参考
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.1")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.1")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.3")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.3")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")

@@ -57,6 +57,7 @@
     <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.Eu5GameMetadataProvider"/>
     <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
     <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
+    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.Victoria3GameMetadataProvider"/>
 
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTextColorQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>

@@ -56,3 +56,27 @@ class Eu5GameMetadataProvider : ParadoxRootMetadataProvider {
         override val infoFile: VirtualFile? get() = null
     }
 }
+
+class Victoria3GameMetadataProvider : ParadoxRootMetadataProvider {
+    override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
+        // In some rare cases the Victoria 3 launcher file does not match the expected values.
+        // So we detect the binary directly and read the version from the game branch file.
+        rootFile.findFileByRelativePath("binaries/victoria3.exe")?.exists() ?: return null
+        val branch = rootFile.findFileByRelativePath("caligula_branch.txt")?.readBytes()?.toString(Charsets.UTF_8) ?: return null
+        return Metadata(
+            rootFile = rootFile,
+            name = ParadoxGameType.Vic3.name,
+            version = branch,
+            gameType = ParadoxGameType.Vic3,
+        )
+    }
+
+    class Metadata(
+        override val rootFile: VirtualFile,
+        override val name: String,
+        override val version: String?,
+        override val gameType: ParadoxGameType,
+    ) : ParadoxRootMetadata.Game {
+        override val infoFile: VirtualFile? get() = null
+    }
+}
