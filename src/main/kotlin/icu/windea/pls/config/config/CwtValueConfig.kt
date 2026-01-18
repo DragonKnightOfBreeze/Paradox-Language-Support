@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtType
 
 /**
@@ -23,6 +24,8 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
 
     override val configExpression: CwtDataExpression
+
+    override val memberType: CwtMemberType get() = CwtMemberType.VALUE
 
     override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
         return visitor.visitValue(this)

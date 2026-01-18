@@ -16,6 +16,7 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.isProperty
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
@@ -296,7 +297,7 @@ object ParadoxScopeManager {
         val overriddenScopeContext = ParadoxScopeService.getOverriddenScopeContext(element, config, parentScopeContext)
         if (overriddenScopeContext != null) return overriddenScopeContext
 
-        if (config is CwtPropertyConfig && config.configExpression.type == CwtDataTypes.ScopeField) {
+        if (config.isProperty() && config.configExpression.type == CwtDataTypes.ScopeField) {
             if (parentScopeContext == null) return null
             val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
             val expressionString = expressionElement.value

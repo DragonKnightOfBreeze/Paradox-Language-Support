@@ -7,6 +7,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtType
 
 /**
@@ -37,6 +38,8 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
 
     val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
+
+    val memberType: CwtMemberType
 
     fun accept(visitor: CwtMemberConfigVisitor): Boolean {
         return visitor.visit(this)

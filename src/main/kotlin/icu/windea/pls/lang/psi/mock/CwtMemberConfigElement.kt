@@ -5,8 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
@@ -21,9 +20,9 @@ class CwtMemberConfigElement(
     private val project: Project
 ) : CwtConfigMockPsiElement(parent) {
     override fun getIcon(): Icon {
-        return when (config) {
-            is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
-            is CwtValueConfig -> PlsIcons.Nodes.CwtValue
+        return when (config.memberType) {
+            CwtMemberType.PROPERTY -> PlsIcons.Nodes.CwtProperty
+            CwtMemberType.VALUE -> PlsIcons.Nodes.CwtValue
         }
     }
 
@@ -32,9 +31,9 @@ class CwtMemberConfigElement(
     }
 
     override fun getTypeName(): String {
-        return when (config) {
-            is CwtPropertyConfig -> PlsBundle.message("cwt.description.property")
-            is CwtValueConfig -> PlsBundle.message("cwt.description.value")
+        return when (config.memberType) {
+            CwtMemberType.PROPERTY -> PlsBundle.message("cwt.description.property")
+            CwtMemberType.VALUE -> PlsBundle.message("cwt.description.value")
         }
     }
 

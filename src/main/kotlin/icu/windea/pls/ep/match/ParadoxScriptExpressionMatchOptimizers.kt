@@ -2,6 +2,7 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.isProperty
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
@@ -41,7 +42,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
     @Optimized
     override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizer.Context): List<CwtMemberConfig<*>>? {
         if (configs.isEmpty()) return null
-        val filtered = configs.filterFast { it.valueType == CwtType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+        val filtered = configs.filterFast { it.valueType == CwtType.Block && it.isProperty() }.cast<List<CwtPropertyConfig>>()
         val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
         if (filteredGroup.isEmpty()) return null
         val blockElement = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null

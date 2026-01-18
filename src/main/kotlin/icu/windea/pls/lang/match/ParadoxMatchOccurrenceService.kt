@@ -3,9 +3,9 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.isProperty
+import icu.windea.pls.config.isValue
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.isParameterized
@@ -82,8 +82,8 @@ object ParadoxMatchOccurrenceService {
                 return@f
             }
             val matched = childConfigs.find { childConfig ->
-                if (childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
-                if (childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
+                if (childConfig.isProperty() && data !is ParadoxScriptProperty) return@find false
+                if (childConfig.isValue() && data !is ParadoxScriptValue) return@find false
                 ParadoxMatchService.matchScriptExpression(data, expression, childConfig.configExpression, childConfig, configGroup).get()
             }
             if (matched == null) return@f

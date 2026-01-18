@@ -6,5 +6,4 @@ enum class CwtMembersType {
     MIXED,
     PROPERTY,
     VALUE,
-    ;
 }

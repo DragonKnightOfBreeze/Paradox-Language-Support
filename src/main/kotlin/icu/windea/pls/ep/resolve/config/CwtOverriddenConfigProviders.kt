@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.manipulators.CwtConfigInlineMode
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.properties
@@ -28,10 +29,10 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     // 重载 `inverted_switch = {...}` 中匹配 `scalar` 的属性的键对应的规则
     // 兼容使用内联或者封装变量的情况
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         if (config !is CwtPropertyConfig) return emptyList()
         if (config.key != Constants.CASE_KEY) return emptyList()
+
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
         if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return emptyList()
         ProgressManager.checkCanceled()
@@ -49,7 +50,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: continue
             resultConfigs.add(inlined)
         }
-        return resultConfigs as List<T>
+        return resultConfigs.cast<List<T>>()
     }
 
     object Constants {
@@ -65,10 +66,10 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     // 重载 `export_trigger_value_to_variable = {...}` 中名为 `parameters` 的属性的值对应的规则
     // 兼容使用内联或者封装变量的情况
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         if (config !is CwtPropertyConfig) return emptyList()
         if (config.key != Constants.PARAMETERS_KEY) return emptyList()
+
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
         if (aliasConfig.subName !in Constants.CONTEXT_NAMES) return emptyList()
         ProgressManager.checkCanceled()
@@ -87,12 +88,12 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
-        return resultConfigs as List<T>
+        return resultConfigs.cast<List<T>>()
     }
 
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
         // for `export_trigger_value_to_variable`, skip all properties
-        // for `complex_trigger_modifier`, skip properties whose value config type is int, float, value_field or variable_field
+        // for `complex_trigger_modifier`, skip properties whose value config type is `int`, `float`, `value_field` or `variable_field`
 
         if (!configExpression.isKey) return false
         configs.forEach { c1 ->

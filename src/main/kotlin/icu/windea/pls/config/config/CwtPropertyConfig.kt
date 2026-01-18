@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 
@@ -37,6 +38,8 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val keyExpression: CwtDataExpression
     override val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
+
+    override val memberType: CwtMemberType get() = CwtMemberType.PROPERTY
 
     override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
         return visitor.visitProperty(this)
