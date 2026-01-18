@@ -13,8 +13,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
@@ -56,7 +55,7 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         if (complexExpression == null) return null
 
         val ref = Ref<Pair<TextRange, TextRange>>()
-        complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+        complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (!inRange(node)) return super.visit(node)
                 val matched = ParadoxComplexExpressionUtil.getMatchedMarkerNode(node) ?: return super.visit(node)

@@ -4,6 +4,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.impl.CwtPropertyConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.CwtSeparatorType
@@ -37,6 +38,10 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     override val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
 
+    override fun accept(visitor: CwtMemberConfigVisitor): Boolean {
+        return visitor.visitProperty(this)
+    }
+
     interface Resolver {
         /** 由 [CwtProperty] 解析为属性规则。 */
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
@@ -65,17 +70,10 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         ): CwtPropertyConfig
 
         /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun delegated(
-            targetConfig: CwtPropertyConfig,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-        ): CwtPropertyConfig
+        fun delegated(targetConfig: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>? = targetConfig.configs): CwtPropertyConfig
 
         /** 创建基于 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 `null`。 */
-        fun delegatedWith(
-            targetConfig: CwtPropertyConfig,
-            key: String,
-            value: String,
-        ): CwtPropertyConfig
+        fun delegatedWith(targetConfig: CwtPropertyConfig, key: String, value: String): CwtPropertyConfig
 
         fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
 

@@ -31,4 +31,6 @@ interface CwtConfig<out T : PsiElement> : UserDataHolder {
     val pointer: SmartPsiElementPointer<out T>
     val configGroup: CwtConfigGroup
     val configExpression: CwtDataExpression? get() = null
+
+    override fun toString(): String
 }

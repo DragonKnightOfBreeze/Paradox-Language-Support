@@ -3,6 +3,9 @@ package icu.windea.pls.config.config
 import icu.windea.pls.config.config.impl.CwtMemberConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.util.CwtMemberConfigVisitor
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.CwtType
@@ -36,14 +39,17 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
     val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression
 
-    override fun toString(): String
+    fun accept(visitor: CwtMemberConfigVisitor): Boolean {
+        return visitor.visit(this)
+    }
+
+    fun acceptChildren(visitor: CwtMemberConfigVisitor): Boolean {
+        return configs?.orNull()?.process { it.accept(visitor) } ?: true
+    }
 
     interface Resolver {
         /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun <T : CwtMemberConfig<*>> delegated(
-            targetConfig: T,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-        ): T
+        fun <T : CwtMemberConfig<*>> delegated(targetConfig: T, configs: List<CwtMemberConfig<*>>? = targetConfig.configs): T
 
         fun withConfigs(config: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean
 

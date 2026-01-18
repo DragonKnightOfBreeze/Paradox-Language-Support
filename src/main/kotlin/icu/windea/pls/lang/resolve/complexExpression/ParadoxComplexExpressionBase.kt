@@ -5,8 +5,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNodeBase
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 
 abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase(), ParadoxComplexExpression {
     fun finishResolving() {
@@ -23,7 +22,7 @@ abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase()
     override fun getAllErrors(element: ParadoxExpressionElement?): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         errors += getErrors(element)
-        accept(object : ParadoxComplexExpressionVisitor() {
+        accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 node.getUnresolvedError()?.let { errors += it }
                 if (element != null) node.getUnresolvedError(element)?.let { errors += it }
@@ -35,7 +34,7 @@ abstract class ParadoxComplexExpressionBase : ParadoxComplexExpressionNodeBase()
 
     override fun getAllReferences(element: ParadoxExpressionElement): List<PsiReference> {
         val references = mutableListOf<PsiReference>()
-        accept(object : ParadoxComplexExpressionVisitor() {
+        accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 node.getReference(element)?.let { references += it }
                 return super.visit(node)

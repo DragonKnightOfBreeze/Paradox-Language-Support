@@ -18,8 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -54,7 +53,7 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
 
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+                complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
                     override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                         if (node is ParadoxComplexExpression) doCheckExpression(element, node)
                         return super.visit(node)

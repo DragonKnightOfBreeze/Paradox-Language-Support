@@ -5,8 +5,11 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
 
 /**
  * 复杂表达式的节点。复杂表达式由数个节点组成，本身也是一个节点。
@@ -31,4 +34,12 @@ interface ParadoxComplexExpressionNode {
     fun getUnresolvedError(): ParadoxComplexExpressionError? = null
 
     fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? = null
+
+    fun accept(visitor: ParadoxComplexExpressionVisitor): Boolean {
+        return visitor.visit(this)
+    }
+
+    fun acceptChildren(visitor: ParadoxComplexExpressionVisitor): Boolean {
+        return nodes.orNull()?.process { it.accept(visitor) } ?: true
+    }
 }

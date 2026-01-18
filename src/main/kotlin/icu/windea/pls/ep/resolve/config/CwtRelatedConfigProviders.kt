@@ -28,8 +28,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
@@ -156,7 +155,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
         if (complexExpression == null) return emptySet()
 
         val result = mutableListOf<CwtConfig<*>>()
-        complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+        complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (finalOffset in node.rangeInExpression) {
                     result.addAll(0, node.getRelatedConfigs())

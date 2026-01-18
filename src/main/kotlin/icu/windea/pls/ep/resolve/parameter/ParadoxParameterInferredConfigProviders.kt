@@ -21,8 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.resolve.complexExpression.util.accept
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -151,7 +150,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, expressionConfig) ?: return null
         val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: List<CwtValueConfig>? = null
-        expression.accept(object : ParadoxComplexExpressionVisitor() {
+        expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (node.rangeInExpression == rangeInExpressionElement) {
                     result = getConfigsFromNode(expressionElement, expressionConfig, node)

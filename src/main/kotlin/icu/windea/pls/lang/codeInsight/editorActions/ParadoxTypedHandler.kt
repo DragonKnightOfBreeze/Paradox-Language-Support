@@ -49,7 +49,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         // val startOffset = elementOffset + ParadoxExpressionManager.getExpressionOffset(element)
         // val offsetInExpression = caretOffset - startOffset
         // var matched = false
-        // complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+        // complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
         //     override fun visit(node: ParadoxComplexExpressionNode): Boolean {
         //         if (node !is ParadoxMarkerNode || node.text.length != 1 || node.text[0] != c) return super.visit(node)
         //         // 刚输入的字符应当位于该 MarkerNode 的末尾（endOffset == caret 相对偏移）

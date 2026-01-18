@@ -178,7 +178,7 @@ object ParadoxComplexExpressionValidator {
 
     private fun validateAllNodes(expression: ParadoxComplexExpression, errors: MutableList<ParadoxComplexExpressionError>, processor: Processor<ParadoxComplexExpressionNode>): Boolean {
         var result = true
-        expression.accept(object : ParadoxComplexExpressionVisitor() {
+        expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (node is ParadoxComplexExpression && node !== expression) {
                     errors += node.getErrors()
