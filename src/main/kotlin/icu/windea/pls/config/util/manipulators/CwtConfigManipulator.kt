@@ -211,42 +211,16 @@ object CwtConfigManipulator {
     }
 
     @Optimized
-    fun deepCopyConfigs(
-        containerConfig: CwtMemberConfig<*>,
-        parentConfig: CwtMemberConfig<*> = containerConfig
-    ): List<CwtMemberConfig<*>>? {
-        return withRecursionGuard("CwtConfigManipulator.deepCopyConfigs") {
-            val key = getKeyForDeepCopy(containerConfig)
-            withRecursionCheck(key) {
-                doDeepCopyConfigs(containerConfig, parentConfig)
-            }
-        }
+    fun deepCopyConfigs(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig): List<CwtMemberConfig<*>>? {
+        return doDeepCopyConfigs(containerConfig, parentConfig)
     }
 
     @Optimized
-    fun deepCopyConfigsInDeclarationConfig(
-        containerConfig: CwtMemberConfig<*>,
-        parentConfig: CwtMemberConfig<*> = containerConfig,
-        context: CwtDeclarationConfigContext
-    ): List<CwtMemberConfig<*>>? {
-        return withRecursionGuard("CwtConfigManipulator.deepCopyConfigsInDeclarationConfig") {
-            val key = getKeyForDeepCopy(containerConfig)
-            withRecursionCheck(key) {
-                doDeepCopyConfigsInDeclarationConfig(containerConfig, context, parentConfig)
-            }
-        }
+    fun deepCopyConfigsInDeclaration(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
+        return doDeepCopyConfigsInDeclaration(containerConfig, context, parentConfig)
     }
 
-    private fun getKeyForDeepCopy(containerConfig: CwtMemberConfig<*>): Any? {
-        // NOTE 2.1.1 这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
-        // NOTE 2.1.1 为了优化性能，这里可以直接检查是否引用相等
-        return containerConfig.pointer.takeIf { it !== emptyPointer<PsiElement>() }
-    }
-
-    private fun doDeepCopyConfigs(
-        containerConfig: CwtMemberConfig<*>,
-        parentConfig: CwtMemberConfig<*>
-    ): List<CwtMemberConfig<*>>? {
+    private fun doDeepCopyConfigs(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
@@ -258,15 +232,11 @@ object CwtConfigManipulator {
             result += delegatedConfig
         }
         result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
-        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则（即使这里得到的结果是空列表）
+        injectConfigsForDeepCopy(parentConfig, result) ?: return emptyList() // 尝试注入规则，如果失败则返回空列表（即使输入的结果为空也要尝试）
         return result // 这里需要直接返回可变列表
     }
 
-    private fun doDeepCopyConfigsInDeclarationConfig(
-        containerConfig: CwtMemberConfig<*>,
-        context: CwtDeclarationConfigContext,
-        parentConfig: CwtMemberConfig<*>
-    ): List<CwtMemberConfig<*>>? {
+    private fun doDeepCopyConfigsInDeclaration(containerConfig: CwtMemberConfig<*>, context: CwtDeclarationConfigContext, parentConfig: CwtMemberConfig<*>): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
@@ -275,19 +245,19 @@ object CwtConfigManipulator {
             if (matched != null) {
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
                 if (matched) {
-                    result += deepCopyConfigsInDeclarationConfig(config, parentConfig, context).orEmpty()
+                    result += deepCopyConfigsInDeclaration(config, parentConfig, context).orEmpty()
                 }
                 return@f
             }
 
             val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = config.delegated(childConfigs).also { it.parentConfig = parentConfig }
-            if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
+            if (childConfigs != null) childConfigs += deepCopyConfigsInDeclaration(config, delegatedConfig, context).orEmpty()
             delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
         result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
-        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则（即使这里得到的结果是空列表）
+        injectConfigsForDeepCopy(parentConfig, result) ?: return emptyList() // 尝试注入规则，如果失败则返回空列表（即使输入的结果为空也要尝试）
         return result // 这里需要直接返回可变列表
     }
 
@@ -297,6 +267,22 @@ object CwtConfigManipulator {
         val subtypeExpression = ParadoxDefinitionSubtypeExpression.resolve(subtypeString)
         val subtypes = context.definitionSubtypes
         return subtypes != null && subtypeExpression.matches(subtypes)
+    }
+
+    private fun injectConfigsForDeepCopy(parentConfig: CwtMemberConfig<*>, result: MutableList<CwtMemberConfig<*>>): Boolean? {
+        // NOTE 2.1.1 对于目前的深拷贝规则的逻辑，仅需在注入规则时使用递归守卫（根据分析结果，无需使用命名递归守卫）
+        return withRecursionGuard {
+            val key = getKeyForDeepCopy(parentConfig)
+            withRecursionCheck(key) {
+                CwtConfigService.injectConfigs(parentConfig, result)
+            }
+        }
+    }
+
+    private fun getKeyForDeepCopy(parentConfig: CwtMemberConfig<*>): Any? {
+        // NOTE 2.1.1 这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
+        // NOTE 2.1.1 为了优化性能，这里可以直接检查是否引用相等
+        return parentConfig.pointer.takeIf { it !== emptyPointer<PsiElement>() }
     }
 
     // endregion

@@ -169,14 +169,14 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         // 在测试里临时注册了一个 provider：
         // - 在 `injectConfigs(parentConfig, ...)` 里调用 `CwtConfigManipulator.deepCopyConfigs(parentConfig)`
         // - 由于此时 `deepCopyConfigs(parentConfig)` 正在进行中，新实现会通过 key-based recursion guard 返回 `null`
-        // - 测试用 `AtomicBoolean` 记录“确实发生了递归拦截（返回 `null`）”
+        // - 测试用 `AtomicBoolean` 记录“确实发生了递归拦截（返回空列表）”
 
         val recursionPrevented = AtomicBoolean(false)
 
         val provider = object : CwtInjectedConfigProvider {
             override fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
                 val r = CwtConfigManipulator.deepCopyConfigs(parentConfig)
-                if (r == null) recursionPrevented.set(true)
+                if (r == emptyList<CwtMemberConfig<*>>()) recursionPrevented.set(true)
                 return false
             }
         }

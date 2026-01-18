@@ -41,7 +41,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -73,7 +73,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }
@@ -105,7 +105,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = rootConfig.delegated(configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclaration(rootConfig, finalRootConfig, context).orEmpty()
         finalRootConfig.postOptimize() // 进行后续优化
         return finalRootConfig
     }

@@ -60,7 +60,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
             definitionSubtypes = listOf("foo"),
             configGroup = group,
         )
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         val list = copied!!
         // expect: a (prop), b (prop), v1 (value). No subtype[...] nodes and no c.
@@ -167,7 +167,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(strProp, file, group)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, group)
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
@@ -183,7 +183,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(emptyProp, file, group)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, group)
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -226,7 +226,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, group)!!
         val context = CwtDeclarationConfigContext(null, "test", null, group)
 
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(container, parentConfig = otherParent, context = context)
+        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = otherParent, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
         val otherChildren = otherParent.configs?.size

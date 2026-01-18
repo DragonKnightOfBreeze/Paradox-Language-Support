@@ -4,11 +4,15 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.StackOverflowPreventedException
 import com.intellij.openapi.util.UserDataHolder
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
+import java.util.*
 
+@Optimized
 object RecursionGuardScope {
-    private val cache = ThreadLocal.withInitial { mutableMapOf<String, RecursionGuard>() }
+    private val cache = ThreadLocal.withInitial { FastMap<String, RecursionGuard>() }
     private val cacheKey = createKey<MutableMap<String, RecursionGuard>>("RecursionGuardScope.cacheKey")
 
     @PublishedApi
@@ -18,7 +22,7 @@ object RecursionGuardScope {
 
     @PublishedApi
     internal fun getContextRecursionGuardCache(context: UserDataHolder): MutableMap<String, RecursionGuard> {
-        return context.getOrPutUserData(cacheKey) { mutableMapOf() }
+        return context.getOrPutUserData(cacheKey) { FastMap() }
     }
 
     @PublishedApi
@@ -47,7 +51,7 @@ object RecursionGuardScope {
  * 递归守卫。
  */
 class RecursionGuard(val name: Any) {
-    val stackTrace = linkedSetOf<Any>()
+    val stackTrace = ArrayDeque<Any>() // 来自 GPT：小深度用线性结构（数组/栈）线性扫，往往比哈希集合更快（分支预测友好、少间接寻址）
 
     /**
      * 用于进行直接的递归检测。
