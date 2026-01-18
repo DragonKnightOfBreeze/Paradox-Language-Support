@@ -28,6 +28,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
@@ -197,14 +198,16 @@ object ParadoxConfigService {
         return cached
     }
 
+    @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
-            return rootConfigs.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
+            return rootConfigs.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
         return rootConfigs
     }
 
+    @Optimized
     fun getFlattenedConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val result = flattenConfigsForConfigContext(context, options)
         return result.sortedByPriority({ it.configExpression }, { it.configGroup }) // 按优先级排序
@@ -295,7 +298,7 @@ object ParadoxConfigService {
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
         if (context.memberRole == ParadoxMemberRole.PropertyValue) {
             result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
-            result = result.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
+            result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
         return result

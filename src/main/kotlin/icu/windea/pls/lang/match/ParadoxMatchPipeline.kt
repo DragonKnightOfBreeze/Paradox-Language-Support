@@ -2,6 +2,10 @@ package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
@@ -20,6 +24,7 @@ object ParadoxMatchPipeline {
         return result
     }
 
+    @Optimized
     fun filter(
         candidates: List<ParadoxMatchCandidate>,
         options: ParadoxMatchOptions? = null
@@ -33,10 +38,10 @@ object ParadoxMatchPipeline {
         // 如果到这里仍然无法匹配，则直接返回空列表
 
         if (candidates.isEmpty()) return emptyList()
-        val exactMatched = candidates.filter { it.result is ParadoxMatchResult.ExactMatch }
-        if (exactMatched.isNotEmpty()) return exactMatched.map { it.value }
+        val exactMatched = candidates.filterFast { it.result is ParadoxMatchResult.ExactMatch }
+        if (exactMatched.isNotEmpty()) return exactMatched.mapFast { it.value }
 
-        val matched = mutableListOf<ParadoxMatchCandidate>()
+        val matched = FastList<ParadoxMatchCandidate>()
 
         addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
         addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
@@ -49,13 +54,13 @@ object ParadoxMatchPipeline {
             if (it.result is ParadoxMatchResult.FallbackMatch) return@p false // 之后再匹配
             it.result.get(options)
         }
-        if (matched.isNotEmpty()) return matched.map { it.value }
+        if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
         candidates.filterTo(matched) { it.result is ParadoxMatchResult.PartialMatch }
-        if (matched.isNotEmpty()) return matched.map { it.value }
+        if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
         candidates.filterTo(matched) { it.result is ParadoxMatchResult.FallbackMatch }
-        if (matched.isNotEmpty()) return matched.map { it.value }
+        if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
         return emptyList()
     }
@@ -66,7 +71,7 @@ object ParadoxMatchPipeline {
         options: ParadoxMatchOptions? = null,
         predicate: (ParadoxMatchCandidate) -> Boolean
     ) {
-        val lazyMatched = candidates.filter(predicate)
+        val lazyMatched = candidates.filterFast(predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {
             matched += lazyMatched.first()

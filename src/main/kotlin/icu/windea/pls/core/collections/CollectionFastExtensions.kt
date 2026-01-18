@@ -49,12 +49,30 @@ inline fun <T, R> List<T>.mapFast(transform: (T) -> R): List<R> {
     return destination
 }
 
+/** @see kotlin.collections.mapNotNull */
+@Fast
+inline fun <T, R> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
+    if (isEmpty()) return emptyList()
+    val destination = FastList<R>(size)
+    forEachFast { e -> transform(e)?.let { destination.add(it) } }
+    return destination
+}
+
 /** @see kotlin.collections.filter */
 @Fast
 inline fun <T> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     if (isEmpty()) return emptyList()
     val destination = FastList<T>()
     forEachFast { e -> if (predicate(e)) destination.add(e) }
+    return destination
+}
+
+/** @see kotlin.collections.filterNotNull */
+@Fast
+inline fun <T> List<T?>.filterNotNullFast(): List<T> {
+    if (isEmpty()) return emptyList()
+    val destination = FastList<T>()
+    forEachFast { e -> if (e != null) destination.add(e) }
     return destination
 }
 
