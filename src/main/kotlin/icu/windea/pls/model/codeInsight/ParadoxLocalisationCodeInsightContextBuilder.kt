@@ -8,7 +8,6 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.enabledTool
 import icu.windea.pls.core.getInspectionToolState
@@ -16,6 +15,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.selector

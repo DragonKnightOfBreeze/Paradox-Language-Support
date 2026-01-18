@@ -6,9 +6,9 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
-import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
