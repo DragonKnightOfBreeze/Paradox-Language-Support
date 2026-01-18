@@ -26,6 +26,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
@@ -65,9 +66,9 @@ object CwtConfigManipulator {
 
     private fun doGetIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int, depth: Int = 0): String {
         if (maxDepth >= 0 && maxDepth < depth) return ""
-        val children = config.configs
         return buildString {
             if (config is CwtPropertyConfig) append(config.key).append('=')
+            val children = config.configs
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
@@ -81,7 +82,7 @@ object CwtConfigManipulator {
         return when (size) {
             0 -> ""
             1 -> doGetIdentifierKey(configs.get(0), maxDepth, depth)
-            else -> configs.mapTo(FastList(size)) { doGetIdentifierKey(it, maxDepth, depth) }.sorted().joinToString("\u0000")
+            else -> configs.mapFast { doGetIdentifierKey(it, maxDepth, depth) }.sorted().joinToString("\u0000")
         }
     }
 
@@ -98,9 +99,9 @@ object CwtConfigManipulator {
     }
 
     private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>): String {
-        val children = config.optionConfigs
         return buildString {
             if (config is CwtOptionConfig) append(config.key).append('=')
+            val children = config.optionConfigs
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
@@ -114,10 +115,11 @@ object CwtConfigManipulator {
         return when (size) {
             0 -> ""
             1 -> doGetIdentifierKey(optionConfigs.get(0))
-            else -> optionConfigs.mapTo(FastList(size)) { doGetIdentifierKey(it) }.sorted().joinToString("\u0000")
+            else -> optionConfigs.mapFast { doGetIdentifierKey(it) }.sorted().joinToString("\u0000")
         }
     }
 
+    @Optimized
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
     }
@@ -132,17 +134,13 @@ object CwtConfigManipulator {
             if (!newGuardStack.add(guardKey)) return "..."
             return doGetDistinctKey(inlinedConfig, newGuardStack)
         }
-        val children = config.configs
         return buildString {
             if (config is CwtPropertyConfig) append(config.key).append('=')
+            val children = config.configs
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
-                else -> {
-                    append('{')
-                    append(children.map { doGetDistinctKey(it, guardStack) }.sorted().joinToString("\u0000"))
-                    append('}')
-                }
+                else -> append('{').append(children.mapFast { doGetDistinctKey(it, guardStack) }.sorted().joinToString("\u0000")).append('}')
             }
         }
     }
@@ -152,32 +150,36 @@ object CwtConfigManipulator {
         return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
     }
 
-    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): MutableSet<@CaseInsensitive String> {
+    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): Set<@CaseInsensitive String> {
+        val childConfigs = config.configs
+        if (childConfigs.isNullOrEmpty()) return emptySet()
         val keys = caseInsensitiveStringSet()
-        config.configs?.forEachFast {
-            if (it is CwtPropertyConfig && isInBlockKey(it)) {
-                keys.add(it.key)
-            }
-        }
+        childConfigs.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.add(it.key) }
+        if (keys.isEmpty()) return emptySet()
         when (config) {
             is CwtPropertyConfig -> {
                 val propertyConfig = config
-                propertyConfig.parentConfig?.configs?.forEachFast { c ->
-                    if (!c.isSamePointer(propertyConfig) && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
-                        c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                    }
+                val configs1 = propertyConfig.parentConfig?.configs
+                if (configs1.isNullOrEmpty()) return keys
+                configs1.forEachFast f@{ c ->
+                    val childConfigs1 = c.configs
+                    if (childConfigs1.isNullOrEmpty()) return@f
+                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
+                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                 }
             }
             is CwtValueConfig -> {
                 val propertyConfig = config.propertyConfig
-                propertyConfig?.parentConfig?.configs?.forEachFast { c ->
-                    if (!c.isSamePointer(propertyConfig) && c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true)) {
-                        c.configs?.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                    }
+                val configs1 = propertyConfig?.parentConfig?.configs
+                if (configs1.isNullOrEmpty()) return keys
+                configs1.forEachFast f@{ c ->
+                    val childConfigs1 = c.configs
+                    if (childConfigs1.isNullOrEmpty()) return@f
+                    if (c.isSamePointer(propertyConfig) || c !is CwtPropertyConfig || !c.key.equals(propertyConfig.key, true)) return@f
+                    childConfigs1.forEachFast { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                 }
             }
         }
-
         return keys
     }
 
