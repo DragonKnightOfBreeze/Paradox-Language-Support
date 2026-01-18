@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-## 2.1.1-dev
+## 2.1.1
 
+- [x] 同步规则文件 / Synchronize config files
 - [x] #259 [Vic 3] PLS Hangs while indexing game files
 - [x] #261 Case Insensitive Enums
 - [x] 优化：继续完善对链式的复杂表达式的支持 / OP: Continue to optimize support for linked complex expressions
