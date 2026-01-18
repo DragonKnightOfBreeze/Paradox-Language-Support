@@ -5,6 +5,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
@@ -13,6 +15,7 @@ object ParadoxMatchService {
     /**
      * @see ParadoxScriptExpressionMatcher.match
      */
+    @Optimized
     fun matchScriptExpression(
         element: PsiElement,
         expression: ParadoxScriptExpression,
@@ -23,7 +26,7 @@ object ParadoxMatchService {
     ): ParadoxMatchResult {
         val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, options)
         val eps = ParadoxScriptExpressionMatcher.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
+        eps.forEachFast { ep ->
             val r = ep.match(context)
             if (r != null) return r
         }
@@ -33,6 +36,7 @@ object ParadoxMatchService {
     /**
      * @see ParadoxCsvExpressionMatcher.match
      */
+    @Optimized
     fun matchCsvExpression(
         element: PsiElement,
         expressionText: String,
@@ -41,7 +45,7 @@ object ParadoxMatchService {
     ): ParadoxMatchResult {
         val context = ParadoxCsvExpressionMatcher.Context(element, expressionText, configExpression, configGroup)
         val eps = ParadoxCsvExpressionMatcher.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
+        eps.forEachFast { ep ->
             val r = ep.match(context)
             if (r != null) return r
         }

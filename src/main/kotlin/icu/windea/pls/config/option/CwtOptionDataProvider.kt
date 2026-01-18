@@ -8,9 +8,11 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
@@ -22,6 +24,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 object CwtOptionDataProvider {
     // NOTE 2.1.1. 目前不作为 EP
 
+    @Optimized
     fun process(optionData: CwtOptionDataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
         if (optionData !is CwtOptionDataHolderBase) return
         if (optionConfigs.isEmpty()) return
@@ -29,7 +32,7 @@ object CwtOptionDataProvider {
             processForInternalConfigs(optionData, optionConfigs)
             return
         }
-        for (config in optionConfigs) {
+        optionConfigs.forEachFast { config ->
             when (config) {
                 is CwtOptionConfig -> processOptionConfig(optionData, config)
                 is CwtOptionValueConfig -> processOptionValueConfig(optionData, config)
@@ -181,8 +184,8 @@ object CwtOptionDataProvider {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
         val r = FastMap<String, ReversibleValue<String>>()
-        for ((_, optionConfig) in optionConfigs.withIndex()) {
-            if (optionConfig !is CwtOptionConfig) continue
+        optionConfigs.forEachFast f@{  optionConfig ->
+            if (optionConfig !is CwtOptionConfig) return@f
             val k = optionConfig.key
             val o = optionConfig.separatorType == CwtSeparatorType.EQUAL
             val v = ReversibleValue(o, optionConfig.value)
@@ -195,11 +198,11 @@ object CwtOptionDataProvider {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
         val r = FastMap<String, String>()
-        for ((_, optionConfig) in optionConfigs.withIndex()) {
-            if (optionConfig !is CwtOptionConfig) continue
+        optionConfigs.forEachFast f@{ optionConfig ->
+            if (optionConfig !is CwtOptionConfig) return@f
             // ignore case for both system scopes and scopes (to lowercase)
             val k = optionConfig.key.lowercase()
-            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
+            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
             r[k] = v
         }
         return r.optimized()

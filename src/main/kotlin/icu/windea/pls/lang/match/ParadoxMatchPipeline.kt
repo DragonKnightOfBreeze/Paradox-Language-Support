@@ -5,18 +5,20 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
+    @Optimized
     inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult?): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = buildList {
-            for ((_, config) in configs.withIndex()) {
+            configs.forEachFast f@{ config ->
                 val matchResult = matchResultProvider(config)
-                if (matchResult == null || matchResult == ParadoxMatchResult.NotMatch) continue
+                if (matchResult == null || matchResult == ParadoxMatchResult.NotMatch) return@f
                 val matchCandidate = ParadoxMatchCandidate(config, matchResult)
                 this += matchCandidate
             }
@@ -82,6 +84,7 @@ object ParadoxMatchPipeline {
         }
     }
 
+    @Optimized
     fun optimize(
         element: PsiElement,
         expression: ParadoxScriptExpression,
@@ -95,12 +98,11 @@ object ParadoxMatchPipeline {
         var result = configs
         val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, options)
         val optimizers = ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList
-        for ((_, optimizer) in optimizers.withIndex()) {
+        optimizers.forEachFast f@{ optimizer ->
             val optimized = optimizer.optimize(result, context)
-            if (optimized == null) continue
+            if (optimized == null) return@f
             if (optimizer.isDynamic(context)) markDynamicAfterOptimized()
             result = optimized
-            if (result.isEmpty()) break
         }
         return result
     }

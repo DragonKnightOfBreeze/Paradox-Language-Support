@@ -20,6 +20,7 @@ import icu.windea.pls.config.filterIsValue
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
@@ -119,11 +120,12 @@ object CwtConfigResolverManager {
         }
         return optionConfigs.optimized() // optimized to optimize memory
     }
-
+    
+    @Optimized
     fun getMembersType(configs: List<CwtMemberConfig<*>>): CwtMembersType {
         if (configs.isEmpty()) return CwtMembersType.NONE
         var result = CwtMembersType.NONE
-        for ((_, c) in configs.withIndex()) {
+        configs.forEachFast { c ->
             val r = when (c.memberType) {
                 CwtMemberType.PROPERTY -> CwtMembersType.PROPERTY
                 CwtMemberType.VALUE -> CwtMembersType.VALUE

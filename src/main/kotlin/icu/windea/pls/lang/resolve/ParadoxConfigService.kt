@@ -28,6 +28,7 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
@@ -91,11 +92,12 @@ object ParadoxConfigService {
     /**
      * @see CwtOverriddenConfigProvider.getOverriddenConfigs
      */
+    @Optimized
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         val gameType = config.configGroup.gameType
         val eps = CwtOverriddenConfigProvider.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
-            if (!PlsAnnotationManager.check(ep, gameType)) continue
+        eps.forEachFast f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getOverriddenConfigs(contextElement, config).orNull()
                 ?.onEach {
                     it.originalConfig = config
@@ -109,12 +111,13 @@ object ParadoxConfigService {
     /**
      * @see CwtRelatedConfigProvider.getRelatedConfigs
      */
+    @Optimized
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         val gameType = selectGameType(file) ?: return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
         val eps = CwtRelatedConfigProvider.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
-            if (!PlsAnnotationManager.check(ep, gameType)) continue
+        eps.forEachFast f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getRelatedConfigs(file, offset)
             result += r
         }
@@ -124,14 +127,15 @@ object ParadoxConfigService {
     /**
      * @see CwtConfigContextProvider.getContext
      */
+    @Optimized
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val memberPathFromFile = ParadoxMemberService.getPath(element)?.normalize() ?: return null
         val memberRole = ParadoxMemberRole.resolve(element)
         val gameType = selectGameType(file)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
-            if (!PlsAnnotationManager.check(ep, gameType)) continue
+        eps.forEachFast f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getContext(element, file, memberPathFromFile, memberRole)?.also { it.provider = ep }
             if (r != null) return r
         }
@@ -141,11 +145,12 @@ object ParadoxConfigService {
     /**
      * @see CwtDeclarationConfigContextProvider.getContext
      */
+    @Optimized
     fun getDeclarationConfigContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
-        for ((_, ep) in eps.withIndex()) {
-            if (!PlsAnnotationManager.check(ep, gameType)) continue
+        eps.forEachFast f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f
             val r = ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
             if (r != null) return r
         }
@@ -246,24 +251,24 @@ object ParadoxConfigService {
 
             // 按照 `subPath` 打平规则，并进行必要的处理
             if (subPath == "-") {
-                for ((_, parentConfig) in matchedParentConfigs.withIndex()) {
+                matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.values
-                    if (configs.isNullOrEmpty()) continue
-                    for ((_, config) in configs.withIndex()) {
+                    if (configs.isNullOrEmpty()) return@f1
+                    configs.forEachFast { config ->
                         this += config
                     }
                 }
             } else {
                 val parameterizedKeyConfigs by lazy { getParameterizedKeyConfigs(property, expression) }
 
-                for ((_, parentConfig) in matchedParentConfigs.withIndex()) {
+                matchedParentConfigs.forEachFast f1@{ parentConfig ->
                     val configs = parentConfig.properties
-                    if (configs.isNullOrEmpty()) continue
+                    if (configs.isNullOrEmpty()) return@f1
 
                     val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
                     val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
 
-                    for ((_, config) in configs.withIndex()) {
+                    configs.forEachFast { config ->
                         // 打平后需要首先进行必要的内联
                         val inlinedConfigs = inlineConfigForConfigContext(config, subPath)
                         val matchedConfigs = when {
@@ -273,7 +278,7 @@ object ParadoxConfigService {
 
                         // 如果当前路径是整个作为参数的，需要检查精确匹配与宽松匹配
                         // 如果存在精确匹配的规则，则仅使用那些规则；否则，如果存在宽松匹配的规则且是唯一的，则仅使用那个规则
-                        for ((_, matchedConfig) in matchedConfigs.withIndex()) {
+                        matchedConfigs.forEachFast { matchedConfig ->
                             if (matchedConfig is CwtPropertyConfig) {
                                 val m = matchesParameterizedKeyConfigs(parameterizedKeyConfigs, matchedConfig.keyExpression)
                                 when (m) {
