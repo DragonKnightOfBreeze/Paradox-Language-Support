@@ -21,6 +21,13 @@ import java.util.*
 internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverScope {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
+    override fun resolve(element: CwtValue): CwtOptionValueConfig {
+        val value = element.value
+        val valueType = element.type
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
+        return create(value, valueType, optionConfigs)
+    }
+
     override fun create(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
         val noOptionConfigs = optionConfigs.isNullOrEmpty()
         if (noOptionConfigs) {
@@ -31,13 +38,6 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver,
             }
         }
         return CwtOptionValueConfigImplNested(optionConfigs)
-    }
-
-    override fun resolve(element: CwtValue): CwtOptionValueConfig {
-        val value = element.value
-        val valueType = element.type
-        val optionConfigs = CwtConfigResolverManager.getOptionConfigsInOption(element)
-        return create(value, valueType, optionConfigs)
     }
 }
 

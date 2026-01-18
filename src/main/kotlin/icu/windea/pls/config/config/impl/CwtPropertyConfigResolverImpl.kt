@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.util.elementType
 import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -26,11 +27,15 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtMembersType
 import icu.windea.pls.model.CwtSeparatorType
@@ -46,18 +51,33 @@ internal class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCo
         // - use `EmptyPointer` for default project to optimize memory
         // - use `CwtPropertyPointer` to optimize performance and memory
         // - 2.1.1 use `keyExpression` and `valueExpression` as constructor argument and field directly to optimize performance
+        // - 2.1.1 reduce PSI iterations to optimize performance
 
-        val valueElement = element.propertyValue
-        if (valueElement == null) {
-            logger.warn("Missing property value.".withLocationPrefix(element))
+        var keyElement: CwtPropertyKey? = null
+        var valueElement: CwtValue? = null
+        var separatorType = CwtSeparatorType.EQUAL
+        element.forEachChild { e ->
+            when {
+                e is CwtPropertyKey -> keyElement = e
+                e is CwtValue -> valueElement = e
+                e.elementType == CwtElementTypes.NOT_EQUAL_SIGN -> separatorType = CwtSeparatorType.NOT_EQUAL
+            }
+        }
+
+        if (keyElement == null) {
+            logger.warn("Missing property key, skipped.".withLocationPrefix(element))
             return null
         }
-        val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(element.createPointer(file))
+        if (valueElement == null) {
+            logger.warn("Missing property value, skipped.".withLocationPrefix(element))
+            return null
+        }
+
+        val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(file, element, valueElement)
         val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
-        val keyExpression = CwtDataExpression.resolveKey(element.name)
-        val valueType = valueElement.type
-        val separatorType = element.separatorType
+        val keyExpression = CwtDataExpression.resolveKey(keyElement.value)
         val valueExpression = if (configs == null) CwtDataExpression.resolveValue(valueElement.value) else CwtDataExpression.resolveBlock()
+        val valueType = valueElement.type
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProvider.process(config.optionData, optionConfigs) // initialize option data
@@ -119,7 +139,7 @@ private abstract class CwtPropertyConfigBase : CwtOptionDataHolderBase(), CwtPro
         // this function should be enough fast because there are no pointers to be created
         val resolvedPointer = this.resolved().pointer
         val valuePointer = when {
-            resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer
+            resolvedPointer is CwtPropertyPointer -> resolvedPointer.propertyValuePointer
             else -> resolvedPointer.element?.propertyValue?.createPointer()
         } ?: return null
         return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)

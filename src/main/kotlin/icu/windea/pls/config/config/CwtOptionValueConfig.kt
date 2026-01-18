@@ -20,13 +20,13 @@ import icu.windea.pls.model.CwtType
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {
+        fun resolve(element: CwtValue): CwtOptionValueConfig
+
         fun create(
             value: String,
             valueType: CwtType = CwtType.String,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
         ): CwtOptionValueConfig
-
-        fun resolve(element: CwtValue): CwtOptionValueConfig
     }
 
     companion object : Resolver by CwtOptionValueConfigResolverImpl()

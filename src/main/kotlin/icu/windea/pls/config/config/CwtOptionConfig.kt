@@ -30,6 +30,8 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     override val valueType: CwtType
 
     interface Resolver {
+        fun resolve(element: CwtOption): CwtOptionConfig?
+
         fun create(
             key: String,
             value: String,
@@ -37,8 +39,6 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
         ): CwtOptionConfig
-
-        fun resolve(element: CwtOption): CwtOptionConfig?
     }
 
     companion object : Resolver by CwtOptionConfigResolverImpl()
