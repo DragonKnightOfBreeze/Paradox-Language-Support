@@ -92,21 +92,19 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     }
 
     private fun updateChildConfigs(targetConfig: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean {
-        val updated = CwtMemberConfig.withConfigs(targetConfig, configs)
-        if (updated) CwtMemberConfig.postOptimize(targetConfig)
+        val updated = targetConfig.withConfigs(configs)
+        if (updated) targetConfig.postOptimize()
         return updated
     }
 
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {
         val sourceConfigs = configToInject.configs
-        if (sourceConfigs == null) {
-            return CwtMemberConfig.delegated(configToInject, null).also { it.parentConfig = parentConfig }
-        }
+            ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
         val copiedChildConfigs = CwtConfigManipulator.createListForDeepCopy(sourceConfigs)
-            ?: return CwtMemberConfig.delegated(configToInject, null).also { it.parentConfig = parentConfig }
-        val delegatedConfig = CwtMemberConfig.delegated(configToInject, copiedChildConfigs).also { it.parentConfig = parentConfig }
+            ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
+        val delegatedConfig = configToInject.delegated(copiedChildConfigs).also { it.parentConfig = parentConfig }
         copiedChildConfigs += CwtConfigManipulator.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
-        CwtMemberConfig.postOptimize(delegatedConfig)
+        delegatedConfig.postOptimize()
         return delegatedConfig
     }
 }

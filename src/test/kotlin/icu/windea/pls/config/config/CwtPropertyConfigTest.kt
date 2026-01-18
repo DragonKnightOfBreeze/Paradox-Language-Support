@@ -190,7 +190,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
 
         // delegated (inherit read of userData; parentConfig should be reset; configs can be replaced)
         run {
-            val delegated = CwtPropertyConfig.delegated(baseCfg, configs = emptyList())
+            val delegated = baseCfg.delegated(configs = emptyList())
             assertNull(delegated.parentConfig)
             assertNotNull(delegated.configs)
             assertTrue(delegated.configs!!.isEmpty())
@@ -205,7 +205,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
 
         // delegatedWith (override key/value; expressions recomputed)
         run {
-            val delegated = CwtPropertyConfig.delegatedWith(baseCfg, key = baseCfg.key + "_d", value = "42")
+            val delegated = baseCfg.delegatedWith(key = baseCfg.key + "_d", value = "42")
             assertEquals(baseCfg.key + "_d", delegated.key)
             assertEquals("42", delegated.value)
             // expressions exist; for block value (configs != null), valueExpression is blockExpression with isKey=false
@@ -223,7 +223,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val p = root.findChild<CwtProperty> { it.name == "str_prop" }!!
         val c = CwtPropertyConfig.resolve(p, file, group)!!
         assertEquals(CwtType.String, c.valueType)
-        val d = CwtPropertyConfig.delegatedWith(c, key = c.key + "_d", value = "x")
+        val d = c.delegatedWith(key = c.key + "_d", value = "x")
         assertNull(d.parentConfig)
         assertTrue(d.keyExpression.isKey)
         assertFalse(d.valueExpression.isKey)

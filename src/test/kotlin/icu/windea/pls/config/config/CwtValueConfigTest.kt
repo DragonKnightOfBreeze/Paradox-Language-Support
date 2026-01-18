@@ -169,7 +169,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
 
         // delegated (inherit read of userData; parentConfig should be reset; configs can be replaced)
         run {
-            val delegated = CwtValueConfig.delegated(baseCfg, configs = emptyList())
+            val delegated = baseCfg.delegated(configs = emptyList())
             assertNull(delegated.parentConfig)
             assertNotNull(delegated.configs)
             assertTrue(delegated.configs!!.isEmpty())
@@ -184,7 +184,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
 
         // delegatedWith (override value; expressions recomputed)
         run {
-            val delegated = CwtValueConfig.delegatedWith(baseCfg, value = "over")
+            val delegated = baseCfg.delegatedWith(value = "over")
             assertEquals("over", delegated.value)
             // for block base (configs != null), valueExpression is blockExpression with isKey=false
             assertFalse(delegated.valueExpression.isKey)
@@ -226,7 +226,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         val v = root.findChild<CwtValue> { it.value == "42" }!!
         val c = CwtValueConfig.resolve(v, file, group)
         assertEquals(CwtType.Int, c.valueType)
-        val d = CwtValueConfig.delegatedWith(c, value = "100")
+        val d = c.delegatedWith(value = "100")
         assertNull(d.parentConfig)
         assertEquals("100", d.value)
         assertFalse(d.valueExpression.isKey)

@@ -250,9 +250,9 @@ object CwtConfigManipulator {
         val result = createListForDeepCopy()
         configs.forEachFast { config ->
             val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
+            val delegatedConfig = config.delegated(childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
-            CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
+            delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
         CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
@@ -279,9 +279,9 @@ object CwtConfigManipulator {
             }
 
             val childConfigs = createListForDeepCopy(config.configs)
-            val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
+            val delegatedConfig = config.delegated(childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
-            CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
+            delegatedConfig.postOptimize() // 进行后续优化
             result += delegatedConfig
         }
         CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
@@ -305,11 +305,11 @@ object CwtConfigManipulator {
     fun inline(directiveConfig: CwtDirectiveConfig): CwtPropertyConfig {
         val other = directiveConfig.config
         val inlined = CwtPropertyConfig.copy(
-            targetConfig = other,
+            sourceConfig = other,
             keyExpression = CwtDataExpression.resolveKey(directiveConfig.name),
             configs = deepCopyConfigs(other),
         )
-        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, other.optionData) // merge option data
         inlined.inlineConfig = directiveConfig
         return inlined
@@ -330,12 +330,12 @@ object CwtConfigManipulator {
         // inline all value and configs
         val other = singleAliasConfig.config
         val inlined = CwtPropertyConfig.copy(
-            targetConfig = config,
+            sourceConfig = config,
             valueExpression = other.valueExpression,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
         )
-        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = singleAliasConfig
@@ -370,13 +370,13 @@ object CwtConfigManipulator {
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
-            targetConfig = config,
+            sourceConfig = config,
             keyExpression = aliasConfig.subNameExpression,
             valueExpression = other.valueExpression,
             valueType = other.valueType,
             configs = deepCopyConfigs(other),
         )
-        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData, other.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
@@ -392,7 +392,7 @@ object CwtConfigManipulator {
     @Optimized
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
         val inlined = CwtPropertyConfig.copy(
-            targetConfig = config,
+            sourceConfig = config,
             keyExpression = when (inlineMode) {
                 CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.keyExpression else return null
                 CwtConfigInlineMode.VALUE_TO_KEY -> CwtDataExpression.resolveKey(otherConfig.value)
@@ -414,7 +414,7 @@ object CwtConfigManipulator {
                 else -> deepCopyConfigs(config)
             },
         )
-        CwtPropertyConfig.postOptimize(inlined) // do post optimization
+        inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, config.optionData) // merge option data
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig

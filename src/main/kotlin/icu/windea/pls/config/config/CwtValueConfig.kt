@@ -28,6 +28,16 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         return visitor.visitValue(this)
     }
 
+    /** 创建基于当前规则的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
+    override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig {
+        throw UnsupportedOperationException()
+    }
+
+    /** 创建基于当前规则的委托规则，并指定要替换的值。父规则会被重置为 `null`。 */
+    fun delegatedWith(value: String): CwtValueConfig {
+        throw UnsupportedOperationException()
+    }
+
     interface Resolver {
         /** 由 [CwtValue] 解析为值规则。 */
         fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
@@ -49,38 +59,18 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             injectable: Boolean = false,
         ): CwtValueConfig
 
-        /** 创建基于指定的字符串字面量的模拟的值规则。使用空指针。 */
+        /** 创建基于指定的字符串字面量 [value] 的模拟的值规则。使用空指针。 */
         fun createMock(configGroup: CwtConfigGroup, value: String): CwtValueConfig
 
-        /** 创建基于 [targetConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
+        /** 创建基于源规则 [sourceConfig] 的复制规则。其中的选项数据仍然需要手动合并。 */
         fun copy(
-            targetConfig: CwtValueConfig,
-            pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
-            valueExpression: CwtDataExpression = targetConfig.valueExpression,
-            valueType: CwtType = targetConfig.valueType,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,
+            sourceConfig: CwtValueConfig,
+            pointer: SmartPsiElementPointer<out CwtValue> = sourceConfig.pointer,
+            valueExpression: CwtDataExpression = sourceConfig.valueExpression,
+            valueType: CwtType = sourceConfig.valueType,
+            configs: List<CwtMemberConfig<*>>? = sourceConfig.configs,
+            propertyConfig: CwtPropertyConfig? = sourceConfig.propertyConfig,
         ): CwtValueConfig
-
-        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun delegated(
-            targetConfig: CwtValueConfig,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-        ): CwtValueConfig
-
-        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的值。父规则会被重置为 `null`。 */
-        fun delegatedWith(
-            targetConfig: CwtValueConfig,
-            value: String,
-        ): CwtValueConfig
-
-        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>): Boolean
-
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
-        fun postProcess(config: CwtValueConfig)
-
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
-        fun postOptimize(config: CwtValueConfig)
     }
 
     companion object : Resolver by CwtValueConfigResolverImpl()

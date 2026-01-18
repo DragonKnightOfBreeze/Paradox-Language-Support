@@ -1,6 +1,5 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.config.impl.CwtMemberConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
@@ -47,20 +46,19 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T
         return configs?.orNull()?.process { it.accept(visitor) } ?: true
     }
 
-    interface Resolver {
-        /** 创建基于 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
-        fun <T : CwtMemberConfig<*>> delegated(targetConfig: T, configs: List<CwtMemberConfig<*>>? = targetConfig.configs): T
+    /** 尝试将 [configs] 作为当前规则的子规则列表。返回是否操作成功。 */
+    fun withConfigs(configs: List<CwtMemberConfig<*>>): Boolean = false
 
-        fun withConfigs(config: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean
+    /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
+    fun postProcess() {}
 
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理。 */
-        fun postProcess(config: CwtMemberConfig<*>)
+    /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+    fun postOptimize() {}
 
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
-        fun postOptimize(config: CwtMemberConfig<*>)
+    /** 创建基于当前规则的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。 */
+    fun delegated(configs: List<CwtMemberConfig<*>>? = this.configs): CwtMemberConfig<T> {
+        throw UnsupportedOperationException()
     }
 
     object Keys : KeyRegistry()
-
-    companion object : Resolver by CwtMemberConfigResolverImpl()
 }

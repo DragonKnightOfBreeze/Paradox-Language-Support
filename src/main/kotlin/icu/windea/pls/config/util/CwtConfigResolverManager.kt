@@ -71,7 +71,7 @@ object CwtConfigResolverManager {
                 else -> null
             }
             if (resolved == null) return@f
-            CwtMemberConfig.postProcess(resolved)
+            resolved.postProcess()
             configs += resolved
         }
         return configs // delay optimization
