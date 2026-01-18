@@ -18,6 +18,8 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.filterIsProperty
+import icu.windea.pls.config.filterIsValue
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.Optimized
@@ -25,7 +27,6 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.mapNotNullFast
@@ -382,7 +383,7 @@ object ParadoxConfigService {
         when (element) {
             is ParadoxScriptProperty -> {
                 // 匹配属性
-                val result = contextConfigs.filterIsInstanceFast<CwtPropertyConfig>()
+                val result = contextConfigs.filterIsProperty()
                 if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
@@ -408,7 +409,7 @@ object ParadoxConfigService {
             }
             else -> {
                 // 匹配文件或单独的值
-                val result = contextConfigs.filterIsInstanceFast<CwtValueConfig>()
+                val result = contextConfigs.filterIsValue()
                 if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()

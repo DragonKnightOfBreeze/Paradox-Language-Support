@@ -76,11 +76,11 @@ inline fun <T> List<T?>.filterNotNullFast(): List<T> {
     return destination
 }
 
-/** @see kotlin.collections.filterIsInstance */
-@Fast
-inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
-    if (isEmpty()) return emptyList()
-    val destination = FastList<R>()
-    forEachFast { e -> if (e is R) destination.add(e) }
-    return destination
-}
+// /** @see kotlin.collections.filterIsInstance */
+// @Fast
+// inline fun <reified R> List<*>.filterIsInstanceFast(): List<R> {
+//     if (isEmpty()) return emptyList()
+//     val destination = FastList<R>()
+//     forEachFast { e -> if (e is R) destination.add(e) }
+//     return destination
+// }

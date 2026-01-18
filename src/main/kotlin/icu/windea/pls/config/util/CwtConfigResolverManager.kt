@@ -15,10 +15,11 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.filterIsProperty
+import icu.windea.pls.config.filterIsValue
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
@@ -36,6 +37,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtMembersType
 
 object CwtConfigResolverManager {
@@ -122,9 +124,9 @@ object CwtConfigResolverManager {
         if (configs.isEmpty()) return CwtMembersType.NONE
         var result = CwtMembersType.NONE
         for ((_, c) in configs.withIndex()) {
-            val r = when (c) {
-                is CwtPropertyConfig -> CwtMembersType.PROPERTY
-                is CwtValueConfig -> CwtMembersType.VALUE
+            val r = when (c.memberType) {
+                CwtMemberType.PROPERTY -> CwtMembersType.PROPERTY
+                CwtMemberType.VALUE -> CwtMembersType.VALUE
             }
             when {
                 result == CwtMembersType.NONE -> result = r
@@ -138,7 +140,7 @@ object CwtConfigResolverManager {
         if (configs.isEmpty()) return emptyList()
         return when (membersType) {
             CwtMembersType.PROPERTY -> configs.cast()
-            CwtMembersType.MIXED -> configs.filterIsInstanceFast()
+            CwtMembersType.MIXED -> configs.filterIsProperty()
             else -> emptyList()
         }
     }
@@ -147,7 +149,7 @@ object CwtConfigResolverManager {
         if (configs.isEmpty()) return emptyList()
         return when (membersType) {
             CwtMembersType.VALUE -> configs.cast()
-            CwtMembersType.MIXED -> configs.filterIsInstanceFast()
+            CwtMembersType.MIXED -> configs.filterIsValue()
             else -> emptyList()
         }
     }

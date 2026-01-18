@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.castOrNull
@@ -141,7 +143,6 @@ fun ParadoxScriptValue.inlineMathValue(valid: Boolean = false): MathResult? {
     return r
 }
 
-@Suppress("unused")
 fun ParadoxScriptValue.evaluateValue(strict: Boolean = false, valid: Boolean = false): Any? {
     val resolved = resolved() ?: return null
     val r = when (resolved) {
