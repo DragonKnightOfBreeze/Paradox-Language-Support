@@ -215,7 +215,7 @@ object CwtConfigManipulator {
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig
     ): List<CwtMemberConfig<*>>? {
-        return withRecursionGuard {
+        return withRecursionGuard("CwtConfigManipulator.deepCopyConfigs") {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
                 doDeepCopyConfigs(containerConfig, parentConfig)
@@ -229,7 +229,7 @@ object CwtConfigManipulator {
         parentConfig: CwtMemberConfig<*> = containerConfig,
         context: CwtDeclarationConfigContext
     ): List<CwtMemberConfig<*>>? {
-        return withRecursionGuard {
+        return withRecursionGuard("CwtConfigManipulator.deepCopyConfigsInDeclarationConfig") {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
                 doDeepCopyConfigsInDeclarationConfig(containerConfig, context, parentConfig)
