@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
     id("org.jetbrains.intellij.platform") version "2.10.5" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.1"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
-    id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
+    id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // 用于在缺失本地仓库时按需下载 CWT 规则 zip（HTTPS），以兼容 CI 环境
     id("de.undercouch.download") version "5.6.0" // https://github.com/michel-kraemer/gradle-download-task
