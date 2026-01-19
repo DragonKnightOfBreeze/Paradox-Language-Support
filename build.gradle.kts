@@ -119,8 +119,8 @@ dependencies {
     // 目前仅用作参考
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.3")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.3")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.4")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.4")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")
