@@ -2,6 +2,7 @@ cwt/cwtools-*-config
 
 .clinerules
 # .windsurf # why?
+notebook
 lib
 tmp
 local.properties
