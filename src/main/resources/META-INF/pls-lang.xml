@@ -26,15 +26,15 @@
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
 
     <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
-    <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
-
     <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.CwtConfigProjectViewDecorator"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.ParadoxProjectViewDecorator"/>
+    <moduleRendererFactory implementation="icu.windea.pls.lang.CwtConfigModuleRenderFactory"/>
+    <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
 
     <iconProvider implementation="icu.windea.pls.lang.CwtConfigIconProvider"/>
     <iconProvider implementation="icu.windea.pls.lang.ParadoxIconProvider"/>
