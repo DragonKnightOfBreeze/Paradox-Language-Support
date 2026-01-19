@@ -52,7 +52,7 @@ class ParadoxDefinitionInfo(
     val types: List<String> by lazy { doGetTypes() }
     val typesText: String by lazy { types.joinToString(", ") }
 
-    val memberPath = ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
+    val memberPath: ParadoxMemberPath = doGetMemberPath()
 
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
@@ -83,6 +83,13 @@ class ParadoxDefinitionInfo(
     private fun doGetTypes(): List<String> {
         val result = buildList(subtypes.size + 1) { add(type); addAll(subtypes) }
         return result.optimized() // optimized to optimize memory
+    }
+
+    private fun doGetMemberPath(): ParadoxMemberPath {
+        // NOTE 2.1.2 file definition has empty member path
+        if(typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
+
+        return ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
     }
 
     private fun doGetSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {

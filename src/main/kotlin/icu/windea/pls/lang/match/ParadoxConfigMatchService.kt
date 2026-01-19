@@ -130,12 +130,13 @@ object ParadoxConfigMatchService {
         rootKeys: List<String>?,
         typeKeyPrefix: Lazy<String?>?,
     ): Boolean {
-        // 判断 definition 是否需要是 scriptFile 还是 scriptProperty
+        // 判断 definition 需要是 scriptFile 还是 scriptProperty
         run {
+            val elementType = element.elementType
             if (typeConfig.typePerFile) {
-                if (element !is ParadoxScriptFile) return false
+                if (elementType != ParadoxScriptFile.ELEMENT_TYPE) return false
             } else {
-                if (element !is ParadoxScriptProperty) return false
+                if (elementType != PROPERTY) return false
             }
         }
 
@@ -169,7 +170,7 @@ object ParadoxConfigMatchService {
         rootKeys: List<String>? = null,
         typeKeyPrefix: Lazy<String?>? = null,
     ): Boolean {
-        // 判断 definition 是否需要是 scriptFile 还是 scriptProperty
+        // 判断 definition 需要是 scriptFile 还是 scriptProperty
         run {
             val elementType = node.tokenType
             if (typeConfig.typePerFile) {
@@ -202,7 +203,7 @@ object ParadoxConfigMatchService {
         rootKeys: List<String>? = null,
         typeKeyPrefix: Lazy<String?>? = null,
     ): Boolean {
-        // 判断 element 是否需要是 scriptFile 还是 scriptProperty
+        // 判断 definition 需要是 scriptFile 还是 scriptProperty
         if (typeConfig.typePerFile) return false
 
         val fastResult = matchesTypeFast(typeConfig, path, typeKey, rootKeys, typeKeyPrefix)
