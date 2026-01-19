@@ -16,7 +16,6 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -233,13 +232,13 @@ object ParadoxConfigExpressionService {
 
     private fun findValueElementByPath(definition: ParadoxScriptDefinitionElement, path: String): ParadoxScriptValue? {
         if (path.isEmpty()) return null
-        val properties = selectScope { definition.properties(conditional = true, inline = true).ofPath(path).asProperty() }
+        val properties = selectScope { definition.ofPath(path, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue }
     }
 
     private fun findValueByPaths(definition: ParadoxScriptDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
-        val properties = selectScope { definition.properties(conditional = true, inline = true).ofPaths(paths).asProperty() }
+        val properties = selectScope { definition.ofPaths(paths, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue?.stringValue() }
     }
 }
