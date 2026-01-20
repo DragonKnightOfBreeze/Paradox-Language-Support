@@ -11,6 +11,9 @@ import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination
 
 // org.intellij.plugins.markdown.lang.references.paths.MarkdownUnresolvedFileReferenceInspection
 
+/**
+ * 检查 Markdown 文件中的无法解析的链接引用（包含 [ParadoxPathReference] 时）。
+ */
 class MarkdownUnresolvedReferenceLinkInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : MarkdownElementVisitor() {
