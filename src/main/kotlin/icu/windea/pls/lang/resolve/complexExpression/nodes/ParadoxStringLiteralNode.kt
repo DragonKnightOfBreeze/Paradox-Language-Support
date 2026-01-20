@@ -16,6 +16,6 @@ class ParadoxStringLiteralNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         // 使用本地化的 STRING_KEY 高亮以统一字符串样式
-        return ParadoxLocalisationAttributesKeys.STRING_KEY
+        return ParadoxLocalisationAttributesKeys.TEXT_KEY
     }
 }

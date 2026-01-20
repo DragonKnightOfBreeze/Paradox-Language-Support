@@ -599,7 +599,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -633,7 +633,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             return LEFT_BRACKET;
         } else {
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -651,7 +651,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -669,7 +669,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -687,7 +687,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -934,12 +934,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return STRING_TOKEN;
+            { return TEXT_TOKEN;
             }
           // fall through
           case 46: break;
           case 2:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
             }
           // fall through
@@ -950,7 +950,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 48: break;
           case 4:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
             }
           // fall through
@@ -961,7 +961,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 50: break;
           case 6:
-            { if (yystate() != IN_CONCEPT_TEXT) return STRING_TOKEN;
+            { if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
         beginNextState(); return RIGHT_BRACKET;
             }
           // fall through
@@ -1152,7 +1152,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 87: break;
           case 43:
-            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
+            { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
         beginNextState(); return TEXT_FORMAT_END;
             }
           // fall through

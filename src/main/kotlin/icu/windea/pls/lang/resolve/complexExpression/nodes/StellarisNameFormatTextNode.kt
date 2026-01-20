@@ -18,7 +18,7 @@ class StellarisNameFormatTextNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.STRING_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.TEXT_KEY
             else -> ParadoxScriptAttributesKeys.STRING_KEY
         }
     }

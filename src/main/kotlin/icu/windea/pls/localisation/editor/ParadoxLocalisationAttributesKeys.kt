@@ -43,7 +43,7 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val TEXT_FORMAT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_FORMAT", IDENTIFIER)
     @JvmField
-    val STRING_KEY = createTextAttributesKey("PARADOX_LOCALISATION.STRING", STRING)
+    val TEXT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.TEXT", STRING)
     @JvmField
     val VALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VALID_ESCAPE", VALID_STRING_ESCAPE)
     @JvmField

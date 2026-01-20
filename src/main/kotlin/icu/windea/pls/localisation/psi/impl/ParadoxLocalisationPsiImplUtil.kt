@@ -173,11 +173,11 @@ object ParadoxLocalisationPsiImplUtil {
 
     // endregion
 
-    // region ParadoxLocalisationString
+    // region ParadoxLocalisationText
 
     @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationString): PsiElement {
-        val idElement = element.findChild { it.elementType == STRING_TOKEN }!!
+    fun getIdElement(element: ParadoxLocalisationText): PsiElement {
+        val idElement = element.findChild { it.elementType == TEXT_TOKEN }!!
         return idElement
     }
 

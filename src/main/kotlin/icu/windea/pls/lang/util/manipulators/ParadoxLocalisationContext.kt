@@ -7,7 +7,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 
 data class ParadoxLocalisationContext(
     private val elementPointer: SmartPsiElementPointer<ParadoxLocalisationProperty>,
@@ -46,11 +46,11 @@ data class ParadoxLocalisationContext(
             var r = false
             pv.acceptChildren(object : PsiRecursiveElementVisitor() {
                 override fun visitElement(element: PsiElement) {
-                    if (element is ParadoxLocalisationString) return visitString(element)
+                    if (element is ParadoxLocalisationText) return visitString(element)
                     super.visitElement(element)
                 }
 
-                private fun visitString(element: ParadoxLocalisationString) {
+                private fun visitString(element: ParadoxLocalisationText) {
                     val s = element.text
                     if (checkString(s)) {
                         r = true

@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.constants.PlsStrings
@@ -48,7 +48,7 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
     }
 
     context(context: Context)
-    override fun renderString(element: ParadoxLocalisationString) {
+    override fun renderString(element: ParadoxLocalisationText) {
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, EscapeType.Default)
         context.builder.append(text)
     }

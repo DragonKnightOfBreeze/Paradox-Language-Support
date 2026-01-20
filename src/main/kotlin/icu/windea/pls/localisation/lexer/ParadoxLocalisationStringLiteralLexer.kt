@@ -4,7 +4,7 @@ import com.intellij.lexer.StringLiteralLexer
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.tree.IElementType
 
-class ParadoxLocalisationStringLiteralLexer(
+class ParadoxLocalisationTextLiteralLexer(
     originalLiteralToken: IElementType
 ) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$£§#", false, false) {
     override fun getTokenType(): IElementType? {

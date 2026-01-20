@@ -79,9 +79,9 @@ text_root ::= text_items {
 private text_items ::= text_item +
 private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
-rich_text ::= string | colorful_text | parameter | icon | command | concept_command | text_icon | text_format
+rich_text ::= text | colorful_text | parameter | icon | command | concept_command | text_icon | text_format
 
-string ::= STRING_TOKEN {
+text ::= TEXT_TOKEN {
   extends=rich_text
   methods=[getIdElement]
 }

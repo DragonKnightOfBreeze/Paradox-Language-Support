@@ -64,7 +64,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -98,7 +98,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             return LEFT_BRACKET;
         } else {
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -116,7 +116,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -134,7 +134,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 
@@ -152,7 +152,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
-            return STRING_TOKEN;
+            return TEXT_TOKEN;
         }
     }
 %}
@@ -230,20 +230,20 @@ TEXT_ICON_TOKEN=\w+
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
     "#" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
     }
     "#!" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.test(this)) return TEXT_TOKEN;
         beginNextState(); return TEXT_FORMAT_END;
     }
     "@" {
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return STRING_TOKEN;
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(this)) return TEXT_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
     }
-    {PLAIN_TEXT_TOKEN} { return STRING_TOKEN; }
+    {PLAIN_TEXT_TOKEN} { return TEXT_TOKEN; }
     "]" {
-        if (yystate() != IN_CONCEPT_TEXT) return STRING_TOKEN;
+        if (yystate() != IN_CONCEPT_TEXT) return TEXT_TOKEN;
         beginNextState(); return RIGHT_BRACKET;
     }
 }

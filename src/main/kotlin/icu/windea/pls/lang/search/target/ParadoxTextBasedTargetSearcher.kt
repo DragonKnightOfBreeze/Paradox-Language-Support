@@ -53,7 +53,7 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
     protected abstract fun processText(text: String, context: Context, consumer: Processor<in PsiElement>): Boolean
 
     protected fun processLeafElement(element: PsiElement, context: Context, consumer: Processor<in PsiElement>): Boolean {
-        if (element.elementType != ParadoxLocalisationElementTypes.STRING_TOKEN) return true
+        if (element.elementType != ParadoxLocalisationElementTypes.TEXT_TOKEN) return true
         val localisation = element.parentOfType<ParadoxLocalisationProperty>() ?: return true
         return processLocalisation(localisation, context, consumer)
     }

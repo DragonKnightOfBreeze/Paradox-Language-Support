@@ -26,7 +26,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
-  IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
+  IElementType TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT");
   IElementType TEXT_FORMAT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT");
   IElementType TEXT_FORMAT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT_TEXT");
   IElementType TEXT_ICON = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ICON");
@@ -60,13 +60,13 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
-  IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
   IElementType TEXT_FORMAT_END = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_END");
   IElementType TEXT_FORMAT_START = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_START");
   IElementType TEXT_FORMAT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_TOKEN");
   IElementType TEXT_ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_END");
   IElementType TEXT_ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_START");
   IElementType TEXT_ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_TOKEN");
+  IElementType TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_TOKEN");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -122,8 +122,8 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
       }
-      else if (type == STRING) {
-        return new ParadoxLocalisationStringImpl(node);
+      else if (type == TEXT) {
+        return new ParadoxLocalisationTextImpl(node);
       }
       else if (type == TEXT_FORMAT) {
         return new ParadoxLocalisationTextFormatImpl(node);

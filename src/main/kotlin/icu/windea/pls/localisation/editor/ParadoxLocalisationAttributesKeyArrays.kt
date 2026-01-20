@@ -35,7 +35,7 @@ object ParadoxLocalisationAttributesKeyArrays {
     @JvmField
     val TEXT_FORMAT_KEYS = arrayOf(K.TEXT_FORMAT_KEY)
     @JvmField
-    val STRING_KEYS = arrayOf(K.STRING_KEY)
+    val TEXT_KEYS = arrayOf(K.TEXT_KEY)
     @JvmField
     val VALID_ESCAPE_KEYS = arrayOf(K.VALID_ESCAPE_KEY)
     @JvmField

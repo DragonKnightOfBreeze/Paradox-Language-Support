@@ -28,7 +28,7 @@ import icu.windea.pls.lang.settings.PlsSettings
  *
  * 设计要点：
  * - 直接复用 ParadoxTextBasedTargetSearch 提供的查询逻辑，避免重复实现。
- * - 仅从本地化文本（ParadoxLocalisationString 的纯文本）出发，不解析 $KEY$ 等引用。
+ * - 仅从本地化文本（ParadoxLocalisationText 的纯文本）出发，不解析 $KEY$ 等引用。
  * - 渐进式输出，支持取消，保证体验与性能。
  */
 class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : WeightedSearchEverywhereContributor<PsiElement>,

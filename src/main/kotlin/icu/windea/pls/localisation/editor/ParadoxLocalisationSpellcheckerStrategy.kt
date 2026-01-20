@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
-import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 
@@ -40,7 +40,7 @@ class ParadoxLocalisationSpellcheckerStrategy : SpellcheckingStrategy(), DumbAwa
         return when (element) {
             is PsiComment -> super.getTokenizer(element)
             is ParadoxLocalisationPropertyKey -> emptyTokenizer // 目前不做检查
-            is ParadoxLocalisationString -> textTokenizer
+            is ParadoxLocalisationText -> textTokenizer
             is ParadoxLocalisationParameter -> emptyTokenizer // 目前不做检查
             is ParadoxScriptedVariableReference -> scriptedVariableReferenceTokenizer
             is ParadoxLocalisationIcon -> iconTokenizer

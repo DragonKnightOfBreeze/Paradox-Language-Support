@@ -103,7 +103,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     // visitParadoxScriptedVariableReference(o);
   }
 
-  public void visitString(@NotNull ParadoxLocalisationString o) {
+  public void visitText(@NotNull ParadoxLocalisationText o) {
     visitRichText(o);
   }
 

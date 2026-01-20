@@ -11,7 +11,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
-import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import java.awt.Color
@@ -67,7 +67,7 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
     context(context: C)
     protected open fun renderRichText(element: ParadoxLocalisationRichText) {
         when (element) {
-            is ParadoxLocalisationString -> renderString(element)
+            is ParadoxLocalisationText -> renderString(element)
             is ParadoxLocalisationColorfulText -> renderColorfulText(element)
             is ParadoxLocalisationParameter -> renderParameter(element)
             is ParadoxLocalisationIcon -> renderIcon(element)
@@ -80,7 +80,7 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
     }
 
     context(context: C)
-    protected abstract fun renderString(element: ParadoxLocalisationString)
+    protected abstract fun renderString(element: ParadoxLocalisationText)
 
     context(context: C)
     protected abstract fun renderColorfulText(element: ParadoxLocalisationColorfulText)
