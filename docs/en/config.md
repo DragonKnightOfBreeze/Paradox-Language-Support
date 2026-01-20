@@ -1,4 +1,4 @@
-# Config Related
+# Config
 
 <!-- TODO Manual improvement and polish -->
 
@@ -10,7 +10,7 @@ PLS implements various advanced language features based on config groups compose
 
 Config groups can come from different sources. For the same source, there are config groups for each game type, and the shared config group for all game types.
 
-You can enable or disable each type of config group on the plugin settings page (`Paradox Language Support > Config Related`).
+You can enable or disable each type of config group on the plugin settings page (`Paradox Language Support > Config`).
 The parent directories for these config groups, as well as the repository URLs for remote config groups, can also be configured there.
 
 Reference links:

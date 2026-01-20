@@ -17,7 +17,8 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls" groupId="language" key="settings" instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
+    <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings"
+                             instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
 
     <webHelpProvider implementation="icu.windea.pls.lang.PlsWebHelpProvider"/>
 
