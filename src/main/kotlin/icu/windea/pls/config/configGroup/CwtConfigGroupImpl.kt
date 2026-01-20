@@ -11,7 +11,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 private val logger = logger<CwtConfigGroupImpl>()
 
@@ -21,8 +20,8 @@ class CwtConfigGroupImpl(
 ) : CwtConfigGroupDataHolderBase(), CwtConfigGroup {
     private val mutex = Mutex()
 
-    override val initialized = AtomicBoolean()
-    override val changed = AtomicBoolean()
+    @Volatile override var initialized: Boolean = false
+    @Volatile override var changed: Boolean = false
     override val initializer = CwtConfigGroupInitializer(project, gameType)
     override val modificationTracker = SimpleModificationTracker()
 
@@ -38,7 +37,7 @@ class CwtConfigGroupImpl(
                 initializer.copyUserDataTo(this) // 直接一次性替换规则数据
                 initializer.clear() // 清空以避免内存泄露
                 modificationTracker.incModificationCount() // 显式增加修改计数
-                initialized.set(true) // 标记规则数据已全部加载完毕
+                initialized = true // 标记规则数据已全部加载完毕
                 val end = System.currentTimeMillis()
                 val targetName = if (project.isDefault) "application" else "project '${project.name}'"
                 logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")

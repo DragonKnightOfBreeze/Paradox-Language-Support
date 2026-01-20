@@ -28,15 +28,15 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         presentation.isVisible = true
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
         presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
-        configGroups.forEach { configGroup -> configGroup.changed.set(false) }
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
+        configGroups.forEach { configGroup -> configGroup.changed = false }
         configGroupService.refreshConfigGroups(configGroups)
     }
 }

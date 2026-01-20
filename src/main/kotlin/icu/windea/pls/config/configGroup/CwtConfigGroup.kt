@@ -5,7 +5,6 @@ import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.model.ParadoxGameType
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 规则分组。保存了处理后的所有规则数据。
@@ -22,8 +21,8 @@ interface CwtConfigGroup : CwtConfigGroupDataHolder, UserDataHolder {
     val project: Project
     val gameType: ParadoxGameType
 
-    val initialized: AtomicBoolean
-    val changed: AtomicBoolean
+    var initialized: Boolean
+    var changed: Boolean
     val initializer: CwtConfigGroupInitializer
     val modificationTracker: SimpleModificationTracker
 

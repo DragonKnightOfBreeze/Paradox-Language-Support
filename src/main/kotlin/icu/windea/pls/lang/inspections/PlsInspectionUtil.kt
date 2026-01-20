@@ -24,8 +24,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 object PlsInspectionUtil {
     fun isConfigGroupInitialized(file: PsiFile): Boolean {
         val project = file.project
-        return PlsFacade.getConfigGroup(project).initialized.get()
-            && PlsFacade.getConfigGroup(project, selectGameType(file)).initialized.get()
+        return PlsFacade.getConfigGroup(project).initialized
+            && PlsFacade.getConfigGroup(project, selectGameType(file)).initialized
     }
 
     context(tool: LocalInspectionTool)

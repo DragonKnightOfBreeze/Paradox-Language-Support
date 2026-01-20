@@ -33,9 +33,9 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
             }
         }
-        val configGroupsToChange = configGroups.filter { !it.changed.get() }
+        val configGroupsToChange = configGroups.filter { !it.changed }
         if (configGroupsToChange.isEmpty()) return
-        configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
+        configGroupsToChange.forEach { configGroup -> configGroup.changed = true }
         configGroupService.updateRefreshFloatingToolbar()
     }
 }

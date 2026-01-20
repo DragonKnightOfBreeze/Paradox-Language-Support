@@ -69,9 +69,9 @@ class CwtConfigFileListener : AsyncFileListener {
                             }
                         }
                     }
-                    val configGroupsToChange = configGroups.filter { !it.changed.get() }
+                    val configGroupsToChange = configGroups.filter { !it.changed }
                     if (configGroupsToChange.isEmpty()) return@f1
-                    configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
+                    configGroupsToChange.forEach { configGroup -> configGroup.changed = true }
                     configGroupService.updateRefreshFloatingToolbar()
                 }
             }

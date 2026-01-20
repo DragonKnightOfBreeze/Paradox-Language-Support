@@ -34,7 +34,7 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
 
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
         val configGroupService = CwtConfigGroupService.getInstance(project)
-        val isChanged = configGroupService.getConfigGroups().values.any { it.changed.get() }
+        val isChanged = configGroupService.getConfigGroups().values.any { it.changed }
         when (isChanged) {
             true -> component.scheduleShow()
             else -> component.scheduleHide()
