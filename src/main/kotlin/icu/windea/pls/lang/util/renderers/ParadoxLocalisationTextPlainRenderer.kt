@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util.renderers
 
-import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.util.EscapeType
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
@@ -18,6 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -39,14 +39,11 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
     }
 
     context(context: Context)
-    override fun renderProperty(element: ParadoxLocalisationProperty) {
+    override fun renderRootProperty(element: ParadoxLocalisationProperty) {
         val richTextList = element.propertyValue?.richTextList
         if (richTextList.isNullOrEmpty()) return
         withGuard(context.guardStack, element) {
-            for (richText in richTextList) {
-                ProgressManager.checkCanceled()
-                renderRichText(richText)
-            }
+            renderRichTexts(richTextList)
         }
     }
 
@@ -61,30 +58,33 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
         // 直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        for (richText in richTextList) {
-            ProgressManager.checkCanceled()
-            renderRichText(richText)
-        }
+        renderRichTexts(richTextList)
     }
 
     context(context: Context)
     override fun renderParameter(element: ParadoxLocalisationParameter) {
+        // 尝试渲染解析后的文本，如果处理失败，则使用原始文本
         val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
         // 本地化
         run {
             if (resolved !is ParadoxLocalisationProperty) return@run
             if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) return@run // 跳过特殊本地化
-            if (checkGuard(context.guardStack, resolved)) return@run  // 跳过存在递归的情况
-            renderProperty(resolved)
+            if (checkGuard(context.guardStack, resolved)) return@run // 跳过存在递归的情况
+            val richTextList = resolved.propertyValue?.richTextList
+            if (richTextList.isNullOrEmpty()) return
+            withGuard(context.guardStack, resolved) {
+                renderRichTexts(richTextList)
+            }
             return
         }
         // 封装变量
         run {
             if (resolved !is ParadoxScriptScriptedVariable) return@run
-            val v = resolved.value ?: return@run
+            val v = resolved.value ?: PlsStrings.unresolved
             context.builder.append(v)
             return
         }
+
         // 回退
         context.builder.append(element.text)
     }
@@ -103,25 +103,29 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
 
     context(context: Context)
     override fun renderConceptCommand(element: ParadoxLocalisationConceptCommand) {
-        val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
+        // 尝试渲染解析后的文本，如果处理失败，则使用原始文本
+        val (_, resolved) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         // 概念文本
         run {
-            if (textElement !is ParadoxLocalisationConceptText) return@run
-            val richTextList = textElement.richTextList
+            if (resolved !is ParadoxLocalisationConceptText) return@run
+            val richTextList = resolved.richTextList
             if (richTextList.isEmpty()) return
-            for (richText in richTextList) {
-                ProgressManager.checkCanceled()
-                renderRichText(richText)
-            }
+            renderRichTexts(richTextList)
+            return
         }
         // 本地化
         run {
-            if (textElement !is ParadoxLocalisationProperty) return@run
-            if (ParadoxLocalisationManager.isSpecialLocalisation(textElement)) return@run // 跳过特殊本地化
-            if (checkGuard(context.guardStack, textElement)) return@run  // 跳过存在递归的情况
-            renderProperty(textElement)
+            if (resolved !is ParadoxLocalisationProperty) return@run
+            if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) return@run // 跳过特殊本地化
+            if (checkGuard(context.guardStack, resolved)) return@run  // 跳过存在递归的情况
+            val richTextList = resolved.propertyValue?.richTextList
+            if (richTextList.isNullOrEmpty()) return
+            withGuard(context.guardStack, resolved) {
+                renderRichTexts(richTextList)
+            }
             return
         }
+
         // 回退
         context.builder.append(element.text)
     }
@@ -136,9 +140,6 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
     override fun renderTextFormat(element: ParadoxLocalisationTextFormat) {
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return
-        for (richText in richTextList) {
-            ProgressManager.checkCanceled()
-            renderRichText(richText)
-        }
+        renderRichTexts(richTextList)
     }
 }

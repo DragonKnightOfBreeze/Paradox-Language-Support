@@ -23,7 +23,7 @@ abstract class ParadoxScriptTextRendererBase<C, R> : ParadoxScriptTextRenderer<C
     }
 
     fun render(element: ParadoxScriptMember, context: C = initContext()): R {
-        with(context) { renderMember(element) }
+        with(context) { renderRootMember(element) }
         return getOutput(context)
     }
 
@@ -31,6 +31,11 @@ abstract class ParadoxScriptTextRendererBase<C, R> : ParadoxScriptTextRenderer<C
 
     context(context: C)
     protected abstract fun renderFile(element: ParadoxScriptFile)
+
+    context(context: C)
+    protected open fun renderRootMember(element: ParadoxScriptMember) {
+        renderMember(element)
+    }
 
     context(context: C)
     protected open fun renderMember(element: ParadoxScriptMember) {

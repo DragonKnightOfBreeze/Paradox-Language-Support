@@ -43,21 +43,25 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
     protected abstract fun getOutput(context: C): R
 
     context(context: C)
-    protected open fun renderRootProperty(element: ParadoxLocalisationProperty) {
-        renderProperty(element)
-    }
+    protected abstract fun renderRootProperty(element: ParadoxLocalisationProperty)
 
     context(context: C)
     protected open fun renderRootRichTexts(elements: List<ParadoxLocalisationRichText>) {
-        for (element in elements) {
-            ProgressManager.checkCanceled()
-            renderRichText(element)
-        }
+        renderRichTexts(elements)
     }
 
     context(context: C)
     protected open fun renderRootRichText(element: ParadoxLocalisationRichText) {
         renderRichText(element)
+    }
+
+    context(context: C)
+    protected open fun renderRichTexts(elements: List<ParadoxLocalisationRichText>) {
+        if (elements.isEmpty()) return
+        for (element in elements) {
+            ProgressManager.checkCanceled()
+            renderRichText(element)
+        }
     }
 
     context(context: C)
@@ -74,9 +78,6 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
             else -> throw UnsupportedOperationException("Unsupported rich type element type: ${element.elementType}")
         }
     }
-
-    context(context: C)
-    protected abstract fun renderProperty(element: ParadoxLocalisationProperty)
 
     context(context: C)
     protected abstract fun renderString(element: ParadoxLocalisationString)
