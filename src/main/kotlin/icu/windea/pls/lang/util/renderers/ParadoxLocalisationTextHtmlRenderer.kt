@@ -12,6 +12,7 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.util.EscapeType
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -56,11 +57,11 @@ import javax.swing.UIManager
  * 用于将本地化文本渲染为 HTML 文本。
  */
 @Suppress("unused")
-class ParadoxLocalisationTextHtmlRenderer : ParadoxRenderer<PsiElement, Context, String> {
+class ParadoxLocalisationTextHtmlRenderer : ParadoxRenderer<Context, String> {
     data class Context(
         var builder: DocumentationBuilder = DocumentationBuilder()
     ) {
-        val guardStack: ArrayDeque<String> = ArrayDeque() // 防止 StackOverflow
+        val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
         val colorStack: ArrayDeque<Color> = ArrayDeque()
     }
 
@@ -144,7 +145,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxRenderer<PsiElement, Context,
 
     context(context: Context)
     private fun renderString(element: ParadoxLocalisationString) {
-        val escapeType = ParadoxEscapeManager.Type.Html
+        val escapeType = EscapeType.Html
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text.escapeXml(), escapeType)
         context.builder.append(text)
     }
@@ -170,7 +171,6 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxRenderer<PsiElement, Context,
 
         val color = if (shouldRenderColurfulText()) element.argumentElement?.colorInfo?.color else null
         renderWithColor(color) {
-            // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
             when {
                 resolved is ParadoxLocalisationProperty -> {

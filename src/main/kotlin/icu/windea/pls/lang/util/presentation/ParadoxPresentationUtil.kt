@@ -19,7 +19,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
-import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -60,7 +60,7 @@ object ParadoxPresentationUtil {
     }
 
     fun getPropertyText(property: ParadoxScriptProperty, detail: Boolean = false): SimpleColoredText {
-        val renderer = ParadoxScriptTextRenderer().apply { renderInBlock = detail }
+        val renderer = ParadoxScriptTextPlainRenderer().apply { renderInBlock = detail }
         val rendered = renderer.render(property)
         val propertyText = SimpleColoredText(rendered, DiagramElementManager.DEFAULT_TEXT_ATTR)
         val propertyValue = property.propertyValue

@@ -1,15 +1,13 @@
 package icu.windea.pls.lang.util
 
+import icu.windea.pls.core.util.EscapeType
 import java.util.*
 import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxEscapeManager {
-    enum class Type {
-        Default, Html, Inlay
-    }
 
-    fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
         var isEscape = false
         for (c in value) {
             if (isEscape) {
@@ -17,21 +15,21 @@ object ParadoxEscapeManager {
                 when (c) {
                     'n' -> {
                         when (type) {
-                            Type.Html -> builder.append("<br>\n")
-                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
+                            EscapeType.Html -> builder.append("<br>\n")
+                            EscapeType.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\n')
                         }
                     }
                     'r' -> {
                         when (type) {
-                            Type.Html -> builder.append("<br>\r")
-                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
+                            EscapeType.Html -> builder.append("<br>\r")
+                            EscapeType.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\r')
                         }
                     }
                     't' -> {
                         when (type) {
-                            Type.Html -> builder.append("&emsp;")
+                            EscapeType.Html -> builder.append("&emsp;")
                             else -> builder.append('\t')
                         }
                     }
@@ -48,11 +46,11 @@ object ParadoxEscapeManager {
         }
     }
 
-    fun unescapeStringForScript(value: String, type: Type = Type.Default): String {
+    fun unescapeStringForScript(value: String, type: EscapeType = EscapeType.Default): String {
         return buildString { unescapeStringForScriptTo(value, this, type) }
     }
 
-    fun unescapeStringForLocalisationTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeStringForLocalisationTo(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
         var isEscape = false
         var isLeftBracket = false
         for (c in value) {
@@ -70,21 +68,21 @@ object ParadoxEscapeManager {
                 when (c) {
                     'n' -> {
                         when (type) {
-                            Type.Html -> builder.append("<br>\n")
-                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
+                            EscapeType.Html -> builder.append("<br>\n")
+                            EscapeType.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\n')
                         }
                     }
                     'r' -> {
                         when (type) {
-                            Type.Html -> builder.append("<br>\r")
-                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
+                            EscapeType.Html -> builder.append("<br>\r")
+                            EscapeType.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\r')
                         }
                     }
                     't' -> {
                         when (type) {
-                            Type.Html -> builder.append("&emsp;")
+                            EscapeType.Html -> builder.append("&emsp;")
                             else -> builder.append('\t')
                         }
                     }
@@ -102,7 +100,7 @@ object ParadoxEscapeManager {
         }
     }
 
-    fun unescapeStringForLocalisation(value: String, type: Type = Type.Default): String {
+    fun unescapeStringForLocalisation(value: String, type: EscapeType = EscapeType.Default): String {
         return buildString { unescapeStringForLocalisationTo(value, this, type) }
     }
 

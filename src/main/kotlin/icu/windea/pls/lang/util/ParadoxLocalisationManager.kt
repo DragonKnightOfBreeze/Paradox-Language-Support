@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -43,7 +43,7 @@ object ParadoxLocalisationManager {
     }
 
     private fun doGetLocalizedText(element: ParadoxLocalisationProperty): String? {
-        return ParadoxLocalisationTextRenderer().render(element).orNull()
+        return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
     }
 
     fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {

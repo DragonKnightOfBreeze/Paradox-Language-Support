@@ -14,6 +14,7 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.util.EscapeType
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
@@ -59,7 +60,7 @@ import javax.imageio.ImageIO
 @Suppress("unused", "UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
     val hintsContext: ParadoxHintsContext
-) : ParadoxRenderer<PsiElement, Context, InlayPresentation?> {
+) : ParadoxRenderer<Context, InlayPresentation?> {
     data class Context(
         val editor: Editor,
         val settings: ParadoxHintsSettings,
@@ -68,7 +69,7 @@ class ParadoxLocalisationTextInlayRenderer(
     ) {
         val truncateRemain: AtomicInteger = AtomicInteger(settings.textLengthLimit) // 记录到需要截断为止所剩余的长度
         var lineEnd: Boolean = false
-        val guardStack: ArrayDeque<String> = ArrayDeque() // 防止 StackOverflow
+        val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
     }
 
     var color: Color? = null
@@ -96,7 +97,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     fun render(element: ParadoxLocalisationRichText, context: Context = initContext()): InlayPresentation? {
         // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        val r = with(context) { renderRichText(element) }
+        val r = with(context) { renderRootRichText(element) }
         if (!r) context.builder.add(context.factory.smallText("...")) // 添加省略号
         return context.builder.mergePresentations()
     }
@@ -160,7 +161,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     context(context: Context)
     private fun renderString(element: ParadoxLocalisationString): Boolean {
-        val escapeType = ParadoxEscapeManager.Type.Inlay
+        val escapeType = EscapeType.Inlay
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, escapeType)
         context.builder.add(context.factory.truncatedSmallText(text))
         return continueProcess()
@@ -188,7 +189,6 @@ class ParadoxLocalisationTextInlayRenderer(
         val color = if (shouldRenderColurfulText()) element.argumentElement?.colorInfo?.color else null
         return renderWithColor(color) r@{
             // 如果处理文本失败，则使用原始文本
-            // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
             val presentation = when {
                 resolved is ParadoxLocalisationProperty -> {

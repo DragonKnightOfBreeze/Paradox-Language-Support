@@ -7,7 +7,7 @@ import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -28,7 +28,7 @@ abstract class CopyLocalisationTextAsPlainIntentionBase : ModCommandAction, Dumb
 
     private fun getText(context: ActionContext): String? {
         val element = findElement(context) ?: return null
-        return ParadoxLocalisationTextRenderer().render(element)
+        return ParadoxLocalisationTextPlainRenderer().render(element)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationProperty? {

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -145,7 +145,7 @@ object ParadoxScriptNavigationManager {
             append(": ").append(definitionInfo.typesText)
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(element)
             if (localisation != null) {
-                val localizedName = ParadoxLocalisationTextRenderer().render(localisation)
+                val localizedName = ParadoxLocalisationTextPlainRenderer().render(localisation)
                 append(" ").append(localizedName)
             }
         }.optimized() // optimized to optimize memory
