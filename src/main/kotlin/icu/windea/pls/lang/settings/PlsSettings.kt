@@ -62,7 +62,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
-     * @property renderRelatedLocalisationsForScriptedVariables 是否需要为脚本变量渲染相关本地化文本到文档中（同名的本地化）。
+     * @property renderRelatedLocalisationsForScriptedVariables 是否需要为封装变量渲染相关本地化文本到文档中（同名的本地化）。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
      * @property renderRelatedImagesForDefinitions 是否需要为定义渲染相关图片到文档中。
      * @property renderNameDescForModifiers 是否需要为修正渲染相关本地化文本到文档中。

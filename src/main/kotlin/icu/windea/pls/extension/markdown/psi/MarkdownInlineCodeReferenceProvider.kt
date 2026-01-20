@@ -61,7 +61,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
         }
 
         override fun resolveReference(): Collection<Symbol> {
-            // 如果带有前缀 @ ，则尝试解析为脚本变量
+            // 如果带有前缀 @ ，则尝试解析为封装变量
             // 否则，尝试解析为定义或者本地化
 
             when {
