@@ -7,7 +7,7 @@ import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.psi.members
-import icu.windea.pls.lang.psi.value
+import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer.*
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -88,7 +88,8 @@ class ParadoxScriptTextPlainRenderer : ParadoxScriptTextRendererBase<Context, St
 
     context(context: Context)
     override fun renderExpressionElement(element: ParadoxScriptExpressionElement) {
-        val v = element.value()?.letIf(element is ParadoxScriptStringExpressionElement) { it.quoteIfNecessary() }
+        val resolved = element.resolved()
+        val v = resolved?.value?.letIf(resolved is ParadoxScriptStringExpressionElement) { it.quoteIfNecessary() }
         context.builder.append(v ?: PlsStrings.unresolved)
     }
 
