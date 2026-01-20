@@ -161,7 +161,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
     fun testInjection_deepRecursive_ignored() {
         // 关键思路：用测试专用 `CwtInjectedConfigProvider` 强制制造 `deepCopyConfigs` 重入
         //
-        // 真正的“深递归”不是来自 `inject` 注释本身（那是浅递归链），而是来自：
+        // 真正的“深递归”不是来自 `## inject` 本身（那是浅递归链），而是来自：
         // - 注入时 `deepCopyForInjection` 会调用 `CwtConfigManipulator.deepCopyConfigs(configToInject, delegatedConfig)`
         // - 在 deep copy 过程中会调用 `CwtConfigService.injectConfigs(parentConfig, result)`
         // - 如果某个 `CwtInjectedConfigProvider` 在回调里再次触发 deep copy（对同一 parentConfig），就会出现 deep recursion / reentrancy。

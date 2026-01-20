@@ -1650,7 +1650,7 @@ some_config
 
 #### 如何在规则文件中进行规则注入 {#faq-config-injection}
 
-Since plugin version 2.1.0, config injection can be performed during the resolving phase of config by using the `inject` option.
+Since plugin version 2.1.0, config injection can be performed during the resolving phase of config by using the `## inject` option.
 
 If there is an existing config snippet
 

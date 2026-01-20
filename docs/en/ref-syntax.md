@@ -44,7 +44,7 @@ This chapter describes the syntax of the CWT language.
 CWT language is a Domain-Specific Language used for writing CWT configs.
 CWT files use the `.cwt` extension. Its syntax is similar to Paradox Script, but additionally supports *option comments* and *documentation comments*.
 
-CWT configs are a set of specifications written in the CWT language, which is used to provide high-level language features for itself and game and and files (script files, localization files, and CSV files), including but not limited to code highlighting, code inspection, code completion, etc.
+CWT configs are a set of specifications written in the CWT language, which is used to provide high-level language features for itself and game and files (script files, localization files, and CSV files), including but not limited to code highlighting, code inspection, code completion, etc.
 
 The relationship between CWT and CWT configs is similar to JSON and JSON SCHEMA.
 
@@ -267,7 +267,8 @@ Markup available inside the text (`"<text>"`):
 - **Icon**: `£icon|frame£` (`|frame` can be omitted), embeds a GFX icon when rendered.
 - **Command**: `[text|argument]`, where `text` can be parameterized; commonly used for `Get...`/context calls.
 - **Concept Command (Stellaris)**: `['concept' <rich text>]`, used to link concepts and display descriptive text.
-- **Text Format (CK3/Vic3)**: `#format ... #!`, used to style text blocks; and **Text Icons**: `@icon!` (starts with `@`, ends with `!`).
+- **Text Format (CK3/Vic3)**: `#format ... #!`, used to style text blocks.
+- **Text Icons (CK3/Vic3)**: `@icon!` (starts with `@`, ends with `!`).
 
 Example:
 

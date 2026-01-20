@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ParadoxDiagramSettings.Ck2.EventTree">
     <attribute>
-      <entry key="hidden" value="true" />
       <entry key="triggered" value="true" />
+      <entry key="hidden" value="true" />
     </attribute>
     <type>
       <entry key="scopeless" value="true" />
@@ -28,13 +28,24 @@
   </component>
   <component name="ParadoxDiagramSettings.Eu4.EventTree">
     <attribute>
-      <entry key="hidden" value="true" />
       <entry key="triggered" value="true" />
+      <entry key="hidden" value="true" />
     </attribute>
     <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="province" value="true" />
+    </type>
+  </component>
+  <component name="ParadoxDiagramSettings.Eu5.EventTree">
+    <attribute>
+      <entry key="hidden" value="true" />
+    </attribute>
+    <type>
+      <entry key="scopeless" value="true" />
+      <entry key="country" value="true" />
+      <entry key="state" value="true" />
+      <entry key="character" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Hoi4.EventTree">
@@ -65,8 +76,8 @@
   </component>
   <component name="ParadoxDiagramSettings.Stellaris.EventTree">
     <attribute>
-      <entry key="hidden" value="true" />
       <entry key="triggered" value="true" />
+      <entry key="hidden" value="true" />
       <entry key="major" value="true" />
       <entry key="diplomatic" value="true" />
     </attribute>
@@ -88,13 +99,17 @@
       <entry key="leader" value="true" />
       <entry key="situation" value="true" />
       <entry key="agreement" value="true" />
+      <entry key="cosmic_storm" value="true" />
+      <entry key="cosmic_storm_influence_field" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Stellaris.TechTree">
     <area>
-      <entry key="physics" value="true" />
-      <entry key="society" value="true" />
-      <entry key="engineering" value="true" />
+      <entry key="start" value="true" />
+      <entry key="rare" value="true" />
+      <entry key="dangerous" value="true" />
+      <entry key="insight" value="true" />
+      <entry key="repeatable" value="true" />
     </area>
     <attribute>
       <entry key="start" value="true" />
@@ -103,6 +118,29 @@
       <entry key="insight" value="true" />
       <entry key="repeatable" value="true" />
     </attribute>
+    <category>
+      <entry key="materials" value="true" />
+      <entry key="propulsion" value="true" />
+      <entry key="voidcraft" value="true" />
+      <entry key="industry" value="true" />
+      <entry key="field_manipulation" value="true" />
+      <entry key="particles" value="true" />
+      <entry key="computing" value="true" />
+      <entry key="psionics" value="true" />
+      <entry key="new_worlds" value="true" />
+      <entry key="statecraft" value="true" />
+      <entry key="biology" value="true" />
+      <entry key="military_theory" value="true" />
+      <entry key="archaeostudies" value="true" />
+    </category>
+    <tier>
+      <entry key="0" value="true" />
+      <entry key="1" value="true" />
+      <entry key="2" value="true" />
+      <entry key="3" value="true" />
+      <entry key="4" value="true" />
+      <entry key="5" value="true" />
+    </tier>
   </component>
   <component name="ParadoxDiagramSettings.Vic2.EventTree">
     <attribute>
