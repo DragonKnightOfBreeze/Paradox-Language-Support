@@ -57,7 +57,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptBlock) return
                 if (element is ParadoxScriptBoolean) return
 
-                // 得到完全匹配的CWT规则
+                // 得到完全匹配的规则
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
 
                 // 开始检查

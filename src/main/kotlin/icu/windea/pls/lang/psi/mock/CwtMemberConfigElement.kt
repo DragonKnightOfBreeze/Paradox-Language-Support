@@ -11,7 +11,7 @@ import java.util.*
 import javax.swing.Icon
 
 /**
- * 用于为合成的（注入的/合并后的）CWT规则提供声明处。
+ * 用于为合成的（注入的/合并后的）规则提供声明处。
  */
 class CwtMemberConfigElement(
     parent: PsiElement,

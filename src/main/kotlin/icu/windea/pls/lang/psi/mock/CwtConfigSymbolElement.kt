@@ -9,7 +9,7 @@ import java.util.*
 import javax.swing.Icon
 
 /**
- * 用于为CWT规则文件中的一些符号提供对引用解析和查找用法的支持。
+ * 用于为规则文件中的一些符号提供对引用解析和查找用法的支持。
  */
 class CwtConfigSymbolElement(
     parent: PsiElement,

@@ -358,7 +358,7 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试推断得到参数对应的上下文CWT规则。
+     * 尝试推断得到参数对应的上下文规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
@@ -377,7 +377,7 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试（从扩展的CWT规则）推断得到参数对应的上下文CWT规则。
+     * 尝试（从扩展的规则）推断得到参数对应的上下文规则。
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         return doGetInferredContextConfigsFromConfig(parameterElement)

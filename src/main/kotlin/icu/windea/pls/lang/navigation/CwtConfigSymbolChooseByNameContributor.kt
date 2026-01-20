@@ -22,7 +22,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 
 /**
- * 用于在 *随处搜索（Search Everywhere）* 中查找CWT规则符号。
+ * 用于在 *随处搜索（Search Everywhere）* 中查找规则符号。
  *
  * 进行搜索时会尝试推断当前项目以及当前的游戏类型。
  */

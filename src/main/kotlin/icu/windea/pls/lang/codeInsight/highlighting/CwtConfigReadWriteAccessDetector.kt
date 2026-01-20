@@ -13,7 +13,7 @@ import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 // 如果在查找用法页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 
 /**
- * 在查找用法中，区分CWT规则符号的读写使用。
+ * 在查找用法中，区分规则符号的读写使用。
  */
 class CwtConfigReadWriteAccessDetector : ReadWriteAccessDetector() {
     override fun isReadWriteAccessible(element: PsiElement): Boolean {

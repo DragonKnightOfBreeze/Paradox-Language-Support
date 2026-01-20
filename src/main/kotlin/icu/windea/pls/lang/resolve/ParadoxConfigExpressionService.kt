@@ -134,7 +134,7 @@ object ParadoxConfigExpressionService {
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                    if (primaryImageConfigs.isEmpty()) return null // 没有或者CWT规则不完善
+                    if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
                     return withRecursionGuard {
                         withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -181,7 +181,7 @@ object ParadoxConfigExpressionService {
                     return createImageResolveResult(spriteName, newFrameInfo, definition, project)
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                if (primaryImageConfigs.isEmpty()) return null // 没有或者CWT规则不完善
+                if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
                 return withRecursionGuard {
                     withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->

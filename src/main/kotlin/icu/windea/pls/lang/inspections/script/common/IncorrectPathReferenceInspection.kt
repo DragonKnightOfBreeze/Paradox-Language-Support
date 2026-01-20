@@ -53,7 +53,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
 
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
-                // 得到完全匹配的CWT规则
+                // 得到完全匹配的规则
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
                 val configExpression = config.configExpression
                 val dataType = configExpression.type

@@ -18,7 +18,7 @@ import kotlin.experimental.or
  */
 class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
-        // 0.7.8 这里不能仅仅用fileName去查找，需要基于CWT规则文件判断
+        // 0.7.8 这里不能仅仅用fileName去查找，需要基于规则文件判断
         val target = queryParameters.elementToSearch
         if (target !is PsiFile) return
 

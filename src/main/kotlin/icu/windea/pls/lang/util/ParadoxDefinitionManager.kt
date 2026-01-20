@@ -158,7 +158,7 @@ object ParadoxDefinitionManager {
     private fun doGetPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
-        if (primaryLocalisations.isEmpty()) return null // 没有或者CWT规则不完善
+        if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
@@ -186,7 +186,7 @@ object ParadoxDefinitionManager {
     private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
-        if (primaryLocalisations.isEmpty()) return null // 没有或者CWT规则不完善
+        if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
@@ -214,7 +214,7 @@ object ParadoxDefinitionManager {
     private fun doGetPrimaryLocalisations(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
         val definitionInfo = element.definitionInfo ?: return emptySet()
         val primaryLocalisations = definitionInfo.primaryLocalisations
-        if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者CWT规则不完善
+        if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
@@ -243,7 +243,7 @@ object ParadoxDefinitionManager {
     private fun doGetPrimaryImage(element: ParadoxScriptDefinitionElement): PsiFile? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryImages = definitionInfo.primaryImages
-        if (primaryImages.isEmpty()) return null // 没有或者CWT规则不完善
+        if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         for (primaryImage in primaryImages) {
             val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
             val file = resolved?.element?.castOrNull<PsiFile>()

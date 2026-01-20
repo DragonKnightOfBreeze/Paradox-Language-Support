@@ -8,7 +8,7 @@ import java.util.*
 import javax.swing.Icon
 
 /**
- * 用于在 *随处搜索* 中查找CWT规则符号。
+ * 用于在 *随处搜索（Search Everywhere）* 中查找规则符号。
  */
 class CwtConfigSymbolNavigationElement(
     parent: PsiElement,

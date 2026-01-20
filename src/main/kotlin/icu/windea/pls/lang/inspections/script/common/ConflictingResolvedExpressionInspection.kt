@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.parentProperty
 import javax.swing.JComponent
 
 /**
- * 对应的CWT规则有多个且存在冲突的表达式的代码检查。
+ * 对应的规则有多个且存在冲突的表达式的代码检查。
  *
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。

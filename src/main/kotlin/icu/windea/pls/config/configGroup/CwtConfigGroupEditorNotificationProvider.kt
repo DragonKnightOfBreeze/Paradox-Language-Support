@@ -15,7 +15,7 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 当用户打开CWT规则文件时，给出提示以及一些参考信息。
+ * 当用户打开规则文件时，给出提示以及一些参考信息。
  */
 class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, DumbAware {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
