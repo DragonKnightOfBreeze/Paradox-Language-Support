@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.ai" parentId="pls" bundle="messages.PlsBundle" key="settings.ai" instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
+    <applicationConfigurable id="pls.ai" parentId="pls" groupWeight="80" bundle="messages.PlsBundle" key="settings.ai" instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
 
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
