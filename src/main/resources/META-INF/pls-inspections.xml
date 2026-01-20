@@ -77,10 +77,6 @@
                      key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedPathReferenceInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
-                     key="inspection.script.unusedInlineScript" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.UnusedInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
                      key="inspection.script.unusedParameter" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
@@ -197,6 +193,10 @@
                      key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
+                     key="inspection.script.unusedInlineScript" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WEAK WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.script.inlineScript.UnusedInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"
                      key="inspection.script.conflictingInlineScriptUsage" groupKey="inspection.script.inlineScript.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"

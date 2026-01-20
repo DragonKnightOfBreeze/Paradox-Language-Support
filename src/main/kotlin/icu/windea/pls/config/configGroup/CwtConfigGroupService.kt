@@ -15,6 +15,7 @@ import com.intellij.platform.util.progress.reportProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
@@ -59,7 +60,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             }
             reportProgress(toProcess.size) { reporter ->
                 toProcess.forEachConcurrent { configGroup ->
-                    val step = if(configGroup.project.isDefault) {
+                    val step = if (configGroup.project.isDefault) {
                         PlsBundle.message("configGroup.process.step.application", configGroup.gameType.id)
                     } else {
                         PlsBundle.message("configGroup.process.step.project", configGroup.gameType.id)
@@ -120,6 +121,16 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             }
         }
         return configGroups
+    }
+
+    /**
+     * 检查指定项目与上下文（[context]）的规则分组是否已加载完毕。
+     */
+    fun checkConfigGroupInitialized(context: Any?): Boolean {
+        if (!getConfigGroup(ParadoxGameType.Core).initialized) return false
+        val gameType = selectGameType(context)
+        if (gameType != null && !getConfigGroup(gameType).initialized) return false
+        return true
     }
 
     @Synchronized
@@ -197,6 +208,6 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         fun getInstance(): CwtConfigGroupService = service()
 
         @JvmStatic
-        fun getInstance(project: Project): CwtConfigGroupService = project.service()
+        fun getInstance(project: Project): CwtConfigGroupService = if (project.isDefault) getInstance() else project.service()
     }
 }

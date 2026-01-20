@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.letIf
@@ -47,8 +48,9 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         if (items.isEmpty()) return
 
         for (item in items) {
+            ProgressManager.checkCanceled()
             val severity = getHighlightSeverity(item)
-            val message = getMessage(annotationResult, item)
+            val message = getDescription(annotationResult, item)
             for (location in item.locations) {
                 val extraMessage = getExtraMessage(annotationResult, item, location)
                 val fullMessage = message + extraMessage
@@ -78,7 +80,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         return tigerHighlightSeverity.value ?: HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING
     }
 
-    private fun getMessage(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
+    private fun getDescription(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
         // output example:
         // error(missing-item): media alias asia_confucianism_shin not defined in gfx/media_aliases/
 

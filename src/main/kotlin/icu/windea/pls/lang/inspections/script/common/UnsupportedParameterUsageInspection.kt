@@ -2,13 +2,14 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -20,16 +21,16 @@ import icu.windea.pls.script.psi.ParadoxScriptParameter
  */
 class UnsupportedParameterUsageInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求规则数据已全部加载完毕
-        if (!PlsInspectionUtil.isConfigGroupInitialized(file)) return false
-
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 checkGeneral(element, holder)
                 checkInlineScript(element, holder)
             }

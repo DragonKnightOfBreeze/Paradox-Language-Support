@@ -8,23 +8,35 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
+import javax.swing.JComponent
 
 /**
  * 缺失的参数的代码检查。
+ *
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingParameterInspection : LocalInspectionTool() {
+    @JvmField
+    var ignoredInInjectedFiles = false
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -34,6 +46,7 @@ class MissingParameterInspection : LocalInspectionTool() {
             }
 
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if (!shouldVisit(element)) return
 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
@@ -60,12 +73,22 @@ class MissingParameterInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, names: Set<String>, rangeInElement: TextRange? = null) {
-                val message = when {
+                val description = when {
                     names.isEmpty() -> return
                     names.size == 1 -> PlsBundle.message("inspection.script.missingParameter.desc.1", names.single().let { "'$it'" })
                     else -> PlsBundle.message("inspection.script.missingParameter.desc.2", names.joinToString(", ") { "'$it'" })
                 }
-                holder.registerProblem(element, rangeInElement, message)
+                holder.registerProblem(element, rangeInElement, description)
+            }
+        }
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            // ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

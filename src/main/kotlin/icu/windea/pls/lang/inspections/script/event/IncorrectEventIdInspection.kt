@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.event
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
@@ -24,13 +25,15 @@ class IncorrectEventIdInspection : EventInspectionBase() {
 
         val elements = file.properties(inline = true)
         for (element in elements) {
+            ProgressManager.checkCanceled()
             val definitionInfo = element.definitionInfo ?: continue
             if (definitionInfo.type != ParadoxDefinitionTypes.event) continue
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) continue
             val nameElement = selectScope { element.nameElement(nameField) } ?: continue
-            holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
+            val description = PlsBundle.message("inspection.script.incorrectEventId.desc", eventId)
+            holder.registerProblem(nameElement, description)
         }
 
         return holder.resultsArray

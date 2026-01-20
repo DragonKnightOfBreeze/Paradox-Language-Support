@@ -2,13 +2,16 @@ package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.inspections.PlsInspectionService
@@ -24,7 +27,11 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的 CSV 文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -35,15 +42,11 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxCsvColumn) visitColumn(element)
-            }
-
-            private fun visitColumn(element: ParadoxCsvColumn) {
+        return object : ParadoxCsvVisitor() {
+            override fun visitColumn(element: ParadoxCsvColumn) {
+                ProgressManager.checkCanceled()
                 if (element.isEmptyColumn()) return // skip empty columns
-
-                if (element.isHeaderColumn()) return
+                if (element.isHeaderColumn()) return // skip header columns
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
@@ -59,8 +62,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

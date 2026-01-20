@@ -30,7 +30,7 @@ object PlsFacade {
     fun getCoroutineScope(project: Project): CoroutineScope = project.service<CoroutineScopeService>().coroutineScope
 
     /**
-     * 得到默认项目的指定游戏类型的规则分组。不能用于 访问 PSI。
+     * 得到默认项目的指定游戏类型的规则分组。不能用于访问 PSI。
      *
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
@@ -48,6 +48,16 @@ object PlsFacade {
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
         return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
+    }
+
+    /**
+     * 检查指定项目与上下文（[context]）的规则分组是否已加载完毕。
+     *
+     * @param project 指定的项目。
+     * @param context 用于获取游戏类型的上下文对象。
+     */
+    fun checkConfigGroupInitialized(project: Project, context: Any?): Boolean {
+        return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)
     }
 
     fun createNotification(notificationType: NotificationType, content: String): Notification {

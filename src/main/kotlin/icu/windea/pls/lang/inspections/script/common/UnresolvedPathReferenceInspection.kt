@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -48,8 +49,13 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 判断是否需要忽略内联脚本文件
         if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -62,6 +68,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                ProgressManager.checkCanceled()
                 val text = element.text
                 if (text.isParameterized()) return // skip if expression is parameterized
                 val valueConfig = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return // match or single
@@ -72,8 +79,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     val filePath = element.value
                     val virtualFile = filePath.toVirtualFile()
                     if (virtualFile != null) return
-                    val message = PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", filePath)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                    val description = PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", filePath)
+                    holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                     return
                 }
                 val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
@@ -88,8 +95,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     }
                     val selector = selector(project, file).file() // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
-                    val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
-                    holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                    val description = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
+                    holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
                 }
             }
 

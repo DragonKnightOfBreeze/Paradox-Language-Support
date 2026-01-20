@@ -26,7 +26,9 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        // 跳过内存文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false
+        // 要求是符合条件的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 
@@ -41,9 +43,9 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val expect = "UTF-8 BOM"
         val actual = "UTF-8" + if (hasBom) "BOM" else "NO BOM"
-        val message = PlsBundle.message("inspection.localisation.incorrectFileEncoding.desc.1", actual, expect)
+        val description = PlsBundle.message("inspection.localisation.incorrectFileEncoding.desc.1", actual, expect)
         val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, true)
-        holder.registerProblem(file, message, fix)
+        holder.registerProblem(file, description, fix)
         return holder.resultsArray
     }
 }

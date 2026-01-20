@@ -5,6 +5,7 @@ import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -19,6 +20,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quote
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
@@ -68,8 +70,13 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     // 如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 判断是否需要忽略内联脚本文件
         if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
@@ -87,6 +94,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
+                ProgressManager.checkCanceled()
                 val disabledElement = session.disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
@@ -108,16 +116,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val expectedConfigs = getExpectedConfigs(element)
                 if (isSkipped(propertyKey, expectedConfigs)) return true
-                val message = getMessage(propertyKey, expectedConfigs)
+                val description = getDescription(propertyKey, expectedConfigs)
                 val highlightType = getHighlightType(propertyKey, expectedConfigs)
                 val fixes = getFixes(propertyKey, expectedConfigs)
-                holder.registerProblem(element, message, highlightType, *fixes)
+                holder.registerProblem(element, description, highlightType, *fixes)
 
                 // skip checking children if parent has problems
                 return false
             }
 
             private fun visitValue(element: ParadoxScriptValue): Boolean {
+                ProgressManager.checkCanceled()
                 if (!element.isExpression()) return false // skip check if element is not an expression
 
                 val disabledElement = session.disabledElement
@@ -143,10 +152,10 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
                 val expectedConfigs = getExpectedConfigs(element, configContext)
                 if (isSkipped(element, expectedConfigs)) return true
-                val message = getMessage(element, expectedConfigs)
+                val description = getDescription(element, expectedConfigs)
                 val highlightType = getHighlightType(element, expectedConfigs)
                 val fixes = getFixes(element, expectedConfigs)
-                holder.registerProblem(element, message, highlightType, *fixes)
+                holder.registerProblem(element, description, highlightType, *fixes)
 
                 // skip checking children if parent has problems
                 return false
@@ -232,7 +241,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         }
     }
 
-    private fun getMessage(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
+    private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
             showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString.quote('`') }
                 .truncate(PlsInternalSettings.getInstance().itemLimit).joinToString()
@@ -276,26 +285,22 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             // showExpectInfo
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
-                    .bindSelected(::showExpectInfo)
-                    .actionListener { _, component -> showExpectInfo = component.isSelected }
+                    .bindSelected(::showExpectInfo.toAtomicProperty())
             }
             // ignoredByConfigs
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs)
-                    .actionListener { _, component -> ignoredByConfigs = component.isSelected }
+                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
-                    .bindSelected(::ignoredInInlineScriptFiles)
-                    .actionListener { _, component -> ignoredInInlineScriptFiles = component.isSelected }
+                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }
     }

@@ -28,7 +28,8 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     var ignoredFileNames = "languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        // 跳过内存文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false
         return true
     }
 
@@ -41,12 +42,14 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         }
         if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        val description = PlsBundle.message("inspection.localisation.multipleLocales.desc")
+        holder.registerProblem(file, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         return holder.resultsArray
     }
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // ignoredFileNames
             row {
                 label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
                     .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }

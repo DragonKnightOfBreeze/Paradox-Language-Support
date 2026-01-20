@@ -9,9 +9,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
@@ -29,9 +29,10 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
-        if (selectRootFile(file) == null) return false
-        return true
+        // 跳过内存文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false
+        // 要求是符合条件的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
@@ -55,9 +56,9 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val expect = "UTF-8" + if (validBom == null) "" else if (validBom) " BOM" else " NO BOM"
         val actual = "UTF-8" + if (hasBom) " BOM" else " NO BOM"
-        val message = PlsBundle.message("inspection.script.incorrectFileEncoding.desc.1", actual, expect)
+        val description = PlsBundle.message("inspection.script.incorrectFileEncoding.desc.1", actual, expect)
         val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, validBom)
-        holder.registerProblem(file, message, fix)
+        holder.registerProblem(file, description, fix)
         return holder.resultsArray
     }
 }

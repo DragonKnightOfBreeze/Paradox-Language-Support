@@ -13,13 +13,15 @@ data class ParadoxComplexExpressionError(
     val description: String,
     val highlightType: ProblemHighlightType? = null
 ) {
-    fun isUnresolvedError() = this.code in 1..100
+    fun isUnresolvedError() = code in 1..100
+    fun isMalformedError() = code in 101..200
 
     fun register(element: ParadoxExpressionElement, holder: ProblemsHolder, vararg fixes: LocalQuickFix) {
         val description = description
         val highlightType = when {
             highlightType != null -> highlightType
             isUnresolvedError() -> ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
+            isMalformedError() -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
             else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
         }
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))

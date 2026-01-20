@@ -4,11 +4,13 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
@@ -35,8 +37,11 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     var ignoredInInlineScriptFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 判断是否需要忽略内联脚本文件
         if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -46,18 +51,19 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             }
 
             private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
+                ProgressManager.checkCanceled()
                 val name = element.name ?: return
                 if (name.isParameterized()) return // skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
-                val message = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
-                val quickFixes = getQuickFixes(element, name)
-                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
+                val description = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
+                val fixes = getFixes(element, name)
+                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *fixes)
             }
         }
     }
 
-    private fun getQuickFixes(element: ParadoxScriptedVariableReference, name: String): Array<LocalQuickFix> {
+    private fun getFixes(element: ParadoxScriptedVariableReference, name: String): Array<LocalQuickFix> {
         return arrayOf(
             IntroduceLocalScriptedVariableFix(name, element),
             IntroduceGlobalVariableFix(name, element),
@@ -69,14 +75,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
-                    .bindSelected(::ignoredInInlineScriptFiles)
-                    .actionListener { _, component -> ignoredInInlineScriptFiles = component.isSelected }
+                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }
     }

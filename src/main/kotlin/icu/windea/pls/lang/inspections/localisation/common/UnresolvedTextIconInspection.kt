@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
@@ -14,6 +14,7 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import javax.swing.JComponent
@@ -32,17 +33,17 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
-            && ParadoxSyntaxConstraint.LocalisationTextIcon.test(file)
+        // 要求游戏类型支持文本图标
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.test(file)) return false
+        // 要求是符合条件的本地化文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationTextIcon) visitIcon(element)
-            }
-
-            private fun visitIcon(element: ParadoxLocalisationTextIcon) {
+        return object : ParadoxLocalisationVisitor() {
+            override fun visitTextIcon(element: ParadoxLocalisationTextIcon) {
+                ProgressManager.checkCanceled()
                 val name = element.name ?: return
                 ignoredNames.splitOptimized(';').forEach {
                     if (name.matchesPattern(it, true)) return // 忽略
@@ -50,13 +51,15 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedTextIcon.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                val description = PlsBundle.message("inspection.localisation.unresolvedTextIcon.desc", name)
+                holder.registerProblem(location,  description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // ignoredNames
             row {
                 label(PlsBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames"))
             }

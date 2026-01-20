@@ -13,12 +13,12 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -30,8 +30,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class UnusedParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求是符合条件的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -52,6 +52,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
             }
 
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if (!shouldVisit(element)) return
 
                 val references = element.references
@@ -92,8 +93,8 @@ class UnusedParameterInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.unusedParameter.desc", name)
-                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
+                val description = PlsBundle.message("inspection.script.unusedParameter.desc", name)
+                holder.registerProblem(element, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }
     }

@@ -3,13 +3,16 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightInfo
@@ -21,6 +24,8 @@ import javax.swing.JComponent
 
 /**
  * 缺失的图片的代码检查。
+ *
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class MissingImageInspection : LocalInspectionTool() {
     @JvmField
@@ -35,76 +40,89 @@ class MissingImageInspection : LocalInspectionTool() {
     var checkForModifiers = false
     @JvmField
     var checkModifierIcons = true
+    @JvmField
+    var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
-                    is ParadoxScriptDefinitionElement -> visitDefinition(element)
+                    is ParadoxScriptDefinitionElement -> visitDefinitionElement(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
 
-            private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
+            private fun visitDefinitionElement(definition: ParadoxScriptDefinitionElement) {
+                ProgressManager.checkCanceled()
                 val context = ParadoxImageCodeInsightContextBuilder.fromDefinition(definition, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
-                registerProblems(context, definition, holder)
+                registerProblems(holder, definition, context)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                ProgressManager.checkCanceled()
                 val context = ParadoxImageCodeInsightContextBuilder.fromExpression(element, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
-                registerProblems(context, element, holder)
+                registerProblems(holder, element, context)
             }
 
-            private fun registerProblems(context: ParadoxImageCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
+            private fun registerProblems(holder: ProblemsHolder, element: PsiElement, context: ParadoxImageCodeInsightContext) {
                 val location = when {
                     element is ParadoxScriptFile -> element
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptStringExpressionElement -> element
                     else -> return
                 }
-                val messages = getMessages(context)
-                if (messages.isEmpty()) return
+                val descriptions = getDescriptions(context)
+                if (descriptions.isEmpty()) return
                 val fixes = getFixes(element, context)
-                for (message in messages) {
-                    holder.registerProblem(location, message, *fixes)
+                for (description in descriptions) {
+                    holder.registerProblem(location, description, *fixes)
                 }
-            }
-
-            private fun getMessages(context: ParadoxImageCodeInsightContext): List<String> {
-                val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
-                val excludeKeys = mutableSetOf<String>()
-                for (codeInsightInfo in context.infos) {
-                    if (!codeInsightInfo.check) continue
-                    val key = codeInsightInfo.key ?: continue
-                    if (excludeKeys.contains(key)) continue
-                    if (codeInsightInfo.missing) {
-                        includeMap.putIfAbsent(key, codeInsightInfo)
-                    } else {
-                        includeMap.remove(key)
-                        excludeKeys.add(key)
-                    }
-                }
-                return includeMap.values.mapNotNull { getMessage(it) }
-            }
-
-            private fun getMessage(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
-                val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
-                locationExpression?.takeUnless { it.isPlaceholder }?.location
-                    ?.let { return PlsBundle.message("inspection.script.missingImage.desc.3", it) }
-                codeInsightInfo.gfxName
-                    ?.let { return PlsBundle.message("inspection.script.missingImage.desc.2", it) }
-                codeInsightInfo.filePath
-                    ?.let { return PlsBundle.message("inspection.script.missingImage.desc.1", it) }
-                return null
             }
         }
+    }
+
+    private fun getDescriptions(context: ParadoxImageCodeInsightContext): List<String> {
+        val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
+        val excludeKeys = mutableSetOf<String>()
+        for (codeInsightInfo in context.infos) {
+            if (!codeInsightInfo.check) continue
+            val key = codeInsightInfo.key ?: continue
+            if (excludeKeys.contains(key)) continue
+            if (codeInsightInfo.missing) {
+                includeMap.putIfAbsent(key, codeInsightInfo)
+            } else {
+                includeMap.remove(key)
+                excludeKeys.add(key)
+            }
+        }
+        return includeMap.values.mapNotNull { getDescription(it) }
+    }
+
+    private fun getDescription(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
+        val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
+        locationExpression?.takeUnless { it.isPlaceholder }?.location
+            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.3", it) }
+        codeInsightInfo.gfxName
+            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.2", it) }
+        codeInsightInfo.filePath
+            ?.let { return PlsBundle.message("inspection.script.missingImage.desc.1", it) }
+        return null
+    }
+
+    @Suppress("unused")
+    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
+        // nothing now
+        return LocalQuickFix.EMPTY_ARRAY
     }
 
     override fun createOptionsPanel(): JComponent {
@@ -114,8 +132,7 @@ class MissingImageInspection : LocalInspectionTool() {
             // checkForDefinitions
             row {
                 checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForDefinitions"))
-                    .bindSelected(::checkForDefinitions)
-                    .actionListener { _, component -> checkForDefinitions = component.isSelected }
+                    .bindSelected(::checkForDefinitions.toAtomicProperty())
                     .also { checkForDefinitionsCb = it }
             }
             indent {
@@ -128,47 +145,41 @@ class MissingImageInspection : LocalInspectionTool() {
                 // checkPrimaryForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkPrimaryForDefinitions"))
-                        .bindSelected(::checkPrimaryForDefinitions)
-                        .actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
+                        .bindSelected(::checkPrimaryForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkOptionalForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkOptionalForDefinitions"))
-                        .bindSelected(::checkOptionalForDefinitions)
-                        .actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
+                        .bindSelected(::checkOptionalForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 // checkGeneratedModifierIconsForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
-                        .bindSelected(::checkGeneratedModifierIconsForDefinitions)
-                        .actionListener { _, component -> checkGeneratedModifierIconsForDefinitions = component.isSelected }
+                        .bindSelected(::checkGeneratedModifierIconsForDefinitions.toAtomicProperty())
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
             }
             // checkForModifiers
             row {
                 checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForModifiers"))
-                    .bindSelected(::checkForModifiers)
-                    .actionListener { _, component -> checkForModifiers = component.isSelected }
+                    .bindSelected(::checkForModifiers.toAtomicProperty())
                     .also { checkForModifiersCb = it }
             }
             indent {
                 // checkModifierIcons
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkModifierIcons"))
-                        .bindSelected(::checkModifierIcons)
-                        .actionListener { _, component -> checkModifierIcons = component.isSelected }
+                        .bindSelected(::checkModifierIcons.toAtomicProperty())
                         .enabledIf(checkForModifiersCb.selected)
                 }
             }
+            // ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+            }
         }
-    }
-
-    @Suppress("unused")
-    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
-        // nothing now
-        return LocalQuickFix.EMPTY_ARRAY
     }
 }

@@ -53,8 +53,8 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toIntOrNull()
         } ?: return
         if (intValue in intRange) return
-        val message = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, intRange.expression, intValue)
-        holder.registerProblem(element, message)
+        val description = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, intRange.expression, intValue)
+        holder.registerProblem(element, description)
     }
 }
 
@@ -70,8 +70,8 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
             else -> element.value.toFloatOrNull()
         } ?: return
         if (floatValue in floatRange) return
-        val message = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, floatRange.expression, floatValue)
-        holder.registerProblem(element, message)
+        val description = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, floatRange.expression, floatValue)
+        holder.registerProblem(element, description)
     }
 }
 
@@ -85,8 +85,8 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
         val expectedColorType = configExpression.value ?: return
         val colorType = element.colorType
         if (colorType == expectedColorType) return
-        val message = PlsBundle.message("incorrectExpressionChecker.expect.colorType", expression, expectedColorType, colorType)
-        holder.registerProblem(element, message)
+        val description = PlsBundle.message("incorrectExpressionChecker.expect.colorType", expression, expectedColorType, colorType)
+        holder.registerProblem(element, description)
     }
 }
 
@@ -105,8 +105,8 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression
-        val message = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
-        holder.registerProblem(element, message)
+        val description = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
+        holder.registerProblem(element, description)
     }
 }
 
@@ -125,8 +125,8 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression
-        val message = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
-        holder.registerProblem(element, message)
+        val description = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
+        holder.registerProblem(element, description)
     }
 }
 
@@ -205,13 +205,13 @@ class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
         val separatorIndex = text.indexOf('@')
         if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", selector(project, element).definition()).findFirst() == null) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
-            holder.registerProblem(element, message, ProblemHighlightType.ERROR, range)
+            val description = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
+            holder.registerProblem(element, description, ProblemHighlightType.ERROR, range)
         }
         if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
             val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
-            holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR, range)
+            val description = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
+            holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }
 }

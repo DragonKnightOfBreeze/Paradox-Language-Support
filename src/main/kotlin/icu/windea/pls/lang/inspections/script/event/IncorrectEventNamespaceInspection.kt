@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.event
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
@@ -24,13 +25,15 @@ class IncorrectEventNamespaceInspection : EventInspectionBase() {
 
         val elements = file.properties(inline = true)
         for (element in elements) {
+            ProgressManager.checkCanceled()
             val definitionInfo = element.definitionInfo ?: continue
             if (definitionInfo.type != ParadoxDefinitionTypes.eventNamespace) continue
             val nameField = definitionInfo.typeConfig.nameField
             val eventNamespace = definitionInfo.name
             if (ParadoxEventManager.isValidEventNamespace(eventNamespace)) continue
             val nameElement = selectScope { element.nameElement(nameField) } ?: continue
-            holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventNamespace.desc", eventNamespace))
+            val description = PlsBundle.message("inspection.script.incorrectEventNamespace.desc", eventNamespace)
+            holder.registerProblem(nameElement, description)
         }
 
         return holder.resultsArray

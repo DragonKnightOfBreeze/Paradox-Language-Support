@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -36,6 +37,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 checkComparisonOperator(element)
             }
 
@@ -47,8 +49,8 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
                 if (canResolveToNumber(propertyKey)) return
                 val propertyValue = element.propertyValue ?: return
                 if (canResolveToNumber(propertyValue)) return
-                val message = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
-                holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
+                val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
+                holder.registerProblem(token, description, ProblemHighlightType.GENERIC_ERROR)
             }
 
             @Suppress("unused")

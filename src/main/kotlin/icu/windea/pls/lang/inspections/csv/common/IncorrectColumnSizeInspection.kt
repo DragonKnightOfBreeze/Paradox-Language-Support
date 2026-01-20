@@ -2,13 +2,16 @@ package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
@@ -21,7 +24,11 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的 CSV 文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -38,18 +45,14 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         val headerColumnSize = ParadoxCsvManager.computeHeaderColumnSize(header)
         if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
 
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxCsvRow) visitRow(element)
-            }
-
-            private fun visitRow(element: ParadoxCsvRow) {
+        return object : ParadoxCsvVisitor() {
+            override fun visitRow(element: ParadoxCsvRow) {
+                ProgressManager.checkCanceled()
                 val columnSize = ParadoxCsvManager.computeColumnSize(element)
                 if (columnSize == expectColumnSize) return
-
-                val locationElement = element.lastChild ?: return // latest non-empty column or separator
+                val location = element.lastChild ?: return // latest non-empty column or separator
                 val description = PlsBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
-                holder.registerProblem(locationElement, description)
+                holder.registerProblem(location, description)
             }
         }
     }
@@ -59,8 +62,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

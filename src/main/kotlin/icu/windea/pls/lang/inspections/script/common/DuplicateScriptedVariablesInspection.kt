@@ -57,9 +57,9 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
             for (value in values) {
                 // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                 val location = value.scriptedVariableName
-                val message = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
+                val description = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, value, values)
-                holder.registerProblem(location, message, fix)
+                holder.registerProblem(location, description, fix)
             }
         }
         return holder.resultsArray

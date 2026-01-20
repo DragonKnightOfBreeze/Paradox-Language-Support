@@ -181,9 +181,9 @@ object ParadoxParameterManager {
         val fileConditionStack = ArrayDeque<ReversibleValue<String>>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptParameterConditionExpression) visitParadoxConditionExpression(element)
-                if (element is ParadoxConditionParameter) visitConditionParameter(element)
-                if (element is ParadoxParameter) visitParameter(element)
+                if (element is ParadoxScriptParameterConditionExpression) return visitParadoxConditionExpression(element)
+                if (element is ParadoxConditionParameter) return visitConditionParameter(element)
+                if (element is ParadoxParameter) return visitParameter(element)
                 super.visitElement(element)
             }
 

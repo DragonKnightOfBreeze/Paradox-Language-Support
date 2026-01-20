@@ -16,17 +16,11 @@ import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionInListFix
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object PlsInspectionUtil {
-    fun isConfigGroupInitialized(file: PsiFile): Boolean {
-        val project = file.project
-        return PlsFacade.getConfigGroup(project).initialized
-            && PlsFacade.getConfigGroup(project, selectGameType(file)).initialized
-    }
 
     context(tool: LocalInspectionTool)
     fun getWeakerHighlightType(condition: Boolean = true): ProblemHighlightType {

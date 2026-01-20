@@ -30,9 +30,9 @@ class OverrideForFileInspection : OverrideRelatedInspectionBase() {
 
                 val locationElement = file
                 val (key, target, results) = overrideResult
-                val message = PlsBundle.message("inspection.overrideForFile.desc", key)
+                val description = PlsBundle.message("inspection.overrideForFile.desc", key)
                 val fix = NavigateToOverridingFilesFix(key, target, results)
-                holder.registerProblem(locationElement, message, fix)
+                holder.registerProblem(locationElement, description, fix)
             }
         }
     }

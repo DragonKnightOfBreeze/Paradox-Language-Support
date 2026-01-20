@@ -9,9 +9,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -21,9 +21,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求规则数据已全部加载完毕
-        if (!PlsInspectionUtil.isConfigGroupInitialized(file)) return false
-
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的脚本文件
         return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
@@ -38,7 +38,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
                 val complexExpression = resolveComplexExpression(element, configGroup) ?: return
                 val errors = complexExpression.getAllErrors(element)
                 if (errors.isEmpty()) return
-                val fixes = getFixes(element, complexExpression)
+                val fixes = getFixes(element, complexExpression, errors)
                 errors.forEach { error -> error.register(element, holder, *fixes) }
             }
         }
@@ -53,7 +53,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean
 
-    protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
+    protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression, errors: List<ParadoxComplexExpressionError>): Array<LocalQuickFix> {
         return LocalQuickFix.EMPTY_ARRAY
     }
 }

@@ -2,10 +2,12 @@ package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -26,19 +28,26 @@ class NonTriggeredEventInspection : EventInspectionBase() {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file.properties(inline = true).forEach f@{ element ->
-            val definitionInfo = element.definitionInfo ?: return@f
-            if (definitionInfo.type != ParadoxDefinitionTypes.event) return@f
-            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no `triggered` subtype declared, skip
-            if ("inherited" in definitionInfo.subtypes) return@f  // ignore inherited events
-            if ("triggered" in definitionInfo.subtypes) return@f
-            val fixes = buildList {
-                if (element.block != null) this += Fix1(element)
-            }.toTypedArray()
-            holder.registerProblem(element.propertyKey, PlsBundle.message("inspection.script.nonTriggeredEvent.desc"), *fixes)
+        val elements = file.properties(inline = true)
+        for (element in elements) {
+            ProgressManager.checkCanceled()
+            val definitionInfo = element.definitionInfo ?: continue
+            if (definitionInfo.type != ParadoxDefinitionTypes.event) continue
+            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) continue  // no `triggered` subtype declared, skip
+            if ("inherited" in definitionInfo.subtypes) continue  // ignore inherited events
+            if ("triggered" in definitionInfo.subtypes) continue
+            val description = PlsBundle.message("inspection.script.nonTriggeredEvent.desc")
+            val fixes = getFixes(element)
+            holder.registerProblem(element.propertyKey, description, *fixes)
         }
 
         return holder.resultsArray
+    }
+
+    private fun getFixes(element: ParadoxScriptProperty): Array<LocalQuickFix> {
+        return buildList {
+            if (element.block != null) this += (Fix1(element))
+        }.toTypedArray()
     }
 
     private class Fix1(

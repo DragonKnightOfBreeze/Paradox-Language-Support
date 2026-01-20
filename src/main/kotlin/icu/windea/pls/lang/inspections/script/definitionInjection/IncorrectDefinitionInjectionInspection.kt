@@ -1,13 +1,15 @@
 package icu.windea.pls.lang.inspections.script.definitionInjection
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptVisitor
 import javax.swing.JComponent
 
 /**
@@ -19,9 +21,9 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
     private var checkForRelaxModes = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element !is ParadoxScriptProperty) return
+        return object : ParadoxScriptVisitor() {
+            override fun visitProperty(element: ParadoxScriptProperty) {
+                ProgressManager.checkCanceled()
                 val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
                 if (definitionInjectionInfo.target.isNullOrEmpty()) {
                     val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.1")
@@ -52,10 +54,10 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // checkForRelaxModes
             row {
                 checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes"))
-                    .bindSelected(::checkForRelaxModes)
-                    .actionListener { _, component -> checkForRelaxModes = component.isSelected }
+                    .bindSelected(::checkForRelaxModes.toAtomicProperty())
                 contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes.tip"))
             }
         }

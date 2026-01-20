@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -20,6 +21,7 @@ import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
@@ -36,9 +38,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField
     var locales = ""
 
+    @Suppress("ktPropBy")
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求是符合条件的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 
@@ -48,12 +52,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
         if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationProperty) visitLocalisation(element)
-            }
-
-            private fun visitLocalisation(element: ParadoxLocalisationProperty) {
+        return object : ParadoxLocalisationVisitor() {
+            override fun visitProperty(element: ParadoxLocalisationProperty) {
+                ProgressManager.checkCanceled()
                 val context = ParadoxLocalisationCodeInsightContextBuilder.fromLocalisation(element, locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
@@ -65,38 +66,38 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     element is ParadoxLocalisationProperty -> element.propertyKey
                     else -> return
                 }
-                val messages = getMessages(context)
+                val messages = getDescriptions(context)
                 if (messages.isEmpty()) return
                 val fixes = getFixes(element, context)
-                for (message in messages) {
-                    holder.registerProblem(location, message, *fixes)
+                for (description in messages) {
+                    holder.registerProblem(location, description, *fixes)
                 }
-            }
-
-            private fun getMessages(context: ParadoxLocalisationCodeInsightContext): List<String> {
-                val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
-                val excludeKeys = mutableSetOf<String>()
-                for (codeInsightInfo in context.infos) {
-                    if (!codeInsightInfo.check) continue
-                    val key = codeInsightInfo.key ?: continue
-                    if (excludeKeys.contains(key)) continue
-                    if (codeInsightInfo.missing) {
-                        includeMap.putIfAbsent(key, codeInsightInfo)
-                    } else {
-                        includeMap.remove(key)
-                        excludeKeys.add(key)
-                    }
-                }
-                return includeMap.values.mapNotNull { getMessage(it) }
-            }
-
-            private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
-                val localeId = codeInsightInfo.locale.id
-                codeInsightInfo.name
-                    ?.let { return PlsBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
-                return null
             }
         }
+    }
+
+    private fun getDescriptions(context: ParadoxLocalisationCodeInsightContext): List<String> {
+        val includeMap = mutableMapOf<String, ParadoxLocalisationCodeInsightInfo>()
+        val excludeKeys = mutableSetOf<String>()
+        for (codeInsightInfo in context.infos) {
+            if (!codeInsightInfo.check) continue
+            val key = codeInsightInfo.key ?: continue
+            if (excludeKeys.contains(key)) continue
+            if (codeInsightInfo.missing) {
+                includeMap.putIfAbsent(key, codeInsightInfo)
+            } else {
+                includeMap.remove(key)
+                excludeKeys.add(key)
+            }
+        }
+        return includeMap.values.mapNotNull { getDescription(it) }
+    }
+
+    private fun getDescription(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
+        val localeId = codeInsightInfo.locale.id
+        codeInsightInfo.name
+            ?.let { return PlsBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+        return null
     }
 
     private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<LocalQuickFix> {
@@ -111,8 +112,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             // checkForPreferredLocale
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
-                    .bindSelected(::checkForPreferredLocale)
-                    .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
+                    .bindSelected(::checkForPreferredLocale.toAtomicProperty())
                 cell(ActionLink(PlsBundle.message("configure")) {
                     // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
@@ -122,8 +122,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             // checkForSpecificLocales
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
-                    .bindSelected(::checkForSpecificLocales)
-                    .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
+                    .bindSelected(::checkForSpecificLocales.toAtomicProperty())
                 val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(PlsBundle.message("configure")) {
                     val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }

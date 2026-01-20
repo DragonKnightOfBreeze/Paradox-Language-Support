@@ -3,13 +3,16 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import javax.swing.JComponent
 
 /**
@@ -22,21 +25,23 @@ class UnresolvedColorInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的本地化文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationColorfulText) visitColorfulText(element)
-            }
-
-            private fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
-                val location = element.idElement ?: return
+        return object : ParadoxLocalisationVisitor() {
+            override fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
+                ProgressManager.checkCanceled()
+                val name = element.name ?: return
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
-                val name = element.name ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedColor.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                val location = element.idElement ?: return
+                val description = PlsBundle.message("inspection.localisation.unresolvedColor.desc", name)
+                holder.registerProblem(location, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
@@ -46,8 +51,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

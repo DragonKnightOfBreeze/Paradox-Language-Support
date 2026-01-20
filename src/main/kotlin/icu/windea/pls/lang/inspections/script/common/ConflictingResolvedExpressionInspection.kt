@@ -2,37 +2,55 @@ package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.parentProperty
+import javax.swing.JComponent
 
 /**
  * 对应的CWT规则有多个且存在冲突的表达式的代码检查。
+ *
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
-@Suppress("UNUSED_PARAMETER")
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
+    @JvmField
+    var ignoredInInjectedFiles = false
+    @JvmField
+    var ignoredInInlineScriptFiles = false
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 判断是否需要忽略内联脚本文件
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
+        // 要求是符合条件的脚本文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -42,6 +60,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitBlock(element: ParadoxScriptBlock) {
+                ProgressManager.checkCanceled()
                 if (!element.isExpression()) return // skip check if element is not an expression
 
                 // skip checking property if its property key may contain parameters
@@ -83,6 +102,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
 
+            @Suppress("UNUSED_PARAMETER")
             private fun filterConfigs(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
                 val configsToCheck = configs.filter { config ->
                     val childConfigs = config.configs
@@ -92,6 +112,21 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     }
                 }
                 return configsToCheck.ifEmpty { configs }
+            }
+        }
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            // ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
+            }
+            // ignoredInInlineScriptFiles
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }
     }

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
@@ -9,6 +9,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
  * 不正确的对定义的重载的代码检查。
@@ -30,21 +31,19 @@ class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase()
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
 
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptProperty) visitDefinition(element)
-            }
+        return object : ParadoxScriptVisitor() {
+            override fun visitProperty(element: ParadoxScriptProperty) {
+                ProgressManager.checkCanceled()
 
-            private fun visitDefinition(element: ParadoxScriptProperty) {
                 val overrideResult = ParadoxOverrideService.getOverrideResultForDefinition(element, file)
                 if (overrideResult == null) return
                 if (ParadoxOverrideService.isOverrideCorrect(overrideResult)) return
 
                 val locationElement = element.propertyKey
                 val (key, target, results, overrideStrategy) = overrideResult
-                val message = PlsBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy)
+                val description = PlsBundle.message("inspection.incorrectOverrideForDefinition.desc", key, overrideStrategy)
                 val fix = NavigateToOverridingDefinitionsFix(key, target, results)
-                holder.registerProblem(locationElement, message, fix)
+                holder.registerProblem(locationElement, description, fix)
             }
         }
     }

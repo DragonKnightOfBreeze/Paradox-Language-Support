@@ -4,18 +4,21 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvVisitor
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -32,7 +35,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
+        // 要求是符合条件的 CSV 文件
+        val injectable = !ignoredInInjectedFiles
+        return ParadoxPsiFileMatcher.isCsvFile(file, smart = true, injectable = injectable)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -43,18 +50,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxCsvColumn) visitColumn(element)
-            }
-
-            private fun visitColumn(element: ParadoxCsvColumn) {
+        return object : ParadoxCsvVisitor() {
+            override fun visitColumn(element: ParadoxCsvColumn) {
+                ProgressManager.checkCanceled()
                 if (element.isHeaderColumn()) return
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
-                val locationElement = when {
+                val location = when {
                     // special handle for empty columns
                     element.isEmptyColumn() -> {
                         val isFirst = element.getColumnIndex() == 0
@@ -62,16 +66,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     }
                     else -> element
                 }
-
-                val description = getMessage(element, columnConfig, config)
+                val description = getDescription(element, columnConfig, config)
                 val highlightType = getHighlightType(element, columnConfig, config)
                 val fixes = getFixes(element, columnConfig, config)
-                holder.registerProblem(locationElement, description, highlightType, *fixes)
+                holder.registerProblem(location, description, highlightType, *fixes)
             }
         }
     }
 
-    private fun getMessage(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): String {
+    private fun getDescription(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): String {
         return PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
     }
 
@@ -94,8 +97,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

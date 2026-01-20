@@ -36,7 +36,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  */
 class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        // 跳过内存文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false
+        // 要求是符合条件的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 
@@ -62,13 +64,18 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val quickFixes = buildList {
+        val location = locale // 不要直接注册到文件上
+        val description = PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId)
+        val fixes = getFixes(locale, expectedFileName, localeIdFromFile)
+        holder.registerProblem(location, description, *fixes)
+        return holder.resultsArray
+    }
+
+    private fun getFixes(locale: ParadoxLocalisationLocale, expectedFileName: String, localeIdFromFile: String?): Array<LocalQuickFix> {
+        return buildList {
             this += RenameFileFix(locale, expectedFileName)
             if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
-        }.toTypedArray<LocalQuickFix>()
-        // 将检查注册在locale上，而非file上
-        holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId), *quickFixes)
-        return holder.resultsArray
+        }.toTypedArray()
     }
 
     // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

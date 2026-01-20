@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.inspections.overrides
 
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
@@ -9,6 +9,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
  * 对（全局）封装变量的重载的代码检查。
@@ -25,20 +26,18 @@ class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
         if (!ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return PsiElementVisitor.EMPTY_VISITOR
 
-        return object : PsiElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptScriptedVariable) visitScriptedVariable(element)
-            }
+        return object : ParadoxScriptVisitor() {
+            override fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
+                ProgressManager.checkCanceled()
 
-            private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, file)
                 if (overrideResult == null) return
 
                 val locationElement = element.scriptedVariableName
                 val (key, target, results) = overrideResult
-                val message = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
+                val description = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
                 val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
-                holder.registerProblem(locationElement, message, fix)
+                holder.registerProblem(locationElement, description, fix)
             }
         }
     }

@@ -14,12 +14,12 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -32,8 +32,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class UnsetDynamicValueInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
+        // 要求是符合条件的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -53,6 +53,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
             }
 
             override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
                 if (!shouldVisit(element)) return
 
                 val references = element.references
@@ -92,8 +93,8 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
             }
 
             private fun registerProblem(element: PsiElement, name: String, dynamicValueType: String, range: TextRange) {
-                val message = PlsBundle.message("inspection.script.unsetDynamicValue.desc", name, dynamicValueType)
-                holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
+                val description = PlsBundle.message("inspection.script.unsetDynamicValue.desc", name, dynamicValueType)
+                holder.registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, range)
             }
         }
     }

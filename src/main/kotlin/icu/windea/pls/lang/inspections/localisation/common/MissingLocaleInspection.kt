@@ -27,7 +27,8 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
     var ignoredFileNames = ""
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        // 跳过内存文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false
         return true
     }
 
@@ -40,12 +41,14 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         }
         if (file.propertyLists.all { it.locale != null }) return null // 没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.desc"))
+        val description = PlsBundle.message("inspection.localisation.missingLocale.desc")
+        holder.registerProblem(file, description)
         return holder.resultsArray
     }
 
     override fun createOptionsPanel(): JComponent {
         return panel {
+            // ignoredFileNames
             row {
                 label(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames"))
                     .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.tooltip") }

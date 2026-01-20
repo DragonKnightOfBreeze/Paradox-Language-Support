@@ -53,7 +53,8 @@ class MismatchedEventIdInspection : EventInspectionBase() {
                 val nameElement = selectScope { event.nameElement(nameField) } ?: continue
                 val eventId = nameElement.stringValue() ?: continue
                 if (!ParadoxEventManager.isMatchedEventId(eventId, namespace)) {
-                    holder.registerProblem(nameElement, PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace))
+                    val description = PlsBundle.message("inspection.script.mismatchedEventId.desc", eventId, namespace)
+                    holder.registerProblem(nameElement, description)
                 }
             }
         }

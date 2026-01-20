@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.inspections.localisation.scope
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
@@ -20,11 +19,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.isCommandExpression
 
-class IncorrectScopeSwitchInspection : LocalInspectionTool() {
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
-    }
-
+class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
@@ -33,44 +28,37 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
+                ProgressManager.checkCanceled()
                 if (!element.isCommandExpression()) return
                 val value = element.value
-                val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup)
-                if (commandExpression == null) return
-                checkExpression(element, commandExpression)
+                val commandExpression = ParadoxCommandExpression.resolve(value, null, configGroup) ?: return
+                checkExpression(holder, element, commandExpression, configGroup)
             }
+        }
+    }
 
-            fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                doCheckExpression(element, complexExpression)
-            }
+    private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup) {
+        var inputScopeContext = ParadoxScopeManager.getAnyScopeContext()
+        if (complexExpression !is ParadoxCommandExpression) return
+        for (node in complexExpression.nodes) {
+            when (node) {
+                is ParadoxCommandScopeLinkNode -> {
+                    val supportedScopes = ParadoxScopeManager.getSupportedScopesOfNode(element, node, inputScopeContext)
+                    val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
+                    val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                    inputScopeContext = outputScopeContext
 
-            private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                var inputScopeContext = ParadoxScopeManager.getAnyScopeContext()
-                when (complexExpression) {
-                    is ParadoxCommandExpression -> {
-                        for (node in complexExpression.nodes) {
-                            when (node) {
-                                is ParadoxCommandScopeLinkNode -> {
-                                    val supportedScopes = ParadoxScopeManager.getSupportedScopesOfNode(element, node, inputScopeContext)
-                                    val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
-                                    val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
-                                    inputScopeContext = outputScopeContext
-
-                                    if (supportedScopes.isNullOrEmpty()) continue
-                                    if (matched) continue
-                                    val offset = ParadoxExpressionManager.getExpressionOffset(element)
-                                    val startOffset = offset + node.rangeInExpression.startOffset
-                                    val endOffset = offset + node.rangeInExpression.endOffset
-                                    val range = TextRange.create(startOffset, endOffset)
-                                    val description = PlsBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
-                                    holder.registerProblem(element, range, description)
-                                    break // only reports first problem per complex expression
-                                }
-                                is ParadoxCommandFieldNode -> break
-                            }
-                        }
-                    }
+                    if (supportedScopes.isNullOrEmpty()) continue
+                    if (matched) continue
+                    val offset = ParadoxExpressionManager.getExpressionOffset(element)
+                    val startOffset = offset + node.rangeInExpression.startOffset
+                    val endOffset = offset + node.rangeInExpression.endOffset
+                    val range = TextRange.create(startOffset, endOffset)
+                    val description = PlsBundle.message("inspection.localisation.incorrectScopeSwitch.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
+                    holder.registerProblem(element, range, description)
+                    break // only reports first problem per complex expression
                 }
+                is ParadoxCommandFieldNode -> break
             }
         }
     }

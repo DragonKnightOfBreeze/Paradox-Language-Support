@@ -22,7 +22,8 @@ class MissingEventNamespaceInspection : EventInspectionBase() {
         if (!r) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        holder.registerProblem(file, PlsBundle.message("inspection.script.missingEventNamespace.desc"))
+        val description = PlsBundle.message("inspection.script.missingEventNamespace.desc")
+        holder.registerProblem(file, description)
         return holder.resultsArray
     }
 }
