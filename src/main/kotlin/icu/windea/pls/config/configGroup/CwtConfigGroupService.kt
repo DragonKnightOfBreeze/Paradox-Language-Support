@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
+import com.intellij.platform.util.progress.reportProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
@@ -30,12 +31,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        val configGroupsToInit = buildSet {
-            addAll(configGroups)
-            // 之后也要初始化默认项目的规则数据
-            configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
-        }
-        configGroupsToInit.forEachConcurrent { configGroup -> configGroup.init() }
+        process(configGroups, project)
         val end = System.currentTimeMillis()
         val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Initialized config groups for $targetName in ${end - start} ms.")
@@ -43,15 +39,37 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        val configGroupsToInit = buildSet {
-            addAll(configGroups)
-            // 之后也要刷新默认项目的规则数据
-            configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
-        }
-        configGroupsToInit.forEachConcurrent { configGroup -> configGroup.init() }
+        process(configGroups, project)
         val end = System.currentTimeMillis()
         val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
+    }
+
+    private suspend fun process(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        if (project.isDefault) {
+            val toProcess = configGroups.toSet()
+            toProcess.forEachConcurrent { configGroup ->
+                configGroup.init()
+            }
+        } else {
+            val toProcess = buildSet {
+                addAll(configGroups)
+                // 之后也要初始化默认项目的规则数据
+                configGroups.mapTo(this) { configGroup -> PlsFacade.getConfigGroup(configGroup.gameType) }
+            }
+            reportProgress(toProcess.size) { reporter ->
+                toProcess.forEachConcurrent { configGroup ->
+                    val step = if(configGroup.project.isDefault) {
+                        PlsBundle.message("configGroup.process.step.application", configGroup.gameType.id)
+                    } else {
+                        PlsBundle.message("configGroup.process.step.project", configGroup.gameType.id)
+                    }
+                    reporter.itemStep(step) {
+                        configGroup.init()
+                    }
+                }
+            }
+        }
     }
 
     fun initAsync(callback: () -> Unit = {}) {
