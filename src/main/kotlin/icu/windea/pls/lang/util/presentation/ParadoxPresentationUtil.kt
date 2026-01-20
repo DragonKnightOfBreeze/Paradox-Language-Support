@@ -4,8 +4,10 @@ import com.intellij.diagram.DiagramElementManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.ui.ColorUtil
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.ui.JBUI
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.lang.psi.properties
@@ -17,7 +19,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextUIRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -81,7 +82,25 @@ object ParadoxPresentationUtil {
     }
 
     fun getLabel(text: String, color: Color? = null): JLabel {
-        return ParadoxLocalisationTextUIRenderer().withColor(color).renderLabel(text)
+        val label = JLabel()
+        label.text = getLabelHtml(text, color)
+        label.border = JBUI.Borders.empty()
+        label.size = label.preferredSize
+        label.isOpaque = false
+        return label
+    }
+
+    fun getLabelHtml(text: String, color: Color? = null): String {
+        // com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
+        return buildString {
+            append("<html>")
+            append("<span")
+            if (color != null) append(" style='color: #").append(ColorUtil.toHex(color, true)).append("'")
+            append(">")
+            append(text)
+            append("</span>")
+            append("</html>")
+        }
     }
 
     fun getIcon(ddsFile: PsiFile): Icon? {
