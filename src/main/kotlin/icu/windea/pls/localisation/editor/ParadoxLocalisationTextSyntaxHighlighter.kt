@@ -11,7 +11,7 @@ import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeyArrays as KA
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeySets as KA
 
 class ParadoxLocalisationTextSyntaxHighlighter(
     private val project: Project?,

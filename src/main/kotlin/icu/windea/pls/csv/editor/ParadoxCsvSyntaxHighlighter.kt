@@ -9,7 +9,7 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeyArrays as KA
+import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeySets as KA
 
 class ParadoxCsvSyntaxHighlighter(
     private val project: Project?

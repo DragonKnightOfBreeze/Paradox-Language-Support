@@ -3,17 +3,17 @@ package icu.windea.pls.csv.editor
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeys as K
 
-object ParadoxCsvAttributesKeyArrays {
+object ParadoxCsvAttributesKeySets {
     @JvmField
     val SEPARATOR_KEYS = arrayOf(K.SEPARATOR_KEY)
     @JvmField
     val COMMENT_KEYS = arrayOf(K.COMMENT_KEY)
-    @JvmField
-    val HEADER_KEYS = arrayOf(K.HEADER_KEY)
-    @JvmField
-    val KEYWORD_KEYS = arrayOf(K.KEYWORD_KEY)
-    @JvmField
-    val NUMBER_KEYS = arrayOf(K.NUMBER_KEY)
+    // @JvmField
+    // val HEADER_KEYS = arrayOf(K.HEADER_KEY)
+    // @JvmField
+    // val KEYWORD_KEYS = arrayOf(K.KEYWORD_KEY)
+    // @JvmField
+    // val NUMBER_KEYS = arrayOf(K.NUMBER_KEY)
     @JvmField
     val STRING_KEYS = arrayOf(K.STRING_KEY)
     @JvmField

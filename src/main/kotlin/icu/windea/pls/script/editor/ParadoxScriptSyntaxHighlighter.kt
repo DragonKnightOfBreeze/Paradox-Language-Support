@@ -9,7 +9,7 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeyArrays as KA
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeySets as KA
 
 class ParadoxScriptSyntaxHighlighter(
     private val project: Project?

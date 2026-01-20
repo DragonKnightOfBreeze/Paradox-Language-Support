@@ -3,7 +3,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.cwt.editor.CwtAttributesKeys as K
 
-object CwtAttributesKeyArrays {
+object CwtAttributesKeySets {
     @JvmField
     val BRACES_KEYS = arrayOf(K.BRACES_KEY)
     @JvmField

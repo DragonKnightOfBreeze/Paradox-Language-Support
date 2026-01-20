@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.editor
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as K
 
-object ParadoxLocalisationAttributesKeyArrays {
+object ParadoxLocalisationAttributesKeySets {
     @JvmField
     val OPERATOR_KEYS = arrayOf(K.OPERATOR_KEY)
     @JvmField

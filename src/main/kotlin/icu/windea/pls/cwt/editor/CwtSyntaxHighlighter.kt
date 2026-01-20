@@ -9,7 +9,7 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.cwt.lexer.CwtLexerFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.cwt.editor.CwtAttributesKeyArrays as KA
+import icu.windea.pls.cwt.editor.CwtAttributesKeySets as KA
 
 class CwtSyntaxHighlighter(
     private val project: Project?

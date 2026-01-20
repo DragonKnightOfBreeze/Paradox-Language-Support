@@ -3,7 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as K
 
-object ParadoxScriptAttributesKeyArrays {
+object ParadoxScriptAttributesKeySets {
     @JvmField
     val BRACES_KEYS = arrayOf(K.BRACES_KEY)
     @JvmField
