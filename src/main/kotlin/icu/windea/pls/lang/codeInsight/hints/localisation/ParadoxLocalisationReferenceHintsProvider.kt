@@ -7,6 +7,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -24,12 +25,12 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableRefere
 class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.localisationReference")
 
-    override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
-    override val description: String get() = PlsBundle.message("localisation.hints.localisationReference.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+    override val name get() = PlsBundle.message("localisation.hints.localisationReference")
+    override val description get() = PlsBundle.message("localisation.hints.localisationReference.description")
+    override val key get() = settingsKey
 
-    override val renderLocalisation: Boolean get() = true
-    override val renderIcon: Boolean get() = true
+    override val renderLocalisation get() = true
+    override val renderIcon get() = true
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
@@ -40,5 +41,11 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(element) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxLocalisationParameter) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
     }
 }

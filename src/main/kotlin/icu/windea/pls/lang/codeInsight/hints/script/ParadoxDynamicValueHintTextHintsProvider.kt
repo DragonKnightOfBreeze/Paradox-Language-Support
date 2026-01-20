@@ -31,12 +31,12 @@ import icu.windea.pls.script.psi.isExpression
 class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.dynamicValueHintText")
 
-    override val name: String get() = PlsBundle.message("script.hints.dynamicValueHintText")
-    override val description: String get() = PlsBundle.message("script.hints.dynamicValueHintText.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+    override val name get() = PlsBundle.message("script.hints.dynamicValueHintText")
+    override val description get() = PlsBundle.message("script.hints.dynamicValueHintText.description")
+    override val key get() = settingsKey
 
-    override val renderLocalisation: Boolean get() = true
-    override val renderIcon: Boolean get() = true
+    override val renderLocalisation get() = true
+    override val renderIcon get() = true
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {

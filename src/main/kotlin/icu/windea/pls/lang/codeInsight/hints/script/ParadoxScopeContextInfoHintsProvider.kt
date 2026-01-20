@@ -35,11 +35,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scopeContextInfo")
 
-    override val name: String get() = PlsBundle.message("script.hints.scopeContextInfo")
-    override val description: String get() = PlsBundle.message("script.hints.scopeContextInfo.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+    override val name get() = PlsBundle.message("script.hints.scopeContextInfo")
+    override val description get() = PlsBundle.message("script.hints.scopeContextInfo.description")
+    override val key get() = settingsKey
 
-    override val showScopeContextInfo: Boolean get() = true
+    override val showScopeContextInfo get() = true
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {

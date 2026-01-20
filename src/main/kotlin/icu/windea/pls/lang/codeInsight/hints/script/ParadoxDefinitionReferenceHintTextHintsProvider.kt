@@ -29,12 +29,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.definitionReferenceHintText")
 
-    override val name: String get() = PlsBundle.message("script.hints.definitionReferenceHintText")
-    override val description: String get() = PlsBundle.message("script.hints.definitionReferenceHintText.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+    override val name get() = PlsBundle.message("script.hints.definitionReferenceHintText")
+    override val description get() = PlsBundle.message("script.hints.definitionReferenceHintText.description")
+    override val key get() = settingsKey
 
-    override val renderLocalisation: Boolean get() = true
-    override val renderIcon: Boolean get() = true
+    override val renderLocalisation get() = true
+    override val renderIcon get() = true
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {

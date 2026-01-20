@@ -12,7 +12,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
+ * 通过内嵌提示显示定义引用信息，包括类型和子类型。
  *
  * @see ParadoxDefinitionReferenceInfoSettingsProvider
  */

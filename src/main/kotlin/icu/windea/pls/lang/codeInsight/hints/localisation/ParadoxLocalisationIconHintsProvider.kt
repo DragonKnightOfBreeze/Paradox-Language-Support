@@ -30,11 +30,11 @@ import javax.imageio.ImageIO
 class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.localisationIcon")
 
-    override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
-    override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+    override val name get() = PlsBundle.message("localisation.hints.localisationIcon")
+    override val description get() = PlsBundle.message("localisation.hints.localisationIcon.description")
+    override val key get() = settingsKey
 
-    override val renderIcon: Boolean get() = true
+    override val renderIcon get() = true
 
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
