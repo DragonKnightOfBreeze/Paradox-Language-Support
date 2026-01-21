@@ -2,7 +2,11 @@
 
 ## 设置页面 {#settings-page}
 
-待编写。
+在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > AI`，可以打开 AI 的设置页面。
+
+可以在这里配置是否启用 AI 集成，相关功能的一些具体的配置项，以及 AI 服务的提供商。
+
+![](../images/ai/ai_settings_1.png)
 
 ## 相关功能 {#features}
 

@@ -12,6 +12,7 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")
@@ -28,41 +29,46 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
         val settings = PlsConfigSettings.getInstance().state
         return panel {
             group(PlsBundle.message("settings.config.configGroups")) {
+                row {
+                    comment(PlsBundle.message("settings.config.configGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+                }
                 // enableBuiltInConfigGroups
                 row {
                     checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
+                        .comment(PlsBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                         .bindSelected(settings::enableBuiltInConfigGroups)
                         .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
-                    comment(PlsBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+                    browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("config.html#config-group-builtin"))
                 }
                 // enableRemoteConfigGroups
                 row {
                     checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
+                        .comment(PlsBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
                         .bindSelected(settings::enableRemoteConfigGroups)
                         .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
-                    comment(PlsBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
+                    browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("config.html#config-group-remote"))
                 }
                 // enableLocalConfigGroups
                 row {
                     checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
+                        .comment(PlsBundle.message("settings.config.enableLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(settings::enableLocalConfigGroups)
                         .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
+                    browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("config.html#config-group-local"))
                 }
                 // enableProjectLocalConfigGroups
                 row {
                     checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
+                        .comment(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(settings::enableProjectLocalConfigGroups)
                         .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
+                    browserLink(PlsBundle.message("link.documentation"), PlsConstants.docUrl("config.html#config-group-project-local"))
                 }
 
                 // remoteConfigDirectory
                 row {
                     label(PlsBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
-                        .comment(PlsBundle.message("settings.config.remoteConfigDirectory.tip"), MAX_LINE_LENGTH_WORD_WRAP)
+                        .comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("settings.config.remoteConfigDirectory.title"))
                     textFieldWithBrowseButton(descriptor, null)
@@ -77,7 +83,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 // configRepositoryUrls
                 row {
                     label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
-                        .comment(PlsBundle.message("settings.config.configRepositoryUrls.tip"), MAX_LINE_LENGTH_WORD_WRAP)
+                        .comment(PlsBundle.message("settings.config.configRepositoryUrls.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     val configRepositoryUrls = settings.configRepositoryUrls
                     ParadoxGameType.getAll().forEach { configRepositoryUrls.putIfAbsent(it.id, CwtConfigRepositoryManager.getDefaultUrl(it)) }
                     val defaultList = configRepositoryUrls.toMutableEntryList()
@@ -86,7 +92,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                         val dialog = ConfigRepositoryUrlsDialog(list)
                         if (dialog.showAndGet()) list = dialog.resultList
                     }
-                    link(PlsBundle.message("configure"), action)
+                    link(PlsBundle.message("link.configure"), action)
                         .onApply {
                             val oldConfigRepositoryUrls = configRepositoryUrls.toMutableMap()
                             val newConfigRepositoryUrls = list.toMutableMap()
@@ -100,7 +106,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 // localConfigDirectory
                 row {
                     label(PlsBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
-                        .comment(PlsBundle.message("settings.config.localConfigDirectory.tip"), MAX_LINE_LENGTH_WORD_WRAP)
+                        .comment(PlsBundle.message("settings.config.localConfigDirectory.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("settings.config.localConfigDirectory.title"))
                     textFieldWithBrowseButton(descriptor, null)
@@ -112,7 +118,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 // projectLocalConfigDirectoryName
                 row {
                     label(PlsBundle.message("settings.config.projectLocalConfigDirectoryName")).widthGroup(groupName)
-                        .comment(PlsBundle.message("settings.config.projectLocalConfigDirectoryName.tip"), MAX_LINE_LENGTH_WORD_WRAP)
+                        .comment(PlsBundle.message("settings.config.projectLocalConfigDirectoryName.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     textField()
                         .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(".config") }

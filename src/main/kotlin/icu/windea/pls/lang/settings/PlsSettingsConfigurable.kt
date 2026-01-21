@@ -60,7 +60,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         val dialog = DefaultGameDirectoriesDialog(list)
                         if (dialog.showAndGet()) list = dialog.resultList
                     }
-                    link(PlsBundle.message("configure"), action)
+                    link(PlsBundle.message("link.configure"), action)
                         .onApply {
                             val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
                             val newDefaultGameDirectories = list.toMutableMap()
@@ -243,7 +243,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(completionSettings::completeWithClauseTemplate)
                     contextHelp(PlsBundle.message("settings.completion.completeWithClauseTemplate.tip"))
 
-                    link(PlsBundle.message("configure")) {
+                    link(PlsBundle.message("link.configure")) {
                         val dialog = ClauseTemplateSettingsDialog()
                         dialog.show()
                     }

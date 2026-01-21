@@ -2,9 +2,19 @@
 
 <!-- TODO Manual improvement and polish -->
 
+## Settings Page {#settings-page}
+
+In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Config` to open the config settings page.
+
+Here you can configure the sources of the config groups to enable, as well as the related urls and directories.
+
+![](../images/config/config_settings_1.png)
+
 ## Config Group {#config-group}
 
 ### Summary {#config-group-summary}
+
+Many of the language features provided by PLS are driven by CWT config files, which belong to different config groups.
 
 PLS implements various advanced language features based on config groups composed of CWT config files.
 

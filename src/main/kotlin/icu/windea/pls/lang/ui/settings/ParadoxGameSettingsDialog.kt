@@ -75,7 +75,7 @@ class ParadoxGameSettingsDialog(
                 row { // 尽管目前仅适用于模组目录……
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
+                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Tiger.url)
                 }
             }
 

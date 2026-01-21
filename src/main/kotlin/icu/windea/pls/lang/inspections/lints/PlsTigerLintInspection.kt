@@ -32,7 +32,7 @@ class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInsp
                 label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
                 contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
 
-                link(PlsBundle.message("configure")) {
+                link(PlsBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                     val dialog = PlsTigerHighlightDialog()
                     if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)

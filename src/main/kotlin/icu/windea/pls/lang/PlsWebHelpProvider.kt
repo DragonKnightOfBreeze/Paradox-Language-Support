@@ -8,17 +8,16 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class PlsWebHelpProvider : WebHelpProvider() {
     private val prefix = "${PlsConstants.pluginId}."
-    private val docBaseUrl = "https://windea.icu/Paradox-Language-Support"
 
     override fun getHelpPageUrl(helpTopicId: String): String? {
         val shortId = helpTopicId.removePrefix(prefix)
         return when (shortId) {
-            // "config.settings" -> "$docBaseUrl/config.html#settings-page" // TODO 2.0.5+
-            "integrations.settings" -> "$docBaseUrl/integrations.html#settings-page"
-            "ai.settings" -> "$docBaseUrl/ai.html#settings-page"
-            "diagram.settings" -> "$docBaseUrl/extensions.html#diagram-settings-page"
-            // "diagram.eventTree" -> "$docBaseUrl/extensions.html#event-tree-diagram"
-            // "diagram.techTree" -> "$docBaseUrl/extensions.html#tech-tree-diagram"
+            "config.settings" -> PlsConstants.docUrl("config.html#settings-page")
+            "integrations.settings" -> PlsConstants.docUrl("integrations.html#settings-page")
+            "ai.settings" -> PlsConstants.docUrl("ai.html#settings-page")
+            "diagram.settings" -> PlsConstants.docUrl("extensions.html#diagram-settings-page")
+            // "diagram.eventTree" -> PlsConstants.docUrl("extensions.html#event-tree-diagram")
+            // "diagram.techTree" -> PlsConstants.docUrl("extensions.html#tech-tree-diagram")
             else -> null
         }
     }

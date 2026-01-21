@@ -34,16 +34,19 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     comment(PlsBundle.message("settings.integrations.image.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
+                // enableTexconv
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv")).bindSelected(imageSettings::enableTexconv)
+                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv"))
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
+                        .bindSelected(imageSettings::enableTexconv)
+                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Texconv.url)
                 }
                 // enableMagick
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(imageSettings::enableMagick)
+                    checkBox(PlsBundle.message("settings.integrations.image.from.magick"))
                         .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
+                        .bindSelected(imageSettings::enableMagick)
+                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Magick.url)
                 }
                 // magickPath
                 row {
@@ -65,12 +68,12 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     checkBox(PlsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                         .comment(PlsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.TranslationPlugin.url)
-                    link(PlsBundle.message("settings.integrations.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
+                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.TranslationPlugin.url)
+                    link(PlsBundle.message("link.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
                 }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
-                    link(PlsBundle.message("settings.integrations.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
+                    link(PlsBundle.message("link.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
                 }
             }
             // linting tools
@@ -85,9 +88,10 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
                 // enableTiger
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(lintSettings::enableTiger)
+                    checkBox(PlsBundle.message("settings.integrations.lint.tiger"))
+                        .bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
+                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Tiger.url)
                 }
 
                 val map = PlsIntegrationsSettingsManager.getTigerSettingsMap(settings)
@@ -122,7 +126,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 // tigerHighlighting
                 row {
                     label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
-                    link(PlsBundle.message("configure")) {
+                    link(PlsBundle.message("link.configure")) {
                         // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                         val dialog = PlsTigerHighlightDialog()
                         if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
