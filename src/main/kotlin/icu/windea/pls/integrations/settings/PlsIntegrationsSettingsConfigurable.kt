@@ -1,6 +1,5 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.ide.plugins.PluginManagerConfigurable
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
@@ -8,10 +7,8 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
-import icu.windea.pls.lang.util.PlsUiManager
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -69,11 +66,11 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                         .comment(PlsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.TranslationPlugin.url)
-                    link(PlsBundle.message("settings.integrations.install")) { PlsUiManager.selectSettings(PluginManagerConfigurable.ID, "Translation") }
+                    link(PlsBundle.message("settings.integrations.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
                 }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
-                    link(PlsBundle.message("settings.integrations.translation.from.ai.link")) { PlsUiManager.selectSettings<PlsAiSettingsConfigurable>() }
+                    link(PlsBundle.message("settings.integrations.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
                 }
             }
             // linting tools

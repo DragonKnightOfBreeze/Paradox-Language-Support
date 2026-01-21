@@ -52,7 +52,6 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
             // ignoredFileNames
             row {
                 label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
-                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })

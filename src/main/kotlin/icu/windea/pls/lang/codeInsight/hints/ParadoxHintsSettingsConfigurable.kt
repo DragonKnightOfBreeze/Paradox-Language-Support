@@ -29,20 +29,20 @@ class ParadoxHintsSettingsConfigurable(
     private fun Panel.createTextLengthLimitRow() {
         row {
             label(PlsBundle.message("hints.settings.textLengthLimit")).widthGroup("left")
-                .applyToComponent { toolTipText = PlsBundle.message("hints.settings.textLengthLimit.tooltip") }
             textField()
                 .bindIntText(settings::textLengthLimit.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
+            contextHelp(PlsBundle.message("hints.settings.textLengthLimit.tooltip"))
         }
     }
 
     private fun Panel.createIconHeightLimitRow() {
         row {
             label(PlsBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
-                .applyToComponent { toolTipText = PlsBundle.message("hints.settings.iconHeightLimit.tooltip") }
             textField()
                 .bindIntText(settings::iconHeightLimit.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
+            contextHelp(PlsBundle.message("hints.settings.iconHeightLimit.tooltip"))
         }
     }
 }

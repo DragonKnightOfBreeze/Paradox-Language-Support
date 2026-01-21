@@ -7,9 +7,9 @@ interface PlsSettingsStrategies {
      * 本地化的生成策略。
      */
     enum class LocalisationGeneration(override val text: String) : PlsSettingsStrategy {
-        EmptyText(PlsBundle.message("settings.strategy.localisationGeneration0")),
-        SpecificText(PlsBundle.message("settings.strategy.localisationGeneration1")),
-        FromLocale(PlsBundle.message("settings.strategy.localisationGeneration2")),
+        EmptyText(PlsBundle.message("settings.strategy.localisationGeneration.0")),
+        SpecificText(PlsBundle.message("settings.strategy.localisationGeneration.1")),
+        FromLocale(PlsBundle.message("settings.strategy.localisationGeneration.2")),
         ;
     }
 

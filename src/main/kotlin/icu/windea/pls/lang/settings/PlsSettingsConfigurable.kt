@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.settings
 
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
@@ -35,7 +36,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 // defaultGameType
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
-                        .comment(PlsBundle.message("settings.general.defaultGameType.tip"))
+                        .comment(PlsBundle.message("settings.general.defaultGameType.comment"))
                     var defaultGameType = settings.defaultGameType
                     comboBox(gameTypes, textListCellRenderer { it?.title })
                         .bindItem(settings::defaultGameType.toNullableProperty())
@@ -44,13 +45,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newDefaultGameType = settings.defaultGameType
                             if (oldDefaultGameType == newDefaultGameType) return@onApply
                             defaultGameType = newDefaultGameType
-                            PlsSettingsManager.onDefaultGameTypeChanged(callbackLock,oldDefaultGameType, newDefaultGameType)
+                            PlsSettingsManager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
                         }
                 }
                 // defaultGameDirectories
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
-                        .comment(PlsBundle.message("settings.general.defaultGameDirectories.tip"))
+                        .comment(PlsBundle.message("settings.general.defaultGameDirectories.comment"))
                     val defaultGameDirectories = settings.defaultGameDirectories
                     gameTypes.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = defaultGameDirectories.toMutableEntryList()
@@ -65,7 +66,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newDefaultGameDirectories = list.toMutableMap()
                             if (oldDefaultGameDirectories == newDefaultGameDirectories) return@onApply
                             settings.defaultGameDirectories = newDefaultGameDirectories
-                            PlsSettingsManager.onDefaultGameDirectoriesChanged(callbackLock,oldDefaultGameDirectories, newDefaultGameDirectories)
+                            PlsSettingsManager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
                         }
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
@@ -73,7 +74,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 // preferredLocale
                 row {
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tip") }
+                        .comment(PlsBundle.message("settings.general.preferredLocale.comment"))
                     var preferredLocale = settings.preferredLocale
                     localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
@@ -82,17 +83,16 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             if (oldPreferredLocale == newPreferredLocale) return@onApply
                             preferredLocale = newPreferredLocale
                             PlsSettingsManager.refreshForOpenedFiles(callbackLock)
-                            PlsSettingsManager.onPreferredLocaleChanged(callbackLock,oldPreferredLocale, newPreferredLocale)
+                            PlsSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                         }
                 }
                 // ignoredFileNames
                 row {
                     label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tip") }
+                        .comment(PlsBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
                     var ignoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
-                        .comment(PlsBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
                         .align(Align.FILL)
                         .resizableColumn()
                         .onApply {
@@ -383,21 +383,17 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 val generationSettings = settings.generation
 
                 // localisationStrategy
-                buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
-                    row {
-                        with(LocalisationGeneration.EmptyText) { radioButton(text, this) }
-                    }
-                    row {
-                        lateinit var rb: JBRadioButton
-                        with(LocalisationGeneration.SpecificText) { radioButton(text, this) }.applyToComponent { rb = this }
-                        textField().bindText(generationSettings::localisationStrategyText.toNonNullableProperty("")).enabledIf(rb.selected)
-                    }
-                    row {
-                        lateinit var rb: JBRadioButton
-                        with(LocalisationGeneration.FromLocale) { radioButton(text, this) }.applyToComponent { rb = this }
-                        localeComboBox(withAuto = true).bindItem(generationSettings::localisationStrategyLocale.toNullableProperty()).enabledIf(rb.selected)
-                    }
-                }.bind(generationSettings::localisationStrategy)
+                row {
+                    val property = AtomicProperty(generationSettings.localisationStrategy)
+                    label(PlsBundle.message("settings.generation.localisationStrategy"))
+                    comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
+                        .bindItem(generationSettings::localisationStrategy.toNullableProperty())
+                        .bindItem(property)
+                    textField().bindText(generationSettings::localisationStrategyText.toNonNullableProperty(""))
+                        .enabledIf(property.transform { it == LocalisationGeneration.SpecificText })
+                    localeComboBox(withAuto = true).bindItem(generationSettings::localisationStrategyLocale.toNullableProperty())
+                        .enabledIf(property.transform { it == LocalisationGeneration.FromLocale })
+                }
             }
             // hierarchy
             collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
