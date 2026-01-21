@@ -540,13 +540,13 @@
 
     <group id="Pls.Diff">
       <action id="Pls.Diff.CompareFiles" class="icu.windea.pls.lang.diff.actions.CompareFilesAction" icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt f"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift d"/>
       </action>
       <action id="Pls.Diff.CompareDefinitions" class="icu.windea.pls.lang.diff.actions.CompareDefinitionsAction" icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt d"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt d"/>
       </action>
       <action id="Pls.Diff.CompareLocalisations" class="icu.windea.pls.lang.diff.actions.CompareLocalisationsAction" icon="AllIcons.Actions.Diff">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift alt l"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt d"/>
       </action>
       <add-to-group group-id="EditorContextBarMenu" anchor="last"/>
     </group>
