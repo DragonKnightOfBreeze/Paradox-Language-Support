@@ -405,6 +405,8 @@
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxClearResolveCacheOnPreferredLocaleChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnConfigDirectoriesChangedListener"

@@ -14,3 +14,4 @@ interface ParadoxDefaultGameTypeListener {
         val TOPIC = Topic(ParadoxDefaultGameTypeListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }
+

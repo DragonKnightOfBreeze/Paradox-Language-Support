@@ -5,6 +5,7 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
+import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 
@@ -23,27 +24,22 @@ object PlsSettingsManager {
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String?, newPreferredLocale: String?) {
+    fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String, newPreferredLocale: String) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 
         ParadoxModificationTrackers.PreferredLocale.incModificationCount()
-    }
 
-    // NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
+        val messageBus = application.messageBus
+        messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
+
+        refreshForOpenedFiles(callbackLock)
+    }
 
     fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
         val files = PlsDaemonManager.findFilesByFileNames(fileNames)
         PlsDaemonManager.reparseFiles(files)
-    }
-
-    fun refreshForOpenedFiles(callbackLock: CallbackLock) {
-        if (!callbackLock.check("refreshForOpenedFiles")) return
-
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.refreshFiles(openedFiles)
     }
 
     fun refreshForParameterInference(callbackLock: CallbackLock) {
@@ -72,5 +68,12 @@ object PlsSettingsManager {
         ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
         refreshForOpenedFiles(callbackLock)
+    }
+
+    fun refreshForOpenedFiles(callbackLock: CallbackLock) {
+        if (!callbackLock.check("refreshForOpenedFiles")) return
+
+        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.refreshFiles(openedFiles)
     }
 }

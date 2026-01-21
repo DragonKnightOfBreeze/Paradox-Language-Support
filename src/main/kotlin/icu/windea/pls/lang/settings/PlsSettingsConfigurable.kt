@@ -76,13 +76,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupNameGeneral)
                         .comment(PlsBundle.message("settings.general.preferredLocale.comment"))
                     var preferredLocale = settings.preferredLocale
-                    localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
+                    localeComboBox(withAuto = true)
+                        .bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
-                            val oldPreferredLocale = preferredLocale
-                            val newPreferredLocale = settings.preferredLocale
+                            val oldPreferredLocale = preferredLocale.orEmpty()
+                            val newPreferredLocale = settings.preferredLocale.orEmpty()
                             if (oldPreferredLocale == newPreferredLocale) return@onApply
                             preferredLocale = newPreferredLocale
-                            PlsSettingsManager.refreshForOpenedFiles(callbackLock)
                             PlsSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
                         }
                 }

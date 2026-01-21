@@ -12,7 +12,7 @@ import icu.windea.pls.model.constants.PlsConstants
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
     init {
-        // 当用户可能正在输入语言区域的名字时提示
+        // 当用户可能正在输入语言环境的名字时提示
         val localePattern = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
         extend(CompletionType.BASIC, localePattern, ParadoxLocalisationLocaleCompletionProvider())
 
