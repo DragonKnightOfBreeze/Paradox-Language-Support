@@ -1,19 +1,17 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.ide.DataManager
+import com.intellij.ide.plugins.PluginManagerConfigurable
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
-import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.lang.util.PlsUiManager
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -32,7 +30,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
             // image tools
             group(PlsBundle.message("settings.integrations.image")) {
                 val imageSettings = settings.image
-                lateinit var cbMagick: JBCheckBox
 
                 row {
                     comment(PlsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -49,7 +46,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(imageSettings::enableMagick)
                         .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                        .applyToComponent { cbMagick = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
                 }
                 // magickPath
@@ -62,7 +58,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .applyToComponent { setEmptyState(PlsIntegrationConstants.Magick.pathTip()) }
                         .align(Align.FILL)
                         .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
-                }.enabledIf(cbMagick.selected)
+                }
             }
             // translation tools
             group(PlsBundle.message("settings.integrations.translation")) {
@@ -73,28 +69,16 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                         .comment(PlsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.TranslationPlugin.url)
+                    link(PlsBundle.message("settings.integrations.install")) { PlsUiManager.selectSettings(PluginManagerConfigurable.ID, "Translation") }
                 }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
-                    link(PlsBundle.message("settings.integrations.translation.from.ai.link")) {
-                        DataManager.getInstance().dataContextFromFocusAsync.then {
-                            // 直接转到AI设置页面
-                            Settings.KEY.getData(it)?.let { settings ->
-                                settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
-                                    settings.select(configurable)
-                                }
-                            }
-
-                            // 这会嵌套打开AI设置页面
-                            // ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
-                        }
-                    }
+                    link(PlsBundle.message("settings.integrations.translation.from.ai.link")) { PlsUiManager.selectSettings<PlsAiSettingsConfigurable>() }
                 }
             }
             // linting tools
             group(PlsBundle.message("settings.integrations.lint")) {
                 val lintSettings = settings.lint
-                lateinit var cbTiger: JBCheckBox
 
                 row {
                     comment(PlsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -106,7 +90,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                        .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
 
@@ -124,7 +107,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .align(Align.FILL)
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
-                    }.enabledIf(cbTiger.selected)
+                    }
                     row {
                         label(PlsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
                         val descriptor = FileChooserDescriptorFactory.singleFile()
@@ -136,20 +119,19 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
                             .align(Align.FILL)
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
-                    }.enabledIf(cbTiger.selected)
+                    }
                 }
 
                 // tigerHighlighting
                 row {
                     label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
-                    contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
-
                     link(PlsBundle.message("configure")) {
                         // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                         val dialog = PlsTigerHighlightDialog()
                         if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                     }
-                }.enabledIf(cbTiger.selected)
+                    contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+                }
             }
         }
     }

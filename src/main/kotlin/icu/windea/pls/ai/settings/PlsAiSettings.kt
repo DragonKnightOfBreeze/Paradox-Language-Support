@@ -30,13 +30,13 @@ class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettings.State>(State(
 
     /**
      * @property enable 是否启用基于 AI 的各种功能。
-     * @property providerType 当前使用的 AI 服务提供者的类型。
      * @property withContext 是否向提示中注入上下文信息。
+     * @property providerType 当前使用的 AI 服务提供者的类型。
      */
     class State : BaseState() {
         var enable by property(false)
-        var providerType by enum<ChatModelProviderType>(ChatModelProviderType.OPEN_AI)
         var withContext by property(false)
+        var providerType by enum<ChatModelProviderType>(ChatModelProviderType.OPEN_AI)
 
         @get:Property(surroundWithTag = false)
         var features by property(FeaturesState())

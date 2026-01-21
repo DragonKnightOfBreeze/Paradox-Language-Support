@@ -61,19 +61,6 @@
       <entry key="operative_leader" value="true" />
     </type>
   </component>
-  <component name="ParadoxDiagramSettings.Ir.EventTree">
-    <attribute>
-      <entry key="hidden" value="true" />
-    </attribute>
-    <type>
-      <entry key="scopeless" value="true" />
-      <entry key="country" value="true" />
-      <entry key="major_country" value="true" />
-      <entry key="province" value="true" />
-      <entry key="character" value="true" />
-      <entry key="state" value="true" />
-    </type>
-  </component>
   <component name="ParadoxDiagramSettings.Stellaris.EventTree">
     <attribute>
       <entry key="triggered" value="true" />

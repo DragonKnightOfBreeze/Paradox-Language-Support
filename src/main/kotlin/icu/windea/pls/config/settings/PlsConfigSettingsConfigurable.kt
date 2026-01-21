@@ -5,9 +5,7 @@ import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.CallbackLock
@@ -29,9 +27,9 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
         callbackLock.reset()
         val settings = PlsConfigSettings.getInstance().state
         return panel {
-            lateinit var cbRemote: JBCheckBox
-            lateinit var cbLocal: JBCheckBox
-            lateinit var cbProjectLocal: JBCheckBox
+            group(PlsBundle.message("settings.config.configGroups")) {
+
+            }
 
             // enableBuiltInConfigGroups
             row {
@@ -41,16 +39,29 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
-
             // enableRemoteConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
                     .bindSelected(settings::enableRemoteConfigGroups)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    .applyToComponent { cbRemote = this }
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
+            // enableLocalConfigGroups
+            row {
+                checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
+                    .bindSelected(settings::enableLocalConfigGroups)
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
+            }
+            // enableProjectLocalConfigGroups
+            row {
+                checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
+                    .bindSelected(settings::enableProjectLocalConfigGroups)
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
+                contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
+            }
+
             // remoteConfigDirectory
             row {
                 label(PlsBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
@@ -65,7 +76,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                         PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock)
                         PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
                     }
-            }.enabledIf(cbRemote.selected)
+            }
             // configRepositoryUrls
             row {
                 label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
@@ -88,21 +99,6 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     }
                     .onReset { list = defaultList }
                     .onIsModified { list != defaultList }
-            }.enabledIf(cbRemote.selected)
-            // overrideBuiltIn
-            row {
-                checkBox(PlsBundle.message("settings.config.overrideBuiltIn"))
-                    .bindSelected(settings::overrideBuiltIn)
-                    .onApply { PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
-            }.enabledIf(cbRemote.selected)
-
-            // enableLocalConfigGroups
-            row {
-                checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
-                    .bindSelected(settings::enableLocalConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    .applyToComponent { cbLocal = this }
-                contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
             }
             // localConfigDirectory
             row {
@@ -115,15 +111,6 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            }.enabledIf(cbLocal.selected)
-
-            // enableProjectLocalConfigGroups
-            row {
-                checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
-                    .bindSelected(settings::enableProjectLocalConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-                    .applyToComponent { cbProjectLocal = this }
-                contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
             }
             // projectLocalConfigDirectoryName
             row {
@@ -133,7 +120,13 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(".config") }
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
-            }.enabledIf(cbProjectLocal.selected)
+            }
+            // overrideBuiltIn
+            row {
+                checkBox(PlsBundle.message("settings.config.overrideBuiltIn"))
+                    .bindSelected(settings::overrideBuiltIn)
+                    .onApply { PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
+            }
         }
     }
 }

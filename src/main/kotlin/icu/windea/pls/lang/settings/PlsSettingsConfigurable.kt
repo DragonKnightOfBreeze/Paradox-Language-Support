@@ -35,7 +35,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 // defaultGameType
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
+                        .comment(PlsBundle.message("settings.general.defaultGameType.tip"))
                     var defaultGameType = settings.defaultGameType
                     comboBox(gameTypes, textListCellRenderer { it?.title })
                         .bindItem(settings::defaultGameType.toNullableProperty())
@@ -50,7 +50,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 // defaultGameDirectories
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tip") }
+                        .comment(PlsBundle.message("settings.general.defaultGameDirectories.tip"))
                     val defaultGameDirectories = settings.defaultGameDirectories
                     gameTypes.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = defaultGameDirectories.toMutableEntryList()

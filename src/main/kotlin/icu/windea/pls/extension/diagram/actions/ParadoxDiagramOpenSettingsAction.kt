@@ -4,10 +4,10 @@ import com.intellij.diagram.DiagramDataKeys
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable
+import icu.windea.pls.lang.util.PlsUiManager
 
 // com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
@@ -25,7 +25,7 @@ class ParadoxDiagramOpenSettingsAction : AnAction(), DumbAware {
         val project = builder.project
         val provider = builder.provider
         if (provider !is ParadoxDiagramProvider) return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, PlsDiagramSettingsConfigurable::class.java)
+        PlsUiManager.showSettingsDialog<PlsDiagramSettingsConfigurable>(project)
     }
 }
 
