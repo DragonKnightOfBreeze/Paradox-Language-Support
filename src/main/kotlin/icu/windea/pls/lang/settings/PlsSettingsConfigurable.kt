@@ -8,19 +8,14 @@ import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
-import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
-import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
-import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
-import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
@@ -49,7 +44,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newDefaultGameType = settings.defaultGameType
                             if (oldDefaultGameType == newDefaultGameType) return@onApply
                             defaultGameType = newDefaultGameType
-                            onDefaultGameTypeChanged(oldDefaultGameType, newDefaultGameType)
+                            PlsSettingsManager.onDefaultGameTypeChanged(callbackLock,oldDefaultGameType, newDefaultGameType)
                         }
                 }
                 // defaultGameDirectories
@@ -70,7 +65,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newDefaultGameDirectories = list.toMutableMap()
                             if (oldDefaultGameDirectories == newDefaultGameDirectories) return@onApply
                             settings.defaultGameDirectories = newDefaultGameDirectories
-                            onDefaultGameDirectoriesChanged(oldDefaultGameDirectories, newDefaultGameDirectories)
+                            PlsSettingsManager.onDefaultGameDirectoriesChanged(callbackLock,oldDefaultGameDirectories, newDefaultGameDirectories)
                         }
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
@@ -86,8 +81,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newPreferredLocale = settings.preferredLocale
                             if (oldPreferredLocale == newPreferredLocale) return@onApply
                             preferredLocale = newPreferredLocale
-                            refreshForOpenedFiles()
-                            onPreferredLocaleChanged(oldPreferredLocale, newPreferredLocale)
+                            PlsSettingsManager.refreshForOpenedFiles(callbackLock)
+                            PlsSettingsManager.onPreferredLocaleChanged(callbackLock,oldPreferredLocale, newPreferredLocale)
                         }
                 }
                 // ignoredFileNames
@@ -109,7 +104,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             fileNames += oldIgnoredFileNameSet
                             fileNames += newIgnoredFileNameSet
                             // 设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-                            refreshForFilesByFileNames(fileNames)
+                            PlsSettingsManager.refreshForFilesByFileNames(callbackLock, fileNames)
                         }
                 }
             }
@@ -567,14 +562,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.inference.injectionForParameterValue"))
                         .bindSelected(inferenceSettings::injectionForParameterValue)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.injectionForParameterValue.tip"))
                 }
                 // injectionForLocalisationText
                 row {
                     checkBox(PlsBundle.message("settings.inference.injectionForLocalisationText"))
                         .bindSelected(inferenceSettings::injectionForLocalisationText)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
                 }
                 // configContextForParameters & configContextForParametersFast
@@ -582,13 +577,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
                         .bindSelected(inferenceSettings::configContextForParameters)
-                        .onApply { refreshForParameterInference() }
+                        .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                         .applyToComponent { cb = this }
                     contextHelp(PlsBundle.message("settings.inference.configContextForParameters.tip"))
 
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(inferenceSettings::configContextForParametersFast)
-                        .onApply { refreshForParameterInference() }
+                        .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                         .enabledIf(cb.selected)
                     contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
@@ -597,13 +592,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
                         .bindSelected(inferenceSettings::configContextForInlineScripts)
-                        .onApply { refreshForInlineScriptInference() }
+                        .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                         .applyToComponent { cb = this }
                     contextHelp(PlsBundle.message("settings.inference.configContextForInlineScripts.tip"))
 
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(inferenceSettings::configContextForInlineScriptsFast)
-                        .onApply { refreshForInlineScriptInference() }
+                        .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                         .enabledIf(cb.selected)
                     contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
@@ -611,21 +606,21 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(inferenceSettings::scopeContext)
-                        .onApply { refreshForScopeContextInference() }
+                        .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.scopeContext.tip"))
                 }
                 // scopeContextForEvents
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
                         .bindSelected(inferenceSettings::scopeContextForEvents)
-                        .onApply { refreshForScopeContextInference() }
+                        .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.scopeContextForEvents.tip"))
                 }
                 // scopeContextForOnActions
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
                         .bindSelected(inferenceSettings::scopeContextForOnActions)
-                        .onApply { refreshForScopeContextInference() }
+                        .onApply { PlsSettingsManager.refreshForScopeContextInference(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.scopeContextForOnActions.tip"))
                 }
             }
@@ -652,80 +647,15 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(otherSettings::highlightLocalisationColorId)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
                 }
                 // renderLocalisationColorfulText
                 row {
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(otherSettings::renderLocalisationColorfulText)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
                 }
             }
         }
-    }
-
-    private fun onDefaultGameTypeChanged(oldDefaultGameType: ParadoxGameType, newDefaultGameType: ParadoxGameType) {
-        if (!callbackLock.check("onDefaultGameTypeChanged")) return
-
-        val messageBus = application.messageBus
-        messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(oldDefaultGameType, newDefaultGameType)
-    }
-
-    private fun onDefaultGameDirectoriesChanged(oldDefaultGameDirectories: MutableMap<String, String>, newDefaultGameDirectories: MutableMap<String, String>) {
-        if (!callbackLock.check("onDefaultGameDirectoriesChanged")) return
-
-        val messageBus = application.messageBus
-        messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun onPreferredLocaleChanged(oldPreferredLocale: String?, newPreferredLocale: String?) {
-        if (!callbackLock.check("onPreferredLocaleChanged")) return
-
-        ParadoxModificationTrackers.PreferredLocale.incModificationCount()
-    }
-
-    // NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
-
-    private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
-        if (!callbackLock.check("refreshForFilesByFileNames")) return
-
-        val files = PlsDaemonManager.findFilesByFileNames(fileNames)
-        PlsDaemonManager.reparseFiles(files)
-    }
-
-    private fun refreshForOpenedFiles() {
-        if (!callbackLock.check("refreshForOpenedFiles")) return
-
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.refreshFiles(openedFiles)
-    }
-
-    private fun refreshForParameterInference() {
-        if (!callbackLock.check("refreshForParameterInference")) return
-
-        ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
-
-        refreshForOpenedFiles()
-    }
-
-    private fun refreshForInlineScriptInference() {
-        if (!callbackLock.check("refreshForInlineScriptInference")) return
-
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.InlineScripts.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
-
-        // 这里只用刷新内联脚本文件
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsDaemonManager.reparseFiles(openedFiles)
-    }
-
-    private fun refreshForScopeContextInference() {
-        if (!callbackLock.check("refreshForScopeContextInference")) return
-
-        ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
-
-        refreshForOpenedFiles()
     }
 }
