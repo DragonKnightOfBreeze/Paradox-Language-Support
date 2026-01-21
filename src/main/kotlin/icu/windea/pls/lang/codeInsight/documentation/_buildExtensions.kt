@@ -50,7 +50,7 @@ fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuild
 }
 
 fun DocumentationBuilder.appendLink(refText: String, label: String): DocumentationBuilder {
-    // 不自动转义link的label
+    // 不自动转义 `link` 的 `label`
     append("<a href=\"").append(refText).append("\">").append(label).append("</a>")
     return this
 }
@@ -78,7 +78,7 @@ fun DocumentationBuilder.appendImgTag(url: String, local: Boolean = true): Docum
 fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder {
     val finalUrl = if (local) url.toFileUrl() else url
     append("<img src=\"").append(finalUrl).append("\"")
-    // 这里不能使用style="..."
+    // 这里不能使用 `style="..."`
     append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
     append("/>")
     return this
