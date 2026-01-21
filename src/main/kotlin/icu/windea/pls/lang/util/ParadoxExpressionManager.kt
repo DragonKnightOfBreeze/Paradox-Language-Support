@@ -367,7 +367,7 @@ object ParadoxExpressionManager {
         // 尝试基于规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DUMB
+        val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
         val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) // unquoted text
