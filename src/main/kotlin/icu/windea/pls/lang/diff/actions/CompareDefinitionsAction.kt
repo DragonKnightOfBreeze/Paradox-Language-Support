@@ -3,16 +3,12 @@ package icu.windea.pls.lang.diff.actions
 import com.intellij.diff.DiffContentFactory
 import com.intellij.diff.actions.impl.GoToChangePopupBuilder
 import com.intellij.diff.chains.DiffRequestChain
-import com.intellij.diff.chains.DiffRequestProducer
-import com.intellij.diff.chains.DiffRequestSelectionChain
-import com.intellij.diff.chains.SimpleDiffRequestChain
 import com.intellij.diff.contents.DocumentContent
 import com.intellij.diff.requests.DiffRequest
 import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.diff.util.DiffUserDataKeys
 import com.intellij.diff.util.Side
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.ListSelection
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -26,7 +22,6 @@ import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
-import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiFile
@@ -156,17 +151,17 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
                 val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null
                 val otherFile = otherPsiFile.virtualFile ?: return@mapNotNull null
+
                 val isSamePosition = definition isSamePosition otherDefinition
+                val isCurrent = isSamePosition
+                val isReadonly = isSamePosition
+
                 val otherContentTitle = when {
                     isSamePosition -> getContentTitle(otherDefinition, otherDefinitionInfo, true)
                     else -> getContentTitle(otherDefinition, otherDefinitionInfo)
                 } ?: return@mapNotNull null
-                var isCurrent = false
-                var readonly = false
                 val otherContent = when {
                     isSamePosition -> {
-                        isCurrent = true
-                        readonly = true
                         val otherDocument = EditorFactory.getInstance().createDocument(documentContent.document.text)
                         val otherDocumentContent = contentFactory.create(project, otherDocument, content.highlightFile)
                         createContent(contentFactory, project, otherDocumentContent, definition)
@@ -177,7 +172,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                     }
                 }
                 if (isCurrent) currentIndex = index
-                if (readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                if (isReadonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
@@ -247,13 +242,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
 
     class MyDiffRequestChain(
-        producers: List<DiffRequestProducer>,
+        producers: List<ParadoxDiffRequestProducer>,
         defaultIndex: Int = 0
-    ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, defaultIndex)
-
-        override fun getListSelection() = listSelection
-
+    ) : ParadoxDiffRequestChain(producers, defaultIndex) {
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
@@ -262,10 +253,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     class MyRequestProducer(
         request: DiffRequest,
         val otherDefinitionInfo: ParadoxDefinitionInfo,
-        val otherFile: VirtualFile,
-        val icon: Icon,
-        val isCurrent: Boolean
-    ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
+        otherFile: VirtualFile,
+        icon: Icon,
+        isCurrent: Boolean
+    ) : ParadoxDiffRequestProducer(request, otherFile, icon, isCurrent) {
         override fun getName(): String {
             return doGetName() ?: super.name
         }
@@ -284,7 +275,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
 
     class MyGotoChangePopupAction(
-        val chain: MyDiffRequestChain,
+        val chain: ParadoxDiffRequestChain,
         val onSelected: Consumer<in Int>,
         val defaultSelection: Int
     ) : GoToChangePopupBuilder.BaseGoToChangePopupAction() {
@@ -296,7 +287,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             return JBPopupFactory.getInstance().createListPopup(Popup())
         }
 
-        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+        private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
             PlsBundle.message("diff.compare.definitions.popup.title"),
             chain.requests
         ) {
@@ -304,17 +295,17 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 defaultOptionIndex = defaultSelection
             }
 
-            override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
+            override fun getIconFor(value: ParadoxDiffRequestProducer) = value.icon
 
-            override fun getTextFor(value: DiffRequestProducer) = value.name
+            override fun getTextFor(value: ParadoxDiffRequestProducer) = value.name
 
             // com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             @Suppress("UseJBColor")
-            override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+            override fun getBackgroundFor(value: ParadoxDiffRequestProducer) = if (value.isCurrent) Color(0x808080) else null
 
             override fun isSpeedSearchEnabled() = true
 
-            override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
+            override fun onChosen(selectedValue: ParadoxDiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 val selectedIndex = chain.requests.indexOf(selectedValue)
                 onSelected.consume(selectedIndex)
             }

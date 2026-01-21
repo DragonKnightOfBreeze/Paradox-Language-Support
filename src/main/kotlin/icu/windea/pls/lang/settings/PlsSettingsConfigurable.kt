@@ -387,11 +387,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             collapsibleGroup(PlsBundle.message("settings.generation")) {
                 val generationSettings = settings.generation
 
-                // fileNamePrefix
-                row {
-                    label(PlsBundle.message("settings.generation.fileNamePrefix"))
-                    textField().bindText(generationSettings::fileNamePrefix.toNonNullableProperty(""))
-                }.visible(false)
                 // localisationStrategy
                 buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
                     row {
@@ -504,6 +499,17 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.hierarchy.techTreeGrouping"))
                     comboBox(TechTreeGrouping.entries, textListCellRenderer { it?.text })
                         .bindItem(hierarchySettings::techTreeGrouping.toNullableProperty())
+                }
+            }
+            // diff
+            collapsibleGroup(PlsBundle.message("settings.diff")) {
+                val diffSettings = settings.diff
+
+                // defaultDiffGroup
+                row {
+                    label(PlsBundle.message("settings.diff.defaultDiffGroup"))
+                    comboBox(DiffGroup.entries, textListCellRenderer { it?.text })
+                        .bindItem(diffSettings::defaultDiffGroup.toNullableProperty())
                 }
             }
             // navigation
@@ -653,12 +659,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(otherSettings::renderLocalisationColorfulText)
                         .onApply { refreshForOpenedFiles() }
-                }
-                // defaultDiffGroup
-                row {
-                    label(PlsBundle.message("settings.others.defaultDiffGroup"))
-                    comboBox(DiffGroup.entries, textListCellRenderer { it?.text })
-                        .bindItem(otherSettings::defaultDiffGroup.toNullableProperty())
                 }
             }
         }

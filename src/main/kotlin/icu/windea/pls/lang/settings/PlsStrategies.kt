@@ -14,12 +14,13 @@ interface PlsStrategies {
     }
 
     /**
-     * 默认 DIFF 分组的策略。
+     * 默认差异比较分组的策略。
      */
     enum class DiffGroup(val text: String) {
-        VsCopy(PlsBundle.message("settings.strategy.diffGroup.0")),
-        First(PlsBundle.message("settings.strategy.diffGroup.1")),
-        Last(PlsBundle.message("settings.strategy.diffGroup.2")),
+        Current(PlsBundle.message("settings.strategy.diffGroup.0")),
+        Vanilla(PlsBundle.message("settings.strategy.diffGroup.1")),
+        First(PlsBundle.message("settings.strategy.diffGroup.2")),
+        Last(PlsBundle.message("settings.strategy.diffGroup.3")),
         ;
     }
 

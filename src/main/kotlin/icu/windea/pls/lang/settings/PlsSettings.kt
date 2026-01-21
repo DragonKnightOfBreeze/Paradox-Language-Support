@@ -53,6 +53,8 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         @get:Property(surroundWithTag = false)
         var hierarchy by property(HierarchyState())
         @get:Property(surroundWithTag = false)
+        var diff by property(DiffState())
+        @get:Property(surroundWithTag = false)
         var navigation by property(NavigationState())
         @get:Property(surroundWithTag = false)
         var inference by property(InferenceState())
@@ -131,6 +133,18 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
+     * @property localisationStrategy 生成本地化时，生成本地化文本的策略。
+     * @property localisationStrategyText 生成本地化时，如果本地化文本要用特定文本填充，这个特定文本是什么。
+     * @property localisationStrategyLocale 生成本地化时，如果本地化文本要用来自特定语言环境的本地化文本填充，这个特定语言环境是什么。
+     */
+    @Tag("generation")
+    class GenerationState : BaseState() {
+        var localisationStrategy by enum(LocalisationGeneration.SpecificText)
+        var localisationStrategyText by string("REPLACE_ME")
+        var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
+    }
+
+    /**
      * 注意：某些折叠规则总是启用，不可配置。
      *
      * @property comments 是否允许折叠多行注释。
@@ -178,19 +192,6 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var scriptedVariableReferencesByDefault by property(true)
         var variableOperationExpressions by property(true)
         var variableOperationExpressionsByDefault by property(true)
-    }
-
-    /**
-     * @property localisationStrategy 生成本地化时如何生成本地化文本。
-     * @property localisationStrategyText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
-     * @property localisationStrategyLocale 生成本地化时如果基于特定语言环境的已有本地化文本，这个特定语言环境是什么。
-     */
-    @Tag("generation")
-    class GenerationState : BaseState() {
-        var fileNamePrefix by string("000000_")
-        var localisationStrategy by enum(LocalisationGeneration.SpecificText)
-        var localisationStrategyText by string("REPLACE_ME")
-        var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
     }
 
     /**
@@ -251,6 +252,14 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
+     * @property defaultDiffGroup 进行差异比较时，初始打开的分组。
+     */
+    @Tag("diff")
+    class DiffState : BaseState() {
+        var defaultDiffGroup by enum(DiffGroup.Current)
+    }
+
+    /**
      * @property seForScriptedVariables 是否可在随处搜索中搜索封装变量（作为符号）。
      * @property seForDefinitions 是否可在随处搜索中搜索定义（作为符号）。
      * @property seForLocalisations 是否可在随处搜索中搜索本地化（作为符号）。
@@ -306,7 +315,6 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
      * @property renderLocalisationColorfulText 是否用对应的颜色渲染本地化彩色文本。
-     * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
     @Tag("others")
     class OthersState : BaseState() {
@@ -315,6 +323,5 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
         var renderLocalisationColorfulText by property(true)
-        var defaultDiffGroup by enum(DiffGroup.VsCopy)
     }
 }

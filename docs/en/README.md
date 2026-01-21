@@ -11,7 +11,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing and many other features.
+- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diff viewing, diagrams and many other features.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
 - **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressoins, inline scripts, definition injections, etc.

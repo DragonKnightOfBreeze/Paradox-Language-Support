@@ -3,9 +3,6 @@ package icu.windea.pls.lang.diff.actions
 import com.intellij.diff.DiffContentFactory
 import com.intellij.diff.actions.impl.GoToChangePopupBuilder
 import com.intellij.diff.chains.DiffRequestChain
-import com.intellij.diff.chains.DiffRequestProducer
-import com.intellij.diff.chains.DiffRequestSelectionChain
-import com.intellij.diff.chains.SimpleDiffRequestChain
 import com.intellij.diff.contents.DocumentContent
 import com.intellij.diff.contents.FileContent
 import com.intellij.diff.requests.DiffRequest
@@ -13,7 +10,6 @@ import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.diff.util.DiffUserDataKeys
 import com.intellij.diff.util.Side
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.ListSelection
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -27,7 +23,6 @@ import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
-import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
@@ -102,47 +97,40 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
         val windowTitle = getWindowsTitle(file) ?: return null
         val contentTitle = getContentTitle(file) ?: return null
-        val binary = file.fileType.isBinary
+        val isBinary = file.fileType.isBinary
         val content = when {
-            binary -> createBinaryContent(contentFactory, project, file)
+            isBinary -> createBinaryContent(contentFactory, project, file)
             else -> createContent(contentFactory, project, file)
         } ?: return null
-        if (binary) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+        if (isBinary) content.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
 
         var index = 0
         var currentIndex = 0
         val producers = runReadAction {
             virtualFiles.mapNotNull { otherFile ->
                 if (file.fileType != otherFile.fileType) return@mapNotNull null
+
                 val isSameFile = file == otherFile
+                val isCurrent = isSameFile
+                val isReadonly = isBinary || isSameFile
+
                 val otherContentTitle = when {
                     isSameFile -> getContentTitle(otherFile, true)
                     else -> getContentTitle(otherFile)
                 } ?: return@mapNotNull null
-                var isCurrent = false
-                var readonly = false
                 val otherContent = when {
-                    binary -> {
-                        if (isSameFile) isCurrent = true
-                        readonly = true
-                        createBinaryContent(contentFactory, project, otherFile)
-                    }
-                    isSameFile -> {
-                        isCurrent = true
-                        readonly = true
-                        createTempContent(contentFactory, project, file)
-                    }
-                    else -> {
-                        createContent(contentFactory, project, otherFile)
-                    }
+                    isBinary -> createBinaryContent(contentFactory, project, otherFile)
+                    isSameFile -> createTempContent(contentFactory, project, file)
+                    else -> createContent(contentFactory, project, otherFile)
                 } ?: return@mapNotNull null
+
                 if (isCurrent) currentIndex = index
-                if (readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                if (isReadonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherFile.fileType.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 // 窗口定位到当前光标位置
-                if (!binary && editor != null) {
+                if (!isBinary && editor != null) {
                     val currentLine = editor.caretModel.logicalPosition.line
                     request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
                 }
@@ -193,13 +181,9 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     }
 
     class MyDiffRequestChain(
-        producers: List<DiffRequestProducer>,
+        producers: List<ParadoxDiffRequestProducer>,
         defaultIndex: Int = 0
-    ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
-        private val listSelection = ListSelection.createAt(producers, defaultIndex)
-
-        override fun getListSelection() = listSelection
-
+    ) : ParadoxDiffRequestChain(producers, defaultIndex) {
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
@@ -207,10 +191,10 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
     class MyRequestProducer(
         request: DiffRequest,
-        val otherFile: VirtualFile,
-        val icon: Icon?,
-        val isCurrent: Boolean
-    ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
+        otherFile: VirtualFile,
+        icon: Icon?,
+        isCurrent: Boolean,
+    ) : ParadoxDiffRequestProducer(request, otherFile, icon, isCurrent) {
         override fun getName(): String {
             return doGetName() ?: super.name
         }
@@ -227,7 +211,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     }
 
     class MyGotoChangePopupAction(
-        val chain: MyDiffRequestChain,
+        val chain: ParadoxDiffRequestChain,
         val onSelected: Consumer<in Int>,
         val defaultSelection: Int
     ) : GoToChangePopupBuilder.BaseGoToChangePopupAction() {
@@ -239,7 +223,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             return JBPopupFactory.getInstance().createListPopup(Popup())
         }
 
-        private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
+        private inner class Popup : BaseListPopupStep<ParadoxDiffRequestProducer>(
             PlsBundle.message("diff.compare.files.popup.title"),
             chain.requests
         ) {
@@ -247,17 +231,17 @@ class CompareFilesAction : ParadoxShowDiffAction() {
                 defaultOptionIndex = defaultSelection
             }
 
-            override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
+            override fun getIconFor(value: ParadoxDiffRequestProducer) = value.icon
 
-            override fun getTextFor(value: DiffRequestProducer) = value.name
+            override fun getTextFor(value: ParadoxDiffRequestProducer) = value.name
 
             // com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             @Suppress("UseJBColor")
-            override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+            override fun getBackgroundFor(value: ParadoxDiffRequestProducer) = if (value.isCurrent) Color(0x808080) else null
 
             override fun isSpeedSearchEnabled() = true
 
-            override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
+            override fun onChosen(selectedValue: ParadoxDiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 val selectedIndex = chain.requests.indexOf(selectedValue)
                 onSelected.consume(selectedIndex)
             }
