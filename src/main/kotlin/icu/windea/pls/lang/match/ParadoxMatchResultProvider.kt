@@ -52,12 +52,12 @@ private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
         val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile)
-        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile)
+        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
         val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FilePath)
         val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
         val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile)
+        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
 
         private fun createKeyForCache(vararg dependencyItems: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult

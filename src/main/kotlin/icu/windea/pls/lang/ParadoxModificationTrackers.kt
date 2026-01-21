@@ -25,22 +25,16 @@ object ParadoxModificationTrackers {
     val ScriptedVariables = ScriptFile("common/scripted_variables/**/*.txt")
     val InlineScripts = ScriptFile("common/inline_scripts/**/*.txt")
 
+    val PreferredLocale = SimpleModificationTracker()
+    val FilePath = SimpleModificationTracker()
     val ParameterConfigInference = SimpleModificationTracker()
     val InlineScriptConfigInference = SimpleModificationTracker()
     val DefinitionScopeContextInference = SimpleModificationTracker()
 
-    val PreferredLocale = SimpleModificationTracker()
-    val FilePath = SimpleModificationTracker()
-    val Match = MergedModificationTracker(
-        ScriptFile,
-        LocalisationFile,
-        FilePath,
-        ParameterConfigInference,
-        InlineScriptConfigInference,
-    )
     val Resolve = MergedModificationTracker(
         ScriptFile,
         LocalisationFile,
+        PreferredLocale,
         FilePath,
         ParameterConfigInference,
         InlineScriptConfigInference,
