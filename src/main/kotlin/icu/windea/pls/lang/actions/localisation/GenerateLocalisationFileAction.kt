@@ -31,7 +31,7 @@ import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsStrategies
+import icu.windea.pls.lang.settings.PlsSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -125,13 +125,13 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.id)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
-                                        PlsStrategies.LocalisationGeneration.EmptyText -> {
+                                        PlsSettingsStrategies.LocalisationGeneration.EmptyText -> {
                                             e.setValue("")
                                         }
-                                        PlsStrategies.LocalisationGeneration.SpecificText -> {
+                                        PlsSettingsStrategies.LocalisationGeneration.SpecificText -> {
                                             e.setValue(specificText)
                                         }
-                                        PlsStrategies.LocalisationGeneration.FromLocale -> {
+                                        PlsSettingsStrategies.LocalisationGeneration.FromLocale -> {
                                             // 使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
                                             val selector = selector(project, baseFile).localisation().contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.searchNormal(e.name, selector).find()

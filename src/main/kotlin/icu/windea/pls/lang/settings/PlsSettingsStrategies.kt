@@ -2,11 +2,11 @@ package icu.windea.pls.lang.settings
 
 import icu.windea.pls.PlsBundle
 
-interface PlsStrategies {
+interface PlsSettingsStrategies {
     /**
      * 本地化的生成策略。
      */
-    enum class LocalisationGeneration(val text: String) {
+    enum class LocalisationGeneration(override val text: String) : PlsSettingsStrategy {
         EmptyText(PlsBundle.message("settings.strategy.localisationGeneration0")),
         SpecificText(PlsBundle.message("settings.strategy.localisationGeneration1")),
         FromLocale(PlsBundle.message("settings.strategy.localisationGeneration2")),
@@ -16,7 +16,7 @@ interface PlsStrategies {
     /**
      * 默认差异比较分组的策略。
      */
-    enum class DiffGroup(val text: String) {
+    enum class DiffGroup(override val text: String) : PlsSettingsStrategy {
         Current(PlsBundle.message("settings.strategy.diffGroup.0")),
         Vanilla(PlsBundle.message("settings.strategy.diffGroup.1")),
         First(PlsBundle.message("settings.strategy.diffGroup.2")),
@@ -25,16 +25,9 @@ interface PlsStrategies {
     }
 
     /**
-     * 层级视图的分组策略。
-     */
-    interface Grouping {
-        val text: String
-    }
-
-    /**
      * 事件树的层级视图的分组策略。
      */
-    enum class EventTreeGrouping(override val text: String) : Grouping {
+    enum class EventTreeGrouping(override val text: String) : PlsSettingsStrategy {
         None(PlsBundle.message("settings.strategy.eventTreeGrouping.0")),
         Type(PlsBundle.message("settings.strategy.eventTreeGrouping.1")),
         ;
@@ -43,7 +36,7 @@ interface PlsStrategies {
     /**
      * 科技树的层级视图的分组策略。
      */
-    enum class TechTreeGrouping(override val text: String) : Grouping {
+    enum class TechTreeGrouping(override val text: String) : PlsSettingsStrategy {
         None(PlsBundle.message("settings.strategy.techTreeGrouping.0")),
         Tier(PlsBundle.message("settings.strategy.techTreeGrouping.1")),
         Area(PlsBundle.message("settings.strategy.techTreeGrouping.2")),

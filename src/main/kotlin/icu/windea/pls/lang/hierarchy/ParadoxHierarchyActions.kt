@@ -19,7 +19,8 @@ import icu.windea.pls.lang.project
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.settings.PlsStrategies
+import icu.windea.pls.lang.settings.PlsSettingsStrategies
+import icu.windea.pls.lang.settings.PlsSettingsStrategy
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JComponent
@@ -96,8 +97,8 @@ interface ParadoxHierarchyActions {
         override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
             val type = browser.castOrNull<ParadoxDefinitionHierarchyBrowser>()?.type
             val strategies = when (type) {
-                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsStrategies.EventTreeGrouping.entries
-                Type.TechTreePre, Type.TechTreePost -> PlsStrategies.TechTreeGrouping.entries
+                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsSettingsStrategies.EventTreeGrouping.entries
+                Type.TechTreePre, Type.TechTreePost -> PlsSettingsStrategies.TechTreeGrouping.entries
                 else -> emptyList()
             }
 
@@ -121,11 +122,11 @@ interface ParadoxHierarchyActions {
             return panel
         }
 
-        private inner class MenuAction(val strategy: PlsStrategies.Grouping) : AnAction(strategy.text) {
+        private inner class MenuAction(val strategy: PlsSettingsStrategy) : AnAction(strategy.text) {
             override fun actionPerformed(e: AnActionEvent) {
                 when (strategy) {
-                    is PlsStrategies.EventTreeGrouping -> PlsSettings.getInstance().state.hierarchy.eventTreeGrouping = strategy
-                    is PlsStrategies.TechTreeGrouping -> PlsSettings.getInstance().state.hierarchy.techTreeGrouping = strategy
+                    is PlsSettingsStrategies.EventTreeGrouping -> PlsSettings.getInstance().state.hierarchy.eventTreeGrouping = strategy
+                    is PlsSettingsStrategies.TechTreeGrouping -> PlsSettings.getInstance().state.hierarchy.techTreeGrouping = strategy
                 }
 
                 // invokeLater is called to update state of button before long tree building operation

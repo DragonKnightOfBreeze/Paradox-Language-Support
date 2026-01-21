@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
+import icu.windea.pls.lang.settings.PlsSettingsStrategies.DiffGroup as DiffGroupStrategy
 
 // com.intellij.diff.actions.BaseShowDiffAction
 
