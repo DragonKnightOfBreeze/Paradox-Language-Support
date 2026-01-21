@@ -28,7 +28,7 @@ class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameType
         val steamWorkshopDir = parentDir ?: return null
         val steamId = steamWorkshopDir.name
         val gameType = ParadoxGameType.getAll().find { it.steamId == steamId } ?: return null
-        if (PlsPathService.getInstance().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
+        if (PlsPathService.getInstance().getSteamGameWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
         return gameType
     }
 }

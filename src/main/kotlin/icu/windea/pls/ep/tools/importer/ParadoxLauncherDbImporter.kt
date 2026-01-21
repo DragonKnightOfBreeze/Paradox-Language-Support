@@ -42,7 +42,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
         val gameType = modSetInfo.gameType
 
         // 校验 Steam 创意工坊目录
-        val workshopDirPath = PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
+        val workshopDirPath = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
             ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         if (workshopDirPath.notExists()) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))

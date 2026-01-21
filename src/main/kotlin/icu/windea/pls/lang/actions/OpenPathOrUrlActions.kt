@@ -22,7 +22,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
@@ -31,8 +32,9 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val gameType = getGameType(e) ?: return null
-            return PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
+            return PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         }
     }
 
@@ -40,7 +42,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             return PlsPathService.getInstance().getGameDataPath(gameType.title)
         }
     }
@@ -72,8 +75,7 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-            val fileInfo = file.fileInfo ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             return fileInfo.rootInfo.rootFile.toNioPath()
         }
@@ -83,7 +85,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
         }
@@ -93,7 +96,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameWorkshopUrlInSteam(steamId)
         }
@@ -121,7 +125,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
         }
@@ -131,7 +136,8 @@ interface OpenPathOrUrlActions {
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val gameType = getGameType(e) ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
+            val gameType = fileInfo.rootInfo.gameType
             val steamId = gameType.steamId
             return PlsUrlService.getInstance().getSteamGameWorkshopUrl(steamId)
         }
@@ -139,16 +145,14 @@ interface OpenPathOrUrlActions {
 
     class ModPage : HandleUrlActionBase() {
         override fun isVisible(e: AnActionEvent): Boolean {
-            val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return false
-            val fileInfo = file.fileInfo ?: return false
+            val fileInfo = getFileInfo(e) ?: return false
             return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
-            val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-            val fileInfo = file.fileInfo ?: return null
+            val fileInfo = getFileInfo(e) ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
             val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
             return PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)

@@ -36,7 +36,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     private fun addAllowedRoots() {
         // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
         val additionalAllowedRoots = listOfNotNull(
-            PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId),
+            PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
             PlsPathService.getInstance().getGameDataPath(gameType.title),
         )
         System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))

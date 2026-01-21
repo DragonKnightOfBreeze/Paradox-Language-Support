@@ -1,31 +1,33 @@
 package icu.windea.pls.lang.actions
 
+import com.intellij.ide.lightEdit.LightEditCompatible
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.model.ParadoxFileInfo
 import java.nio.file.Path
 import javax.swing.Icon
 
+@Suppress("UnstableApiUsage")
 abstract class HandlePathActionBase(
     icon: Icon? = null,
     text: String? = null,
     description: String? = null,
-) : DumbAwareAction(text, description, icon) {
+) : DumbAwareAction(text, description, icon), LightEditCompatible {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
-        val visible = isVisible(e)
-        presentation.isEnabledAndVisible = visible
-        if (!visible) return
+        presentation.isEnabledAndVisible = false
+        if (!isVisible(e)) return
+        presentation.isVisible = true
+        if (!isEnabled(e)) return
         val targetPath = getTargetPath(e)
-        val enabled = targetPath != null && isEnabled(e)
-        presentation.isEnabled = enabled
-        if (!enabled) return
+        if (targetPath == null) return
+        presentation.isEnabled = true
         presentation.description = templatePresentation.description + " (" + targetPath + ")"
     }
 
@@ -35,11 +37,9 @@ abstract class HandlePathActionBase(
 
     protected abstract fun getTargetPath(e: AnActionEvent): Path?
 
-    protected fun getGameType(e: AnActionEvent): ParadoxGameType? {
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        if (gameType == ParadoxGameType.Core) return null
-        return gameType
+    protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
+        val files = PlsFileManager.findFiles(e)
+        return files.firstNotNullOfOrNull { it.fileInfo }
     }
 
     protected fun openPath(e: AnActionEvent) {

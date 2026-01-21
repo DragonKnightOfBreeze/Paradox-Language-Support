@@ -51,14 +51,14 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     private fun addAllowedRoots() {
         // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
         val additionalAllowedRoots = listOfNotNull(
-            PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId),
+            PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
             PlsPathService.getInstance().getGameDataPath(gameType.title),
         )
         System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))
     }
 
     private fun buildModSetInfoFromWorkshop(): ParadoxModSetInfo {
-        val workshop = PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
+        val workshop = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
             ?: throw AssertionError("Steam workshop path not found for ${gameType.title}")
         val mods = remoteIds.mapNotNull f@{ id ->
             val dir = ParadoxMetadataManager.getModDirectoryFromSteamId(id, workshop) ?: return@f null

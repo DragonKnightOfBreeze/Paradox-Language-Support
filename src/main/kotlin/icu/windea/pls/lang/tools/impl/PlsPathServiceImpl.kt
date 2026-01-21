@@ -87,7 +87,7 @@ class PlsPathServiceImpl : PlsPathService {
         }
     }
 
-    override fun getSteamWorkshopPath(steamId: String): Path? {
+    override fun getSteamGameWorkshopPath(steamId: String): Path? {
         if (steamId.isEmpty()) return null
         return doGetSteamWorkshopPath(steamId)
     }

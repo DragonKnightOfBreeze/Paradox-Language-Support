@@ -32,7 +32,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
-        val workshopDirPath = PlsPathService.getInstance().getSteamWorkshopPath(gameType.steamId)
+        val workshopDirPath = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         if (workshopDirPath == null) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         }
