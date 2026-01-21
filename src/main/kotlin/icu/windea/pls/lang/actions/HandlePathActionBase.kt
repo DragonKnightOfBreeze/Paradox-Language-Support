@@ -39,7 +39,8 @@ abstract class HandlePathActionBase(
 
     protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
         val files = PlsFileManager.findFiles(e)
-        return files.firstNotNullOfOrNull { it.fileInfo }
+        val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
+        return fileInfo
     }
 
     protected fun openPath(e: AnActionEvent) {

@@ -8,7 +8,7 @@ import java.nio.file.Path
 interface GoToPathActions {
     class Steam : GoToPathActionBase() {
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return PlsPathService.getInstance().getSteamPath()
+            return  PlsPathService.getInstance().getSteamPath()
         }
     }
 
