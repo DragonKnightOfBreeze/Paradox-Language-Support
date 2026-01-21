@@ -91,11 +91,9 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             }
         }
         if (virtualFiles.size <= 1) {
-            // unexpected, should not be empty here
-            PlsFacade.createNotification(
-                NotificationType.INFORMATION,
-                PlsBundle.message("diff.compare.files.content.title.info.1")
-            ).notify(project)
+            // unexpected
+            val content = PlsBundle.message("diff.compare.files.content.title.info.1")
+            PlsFacade.createNotification(NotificationType.INFORMATION, content).notify(project)
             return null
         }
 

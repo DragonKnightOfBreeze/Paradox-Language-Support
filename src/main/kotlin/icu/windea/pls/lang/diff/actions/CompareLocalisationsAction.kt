@@ -132,11 +132,9 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             }
         }
         if (localisations.size <= 1) {
-            // unexpected, should not be empty here
-            PlsFacade.createNotification(
-                NotificationType.INFORMATION,
-                PlsBundle.message("diff.compare.localisations.content.title.info.1")
-            ).notify(project)
+            // unexpected
+            val content = PlsBundle.message("diff.compare.localisations.content.title.info.1")
+            PlsFacade.createNotification(NotificationType.INFORMATION, content).notify(project)
             return null
         }
 
