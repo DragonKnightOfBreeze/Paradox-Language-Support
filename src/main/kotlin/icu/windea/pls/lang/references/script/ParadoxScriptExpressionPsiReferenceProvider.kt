@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -20,8 +21,11 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
         if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY // #131
 
+        // 要求规则分组数据已加载完毕
+        if (!PlsFacade.checkConfigGroupInitialized(element.project, element)) return PsiReference.EMPTY_ARRAY
+
         // 跳过 element 是定义的 typeKey 的情况
-        if(element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) return PsiReference.EMPTY_ARRAY
+        if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) return PsiReference.EMPTY_ARRAY
 
         // 尝试解析为复杂枚举值声明
         run {
