@@ -71,7 +71,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             return
         }
 
-        // 出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
+        // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
         val file = findFile(e)
@@ -173,20 +173,22 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, qualifiedName, entryPath)
+        // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
+        return PlsBundle.message("diff.compare.files.dialog.title", path, qualifiedName)
     }
 
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
+        // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, qualifiedName, entryPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, qualifiedName, entryPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", path, qualifiedName)
+            else -> PlsBundle.message("diff.compare.files.content.title", path, qualifiedName)
         }
     }
 
@@ -217,9 +219,10 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
-            val entryPath = fileInfo.entryPath ?: return null
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, qualifiedName, entryPath)
+            // NOTE 2.1.2 目前的方案：仅显示文件的路径信息、游戏或模组的名字和版本信息
+            return PlsBundle.message("diff.compare.files.popup.name", path, qualifiedName)
         }
     }
 

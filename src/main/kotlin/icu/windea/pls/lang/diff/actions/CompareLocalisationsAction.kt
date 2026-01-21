@@ -91,7 +91,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             return
         }
 
-        // 出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
+        // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
@@ -213,27 +213,29 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
 
     private fun getWindowsTitle(localisation: ParadoxLocalisationProperty): String? {
-        val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val name = localisation.name
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, qualifiedName, entryPath)
+        // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, path, qualifiedName)
     }
 
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
-        val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val name = localisation.name
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
+        // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, qualifiedName, entryPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, qualifiedName, entryPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, path, qualifiedName)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, path, qualifiedName)
         }
     }
 
@@ -266,9 +268,12 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val name = otherLocalisationName
+            val localeId = locale.id
+            val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
-            val entryPath = fileInfo.entryPath ?: return null
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale.id, fileInfo.path, qualifiedName, entryPath)
+            // NOTE 2.1.2 目前的方案：仅显示本地化的名字、路径信息、游戏或模组的名字和版本信息（这里还会显示语言区域信息）
+            return PlsBundle.message("diff.compare.localisations.popup.name", name, localeId, path, qualifiedName)
         }
     }
 

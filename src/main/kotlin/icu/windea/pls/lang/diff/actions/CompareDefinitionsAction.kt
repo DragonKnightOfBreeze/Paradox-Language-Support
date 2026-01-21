@@ -93,7 +93,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             return
         }
 
-        // 出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
+        // 出于性能原因，目前不在 update 方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
@@ -222,9 +222,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val name = definitionInfo.name.or.anonymous()
+        val type = definitionInfo.type
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
-        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
+        // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
+        return PlsBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
     }
 
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
@@ -232,11 +235,14 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val name = definitionInfo.name.or.anonymous()
+        val type = definitionInfo.type
+        val path = fileInfo.path
         val qualifiedName = rootInfo.qualifiedName
-        val entryPath = fileInfo.entryPath ?: return null
+        // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", name, type, path, qualifiedName)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", name, type, path, qualifiedName)
         }
     }
 
@@ -268,9 +274,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val name = otherDefinitionInfo.name.or.anonymous()
+            val type = otherDefinitionInfo.type
+            val path = fileInfo.path
             val qualifiedName = rootInfo.qualifiedName
-            val entryPath = fileInfo.entryPath ?: return null
-            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.or.anonymous(), otherDefinitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
+            // NOTE 2.1.2 目前的方案：仅显示定义的名字、类型（不包括子类型）、路径信息、游戏或模组的名字和版本信息
+            return PlsBundle.message("diff.compare.definitions.popup.name", name, type, path, qualifiedName)
         }
     }
 
