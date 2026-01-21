@@ -7,7 +7,9 @@ import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -48,6 +50,8 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         if (node !is PsiFileNode) return
         val file = node.element?.value ?: return
         if (file !is ParadoxScriptFile) return
+        val fileInfo = file.fileInfo ?: return
+        if(fileInfo.group == ParadoxFileGroup.ModDescriptor) return // 排除模组描述符文件
         val definitionInfo = file.definitionInfo ?: return
 
         // 特殊图标
