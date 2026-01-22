@@ -1007,7 +1007,7 @@ object ParadoxComplexExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.links.values.filter { it.type.forScope() && it.prefix == prefix }
+        val linkConfigs = configGroup.links.values.filter { it.type.forScope() && matchesLinkPrefix(it.prefix, prefix) }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null
@@ -1024,6 +1024,15 @@ object ParadoxComplexExpressionCompletionManager {
         context.configs = configs
         context.scopeContext = scopeContext
         context.argumentIndex = argIndex
+    }
+
+    private fun matchesLinkPrefix(configPrefix: String?, prefix: String?): Boolean {
+        if (configPrefix == null) return prefix == null
+        if (prefix == null) return false
+        if (configPrefix == prefix) return true
+        if (configPrefix.endsWith(':') && configPrefix.dropLast(1) == prefix) return true
+        if (prefix.endsWith(':') && prefix.dropLast(1) == configPrefix) return true
+        return false
     }
 
     fun completeValueField(context: ProcessingContext, result: CompletionResultSet) {
@@ -1116,7 +1125,7 @@ object ParadoxComplexExpressionCompletionManager {
         val argIndex = context.argumentIndex
 
         val linkConfigs = if (variableOnly) configGroup.linksModel.variable
-        else configGroup.links.values.filter { it.type.forValue() && it.prefix == prefix }
+        else configGroup.links.values.filter { it.type.forValue() && matchesLinkPrefix(it.prefix, prefix) }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.configs = linkConfigs
@@ -1340,7 +1349,7 @@ object ParadoxComplexExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forScope() && it.prefix == prefix }
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forScope() && matchesLinkPrefix(it.prefix, prefix) }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null
@@ -1473,7 +1482,7 @@ object ParadoxComplexExpressionCompletionManager {
         val scopeContext = context.scopeContext
         val argIndex = context.argumentIndex
 
-        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forValue() && it.prefix == prefix }
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.type.forValue() && matchesLinkPrefix(it.prefix, prefix) }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
         context.config = null
