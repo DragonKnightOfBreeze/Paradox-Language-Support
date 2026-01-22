@@ -63,9 +63,10 @@
     </value>
   </option>
 
-  <option name="PARADOX_SCRIPT.DIRECTIVE">
-    <value>
-      <option name="FOREGROUND" value="000080"/>
-    </value>
-  </option>
+  <!--<option name="PARADOX_SCRIPT.DIRECTIVE">-->
+  <!--  <value>-->
+  <!--    <option name="FOREGROUND" value="000080"/>-->
+  <!--    <option name="FONT_TYPE" value="1"/>-->
+  <!--  </value>-->
+  <!--</option>-->
 </list>

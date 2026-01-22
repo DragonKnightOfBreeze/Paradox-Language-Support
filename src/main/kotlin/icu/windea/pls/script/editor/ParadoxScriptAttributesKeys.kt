@@ -75,7 +75,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
     @JvmField
-    val DIRECTIVE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DIRECTIVE", MARKUP_TAG)
+    val DIRECTIVE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DIRECTIVE", KEYWORD) // JSP directive name
 
     @JvmField
     val SYSTEM_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_SCOPE", STATIC_METHOD)
