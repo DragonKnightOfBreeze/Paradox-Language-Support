@@ -4,10 +4,9 @@ import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.MenuOnClickPresentation
 import com.intellij.codeInsight.hints.presentation.ScaleAwarePresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
-import icu.windea.pls.core.optimized
+import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import javax.swing.Icon
 
 @Suppress("UnstableApiUsage")
@@ -22,14 +21,6 @@ class ParadoxHintsBuilder {
         presentations.add(presentation)
     }
 
-    fun merged(): InlayPresentation? {
-        return when {
-            presentations.isEmpty() -> null
-            presentations.size == 1 -> presentations.first()
-            else -> SequencePresentation(presentations.optimized())
-        }
-    }
-
     /**
      * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、偏移、默认点击操作等）。
      */
@@ -39,7 +30,7 @@ class ParadoxHintsBuilder {
         // com.intellij.docker.dockerFile.inlay.DockerInlayHintsProvider.MyCollector.buildPresentation
         // com.intellij.microservices.jvm.dependencies.FrameworkDependenciesInlayHintsCollectorBase.buildPresentation
 
-        val basePresentation = merged() ?: return null
+        val basePresentation = presentations.mergePresentations() ?: return null
         val factory = context.factory
         val scaledFactory = ScaleAwarePresentationFactory(context.editor, factory)
         val scaledPresentation = basePresentation
@@ -62,6 +53,7 @@ class ParadoxHintsBuilder {
     fun text(text: String, pointer: SmartPsiElementPointer<out PsiElement>?) {
         val presentation = context.factory.smallText(text)
             .let { context.factory.psiSingleReference(it) { pointer?.element } }
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
         presentations.add(presentation)
     }
 
@@ -75,6 +67,7 @@ class ParadoxHintsBuilder {
     fun icon(icon: Icon, pointer: SmartPsiElementPointer<out PsiElement>?) {
         val presentation = context.factory.smallScaledIcon(icon)
             .let { context.factory.psiSingleReference(it) { pointer?.element } }
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
         presentations.add(presentation)
     }
 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util.renderers
 
-import com.intellij.codeInsight.hints.InlayPresentationFactory
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
@@ -17,6 +16,7 @@ import icu.windea.pls.core.util.EscapeType
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.PlsHintsUtil
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
@@ -42,8 +42,6 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
-import java.awt.Point
-import java.awt.event.MouseEvent
 import java.util.concurrent.atomic.AtomicInteger
 import javax.imageio.ImageIO
 
@@ -310,23 +308,14 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     context(context: Context)
-    private fun wrapConceptPresentation(presentation: InlayPresentation, referenceElement: PsiElement?): InlayPresentation {
-        val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+    private fun wrapConceptPresentation(base: InlayPresentation, referenceElement: PsiElement?): InlayPresentation {
+        val attributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
         val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-        var result: InlayPresentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
-        if (referenceElement != null) {
-            result = context.factory.psiSingleReference(result) { referenceElement }
-        }
-        result = context.factory.onHover(result, object : InlayPresentationFactory.HoverListener {
-            override fun onHover(event: MouseEvent, translated: Point) {
-                attributesFlags.isDefault = true // change foreground
-            }
-
-            override fun onHoverFinished() {
-                attributesFlags.isDefault = false // reset foreground
-            }
-        })
-        return result
+        val withReference = if (referenceElement != null) base else context.factory.psiSingleReference(base) { referenceElement }
+        val withAttributes = WithAttributesPresentation(withReference, attributesKey, context.editor, attributesFlags)
+        val changeOnHover = context.factory.changeOnHover(withReference, { withAttributes }, { PlsHintsUtil.isControlDown(it) })
+        val withCursorOnHover = context.factory.withCursorOnHoverWhenControlDown(changeOnHover, PlsHintsUtil.getHandCursor())
+        return withCursorOnHover
     }
 
     context(context: Context)
@@ -378,7 +367,6 @@ class ParadoxLocalisationTextInlayRenderer(
     context(context: Context)
     private fun getElementPresentation(element: PsiElement): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
-
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
@@ -396,7 +384,7 @@ class ParadoxLocalisationTextInlayRenderer(
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
-            // 不要尝试跳转到dynamicValue的声明处
+            // 不要尝试跳转到动态值的声明处
             if (resolved == null || resolved is MockPsiElement) {
                 presentations.add(context.factory.smallText(s))
             } else {
