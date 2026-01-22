@@ -1,20 +1,20 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <projectConfigurable id="pls.diagram" parentId="pls" groupWeight="9" bundle="messages.PlsDiagramBundle" key="settings.diagram"
-                         instance="icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable"/>
+                         instance="icu.windea.pls.extensions.diagram.settings.PlsDiagramSettingsConfigurable"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.diagram">
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisEventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisTechTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck2EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck3EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Eu4EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Eu5EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Hoi4EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.IrEventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Vic2EventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.Vic3EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.StellarisEventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.StellarisTechTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Ck2EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Ck3EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Eu4EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Eu5EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Hoi4EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.IrEventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Vic2EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extensions.diagram.provider.Vic3EventTreeDiagramProvider"/>
   </extensions>
 
   <actions resource-bundle="messages.PlsDiagramBundle">
@@ -22,7 +22,7 @@
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </reference>
-    <action id="Pls.Diagram.OpenSettings" class="icu.windea.pls.extension.diagram.actions.ParadoxDiagramOpenSettingsAction" icon="AllIcons.General.GearPlain">
+    <action id="Pls.Diagram.OpenSettings" class="icu.windea.pls.extensions.diagram.actions.ParadoxDiagramOpenSettingsAction" icon="AllIcons.General.GearPlain">
       <add-to-group group-id="Diagram.DefaultGraphToolbar" relative-to-action="Diagram.OpenSettings" anchor="after"/>
     </action>
     <reference ref="UML.Group">

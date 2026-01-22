@@ -1,15 +1,15 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <psi.implicitReferenceProvider implementation="icu.windea.pls.extension.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
+    <psi.implicitReferenceProvider implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
     <localInspection language="Markdown" shortName="PlsMarkdownUnresolvedReferenceLink"
                      bundle="messages.PlsExtensionsBundle"
                      key="inspection.markdown.unresolvedReferenceLinks" groupKey="inspection.markdown.group"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.extension.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>
+                     implementationClass="icu.windea.pls.extensions.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <injectedFileProcessor implementation="icu.windea.pls.extension.markdown.MarkdownCodeFenceInjectedFileProcessor"/>
+    <injectedFileProcessor implementation="icu.windea.pls.extensions.markdown.MarkdownCodeFenceInjectedFileProcessor"/>
   </extensions>
 </idea-plugin>

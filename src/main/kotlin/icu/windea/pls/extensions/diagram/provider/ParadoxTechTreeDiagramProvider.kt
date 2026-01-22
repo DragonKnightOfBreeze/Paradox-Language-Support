@@ -1,0 +1,310 @@
+package icu.windea.pls.extensions.diagram.provider
+
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramCategory
+import com.intellij.diagram.DiagramPresentationModel
+import com.intellij.diagram.DiagramRelationshipInfoAdapter
+import com.intellij.diagram.presentation.DiagramLineType
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.util.progress.reportProgressScope
+import com.intellij.platform.util.progress.reportSequentialProgress
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.ui.SimpleColoredText
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.ep.util.data.StellarisTechnologyData
+import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
+import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
+import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.extensions.diagram.settings.ParadoxTechTreeDiagramSettings
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.getDefinitionPresentation
+import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import java.util.concurrent.ConcurrentHashMap
+import javax.swing.Icon
+import javax.swing.JComponent
+
+/**
+ * 提供群星的科技树图表。
+ * - 可以配置是否显示类型、关键属性、本地化名称（科技名）、图形表示（科技卡）。
+ * - 可以按类型、级别、分类、领域过滤要显示的科技。
+ * - 可以按作用域过滤要显示的科技。（例如，仅限原版，仅限当前模组）
+ * - 支持任何通用的图表操作。（例如，导出为图片）
+ */
+abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
+    object Categories {
+        val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val LocalizedName = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
+        val Presentation = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
+
+        val All = arrayOf(Type, Properties, LocalizedName, Presentation)
+    }
+
+    object Relations {
+        val Prerequisite = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
+            override fun getTargetArrow() = DELTA
+        }
+
+        private val repeatCache = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
+        fun Repeat(label: String) = repeatCache.getOrPut(label) {
+            object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
+                override fun getTargetArrow() = DELTA
+            }
+        }
+    }
+
+    object Items {
+        class Type(val text: String)
+        class Property(val property: ParadoxScriptProperty, val detail: Boolean)
+        class LocalizedName(val text: String)
+        class Presentation(val definition: ParadoxScriptProperty)
+    }
+
+    object Keys : KeyRegistry() {
+        val typeText by registerKey<String>(Keys)
+        val nameText by registerKey<String>(Keys)
+        val nodeData by registerKey<StellarisTechnologyData>(Keys)
+    }
+
+    private val _elementManager by lazy { ElementManager(this) }
+
+    override fun createNodeContentManager() = NodeContentManager()
+
+    override fun getElementManager() = _elementManager
+
+    abstract override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel): DataModel
+
+    override fun getAllContentCategories() = Categories.All
+
+    abstract override fun getDiagramSettings(project: Project): ParadoxTechTreeDiagramSettings<*>?
+
+    class NodeContentManager : OrderedDiagramNodeContentManager() {
+        override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
+            return when (item) {
+                is Items.Type -> category == Categories.Type
+                is Items.Property -> category == Categories.Properties
+                is Items.LocalizedName -> category == Categories.LocalizedName
+                is Items.Presentation -> category == Categories.Presentation
+                else -> true
+            }
+        }
+
+        override fun getContentCategories(): Array<DiagramCategory> {
+            return Categories.All
+        }
+    }
+
+    class ElementManager(provider: ParadoxDefinitionDiagramProvider) : ParadoxDefinitionDiagramProvider.ElementManager(provider) {
+        override fun isAcceptableAsNode(o: Any?): Boolean {
+            return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
+        }
+
+        override fun getElementTitle(element: PsiElement): String? {
+            ProgressManager.checkCanceled()
+            return when (element) {
+                is ParadoxScriptProperty -> runReadAction { ParadoxTechnologyManager.getName(element) }
+                else -> super.getElementTitle(element)
+            }
+        }
+
+        override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
+            provider as ParadoxTechTreeDiagramProvider
+            ProgressManager.checkCanceled()
+            return when (nodeElement) {
+                is ParadoxScriptProperty -> {
+                    val result = mutableListOf<Any>()
+                    nodeElement.getUserData(Keys.typeText)?.let { result += Items.Type(it) }
+                    runReadAction {
+                        val properties = ParadoxPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
+                        properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
+                    }
+                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.LocalizedName(it) }
+                    result += Items.Presentation(nodeElement)
+                    result.toTypedArray()
+                }
+                else -> emptyArray()
+            }
+        }
+
+        override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
+            ProgressManager.checkCanceled()
+            return when (nodeItem) {
+                is Items.LocalizedName -> {
+                    ParadoxPresentationUtil.getLabel(nodeItem.text.or.anonymous())
+                }
+                is Items.Presentation -> runReadAction r@{
+                    val presentationData = nodeItem.definition.getDefinitionPresentation<StellarisTechnologyCardPresentation>()
+                    presentationData?.createComponent()
+                }
+                else -> null
+            }
+        }
+
+        override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
+            ProgressManager.checkCanceled()
+            return when (nodeItem) {
+                is Items.Type -> {
+                    SimpleColoredText(nodeItem.text, DEFAULT_TEXT_ATTR)
+                }
+                is Items.Property -> runReadAction {
+                    val propertyText = ParadoxPresentationUtil.getPropertyText(nodeItem.property, nodeItem.detail)
+                    propertyText
+                }
+                else -> null
+            }
+        }
+
+        override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
+            ProgressManager.checkCanceled()
+            return when (nodeItem) {
+                is Items.Type -> PlsIcons.Nodes.Type
+                is Items.Property -> PlsIcons.Nodes.Property
+                else -> null
+            }
+        }
+    }
+
+    abstract class DataModel(
+        project: Project,
+        file: VirtualFile?, // umlFile
+        provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
+        private val definitionType = ParadoxDefinitionTypes.technology
+        private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+        private val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+
+        override fun updateDataModel() {
+            // 群星原版科技有400+
+
+            val title = PlsDiagramBundle.message("techTree.update.title")
+            runWithModalProgressBlocking(project, title) action@{
+                reportSequentialProgress { sReporter ->
+                    val step1 = PlsDiagramBundle.message("techTree.update.step.1")
+                    val technologies = sReporter.indeterminateStep(step1) {
+                        readAction { searchTechnologies() }
+                    }
+                    if (technologies.isEmpty()) return@action
+                    val size = technologies.size
+
+                    val step2 = PlsDiagramBundle.message("techTree.update.step.2", size)
+                    sReporter.nextStep(25, step2) {
+                        reportProgressScope(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep(step2) {
+                                    readAction { createNode(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step3 = PlsDiagramBundle.message("techTree.update.step.3", size)
+                    sReporter.nextStep(50, step3) {
+                        reportProgressScope(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep {
+                                    readAction { createEdges(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step4 = PlsDiagramBundle.message("techTree.update.step.4", size)
+                    sReporter.nextStep(100, step4) {
+                        reportProgressScope(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep {
+                                    readAction { preloadLocalisations(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    nodeMap.clear()
+                    techMap.clear()
+                }
+            }
+        }
+
+        private fun searchTechnologies(): List<ParadoxScriptDefinitionElement> {
+            ProgressManager.checkCanceled()
+            val definitions = getDefinitions(definitionType)
+            val settings = provider.getDiagramSettings(project)?.state
+            return definitions.filter { settings == null || showNode(it, settings) }
+        }
+
+        private fun createNode(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            val node = Node(technology, provider)
+            val data = technology.getDefinitionData<StellarisTechnologyData>()
+            node.putUserData(Keys.nodeData, data)
+            nodeMap.put(technology, node)
+            val name = technology.definitionInfo?.name.or.anonymous()
+            techMap.put(name, technology)
+            nodes.add(node)
+        }
+
+        private fun createEdges(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            val data = technology.getDefinitionData<StellarisTechnologyData>() ?: return
+            // 循环科技 ..> 循环科技
+            val levels = data.levels
+            if (levels != null) {
+                val label = if (levels <= 0) "max level: inf" else "max level: $levels"
+                val node = nodeMap.get(technology) ?: return
+                val edge = Edge(node, node, Relations.Repeat(label))
+                edges.add(edge)
+            }
+            // 前置 --> 科技
+            val prerequisites = data.prerequisites
+            prerequisites.forEach { prerequisite ->
+                ProgressManager.checkCanceled()
+                val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: return@forEach
+                val target = nodeMap.get(technology) ?: return@forEach
+                val edge = Edge(source, target, Relations.Prerequisite)
+                edges.add(edge)
+            }
+        }
+
+        private fun preloadLocalisations(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            run {
+                val result = technology.definitionInfo?.typesText
+                technology.putUserData(Keys.typeText, result)
+            }
+            run {
+                val result = ParadoxPresentationUtil.getNameText(technology)
+                technology.putUserData(Keys.nameText, result)
+            }
+        }
+
+        override fun getModificationTracker(): ModificationTracker {
+            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
+            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
+            return ParadoxModificationTrackers.ScriptFile(key)
+        }
+    }
+}

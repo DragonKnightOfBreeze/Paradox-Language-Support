@@ -1,0 +1,58 @@
+package icu.windea.pls.extensions.diagram.settings
+
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.Project
+import com.intellij.ui.dsl.builder.*
+import com.intellij.util.xmlb.annotations.XMap
+import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.extensions.diagram.PlsDiagramBundle
+import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
+
+@WithGameType(ParadoxGameType.Eu4)
+@Service(Service.Level.PROJECT)
+@State(name = "ParadoxDiagramSettings.Eu4.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+class Eu4EventTreeDiagramSettings(
+    project: Project
+) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Eu4) {
+    companion object {
+        const val ID = "pls.diagram.Eu4.EventTree"
+    }
+
+    override val id: String = ID
+
+    class State : ParadoxDiagramSettings.State() {
+        override var scopeType by string()
+
+        @get:XMap
+        var type by linkedMap<String, Boolean>()
+        @get:XMap
+        var attribute by linkedMap<String, Boolean>()
+    }
+
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.eu4")
+
+    override val groupBuilder: Panel.() -> Unit = {
+        val settings = state
+        val types = ParadoxEventManager.getAllTypes(gameType)
+        settings.type.retainSettings(types)
+        val attributes = ParadoxEventManager.getAllAttributes(gameType)
+        settings.attribute.retainSettings(attributes)
+        settings.updateSettings()
+
+        row {
+            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+        }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
+        })
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
+        })
+    }
+}
+
