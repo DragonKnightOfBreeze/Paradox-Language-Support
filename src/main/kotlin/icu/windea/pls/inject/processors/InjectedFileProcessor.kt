@@ -9,13 +9,10 @@ import com.intellij.psi.PsiFile
  * @see icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector
  */
 interface InjectedFileProcessor {
+    /** 处理注入的 PSI 文件，返回是否需要继续处理。 */
     fun process(file: PsiFile): Boolean
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<InjectedFileProcessor>("icu.windea.pls.inject.injectedFileProcessor")
-
-        fun process(file: PsiFile): Boolean {
-            return EP_NAME.extensionList.any { it.process(file) }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package icu.windea.pls.extensions.markdown
 
 import com.intellij.psi.PsiFile
+import icu.windea.pls.extensions.settings.PlsExtensionsSettings
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.util.PlsFileManager
@@ -12,9 +13,11 @@ import icu.windea.pls.lang.util.PlsFileManager
  */
 class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
     override fun process(file: PsiFile): Boolean {
+        if (!PlsExtensionsSettings.getInstance().state.markdown.injectCodeBlocks) return true
+
         val vFile = file.virtualFile
-        if (PlsFileManager.isStubFile(vFile)) return false
-        val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return false
+        if (PlsFileManager.isStubFile(vFile)) return true
+        val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return true
         val injectedFileInfo = PlsMarkdownManager.getInjectedFileInfoFromInjectedFile(element)
         ParadoxAnalysisInjector.injectFileInfo(vFile, injectedFileInfo)
         return true

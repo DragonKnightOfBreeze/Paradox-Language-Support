@@ -3,7 +3,6 @@ package icu.windea.pls.extensions.markdown.psi
 import com.intellij.model.Symbol
 import com.intellij.model.psi.ImplicitReferenceProvider
 import com.intellij.model.psi.PsiSymbolReference
-import com.intellij.openapi.options.advanced.AdvancedSettings
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.asSymbol
@@ -12,6 +11,7 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.extensions.markdown.PlsMarkdownManager
+import icu.windea.pls.extensions.settings.PlsExtensionsSettings
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -27,9 +27,9 @@ import icu.windea.pls.model.constants.PlsPatterns
 @Suppress("UnstableApiUsage")
 class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     override fun getImplicitReference(element: PsiElement, offsetInElement: Int): PsiSymbolReference? {
-        if (!AdvancedSettings.getBoolean("pls.md.resolveInlineCodes")) return null
-        val identifier = PlsMarkdownManager.getIdentifierFromInlineCode(element) ?: return null
+        if (!PlsExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
 
+        val identifier = PlsMarkdownManager.getIdentifierFromInlineCode(element) ?: return null
         run {
             val name = identifier.removePrefixOrNull("@") ?: return@run
             if (name.isEmpty() || name.containsBlank()) return@run
@@ -42,7 +42,6 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
             val textRange = TextRange(1, element.text.length - 1)
             return SymbolReference(element, textRange, "", name)
         }
-
         return null
     }
 
@@ -61,7 +60,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
         }
 
         override fun resolveReference(): Collection<Symbol> {
-            // 如果带有前缀 @ ，则尝试解析为封装变量
+            // 如果带有前缀 `@` ，则尝试解析为封装变量
             // 否则，尝试解析为定义或者本地化
 
             when {

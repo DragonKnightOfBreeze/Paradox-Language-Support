@@ -33,7 +33,7 @@ class PlsExtensionsSettings : SimplePersistentStateComponent<PlsExtensionsSettin
      */
     class MarkdownState : BaseState() {
         var resolveLinks: Boolean by property(true)
-        var resolveInlineCodes: Boolean by property(true)
+        var resolveInlineCodes: Boolean by property(true) // NOTE 2.1.2 enabled by default now
         var injectCodeBlocks: Boolean by property(true)
     }
 }
