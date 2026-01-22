@@ -6,7 +6,7 @@ PLS 集成了多种实用工具，用于优化和扩展插件的功能。
 
 ## 设置页面 {#settings-page}
 
-在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 集成`，可以打开集成的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 集成`，可以打开集成的设置页面。
 
 可以在这里配置要启用的工具集成，以及具体的工具集成选项。
 

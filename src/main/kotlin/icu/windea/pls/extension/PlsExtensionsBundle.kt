@@ -1,4 +1,4 @@
-package icu.windea.pls.extension.markdown
+package icu.windea.pls.extension
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.Nls
@@ -6,11 +6,10 @@ import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 import java.util.function.Supplier
 
-@Suppress("unused")
-object PlsMarkdownBundle {
+object PlsExtensionsBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsMarkdownBundle"
-    private val INSTANCE = DynamicBundle(PlsMarkdownBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.PlsExtensionsBundle"
+    private val INSTANCE = DynamicBundle(PlsExtensionsBundle::class.java, BUNDLE)
 
     @JvmStatic
     @Nls
@@ -18,6 +17,7 @@ object PlsMarkdownBundle {
         return INSTANCE.getMessage(key, *params)
     }
 
+    @Suppress("unused")
     @JvmStatic
     @Nls
     fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {

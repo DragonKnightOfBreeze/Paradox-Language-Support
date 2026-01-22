@@ -21,7 +21,7 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
     }
 
     override fun getCustomContainerName(): String? {
-        // 使用相对于游戏或模组目录的路径，并且带上游戏信息/模组信息，或者使用虚拟文件的绝对路径
+        // 使用相对于入口目录的路径，并且带上游戏信息/模组信息，或者使用虚拟文件的绝对路径
         val element = element
         if (element == null) return null
         val file = element.containingFile

@@ -18,11 +18,12 @@ import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
+import icu.windea.pls.model.constants.PlsHelpTopics
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
 
-    override fun getHelpTopic() = "icu.windea.pls.ai.settings"
+    override fun getHelpTopic() = PlsHelpTopics.aiSettings
 
     override fun createPanel(): DialogPanel {
         val settings = PlsAiSettings.getInstance().state

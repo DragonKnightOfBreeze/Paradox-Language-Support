@@ -9,12 +9,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.model.constants.PlsHelpTopics
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
 
-    override fun getHelpTopic() = "icu.windea.pls.integrations.settings"
+    override fun getHelpTopic() = PlsHelpTopics.integrationsSettings
 
     private val groupNameImage = "pls.integrations.image"
     private val groupNameLint = "pls.integrations.lint"

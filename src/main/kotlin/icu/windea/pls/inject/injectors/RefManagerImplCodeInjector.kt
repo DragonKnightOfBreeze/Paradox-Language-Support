@@ -18,12 +18,12 @@ import icu.windea.pls.lang.selectFile
  */
 @InjectionTarget("com.intellij.codeInspection.reference.RefManagerImpl")
 class RefManagerImplCodeInjector : CodeInjectorBase() {
-    // 如果可行，让代码检查页面中的按目录分组选项按照相对于游戏或模组目录的路径分组，而非简单地按照目录名分组
+    // 如果可行，让代码检查页面中的按目录分组选项按照相对于入口目录的路径分组，而非简单地按照目录名分组
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {
         run {
-            // 按目录分组时显示相对于游戏或模组目录的路径
+            // 按目录分组时显示相对于入口目录的路径
             if (entity !is RefFile) return@run
             val element = entity.psiElement ?: return@run
             val file = selectFile(element) ?: return@run

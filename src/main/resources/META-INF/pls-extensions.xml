@@ -1,0 +1,6 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="pls.extensions" groupWeight="10" parentId="pls" bundle="messages.PlsExtensionsBundle" key="settings"
+                             instance="icu.windea.pls.extension.settings.PlsExtensionsSettingsConfigurable"/>
+  </extensions>
+</idea-plugin>

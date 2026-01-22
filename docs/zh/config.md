@@ -4,7 +4,7 @@
 
 ## 设置页面 {#settings-page}
 
-在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 规则`，可以打开规则的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 规则`，可以打开规则的设置页面。
 
 可以在这里配置要启用的规则分组的来源，以及相关的链接和目录。
 

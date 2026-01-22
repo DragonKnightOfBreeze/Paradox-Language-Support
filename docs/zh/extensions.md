@@ -1,15 +1,27 @@
 # 扩展
 
+<!-- TODO 继续改进与润色 -->
+
+## 设置页面 {#settings-page}
+
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 扩展`，可以打开扩展的设置页面。
+
+可以在这里配置各种扩展功能的开关。
+
+图表需要在单独的[设置页面](#diagram-settings-page)中进行配置。
+
+![](../images/extensiosn/extensions_settings_1.png)
+
 ## Markdown {#md}
 
 > [!note]
 > 本章节提到的功能需要同时安装并启用官方的 [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) 插件。
 
-PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链接、内联代码和代码块的处理。
+PLS 进一步集成了对 Markdown 的支持，针对模组开发场景，优化了对链接、内联代码和代码块的处理。
 
-### 链接 {#link}
+### 链接 {#md-link}
 
-通过特定语法格式的链接文本，PLS 可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
+通过特定格式的链接文本，PLS 可以尝试将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
 从而在编辑器中提供代码导航、快速文档等语言功能，为模组文档编写提供有力支持。
 
 此功能同样适用于 HTML 链接，以及快速文档中的 PSI 元素导航（定义、本地化等）。
@@ -68,7 +80,7 @@ PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链
   - `pdx.l:origin_default_desc`
   - `pdx.l:stellaris:origin_default_desc`
 
-**文件路径**（相对于游戏或模组目录）
+**文件路径**（相对于入口目录，根据游戏类型的不同，可能是游戏或模组根目录，或是特定的子目录）
 
 - 格式
   - `pdx.p:{path}`
@@ -91,10 +103,7 @@ PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链
 - `{gameType}` - <GameTypeNote />
 - `{typeExpression}` - <DefinitionTypeNote />
 
-### 内联代码 {#inline-code}
-
-> [!note]
-> 本章节的功能需要启用特定的高级设置项（`高级设置 > Paradox Language Support > 解析 Markdown 内联代码`）。
+### 内联代码 {#md-inline-code}
 
 PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义、本地化等），
 从而在编辑器中额外提供代码导航、快速文档等语言功能。
@@ -130,9 +139,9 @@ PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义
 
 - 如果可以同时解析为定义和本地化，则会优先解析为定义。
 
-### 代码块 {#code-block}
+### 代码块 {#md-code-block}
 
-通过在 Markdown 代码块的语言 ID 后面注入额外的信息，可以为其中的脚本/本地化/CSV文件的片段指定游戏类型和文件路径。
+通过在 Markdown 代码块的语言 ID 后面声明特定格式的属性，可以为其中的脚本/本地化/CSV文件的片段指定额外信息，例如游戏类型和文件路径。
 PLS 会根据这些信息来匹配 CWT 规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
 
 ![](../images/extensions/md_code_fence_1.png)
@@ -157,7 +166,7 @@ defense_army = {
 备注：
 
 - `{gameType}` - <GameTypeNote />
-- `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本/本地化/CSV文件的路径。
+- `{path}` - 相对于入口目录的文件路径。必须是合法的脚本/本地化/CSV文件的路径。
 
 ## 图表 {#diagrams}
 
@@ -182,13 +191,13 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 ### 设置页面 {#diagram-settings-page}
 
-在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 图表`，可以打开图表的设置页面。
+在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 图表`，可以打开图表的设置页面。
 
 可以在此根据多种条件，配置各类图表需要显示的节点。
 
 ![](../images/extensions/diagram_settings_1.png)
 
-### 事件树 {#event-tree-diagram}
+### 事件树 {#diagram-event-tree}
 
 可以通过以下几种方式打开事件树的图表：
 
@@ -207,7 +216,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 > [!warning]
 > IDE 需要花费一定时间来完成数据加载与图形渲染。如果需要渲染的节点与节点元素过多，这个耗时可能相当长。
 
-### 科技树 {#tech-tree-diagram}
+### 科技树 {#diagram-tech-tree}
 
 如果当前游戏类型为 *Stellaris*，可以通过以下几种方式打开科技树的图表：
 

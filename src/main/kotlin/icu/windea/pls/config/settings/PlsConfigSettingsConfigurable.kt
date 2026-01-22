@@ -13,13 +13,14 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.PlsHelpTopics
 import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")
 class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.config")), SearchableConfigurable {
     override fun getId() = "pls.config"
 
-    override fun getHelpTopic() = "icu.windea.pls.config.settings"
+    override fun getHelpTopic() = PlsHelpTopics.configSettings
 
     private val groupName = "pls.config"
     private val callbackLock = CallbackLock()

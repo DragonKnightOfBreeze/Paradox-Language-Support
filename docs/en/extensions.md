@@ -1,15 +1,27 @@
 # Extensions
 
+<!-- TODO Manual improvement and polish -->
+
+## Settings Page {#settings-page}
+
+In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Extensions` to open the extensions settings page.
+
+Here you can configure which extension features to enable.
+
+Diagram settings are configured in a separate [settings page](#diagram-settings-page).
+
+![](../images/extensions/extensions_settings_1.png)
+
 ## Markdown {#md}
 
 > [!note]
 > The features mentioned in this section require installation and activation of the official [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin.
 
-PLS deeply integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
+PLS further integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
 
-### Link {#link}
+### Link {#md-link}
 
-Through specially formatted link text, PLS can parse Markdown links into matching target references (definitions, localizations, etc.), 
+By specially formatted link text, PLS will try to resolve Markdown links into matching target references (definitions, localizations, etc.),
 providing language features such as code navigation and quick documentation in the editor, offering powerful support for mod documentation writing.
 
 This functionality also applies to HTML links and PSI element navigation (definitions, localizations, etc.) in quick documentation.
@@ -68,7 +80,7 @@ For different types of reference links, the formats and examples are as follows:
   - `pdx.l:origin_default_desc`
   - `pdx.l:stellaris:origin_default_desc`
 
-**File Paths** (relative to game or mod directory)
+**File Paths** (relative to entry directory, depends on game type, may be game or mod root directory, or specific subdirectories)
 
 - Format
   - `pdx.p:{path}`
@@ -91,12 +103,9 @@ Notes:
 - `{gameType}` - <GameTypeNote />
 - `{typeExpression}` - <DefinitionTypeNote />
 
-### Inline Code {#inline-code}
+### Inline Code {#md-inline-code}
 
-> [!note]
-> This feature requires enabling a specific advanced setting (`Advanced Settings > Paradox Language Support > Resolve Markdown Inline Code`).
-
-PLS can try to resolve Markdown inline code into matching target references (definitions, localizations, etc.), 
+PLS will try to resolve Markdown inline code into matching target references (definitions, localizations, etc.),
 providing additional language features such as code navigation and quick documentation in the editor.
 
 ![](../images/extensions/md_inline_code_1.png)
@@ -130,9 +139,9 @@ Note:
 
 - If both definition and localization can be resolved, definition takes precedence.
 
-### Code Block {#code-block}
+### Code Block {#md-code-block}
 
-By injecting additional information after the language ID in Markdown code blocks, you can specify the game type and file path for script / localization / csv file fragments. 
+By declaring specially formatted attributes after the language ID of Markdown code blocks, you can specify additional information for snippets of script, localization and csv files, such as game type and file path.
 PLS will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
 
 ![](../images/extensions/md_code_fence_1.png)
@@ -157,7 +166,7 @@ defense_army = {
 Notes:
 
 - `{gameType}` - <GameTypeNote />
-- `{path}` - Mocked file path relative to game or mod directory. Must be a valid script / localization / csv file path.
+- `{path}` - File path relative to entry directory. Must be a valid script, localization or csv file path.
 
 ## Diagrams {#diagrams}
 
@@ -188,7 +197,7 @@ Here you can configure which nodes to display for various diagram types based on
 
 ![](../images/extensions/diagram_settings_1.png)
 
-### Event Tree {#event-tree-diagram}
+### Event Tree {#diagram-event-tree}
 
 You can open event tree diagrams in several ways:
 
@@ -207,7 +216,7 @@ Event tree diagrams display key information about events and their invocation re
 > [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
 
-### Technology Tree {#tech-tree-diagram}
+### Technology Tree {#diagram-tech-tree}
 
 If the current game type is *Stellaris*, you can open technology tree diagrams in several ways:
 

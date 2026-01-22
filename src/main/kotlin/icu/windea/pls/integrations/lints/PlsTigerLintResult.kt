@@ -12,7 +12,7 @@ import java.io.File
  * Tiger 检查工具的检查结果。
  *
  * @property name 检测工具的名字，如 `vic3-tiger`。
- * @property itemGroup 键是相对于游戏或模组目录的路径，值是对应的一组检查结果项。
+ * @property itemGroup 键是相对于入口目录的路径，值是对应的一组检查结果项。
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
