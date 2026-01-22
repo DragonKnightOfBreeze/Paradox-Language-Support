@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -308,14 +309,15 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     context(context: Context)
-    private fun wrapConceptPresentation(base: InlayPresentation, referenceElement: PsiElement?): InlayPresentation {
+    private fun wrapConceptPresentation(presentation: InlayPresentation, referenceElement: PsiElement?): InlayPresentation {
+        // NOTE 2.1.2 `WithAttributesPresentation` 需要作为 `psiSingleReference` 的子节点，从而正确提供配色
+        val basePresentation = presentation
+            .letIf(referenceElement != null) { context.factory.psiSingleReference(it) { referenceElement } }
         val attributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
         val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-        val withReference = if (referenceElement != null) base else context.factory.psiSingleReference(base) { referenceElement }
-        val withAttributes = WithAttributesPresentation(withReference, attributesKey, context.editor, attributesFlags)
-        val changeOnHover = context.factory.changeOnHover(withReference, { withAttributes }, { PlsHintsUtil.isControlDown(it) })
-        val withCursorOnHover = context.factory.withCursorOnHoverWhenControlDown(changeOnHover, PlsHintsUtil.getHandCursor())
-        return withCursorOnHover
+        val finalPresentation = WithAttributesPresentation(basePresentation, attributesKey, context.editor, attributesFlags)
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }
+        return finalPresentation
     }
 
     context(context: Context)

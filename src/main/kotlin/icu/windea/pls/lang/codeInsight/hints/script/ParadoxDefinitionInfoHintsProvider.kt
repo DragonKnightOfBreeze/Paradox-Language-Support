@@ -30,17 +30,24 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         // 如果定义名等同于类型键，则省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
         sink.addInlinePresentation(element.endOffset, priority = 1) {
-            when {
-                definitionInfo.name.equals(definitionInfo.typeKey, true) -> text(": ")
-                else -> text("${definitionInfo.name}: ".optimized())
+            if (definitionInfo.name.equals(definitionInfo.typeKey, true)) {
+                text(": ")
+            } else {
+                text("${definitionInfo.name}: ".optimized())
             }
             val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
-            if (settings.showSubtypesForDefinition) {
+            run {
                 val subtypeConfigs = definitionInfo.subtypeConfigs
-                for (subtypeConfig in subtypeConfigs) {
-                    text(", ")
-                    text(subtypeConfig.name, subtypeConfig.pointer)
+                if (subtypeConfigs.isEmpty()) return@run
+                if (!settings.showSubtypesForDefinition) return@run
+                if (!settings.truncateSubtypesForDefinition) {
+                    for (subtypeConfig in subtypeConfigs) {
+                        text(", ")
+                        text(subtypeConfig.name, subtypeConfig.pointer)
+                    }
+                } else {
+                    text("...")
                 }
             }
         }

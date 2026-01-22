@@ -32,11 +32,17 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvi
             text(": ")
             val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
-            if (settings.showSubtypesForDefinition) {
+            run {
                 val subtypeConfigs = definitionInfo.subtypeConfigs
-                for (subtypeConfig in subtypeConfigs) {
-                    text(", ")
-                    text(subtypeConfig.name, subtypeConfig.pointer)
+                if (subtypeConfigs.isEmpty()) return@run
+                if (!settings.showSubtypesForCsvDefinitionReference) return@run
+                if (!settings.truncateSubtypesForCsvDefinitionReference) {
+                    for (subtypeConfig in subtypeConfigs) {
+                        text(", ")
+                        text(subtypeConfig.name, subtypeConfig.pointer)
+                    }
+                } else {
+                    text("...")
                 }
             }
         }
