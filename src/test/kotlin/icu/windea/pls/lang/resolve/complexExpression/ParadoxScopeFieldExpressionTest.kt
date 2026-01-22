@@ -36,7 +36,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun setup() {
         markIntegrationTest()
         markConfigDirectory("features/complexExpression/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Vic3)
     }
 
     private fun parse(
