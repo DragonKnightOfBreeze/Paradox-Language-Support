@@ -10,7 +10,7 @@
 
 图表需要在单独的[设置页面](#diagram-settings-page)中进行配置。
 
-![](../images/extensiosn/extensions_settings_1.png)
+![](../images/extensions/extensions_settings_1.png)
 
 ## Markdown {#md}
 
