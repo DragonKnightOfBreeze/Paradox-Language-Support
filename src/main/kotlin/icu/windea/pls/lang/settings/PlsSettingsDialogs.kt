@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
@@ -8,7 +9,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Entry
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.ui.EntryListTableModel
 import icu.windea.pls.model.ParadoxGameType
@@ -35,7 +36,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                     label(gameType.title + ":").widthGroup("left")
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("gameDirectory.title"))
-                        .apply { putUserData(PlsDataKeys.gameType, gameType) }
+                        .apply { putUserData(PlsDataKeys.gameTypeProperty, AtomicProperty(gameType)) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
                         .columns(COLUMNS_LARGE)

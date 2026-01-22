@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.CustomShortcutSet
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -17,7 +18,7 @@ import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -33,9 +34,10 @@ interface ParadoxModDependenciesToolbarActions {
             val settings = table.model.settings
             val qualifiedName = settings.qualifiedName
             val gameType = settings.gameType ?: return
+            val gameTypeProperty = AtomicProperty(gameType)
             val descriptor = FileChooserDescriptorFactory.multiDirs()
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
-                .apply { putUserData(PlsDataKeys.gameType, gameType) }
+                .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
             FileChooser.chooseFiles(descriptor, project, table, null) { files ->
                 try {
                     var count = 0

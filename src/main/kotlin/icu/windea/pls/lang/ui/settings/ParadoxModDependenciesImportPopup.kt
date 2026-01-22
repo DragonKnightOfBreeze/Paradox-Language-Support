@@ -3,6 +3,7 @@ package icu.windea.pls.lang.ui.settings
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
@@ -13,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModDependencies
@@ -42,9 +43,10 @@ class ParadoxModDependenciesImportPopup(
     private fun execute(modImporter: ParadoxModImporter) {
         val settings = table.model.settings
         val gameType = settings.finalGameType
+        val gameTypeProperty = AtomicProperty(gameType)
         val selected = modImporter.getSelectedFile(gameType)?.toVirtualFile()
         val descriptor = modImporter.createFileChooserDescriptor(gameType)
-            .apply { putUserData(PlsDataKeys.gameType, gameType) }
+            .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
         FileChooser.chooseFile(descriptor, project, table, selected) { file ->
             doExecute(settings, modImporter, file)
         }

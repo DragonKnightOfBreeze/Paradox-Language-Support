@@ -14,7 +14,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener

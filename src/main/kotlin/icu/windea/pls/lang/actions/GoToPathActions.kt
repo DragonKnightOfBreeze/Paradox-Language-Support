@@ -8,15 +8,13 @@ import java.nio.file.Path
 interface GoToPathActions {
     class Steam : GoToPathActionBase() {
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return  PlsPathService.getInstance().getSteamPath()
+            return PlsPathService.getInstance().getSteamPath()
         }
     }
 
     class SteamGame : GoToPathActionBase() {
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
-            val rootInfo = fileInfo.rootInfo
-            val gameType = rootInfo.gameType
+            val gameType = getGameType(e) ?: return null
             return PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
@@ -27,9 +25,7 @@ interface GoToPathActions {
         }
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
-            val rootInfo = fileInfo.rootInfo
-            val gameType = rootInfo.gameType
+            val gameType = getGameType(e) ?: return null
             return PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
         }
     }
@@ -40,9 +36,7 @@ interface GoToPathActions {
         }
 
         override fun getTargetPath(e: AnActionEvent): Path? {
-            val fileInfo = getFileInfo(e) ?: return null
-            val rootInfo = fileInfo.rootInfo
-            val gameType = rootInfo.gameType
+            val gameType = getGameType(e) ?: return null
             return PlsPathService.getInstance().getGameDataPath(gameType.title)
         }
     }

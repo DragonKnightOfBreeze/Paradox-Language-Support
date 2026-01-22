@@ -3,6 +3,7 @@ package icu.windea.pls.lang.ui.settings
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileChooser.FileChooserFactory
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
@@ -12,7 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.model.tools.toModSetInfo
@@ -40,8 +41,9 @@ class ParadoxModDependenciesExportPopup(
     private fun execute(modExporter: ParadoxModExporter) {
         val settings = table.model.settings
         val gameType = settings.finalGameType
+        val gameTypeProperty = AtomicProperty(gameType)
         val descriptor = modExporter.createFileSaverDescriptor(gameType)
-            .apply { putUserData(PlsDataKeys.gameType, gameType) }
+            .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
         val baseDir = modExporter.getSavedBaseDir(gameType)
         val fileName = modExporter.getSavedFileName(gameType)
         val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(baseDir, fileName)

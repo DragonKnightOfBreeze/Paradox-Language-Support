@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.Component

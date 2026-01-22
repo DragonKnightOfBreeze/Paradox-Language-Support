@@ -12,7 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings

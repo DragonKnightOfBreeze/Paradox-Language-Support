@@ -11,6 +11,7 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 
 /**
@@ -72,5 +73,15 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
         val files = PlsFileManager.findFiles(e)
         val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
         return fileInfo
+    }
+
+    protected fun getGameType(e: AnActionEvent): ParadoxGameType? {
+        // NOTE 2.1.2 首先需要尝试从绑定的属性获取游戏类型
+        val fromData = PlsDataKeys.gameTypeProperty.getData(e.dataContext)
+        if (fromData != null) return fromData.get()
+
+        val fileInfo = getFileInfo(e)
+        if (fileInfo != null) return fileInfo.rootInfo.gameType
+        return null
     }
 }
