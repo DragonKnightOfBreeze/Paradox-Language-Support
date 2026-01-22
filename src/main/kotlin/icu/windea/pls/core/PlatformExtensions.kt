@@ -550,7 +550,7 @@ fun PsiReference.collectReferences(): Array<out PsiReference> {
 private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
     if (sourceReference is PsiReferencesAware) {
         val references = sourceReference.getReferences()
-        if (references.isNotNullOrEmpty()) {
+        if (references.isNotNullOrEmpty()) { // 为空数组 / 为 `null` 在这里是等价的
             references.forEach { reference ->
                 ProgressManager.checkCanceled()
                 doCollectReferences(reference, result)
