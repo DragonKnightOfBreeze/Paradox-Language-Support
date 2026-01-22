@@ -4,6 +4,6 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 
 data class ParadoxHintsSettings(
     var showScopeContextOnlyIfIsChanged: Boolean = true,
-    var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
+    var localisationTextLengthLimit: Int = PlsInternalSettings.getInstance().localisationLengthLimitForInlay,
     var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
 )

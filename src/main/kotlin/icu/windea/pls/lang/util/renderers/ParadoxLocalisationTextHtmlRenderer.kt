@@ -190,7 +190,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
             val icon = iconFileUrl.toIconOrNull() ?: return@r
             // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            // 如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
+            // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             // 实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
             val locFontSize = PlsInternalSettings.getInstance().localisationFontSize

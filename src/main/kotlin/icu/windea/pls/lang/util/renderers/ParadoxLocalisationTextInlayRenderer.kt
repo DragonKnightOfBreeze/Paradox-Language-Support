@@ -64,7 +64,7 @@ class ParadoxLocalisationTextInlayRenderer(
         val factory: PresentationFactory,
         var builder: MutableList<InlayPresentation> = mutableListOf(),
     ) {
-        val truncateRemain: AtomicInteger = AtomicInteger(settings.textLengthLimit) // 记录到需要截断为止所剩余的长度
+        val truncateRemain: AtomicInteger = AtomicInteger(settings.localisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
         var lineEnd: Boolean = false
         var truncated: Boolean = false
         val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
@@ -353,15 +353,15 @@ class ParadoxLocalisationTextInlayRenderer(
 
     context(context: Context)
     private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
-        val textLengthLimit = context.settings.textLengthLimit
-        val truncatedText = if (textLengthLimit > 0) text.take(context.truncateRemain.get()) else text
+        val limit = context.settings.localisationTextLengthLimit
+        val truncatedText = if (limit > 0) text.take(context.truncateRemain.get()) else text
         val truncatedTextSingleLine = truncatedText.substringBefore('\n')
         val finalText = truncatedTextSingleLine
         val result = smallText(finalText)
         if (truncatedTextSingleLine.length != truncatedText.length) {
             context.lineEnd = true
         }
-        if (textLengthLimit > 0) {
+        if (limit > 0) {
             context.truncateRemain.getAndAdd(-truncatedText.length)
         }
         updateTruncationState()
@@ -371,8 +371,8 @@ class ParadoxLocalisationTextInlayRenderer(
     context(context: Context)
     private fun updateTruncationState() {
         if (context.truncated) return
-        val textLengthLimit = context.settings.textLengthLimit
-        context.truncated = context.lineEnd || (textLengthLimit > 0 && context.truncateRemain.get() <= 0)
+        val limit = context.settings.localisationTextLengthLimit
+        context.truncated = context.lineEnd || (limit > 0 && context.truncateRemain.get() <= 0)
     }
 
     context(context: Context)

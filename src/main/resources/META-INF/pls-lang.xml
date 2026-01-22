@@ -349,12 +349,11 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!--这里不能在 description 中使用 html-->
-    <registryKey key="pls.settings.showModalOnInitConfigGroups" defaultValue="false" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.localisationTextIconSizeLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.textLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.maxImageSize.for.documentation" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.localisationTextLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.textLengthLimit.for.presentation" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.itemLimit" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.maxDefinitionDepth" defaultValue="4" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>

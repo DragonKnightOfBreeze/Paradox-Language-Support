@@ -20,7 +20,6 @@ abstract class ParadoxShowDiffAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
         val chain = getDiffRequestChain(e) ?: return

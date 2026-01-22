@@ -15,7 +15,7 @@ class ParadoxHintsSettingsConfigurable(
     override fun createComponent(listener: ChangeListener): JComponent = panel {
         // NOTE 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
         if (provider.showScopeContextInfo) createScopeContextInfoRow()
-        if (provider.renderLocalisation) createTextLengthLimitRow()
+        if (provider.renderLocalisation) createLocalisationTextLengthLimitRow()
         if (provider.renderIcon) createIconHeightLimitRow()
     }
 
@@ -26,13 +26,13 @@ class ParadoxHintsSettingsConfigurable(
         }
     }
 
-    private fun Panel.createTextLengthLimitRow() {
+    private fun Panel.createLocalisationTextLengthLimitRow() {
         row {
-            label(PlsBundle.message("hints.settings.textLengthLimit")).widthGroup("left")
+            label(PlsBundle.message("hints.settings.localisationTextLengthLimit")).widthGroup("left")
             textField()
-                .bindIntText(settings::textLengthLimit.toAtomicProperty())
+                .bindIntText(settings::localisationTextLengthLimit.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-            contextHelp(PlsBundle.message("hints.settings.textLengthLimit.tooltip"))
+            contextHelp(PlsBundle.message("hints.settings.localisationTextLengthLimit.tip"))
         }
     }
 
@@ -42,7 +42,7 @@ class ParadoxHintsSettingsConfigurable(
             textField()
                 .bindIntText(settings::iconHeightLimit.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-            contextHelp(PlsBundle.message("hints.settings.iconHeightLimit.tooltip"))
+            contextHelp(PlsBundle.message("hints.settings.iconHeightLimit.tip"))
         }
     }
 }
