@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors.ext
+package icu.windea.pls.inject.injectors.addon
 
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectionTarget

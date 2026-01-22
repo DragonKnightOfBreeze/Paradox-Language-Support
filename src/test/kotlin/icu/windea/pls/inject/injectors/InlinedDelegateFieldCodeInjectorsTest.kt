@@ -47,7 +47,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
         val configGroupBaseClassName = "icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase"
 
         val injectors = CodeInjector.EP_NAME.extensionList
-            .filter { it.javaClass.name.startsWith("icu.windea.pls.inject.injectors.ext.InlinedDelegateFieldCodeInjectors$") }
+            .filter { it.javaClass.name.startsWith("icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$") }
 
         assertTrue(
             "Cannot find any code injectors from EP: icu.windea.pls.inject.codeInjector (expected InlinedDelegateFieldCodeInjectors.*)",

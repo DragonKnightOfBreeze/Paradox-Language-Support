@@ -37,41 +37,41 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
 
     <!--code injectors to optimize memory-->
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.OptimizedFieldCodeInjectors$BasePresentation"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.InlinedDelegateFieldCodeInjectors$CwtOptionDataHolderBase"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.InlinedDelegateFieldCodeInjectors$CwtConfigGroupDataHolderBase"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.OptimizedFieldCodeInjectors$BasePresentation"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtOptionDataHolderBase"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtConfigGroupDataHolderBase"/>
 
     <!--code injectors to optimize performance-->
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$Property"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$PropertyKey"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$Option"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$OptionKey"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$Boolean"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$Int"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$Float"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.CwtPsiCodeInjectors$String"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$ScriptedVariable"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$ScriptedVariableName"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Property"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$PropertyKey"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Boolean"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Int"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Float"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$String"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Color"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$InlineMath"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$ParameterConditionParameter"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$Parameter"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxScriptPsiCodeInjectors$InlineMathParameter"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$Locale"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$Property"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$PropertyKey"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$PropertyValue"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$Parameter"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$Icon"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$TextFormat"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxLocalisationPsiCodeInjectors$TextIcon"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.ext.ParadoxCsvPsiCodeInjectors$Column"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Property"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$PropertyKey"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Option"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$OptionKey"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Boolean"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Int"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Float"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$String"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$ScriptedVariable"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$ScriptedVariableName"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Property"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$PropertyKey"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Boolean"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Int"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Float"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$String"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Color"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$InlineMath"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$ParameterConditionParameter"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$Parameter"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxScriptPsiCodeInjectors$InlineMathParameter"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$Locale"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$Property"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$PropertyKey"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$PropertyValue"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$Parameter"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$Icon"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$TextFormat"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxLocalisationPsiCodeInjectors$TextIcon"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.addon.ParadoxCsvPsiCodeInjectors$Column"/>
   </extensions>
 
   <extensionPoints>
