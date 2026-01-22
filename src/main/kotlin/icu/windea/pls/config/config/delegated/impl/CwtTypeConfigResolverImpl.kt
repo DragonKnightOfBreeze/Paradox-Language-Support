@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
@@ -15,6 +14,7 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -111,7 +111,7 @@ private class CwtTypeConfigImpl(
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {
         config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also {
             it.tagType = ParadoxTagType.TypeKeyPrefix
-            it.pointer.element?.bindConfig(it)
+            it.resolveElementWithConfig()
         }
     }
 

@@ -15,7 +15,6 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.cwt.psi.CwtMember
 
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
@@ -41,9 +40,13 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
     return pointer === other.pointer && pointer !== emptyPointer<PsiElement>()
 }
 
-fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
-    this.putUserData(CwtConfigManager.Keys.bindingConfig, config)
-    return this
+/**
+ * 尝试解析当前规则指向的 [PsiElement]，并绑定当前规则。
+ */
+fun <T : PsiElement> CwtConfig<T>?.resolveElementWithConfig(): T? {
+    val element = this?.pointer?.element ?: return null
+    element.putUserData(CwtConfigManager.Keys.config, this)
+    return element
 }
 
 // in order to be compatible with eu5 config files

@@ -150,8 +150,8 @@ object CwtDocumentationManager {
         definition {
             appendCwtConfigFileInfoHeader(element)
 
-            val bindingConfig = element.getUserData(CwtConfigManager.Keys.bindingConfig)
-            val tagType = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
+            val config = element.getUserData(CwtConfigManager.Keys.config)
+            val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
 
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name

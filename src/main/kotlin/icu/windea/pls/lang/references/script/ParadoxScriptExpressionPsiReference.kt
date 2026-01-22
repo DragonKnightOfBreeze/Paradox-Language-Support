@@ -8,10 +8,10 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiReferencesAware
@@ -38,13 +38,9 @@ class ParadoxScriptExpressionPsiReference(
     private val project get() = config.configGroup.project
 
     init {
-        bindConfigForResolved()
-    }
-
-    private fun bindConfigForResolved() {
         // 用于处理特殊标签
         if (config is CwtValueConfig && config.tagType != null) {
-            config.pointer.element?.bindConfig(config)
+            config.resolveElementWithConfig()
         }
     }
 

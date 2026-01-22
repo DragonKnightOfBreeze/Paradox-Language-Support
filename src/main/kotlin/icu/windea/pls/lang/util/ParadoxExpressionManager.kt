@@ -17,13 +17,13 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
-import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty
@@ -487,42 +487,42 @@ object ParadoxExpressionManager {
     @Suppress("unused")
     fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemScopeConfig = configGroup.systemScopes[name] ?: return null
-        val resolved = systemScopeConfig.pointer.element?.bindConfig(systemScopeConfig) ?: return null
+        val resolved = systemScopeConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 
     @Suppress("unused")
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
-        val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
+        val resolved = linkConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 
     @Suppress("unused")
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
-        val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
+        val resolved = linkConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 
     fun resolvePredefinedEnumValue(name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
-        val resolved = enumValueConfig.pointer.element?.bindConfig(enumValueConfig) ?: return null
+        val resolved = enumValueConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 
     @Suppress("unused")
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
-        val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
+        val resolved = linkConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 
     @Suppress("unused")
     fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
-        val resolved = commandConfig.pointer.element?.bindConfig(commandConfig) ?: return null
+        val resolved = commandConfig.resolveElementWithConfig() ?: return null
         return resolved
     }
 

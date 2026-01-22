@@ -77,7 +77,7 @@ object CwtConfigManager {
         val filePathPatternsForPriority by registerKey<Set<String>>(Keys)
 
         /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
-        val bindingConfig by registerKey<CwtConfig<*>>(this)
+        val config by registerKey<CwtConfig<*>>(this)
     }
 
     fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {

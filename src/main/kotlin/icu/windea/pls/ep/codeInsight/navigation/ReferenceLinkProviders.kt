@@ -55,7 +55,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
                     subtypeName == null -> configGroup.types[name]
                     else -> configGroup.types.getValue(name).subtypes[subtypeName]
                 } ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.values -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
@@ -63,7 +63,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
                 val valueName = tokens.getOrNull(2)
                 val config = configGroup.dynamicValueTypes[name] ?: return null
                 if (valueName == null) return config.pointer.element
-                return config.valueConfigMap.get(valueName)?.pointer?.element
+                config.valueConfigMap.get(valueName)?.pointer?.element
             }
             categories.enums -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
@@ -71,55 +71,55 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
                 val valueName = tokens.getOrNull(2)
                 val config = configGroup.enums[name] ?: return null
                 if (valueName == null) return config.pointer.element
-                return config.valueConfigMap.get(valueName)?.pointer?.element
+                config.valueConfigMap.get(valueName)?.pointer?.element
             }
             categories.complexEnums -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.complexEnums[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.scopes -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.scopeAliasMap[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.systemScopes -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.systemScopes[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.links -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.links[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.localisationLinks -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.localisationLinks[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.localisationCommands -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.localisationCommands[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.modifierCategories -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.modifierCategories[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             categories.modifiers -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
                 val name = tokens.getOrNull(1) ?: return null
                 val config = configGroup.modifiers[name] ?: return null
-                return config.pointer.element
+                config.pointer.element
             }
             else -> null
         }
@@ -131,7 +131,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is CwtProperty && element !is CwtValue) return null
-        val config = element.getUserData(CwtConfigManager.Keys.bindingConfig) ?: return null // retrieve config from user data
+        val config = element.getUserData(CwtConfigManager.Keys.config) ?: return null // retrieve config from user data
         // 这里目前仅支持可能用到的那些
         val linkType = ReferenceLinkType.CwtConfig
         val categories = ReferenceLinkType.CwtConfig.Categories
