@@ -109,6 +109,8 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             return "ParadoxScriptPropertyStub.Definition(" +
                 "definitionName=$definitionName, " +
                 "definitionType=$definitionType, " +
+                "definitionSubtypes=$definitionSubtypes, " +
+                "rootKeys=$rootKeys, " +
                 "gameType=$gameType)"
         }
     }
