@@ -68,20 +68,12 @@ class ParadoxDynamicScopeLinkNode(
                     .filter { text.startsWith(it.prefix!!) }
                 if (linkConfigs.isEmpty()) return@r1
 
-                val prefixText = linkConfigs.maxByOrNull { it.prefix!!.length }!!.prefix!!
-
                 run r2@{
-                    val hasTrailingColon = prefixText.endsWith(':')
-                    val nodeText = if (hasTrailingColon) prefixText.dropLast(1) else prefixText
+                    val nodeText = linkConfigs.first().prefix!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                     startIndex += nodeText.length
-                    if (hasTrailingColon) {
-                        val markerRange = TextRange.from(offset + startIndex, 1)
-                        nodes += ParadoxMarkerNode(":", markerRange, configGroup)
-                        startIndex += 1
-                    }
                 }
                 run r2@{
                     val nodeText = text.substring(startIndex)
