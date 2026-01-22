@@ -65,20 +65,22 @@ class CwtConfigFileChangeCollector {
         val openProjects = ProjectManager.getInstance().openProjects
         openProjects.forEach f1@{ project ->
             val configGroupService = CwtConfigGroupService.getInstance(project)
-            val configGroups = mutableSetOf<CwtConfigGroup>()
+            val configGroupsToChange = FastSet<CwtConfigGroup>()
             fileProviders.forEachFast f2@{ fileProvider ->
                 if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2
+                if (!fileProvider.isEnabled) return@f2 // 如果未启用则不要把规则分组标记为已更改
                 contextDirectories.forEach f3@{ contextDirectory ->
                     val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3
-                    configGroups += configGroup
-                    if (configGroup.gameType == ParadoxGameType.Core) {
-                        ParadoxGameType.getAll().forEachFast { gameType -> configGroups += configGroupService.getConfigGroup(gameType) }
+                    if (!configGroup.changed) configGroupsToChange += configGroup
+                    if (configGroup.gameType != ParadoxGameType.Core) return@f3
+                    ParadoxGameType.getAll().forEachFast { gameType ->
+                        val extraConfigGroup = configGroupService.getConfigGroup(gameType)
+                        if (!extraConfigGroup.changed) configGroupsToChange += extraConfigGroup
                     }
                 }
             }
-            val configGroupsToChange = configGroups.filter { !it.changed }
             if (configGroupsToChange.isEmpty()) return@f1
-            configGroupsToChange.forEachFast { configGroup -> configGroup.changed = true }
+            configGroupsToChange.forEach { configGroup -> configGroup.changed = true }
             configGroupService.updateRefreshFloatingToolbar()
         }
     }
