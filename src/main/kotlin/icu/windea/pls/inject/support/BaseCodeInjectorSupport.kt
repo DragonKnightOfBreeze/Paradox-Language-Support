@@ -104,7 +104,12 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                 }
             }
             """.trimIndent()
-            applyInjectedCode(injectMethodInfo, targetMethod, injectedCode)
+            when (injectMethodInfo.pointer) {
+                InjectMethod.Pointer.BODY -> targetMethod.setBody(injectedCode)
+                InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(injectedCode)
+                InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(injectedCode, false, targetMethod.declaringClass.isKotlin)
+                InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(injectedCode, true, targetMethod.declaringClass.isKotlin)
+            }
         }
     }
 
@@ -126,36 +131,69 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             if ((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
             ctMethod.parameterTypes.size >= argSize
         }
-        run {
-            if (ctMethods.size <= 1) return@run
-            ctMethods = ctMethods.filter { ctMethod ->
-                for (i in 0 until argSize) {
-                    val r = runCatchingCancelable {
-                        val t1 = ctMethod.parameterTypes[i]
-                        val t2 = normalParameterTypes[i]
-                        val t3 = classPool.get(t2.name)
-                        t1.subclassOf(t3)
-                    }.getOrElse { true }
-                    if (!r) return@filter false
-                }
-                true
+        ctMethods = ctMethods.filter { ctMethod ->
+            for (i in 0 until argSize) {
+                val r = runCatchingCancelable {
+                    val injectParameterType = normalParameterTypes[i]
+                    val targetParameterType = ctMethod.parameterTypes[i]
+                    isParameterCompatible(injectParameterType, targetParameterType, classPool)
+                }.getOrElse { false }
+                if (!r) return@filter false
             }
-        }
-        run {
-            if (ctMethods.size <= 1) return@run
-            ctMethods = ctMethods.filter { ctMethod ->
-                ctMethod.parameterTypes.size >= argSize
-            }
+            true
         }
         return ctMethods.firstOrNull()
     }
 
-    private fun applyInjectedCode(injectMethodInfo: InjectMethodInfo, targetMethod: CtMethod, code: String) {
-        when (injectMethodInfo.pointer) {
-            InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
-            InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(code)
-            InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
-            InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(code, true, targetMethod.declaringClass.isKotlin)
+    private fun isParameterCompatible(injectParameterType: Class<*>, targetParameterType: CtClass, classPool: ClassPool): Boolean {
+        if (targetParameterType.isPrimitive) {
+            val wrapperType = getPrimitiveWrapperType(targetParameterType) ?: return false
+            return if (injectParameterType.isPrimitive) {
+                getPrimitiveWrapperType(injectParameterType) == wrapperType
+            } else {
+                injectParameterType.isAssignableFrom(wrapperType)
+            }
+        }
+
+        if (injectParameterType.isPrimitive) {
+            val wrapperType = getPrimitiveWrapperType(injectParameterType) ?: return false
+            val wrapperCtClass = classPool.get(wrapperType.name)
+            return targetParameterType.subclassOf(wrapperCtClass)
+        }
+
+        val expectedCtClass = classPool.get(injectParameterType.name)
+        return targetParameterType.subclassOf(expectedCtClass)
+    }
+
+    @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    private fun getPrimitiveWrapperType(type: Class<*>): Class<*>? {
+        return when (type) {
+            java.lang.Boolean.TYPE -> java.lang.Boolean::class.java
+            java.lang.Byte.TYPE -> java.lang.Byte::class.java
+            java.lang.Character.TYPE -> java.lang.Character::class.java
+            java.lang.Double.TYPE -> java.lang.Double::class.java
+            java.lang.Float.TYPE -> java.lang.Float::class.java
+            java.lang.Integer.TYPE -> java.lang.Integer::class.java
+            java.lang.Long.TYPE -> java.lang.Long::class.java
+            java.lang.Short.TYPE -> java.lang.Short::class.java
+            java.lang.Void.TYPE -> java.lang.Void::class.java
+            else -> null
+        }
+    }
+
+    @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    private fun getPrimitiveWrapperType(type: CtClass): Class<*>? {
+        return when (type) {
+            CtClass.booleanType -> java.lang.Boolean::class.java
+            CtClass.byteType -> java.lang.Byte::class.java
+            CtClass.charType -> java.lang.Character::class.java
+            CtClass.doubleType -> java.lang.Double::class.java
+            CtClass.floatType -> java.lang.Float::class.java
+            CtClass.intType -> java.lang.Integer::class.java
+            CtClass.longType -> java.lang.Long::class.java
+            CtClass.shortType -> java.lang.Short::class.java
+            CtClass.voidType -> java.lang.Void::class.java
+            else -> null
         }
     }
 }
