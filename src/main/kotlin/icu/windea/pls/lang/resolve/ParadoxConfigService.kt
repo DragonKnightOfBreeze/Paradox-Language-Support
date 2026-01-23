@@ -46,12 +46,12 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.selectGameType
@@ -66,6 +66,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.property
+import java.util.*
 
 object ParadoxConfigService {
     @Optimized
@@ -88,6 +89,8 @@ object ParadoxConfigService {
                 .withDependencyItems(ModificationTracker.NEVER_CHANGED)
         }
     }
+
+    private val resolvingConfigContexts = ThreadLocal.withInitial { ArrayDeque<CwtConfigContext>() }
 
     /**
      * @see CwtOverriddenConfigProvider.getOverriddenConfigs
@@ -159,36 +162,38 @@ object ParadoxConfigService {
 
     fun getConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val provider = context.provider
-        val cachedKey = provider.getCacheKey(context, options) ?: return emptyList()
+        val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
         if (context.dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
-            context.dynamicCache[cachedKey]?.let { return it }
+            val dynamicCacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
+            context.dynamicCache[dynamicCacheKey]?.let { return it }
         }
         val rootFile = selectRootFile(context.element) ?: return emptyList()
         val cache = context.configGroup.configsCache.value.get(rootFile)
         val cached = withRecursionGuard {
-            withRecursionCheck(cachedKey) {
+            withRecursionCheck(cacheKey) {
+                val resolving = resolvingConfigContexts.get()
+                resolving.addLast(context)
                 try {
-                    PlsStates.dynamicContextConfigs.set(false)
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
-                    cache.asMap().getOrPut(cachedKey) {
+                    cache.asMap().getOrPut(cacheKey) {
                         val result = provider.getConfigs(context, options)
                         result?.optimized().orEmpty()
                     }
                 } finally {
-                    if (PlsStates.dynamicContextConfigs.get() == true) {
-                        // mark as dynamic
-                        context.dynamic = true
+                    resolving.pollLast()
+                    if (context.dynamic) {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
-                        cache.invalidate(cachedKey)
+                        cache.invalidate(cacheKey)
                     }
-                    PlsStates.dynamicContextConfigs.remove()
+                    if (resolving.isEmpty()) resolvingConfigContexts.remove()
                 }
             }
-        } ?: emptyList() // unexpected recursion, return empty list
+        } ?: return emptyList() // unexpected recursion, return empty list
         if (context.dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
-            context.dynamicCache[cachedKey] = cached
+            val dynamicCacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
+            context.dynamicCache[dynamicCacheKey] = cached
         }
         return cached
     }
@@ -202,6 +207,10 @@ object ParadoxConfigService {
             result.apply { declarationConfigCacheKey = cacheKey }
         }
         return cached
+    }
+
+    fun getResolvingConfigContext(): CwtConfigContext? {
+        return resolvingConfigContexts.get()?.peekLast()
     }
 
     @Optimized
@@ -239,6 +248,9 @@ object ParadoxConfigService {
 
         // 从存储于 PSI 的上级缓存中获取 `parentContext`（父上下文），然后再从存储于规则分组的缓存中获取 `parentConfigs`（父上下文规则）
         val parentContext = ParadoxConfigManager.getConfigContext(parentMember) ?: return emptyList()
+        // NOTE 2.1.2 如果父上下文是动态的，也需要把子上下文标记为动态的
+        if (parentContext.dynamic) context.dynamic = true
+
         val parentConfigs = parentContext.getConfigs(options)
         if (parentConfigs.isEmpty()) return emptyList() // 忽略
 

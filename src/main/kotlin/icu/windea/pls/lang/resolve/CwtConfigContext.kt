@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -19,6 +18,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 规则上下文。
@@ -63,7 +63,7 @@ class CwtConfigContext(
 // Accessors
 
 var CwtConfigContext.dynamic: Boolean by registerKey(CwtConfigContext.Keys, false)
-val CwtConfigContext.dynamicCache: MutableMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { SoftConcurrentHashMap() }
+val CwtConfigContext.dynamicCache: MutableMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterElement: ParadoxParameterElement? by registerKey(CwtConfigContext.Keys)

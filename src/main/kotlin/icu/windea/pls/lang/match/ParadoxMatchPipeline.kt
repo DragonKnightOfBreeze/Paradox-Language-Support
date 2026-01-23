@@ -8,12 +8,16 @@ import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
     @Optimized
-    inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult?): List<ParadoxMatchCandidate> {
+    inline fun <T : CwtMemberConfig<*>> collectCandidates(
+        configs: List<T>,
+        matchResultProvider: (T) -> ParadoxMatchResult?
+    ): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = buildList {
             configs.forEachFast f@{ config ->
@@ -96,21 +100,20 @@ object ParadoxMatchPipeline {
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         var result = configs
+        var dynamic = false
+
         val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, options)
         val optimizers = ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList
         optimizers.forEachFast f@{ optimizer ->
             val optimized = optimizer.optimize(result, context)
             if (optimized == null) return@f
-            if (optimizer.isDynamic(context)) markDynamicAfterOptimized()
+            if (optimizer.isDynamic(context)) dynamic = true
             result = optimized
         }
-        return result
-    }
 
-    private fun markDynamicAfterOptimized() {
-        // see: icu.windea.pls.lang.resolve.ParadoxConfigService.getConfigsForConfigContext
-        val s = PlsStates.dynamicContextConfigs
-        if (s.get() == null) return
-        s.set(true)
+        // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
+        if (dynamic) ParadoxConfigService.getResolvingConfigContext()?.dynamic = true
+
+        return result
     }
 }
