@@ -11,6 +11,9 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDeclarativeHintsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<ParadoxDeclarativeHintsSettings.State>(State()) {
+    var showNameForDefinition: Boolean
+        get() = state.showNameForDefinition
+        set(value) = run { updateState { it.copy(showNameForDefinition = value) } }
     var showSubtypesForDefinition: Boolean
         get() = state.showSubtypesForDefinition
         set(value) = run { updateState { it.copy(showSubtypesForDefinition = value) } }
@@ -31,12 +34,13 @@ class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<Par
         set(value) = run { updateState { it.copy(truncateSubtypesForCsvDefinitionReference = value) } }
 
     data class State(
+        @JvmField val showNameForDefinition: Boolean = true,
         @JvmField val showSubtypesForDefinition: Boolean = true,
-        @JvmField val truncateSubtypesForDefinition: Boolean = true,
+        @JvmField val truncateSubtypesForDefinition: Boolean = false,
         @JvmField val showSubtypesForDefinitionReference: Boolean = true,
-        @JvmField val truncateSubtypesForDefinitionReference: Boolean = true,
+        @JvmField val truncateSubtypesForDefinitionReference: Boolean = false,
         @JvmField val showSubtypesForCsvDefinitionReference: Boolean = true,
-        @JvmField val truncateSubtypesForCsvDefinitionReference: Boolean = true,
+        @JvmField val truncateSubtypesForCsvDefinitionReference: Boolean = false,
     )
 
     companion object {

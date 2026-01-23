@@ -23,7 +23,7 @@ class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsP
     )
 
     private val showSubtypesProperty = AtomicProperty(true)
-    private val truncateSubtypesProperty = AtomicProperty(true)
+    private val truncateSubtypesProperty = AtomicProperty(false)
     private var showSubtypes by showSubtypesProperty
     private var truncateSubtypes by truncateSubtypesProperty
 

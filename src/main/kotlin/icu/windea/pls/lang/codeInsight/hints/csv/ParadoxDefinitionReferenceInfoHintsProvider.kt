@@ -42,7 +42,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvi
                         text(subtypeConfig.name, subtypeConfig.pointer)
                     }
                 } else {
-                    text("...")
+                    text(", ...")
                 }
             }
         }

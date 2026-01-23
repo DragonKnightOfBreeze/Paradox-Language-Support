@@ -30,10 +30,10 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         // 如果定义名等同于类型键，则省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
         sink.addInlinePresentation(element.endOffset, priority = 1) {
-            if (definitionInfo.name.equals(definitionInfo.typeKey, true)) {
-                text(": ")
-            } else {
+            if (settings.showNameForDefinition && !definitionInfo.name.equals(definitionInfo.typeKey, true)) {
                 text("${definitionInfo.name}: ".optimized())
+            } else {
+                text(": ")
             }
             val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
@@ -47,7 +47,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
                         text(subtypeConfig.name, subtypeConfig.pointer)
                     }
                 } else {
-                    text("...")
+                    text(", ...")
                 }
             }
         }

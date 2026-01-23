@@ -23,7 +23,7 @@ class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsP
     )
 
     private val showSubtypesProperty = AtomicProperty(true)
-    private val truncateSubtypesProperty = AtomicProperty(true)
+    private val truncateSubtypesProperty = AtomicProperty(false)
     private var showSubtypes by showSubtypesProperty
     private var truncateSubtypes by truncateSubtypesProperty
 
@@ -38,9 +38,9 @@ class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsP
     }
 
     override fun createComponent(project: Project, language: Language): JComponent {
-        val S = getSettingsInstance(project)
-        showSubtypes = S.showSubtypesForCsvDefinitionReference
-        truncateSubtypes = S.truncateSubtypesForCsvDefinitionReference
+        val s = getSettingsInstance(project)
+        showSubtypes = s.showSubtypesForCsvDefinitionReference
+        truncateSubtypes = s.truncateSubtypesForCsvDefinitionReference
         return component
     }
 
