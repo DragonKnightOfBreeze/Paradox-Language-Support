@@ -35,7 +35,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.InjectLanguageActionCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.WithAttributesPresentationCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.fix.IdentifierHighlightingManagerImplCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.fix.IdentifierHighlightingComputerCodeInjector"/>
 
     <!--code injectors to optimize memory-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.OptimizedFieldCodeInjectors$BasePresentation"/>
