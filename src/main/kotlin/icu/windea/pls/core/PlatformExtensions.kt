@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE", "UnstableApiUsage")
+@file:Suppress("unused", "UnstableApiUsage")
 
 package icu.windea.pls.core
 
@@ -61,6 +61,7 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ArrayUtil
 import com.intellij.util.Processor
 import com.intellij.util.Query
+import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
@@ -75,7 +76,7 @@ import kotlin.reflect.KProperty
 
 // region Common Extensions
 
-/** 忽略大小写的字符串比较。*/
+/** 忽略大小写的字符串比较。 */
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
@@ -146,8 +147,10 @@ fun <T> Query<T>.processAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 
 /**
@@ -259,19 +262,19 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 
 // region VFS Extensions
 
-// /**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
+// /**查找当前项目中指定语言文件类型和作用域的VirtualFile。 */
 // fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
 // }
 
-// /**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
+// /**查找当前项目中指定语言文件类型和作用域的PsiFile。 */
 // inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
 //		PsiManager.getInstance(project).findFile(it)
 //	}.filterIsInstance<T>()
 // }
 
-// /**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
+// /**递归得到当前VirtualFile的所有作为子节点的VirtualFile。 */
 // fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
 //	for(child in this.children) {
 //		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
@@ -279,42 +282,42 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 //	return destination
 // }
 
-/** 将文件路径转换为 VirtualFile（可选刷新 VFS）。*/
+/** 将文件路径转换为 VirtualFile（可选刷新 VFS）。 */
 fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
     val path = this.toPathOrNull() ?: return null
     return VfsUtil.findFile(path, refreshIfNeed)
 }
 
-/** 将 Path 转换为 VirtualFile（可选刷新 VFS）。*/
+/** 将 Path 转换为 VirtualFile（可选刷新 VFS）。 */
 fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
     val path = this
     return VfsUtil.findFile(path, refreshIfNeed)
 }
 
-/** 将 VirtualFile 转为 PsiFile。*/
-inline fun VirtualFile.toPsiFile(project: Project): PsiFile? {
+/** 将 VirtualFile 转为 PsiFile。 */
+fun VirtualFile.toPsiFile(project: Project): PsiFile? {
     if (project.isDisposed) return null
     return PsiManager.getInstance(project).findFile(this)
 }
 
-/** 将 VirtualFile 转为 PsiDirectory。*/
-inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
+/** 将 VirtualFile 转为 PsiDirectory。 */
+fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
     if (project.isDisposed) return null
     return PsiManager.getInstance(project).findDirectory(this)
 }
 
-/** 将 VirtualFile 转为 PsiFile 或 PsiDirectory。*/
-inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
+/** 将 VirtualFile 转为 PsiFile 或 PsiDirectory。 */
+fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
     if (project.isDisposed) return null
     return if (this.isFile) toPsiFile(project) else toPsiDirectory(project)
 }
 
-/** 判断（物理层面）是否包含指定 BOM。*/
+/** 判断（物理层面）是否包含指定 BOM。 */
 fun VirtualFile.hasBom(bom: ByteArray): Boolean {
     return this.bom.let { it != null && it contentEquals bom }
 }
 
-/** 添加 BOM 到虚拟文件（物理层面）。*/
+/** 添加 BOM 到虚拟文件（物理层面）。 */
 @Throws(IOException::class)
 fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
     this.bom = bom
@@ -327,7 +330,7 @@ fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
     }
 }
 
-/** 从虚拟文件移除 BOM（物理层面）。*/
+/** 从虚拟文件移除 BOM（物理层面）。 */
 @Throws(IOException::class)
 fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
     this.bom = null
@@ -344,7 +347,7 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 
 // region AST Extensions
 
-/** 遍历当前节点的直接子节点。*/
+/** 遍历当前节点的直接子节点。 */
 inline fun ASTNode.forEachChild(forward: Boolean = true, action: (ASTNode) -> Unit) {
     var child: ASTNode? = if (forward) this.firstChildNode else this.lastChildNode
     while (child != null) {
@@ -353,7 +356,7 @@ inline fun ASTNode.forEachChild(forward: Boolean = true, action: (ASTNode) -> Un
     }
 }
 
-/** 处理当前节点的直接子节点；当处理器返回 false 时提前终止。*/
+/** 处理当前节点的直接子节点；当处理器返回 false 时提前终止。 */
 inline fun ASTNode.processChild(forward: Boolean = true, processor: (ASTNode) -> Boolean): Boolean {
     var child: ASTNode? = if (forward) this.firstChildNode else this.lastChildNode
     while (child != null) {
@@ -364,7 +367,7 @@ inline fun ASTNode.processChild(forward: Boolean = true, processor: (ASTNode) ->
     return true
 }
 
-/** 获取当前节点的子节点序列。*/
+/** 获取当前节点的子节点序列。 */
 fun ASTNode.children(forward: Boolean = true): Sequence<ASTNode> {
     val child = if (forward) this.firstChildNode else this.lastChildNode
     if (child == null) return emptySequence()
@@ -379,17 +382,17 @@ fun ASTNode.children(forward: Boolean = true): Sequence<ASTNode> {
 //    return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
 // }
 
-/** 在轻量 AST 中查找首个指定类型的子节点。*/
+/** 在轻量 AST 中查找首个指定类型的子节点。 */
 fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
     return LightTreeUtil.firstChildOfType(tree, this, type)
 }
 
-/** 在轻量 AST 中查找首个匹配类型集合的子节点。*/
+/** 在轻量 AST 中查找首个匹配类型集合的子节点。 */
 fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode? {
     return LightTreeUtil.firstChildOfType(tree, this, types)
 }
 
-/** 在轻量 AST 中按谓词查找首个子节点。*/
+/** 在轻量 AST 中按谓词查找首个子节点。 */
 inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNode) -> Boolean): LighterASTNode? {
     val children = tree.getChildren(this)
     for (i in children.indices) {
@@ -399,27 +402,27 @@ inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNod
     return null
 }
 
-/** 获取轻量 AST 的所有直接子节点。*/
+/** 获取轻量 AST 的所有直接子节点。 */
 fun LighterASTNode.children(tree: LighterAST): List<LighterASTNode> {
     return tree.getChildren(this)
 }
 
-/** 获取轻量 AST 中指定类型的直接子节点列表。*/
+/** 获取轻量 AST 中指定类型的直接子节点列表。 */
 fun LighterASTNode.childrenOfType(tree: LighterAST, type: IElementType): List<LighterASTNode> {
     return LightTreeUtil.getChildrenOfType(tree, this, type)
 }
 
-/** 获取轻量 AST 中匹配类型集合的直接子节点列表。*/
+/** 获取轻量 AST 中匹配类型集合的直接子节点列表。 */
 fun LighterASTNode.childrenOfType(tree: LighterAST, types: TokenSet): List<LighterASTNode> {
     return LightTreeUtil.getChildrenOfType(tree, this, types)
 }
 
-/** 获取轻量 AST 的父节点。*/
+/** 获取轻量 AST 的父节点。 */
 fun LighterASTNode.parent(tree: LighterAST): LighterASTNode? {
     return tree.getParent(this)
 }
 
-/** 将轻量 AST Token 节点文本驻留并返回。*/
+/** 将轻量 AST Token 节点文本驻留并返回。 */
 fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     if (this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()
@@ -456,7 +459,7 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
     return null
 }
 
-/** 在 [startOffset, endOffset) 范围内查找并转换元素。*/
+/** 在 [startOffset, endOffset) 范围内查找并转换元素。 */
 fun <T : PsiElement> PsiFile.findElementsBetween(
     startOffset: Int,
     endOffset: Int,
@@ -481,7 +484,7 @@ fun <T : PsiElement> PsiFile.findElementsBetween(
     return elements
 }
 
-/** 在 [startOffset, endOffset) 范围内收集所有 PSI 元素（不转换）。*/
+/** 在 [startOffset, endOffset) 范围内收集所有 PSI 元素（不转换）。 */
 fun PsiFile.findAllElementsBetween(
     startOffset: Int,
     endOffset: Int,
@@ -527,7 +530,7 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
     return null
 }
 
-/** 若为多解析引用，返回首个解析目标；否则调用 `resolve()`。*/
+/** 若为多解析引用，返回首个解析目标；否则调用 `resolve()`。 */
 fun PsiReference.resolveFirst(): PsiElement? {
     return if (this is PsiPolyVariantReference) {
         this.multiResolve(false).firstNotNullOfOrNull { it.element }
@@ -536,7 +539,7 @@ fun PsiReference.resolveFirst(): PsiElement? {
     }
 }
 
-/** 收集该引用及其子引用（若实现了 [PsiReferencesAware]）。*/
+/** 收集该引用及其子引用（若实现了 [PsiReferencesAware]）。 */
 fun PsiReference.collectReferences(): Array<out PsiReference> {
     if (this is PsiReferencesAware) {
         val result = mutableListOf<PsiReference>()
@@ -570,6 +573,13 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
     return startOffset == other.startOffset && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
+/** 获取当前 PSI 的子元素序列。 */
+fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
+    val child = if (forward) this.firstChild else this.lastChild
+    if (child == null) return emptySequence()
+    return child.siblings(forward, withSelf = true)
+}
+
 @JvmName("findChildByType")
 inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
     return children(forward).findIsInstance<T>(predicate)
@@ -584,24 +594,25 @@ inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = t
     return children(forward).filterIsInstance<T>(predicate).toList()
 }
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun PsiElement.findChildren(forward: Boolean = true, noinline predicate: (PsiElement) -> Boolean = { true }): List<PsiElement> {
     return children(forward).filter(predicate).toList()
 }
 
-/** 遍历当前 PSI 的直接子元素。*/
+/** 遍历当前 PSI 的直接子元素。 */
 inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
     // 不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    var child: PsiElement? = if (forward) firstChild else lastChild
     while (child != null) {
         action(child)
         child = if (forward) child.nextSibling else child.prevSibling
     }
 }
 
-/** 处理当前 PSI 的直接子元素；处理器返回 `false` 时提前终止。*/
+/** 处理当前 PSI 的直接子元素。处理器返回 `false` 时提前终止。 */
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
     // 不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    var child: PsiElement? = if (forward) firstChild else lastChild
     while (child != null) {
         val result = processor(child)
         if (!result) return false
@@ -610,30 +621,53 @@ inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiEleme
     return true
 }
 
-/** 获取指定子元素在同类元素中的索引；不存在返回 -1。*/
-inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
-    var child = if (forward) this.firstChild else this.lastChild
-    var index = 0
-    while (child != null) {
-        when (child) {
-            element -> return index
-            is T -> index++
-            else -> child = if (forward) child.nextSibling else child.prevSibling
-        }
+// /** 获取指定子元素在同类元素中的索引。如果不存在则返回-1。 */
+// inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
+//     var child = if (forward) firstChild else lastChild
+//     var index = 0
+//     while (child != null) {
+//         when (child) {
+//             element -> return index
+//             is T -> index++
+//             else -> child = if (forward) child.nextSibling else child.prevSibling
+//         }
+//     }
+//     return -1
+// }
+
+/** 遍历当前 PSI 的所有父元素，直到 PSI 文件为止。 */
+inline fun PsiElement.forEachParent(withSelf: Boolean = false, action: (PsiElement) -> Unit) {
+    var current = when {
+        withSelf -> this
+        this is PsiFile -> return
+        else -> parent
     }
-    return -1
+    while (current != null) {
+        action(current)
+        if (current is PsiFile) break
+        current = current.parent
+    }
 }
 
-/** 获取当前 PSI 的子元素序列。*/
-fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
-    val child = if (forward) this.firstChild else this.lastChild
-    if (child == null) return emptySequence()
-    return child.siblings(forward, withSelf = true)
+/** 处理当前 PSI 的所有父元素，直到 PSI 文件为止。处理器返回 `false` 时提前终止。 */
+inline fun PsiElement.processParent(withSelf: Boolean = false, processor: (PsiElement) -> Boolean): Boolean {
+    var current = when {
+        withSelf -> this
+        this is PsiFile -> return true
+        else -> parent
+    }
+    while (current != null) {
+        val result = processor(current)
+        if (!result) return false
+        if (current is PsiFile) break
+        current = current.parent
+    }
+    return true
 }
 
-val PsiElement.icon get() = getIcon(0)
+inline val PsiElement.icon get() = getIcon(0)
 
-/** PSI 元素的空指针。*/
+/** PSI 元素的空指针。 */
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
     override fun getElement() = null
 
@@ -648,13 +682,13 @@ object EmptyPointer : SmartPsiElementPointer<PsiElement> {
     override fun getPsiRange() = null
 }
 
-/** 得到空指针（用于跨项目/失效元素的占位）。*/
+/** 得到空指针（用于跨项目/失效元素的占位）。 */
 fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.cast()
 
-/** 判断当前智能指针是否是空指针。*/
+/** 判断当前智能指针是否是空指针。 */
 fun SmartPsiElementPointer<*>.isEmpty() = this === EmptyPointer
 
-/** 为当前 PSI 元素创建智能指针，失败时返回空指针。*/
+/** 为当前 PSI 元素创建智能指针，失败时返回空指针。 */
 fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiElementPointer<E> {
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
@@ -664,7 +698,7 @@ fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiE
     }
 }
 
-/** 为当前 PSI 元素创建基于文件的智能指针，失败时返回空指针。*/
+/** 为当前 PSI 元素创建基于文件的智能指针，失败时返回空指针。 */
 fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = file?.project ?: this.project): SmartPsiElementPointer<E> {
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
@@ -713,20 +747,20 @@ fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
 
 // region Symbol Extensions
 
-/** 将 PSI 元素包装为 [Symbol]。*/
+/** 将 PSI 元素包装为 [Symbol]。 */
 fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this)
 
-// /** 将 PSI 引用包装为 [PsiSymbolReference]。*/
+// /** 将 PSI 引用包装为 [PsiSymbolReference]。 */
 // fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getInstance().asSymbolReference(this)
 //
-// /** 从 [Symbol] 中提取底层 PSI 元素。*/
+// /** 从 [Symbol] 中提取底层 PSI 元素。 */
 // fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
 
 // endregion
 
 // region Presentation Extensions
 
-/** 在展示信息中附带文件名与图标。*/
+/** 在展示信息中附带文件名与图标。 */
 fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationBuilder {
     val virtualFile = file.containingFile.virtualFile ?: return this
     val fileType = virtualFile.fileType
@@ -737,10 +771,10 @@ fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationB
 
 // region Code Insight Extensions
 
-/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。*/
+/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。 */
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
-/** 构建行内模板。*/
+/** 构建行内模板。 */
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 /**
@@ -761,28 +795,28 @@ fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): Str
 
 // region Inspection Extensions
 
-/** 根据检查项短名获取对应的 [ScopeToolState]。*/
+/** 根据检查项短名获取对应的 [ScopeToolState]。 */
 fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
     val currentProfile = InspectionProfileManager.getInstance(project).currentProfile
     val tools = currentProfile.getToolsOrNull(shortName, project) ?: return null
     return tools.getState(element)
 }
 
-/** 若检查项启用则返回实际的 [InspectionProfileEntry]，否则返回 null。*/
+/** 若检查项启用则返回实际的 [InspectionProfileEntry]，否则返回 null。 */
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
 
 // endregion
 
 // region Settings Extensions
 
-// 以下的委托方法用于读写需要保存为密码的配置项
+// 以下委托方法用于读写需要保存为密码的配置项
 
-/** 委托读取：从 PasswordSafe 读取当前凭据。*/
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? {
     return PasswordSafe.instance.getPassword(this)
 }
 
-/** 委托写入：将凭据写入 PasswordSafe。*/
+@Suppress("NOTHING_TO_INLINE")
 inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
     PasswordSafe.instance.setPassword(this, value)
 }
@@ -795,10 +829,11 @@ inline fun executeWriteCommand(
     project: Project? = null,
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
-    noinline command: () -> Unit
+    crossinline command: () -> Unit
 ) {
     WriteCommandAction.writeCommandAction(project)
-        .withName(name).withGroupId(groupId).run<Throwable>(command)
+        .withName(name).withGroupId(groupId)
+        .run(ThrowableRunnable { command() })
 }
 
 inline fun executeWriteCommand(
@@ -806,10 +841,11 @@ inline fun executeWriteCommand(
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
     makeWritable: PsiElement? = null,
-    noinline command: () -> Unit
+    crossinline command: () -> Unit
 ) {
     WriteCommandAction.writeCommandAction(project, makeWritable.singleton.setOrEmpty())
-        .withName(name).withGroupId(groupId).run<Throwable>(command)
+        .withName(name).withGroupId(groupId)
+        .run(ThrowableRunnable { command() })
 }
 
 inline fun executeWriteCommand(
@@ -817,10 +853,11 @@ inline fun executeWriteCommand(
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
     makeWritable: Collection<PsiElement> = emptyList(),
-    noinline command: () -> Unit
+    crossinline command: () -> Unit
 ) {
     WriteCommandAction.writeCommandAction(project, makeWritable)
-        .withName(name).withGroupId(groupId).run<Throwable>(command)
+        .withName(name).withGroupId(groupId)
+        .run(ThrowableRunnable { command() })
 }
 
 // endregion

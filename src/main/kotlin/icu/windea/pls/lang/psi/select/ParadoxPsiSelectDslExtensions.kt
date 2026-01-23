@@ -3,7 +3,6 @@
 package icu.windea.pls.lang.psi.select
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
@@ -14,6 +13,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.generateSequenceFromSeeds
 import icu.windea.pls.core.match.PathMatcher
+import icu.windea.pls.core.processParent
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.members
@@ -41,7 +41,7 @@ import icu.windea.pls.script.psi.parentBlock
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun PsiElement.walkUp(): Sequence<PsiElement> {
-    return generateSequence(this) { it.parent }
+    return generateSequence(this) { if (it is PsiFile) null else it.parent } // without walking directories
 }
 
 context(scope: ParadoxPsiSelectScope)
@@ -325,10 +325,12 @@ fun ParadoxScriptDefinitionElement.nameFieldElement(nameField: String?): Paradox
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun PsiElement.parentDefinition(orSelf: Boolean = true): ParadoxScriptDefinitionElement? {
-    return parents(withSelf = orSelf)
-        .takeWhile { it !is PsiDirectory }
-        .filterIsInstance<ParadoxScriptDefinitionElement>()
-        .findIsInstance { ParadoxPsiMatcher.isDefinition(it) }
+    if (language !is ParadoxScriptLanguage) return null
+    processParent(withSelf = orSelf) p@{
+        if (ParadoxPsiMatcher.isDefinition(it)) return it
+        true
+    }
+    return null
 }
 
 /**
@@ -340,9 +342,12 @@ context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun PsiElement.parentDefinitionInjection(orSelf: Boolean = true): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
-    return parents(withSelf = orSelf)
-        .takeWhile { it !is ParadoxScriptRootBlock }
-        .findIsInstance { ParadoxPsiMatcher.isDefinitionInjection(it) }
+    processParent(withSelf = orSelf) p@{
+        if (it is ParadoxScriptRootBlock) return@p false
+        if (ParadoxPsiMatcher.isDefinitionInjection(it)) return it
+        true
+    }
+    return null
 }
 
 /**
@@ -354,9 +359,11 @@ context(_: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
 fun PsiElement.parentDefinitionOrInjection(orSelf: Boolean = true): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    return parents(withSelf = orSelf)
-        .takeWhile { it !is PsiDirectory }
-        .findIsInstance { ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it) }
+    processParent(withSelf = orSelf) p@{
+        if (ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it)) return it
+        true
+    }
+    return null
 }
 
 // endregion
