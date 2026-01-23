@@ -76,6 +76,8 @@ object CodeInjectorScope {
                 throw e.targetException ?: e
             }
             throw e
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

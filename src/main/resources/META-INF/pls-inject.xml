@@ -19,23 +19,23 @@
     <!--core code injectors-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.PathReferenceManagerImplCodeInjector"/>
+
+    <!--code injectors to provide additional features-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
 
     <!--code injectors to optimize image readers (delegate to image tools)-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.TGAImageReaderCodeInjector"/>
 
     <!--code injectors to fix bugs-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.InjectLanguageActionCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.WithAttributesPresentationCodeInjector"/>
-    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ImageDescriptorKtCodeInjector"/>-->
-
-    <!--code injectors to provide additional features-->
-    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.IdentifierHighlightingManagerImplCodeInjector"/>
 
     <!--code injectors to optimize memory-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.OptimizedFieldCodeInjectors$BasePresentation"/>

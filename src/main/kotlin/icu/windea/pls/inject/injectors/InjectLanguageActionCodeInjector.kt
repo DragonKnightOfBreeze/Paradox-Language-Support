@@ -15,9 +15,11 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @InjectionTarget("org.intellij.plugins.intelliLang.inject.InjectLanguageAction", pluginId = "org.intellij.intelliLang")
 class InjectLanguageActionCodeInjector : CodeInjectorBase() {
+    // https://youtrack.jetbrains.com/issue/IJPL-226489/Unable-to-disable-inject-language-action-in-language-injector-Eps
     // https://github.com/JetBrains/intellij-community/pull/3366
 
-    // org.intellij.plugins.intelliLang.inject.InjectLanguageAction#findInjectionHost
+    // see: org.intellij.plugins.intelliLang.inject.InjectLanguageAction#findInjectionHost
+    
     private fun Any.findInjectionHost(editor: Editor, file: PsiFile): PsiLanguageInjectionHost? {
         val function = staticFunction<Any>("findInjectionHost")
         return runCatchingCancelable { function(editor, file) }.getOrNull()?.cast()
