@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject.injectors.fix
 
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
@@ -11,15 +11,14 @@ import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 import java.awt.Graphics2D
 
-/**
- * @see com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
- * @see com.intellij.codeInsight.hints.presentation.WithAttributesPresentation.paint
- */
 @Suppress("UnstableApiUsage")
 @InjectionTarget("com.intellij.codeInsight.hints.presentation.WithAttributesPresentation")
 class WithAttributesPresentationCodeInjector : CodeInjectorBase() {
     // 如果 `other` 是 `INLAY_DEFAULT`（或者 `INLAY_TEXT_WITHOUT_BACKGROUND`），应当直优先使用 `attributes` 进行渲染
     // 否则，`PresentationFactory.withReferenceAttributes` 等会无法正常生效
+
+    // see: com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
+    // see: com.intellij.codeInsight.hints.presentation.WithAttributesPresentation.paint
 
     private val Any.presentation: InlayPresentation by memberProperty("presentation", null)
     private val Any.textAttributesKey: TextAttributesKey by memberProperty("textAttributesKey", null)

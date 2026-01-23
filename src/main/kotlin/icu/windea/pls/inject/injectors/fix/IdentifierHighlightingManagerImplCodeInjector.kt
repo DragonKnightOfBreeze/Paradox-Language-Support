@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject.injectors.fix
 
 import com.intellij.codeInsight.daemon.impl.IdentifierHighlightingResult
 import com.intellij.openapi.editor.Editor
@@ -9,14 +9,13 @@ import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.ParadoxFileType
 import kotlin.coroutines.Continuation
 
-/**
- * @see com.intellij.codeInsight.daemon.impl.IdentifierHighlightingManagerImpl
- * @see com.intellij.codeInsight.daemon.impl.IdentifierHighlightingManagerImpl.getMarkupData
- */
 @Suppress("UnstableApiUsage")
 @InjectionTarget("com.intellij.codeInsight.daemon.impl.IdentifierHighlightingManagerImpl")
 class IdentifierHighlightingManagerImplCodeInjector : CodeInjectorBase() {
     // https://youtrack.jetbrains.com/issue/IJPL-231595/Code-logic-flaw-with-identifier-highlighting
+
+    // see: com.intellij.codeInsight.daemon.impl.IdentifierHighlightingManagerImpl
+    // see: com.intellij.codeInsight.daemon.impl.IdentifierHighlightingManagerImpl.getMarkupData
 
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)

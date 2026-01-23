@@ -1,4 +1,4 @@
-package icu.windea.pls.inject.injectors
+package icu.windea.pls.inject.injectors.fix
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -18,8 +18,9 @@ class InjectLanguageActionCodeInjector : CodeInjectorBase() {
     // https://youtrack.jetbrains.com/issue/IJPL-226489/Unable-to-disable-inject-language-action-in-language-injector-Eps
     // https://github.com/JetBrains/intellij-community/pull/3366
 
+    // see: org.intellij.plugins.intelliLang.inject.InjectLanguageAction
     // see: org.intellij.plugins.intelliLang.inject.InjectLanguageAction#findInjectionHost
-    
+
     private fun Any.findInjectionHost(editor: Editor, file: PsiFile): PsiLanguageInjectionHost? {
         val function = staticFunction<Any>("findInjectionHost")
         return runCatchingCancelable { function(editor, file) }.getOrNull()?.cast()
