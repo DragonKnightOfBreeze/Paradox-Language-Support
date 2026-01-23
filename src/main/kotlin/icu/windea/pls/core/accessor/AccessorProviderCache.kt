@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 object AccessorProviderCache {
     private val cache = ConcurrentHashMap<KClass<*>, AccessorProvider<*>>()
 
-    /** 获取目标类型 [targetClass] 对应的 [AccessorProvider]，若不存在则创建并缓存。*/
+    /** 获取目标类型 [targetClass] 对应的 [AccessorProvider]，若不存在则创建并缓存。 */
     fun <T : Any> get(targetClass: KClass<T>): AccessorProvider<T> {
         return cache.getOrPut(targetClass) { AccessorProviderImpl(targetClass) }.cast()
     }

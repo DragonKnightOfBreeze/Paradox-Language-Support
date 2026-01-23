@@ -47,14 +47,14 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
     @FromOption("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String // TODO 2.0.4+ 需要详细说明这个属性的用处与行为
 
-    /** 得到处理后的“上下文规则容器”。*/
+    /** 得到处理后的“上下文规则容器”。 */
     fun getContainerConfig(): CwtMemberConfig<*>
 
-    /** 得到由其声明的上下文规则列表。*/
+    /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
 
     interface Resolver {
-        /** 由成员规则解析为内联脚本的扩展规则。*/
+        /** 由成员规则解析为内联脚本的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig
     }
 

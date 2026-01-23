@@ -55,7 +55,7 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由属性规则解析为本地化提升规则。*/
+        /** 由属性规则解析为本地化提升规则。 */
         fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig
     }
 

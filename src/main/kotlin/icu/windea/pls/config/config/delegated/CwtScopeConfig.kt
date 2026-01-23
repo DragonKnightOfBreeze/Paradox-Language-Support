@@ -40,7 +40,7 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val isSubscopeOf: String?
 
     interface Resolver {
-        /** 由属性规则解析为作用域规则。*/
+        /** 由属性规则解析为作用域规则。 */
         fun resolve(config: CwtPropertyConfig): CwtScopeConfig?
     }
 

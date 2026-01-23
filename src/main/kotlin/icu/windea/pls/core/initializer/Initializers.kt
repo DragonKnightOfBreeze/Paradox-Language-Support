@@ -13,17 +13,17 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
-/** 收集一个“创建目录”的初始化任务并返回对应的懒值。*/
+/** 收集一个“创建目录”的初始化任务并返回对应的懒值。 */
 fun Initializer.awaitDirectory(value: Path): Lazy<Path> {
     return await(value) { withContext(Dispatchers.IO) { it.createDirectories() } }
 }
 
-/** 收集一个“从 VirtualFile 复制到 Path 并返回 VirtualFile” 的初始化任务并返回懒值。*/
+/** 收集一个“从 VirtualFile 复制到 Path 并返回 VirtualFile” 的初始化任务并返回懒值。 */
 fun Initializer.awaitFileFromVirtualFile(value: Path, sourceUrl: URL): Lazy<VirtualFile> {
     return await(value, { it.createFileFromVirtualFile(VfsUtil.findFileByURL(sourceUrl)!!) }, { it.toVirtualFile()!! })
 }
 
-/** 将给定 [virtualFile] 的内容复制到当前 [Path]，并刷新 VFS 返回对应的 `VirtualFile`。*/
+/** 将给定 [virtualFile] 的内容复制到当前 [Path]，并刷新 VFS 返回对应的 `VirtualFile`。 */
 private suspend fun Path.createFileFromVirtualFile(virtualFile: VirtualFile): VirtualFile? {
     val path = this
     this.createParentDirectories()

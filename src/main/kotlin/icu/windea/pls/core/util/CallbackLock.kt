@@ -6,7 +6,7 @@ package icu.windea.pls.core.util
 class CallbackLock {
     private val keys = mutableSetOf<String>()
 
-    /** 清空已记录的键。*/
+    /** 清空已记录的键。 */
     fun reset() {
         keys.clear()
     }

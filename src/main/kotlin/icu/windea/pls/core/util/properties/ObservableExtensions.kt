@@ -7,12 +7,12 @@ import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import kotlin.reflect.KMutableProperty0
 
-/** 将可变属性 [KMutableProperty0] 映射为只读的可观察属性。*/
+/** 将可变属性 [KMutableProperty0] 映射为只读的可观察属性。 */
 fun <T, V> KMutableProperty0<T>.observe(transform: (T) -> V): ObservableProperty<T, V> {
     return ObservableProperty(this, transform)
 }
 
-/** 将可变属性 [KMutableProperty0] 映射为可写的可观察属性，需提供正反转换。*/
+/** 将可变属性 [KMutableProperty0] 映射为可写的可观察属性，需提供正反转换。 */
 fun <T, V> KMutableProperty0<T>.observeMutable(transform: (T) -> V, revertedTransform: (V) -> T): ObservableMutableProperty<T, V> {
     return ObservableMutableProperty(this, transform, revertedTransform)
 }
@@ -29,7 +29,7 @@ fun KMutableProperty0<String>.fromCommandDelimitedString(ignoreCase: Boolean = f
     return observeMutable({ it.toCommaDelimitedStringSet(stringSet(ignoreCase)) }, { it.toCommaDelimitedString() })
 }
 
-/** 与上类似，但源属性可为空；为空时读取为 `emptySet()`。*/
+/** 与上类似，但源属性可为空；为空时读取为 `emptySet()`。 */
 @JvmName("fromCommandDelimitedStringNullable")
 fun KMutableProperty0<String?>.fromCommandDelimitedString(ignoreCase: Boolean = false): ObservableMutableProperty<String?, Set<String>> {
     return observeMutable({ it?.toCommaDelimitedStringSet(stringSet(ignoreCase)).orEmpty() }, { it.toCommaDelimitedString() })

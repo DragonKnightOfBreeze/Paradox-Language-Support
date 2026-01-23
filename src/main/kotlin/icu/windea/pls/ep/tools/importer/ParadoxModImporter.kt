@@ -31,10 +31,10 @@ interface ParadoxModImporter {
      */
     suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): Result
 
-    /** 创建 [FileChooserDescriptor] ，用于弹出选择文件的对话框，从而获取数据文件的目标路径。*/
+    /** 创建 [FileChooserDescriptor] ，用于弹出选择文件的对话框，从而获取数据文件的目标路径。 */
     fun createFileChooserDescriptor(gameType: ParadoxGameType): FileChooserDescriptor
 
-    /** 得到默认选择的文件。*/
+    /** 得到默认选择的文件。 */
     fun getSelectedFile(gameType: ParadoxGameType): Path?
 
     /**

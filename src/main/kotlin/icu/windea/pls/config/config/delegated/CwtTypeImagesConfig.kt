@@ -40,11 +40,11 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
 
-    /** 按给定的 [subtypes] 合并与筛选后，返回生效的图片位置规则列表。*/
+    /** 按给定的 [subtypes] 合并与筛选后，返回生效的图片位置规则列表。 */
     fun getConfigs(subtypes: List<String>): List<CwtLocationConfig>
 
     interface Resolver {
-        /** 由属性规则解析为类型图片规则。*/
+        /** 由属性规则解析为类型图片规则。 */
         fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig?
     }
 

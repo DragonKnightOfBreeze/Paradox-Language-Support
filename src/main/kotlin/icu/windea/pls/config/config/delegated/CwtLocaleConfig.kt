@@ -48,13 +48,13 @@ interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     override fun toString(): String
 
     interface Resolver {
-        /** 按当前 IDE/项目设置自动解析语言环境规则。*/
+        /** 按当前 IDE/项目设置自动解析语言环境规则。 */
         fun resolveAuto(): CwtLocaleConfig
-        /** 按当前操作系统自动解析语言环境规则。*/
+        /** 按当前操作系统自动解析语言环境规则。 */
         fun resolveAutoOs(): CwtLocaleConfig
-        /** 解析为后备（fallback）语言环境规则。*/
+        /** 解析为后备（fallback）语言环境规则。 */
         fun resolveFallback(): CwtLocaleConfig
-        /** 由属性规则解析为语言环境规则。*/
+        /** 由属性规则解析为语言环境规则。 */
         fun resolve(config: CwtPropertyConfig): CwtLocaleConfig
     }
 

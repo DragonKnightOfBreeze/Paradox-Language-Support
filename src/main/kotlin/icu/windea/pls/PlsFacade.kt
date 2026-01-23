@@ -70,17 +70,17 @@ object PlsFacade {
             .createNotification(title, content, notificationType)
     }
 
-    /** 是否正在进行单元测试。*/
+    /** 是否正在进行单元测试。 */
     fun isUnitTestMode(): Boolean {
         return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
     }
 
-    /** 是否正在调试。*/
+    /** 是否正在调试。 */
     fun isDebug(): Boolean {
         return System.getProperty("pls.is.debug").toBoolean()
     }
 
-    /** 是否是开发中版本。*/
+    /** 是否是开发中版本。 */
     fun isDevVersion(): Boolean {
         return PluginManagerCore.getPlugin(PlsConstants.pluginId)?.version?.endsWith("-dev") == true
     }
@@ -89,10 +89,10 @@ object PlsFacade {
      * 用于检查插件的各种可选择的能力。
      */
     object Capacities {
-        /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。*/
+        /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。 */
         fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
 
-        /** 是否记录缓存状态。*/
+        /** 是否记录缓存状态。 */
         fun recordCacheStats() = System.getProperty("pls.record.cache.status").toBoolean()
 
         /** 是否启用更宽松的优化策略。这适用于多数需要加入到缓存中的集合，进行更详细的忽略检查。 */

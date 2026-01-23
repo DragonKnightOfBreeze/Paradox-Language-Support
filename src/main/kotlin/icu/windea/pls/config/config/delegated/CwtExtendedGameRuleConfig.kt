@@ -42,7 +42,7 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     val configForDeclaration: CwtPropertyConfig?
 
     interface Resolver {
-        /** 由成员规则解析为游戏规则的扩展规则。*/
+        /** 由成员规则解析为游戏规则的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig
     }
 

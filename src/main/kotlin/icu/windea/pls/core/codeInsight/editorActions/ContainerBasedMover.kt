@@ -160,19 +160,19 @@ abstract class ContainerBasedMover : LineMover() {
         return tupleOf(finalStartMember, finalEndMember)
     }
 
-    /** 检查当前文件是否支持该移动器。用于快速失败与跨语言适配。*/
+    /** 检查当前文件是否支持该移动器。用于快速失败与跨语言适配。 */
     protected abstract fun checkFileAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean): Boolean
 
-    /** 判断某 PSI 节点是否为“容器”元素（包含若干“成员”子元素）。*/
+    /** 判断某 PSI 节点是否为“容器”元素（包含若干“成员”子元素）。 */
     protected abstract fun isContainerElement(element: PsiElement): Boolean
 
-    /** 判断 PSI 节点是否为“成员”元素，默认全接受。*/
+    /** 判断 PSI 节点是否为“成员”元素，默认全接受。 */
     protected open fun isMemberElement(element: PsiElement): Boolean = true
 
-    /** 当前成员是否可“附着注释”（将成员前的注释成组视作成员的一部分），默认不可。*/
+    /** 当前成员是否可“附着注释”（将成员前的注释成组视作成员的一部分），默认不可。 */
     protected open fun canAttachComments(memberElement: PsiElement): Boolean = false
 
-    /** 移动时是否可跳过空行（仅当空行后能找到成员时才真正跳过），默认不可。*/
+    /** 移动时是否可跳过空行（仅当空行后能找到成员时才真正跳过），默认不可。 */
     protected open fun canSkipBlankLines(memberElement: PsiElement): Boolean = false
 
     /**

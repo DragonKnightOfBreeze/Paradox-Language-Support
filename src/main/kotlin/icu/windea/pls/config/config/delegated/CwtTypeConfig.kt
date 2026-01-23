@@ -87,7 +87,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
     interface Resolver {
-        /** 由属性规则解析为类型规则。*/
+        /** 由属性规则解析为类型规则。 */
         fun resolve(config: CwtPropertyConfig): CwtTypeConfig?
     }
 

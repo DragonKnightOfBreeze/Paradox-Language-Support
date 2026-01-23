@@ -19,7 +19,7 @@ class Initializer(
     private val completableDeferred: CompletableDeferred<Unit> = CompletableDeferred(),
     private val initializeActions: MutableList<suspend () -> Unit> = mutableListOf()
 ) {
-    /** 并行执行已收集的初始化任务；执行完成后使 `await(...)` 的懒值可读取。*/
+    /** 并行执行已收集的初始化任务；执行完成后使 `await(...)` 的懒值可读取。 */
     suspend fun initialize() {
         if (initializeActions.isEmpty()) return
         val logger = thisLogger()
@@ -34,7 +34,7 @@ class Initializer(
         }
     }
 
-    /** 返回直接包裹值 [value] 的懒对象（不注册初始化任务）。*/
+    /** 返回直接包裹值 [value] 的懒对象（不注册初始化任务）。 */
     fun <T> await(value: T): Lazy<T> {
         return lazyOf(value)
     }
@@ -55,7 +55,7 @@ class Initializer(
         }
     }
 
-    /** 与上类似，但在获取懒值时对 [value] 应用转换函数 [transform] 后返回。*/
+    /** 与上类似，但在获取懒值时对 [value] 应用转换函数 [transform] 后返回。 */
     fun <T, R> await(value: T, initializeAction: suspend (T) -> Unit, transform: (T) -> R): Lazy<R> {
         initializeActions.add { initializeAction(value) }
         return lazy {

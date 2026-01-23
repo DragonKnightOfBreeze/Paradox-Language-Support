@@ -40,7 +40,7 @@ interface CwtDirectiveConfig: CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val relaxModes: Set<@CaseInsensitive String>
 
     interface Resolver {
-        /** 由属性规则解析为声明规则。*/
+        /** 由属性规则解析为声明规则。 */
         fun resolve(config: CwtPropertyConfig): CwtDirectiveConfig?
     }
 

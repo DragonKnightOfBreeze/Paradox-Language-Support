@@ -57,5 +57,5 @@ var ProcessingContext.contextKey: String? by registerKey(PlsProcessingContextKey
 var ProcessingContext.argumentNames: MutableSet<String>? by registerKey(PlsProcessingContextKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by registerKey(PlsProcessingContextKeys)
 
-/** 在对多参数动态链接的代码补全中，表示当前光标所处的参数索引（从0开始）。*/
+/** 在对多参数动态链接的代码补全中，表示当前光标所处的参数索引（从0开始）。 */
 var ProcessingContext.argumentIndex: Int by registerKey(PlsProcessingContextKeys) { 0 }

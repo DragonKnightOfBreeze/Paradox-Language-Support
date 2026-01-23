@@ -55,14 +55,14 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     @FromOption("inherit", defaultValue = "no")
     val inherit: Boolean
 
-    /** 得到处理后的“上下文规则容器”。*/
+    /** 得到处理后的“上下文规则容器”。 */
     fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*>
 
-    /** 得到由其声明的上下文规则列表。*/
+    /** 得到由其声明的上下文规则列表。 */
     fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>>
 
     interface Resolver {
-        /** 由成员规则解析为参数的扩展规则。*/
+        /** 由成员规则解析为参数的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig?
     }
 

@@ -6,34 +6,34 @@ import icu.windea.pls.core.cast
 import java.util.*
 import kotlin.reflect.KProperty
 
-/** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。*/
+/** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。 */
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
-/** 如果当前映射为 `null` 或为空，则返回 `null`。否则返回自身。*/
+/** 如果当前映射为 `null` 或为空，则返回 `null`。否则返回自身。 */
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
-/** 将当前只读 [List] 视为 [MutableList]（要求实际可变，否则抛出异常）。*/
+/** 将当前只读 [List] 视为 [MutableList]（要求实际可变，否则抛出异常）。 */
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
-/** 将当前只读 [Set] 视为 [MutableSet]（要求实际可变，否则抛出异常）。*/
+/** 将当前只读 [Set] 视为 [MutableSet]（要求实际可变，否则抛出异常）。 */
 inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
-/** 将当前只读 [Map] 视为 [MutableMap]（要求实际可变，否则抛出异常）。*/
+/** 将当前只读 [Map] 视为 [MutableMap]（要求实际可变，否则抛出异常）。 */
 inline fun <K, V> Map<K, V>.asMutable(): MutableMap<K, V> = this as MutableMap<K, V>
 
-/** 返回加锁后的同步的 [MutableList]。*/
+/** 返回加锁后的同步的 [MutableList]。 */
 inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 
-/** 返回加锁后的同步的 [MutableSet]。*/
+/** 返回加锁后的同步的 [MutableSet]。 */
 inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
 
-/** 返回加锁后的同步的 [MutableMap]。*/
+/** 返回加锁后的同步的 [MutableMap]。 */
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
 
-/** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。*/
+/** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。 */
 inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
 
-/** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。*/
+/** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。 */
 inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为列表。 */
@@ -47,22 +47,22 @@ inline fun <reified R, C: MutableCollection<in R>> Iterable<*>.filterIsInstanceT
     return destination
 }
 
-/** 查找第一个类型为 [R] 且满足 [predicate] 的元素。*/
+/** 查找第一个类型为 [R] 且满足 [predicate] 的元素。 */
 inline fun <reified R> Iterable<*>.findIsInstance(predicate: (R) -> Boolean = { true }): R? {
     return find { it is R && predicate(it) } as R?
 }
 
-/** 查找最后一个类型为 [R] 且满足 [predicate] 的元素。*/
+/** 查找最后一个类型为 [R] 且满足 [predicate] 的元素。 */
 inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { true }): R? {
     return findLast { it is R && predicate(it) } as R?
 }
 
-/** 将当前列表映射为数组。*/
+/** 将当前列表映射为数组。 */
 inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
     return Array(size) { transform(this[it]) }
 }
 
-/** 将当前集合映射为数组。如果为列表则走下标路径，否则顺序遍历。*/
+/** 将当前集合映射为数组。如果为列表则走下标路径，否则顺序遍历。 */
 inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
     if (this is List) return this.mapToArray(transform)
     val result = arrayOfNulls<R>(this.size)
@@ -72,7 +72,7 @@ inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R
     return result.cast()
 }
 
-/** 将条目映射为数组；在可迭代器场景下避免中间 [List] 分配。*/
+/** 将条目映射为数组；在可迭代器场景下避免中间 [List] 分配。 */
 inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
     // 这里不先将Set转为List
     val size = this.size
@@ -86,7 +86,7 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
     }
 }
 
-/** 逐个处理元素，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
+/** 逐个处理元素，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     for (e in this) {
         val result = processor(e)
@@ -95,7 +95,7 @@ inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     return true
 }
 
-/** 逐个处理条目，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
+/** 逐个处理条目，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
     for (entry in this) {
         val result = processor(entry)
@@ -215,7 +215,7 @@ inline operator fun <V> MapWithDefaultValueDelegate<V>.provideDelegate(thisRef: 
     return map
 }
 
-/** 为 [MutableMap] 提供默认值委托构建器，语法：`myMap withDefault defaultValue`。*/
+/** 为 [MutableMap] 提供默认值委托构建器，语法：`myMap withDefault defaultValue`。 */
 inline infix fun <V> MutableMap<String, V>.withDefault(defaultValue: V) = MapWithDefaultValueDelegate(this, defaultValue)
 
 /** 得到指定键 [key] 对应的类型为 [List] 的值中的最后一个元素，如果不存在则返回 `null`。 */

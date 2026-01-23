@@ -36,7 +36,7 @@ fun String.toIconOrNull(locationClass: Class<*> = PlsFacade::class.java): Icon? 
     return IconLoader.findIcon(this, locationClass)
 }
 
-/** 从 URL 加载图标。*/
+/** 从 URL 加载图标。 */
 fun URL.toIconOrNull(): Icon? {
     return IconLoader.findIcon(this)
 }
@@ -46,17 +46,17 @@ operator fun Color.component2() = green
 operator fun Color.component3() = blue
 operator fun Color.component4() = alpha
 
-/** 调整图标尺寸为 [width]×[height]。*/
+/** 调整图标尺寸为 [width]×[height]。 */
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
 
-/** 将图标转换为 `Image`。*/
+/** 将图标转换为 `Image`。 */
 fun Icon.toImage(): Image {
     return IconUtil.toImage(this)
 }
 
-/** 将图标包装为纯展示用的 `JLabel`（无边框、透明背景）。*/
+/** 将图标包装为纯展示用的 `JLabel`（无边框、透明背景）。 */
 fun Icon.toLabel(): JLabel {
     val label = JLabel("", this, SwingConstants.LEADING)
     label.border = JBUI.Borders.empty()
@@ -65,7 +65,7 @@ fun Icon.toLabel(): JLabel {
     return label
 }
 
-/** 将 `Image` 转为 `Icon`。*/
+/** 将 `Image` 转为 `Icon`。 */
 fun Image.toIcon(): Icon {
     return IconUtil.createImageIcon(this)
 }
@@ -79,13 +79,13 @@ fun JComponent.toImage(width: Int = this.width, height: Int = this.height, type:
     return image
 }
 
-/** 设置组件坐标并返回自身（便于链式调用）。*/
+/** 设置组件坐标并返回自身（便于链式调用）。 */
 fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
     this.setLocation(x, y)
     return this
 }
 
-/** 为组件注册点击监听器。*/
+/** 为组件注册点击监听器。 */
 fun <T : JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
     clickListener.installOn(this, allowDragWhileClicking)
 }
@@ -101,10 +101,10 @@ fun <K, V> MutableMap<K, V>.toMutableProperty(key: K, defaultValue: V): MutableP
     return MutableProperty({ getOrPut(key) { defaultValue } }, { put(key, it) })
 }
 
-/** 应用更小的外边距。*/
+/** 应用更小的外边距。 */
 fun <T : JComponent> Cell<T>.smaller() = customize(UnscaledGaps(3, 0, 3, 0))
 
-/** 应用更小的字体。*/
+/** 应用更小的字体。 */
 fun <T : JComponent> Cell<T>.smallerFont() = applyToComponent { font = JBUI.Fonts.smallFont() }
 
 // endregion

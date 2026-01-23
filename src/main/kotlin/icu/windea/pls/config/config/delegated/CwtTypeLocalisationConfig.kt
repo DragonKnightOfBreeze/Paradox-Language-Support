@@ -42,11 +42,11 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtTypeLocalisationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
 
-    /** 按给定的 [subtypes] 合并与筛选后，返回生效的本地化位置规则列表。*/
+    /** 按给定的 [subtypes] 合并与筛选后，返回生效的本地化位置规则列表。 */
     fun getConfigs(subtypes: List<String>): List<CwtLocationConfig>
 
     interface Resolver {
-        /** 由属性规则解析为类型本地化规则。*/
+        /** 由属性规则解析为类型本地化规则。 */
         fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig?
     }
 

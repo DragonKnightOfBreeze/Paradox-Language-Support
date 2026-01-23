@@ -30,12 +30,12 @@ abstract class FilteredRequestResultProcessor(private val target: PsiElement) : 
         return true
     }
 
-    /** 是否对指定 [element] 启用过滤，默认返回 `true`。*/
+    /** 是否对指定 [element] 启用过滤，默认返回 `true`。 */
     protected open fun applyFor(element: PsiElement): Boolean = true
 
-    /** 当启用过滤时，是否接受该 PSI 元素 [element]，默认返回 `true`。*/
+    /** 当启用过滤时，是否接受该 PSI 元素 [element]，默认返回 `true`。 */
     protected open fun acceptElement(element: PsiElement): Boolean = true
 
-    /** 当启用过滤时，是否接受该 PSI 引用 [reference]，默认返回 `true`。*/
+    /** 当启用过滤时，是否接受该 PSI 引用 [reference]，默认返回 `true`。 */
     protected open fun acceptReference(reference: PsiReference): Boolean = true
 }

@@ -69,12 +69,12 @@ fun <T : Cell<JBCheckBox>> T.threeStateCheckBox(threeStateCheckBox: Cell<ThreeSt
     return this
 }
 
-/** 绑定 `ThreeStateCheckBox` 的状态属性。*/
+/** 绑定 `ThreeStateCheckBox` 的状态属性。 */
 fun <T : ThreeStateCheckBox> Cell<T>.bindState(property: MutableProperty<ThreeStateCheckBox.State>): Cell<T> {
     return bind(ThreeStateCheckBox::getState, ThreeStateCheckBox::setState, property)
 }
 
-/** 绑定 `ThreeStateCheckBox` 的状态属性（基于 Kotlin 属性）。*/
+/** 绑定 `ThreeStateCheckBox` 的状态属性（基于 Kotlin 属性）。 */
 fun <T : ThreeStateCheckBox> Cell<T>.bindState(property: KMutableProperty0<ThreeStateCheckBox.State>): Cell<T> {
     return bind(ThreeStateCheckBox::getState, ThreeStateCheckBox::setState, property.toMutableProperty())
 }

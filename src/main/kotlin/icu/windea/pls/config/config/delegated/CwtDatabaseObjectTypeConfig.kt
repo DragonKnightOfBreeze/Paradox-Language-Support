@@ -48,11 +48,11 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     @FromProperty("localisation: string?")
     val localisation: String?
 
-    /** 根据 [isBase]（基础/替换）返回对应的值规则。*/
+    /** 根据 [isBase]（基础/替换）返回对应的值规则。 */
     fun getConfigForType(isBase: Boolean): CwtValueConfig?
 
     interface Resolver {
-        /** 由属性规则解析为数据库对象类型规则。*/
+        /** 由属性规则解析为数据库对象类型规则。 */
         fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig?
     }
 

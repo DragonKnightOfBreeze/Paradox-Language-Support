@@ -7,7 +7,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
  * 以降低补全侧对具体节点内部结构的耦合。
  */
 interface ParadoxLinkValueNode : ParadoxComplexExpressionNode {
-    /** 仅包含核心参数节点，排除空白与分隔符等辅助节点。*/
+    /** 仅包含核心参数节点，排除空白与分隔符等辅助节点。 */
     val argumentNodes: List<ParadoxComplexExpressionNode>
 
     /**

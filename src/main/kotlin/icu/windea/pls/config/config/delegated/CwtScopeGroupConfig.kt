@@ -43,7 +43,7 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 
     interface Resolver {
-        /** 由属性规则解析为作用域分组规则。*/
+        /** 由属性规则解析为作用域分组规则。 */
         fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig?
     }
 

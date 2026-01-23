@@ -37,7 +37,7 @@ interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtM
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则解析为封装变量的扩展规则。*/
+        /** 由成员规则解析为封装变量的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig?
     }
 

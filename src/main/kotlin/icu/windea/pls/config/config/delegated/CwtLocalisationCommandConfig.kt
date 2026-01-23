@@ -47,7 +47,7 @@ interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtProp
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由属性规则解析为本地化命令规则。*/
+        /** 由属性规则解析为本地化命令规则。 */
         fun resolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig
     }
 

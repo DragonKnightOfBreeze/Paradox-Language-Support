@@ -51,7 +51,7 @@ interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
     val enumNameConfigs: List<CwtMemberConfig<*>>
 
     interface Resolver {
-        /** 由属性规则解析为复杂枚举规则。*/
+        /** 由属性规则解析为复杂枚举规则。 */
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig?
     }
 

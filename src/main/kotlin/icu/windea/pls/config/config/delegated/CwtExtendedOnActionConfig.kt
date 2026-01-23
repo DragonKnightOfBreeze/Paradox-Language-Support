@@ -44,7 +44,7 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则解析为 on action 的扩展规则。*/
+        /** 由成员规则解析为 on action 的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig?
     }
 

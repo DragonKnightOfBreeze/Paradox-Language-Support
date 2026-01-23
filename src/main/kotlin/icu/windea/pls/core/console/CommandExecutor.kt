@@ -25,7 +25,7 @@ class CommandExecutor(
         private val logger = logger<CommandExecutor>()
     }
 
-    /** 直接执行完整的命令数组 [commands] 并以 UTF-8 解析输出。*/
+    /** 直接执行完整的命令数组 [commands] 并以 UTF-8 解析输出。 */
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(commands: List<String>): String {
         logger.info("Executing commands: $commands")
@@ -47,7 +47,7 @@ class CommandExecutor(
         return doExecute(commands, outputCharset)
     }
 
-    /** 实际执行 [commands] 并按 [outputCharset] 读取输出，处理超时与错误流。*/
+    /** 实际执行 [commands] 并按 [outputCharset] 读取输出，处理超时与错误流。 */
     private fun doExecute(commands: List<String>, outputCharset: Charset): String {
         val processBuilder = ProcessBuilder(commands)
         val env = processBuilder.environment()
@@ -75,7 +75,7 @@ class CommandExecutor(
         throw CommandExecutionException(errorResult)
     }
 
-    /** 根据 OS 与入参确定实际使用的命令类型。Windows 下仅允许 CMD/PowerShell。*/
+    /** 根据 OS 与入参确定实际使用的命令类型。Windows 下仅允许 CMD/PowerShell。 */
     private fun getCommandTypeToUse(commandType: CommandType?): CommandType {
         if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
             if (OS.value != OS.Windows) throw UnsupportedOperationException()
@@ -87,7 +87,7 @@ class CommandExecutor(
         }
     }
 
-    /** 将命令行字符串转换为实际的可执行命令数组。*/
+    /** 将命令行字符串转换为实际的可执行命令数组。 */
     private fun getCommands(command: String, commandType: CommandType): List<String> {
         return when (commandType) {
             CommandType.SHELL -> listOf("/bin/sh", "-c", command)

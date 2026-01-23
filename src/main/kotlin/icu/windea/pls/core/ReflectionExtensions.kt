@@ -12,10 +12,10 @@ import kotlin.reflect.KFunction
  */
 fun String.isClassPresent(): Boolean = runCatching { Class.forName(this) }.getOrNull() != null
 
-/** 通过当前类名获取 [Class]。*/
+/** 通过当前类名获取 [Class]。 */
 fun String.toClass(): Class<*> = Class.forName(this)
 
-/** 通过当前类名获取 [KClass]。*/
+/** 通过当前类名获取 [KClass]。 */
 fun String.toKClass(): KClass<out Any> = Class.forName(this).kotlin
 
 /**

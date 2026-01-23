@@ -40,7 +40,7 @@ interface CwtRowConfig : CwtFilePathMatchableConfig {
     val endColumn: String?
 
     interface Resolver {
-        /** 由属性规则解析为行规则。*/
+        /** 由属性规则解析为行规则。 */
         fun resolve(config: CwtPropertyConfig): CwtRowConfig?
     }
 

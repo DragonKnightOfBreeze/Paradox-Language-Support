@@ -36,10 +36,10 @@ interface ParadoxModExporter {
      */
     fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor
 
-    /** 得到默认要保存到的目录。*/
+    /** 得到默认要保存到的目录。 */
     fun getSavedBaseDir(gameType: ParadoxGameType): Path?
 
-    /** 得到默认要保存到的文件名。*/
+    /** 得到默认要保存到的文件名。 */
     fun getSavedFileName(gameType: ParadoxGameType): String?
 
     /**

@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException
  * - 对于提供者侧，若捕获到 [InvocationTargetException]，则抛出其 `cause`（若存在）。
  */
 object AccessorRunner {
-    /** 在“委托”上下文中运行 [block]，按策略转换异常为 [UnsupportedAccessorException]。*/
+    /** 在“委托”上下文中运行 [block]，按策略转换异常为 [UnsupportedAccessorException]。 */
     fun <T> runInAccessorDelegate(block: () -> T): T {
         return try {
             block()
@@ -22,7 +22,7 @@ object AccessorRunner {
         }
     }
 
-    /** 在“提供者”上下文中运行 [block]，额外解包 [InvocationTargetException]。*/
+    /** 在“提供者”上下文中运行 [block]，额外解包 [InvocationTargetException]。 */
     fun <T> runInAccessorProvider(block: () -> T): T {
         return try {
             block()

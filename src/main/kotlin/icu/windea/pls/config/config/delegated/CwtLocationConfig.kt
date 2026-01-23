@@ -51,7 +51,7 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val primary: Boolean
 
     interface Resolver {
-        /** 由属性规则解析为位置规则。*/
+        /** 由属性规则解析为位置规则。 */
         fun resolve(config: CwtPropertyConfig): CwtLocationConfig?
     }
 

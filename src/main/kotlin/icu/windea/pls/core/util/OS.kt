@@ -12,10 +12,10 @@ enum class OS {
     ;
 
     companion object {
-        /** `os.name` 系统属性。*/
+        /** `os.name` 系统属性。 */
         @JvmField
         val name = System.getProperty("os.name")
-        /** `os.version` 系统属性。*/
+        /** `os.version` 系统属性。 */
         @JvmField
         val version = System.getProperty("os.version")
 

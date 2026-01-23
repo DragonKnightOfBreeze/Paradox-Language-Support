@@ -10,7 +10,7 @@ import java.nio.charset.Charset
  * - 若未匹配成功则回退到 UTF-8。
  */
 object CommandOutputCharsetDetector {
-    /** 根据命令类型 [commandType] 返回用于读取输出流的字符集。*/
+    /** 根据命令类型 [commandType] 返回用于读取输出流的字符集。 */
     fun detect(commandType: CommandType): Charset {
         return when (commandType) {
             CommandType.CMD -> charsetForCmd

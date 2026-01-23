@@ -39,7 +39,7 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val name: String
 
     interface Resolver {
-        /** 由属性规则解析为单别名规则。*/
+        /** 由属性规则解析为单别名规则。 */
         fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig?
     }
 

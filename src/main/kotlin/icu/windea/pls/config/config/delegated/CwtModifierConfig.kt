@@ -68,11 +68,11 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由属性规则解析为修正规则。*/
+        /** 由属性规则解析为修正规则。 */
         fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig?
-        // /** 由别名规则（`alias[modifier:...] = ...`）解析为修正规则。*/
+        // /** 由别名规则（`alias[modifier:...] = ...`）解析为修正规则。 */
         // fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig
-        /** 从定义上下文中的 modifiers 条目解析为修正规则，可指定 [name] 与类型表达式。*/
+        /** 从定义上下文中的 modifiers 条目解析为修正规则，可指定 [name] 与类型表达式。 */
         fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig?
     }
 

@@ -100,11 +100,11 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     override val configExpression: CwtDataExpression?
 
     interface Resolver {
-        /** 由属性规则解析为（常规）链接规则。*/
+        /** 由属性规则解析为（常规）链接规则。 */
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig?
         /** 由属性规则解析为本地化链接规则。 */
         fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig?
-        /** 由已有的（常规）链接规则，解析为本地化链接规则。*/
+        /** 由已有的（常规）链接规则，解析为本地化链接规则。 */
         fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig
         /** 构造一个委托版本（wrapper），并指定数据源的索引。如果索引越界，则返回 null。 */
         fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig?

@@ -54,7 +54,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val subtypesUsedInDeclaration: Set<String>
 
     interface Resolver {
-        /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。*/
+        /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
         fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig?
     }
 

@@ -37,7 +37,7 @@ interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由属性规则解析为修正分类规则。*/
+        /** 由属性规则解析为修正分类规则。 */
         fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig?
     }
 

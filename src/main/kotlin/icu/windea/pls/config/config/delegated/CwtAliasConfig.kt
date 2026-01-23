@@ -52,7 +52,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     override val configExpression: CwtDataExpression
 
     interface Resolver {
-        /** 由属性规则解析为别名规则。*/
+        /** 由属性规则解析为别名规则。 */
         fun resolve(config: CwtPropertyConfig): CwtAliasConfig?
         /** 进行解析后的后续处理（从数据表达式收集信息）。 */
         fun postProcess(config: CwtAliasConfig)

@@ -49,7 +49,7 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     override fun toString(): String
 
     interface Resolver {
-        /** 由属性规则解析为系统作用域规则。*/
+        /** 由属性规则解析为系统作用域规则。 */
         fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig
     }
 

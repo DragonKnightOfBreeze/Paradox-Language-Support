@@ -11,17 +11,17 @@ import com.intellij.codeInsight.template.impl.TemplateState
  * 其余回调均提供空实现（或转换为调用 `templateFinished(..., false)`）。
  */
 fun interface TemplateEditingFinishedListener : TemplateEditingListener {
-    /** 模板完成前的回调：默认无操作。*/
+    /** 模板完成前的回调：默认无操作。 */
     override fun beforeTemplateFinished(state: TemplateState, template: Template?) {}
 
-    /** 模板取消：默认转为调用 `templateFinished(template, false)`。*/
+    /** 模板取消：默认转为调用 `templateFinished(template, false)`。 */
     override fun templateCancelled(template: Template) {
         templateFinished(template, false)
     }
 
-    /** 当前变量索引变化：默认无操作。*/
+    /** 当前变量索引变化：默认无操作。 */
     override fun currentVariableChanged(templateState: TemplateState, template: Template, oldIndex: Int, newIndex: Int) {}
 
-    /** 等待输入：默认无操作。*/
+    /** 等待输入：默认无操作。 */
     override fun waitingForInput(template: Template) {}
 }

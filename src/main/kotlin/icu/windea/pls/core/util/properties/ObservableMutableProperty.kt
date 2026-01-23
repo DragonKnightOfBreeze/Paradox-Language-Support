@@ -15,7 +15,7 @@ class ObservableMutableProperty<T, V>(
     transform: (T) -> V,
     private val revertedTransform: (V) -> T
 ) : ObservableProperty<T, V>(target, transform), ReadWriteProperty<Any?, V> {
-    /** 设置投影值 [value]，将其映射到原属性并写回。*/
+    /** 设置投影值 [value]，将其映射到原属性并写回。 */
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: V) {
         val newValue = revertedTransform(value)
         this.value = value

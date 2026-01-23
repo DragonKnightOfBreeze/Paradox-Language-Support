@@ -55,7 +55,7 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     val group: String?
 
     interface Resolver {
-        /** 由属性规则解析为子类型规则。*/
+        /** 由属性规则解析为子类型规则。 */
         fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig?
     }
 
