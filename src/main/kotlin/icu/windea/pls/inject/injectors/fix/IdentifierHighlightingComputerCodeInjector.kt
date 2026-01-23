@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.core.memberProperty
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.psi.ParadoxFile
 
@@ -20,7 +21,7 @@ class IdentifierHighlightingComputerCodeInjector : CodeInjectorBase() {
 
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
-    fun Any.computeRanges(returnValue: IdentifierHighlightingResult): IdentifierHighlightingResult {
+    fun Any.computeRanges(@InjectReturnValue returnValue: IdentifierHighlightingResult): IdentifierHighlightingResult {
         run {
             if (returnValue.targets.size <= 1) return@run
             if (myPsiFile !is ParadoxFile) return@run

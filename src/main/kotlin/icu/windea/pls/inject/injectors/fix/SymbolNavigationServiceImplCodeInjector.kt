@@ -8,6 +8,7 @@ import com.intellij.platform.backend.navigation.NavigationTarget
 import com.intellij.psi.PsiElement
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import kotlin.reflect.KProperty1
@@ -22,7 +23,7 @@ class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
     // see: com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl.getNavigationTargets
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
-    fun getNavigationTargets(project: Project, symbol: Symbol, returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {
+    fun getNavigationTargets(project: Project, symbol: Symbol, @InjectReturnValue returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {
         if (returnValue.isEmpty()) return returnValue
         return returnValue.filter { getElement(it) !is MockPsiElement }
     }

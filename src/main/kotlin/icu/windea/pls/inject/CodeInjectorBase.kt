@@ -7,15 +7,10 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.model.InjectionTargetInfo
 import kotlin.reflect.full.findAnnotation
 
-/**
- * @see InjectionTarget
- * @see InjectMethod
- */
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     override val id: String = javaClass.name
 

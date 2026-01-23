@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.references.paths.ParadoxPathReference
 
@@ -28,7 +29,7 @@ class PathReferenceManagerImplCodeInjector : CodeInjectorBase() {
         relativePathsAllowed: Boolean,
         suitableFileTypes: Array<out FileType>?,
         vararg additionalProviders: PathReferenceProvider,
-        returnValue: Array<out PsiReference>
+        @InjectReturnValue returnValue: Array<out PsiReference>
     ): Array<out PsiReference> {
         val reference = findReference(returnValue)
         if (reference != null) return arrayOf(reference)

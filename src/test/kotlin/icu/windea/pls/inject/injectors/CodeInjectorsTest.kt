@@ -6,6 +6,7 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.OptimizedField
 import javassist.ClassClassPath
@@ -27,6 +28,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         const val TARGET_AFTER = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetAfter"
         const val TARGET_AFTER_FINALLY = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetAfterFinally"
         const val TARGET_STATIC = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetStatic"
+        const val TARGET_PARTIAL_ARGS = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetPartialArgs"
         const val TARGET_PLUGIN_ID_SKIP = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$TargetPluginIdSkip"
         const val TARGET_INTERNAL_TO_STRING_MODEL = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$InternalToStringModel"
         const val TARGET_FIELD_CACHE_MODEL = "icu.windea.pls.inject.injectors.CodeInjectorsTest\$FieldCacheModel"
@@ -178,7 +180,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         @InjectionTarget(TARGET_AFTER, pluginId = "icu.windea.pls")
         class Injector : CodeInjectorBase() {
             @InjectMethod(value = "sum", pointer = InjectMethod.Pointer.AFTER)
-            fun after(a: Int, b: Int, returnValue: Int): Int {
+            fun after(a: Int, b: Int, @InjectReturnValue returnValue: Int): Int {
                 return returnValue + 1
             }
         }
@@ -207,7 +209,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         @InjectionTarget(TARGET_AFTER_FINALLY, pluginId = "icu.windea.pls")
         class Injector : CodeInjectorBase() {
             @InjectMethod(value = "sum", pointer = InjectMethod.Pointer.AFTER_FINALLY)
-            fun afterFinally(a: Int, b: Int, returnValue: Int): Int {
+            fun afterFinally(a: Int, b: Int, @InjectReturnValue returnValue: Int): Int {
                 return returnValue + 2
             }
         }
@@ -250,6 +252,39 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun test_baseSupport_body_partialArgs() {
+        // Inject method can accept fewer normal parameters than target method (prefix matching).
+        makeTargetClass(
+            TARGET_PARTIAL_ARGS,
+            listOf(
+                "public int sum3(int a, int b, int c) { return a + b + c; }"
+            )
+        )
+
+        @InjectionTarget(TARGET_PARTIAL_ARGS, pluginId = "icu.windea.pls")
+        class Injector : CodeInjectorBase() {
+            @InjectMethod(value = "sum3", pointer = InjectMethod.Pointer.BODY)
+            fun sum3(a: Int): Int {
+                return a
+            }
+        }
+
+        val injector = Injector()
+        injector.inject()
+        registerInjector(injector)
+
+        val clazz = Class.forName(TARGET_PARTIAL_ARGS, false, this::class.java.classLoader)
+        val instance = clazz.getDeclaredConstructor().newInstance()
+        val method = clazz.getMethod(
+            "sum3",
+            Int::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType
+        )
+        assertEquals(1, method.invoke(instance, 1, 2, 3))
+    }
+
+    @Test
     fun test_injector_pluginId_notEnabled_skip() {
         // If pluginId is specified but the plugin is not enabled, CodeInjectorBase.inject() will skip injection.
         // This test verifies that the target class is not defined/loaded as a side effect.
@@ -286,7 +321,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         @InjectionTarget(TARGET_INTERNAL_TO_STRING_MODEL)
         class Injector : CodeInjectorBase() {
             @InjectMethod(value = "toString", pointer = InjectMethod.Pointer.AFTER)
-            fun after(returnValue: Any?): String {
+            fun after(@InjectReturnValue returnValue: Any?): String {
                 return "X:" + (returnValue?.toString() ?: "null")
             }
         }

@@ -9,5 +9,5 @@ data class InjectMethodInfo(
     val pointer: InjectMethod.Pointer,
     val static: Boolean,
     val hasReceiver: Boolean,
-    val hasReturnValue: Boolean,
+    val returnValueParameterIndex: Int,
 )

@@ -7,6 +7,7 @@ import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassPool
 import javassist.CtClass
@@ -51,8 +52,9 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val pointer = info.pointer
             val static = info.static
             val hasReceiver = function.extensionReceiverParameter != null
-            val hasReturnValue = method.returnType != Void.TYPE && (pointer == InjectMethod.Pointer.AFTER || pointer == InjectMethod.Pointer.AFTER_FINALLY)
-            val injectMethodInfo = InjectMethodInfo(method, name, pointer, static, hasReceiver, hasReturnValue)
+
+            val returnValueParameterIndex = method.parameters.indexOfFirst { it.isAnnotationPresent(InjectReturnValue::class.java) }
+            val injectMethodInfo = InjectMethodInfo(method, name, pointer, static, hasReceiver, returnValueParameterIndex)
             injectMethodInfos.put(methodId, injectMethodInfo)
             index++
         }
@@ -108,12 +110,17 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
 
     private fun findTargetMethod(injectMethodInfo: InjectMethodInfo, targetClass: CtClass, classPool: ClassPool): CtMethod? {
         val methodName = injectMethodInfo.name
-        var argSize = injectMethodInfo.method.parameterCount
-        if (injectMethodInfo.hasReceiver) argSize--
-        if (injectMethodInfo.hasReturnValue) argSize--
-        if (argSize < 0) return null // unexpected
-        var argIndexOffset = 0
-        if (injectMethodInfo.hasReceiver) argIndexOffset++
+
+        val normalParameterTypes = buildList {
+            val parameterCount = injectMethodInfo.method.parameterCount
+            for (i in 0 until parameterCount) {
+                if (injectMethodInfo.hasReceiver && i == 0) continue
+                if (injectMethodInfo.returnValueParameterIndex == i) continue
+                add(injectMethodInfo.method.parameterTypes[i])
+            }
+        }
+        val argSize = normalParameterTypes.size
+
         var ctMethods = targetClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
             val isStatic = Modifier.isStatic(ctMethod.modifiers)
             if ((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
@@ -122,11 +129,10 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         run {
             if (ctMethods.size <= 1) return@run
             ctMethods = ctMethods.filter { ctMethod ->
-                val size = ctMethod.parameterTypes.size
-                for (i in 0 until size) {
+                for (i in 0 until argSize) {
                     val r = runCatchingCancelable {
                         val t1 = ctMethod.parameterTypes[i]
-                        val t2 = injectMethodInfo.method.parameterTypes[i + argIndexOffset]
+                        val t2 = normalParameterTypes[i]
                         val t3 = classPool.get(t2.name)
                         t1.subclassOf(t3)
                     }.getOrElse { true }
@@ -138,7 +144,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         run {
             if (ctMethods.size <= 1) return@run
             ctMethods = ctMethods.filter { ctMethod ->
-                ctMethod.parameterTypes.size == argSize
+                ctMethod.parameterTypes.size >= argSize
             }
         }
         return ctMethods.firstOrNull()

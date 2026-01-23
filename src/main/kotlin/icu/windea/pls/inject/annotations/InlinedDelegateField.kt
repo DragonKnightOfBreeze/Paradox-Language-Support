@@ -13,6 +13,7 @@ import icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupport
  * @property value 属性名（将自动映射到字段名 `${value}$delegate`）。
  * @property delegateExpression 用于替换字段读取的委托表达式（Javassist 源码片段）。如果为空字符串，则尝试从构造函数/初始化逻辑中自动推导。
  *
+ * @see InlinedDelegateFields
  * @see InlinedDelegateFieldCodeInjectorSupport
  */
 @Target(AnnotationTarget.CLASS)

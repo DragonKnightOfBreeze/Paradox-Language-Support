@@ -8,6 +8,7 @@ import javassist.ClassPool
 import javassist.CtClass
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import java.lang.reflect.Parameter
 
 @Suppress("unused")
 object CodeInjectorScope {
@@ -44,7 +45,8 @@ object CodeInjectorScope {
     @JvmStatic
     internal fun applyInjection(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
         // 如果注入方法是一个扩展方法，则传递 `target` 到接收者（目标方法是一个静态方法时，`target` 的值为 `null`）
-        // 如果注入方法拥有除了以上情况以外的额外参数，则传递 `returnValue` 到第1个额外参数（目标方法没有返回值时，`returnValue` 的值为 `null`）
+        // 如果注入方法的某个参数标记了 `@InjectReturnValue`，则传递 `returnValue` 到该参数（目标方法没有返回值时，`returnValue` 的值为 `null`）
+        // 注入方法的余下参数按顺序传递到目标方法，其数量可以少于或等于目标方法的参数数量，但类型必须按顺序匹配
         // 不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
 
         val codeInjector = codeInjectors[codeInjectorId]
@@ -52,23 +54,29 @@ object CodeInjectorScope {
         val injectMethodInfo = codeInjector.getUserData(injectMethodInfosKey)?.get(methodId)
             ?: throw IllegalStateException("Cannot found inject method info with method id '$methodId'")
         val method = injectMethodInfo.method
-        val actualArgsSize = method.parameterCount
-        val finalArgs = when (actualArgsSize) {
-            args.size -> args
-            else -> {
-                buildList {
-                    if (injectMethodInfo.hasReceiver) {
-                        add(target)
+
+        val parameters: Array<Parameter> = method.parameters
+        val actualArgsSize = parameters.size
+        val finalArgs = arrayOfNulls<Any?>(actualArgsSize)
+
+        var argIndex = 0
+        for (i in 0 until actualArgsSize) {
+            when {
+                injectMethodInfo.hasReceiver && i == 0 -> {
+                    finalArgs[i] = target
+                }
+                injectMethodInfo.returnValueParameterIndex == i -> {
+                    finalArgs[i] = returnValue
+                }
+                else -> {
+                    if (argIndex >= args.size) {
+                        throw IllegalStateException("Cannot bind args for inject method '${method.name}': argIndex out of bounds ($argIndex >= ${args.size})")
                     }
-                    addAll(args)
-                    if (size < actualArgsSize) {
-                        add(returnValue)
-                    }
-                }.toTypedArray()
+                    finalArgs[i] = args[argIndex]
+                    argIndex++
+                }
             }
         }
-        val finalArgsSize = finalArgs.size
-        if (finalArgsSize != actualArgsSize) throw IllegalStateException("FInal args size != actual args size ($finalArgsSize != ${actualArgsSize})")
         try {
             return method.invoke(codeInjector, *finalArgs)
         } catch (e: InvocationTargetException) {

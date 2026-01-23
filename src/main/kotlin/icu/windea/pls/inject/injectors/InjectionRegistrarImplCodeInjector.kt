@@ -8,6 +8,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 
@@ -21,7 +22,7 @@ class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
     // 用于在创建或者重新解析注入的PSI文件时，进行额外的处理
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
-    fun cacheEverything(place: Place, documentWindow: Any, viewProvider: Any, psiFile: PsiFile, returnValue: Boolean): Boolean {
+    fun cacheEverything(place: Place, documentWindow: Any, viewProvider: Any, psiFile: PsiFile, @InjectReturnValue returnValue: Boolean): Boolean {
         runCatchingCancelable {
             InjectedFileProcessor.EP_NAME.extensionList.process { it.process(psiFile) }
         }
