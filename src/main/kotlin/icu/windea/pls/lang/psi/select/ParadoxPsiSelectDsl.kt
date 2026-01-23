@@ -30,10 +30,10 @@ fun <R> selectScope(scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(), bloc
 }
 
 // NOTE 2.1.1 cannot be inline or runtime ClassCastException
-@ParadoxPsiSelectDsl
-fun <T : PsiElement, R> T.select(scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(), block: context(ParadoxPsiSelectScope) T.() -> R): R {
-    return block.invoke(scope, this@select)
-}
+// @ParadoxPsiSelectDsl
+// fun <T : PsiElement, R> T.select(scope: ParadoxPsiSelectScope = ParadoxPsiSelectScope(), block: context(ParadoxPsiSelectScope) T.() -> R): R {
+//     return block.invoke(scope, this@select)
+// }
 
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl

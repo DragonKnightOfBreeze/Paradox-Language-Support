@@ -66,7 +66,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
             val matched = localeIdFromFileName?.let { it == locale.id }
             val lookupElement = LookupElementBuilder.create(element, locale.id)
                 .withIcon(PlsIcons.Nodes.LocalisationLocale)
-                .withTailText(locale.text)
+                .withTailText(" " + locale.text) // 前面需要加一个空格
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(insertHandler)
                 .letIf(matched == false) {
