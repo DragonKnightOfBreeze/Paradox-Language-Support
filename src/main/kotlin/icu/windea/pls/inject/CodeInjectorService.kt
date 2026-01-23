@@ -25,7 +25,10 @@ class CodeInjectorService : Disposable {
 
     fun init() {
         if (!PlsFacade.isUnitTestMode()) {
-            application.putUserData(CodeInjectorScope.applyInjectionMethodKey, CodeInjectorScope.javaClass.methods.first { it.name == "applyInjection" })
+            application.putUserData(
+                CodeInjectorScope.applyInjectionMethodKey,
+                CodeInjectorScope.javaClass.methods.first { it.name == "applyInjection" && it.parameterCount == 6 }
+            )
         }
 
         CodeInjectorScope.classPool = CodeInjectorScope.getClassPool()

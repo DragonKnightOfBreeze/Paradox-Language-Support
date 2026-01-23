@@ -8,11 +8,13 @@ import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
+import icu.windea.pls.inject.annotations.InjectSuperMethod
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassPool
 import javassist.CtClass
 import javassist.CtField
 import javassist.CtMethod
+import javassist.CtNewMethod
 import javassist.Modifier
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.extensionReceiverParameter
@@ -54,7 +56,8 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val hasReceiver = function.extensionReceiverParameter != null
 
             val returnValueParameterIndex = method.parameters.indexOfFirst { it.isAnnotationPresent(InjectReturnValue::class.java) }
-            val injectMethodInfo = InjectMethodInfo(method, name, pointer, static, hasReceiver, returnValueParameterIndex)
+            val superMethodParameterIndex = method.parameters.indexOfFirst { it.isAnnotationPresent(InjectSuperMethod::class.java) }
+            val injectMethodInfo = InjectMethodInfo(method, name, pointer, static, hasReceiver, returnValueParameterIndex, superMethodParameterIndex)
             injectMethodInfos.put(methodId, injectMethodInfo)
             index++
         }
@@ -73,6 +76,8 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                 continue
             }
 
+            ensureSuperMethodBridgeMethod(targetClass, targetMethod, methodId, injectMethodInfo)
+
             val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
             val returnValueArg = when (injectMethodInfo.pointer) {
                 InjectMethod.Pointer.AFTER, InjectMethod.Pointer.AFTER_FINALLY -> "\$_"
@@ -84,7 +89,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             // - com.intellij.openapi.progress.ProcessCanceledException
             // - icu.windea.pls.inject.ContinueInvocationException
 
-            val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
+            val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg, null"
             val expr = when {
                 PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorScope.applyInjection($exprArgs)"
                 else -> "(\$r) __applyInjectionMethod__.invoke(null, new Object[] { $exprArgs })"
@@ -104,11 +109,19 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                 }
             }
             """.trimIndent()
-            when (injectMethodInfo.pointer) {
-                InjectMethod.Pointer.BODY -> targetMethod.setBody(injectedCode)
-                InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(injectedCode)
-                InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(injectedCode, false, targetMethod.declaringClass.isKotlin)
-                InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(injectedCode, true, targetMethod.declaringClass.isKotlin)
+            try {
+                when (injectMethodInfo.pointer) {
+                    InjectMethod.Pointer.BODY -> targetMethod.setBody(injectedCode)
+                    InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(injectedCode)
+                    InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(injectedCode, false, targetMethod.declaringClass.isKotlin)
+                    InjectMethod.Pointer.AFTER_FINALLY -> targetMethod.insertAfter(injectedCode, true, targetMethod.declaringClass.isKotlin)
+                }
+            } catch (e: Exception) {
+                throw IllegalStateException(
+                    "Cannot compile injected code for '${targetClass.name}#${targetMethod.name}' (inject method: '${injectMethodInfo.method.name}', pointer: '${injectMethodInfo.pointer}')\n" +
+                        injectedCode,
+                    e
+                )
             }
         }
     }
@@ -121,6 +134,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             for (i in 0 until parameterCount) {
                 if (injectMethodInfo.hasReceiver && i == 0) continue
                 if (injectMethodInfo.returnValueParameterIndex == i) continue
+                if (injectMethodInfo.superMethodParameterIndex == i) continue
                 add(injectMethodInfo.method.parameterTypes[i])
             }
         }
@@ -143,6 +157,30 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             true
         }
         return ctMethods.firstOrNull()
+    }
+
+    private fun ensureSuperMethodBridgeMethod(targetClass: CtClass, targetMethod: CtMethod, methodId: String, injectMethodInfo: InjectMethodInfo) {
+        if (injectMethodInfo.superMethodParameterIndex < 0) return
+        if (Modifier.isStatic(targetMethod.modifiers)) return
+
+        val superClass = targetClass.superclass ?: return
+        val superMethodExists = runCatchingCancelable {
+            superClass.getMethod(targetMethod.name, targetMethod.signature)
+        }.isSuccess
+        if (!superMethodExists) return
+
+        val bridgeName = "__pls_super_${targetMethod.name}_$methodId"
+        if (targetClass.declaredMethods.any { it.name == bridgeName }) return
+
+        val returnTypeText = targetMethod.returnType.name
+        val parameterText = targetMethod.parameterTypes.mapIndexed { index, type -> "${type.name} p$index" }.joinToString(", ")
+        val bodyText = if (targetMethod.returnType == CtClass.voidType) {
+            "{ super.${targetMethod.name}(\$\$); }"
+        } else {
+            "{ return super.${targetMethod.name}(\$\$); }"
+        }
+        val code = "public $returnTypeText $bridgeName($parameterText) $bodyText"
+        targetClass.addMethod(CtNewMethod.make(code, targetClass))
     }
 
     private fun isParameterCompatible(injectParameterType: Class<*>, targetParameterType: CtClass, classPool: ClassPool): Boolean {

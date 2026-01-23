@@ -10,4 +10,5 @@ data class InjectMethodInfo(
     val static: Boolean,
     val hasReceiver: Boolean,
     val returnValueParameterIndex: Int,
+    val superMethodParameterIndex: Int,
 )
