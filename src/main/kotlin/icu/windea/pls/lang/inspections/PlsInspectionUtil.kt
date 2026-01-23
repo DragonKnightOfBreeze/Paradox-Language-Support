@@ -4,8 +4,6 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions

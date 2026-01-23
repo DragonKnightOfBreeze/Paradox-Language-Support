@@ -2,10 +2,10 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiPolyVariantReference

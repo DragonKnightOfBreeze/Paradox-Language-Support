@@ -3,10 +3,10 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.cwt.psi.CwtProperty
