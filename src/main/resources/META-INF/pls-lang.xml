@@ -294,6 +294,8 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$ResourceIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EconomicCategoryIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$GameConceptIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EventNamespaceIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EventIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$SpriteIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextColorIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextIconIndex"/>

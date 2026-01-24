@@ -43,6 +43,20 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     }
 
     /**
+     * @see ParadoxDefinitionIndexConstraint.EventNamespace
+     */
+    class EventNamespaceIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForEventNamespace
+    }
+
+    /**
+     * @see ParadoxDefinitionIndexConstraint.Event
+     */
+    class EventIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForEvent
+    }
+
+    /**
      * @see ParadoxDefinitionIndexConstraint.Sprite
      */
     class SpriteIndex : BaseIndex() {

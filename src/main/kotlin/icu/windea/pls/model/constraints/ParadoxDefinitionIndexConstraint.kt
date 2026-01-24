@@ -7,13 +7,15 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 enum class ParadoxDefinitionIndexConstraint(
     override val indexKey: StubIndexKey<String, ParadoxScriptDefinitionElement>,
-    val definitionType: String? = null,
+    val definitionType: String,
     override val ignoreCase: Boolean = false,
     override val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
     Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.resource),
     EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.economicCategory),
     GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.gameConcept),
+    EventNamespace(PlsIndexKeys.DefinitionNameForEventNamespace, ParadoxDefinitionTypes.eventNamespace),
+    Event(PlsIndexKeys.DefinitionNameForEvent, ParadoxDefinitionTypes.event),
     Sprite(PlsIndexKeys.DefinitionNameForSprite, ParadoxDefinitionTypes.sprite),
     TextColor(PlsIndexKeys.DefinitionNameForTextColor, ParadoxDefinitionTypes.textColor),
     TextIcon(PlsIndexKeys.DefinitionNameForTextIcon, ParadoxDefinitionTypes.textIcon),

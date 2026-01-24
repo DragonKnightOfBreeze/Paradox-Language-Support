@@ -20,6 +20,8 @@ object PlsIndexKeys {
 
     val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.resource")
     val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.economicCategory")
+    val DefinitionNameForEventNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.eventNamespace")
+    val DefinitionNameForEvent = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.event")
     val DefinitionNameForGameConcept = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.gameConcept")
     val DefinitionNameForSprite = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.sprite")
     val DefinitionNameForTextColor = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.textColor")
