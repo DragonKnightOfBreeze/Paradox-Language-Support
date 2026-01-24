@@ -1,0 +1,6 @@
+l_english:
+ escape_none:0 "text"
+ escape_line_breaks:0 "text\rtext\ntext\r\ntext"
+ escape_invalid:0 "text\1text\_text"
+ escape_special_characters:0 "text\§text\$text\[text[[text\£text\#text\@text"
+ escape_special:0 "text \§Rtext\§! \$KEY\$ \[GetName] [[GetName] \£unity\£"

@@ -29,6 +29,8 @@ class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt",
     @Test
     fun empty() = doTest(true)
     @Test
+    fun escapes() = doTest(true)
+    @Test
     fun only_comments() = doTest(true)
     @Test
     fun mixed_members() = doTest(true)

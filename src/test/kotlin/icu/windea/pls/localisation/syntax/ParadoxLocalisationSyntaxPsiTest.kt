@@ -26,6 +26,8 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun advanced_combined() = doTest(true)
     @Test
     fun empty() = doTest(true)
+    // @Test
+    // fun escapes() = doTest(true)
     @Test
     fun error_unclosed_quote() = doTest(true)
     @Test
