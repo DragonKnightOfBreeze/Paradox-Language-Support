@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 
 class InsertMissingTokenFix(
     private val token: String,
-    private val caretOffset: Int
+    private val offset: Int
 ) : IntentionAction, DumbAware {
     override fun getText() = IdeBundle.message("quickfix.text.insert.0", token)
 
@@ -20,8 +20,8 @@ class InsertMissingTokenFix(
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile) = true
 
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        editor.caretModel.moveToOffset(caretOffset)
-        editor.document.insertString(caretOffset, token)
+        editor.document.insertString(offset, token)
+        editor.caretModel.moveToOffset(offset)
     }
 
     override fun startInWriteAction() = true

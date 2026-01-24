@@ -6,11 +6,11 @@ import com.intellij.psi.tree.IElementType
 
 class ParadoxLocalisationTextLiteralLexer(
     originalLiteralToken: IElementType
-) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$£§#", false, false) {
+) : StringLiteralLexer(NO_QUOTE_CHAR, originalLiteralToken, false, "$£§[#@", false, false) {
     override fun getTokenType(): IElementType? {
         if (myStart >= myEnd) return null
 
-        // handle double left brackets '[['
+        // handle double left brackets `[[`
         if (myStart < myBufferEnd - 1 && myBuffer[myStart] == '[' && myBuffer[myStart + 1] == '[') {
             return StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN
         }
@@ -30,7 +30,7 @@ class ParadoxLocalisationTextLiteralLexer(
     private fun locateToken() {
         if (myEnd != myBufferEnd) return
 
-        // handle double left brackets '[['
+        // handle double left brackets `[[`
         var i = myStart
         if (i < myBufferEnd - 1 && myBuffer[i] == '[' && myBuffer[i + 1] == '[') {
             myEnd = i + 2

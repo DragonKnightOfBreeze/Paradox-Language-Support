@@ -23,7 +23,7 @@ class CwtBasicAnnotator : Annotator {
         // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
-                .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
+                .withFix(InsertStringFix(element, PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
 

@@ -51,13 +51,13 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         yybegin(nextState);
     }
 
-    private boolean isReference() {
+    private boolean isParameter() {
         if (yylength() <= 1) return false;
         return yycharat(yylength() - 1) == '$';
     }
 
     private IElementType checkParameter() {
-        if (isReference()) {
+        if (isParameter()) {
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
             return PARAMETER_START;
@@ -88,7 +88,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private boolean isCommand() {
         if (yylength() <= 1) return false;
-        return yycharat(yylength() - 1) != '['; // not double brackets
+        return yycharat(yylength() - 1) != '['; // double brackets -> escaped
     }
 
     private IElementType checkCommand() {
@@ -197,7 +197,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 BLANK=\s+
 
-PLAIN_TEXT_TOKEN=[^§£\$\[\]#@]+
+PLAIN_TEXT_TOKEN=([^§£\$\[\]#@]|\\[\s\S])+
 ARGUMENT_TOKEN=[^\"§£\$\[\]\r\n\\]+ // pipe is allowed?
 
 COLORFUL_TEXT_CHECK=§.?
