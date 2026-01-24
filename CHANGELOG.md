@@ -4,19 +4,20 @@
 
 ## 2.1.2
 
-- [x] 修复：修复 Steam 路径缓存未被正确预加载的回归 BUG
-- [x] 修复：修复无法正确识别文件定义的成员的回归 BUG
-- [x] 修复：修复无法正确识别 `sprite` 的相关图片的回归 BUG
-- [x] 修复：修复涉及索引的表达式可能无法被正确匹配与解析的回归 BUG
-- [x] 修复：避免渲染（数据库对象表达式中）存在递归的本地化文本时的 SOF
-- [x] 修复：重命名文件后，文件信息（如定义的快速文档中的）不会正确更新
-- [x] 修复：修复对于对应多个 PSI 引用的脚本表达式（如 `religion:catholic`），光标位置的用法高亮可能不正确的问题
-- [x] 修复：修复未正确识别动态的规则上下文的回归 BUG #271
-- [x] 优化：优化插件的设置页面（排序子页面，规范化提示和注释，区分出扩展的设置页面）
-- [x] 优化：优化内嵌提示的渲染效果
-- [x] 优化：对于基于规则数据的功能，尽可能地预先检查规则数据是否已加载完毕（目前包括：代码检查，引用解析）
-- [ ] 其他优化与BUG修复
-- [ ] 性能分析与优化
+- [x] 同步规则文件 / Synchronize config files
+- [x] 修复：修复 Steam 路径缓存未被正确预加载的回归 BUG / FIX: Fixed a regression bug that the Steam path cache was not preloaded correctly
+- [x] 修复：修复无法正确识别文件定义的成员的回归 BUG / FIX: Fixed a regression bug that members defined in a file could not be correctly recognized
+- [x] 修复：修复无法正确识别 `sprite` 的相关图片的回归 BUG / FIX: Fixed a regression bug that could not correctly identify images related to `sprite`
+- [x] 修复：修复涉及索引的表达式可能无法被正确匹配与解析的回归 BUG / FIX: Fixed a regression bug that expressions involving indexes may not be correctly matched and parsed
+- [x] 修复：避免渲染（数据库对象表达式中）存在递归的本地化文本时的 SOF / FIX: Avoided a SOF that occurred when rendering localisation text in database object expressions
+- [x] 修复：重命名文件后，文件信息（如定义的快速文档中的）不会正确更新 / FIX: Fixed a bug that file information (e.g., in quick doc) was not updated correctly after renaming a file
+- [x] 修复：修复对于对应多个 PSI 引用的表达式（如 `religion:catholic`），光标位置的用法高亮可能不正确的问题 / FIX: Fixed a bug that the usage highlight at cursor position may be incorrect for expressions that were resolved to multiple PSI references (e.g., `religion:catholic`)
+- [x] 修复：修复未正确识别动态的规则上下文的回归 BUG #271 / FIX: Fixed a regression bug that dynamic config contexts were not correctly identified
+- [x] 优化：优化插件的设置页面（排序子页面，规范化提示和注释，区分出扩展的设置页面） / OP: Optimize the plugin settings page (sort subpages, normalize tips and comments, separate extensions settings pages)
+- [x] 优化：优化内嵌提示的渲染效果 / OP: Optimize the rendering of inlay hints
+- [x] 优化：对于基于规则数据的功能，尽可能地预先检查规则数据是否已加载完毕（目前包括：代码检查，引用解析） / OP: For config-data-based features, Pre-check if the config data has been fully initialized when possible (Currently include: code inspections, reference resolving)
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
+- [x] 性能分析与优化 / Performance analysis and optimization
 
 ## 2.1.1
 
