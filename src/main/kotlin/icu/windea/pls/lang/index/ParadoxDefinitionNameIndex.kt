@@ -36,12 +36,17 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     }
 
     /**
-     * 用于快速索引游戏概念的名字（其定义类型为 `game_concept`）。
-     *
      * @see ParadoxDefinitionIndexConstraint.GameConcept
      */
     class GameConceptIndex : BaseIndex() {
         override fun getKey() = PlsIndexKeys.DefinitionNameForGameConcept
+    }
+
+    /**
+     * @see ParadoxDefinitionIndexConstraint.Sprite
+     */
+    class SpriteIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForSprite
     }
 
     /**

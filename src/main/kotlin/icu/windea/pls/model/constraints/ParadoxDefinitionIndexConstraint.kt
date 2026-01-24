@@ -14,6 +14,7 @@ enum class ParadoxDefinitionIndexConstraint(
     Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.resource),
     EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.economicCategory),
     GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.gameConcept),
+    Sprite(PlsIndexKeys.DefinitionNameForSprite, ParadoxDefinitionTypes.sprite),
     TextColor(PlsIndexKeys.DefinitionNameForTextColor, ParadoxDefinitionTypes.textColor),
     TextIcon(PlsIndexKeys.DefinitionNameForTextIcon, ParadoxDefinitionTypes.textIcon),
     TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ParadoxDefinitionTypes.textFormat, ignoreCase = true),
