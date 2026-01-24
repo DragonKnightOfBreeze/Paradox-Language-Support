@@ -25,22 +25,19 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
 object PlsIndexService {
     // region FileBasedIndex Methods
 
-    fun <K, V> processFilesWithKeys(
+     fun <K, V> processFiles(
         indexId: ID<K, V>,
         keys: Collection<K>,
+        project: Project,
         scope: GlobalSearchScope,
         processor: Processor<in VirtualFile>,
     ): Boolean {
-        ProgressManager.checkCanceled()
         if (SearchScope.isEmptyScope(scope)) return true
+        if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
+
         val finalKeys = getKeysOrAllKeys(indexId, keys, scope)
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, finalKeys, scope, null, null, processor)
-    }
-
-    private fun <K, V> getKeysOrAllKeys(indexId: ID<K, V>, keys: Collection<K>, scope: GlobalSearchScope): Collection<K> {
-        if (keys.isNotEmpty()) return keys
-        val project = scope.project ?: return emptySet()
-        return FileBasedIndex.getInstance().getAllKeys(indexId, project)
     }
 
     fun <T> processAllFileData(
@@ -51,8 +48,10 @@ object PlsIndexService {
         gameType: ParadoxGameType?,
         processor: (file: VirtualFile, fileData: Map<String, T>) -> Boolean
     ): Boolean {
-        ProgressManager.checkCanceled()
         if (SearchScope.isEmptyScope(scope)) return true
+        if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
+
         val index = findFileBasedIndex(indexType)
         val indexId = index.name
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
@@ -73,8 +72,10 @@ object PlsIndexService {
         gameType: ParadoxGameType?,
         processor: (file: VirtualFile, infos: List<T>) -> Boolean
     ): Boolean {
-        ProgressManager.checkCanceled()
         if (SearchScope.isEmptyScope(scope)) return true
+        if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
+
         val index = findFileBasedIndex(ParadoxMergedIndex::class.java)
         val indexId = index.name
         val key = indexInfoType.id.toString()
@@ -88,6 +89,22 @@ object PlsIndexService {
             if (infos.isNullOrEmpty()) return@p true
             processor(file, infos)
         }
+    }
+
+     fun <K, V> processFilesWithKeys(
+        indexId: ID<K, V>,
+        keys: Collection<K>,
+        scope: GlobalSearchScope,
+        processor: Processor<in VirtualFile>,
+    ): Boolean {
+        val finalKeys = getKeysOrAllKeys(indexId, keys, scope)
+        return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, finalKeys, scope, null, null, processor)
+    }
+
+    private fun <K, V> getKeysOrAllKeys(indexId: ID<K, V>, keys: Collection<K>, scope: GlobalSearchScope): Collection<K> {
+        if (keys.isNotEmpty()) return keys
+        val project = scope.project ?: return emptySet()
+        return FileBasedIndex.getInstance().getAllKeys(indexId, project)
     }
 
     // endregion
@@ -106,7 +123,9 @@ object PlsIndexService {
         scope: GlobalSearchScope,
         crossinline processor: (T) -> Boolean
     ): Boolean {
+        if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
 
         return StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
             ProgressManager.checkCanceled()
@@ -128,7 +147,9 @@ object PlsIndexService {
         crossinline keyPredicate: (key: K) -> Boolean = { true },
         crossinline processor: (key: K, element: T) -> Boolean
     ): Boolean {
+        if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
 
         // #241 try to avoid:
         // java.lang.IllegalStateException: Nesting processElements call under other stub index operation can lead to a deadlock.
@@ -166,7 +187,9 @@ object PlsIndexService {
         crossinline resetDefaultValue: () -> Unit = {},
         crossinline processor: (element: T) -> Boolean
     ): Boolean {
+        if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
+        ProgressManager.checkCanceled()
 
         // #241 try to avoid:
         // java.lang.IllegalStateException: Nesting processElements call under other stub index operation can lead to a deadlock.

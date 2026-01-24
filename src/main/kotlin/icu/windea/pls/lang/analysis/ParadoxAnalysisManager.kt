@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
@@ -192,6 +193,7 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+        if (DumbService.isDumb(project)) return null // NOTE 2.1.2 incase index not ready
         val cachedLocaleConfig = with(dataService) { file.cachedLocaleConfig ?: LazyValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it } }
         return cachedLocaleConfig.initialize {
             runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
@@ -280,16 +282,18 @@ object ParadoxAnalysisManager {
         if (from is CwtLocaleConfig) return from
         if (from is VirtualFile) ParadoxAnalysisInjector.getInjectedLocaleConfig(from)?.let { return it }
         return when {
+            from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
             from is ParadoxLocaleAwareStub<*> -> {
-                val element = from.containingFileStub?.psi ?: return null
                 val id = from.locale ?: return null
-                ParadoxLocaleManager.getLocaleConfigById(element, id)
+                val project = from.containingFileStub?.psi?.project ?: return null
+                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
             }
             from is ParadoxLocalisationLocale -> {
                 val id = runReadActionSmartly { from.name }
-                ParadoxLocaleManager.getLocaleConfigById(from, id)
+                val project = from.project
+                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
             }
             from is StubBasedPsiElementBase<*> -> {
                 val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }

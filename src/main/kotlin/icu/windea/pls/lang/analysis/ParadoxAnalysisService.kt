@@ -95,7 +95,10 @@ object ParadoxAnalysisService {
     fun resolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         val indexId = PlsIndexKeys.FileLocale
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-        val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
-        return localeConfig
+        return resolveLocaleConfigById(localeId, project)
+    }
+
+    fun resolveLocaleConfigById(id: String, project: Project): CwtLocaleConfig? {
+        return PlsFacade.getConfigGroup(project).localisationLocalesById.get(id)
     }
 }

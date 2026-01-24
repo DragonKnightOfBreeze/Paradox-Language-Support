@@ -89,8 +89,4 @@ object ParadoxLocaleManager {
         val locale = getLocaleConfig(id, withAuto = true)
         return locale
     }
-
-    fun getLocaleConfigById(element: PsiElement, id: String): CwtLocaleConfig? {
-        return PlsFacade.getConfigGroup(element.project).localisationLocalesById.get(id)
-    }
 }

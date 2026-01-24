@@ -43,10 +43,10 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (PlsStates.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
-        if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         if (project.isDefault) return
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
+        if (SearchScope.isEmptyScope(scope)) return
 
         when (queryParameters.type) {
             ParadoxScriptedVariableType.Local -> {

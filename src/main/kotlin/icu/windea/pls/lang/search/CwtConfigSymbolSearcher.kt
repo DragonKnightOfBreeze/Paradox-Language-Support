@@ -28,7 +28,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
 
         val indexId = PlsIndexKeys.ConfigSymbol
         val keys = types
-        PlsIndexService.processFilesWithKeys(indexId, keys, scope) p@{ file ->
+        PlsIndexService.processFiles(indexId, keys, project, scope) p@{ file ->
             ProgressManager.checkCanceled()
             // check game type at file level
             if (gameType != null) {
