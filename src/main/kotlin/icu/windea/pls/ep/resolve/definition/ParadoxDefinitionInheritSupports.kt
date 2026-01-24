@@ -65,33 +65,43 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
 
     override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
-        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs) ?: return null
+        if (definitionInfo.type != T.event) return null
+        val data = getData(definitionInfo) ?: return null
+        val baseName = data.base
+        if (baseName.isNullOrEmpty()) return null
+        val subtypeConfigs = definitionInfo.subtypeConfigs // NOTE 2.1.2 有一定的耗时，因此延后获取
+        if (subtypeConfigs.none { it.name == "inherited" }) return null
+
         return getSuperDefinition(definitionInfo, baseName, definitionInfo.subtypeConfigs)
     }
 
     override fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs)
-        if (baseName == null) return null
+        if (definitionInfo.type != T.event) return null
+        val data = getData(definitionInfo) ?: return null
+        val baseName = data.base
+        if (baseName.isNullOrEmpty()) return null
+        val subtypeConfigs = definitionInfo.subtypeConfigs // NOTE 2.1.2 有一定的耗时，因此延后获取
+        if (subtypeConfigs.none { it.name == "inherited" }) return null
+
         return ParadoxModificationTrackers.ScriptFile("events/**/*.txt") // 任意事件脚本文件
     }
 
     override fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean {
-        val baseName = getBaseName(definitionInfo, subtypeConfigs) ?: return true
+        if (definitionInfo.type != T.event) return true
+        val data = getData(definitionInfo) ?: return true
+        val baseName = data.base
+        if (baseName.isNullOrEmpty()) return true
+        if (subtypeConfigs.none { it.name == "inherited" }) return true
+
         val superDefinition = getSuperDefinition(definitionInfo, baseName, subtypeConfigs) ?: return true
         val superDefinitionInfo = superDefinition.definitionInfo ?: return true
         superDefinitionInfo.subtypeConfigs.filterTo(subtypeConfigs) { it in CwtSubtypeGroup.EventAttribute }
-        val clearData = getData(definitionInfo)?.triggerClear ?: false
-        if (clearData) {
-            subtypeConfigs.removeIf { it.name == "triggered" }
-        }
+        if (data.triggerClear) subtypeConfigs.removeIf { it.name == "triggered" }
         return false
     }
 
-    private fun getBaseName(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: List<CwtSubtypeConfig>): String? {
-        if (definitionInfo.type != T.event) return null
-        if (subtypeConfigs.none { it.name == "inherited" }) return null
-        val data = getData(definitionInfo) ?: return null
-        return data.base
+    private fun getData(definitionInfo: ParadoxDefinitionInfo): StellarisEventData? {
+        return definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true)
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxScriptDefinitionElement? {
@@ -111,8 +121,6 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         }
         return result
     }
-
-    private fun getData(definitionInfo: ParadoxDefinitionInfo) = definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true)
 
     // TODO 2.0.7+ （按条件）使用父事件的标题、描述和图片
 
