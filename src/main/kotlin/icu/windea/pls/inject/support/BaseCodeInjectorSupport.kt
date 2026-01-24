@@ -134,9 +134,9 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         ctMethods = ctMethods.filter { ctMethod ->
             for (i in 0 until argSize) {
                 val r = runCatchingCancelable {
-                    val injectParameterType = normalParameterTypes[i]
+                    val parameterType = normalParameterTypes[i]
                     val targetParameterType = ctMethod.parameterTypes[i]
-                    isParameterCompatible(injectParameterType, targetParameterType, classPool)
+                    isParameterCompatible(parameterType, targetParameterType, classPool)
                 }.getOrElse { false }
                 if (!r) return@filter false
             }
@@ -145,40 +145,26 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         return ctMethods.firstOrNull()
     }
 
-    private fun isParameterCompatible(injectParameterType: Class<*>, targetParameterType: CtClass, classPool: ClassPool): Boolean {
+    private fun isParameterCompatible(parameterType: Class<*>, targetParameterType: CtClass, classPool: ClassPool): Boolean {
+        val expectedParameterType = classPool.get(parameterType.name)
+        if (targetParameterType.name == expectedParameterType.name) return true
+        if (targetParameterType.subclassOf(expectedParameterType)) return true
+
         if (targetParameterType.isPrimitive) {
-            val wrapperType = getPrimitiveWrapperType(targetParameterType) ?: return false
-            return if (injectParameterType.isPrimitive) {
-                getPrimitiveWrapperType(injectParameterType) == wrapperType
+            val targetWrapperType = getPrimitiveWrapperType(targetParameterType) ?: return false
+            return if (expectedParameterType.isPrimitive) {
+                getPrimitiveWrapperType(expectedParameterType) == targetWrapperType
             } else {
-                injectParameterType.isAssignableFrom(wrapperType)
+                classPool.get(targetWrapperType.name).subclassOf(expectedParameterType)
             }
         }
 
-        if (injectParameterType.isPrimitive) {
-            val wrapperType = getPrimitiveWrapperType(injectParameterType) ?: return false
-            val wrapperCtClass = classPool.get(wrapperType.name)
-            return targetParameterType.subclassOf(wrapperCtClass)
+        if (expectedParameterType.isPrimitive) {
+            val expectedWrapperType = getPrimitiveWrapperType(expectedParameterType) ?: return false
+            return targetParameterType.subclassOf(classPool.get(expectedWrapperType.name))
         }
 
-        val expectedCtClass = classPool.get(injectParameterType.name)
-        return targetParameterType.subclassOf(expectedCtClass)
-    }
-
-    @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-    private fun getPrimitiveWrapperType(type: Class<*>): Class<*>? {
-        return when (type) {
-            java.lang.Boolean.TYPE -> java.lang.Boolean::class.java
-            java.lang.Byte.TYPE -> java.lang.Byte::class.java
-            java.lang.Character.TYPE -> java.lang.Character::class.java
-            java.lang.Double.TYPE -> java.lang.Double::class.java
-            java.lang.Float.TYPE -> java.lang.Float::class.java
-            java.lang.Integer.TYPE -> java.lang.Integer::class.java
-            java.lang.Long.TYPE -> java.lang.Long::class.java
-            java.lang.Short.TYPE -> java.lang.Short::class.java
-            java.lang.Void.TYPE -> java.lang.Void::class.java
-            else -> null
-        }
+        return false
     }
 
     @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")

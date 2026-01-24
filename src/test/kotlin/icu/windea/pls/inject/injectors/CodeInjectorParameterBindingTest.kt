@@ -16,7 +16,7 @@ import org.junit.runners.JUnit4
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 
-@Suppress("unused", "RedundantSuspendModifier")
+@Suppress("unused")
 @RunWith(JUnit4::class)
 class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     private companion object {
@@ -25,6 +25,10 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
         const val TARGET_MORE_ARGS = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetMoreArgs"
         const val TARGET_MISMATCH_TYPES = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetMismatchTypes"
         const val TARGET_SUSPEND = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetSuspend"
+        const val TARGET_BOXED_TARGET_PRIMITIVE_INJECT = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetBoxedTargetPrimitiveInject"
+        const val TARGET_PRIMITIVE_TARGET_BOXED_INJECT = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetPrimitiveTargetBoxedInject"
+        const val TARGET_ARRAY_INT = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetArrayInt"
+        const val TARGET_ARRAY_OBJECT = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetArrayObject"
     }
 
     override fun setUp() {
@@ -168,6 +172,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
         assertEquals(5, method.invoke(instance, 2, 3))
     }
 
+    @Suppress("RedundantSuspendModifier")
     @Test
     fun test_suspendTarget_and_suspendInjectMethod() {
         makeTargetClass(
@@ -200,5 +205,116 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
         val continuation = newNoopContinuation()
         val result = method.invoke(instance, 2, 3, continuation)
         assertEquals(-1, (result as Number).toInt())
+    }
+
+    @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    @Test
+    fun test_primitiveTarget_boxedInjectMethod_shouldApply() {
+        makeTargetClass(
+            TARGET_PRIMITIVE_TARGET_BOXED_INJECT,
+            listOf(
+                "public int id(int a) { return a; }"
+            )
+        )
+
+        @InjectionTarget(TARGET_PRIMITIVE_TARGET_BOXED_INJECT, pluginId = "icu.windea.pls")
+        class Injector : CodeInjectorBase() {
+            @InjectMethod(value = "id", pointer = InjectMethod.Pointer.BODY)
+            fun id(a: java.lang.Integer): Int {
+                return a.toInt() + 1
+            }
+        }
+
+        val injector = Injector()
+        injector.inject()
+        registerInjector(injector)
+
+        val clazz = Class.forName(TARGET_PRIMITIVE_TARGET_BOXED_INJECT, false, this::class.java.classLoader)
+        val instance = clazz.getDeclaredConstructor().newInstance()
+        val method = clazz.getMethod("id", Int::class.javaPrimitiveType)
+        assertEquals(2, method.invoke(instance, 1))
+    }
+
+    @Suppress("RemoveRedundantQualifierName", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    @Test
+    fun test_boxedTarget_primitiveInjectMethod_shouldApply() {
+        makeTargetClass(
+            TARGET_BOXED_TARGET_PRIMITIVE_INJECT,
+            listOf(
+                "public int id(java.lang.Integer a) { return a.intValue(); }"
+            )
+        )
+
+        @InjectionTarget(TARGET_BOXED_TARGET_PRIMITIVE_INJECT, pluginId = "icu.windea.pls")
+        class Injector : CodeInjectorBase() {
+            @InjectMethod(value = "id", pointer = InjectMethod.Pointer.BODY)
+            fun id(a: Int): Int {
+                return a + 1
+            }
+        }
+
+        val injector = Injector()
+        injector.inject()
+        registerInjector(injector)
+
+        val clazz = Class.forName(TARGET_BOXED_TARGET_PRIMITIVE_INJECT, false, this::class.java.classLoader)
+        val instance = clazz.getDeclaredConstructor().newInstance()
+        val method = clazz.getMethod("id", java.lang.Integer::class.java)
+        assertEquals(2, method.invoke(instance, 1))
+    }
+
+    @Test
+    fun test_arrayParameter_match_intArray() {
+        makeTargetClass(
+            TARGET_ARRAY_INT,
+            listOf(
+                "public int len(int[] a) { return a == null ? -1 : a.length; }"
+            )
+        )
+
+        @InjectionTarget(TARGET_ARRAY_INT, pluginId = "icu.windea.pls")
+        class Injector : CodeInjectorBase() {
+            @InjectMethod(value = "len", pointer = InjectMethod.Pointer.BODY)
+            fun len(a: IntArray): Int {
+                return if (a.isEmpty()) 0 else a.size + 10
+            }
+        }
+
+        val injector = Injector()
+        injector.inject()
+        registerInjector(injector)
+
+        val clazz = Class.forName(TARGET_ARRAY_INT, false, this::class.java.classLoader)
+        val instance = clazz.getDeclaredConstructor().newInstance()
+        val method = clazz.getMethod("len", IntArray::class.java)
+        assertEquals(13, method.invoke(instance, intArrayOf(1, 2, 3)))
+    }
+
+    @Suppress("BoxArray")
+    @Test
+    fun test_arrayParameter_mismatch_shouldNotApply() {
+        makeTargetClass(
+            TARGET_ARRAY_OBJECT,
+            listOf(
+                "public int len(java.lang.Object[] a) { return a == null ? -1 : a.length; }"
+            )
+        )
+
+        @InjectionTarget(TARGET_ARRAY_OBJECT, pluginId = "icu.windea.pls")
+        class Injector : CodeInjectorBase() {
+            @InjectMethod(value = "len", pointer = InjectMethod.Pointer.BODY)
+            fun len(a: IntArray): Int {
+                return a.size + 10
+            }
+        }
+
+        val injector = Injector()
+        injector.inject()
+        registerInjector(injector)
+
+        val clazz = Class.forName(TARGET_ARRAY_OBJECT, false, this::class.java.classLoader)
+        val instance = clazz.getDeclaredConstructor().newInstance()
+        val method = clazz.getMethod("len", Array<Any>::class.java)
+        assertEquals(3, method.invoke(instance, arrayOf(1, 2, 3)))
     }
 }
