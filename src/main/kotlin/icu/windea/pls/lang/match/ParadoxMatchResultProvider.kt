@@ -45,9 +45,9 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
-private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
 private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
+private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
+private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
@@ -97,10 +97,10 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
-    fun getCached(element: PsiElement, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {
+    fun getCached(element: PsiElement, project: Project, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
-        val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(rootFile))
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
         val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
         return cache.get(cacheKey) { ParadoxMatchResult.LazyIndexAwareMatch(predicate) }
     }
@@ -116,7 +116,7 @@ object ParadoxMatchResultProvider {
             suffixes.isEmpty() -> "${typeExpression}#${expression}"
             else -> "${suffixes.joinToString(",")}#${typeExpression}#${expression}"
         }
-        return getCached(element, key, cacheKey) {
+        return getCached(element, project, key, cacheKey) {
             when {
                 suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
                 else -> suffixes.any { ParadoxMatchProvider.matchesDefinition(element, project, expression + it, typeExpression) }
@@ -134,7 +134,7 @@ object ParadoxMatchResultProvider {
             suffixes.isEmpty() -> expression
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
-        return getCached(element, key, cacheKey) {
+        return getCached(element, project, key, cacheKey) {
             when {
                 suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
                 else -> suffixes.any { ParadoxMatchProvider.matchesLocalisation(element, project, expression + it) }
@@ -152,7 +152,7 @@ object ParadoxMatchResultProvider {
             suffixes.isEmpty() -> expression
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
-        return getCached(element, key, cacheKey) {
+        return getCached(element, project, key, cacheKey) {
             when {
                 suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
                 else -> suffixes.any { ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression + it) }
@@ -167,7 +167,7 @@ object ParadoxMatchResultProvider {
         val pathReference = expression.normalizePath()
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
-        return getCached(element, key, cacheKey) {
+        return getCached(element, project, key, cacheKey) {
             ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
         }
     }
@@ -184,7 +184,7 @@ object ParadoxMatchResultProvider {
         }
         val key = Keys.cacheForComplexEnumValues
         val cacheKey = "${enumName}#${name}"
-        return getCached(element, key, cacheKey) {
+        return getCached(element, project, key, cacheKey) {
             ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
         }
     }
@@ -195,7 +195,7 @@ object ParadoxMatchResultProvider {
 
         val key = Keys.cacheForModifiers
         val cacheKey = name
-        return getCached(element, key, cacheKey) {
+        return getCached(element, configGroup.project, key, cacheKey) {
             ParadoxMatchProvider.matchesModifier(element, configGroup, name)
         }
     }
@@ -207,7 +207,7 @@ object ParadoxMatchResultProvider {
         val template = configExpression.expressionString
         val key = Keys.cacheForTemplates
         val cacheKey = "${template}#${expression}"
-        return getCached(element, key, cacheKey) {
+        return getCached(element, configGroup.project, key, cacheKey) {
             ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template)
         }
     }
