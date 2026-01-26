@@ -46,6 +46,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
             val icon = PlsIcons.Nodes.LocalisationConcept
             run action@{
                 val key = concept.name
+                if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)
@@ -56,6 +57,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
             }
             concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
+                if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)

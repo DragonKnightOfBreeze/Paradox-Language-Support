@@ -38,7 +38,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 
         val definitionInfo = target.definitionInfo
         if (definitionInfo == null) return
-        if (definitionInfo.name.isEmpty()) return // ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return // skip anonymous definitions
         val words = getWords(target, definitionInfo)
         val ignoreCase = ParadoxDefinitionIndexConstraint.entries.filter { it.ignoreCase }.any { it.test(definitionInfo.type) }
 

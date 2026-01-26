@@ -214,7 +214,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxScriptDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
-        if (definitionInfo.name.isEmpty()) return null // ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return null // skip anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")

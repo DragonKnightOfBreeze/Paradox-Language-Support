@@ -119,7 +119,8 @@ object ParadoxModifierManager {
                 val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
                 ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
-                    val name = definition.definitionInfo?.name ?: return@p true
+                    val name = definition.definitionInfo?.name
+                    if (name.isNullOrEmpty()) return@p true
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                     true
                 }

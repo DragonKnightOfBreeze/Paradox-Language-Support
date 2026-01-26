@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigExpressionManager.toRegex
+import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
@@ -20,7 +20,7 @@ object ParadoxConfigExpressionMatchService {
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return false
         val expressionString = expression.unquote()
-        val regex = toRegex(templateExpression)
+        val regex = CwtConfigExpressionManager.toRegex(templateExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return false
         if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
         var i = 1
@@ -28,8 +28,9 @@ object ParadoxConfigExpressionMatchService {
             ProgressManager.checkCanceled()
             if (snippetExpression.type == CwtDataTypes.Constant) continue
             val matchGroup = matchResult.groups.get(i++) ?: return false
-            val referenceName = matchGroup.value
-            val scriptExpression = ParadoxScriptExpression.resolve(referenceName, false)
+            val matchValue = matchGroup.value
+            if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
+            val scriptExpression = ParadoxScriptExpression.resolve(matchValue, false)
             val matched = ParadoxMatchService.matchScriptExpression(element, scriptExpression, snippetExpression, null, configGroup, options).get(options)
             if (!matched) return false
         }

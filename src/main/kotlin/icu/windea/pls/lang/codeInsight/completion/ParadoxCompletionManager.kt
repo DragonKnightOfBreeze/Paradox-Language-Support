@@ -519,7 +519,7 @@ object ParadoxCompletionManager {
         ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
-            if (definitionInfo.name.isEmpty()) return@p true // ignore anonymous definitions
+            if (definitionInfo.name.isEmpty()) return@p true // skip anonymous definitions
 
             // apply extraFilter since it's necessary
             if (context.extraFilter?.invoke(definition) == false) return@p true
@@ -877,7 +877,7 @@ object ParadoxCompletionManager {
     fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
         val definitionInfo = element.definitionInfo ?: return true
-        if (definitionInfo.name.isEmpty()) return true // ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return true // skip anonymous definitions
 
         val name = definitionInfo.name
         val typeFile = element.containingFile

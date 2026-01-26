@@ -119,11 +119,11 @@ object ParadoxEconomicCategoryManager {
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.resource, selector).findAll()
-            .mapTo(mutableSetOf()) { it.name }  // it.name is ok
+            .mapNotNullTo(mutableSetOf()) { it.name.orNull() }  // it.name is ok
     }
 
     private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
-        val parent = data.parent ?: return map
+        val parent = data.parent?.orNull() ?: return map
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()

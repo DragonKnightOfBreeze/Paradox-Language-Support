@@ -52,10 +52,12 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
                     val node = ParadoxTemplateSnippetConstantNode(nodeText, nodeTextRange, configGroup)
                     nodes += node
                 }
-                val referenceExpression = templateExpression.referenceExpressions[i]
-                val nodeText = matchGroup.value
+                val matchValue = matchGroup.value
+                val snippetExpression = templateExpression.referenceExpressions[i]
+                if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return null // skip anonymous definitions
+                val nodeText = matchValue
                 val nodeTextRange = TextRange.from(offset + matchRange.first, nodeText.length)
-                val node = ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, referenceExpression)
+                val node = ParadoxTemplateSnippetNode(nodeText, nodeTextRange, configGroup, snippetExpression)
                 nodes += node
                 startIndex = matchRange.last + 1
             }
