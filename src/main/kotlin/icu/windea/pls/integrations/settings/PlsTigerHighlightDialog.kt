@@ -50,9 +50,6 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
         row {
             comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
         }
-        row {
-            comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment1"))
-        }
         createMapping()
     }
 

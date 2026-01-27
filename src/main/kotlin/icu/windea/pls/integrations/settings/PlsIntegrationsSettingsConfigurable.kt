@@ -32,9 +32,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     comment(PlsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
-                row {
-                    comment(PlsBundle.message("settings.integrations.image.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
-                }
                 // enableTexconv
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.texconv"))
@@ -83,9 +80,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
                 row {
                     comment(PlsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                }
-                row {
-                    comment(PlsBundle.message("settings.integrations.lint.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 // enableTiger
                 row {
