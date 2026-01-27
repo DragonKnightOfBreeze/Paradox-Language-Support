@@ -22,7 +22,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
-import icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener
+import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
@@ -167,7 +167,7 @@ object CwtConfigRepositoryManager {
 
             // 如果需要刷新规则分组数据，则通知规则目录发生变更
             if (updated) {
-                application.messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
+                application.messageBus.syncPublisher(CwtConfigDirectoriesListener.TOPIC).onChange()
             }
         }
     }

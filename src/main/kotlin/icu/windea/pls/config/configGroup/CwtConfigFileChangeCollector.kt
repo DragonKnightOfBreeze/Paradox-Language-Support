@@ -81,7 +81,7 @@ class CwtConfigFileChangeCollector {
             }
             if (configGroupsToChange.isEmpty()) return@f1
             configGroupsToChange.forEach { configGroup -> configGroup.changed = true }
-            configGroupService.updateRefreshFloatingToolbar()
+            configGroupService.updateRefreshStatus()
         }
     }
 }

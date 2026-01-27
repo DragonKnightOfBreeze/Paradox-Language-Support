@@ -13,6 +13,17 @@
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>
 
+  <applicationListeners>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateLibraryOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtUpdateConfigGroupOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.config.listeners.CwtSyncOnConfigRepositoryUrlsChangedListener"
+              topic="icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener"/>
+  </applicationListeners>
+
   <!--ExternalSystem.ProjectRefreshActionGroup-->
   <actions>
     <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">

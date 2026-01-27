@@ -41,6 +41,6 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         }
         if (configGroupsToChange.isEmpty()) return
         configGroupsToChange.forEach { configGroup -> configGroup.changed = true }
-        configGroupService.updateRefreshFloatingToolbar()
+        configGroupService.updateRefreshStatus()
     }
 }

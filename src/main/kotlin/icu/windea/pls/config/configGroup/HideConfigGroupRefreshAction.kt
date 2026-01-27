@@ -36,6 +36,6 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
         configGroups.forEach { configGroup -> configGroup.changed = false }
-        configGroupService.updateRefreshFloatingToolbar()
+        configGroupService.updateRefreshStatus()
     }
 }
