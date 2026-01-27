@@ -8,7 +8,7 @@ import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotific
 import icu.windea.pls.lang.util.PlsDaemonManager
 
 /**
- * 当更改默认游戏目录映射后，需要更新编辑器通知。
+ * 当更改默认游戏目录映射后，更新编辑器通知。
  *
  * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
  */

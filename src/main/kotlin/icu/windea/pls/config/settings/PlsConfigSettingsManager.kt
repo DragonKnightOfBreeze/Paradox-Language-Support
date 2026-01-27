@@ -3,14 +3,14 @@ package icu.windea.pls.config.settings
 import com.intellij.util.application
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener
-import icu.windea.pls.lang.listeners.ParadoxConfigRepositoryUrlsListener
+import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
+import icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener
 
 object PlsConfigSettingsManager {
     fun onConfigDirectoriesChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onConfigDirectoriesChanged")) return
 
-        application.messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
+        application.messageBus.syncPublisher(CwtConfigDirectoriesListener.TOPIC).onChange()
     }
 
     fun onRemoteConfigDirectoriesChanged(callbackLock: CallbackLock) {
@@ -19,7 +19,7 @@ object PlsConfigSettingsManager {
         // NOTE 这里需要先验证是否真的需要刷新
         if (!CwtConfigRepositoryManager.isValidToSync()) return
 
-        application.messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.TOPIC).onChange()
+        application.messageBus.syncPublisher(CwtConfigRepositoryUrlsListener.TOPIC).onChange()
 
         // 等到从远程仓库异步同步完毕后，再通知规则目录发生更改，从而允许刷新规则分组数据
     }

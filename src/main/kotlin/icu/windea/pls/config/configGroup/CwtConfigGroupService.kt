@@ -6,14 +6,15 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgress
+import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
@@ -155,7 +156,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                     ""
                 ).notify(project)
             } else if (e == null) {
-                updateRefreshFloatingToolbar()
+                updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                 }
@@ -189,10 +190,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         return rootFilePaths
     }
 
-    fun updateRefreshFloatingToolbar() {
+    fun updateRefreshStatus() {
         if (project.isDefault) return
-        val provider = FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java)
-        provider.updateToolbarComponents(project)
+        application.messageBus.syncPublisher(CwtConfigGroupRefreshStatusListener.TOPIC).onChange(project)
     }
 
     override fun dispose() {

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.listeners
+package icu.windea.pls.config.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
@@ -10,11 +10,11 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 
 /**
- * 当各类规则分组的启用状态发生变化时，需要更新编辑器通知。
+ * 当各类规则分组的启用状态发生变化时，更新编辑器通知。
  *
  * @see CwtConfigGroupEditorNotificationProvider
  */
-class ParadoxUpdateEditorNotificationsOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+class CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener : CwtConfigDirectoriesListener {
     override fun onChange() {
         EditorNotifications.updateAll()
     }
@@ -25,7 +25,7 @@ class ParadoxUpdateEditorNotificationsOnConfigDirectoriesChangedListener : Parad
  *
  * @see CwtConfigGroupLibrary
  */
-class ParadoxUpdateLibraryOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+class CwtUpdateLibraryOnConfigDirectoriesChangedListener : CwtConfigDirectoriesListener {
     override fun onChange() {
         doUpdate()
     }
@@ -44,7 +44,7 @@ class ParadoxUpdateLibraryOnConfigDirectoriesChangedListener : ParadoxConfigDire
  * @see CwtConfigGroup
  * @see ConfigGroupRefreshFloatingProvider
  */
-class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+class CwtUpdateConfigGroupOnConfigDirectoriesChangedListener : CwtConfigDirectoriesListener {
     override fun onChange() {
         doUpdate()
     }
@@ -55,7 +55,7 @@ class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfig
             val configGroupService = CwtConfigGroupService.getInstance(project)
             val configGroups = configGroupService.getConfigGroups().values
             configGroups.forEach { configGroup -> configGroup.changed = true }
-            configGroupService.updateRefreshFloatingToolbar()
+            configGroupService.updateRefreshStatus()
         }
     }
 }

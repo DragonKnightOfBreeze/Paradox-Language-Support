@@ -28,4 +28,3 @@ class ParadoxDiagramOpenSettingsAction : AnAction(), DumbAware {
         PlsOptionsManager.showSettingsDialog<PlsDiagramSettingsConfigurable>(project)
     }
 }
-
