@@ -1,6 +1,5 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.ide.plugins.PluginManagerConfigurable
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
@@ -15,7 +14,7 @@ import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 import icu.windea.pls.lang.util.PlsDaemonManager
-import icu.windea.pls.lang.util.PlsUiManager
+import icu.windea.pls.lang.util.PlsOptionsManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
@@ -32,18 +31,13 @@ object PlsIntegrationsSettingsManager {
 
     // Translation Tools
 
-    @Suppress("UnstableApiUsage")
     fun installTranslationPlugin() {
-        PlsUiManager.withConfigurable<PluginManagerConfigurable, _> { settings, configurabl ->
-            configurabl.openMarketplaceTab("Translation") // NOTE 这里需要先切换到插件市场分页，并设置查询关键字
-            settings.select(configurabl)
-        }
+        // NOTE 这里需要先切换到插件市场分页，并设置查询关键字
+        PlsOptionsManager.selectPlugin("Translation", openMarketplaceTab = true)
     }
 
     fun openAiSettingsPage() {
-        PlsUiManager.withConfigurable<PlsAiSettingsConfigurable, _> { settings, configurable ->
-            settings.select(configurable)
-        }
+        PlsOptionsManager.select<PlsAiSettingsConfigurable>()
     }
 
     // Lint Tools

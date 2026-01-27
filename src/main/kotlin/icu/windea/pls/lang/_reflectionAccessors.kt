@@ -37,3 +37,5 @@ fun psiDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     val function = staticFunction("psiDocumentationTargets", "com.intellij.lang.documentation.psi.UtilKt")
     return runCatchingCancelable { function(element, originalElement) }.getOrNull()?.cast() ?: emptyList()
 }
+
+// com.intellij.ide.plugins.PluginManagerConfigurable.openMarketplaceTab

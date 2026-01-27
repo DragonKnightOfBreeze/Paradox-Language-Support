@@ -28,6 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.openapi.util.Ref
+import com.intellij.openapi.util.Segment
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -180,6 +181,10 @@ fun <T> runReadActionSmartly(runnable: () -> T): T {
 // endregion
 
 // region Text Related Extensions
+
+operator fun Segment.contains(other: Segment): Boolean {
+    return startOffset <= other.startOffset && endOffset >= other.endOffset
+}
 
 /**
  * 去除文本范围首尾的引号。返回处理后的新的文本范围。
