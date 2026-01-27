@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.copy
 import icu.windea.pls.core.util.getValue
@@ -92,9 +91,9 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     // endregion
 
     final override fun copyTo(target: CwtOptionDataHolder) {
-        val keys = userMap.keys
+        // NOTE 2.1.2 `UserDataHolderBase.getUserMap()` 现在是内部 API，因此这里改为直接遍历注册表，应该不会对索引时的性能造成什么影响
+        val keys = Keys.keys.values
         for (key in keys) {
-            if (key !is RegistedKey || key.registry != Keys) continue
             key.copy(this, target, ifPresent = true)
         }
     }

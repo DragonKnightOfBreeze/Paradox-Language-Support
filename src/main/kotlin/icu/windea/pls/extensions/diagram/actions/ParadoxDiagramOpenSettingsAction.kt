@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.extensions.diagram.settings.PlsDiagramSettingsConfigurable
-import icu.windea.pls.lang.util.PlsUiManager
+import icu.windea.pls.lang.util.PlsOptionsManager
 
 // com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
@@ -25,7 +25,6 @@ class ParadoxDiagramOpenSettingsAction : AnAction(), DumbAware {
         val project = builder.project
         val provider = builder.provider
         if (provider !is ParadoxDiagramProvider) return
-        PlsUiManager.showSettingsDialog<PlsDiagramSettingsConfigurable>(project)
+        PlsOptionsManager.showSettingsDialog<PlsDiagramSettingsConfigurable>(project)
     }
 }
-
