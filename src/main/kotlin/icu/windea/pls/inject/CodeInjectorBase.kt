@@ -18,7 +18,8 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         val injectionTargetInfo = getInjectionTargetInfo() ?: return
 
         val pluginId = injectionTargetInfo.injectPluginId
-        val enabledPlugin = pluginId.orNull()?.let { PluginId.findId(it) }
+        val enabledPlugin = pluginId.orNull()
+            ?.let { PluginId.getId(it) }
             ?.let { PluginManager.getInstance().findEnabledPlugin(it) }
         // skip if plugin of specied plugin id is not enabled
         if (pluginId.isNotEmpty() && enabledPlugin == null) return
