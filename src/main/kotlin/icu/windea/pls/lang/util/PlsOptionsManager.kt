@@ -72,9 +72,8 @@ object PlsOptionsManager {
 
     private fun tryOpenMarketplaceTab(configurable: Configurable, option: String) {
         // 我不用这个内部 API 怎么实现这个功能.png
-        runCatchingCancelable {
-            val function = memberFunction("openMarketplaceTab", "com.intellij.ide.plugins.PluginManagerConfigurable")
-            function(configurable, option)
-        }
+        // com.intellij.ide.plugins.PluginManagerConfigurable.openMarketplaceTab
+        val function = memberFunction("openMarketplaceTab", "com.intellij.ide.plugins.PluginManagerConfigurable")
+        runCatchingCancelable { function(configurable, option) }
     }
 }
