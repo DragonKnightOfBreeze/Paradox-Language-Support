@@ -6,7 +6,6 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
-import icu.windea.pls.core.util.OS
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.model.constants.PlsPaths
 import java.nio.file.Path

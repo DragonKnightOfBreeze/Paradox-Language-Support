@@ -2,6 +2,7 @@ package icu.windea.pls.lang.tools.impl
 
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.util.system.OS
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.executeCommand
@@ -9,7 +10,6 @@ import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.core.util.OS
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsPaths
@@ -43,7 +43,7 @@ class PlsPathServiceImpl : PlsPathService {
     }
 
     private fun doGetSteamPath(): Path? {
-        return when (OS.value) {
+        return when (OS.CURRENT) {
             OS.Windows -> {
                 // 查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
@@ -51,7 +51,7 @@ class PlsPathServiceImpl : PlsPathService {
                 val steamPath = commandResult?.orNull()?.toPathOrNull()?.formatted()
                 steamPath
             }
-            OS.Linux -> {
+            else -> {
                 // 默认路径（不准确，但是已经足够）
                 val steamPath = PlsPaths.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
                 steamPath
@@ -65,7 +65,7 @@ class PlsPathServiceImpl : PlsPathService {
     }
 
     private fun doGetSteamGamePath(steamId: String, gameName: String): Path? {
-        return when (OS.value) {
+        return when (OS.CURRENT) {
             OS.Windows -> {
                 // 查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
@@ -78,7 +78,7 @@ class PlsPathServiceImpl : PlsPathService {
                 val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
                 steamGamePath
             }
-            OS.Linux -> {
+            else -> {
                 // 默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath() ?: return null
                 val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
@@ -105,9 +105,9 @@ class PlsPathServiceImpl : PlsPathService {
 
     private fun doGetGameDataPath(gameName: String): Path? {
         // 实际上应基于 `launcher-settings.json` 中的 `gameDataPath`
-        return when (OS.value) {
+        return when (OS.CURRENT) {
             OS.Windows -> PlsPaths.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
-            OS.Linux -> PlsPaths.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
+            else -> PlsPaths.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
     }
 
