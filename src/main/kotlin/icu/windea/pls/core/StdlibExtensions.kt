@@ -29,8 +29,8 @@ private data object EmptyObject
 val EMPTY_OBJECT: Any = EmptyObject
 
 /** 空操作，占位用。 */
-@Suppress("EmptyMethod")
 inline fun pass() {
+    // nothing
 }
 
 /** 若 [condition] 为 `true`，对接收者执行 [block] 并返回结果，否则返回接收者本身。 */
