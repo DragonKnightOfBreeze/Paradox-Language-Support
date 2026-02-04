@@ -901,13 +901,12 @@ object ParadoxDocumentationManager {
         if (parameterContextInfo.parameters.isEmpty()) return // ignore
         val parametersText = buildString {
             append("<pre>")
-            var isFirst = true
+            val m = OnceMarker()
             parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
-                if (isFirst) isFirst = false else append("<br>")
+                if (m.mark()) append("<br>")
                 append(parameterName)
-                // 加上推断得到的规则信息
-                val isOptional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
-                if (isOptional) append("?") // optional marker
+                val optional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
+                if (optional) append("?") // optional marker
                 // 加上推断得到的类型信息
                 val parameterElement = elements.firstOrNull()?.parameterElement
                 val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }

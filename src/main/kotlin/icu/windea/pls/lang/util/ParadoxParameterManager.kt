@@ -36,7 +36,6 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.mergeValue
-import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -45,7 +44,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -62,6 +60,7 @@ import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
@@ -176,28 +175,18 @@ object ParadoxParameterManager {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
-        val fileConditionStack = ArrayDeque<ReversibleValue<String>>()
+        val fileConditionExpressions = ArrayDeque<ParadoxParameterConditionExpression>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptParameterConditionExpression) return visitParadoxConditionExpression(element)
+                if (element is ParadoxScriptParameterConditionExpression) return visitParameterConditionExpression(element)
                 if (element is ParadoxConditionParameter) return visitConditionParameter(element)
                 if (element is ParadoxParameter) return visitParameter(element)
                 super.visitElement(element)
             }
 
-            private fun visitParadoxConditionExpression(element: ParadoxScriptParameterConditionExpression) {
-                var operator = true
-                var value = ""
-                element.processChild p@{
-                    val elementType = it.elementType
-                    when (elementType) {
-                        ParadoxScriptElementTypes.NOT_SIGN -> operator = false
-                        ParadoxScriptElementTypes.PARAMETER_CONDITION_PARAMETER -> value = it.text
-                    }
-                    true
-                }
+            private fun visitParameterConditionExpression(element: ParadoxScriptParameterConditionExpression) {
                 // value may be empty (invalid condition expression)
-                fileConditionStack.addLast(ReversibleValue(value, operator))
+                fileConditionExpressions.addLast(ParadoxParameterConditionExpression.resolve(element.text))
                 super.visitElement(element)
             }
 
@@ -211,15 +200,15 @@ object ParadoxParameterManager {
             private fun visitParameter(element: ParadoxParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = ArrayDeque(fileConditionStack) // not null
-                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
+                val conditionalExpressions = ArrayDeque(fileConditionExpressions) // not null
+                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalExpressions)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 // 不需要继续向下遍历
             }
 
             override fun elementFinished(element: PsiElement?) {
                 if (element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
-                    fileConditionStack.removeLast()
+                    fileConditionExpressions.removeLast()
                 }
             }
         })
@@ -232,21 +221,32 @@ object ParadoxParameterManager {
     fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return true
-        return parameterInfos.all f@{ parameterInfo ->
-            // 如果带有默认值，则为可选
-            if (parameterInfo.defaultValue != null) return@f true
-            // 如果是条件参数，则为可选
-            if (parameterInfo.conditionStack == null) return@f true
-            // 如果基于条件表达式上下文是可选的，则为可选
-            if (parameterInfo.conditionStack.isNotEmpty() && parameterInfo.conditionStack
-                    .all { it.withOperator { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }
-            ) return@f true
-            // 如果作为传入参数的值，则认为是可选的
-            if (parameterInfo.expressionConfigs
-                    .any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
-            ) return@f true
-            false
-        }
+        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
+    }
+
+    /**
+     * 基于指定的参数信息以及输入的一组参数，判断此参数是否是可选的。
+     */
+    fun isOptional(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>? = null): Boolean {
+        // 如果带有默认值，则为可选
+        if (parameterInfo.defaultValue != null) return true
+        // 如果是条件参数，则为可选
+        if (parameterInfo.conditionExpressions == null) return true
+        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
+        if (isOptionalFromConditionStack(parameterInfo, argumentNames)) return true
+        // 如果作为传入参数的值，则认为是可选的
+        if (isPassingParameterValue(parameterInfo)) return true
+        return false
+    }
+
+    private fun isOptionalFromConditionStack(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
+        val conditionExpressions = parameterInfo.conditionExpressions
+        if (conditionExpressions.isNullOrEmpty()) return false
+        return !conditionExpressions.all { it.matches(argumentNames) }
+    }
+
+    private fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
+        return parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
     }
 
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {

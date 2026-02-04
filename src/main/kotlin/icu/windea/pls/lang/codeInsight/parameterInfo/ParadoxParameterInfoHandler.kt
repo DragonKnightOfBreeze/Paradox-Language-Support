@@ -8,6 +8,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
@@ -50,22 +52,17 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
         // 不高亮特定的参数
         val text = when {
             parameterContextInfo.parameters.isEmpty() -> PlsBundle.message("noParameters")
-            else -> {
-                buildString {
-                    var isFirst = true
-                    parameterContextInfo.parameters.forEach { (parameterName, elements) ->
-                        if (isFirst) isFirst = false else append(", ")
-                        append(parameterName)
-                        if (ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)) append("?") // optional marker
-                        // 加上推断得到的类型信息
-                        val parameterElement = elements.firstOrNull()?.parameterElement
-                        if (parameterElement != null) {
-                            val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
-                            if (inferredType != null) {
-                                append(": ").append(inferredType)
-                            }
-                        }
-                    }
+            else -> buildString {
+                val m = OnceMarker()
+                parameterContextInfo.parameters.forEach { (parameterName, elements) ->
+                    if (m.mark()) append(", ")
+                    append(parameterName)
+                    val optional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
+                    if (optional) append("?") // optional marker
+                    // 加上推断得到的类型信息
+                    val parameterElement = elements.firstOrNull()?.parameterElement
+                    val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }
+                    if (inferredType.isNotNullOrEmpty()) append(": ").append(inferredType)
                 }
             }
         }

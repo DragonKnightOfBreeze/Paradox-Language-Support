@@ -22,11 +22,12 @@ data class ReversibleValue<T>(
 
     companion object {
         /**
-         * 从 [expression] 构造 [ReversibleValue]。如果表达式以 `!` 开始则取反。
+         * 从 [expression] 构造 [ReversibleValue]，并在必要时去除首尾空白。如果表达式以 `!` 开始则取反。
          */
         @JvmStatic
         fun from(expression: String): ReversibleValue<String> {
-            return if (expression.startsWith('!')) ReversibleValue(expression.drop(1), false) else ReversibleValue(expression, true)
+            val s = expression.trim()
+            return if (s.startsWith('!')) ReversibleValue(s.drop(1).trimStart(), false) else ReversibleValue(s, true)
         }
     }
 }

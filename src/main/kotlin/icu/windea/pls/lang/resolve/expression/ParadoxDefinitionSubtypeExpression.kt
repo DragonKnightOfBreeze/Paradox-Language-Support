@@ -34,3 +34,4 @@ interface ParadoxDefinitionSubtypeExpression {
 
     companion object : Resolver by ParadoxDefinitionSubtypeExpressionResolverImpl()
 }
+

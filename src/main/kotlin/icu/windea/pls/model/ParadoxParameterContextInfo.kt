@@ -7,12 +7,12 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -28,13 +28,13 @@ class ParadoxParameterContextInfo(
     val gameType: ParadoxGameType
 ) {
     /**
-     * @property conditionStack 文件中从上到下，链表中从左到右，记录条件表达式的堆栈。如果[element]不是[ParadoxParameter]，则应当为null。
+     * @property conditionExpressions 文件中从上到下，链表中从左到右，记录参数条件表达式的堆栈。如果 [element] 是 [ParadoxConditionParameter]，则应当为 null。
      */
     class Parameter(
         private val elementPointer: SmartPsiElementPointer<PsiElement>, // ParadoxConditionParameter | ParadoxParameter
         val name: String,
         val defaultValue: String? = null,
-        val conditionStack: Deque<ReversibleValue<String>>? = null,
+        val conditionExpressions: Deque<ParadoxParameterConditionExpression>? = null,
     ) {
         val element: PsiElement? get() = elementPointer.element
         val parentElement: PsiElement? get() = elementPointer.element?.parent
