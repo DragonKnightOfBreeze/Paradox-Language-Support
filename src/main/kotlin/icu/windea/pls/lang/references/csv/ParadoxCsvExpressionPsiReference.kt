@@ -21,7 +21,7 @@ class ParadoxCsvExpressionPsiReference(
     private val project get() = columnConfig.configGroup.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
+        return ParadoxPsiManager.renameExpressionElement(element, rangeInElement, newElementName, resolve())
     }
 
     // 缓存解析结果以优化性能

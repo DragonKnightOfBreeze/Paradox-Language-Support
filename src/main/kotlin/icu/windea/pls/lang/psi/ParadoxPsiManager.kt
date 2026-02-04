@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.CachedValue
@@ -11,6 +12,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.containsLineBreak
@@ -30,7 +32,9 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -46,7 +50,6 @@ import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
@@ -376,13 +379,20 @@ object ParadoxPsiManager {
 
     // region Rename Methods
 
-    fun handleElementRename(element: ParadoxExpressionElement, rangeInElement: TextRange, newElementName: String): PsiElement {
-        val element = element
-        val resolvedElement = if (element is ParadoxScriptExpressionElement) element.resolved() else element
+    fun renameExpressionElement(element: ParadoxExpressionElement, rangeInElement: TextRange, newElementName: String, resolved: PsiElement? = null, configExpression: CwtDataExpression? = null): PsiElement {
         return when {
-            resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-            resolvedElement.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved is PsiFileSystemItem -> {
+                // #33
+                if (configExpression == null) throw IncorrectOperationException()
+                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
+                val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
+                val newPath = fileInfo.path.parent + "/" + newElementName
+                val newPathReference = ep.extract(configExpression, element, newPath) ?: throw IncorrectOperationException()
+                element.setValue(newPathReference)
+            }
+            resolved.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
+            resolved.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }
     }

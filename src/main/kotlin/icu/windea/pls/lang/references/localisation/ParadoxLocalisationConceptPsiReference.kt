@@ -21,6 +21,7 @@ class ParadoxLocalisationConceptPsiReference(
     override fun handleElementRename(newElementName: String): PsiElement {
         // cannot rename when use alias
         if (element.name != resolve()?.name) throw IncorrectOperationException()
+
         return element.setName(rangeInElement.replace(element.text, newElementName))
     }
 
