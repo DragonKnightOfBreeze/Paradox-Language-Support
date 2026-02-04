@@ -10,7 +10,7 @@ import javax.swing.Icon
 /**
  * 参数上下文引用信息。
  *
- * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。
+ * @param contextNameRange 表示上下文名字的那段文本在整个文件中的文本范围。
  */
 @Suppress("unused")
 class ParadoxParameterContextReferenceInfo(
