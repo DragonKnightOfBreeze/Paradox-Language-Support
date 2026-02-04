@@ -39,13 +39,13 @@ import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -94,15 +94,14 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 得到[element]的文本，然后使用指定的一组[args]替换其中的占位符。
+     * 得到 [element] 的文本，然后使用指定的一组 [args] 替换其中的占位符。
      *
-     * 如果[direct]为true，则直接将占位符`$P$`替换成传入参数`P`的值。此时：
-     *
+     * 如果 [direct] 为 `true`，则直接将占位符 `$P$` 替换成传入参数 `P` 的值。此时：
      * - 值可以是多行字符串。
      * - 如果值是用双引号括起，替换时会被忽略。
      * - 允许重复的传入参数，按顺序进行替换。
      *
-     * @param element 用于得到原始文本的PSI。
+     * @param element 用于得到原始文本的 PSI。
      * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
      */
     fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {

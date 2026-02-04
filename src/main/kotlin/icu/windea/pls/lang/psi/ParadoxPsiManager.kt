@@ -73,7 +73,7 @@ object ParadoxPsiManager {
 
     @Inferred
     fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
-        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
+        // - 忽略所有前导的 `#，然后再忽略所有首尾空白
         // - 始终转义每行的注释文本
 
         if (comments.isEmpty()) return null
@@ -169,22 +169,22 @@ object ParadoxPsiManager {
 
         val toInline = declaration.scriptedVariableValue ?: return
         var newText = rangeInElement.replace(element.text, toInline.text)
-        // 某些情况下newText会以"@"开始，需要去掉
+        // 某些情况下 newText 会以 `@` 开始，需要去掉
         if (element !is ParadoxScriptInlineMathScriptedVariableReference && newText.startsWith('@')) {
             newText = newText.drop(1)
         }
         val language = element.language
         when (language) {
             is ParadoxScriptLanguage -> {
-                // 这里会把newText识别为一个值，但是实际上newText可以是任何文本，目前不进行额外的处理
+                // 这里会把 newText 识别为一个值，但是实际上 newText 可以是任何文本，目前不进行额外的处理
                 val newRef = ParadoxScriptElementFactory.createValue(project, newText)
                 element.replace(newRef)
             }
             is ParadoxLocalisationLanguage -> {
-                // 这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
+                // 这里会把 newText 识别为一个字符串，但是实际上 newText 可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() // 内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
-                // element.parent should be something like "$@var$"
+                // element.parent should be something like `$@var$`
                 element.parent.replace(newRef)
             }
         }
@@ -281,7 +281,7 @@ object ParadoxPsiManager {
         element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
-    @Suppress("unused")
+    @Suppress("UNUSED_PARAMETER")
     fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
         if (element !is ParadoxScriptValue) return
 
@@ -307,7 +307,7 @@ object ParadoxPsiManager {
         usageElement.delete()
     }
 
-    @Suppress("unused")
+    @Suppress("UNUSED_PARAMETER")
     fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
         if (element !is ParadoxLocalisationParameter) return
 
