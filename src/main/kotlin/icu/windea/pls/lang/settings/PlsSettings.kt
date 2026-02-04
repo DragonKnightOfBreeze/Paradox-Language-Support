@@ -173,7 +173,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var comments by property(false)
         var commentsByDefault by property(false)
         var parameterConditionBlocks by property(true)
-        var parameterConditionBlocksByDefault by property(true)
+        var parameterConditionBlocksByDefault by property(false)
         var inlineMathBlocks by property(true)
         var inlineMathBlocksByDefault by property(true)
         var localisationTexts by property(false)
