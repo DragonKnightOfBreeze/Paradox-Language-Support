@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 interface ParadoxDefinitionDataProvider {
     fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): Boolean
 
-    fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T?
+    fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider>("icu.windea.pls.definitionDataProvider")

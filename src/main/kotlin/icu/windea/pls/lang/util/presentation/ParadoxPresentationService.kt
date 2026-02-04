@@ -5,13 +5,13 @@ import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentationProvider
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 object ParadoxPresentationService {
-    inline fun <reified T : ParadoxDefinitionPresentation> getDefinitionPresentation(element: ParadoxScriptDefinitionElement): T? {
-        return getDefinitionPresentation(element, T::class.java)
+    inline fun <reified T : ParadoxDefinitionPresentation> getDefinitionPresentation(element: ParadoxScriptDefinitionElement, relax: Boolean = false): T? {
+        return getDefinitionPresentation(element, T::class.java, relax)
     }
 
-    fun <T : ParadoxDefinitionPresentation> getDefinitionPresentation(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    fun <T : ParadoxDefinitionPresentation> getDefinitionPresentation(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T? {
         return ParadoxDefinitionPresentationProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(element, type)) return@f null
+            if (!ep.supports(element, type, relax)) return@f null
             ep.get(element, type)
         }
     }

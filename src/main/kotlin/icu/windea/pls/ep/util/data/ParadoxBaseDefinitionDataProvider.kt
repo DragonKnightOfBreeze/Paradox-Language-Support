@@ -30,7 +30,6 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
     }
 
     override fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
-        if (!ParadoxDefinitionDataBase::class.java.isAssignableFrom(type)) return false
         if (relax) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
@@ -38,7 +37,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         return true
     }
 
-    override fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean): T? {
+    override fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
         return doGetDataFromCache(element, type)
     }
 

@@ -12,7 +12,7 @@ object ParadoxDataService {
     fun <T : ParadoxDefinitionData> getDefinitionData(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T? {
         return ParadoxDefinitionDataProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!ep.supports(element, type, relax)) return@f null
-            ep.get(element, type, relax)
+            ep.get(element, type)
         }
     }
 }

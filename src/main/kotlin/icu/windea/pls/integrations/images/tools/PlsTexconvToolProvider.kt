@@ -7,7 +7,6 @@ import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.OS
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.annotations.WithOS
 import icu.windea.pls.model.constants.PlsPaths
 import java.nio.file.Files
 import java.nio.file.Path
@@ -19,7 +18,6 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
-@WithOS(OS.Windows)
 class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private val texconvExe by lazy { PlsPaths.texconvExeFile }
     private val texconvExeWd by lazy { PlsPaths.texconvExe.parent?.toFile() }
