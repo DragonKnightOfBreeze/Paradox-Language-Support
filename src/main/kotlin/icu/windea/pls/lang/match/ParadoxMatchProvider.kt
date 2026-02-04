@@ -9,7 +9,6 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*

@@ -34,7 +34,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression

@@ -9,8 +9,8 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 
 internal class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScriptConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
@@ -53,7 +53,7 @@ private class CwtExtendedInlineScriptConfigImpl(
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
             // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
-            else -> containerConfig.valueConfig.singleton.listOrEmpty()
+            else -> containerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)

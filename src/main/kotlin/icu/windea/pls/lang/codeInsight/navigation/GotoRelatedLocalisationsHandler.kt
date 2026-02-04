@@ -16,8 +16,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher

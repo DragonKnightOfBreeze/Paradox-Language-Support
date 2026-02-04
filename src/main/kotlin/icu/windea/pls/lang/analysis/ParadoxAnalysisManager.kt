@@ -20,7 +20,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.LazyValue
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement

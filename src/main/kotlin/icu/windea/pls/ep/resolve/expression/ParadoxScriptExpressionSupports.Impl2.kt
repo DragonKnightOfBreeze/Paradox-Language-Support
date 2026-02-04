@@ -23,8 +23,8 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.keyword
@@ -267,7 +267,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configGroup = config.configGroup
         val project = configGroup.project
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expressionText.toVirtualFile()?.toPsiFile(project).singleton.setOrEmpty()
+            return expressionText.toVirtualFile()?.toPsiFile(project).to.singletonSetOrEmpty()
         } else {
             // if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()

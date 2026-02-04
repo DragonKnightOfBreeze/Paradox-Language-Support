@@ -4,8 +4,8 @@ import com.intellij.ui.Gray
 import icu.windea.pls.core.resize
 import icu.windea.pls.core.toImage
 import icu.windea.pls.core.toLabel
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.withLocation
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.definitionInfo

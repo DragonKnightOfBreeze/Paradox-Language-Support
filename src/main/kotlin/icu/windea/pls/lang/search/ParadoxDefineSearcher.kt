@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.index.ParadoxDefineIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -29,7 +29,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
         val variable = queryParameters.variable
         val namespace = queryParameters.namespace
 
-        val keys = namespace.singleton.setOrEmpty()
+        val keys = namespace.to.singletonSetOrEmpty()
         PlsIndexService.processAllFileData(ParadoxDefineIndex::class.java, keys, project, scope, gameType) p@{ file, fileData ->
             if (namespace != null) {
                 val map = fileData[namespace] ?: return@p true

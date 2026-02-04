@@ -18,10 +18,10 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.definitionInfo

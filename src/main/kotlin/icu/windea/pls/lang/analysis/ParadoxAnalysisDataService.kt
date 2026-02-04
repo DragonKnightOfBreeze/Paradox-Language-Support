@@ -9,7 +9,7 @@ import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.LazyValue
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey

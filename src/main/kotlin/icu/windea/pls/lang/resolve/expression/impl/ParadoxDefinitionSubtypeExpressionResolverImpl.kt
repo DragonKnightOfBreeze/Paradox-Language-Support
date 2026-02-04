@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.expression.impl
 
-import icu.windea.pls.core.util.ReversibleValue
-import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
@@ -14,7 +13,7 @@ internal class ParadoxDefinitionSubtypeExpressionResolverImpl : ParadoxDefinitio
 private class ParadoxDefinitionSubtypeExpressionImpl(
     override val text: String
 ) : ParadoxDefinitionSubtypeExpression {
-    override val subtypes: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue(it) }
+    override val subtypes: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue.from(it) }
 
     override fun matches(subtypes: Collection<String>): Boolean {
         // 目前仅支持"!"和"&"的组合

@@ -32,9 +32,8 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
-import icu.windea.pls.core.util.takeWithOperator
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
@@ -643,7 +642,7 @@ object ParadoxCompletionManager {
 
         val config = context.config
         val configs = context.configs
-        val finalConfigs = configs.ifEmpty { config.singleton.listOrEmpty() }
+        val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
         if (finalConfigs.isEmpty()) return
         for (finalConfig in finalConfigs) {
             val keyword = context.keyword

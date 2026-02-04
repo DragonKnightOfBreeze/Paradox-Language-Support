@@ -10,9 +10,9 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithInternalConfig
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
@@ -55,7 +55,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 val propertyValue = element.propertyValue ?: return
                 val elementsToKeep: List<PsiElement> = when {
                     settings.key != null && propertyValue !is ParadoxScriptBlock -> {
-                        propertyValue.singleton.listOrEmpty()
+                        propertyValue.to.singletonListOrEmpty()
                     }
                     settings.keys != null && propertyValue is ParadoxScriptBlock -> {
                         var i = -1
@@ -87,7 +87,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 var valueRange: TextRange? = null
                 val descriptors = mutableListOf<FoldingDescriptor>()
                 val list = settings.placeholder.split('$')
-                val keys = settings.key?.singleton?.list() ?: settings.keys ?: emptyList()
+                val keys = settings.key?.to?.singletonList() ?: settings.keys ?: emptyList()
                 for ((index, s) in list.withIndex()) {
                     if (index % 2 == 0) {
                         // '{ k = v }' will be folded by ParadoxScriptFoldingBuilder

@@ -16,8 +16,8 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isIdentifier
@@ -142,7 +142,7 @@ object ParadoxComplexExpressionCompletionManager {
         val config = context.config
         val configs = context.configs
 
-        val finalConfigs = if (configs.isNotEmpty()) configs.toListOrThis() else config.singleton.listOrEmpty()
+        val finalConfigs = if (configs.isNotEmpty()) configs.toListOrThis() else config.to.singletonListOrEmpty()
         if (finalConfigs.isEmpty()) return
 
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)

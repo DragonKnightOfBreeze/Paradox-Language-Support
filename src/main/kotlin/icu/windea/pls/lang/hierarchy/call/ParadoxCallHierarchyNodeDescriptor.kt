@@ -15,8 +15,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.ui.SimpleTextAttributes
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.settings.PlsSettings

@@ -84,7 +84,7 @@ private class ParadoxScriptExpressionLazyImpl(
         element.resolved()
     }
 
-    override val value: String get() = valueElement?.value ?: PlsStrings.unknown
+    override val value: String get() = valueElement?.value.orEmpty()
     override val type: ParadoxType get() = valueElement?.type ?: ParadoxType.Unknown
     override val quoted: Boolean get() = valueElement?.text?.isLeftQuoted() ?: false
 }

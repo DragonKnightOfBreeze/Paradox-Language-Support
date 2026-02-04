@@ -9,8 +9,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
@@ -42,7 +42,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        val finalConfigs = getConfig(parameterInfo, configGroup)?.singleton?.list() ?: return null
+        val finalConfigs = getConfig(parameterInfo, configGroup)?.to?.singletonList() ?: return null
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -173,13 +173,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
                 node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.singleton.list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
+                node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
             }
             node is ParadoxScopeLinkNode -> {
-                CwtValueConfig.createMock(configGroup, "scope_field").singleton.list()
+                CwtValueConfig.createMock(configGroup, "scope_field").to.singletonList()
             }
             node is ParadoxValueFieldNode -> {
-                CwtValueConfig.createMock(configGroup, "value_field").singleton.list()
+                CwtValueConfig.createMock(configGroup, "value_field").to.singletonList()
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()

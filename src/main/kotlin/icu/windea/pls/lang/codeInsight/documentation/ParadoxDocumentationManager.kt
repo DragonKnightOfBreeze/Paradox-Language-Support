@@ -18,9 +18,8 @@ import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
-import icu.windea.pls.core.util.unresolved
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -839,7 +838,7 @@ object ParadoxDocumentationManager {
             ParadoxLocalisationType.Synced -> PlsStrings.localisationSyncedPrefix
         }
         append(prefix).append(" ")
-        append("<b>").append(element.name.or.unresolved()).append("</b>")
+        append("<b>").append(element.name.escapeXml()).append("</b>")
     }
 
     private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {

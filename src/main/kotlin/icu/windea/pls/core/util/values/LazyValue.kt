@@ -1,7 +1,14 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.util.values
 
 import icu.windea.pls.core.EMPTY_OBJECT
 
+/**
+ * 可以延迟初始化的值（包装类）。
+ *
+ * 说明：
+ * - 使用双重检查锁定（double-checked locking）保证初始化时的线程安全。
+ * - 不同于 [Lazy]，不需要在声明时就指定初始化逻辑。
+ */
 class LazyValue<T> {
     @Volatile
     private var _value: Any? = EMPTY_OBJECT
@@ -13,7 +20,13 @@ class LazyValue<T> {
             _value = value
         }
 
-    fun isInitialized(): Boolean = _value != EMPTY_OBJECT
+    fun isInitialized(): Boolean {
+        return _value != EMPTY_OBJECT
+    }
+
+    fun clear() {
+        _value = EMPTY_OBJECT
+    }
 
     inline fun check(crossinline predicate: (T) -> Boolean) {
         val value = value ?: return
@@ -29,9 +42,5 @@ class LazyValue<T> {
             value = newValue
             return newValue
         }
-    }
-
-    fun clear() {
-        _value = EMPTY_OBJECT
     }
 }

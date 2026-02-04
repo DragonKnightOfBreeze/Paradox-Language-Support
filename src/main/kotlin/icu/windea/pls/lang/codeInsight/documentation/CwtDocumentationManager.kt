@@ -30,8 +30,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString

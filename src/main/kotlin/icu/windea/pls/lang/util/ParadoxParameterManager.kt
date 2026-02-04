@@ -39,14 +39,13 @@ import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -199,7 +198,7 @@ object ParadoxParameterManager {
                     true
                 }
                 // value may be empty (invalid condition expression)
-                fileConditionStack.addLast(ReversibleValue(operator, value))
+                fileConditionStack.addLast(ReversibleValue(value, operator))
                 super.visitElement(element)
             }
 

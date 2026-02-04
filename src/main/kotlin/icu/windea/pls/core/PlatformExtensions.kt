@@ -67,8 +67,8 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.util.tupleOf
 import java.io.IOException
 import java.nio.file.Path
@@ -843,7 +843,7 @@ inline fun executeWriteCommand(
     makeWritable: PsiElement? = null,
     crossinline command: () -> Unit
 ) {
-    WriteCommandAction.writeCommandAction(project, makeWritable.singleton.setOrEmpty())
+    WriteCommandAction.writeCommandAction(project, makeWritable.to.singletonSetOrEmpty())
         .withName(name).withGroupId(groupId)
         .run(ThrowableRunnable { command() })
 }

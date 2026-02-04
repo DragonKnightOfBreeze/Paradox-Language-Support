@@ -9,8 +9,8 @@ import com.intellij.usages.UsageViewSettings
 import icu.windea.pls.core.compareToIgnoreCase
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
 import javax.swing.Icon

@@ -4,8 +4,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -22,7 +22,7 @@ class ParadoxDatabaseObjectNode(
     val config = expression.typeNode?.config
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton.setOrEmpty()
+        return config.to.singletonSetOrEmpty()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

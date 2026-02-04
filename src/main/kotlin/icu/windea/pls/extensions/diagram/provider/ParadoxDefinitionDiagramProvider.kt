@@ -6,8 +6,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScopes
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extensions.diagram.ParadoxDiagramEdge
 import icu.windea.pls.extensions.diagram.ParadoxDiagramElementManager

@@ -9,8 +9,8 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
@@ -49,6 +49,6 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
             ParadoxMatchService.matchScriptExpression(context, expression, config.keyExpression, config, configGroup).get()
         }
         if (matched == null) return emptyList()
-        return element.singleton.list()
+        return element.to.singletonList()
     }
 }

@@ -3,10 +3,6 @@ package icu.windea.pls.model.constants
 import icu.windea.pls.core.loadText
 
 object PlsStrings {
-    const val anonymous = "(anonymous)"
-    const val unknown = "(unknown)"
-    const val unresolved = "(unresolved)"
-
     const val typePrefix = "(type)"
     const val subtypePrefix = "(subtype)"
     const val rowPrefix = "(row)"

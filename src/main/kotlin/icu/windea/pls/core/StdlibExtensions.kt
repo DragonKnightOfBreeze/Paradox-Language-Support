@@ -125,7 +125,7 @@ fun Number.formatted(digits: Int): String {
 }
 
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
-inline fun <T : CharSequence> T.orNull() = this.takeIf { it.isNotEmpty() }
+inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
 
 /** 判断是否以指定前缀/后缀包裹（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
@@ -488,9 +488,6 @@ inline fun <reified T> Any?.cast(): T = this as T
 /** 安全转换：将对象尝试转换为 [T]，失败返回 `null`。 */
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
-/** 若接收者非空则应用 [block]，否则返回接收者。 */
-inline fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if (this.isNotEmpty()) block(this) else this
-
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
  * 使用"/"作为路径分隔符。
@@ -614,8 +611,3 @@ fun URL.toFile() = File(this.toURI())
 
 /** 将 URL 转换为 [Path]。 */
 fun URL.toPath(): Path = Paths.get(this.toURI())
-
-typealias FloatRange = ClosedRange<Float>
-
-/** 允许对可空 Float 使用 `in` 检查（仅在非空时为真参与判断）。 */
-operator fun FloatRange.contains(element: Float?) = element != null && contains(element)

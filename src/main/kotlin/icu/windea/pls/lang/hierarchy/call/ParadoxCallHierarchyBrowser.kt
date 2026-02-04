@@ -13,8 +13,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.PopupHandler
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.element

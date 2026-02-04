@@ -5,9 +5,9 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
-import icu.windea.pls.core.util.unresolved
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService

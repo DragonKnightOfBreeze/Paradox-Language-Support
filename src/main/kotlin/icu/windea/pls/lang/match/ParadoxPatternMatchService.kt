@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
@@ -85,7 +85,7 @@ object ParadoxPatternMatchService {
         fromIndex: Int = 0,
     ): List<V> {
         val fastResult = map.get(key)
-        if (fastResult != null) return fastResult.singleton.list()
+        if (fastResult != null) return fastResult.to.singletonList()
         return map.entries.filter { (k) -> matches(k, key, contextElement, configGroup, options, fromIndex) }.map { it.value }
     }
 }

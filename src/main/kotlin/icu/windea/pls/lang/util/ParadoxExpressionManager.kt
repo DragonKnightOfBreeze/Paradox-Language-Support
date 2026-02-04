@@ -36,8 +36,8 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -426,7 +426,7 @@ object ParadoxExpressionManager {
         val result = ParadoxScriptExpressionService.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotNullOrEmpty()) return result
 
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).singleton.setOrEmpty()
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonSetOrEmpty()
 
         return emptySet()
     }

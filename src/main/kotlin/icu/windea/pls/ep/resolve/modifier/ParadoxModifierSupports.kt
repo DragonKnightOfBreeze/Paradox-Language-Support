@@ -17,11 +17,12 @@ import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
@@ -433,8 +434,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = modifierElement.gameType
 
         // 加上名字
-        val name = modifierElement.name
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        val name = modifierElement.name.orNull()
+        append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))

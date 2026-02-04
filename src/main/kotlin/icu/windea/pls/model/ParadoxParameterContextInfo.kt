@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxConfigManager

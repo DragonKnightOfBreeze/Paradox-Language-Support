@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.resolve.expression
 
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.resolve.expression.impl.ParadoxDefinitionSubtypeExpressionResolverImpl
 import icu.windea.pls.model.ParadoxDefinitionInfo
 

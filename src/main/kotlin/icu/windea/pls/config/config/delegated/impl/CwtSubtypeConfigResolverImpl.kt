@@ -10,7 +10,7 @@ import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 
 internal class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()

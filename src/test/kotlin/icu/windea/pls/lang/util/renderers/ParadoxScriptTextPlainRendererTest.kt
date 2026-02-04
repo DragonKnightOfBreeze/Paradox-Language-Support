@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -24,7 +25,7 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
 
     private val counter = AtomicInteger()
     private val gameType = ParadoxGameType.Vic3
-    private val unresolved = PlsStrings.unresolved
+    private val unresolved = FallbackStrings.unresolved
     private val blockFolder = PlsStrings.blockFolder
 
     @Before

@@ -4,18 +4,28 @@ import org.junit.Assert
 import org.junit.Test
 
 class ObservableTest {
+    @Suppress("ktPropBy")
+    class Role(
+        var name: String,
+        val title: String,
+        var tag: String
+    ) {
+        val displayName: String by ::name.observe { "$it, $title" }
+        var tagSet: Set<String> by ::tag.fromCommandDelimitedString()
+    }
+
     @Test
     fun test() {
-        val obj = ObservableObject("Windea", "the Dragon Knight", "")
-        val arg = "the seeker"
-        val args = arrayOf("the seeker", "the ranger", "and all my pals")
+        val obj = Role("Neuro", "Sama", "")
+        val arg = "ai,vtuber,lovely,cute"
+        val args = arrayOf("ai", "vtuber", "lovely", "cute")
 
-        obj.name = "Windea - Future Seeker"
-        Assert.assertEquals("Windea - Future Seeker, ${obj.suffix}", obj.displayName)
+        obj.name = "Evil Neuro"
+        Assert.assertEquals("Evil Neuro, ${obj.title}", obj.displayName)
 
-        obj.pals = arg
-        Assert.assertEquals(setOf(arg), obj.palSet)
-        obj.palSet = args.toSet()
-        Assert.assertEquals(args.joinToString(","), obj.pals)
+        obj.tag = arg
+        Assert.assertEquals(setOf(arg), obj.tagSet)
+        obj.tagSet = args.toSet()
+        Assert.assertEquals(args.joinToString(","), obj.tag)
     }
 }

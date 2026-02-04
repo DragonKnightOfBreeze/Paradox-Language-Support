@@ -5,8 +5,8 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
     override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
-        return resolve(text, range, configGroup, config.singleton.list())
+        return resolve(text, range, configGroup, config.to.singletonList())
     }
 
     override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {

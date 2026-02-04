@@ -8,8 +8,8 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.settings.PlsSettings
@@ -188,7 +188,7 @@ object ParadoxExtendedCompletionManager {
 
         val config = context.config
         val configs = context.configs
-        val finalConfigs = configs.ifEmpty { config.singleton.listOrEmpty() }
+        val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
         if (finalConfigs.isEmpty()) return
         for (config in finalConfigs) {
             val dynamicValueType = config.configExpression?.value ?: continue

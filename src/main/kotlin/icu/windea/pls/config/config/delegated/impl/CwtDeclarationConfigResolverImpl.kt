@@ -41,7 +41,7 @@ private class CwtDeclarationConfigImpl(
                 val subtypeExpression = c.key.removeSurroundingOrNull("subtype[", "]")
                 if (subtypeExpression != null) {
                     val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-                    resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
+                    resolved.subtypes.forEach { (subtype, _) -> result.add(subtype) }
                 }
             }
         }

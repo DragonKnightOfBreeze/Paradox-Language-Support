@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 
 /**
  * 类型规则。

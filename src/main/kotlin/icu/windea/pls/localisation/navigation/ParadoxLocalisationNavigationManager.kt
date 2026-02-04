@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.navigation
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale

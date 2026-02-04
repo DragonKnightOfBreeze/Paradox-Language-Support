@@ -10,9 +10,9 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
-import icu.windea.pls.core.util.unknown
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unknown
 import icu.windea.pls.lang.codeInsight.documentation.appendBr
 import icu.windea.pls.lang.codeInsight.documentation.appendIndent
 import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved

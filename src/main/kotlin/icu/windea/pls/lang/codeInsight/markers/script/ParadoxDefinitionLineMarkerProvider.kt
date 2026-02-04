@@ -10,8 +10,8 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFac
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo

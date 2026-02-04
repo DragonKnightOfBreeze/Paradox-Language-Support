@@ -21,9 +21,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager

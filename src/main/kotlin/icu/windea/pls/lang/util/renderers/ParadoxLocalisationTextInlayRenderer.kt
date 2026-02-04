@@ -14,6 +14,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
@@ -39,7 +40,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
@@ -181,7 +181,7 @@ class ParadoxLocalisationTextInlayRenderer(
             // 封装变量
             run {
                 if (resolved !is ParadoxScriptScriptedVariable) return@run
-                val v = resolved.value ?: PlsStrings.unresolved
+                val v = resolved.value ?: FallbackStrings.unresolved
                 context.builder.add(context.factory.smallText(v))
                 updateTruncationState()
                 return@action

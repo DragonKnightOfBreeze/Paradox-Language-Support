@@ -7,8 +7,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
@@ -103,7 +103,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definitionInfo = context.definitionInfo ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val declarationConfig = definitionInfo.getDeclaration(options) ?: return null
-        val rootConfigs = declarationConfig.singleton.list()
+        val rootConfigs = declarationConfig.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
@@ -307,7 +307,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
         val declarationConfig = ParadoxDefinitionInjectionManager.getDeclaration(context.element, definitionInjectionInfo) ?: return null
-        val rootConfigs = declarationConfig.singleton.list()
+        val rootConfigs = declarationConfig.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }

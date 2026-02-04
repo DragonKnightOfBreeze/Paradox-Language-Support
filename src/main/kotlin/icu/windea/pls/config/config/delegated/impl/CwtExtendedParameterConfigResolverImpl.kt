@@ -10,8 +10,8 @@ import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.resolve.parameter.containingContextReference
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxConfigService
@@ -78,7 +78,7 @@ private class CwtExtendedParameterConfigImpl(
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
             // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
-            else -> containerConfig.valueConfig.singleton.listOrEmpty()
+            else -> containerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)

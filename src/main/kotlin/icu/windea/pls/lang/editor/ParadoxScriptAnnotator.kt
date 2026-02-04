@@ -10,8 +10,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized

@@ -6,10 +6,10 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer.*
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -60,7 +60,7 @@ class ParadoxScriptTextPlainRenderer : ParadoxScriptTextRendererBase<Context, St
         renderSeparator(element)
         val propertyValue = element.propertyValue
         if (propertyValue == null) {
-            context.builder.append(PlsStrings.unresolved)
+            context.builder.append(FallbackStrings.unresolved)
             return
         }
         renderValue(propertyValue)
@@ -90,7 +90,7 @@ class ParadoxScriptTextPlainRenderer : ParadoxScriptTextRendererBase<Context, St
     override fun renderExpressionElement(element: ParadoxScriptExpressionElement) {
         val resolved = element.resolved()
         val v = resolved?.value?.letIf(resolved is ParadoxScriptStringExpressionElement) { it.quoteIfNecessary() }
-        context.builder.append(v ?: PlsStrings.unresolved)
+        context.builder.append(v ?: FallbackStrings.unresolved)
     }
 
     context(context: Context)

@@ -34,10 +34,10 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
@@ -441,10 +441,10 @@ object CwtConfigManipulator {
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }
                 val mergedConfig = mergeValueConfig(c1, c2)
-                if (mergedConfig != null) return mergedConfig.singleton.list()
+                if (mergedConfig != null) return mergedConfig.to.singletonList()
             } else if (c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
                 val same = getDistinctKey(c1) == getDistinctKey(c2)
-                if (same) return c1.singleton.list()
+                if (same) return c1.to.singletonList()
             } else {
                 return emptyList()
             }

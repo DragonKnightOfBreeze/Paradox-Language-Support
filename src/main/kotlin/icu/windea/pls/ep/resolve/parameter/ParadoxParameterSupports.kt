@@ -27,8 +27,8 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.codeInsight.documentation.appendBr
 import icu.windea.pls.lang.codeInsight.documentation.appendIndent

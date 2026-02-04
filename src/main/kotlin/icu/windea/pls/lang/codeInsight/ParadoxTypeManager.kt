@@ -6,9 +6,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -257,7 +257,7 @@ object ParadoxTypeManager {
                 val definitionInfo = element.definitionInfo
                 if (definitionInfo != null) {
                     if (definitionInfo.types.size == 1) {
-                        return definitionInfo.typeConfig.pointer.element.singleton.listOrEmpty()
+                        return definitionInfo.typeConfig.pointer.element.to.singletonListOrEmpty()
                     } else {
                         // 这里的element可能是null，以防万一，处理是null的情况
                         return buildList {
@@ -285,7 +285,7 @@ object ParadoxTypeManager {
                         val enumName = complexEnumValueInfo.enumName
                         val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
                         val resolved = config.pointer.element ?: return emptyList()
-                        return resolved.singleton.list()
+                        return resolved.to.singletonList()
                     }
                 }
             }

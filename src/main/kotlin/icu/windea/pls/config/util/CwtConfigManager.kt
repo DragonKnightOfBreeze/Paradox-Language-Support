@@ -45,11 +45,11 @@ import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
@@ -529,21 +529,21 @@ object CwtConfigManager {
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
-                config.singleton.list()
+                config.to.singletonList()
             }
             is CwtValueConfig -> {
                 config.propertyConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
-                config.singleton.list()
+                config.to.singletonList()
             }
             is CwtSingleAliasConfig -> {
-                config.config.singleton.listOrEmpty()
+                config.config.to.singletonListOrEmpty()
             }
             is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
             }
             is CwtDirectiveConfig -> {
-                config.config.singleton.listOrEmpty()
+                config.config.to.singletonListOrEmpty()
             }
             else -> {
                 emptyList()

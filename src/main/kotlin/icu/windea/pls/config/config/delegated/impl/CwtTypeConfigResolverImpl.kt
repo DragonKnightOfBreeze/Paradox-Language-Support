@@ -23,8 +23,7 @@ import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.ReversibleValue
-import icu.windea.pls.core.util.takeWithOperator
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.model.ParadoxTagType
 
 internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverScope {

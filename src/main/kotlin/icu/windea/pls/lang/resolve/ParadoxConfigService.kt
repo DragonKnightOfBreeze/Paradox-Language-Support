@@ -35,10 +35,10 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
@@ -364,7 +364,7 @@ object ParadoxConfigService {
         val result = when (valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
                 val inlined = CwtConfigManipulator.inlineSingleAlias(config)
-                inlined?.singleton?.list()
+                inlined?.to?.singletonList()
             }
             CwtDataTypes.AliasMatchLeft -> {
                 val inlined = CwtConfigManipulator.inlineAlias(config, key)
