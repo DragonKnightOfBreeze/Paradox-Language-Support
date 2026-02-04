@@ -8,10 +8,10 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.quickfix.InsertStringFix
 
 class CwtBasicAnnotator : Annotator {
@@ -40,7 +40,7 @@ class CwtBasicAnnotator : Annotator {
         }
     }
 
-    private fun PsiElement?.isLiteral() = this is CwtPropertyKey || this is CwtValue
+    private fun PsiElement?.isLiteral() = this is CwtExpressionElement
 
     private fun PsiElement?.isQuoteAware() = this is CwtOptionKey || this is CwtPropertyKey || this is CwtString
 }

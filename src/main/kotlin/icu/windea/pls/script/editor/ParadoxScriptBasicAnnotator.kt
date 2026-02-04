@@ -10,13 +10,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.quickfix.InsertStringFix
+import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
 class ParadoxScriptBasicAnnotator : Annotator {
@@ -74,12 +74,13 @@ class ParadoxScriptBasicAnnotator : Annotator {
 
     private fun PsiElement?.isLiteral() = this is ParadoxScriptExpressionElement
 
-    private fun PsiElement?.isQuoteAware() = this is ParadoxScriptStringExpressionElement
+    private fun PsiElement?.isQuoteAware() = this is ParadoxScriptPropertyKey || this is ParadoxScriptString
 
     private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
         val elementType = element.elementType
         if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
-        val templateElement = element.parent?.parent ?: return
+        val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
+        val templateElement = parameterElement.parent ?: return
         val attributesKey = when {
             element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY
             templateElement is ParadoxScriptPropertyKey -> Keys.PROPERTY_KEY_KEY
