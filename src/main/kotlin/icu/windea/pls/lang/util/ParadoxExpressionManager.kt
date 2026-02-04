@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -30,7 +31,9 @@ import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -59,6 +62,9 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -226,6 +232,17 @@ object ParadoxExpressionManager {
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
+    }
+
+    fun resolve(text: String, contextElement: PsiElement?, project: Project): String? {
+        // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
+        run {
+            val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
+            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+            ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
+            ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
+        }
+        return text
     }
 
     // endregion

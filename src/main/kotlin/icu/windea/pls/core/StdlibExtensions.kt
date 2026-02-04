@@ -30,7 +30,8 @@ val EMPTY_OBJECT: Any = EmptyObject
 
 /** 空操作，占位用。 */
 @Suppress("EmptyMethod")
-inline fun pass() {}
+inline fun pass() {
+}
 
 /** 若 [condition] 为 `true`，对接收者执行 [block] 并返回结果，否则返回接收者本身。 */
 @OptIn(ExperimentalContracts::class)
@@ -576,10 +577,10 @@ fun Boolean.toInt() = if (this) 1 else 0
 /** `null` 则返回空字符串。 */
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
-/** "yes"/"no" 到布尔的转换（忽略大小写）。 */
-fun String?.toBooleanYesNo() = this.equals("yes", true)
+/** "yes"/"no" 到布尔的转换（不忽略大小写）。 */
+fun String?.toBooleanYesNo() = if (this == "yes") true else false
 
-/** "yes"/"no" 到可空布尔的转换："yes"->true，"no"->false，其他->null。 */
+/** "yes"/"no" 到可空布尔值的转换（不忽略大小写）。 */
 fun String?.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
 
 /** 生成基于内容的稳定 UUID。 */

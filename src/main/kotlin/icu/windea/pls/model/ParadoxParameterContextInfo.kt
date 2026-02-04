@@ -25,7 +25,7 @@ import java.util.*
 class ParadoxParameterContextInfo(
     val parameters: Map<String, List<Parameter>>,
     val project: Project,
-    val gameType: ParadoxGameType
+    val gameType: ParadoxGameType,
 ) {
     /**
      * @property conditionExpressions 文件中从上到下，链表中从左到右，记录参数条件表达式的堆栈。如果 [element] 是 [ParadoxConditionParameter]，则应当为 null。

@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
@@ -233,13 +234,13 @@ object ParadoxParameterManager {
         // 如果是条件参数，则为可选
         if (parameterInfo.conditionExpressions == null) return true
         // 如果从参数条件表达式的堆栈来看是可选的，则为可选
-        if (isOptionalFromConditionStack(parameterInfo, argumentNames)) return true
+        if (isOptionalFromConditionExpressions(parameterInfo, argumentNames)) return true
         // 如果作为传入参数的值，则认为是可选的
         if (isPassingParameterValue(parameterInfo)) return true
         return false
     }
 
-    private fun isOptionalFromConditionStack(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
+    private fun isOptionalFromConditionExpressions(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
         val conditionExpressions = parameterInfo.conditionExpressions
         if (conditionExpressions.isNullOrEmpty()) return false
         return !conditionExpressions.all { it.matches(argumentNames) }
@@ -247,6 +248,36 @@ object ParadoxParameterManager {
 
     private fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
         return parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+    }
+
+    fun getRequiredParameterNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, argumentNames: MutableSet<String>): MutableSet<String> {
+        val result = mutableSetOf<String>()
+        ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
+            ProgressManager.checkCanceled()
+            val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
+            if (parameterContextInfo.parameters.isEmpty()) return@p true
+            for (parameterName in parameterContextInfo.parameters.keys) {
+                if (result.contains(parameterName)) continue
+                if (!isOptional(parameterContextInfo, parameterName, argumentNames)) result.add(parameterName)
+            }
+            false
+        }
+        return result
+    }
+
+    fun getPresentArgumentNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo): MutableSet<String> {
+        val result = mutableSetOf<String>()
+        for (argument in contextReferenceInfo.arguments) {
+            if (!isPresent(element, argument, contextReferenceInfo.project)) continue
+            result.add(argument.argumentName)
+        }
+        return result
+    }
+
+    fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument, project: Project): Boolean {
+        val argumentValue = argumentInfo.argumentValue ?: return true
+        val resolved = ParadoxExpressionManager.resolve(argumentValue, element, project)
+        return resolved != "no"
     }
 
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -284,7 +315,10 @@ object ParadoxParameterManager {
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
-        val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
+        val argumentNames = mutableSetOf<String>()
+        for (argument in contextReferenceInfo.arguments) {
+            argumentNames.add(argument.argumentName)
+        }
         // 整合查找到的所有参数上下文
         ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
