@@ -17,7 +17,7 @@ class ObservableTest {
     @Test
     fun test() {
         val obj = Role("Neuro", "Sama", "")
-        val arg = "ai,vtuber,lovely,cute"
+        val arg = "ai, vtuber, lovely, cute"
         val args = arrayOf("ai", "vtuber", "lovely", "cute")
 
         obj.name = "Evil Neuro"
