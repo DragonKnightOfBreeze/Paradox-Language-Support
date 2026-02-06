@@ -50,6 +50,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -552,7 +553,11 @@ object ParadoxExpressionManager {
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, options).get(options) }
+        return keys.find { key ->
+            val configExpression = CwtDataExpression.resolve(key, true)
+            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
+            ParadoxMatchService.matchScriptExpression(context).get(options)
+        }
     }
 
     // endregion

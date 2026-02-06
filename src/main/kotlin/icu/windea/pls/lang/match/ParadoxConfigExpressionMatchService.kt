@@ -13,13 +13,13 @@ object ParadoxConfigExpressionMatchService {
     fun matchesTemplate(
         element: PsiElement,
         configGroup: CwtConfigGroup,
-        expression: String,
+        expressionText: String,
         templateExpression: CwtTemplateExpression,
         options: ParadoxMatchOptions? = null,
     ): Boolean {
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return false
-        val expressionString = expression.unquote()
+        val expressionString = expressionText.unquote()
         val regex = CwtConfigExpressionManager.toRegex(templateExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return false
         if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
@@ -30,8 +30,8 @@ object ParadoxConfigExpressionMatchService {
             val matchGroup = matchResult.groups.get(i++) ?: return false
             val matchValue = matchGroup.value
             if (matchValue.isEmpty() && snippetExpression.type == CwtDataTypes.Definition) return false // skip anonymous definitions
-            val scriptExpression = ParadoxScriptExpression.resolve(matchValue, false)
-            val matched = ParadoxMatchService.matchScriptExpression(element, scriptExpression, snippetExpression, null, configGroup, options).get(options)
+            val context = ParadoxScriptExpressionMatchContext(element, ParadoxScriptExpression.resolve(matchValue, false), snippetExpression, null, configGroup, options)
+            val matched = ParadoxMatchService.matchScriptExpression(context).get(options)
             if (!matched) return false
         }
         return true

@@ -352,6 +352,7 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesPropertyForSubtype(definition: ParadoxScriptDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, options: ParadoxMatchOptions?): Boolean {
+        val configGroup = propertyConfig.configGroup
         val propValue = property.propertyValue
 
         // 对于 propertyValue 同样这样判断（可能脚本没有写完）
@@ -366,8 +367,8 @@ object ParadoxConfigMatchService {
             propertyConfig.stringValue != null -> {
                 val expression = ParadoxScriptExpression.resolve(propValue, options)
                 val configExpression = propertyConfig.valueExpression
-                val configGroup = propertyConfig.configGroup
-                return ParadoxMatchService.matchScriptExpression(propValue, expression, configExpression, propertyConfig, configGroup, options).get(options)
+                val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, options)
+                return ParadoxMatchService.matchScriptExpression(context).get(options)
             }
             // 匹配 single_alias
             isSingleAliasEntryConfig(propertyConfig) -> {
@@ -401,8 +402,8 @@ object ParadoxConfigMatchService {
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, options)
             val propConfigs = propertyConfigs.filter { config ->
-                val configExpression = config.keyExpression
-                ParadoxMatchService.matchScriptExpression(keyElement, expression, configExpression, config, configGroup, options).get(options)
+                val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, options)
+                ParadoxMatchService.matchScriptExpression(context).get(options)
             }
 
             // 如果没有匹配的规则则忽略
@@ -433,7 +434,8 @@ object ParadoxConfigMatchService {
             val expression = ParadoxScriptExpression.resolve(valueElement, options)
             val matched = valueConfigs.any { config ->
                 val configExpression = config.valueExpression
-                val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, configExpression, config, configGroup, options).get(options)
+                val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, options)
+                val matched = ParadoxMatchService.matchScriptExpression(context).get(options)
                 if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }

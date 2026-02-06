@@ -84,7 +84,9 @@ object ParadoxMatchOccurrenceService {
             val matched = childConfigs.find { childConfig ->
                 if (childConfig.isProperty() && data !is ParadoxScriptProperty) return@find false
                 if (childConfig.isValue() && data !is ParadoxScriptValue) return@find false
-                ParadoxMatchService.matchScriptExpression(data, expression, childConfig.configExpression, childConfig, configGroup).get()
+                val configExpression = childConfig.configExpression
+                val context = ParadoxScriptExpressionMatchContext(data, expression, configExpression, childConfig, configGroup)
+                ParadoxMatchService.matchScriptExpression(context).get()
             }
             if (matched == null) return@f
             val occurrence = occurrences[matched.configExpression]

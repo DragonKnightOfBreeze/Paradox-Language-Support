@@ -1,8 +1,6 @@
 package icu.windea.pls.lang.match
 
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
@@ -16,15 +14,7 @@ object ParadoxMatchService {
      * @see ParadoxScriptExpressionMatcher.match
      */
     @Optimized
-    fun matchScriptExpression(
-        element: PsiElement,
-        expression: ParadoxScriptExpression,
-        configExpression: CwtDataExpression,
-        config: CwtConfig<*>?,
-        configGroup: CwtConfigGroup,
-        options: ParadoxMatchOptions? = null,
-    ): ParadoxMatchResult {
-        val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, options)
+    fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val eps = ParadoxScriptExpressionMatcher.EP_NAME.extensionList
         eps.forEachFast { ep ->
             val r = ep.match(context)
@@ -37,13 +27,7 @@ object ParadoxMatchService {
      * @see ParadoxCsvExpressionMatcher.match
      */
     @Optimized
-    fun matchCsvExpression(
-        element: PsiElement,
-        expressionText: String,
-        configExpression: CwtDataExpression,
-        configGroup: CwtConfigGroup,
-    ): ParadoxMatchResult {
-        val context = ParadoxCsvExpressionMatcher.Context(element, expressionText, configExpression, configGroup)
+    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val eps = ParadoxCsvExpressionMatcher.EP_NAME.extensionList
         eps.forEachFast { ep ->
             val r = ep.match(context)

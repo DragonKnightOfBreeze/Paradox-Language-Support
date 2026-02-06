@@ -38,9 +38,9 @@ object ParadoxPatternMatchService {
         val configExpression = CwtDataExpression.resolve(pattern0, true)
         if (configExpression.expressionString.isEmpty()) return false
         val expression = ParadoxScriptExpression.resolve(key)
-        val matchContext = ParadoxScriptExpressionMatcher.Context(contextElement, expression, configExpression, null, configGroup, options)
+        val matchContext = ParadoxScriptExpressionMatchContext(contextElement, expression, configExpression, null, configGroup, options)
         val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.isPatternAware()) return@f null
+            if (!ep.isPatternAware(matchContext)) return@f null
             ep.match(matchContext)
         }
         if (matchResult == null) return false
