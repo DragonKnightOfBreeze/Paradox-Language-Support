@@ -2,12 +2,12 @@ package icu.windea.pls.lang.index
 
 import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 定义声明的名字的索引。
  */
-class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
+class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionElement>() {
     override fun getKey() = PlsIndexKeys.DefinitionName
 
     override fun getVersion() = PlsIndexVersions.ScriptStub
@@ -17,7 +17,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     /**
      * @see ParadoxDefinitionIndexConstraint
      */
-    sealed class BaseIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
+    sealed class BaseIndex : StringStubIndexExtension<ParadoxDefinitionElement>() {
         override fun getVersion() = PlsIndexVersions.ScriptStub
     }
 

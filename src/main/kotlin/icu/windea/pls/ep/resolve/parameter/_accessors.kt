@@ -11,11 +11,11 @@ import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 val ParadoxParameterSupport.Keys.support by registerKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
-val ParadoxParameterSupport.Keys.containingContextReference by registerKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
+val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
+val ParadoxParameterSupport.Keys.containingContextReference by registerKey<SmartPsiElementPointer<ParadoxDefinitionElement>>(ParadoxParameterSupport.Keys).withSync()
 val ParadoxParameterSupport.Keys.definitionName by registerKey<String>(ParadoxParameterSupport.Keys).withSync()
 val ParadoxParameterSupport.Keys.definitionTypes by registerKey<List<String>>(ParadoxParameterSupport.Keys).withSync()
 val ParadoxParameterSupport.Keys.inlineScriptExpression by registerKey<String>(ParadoxParameterSupport.Keys).withSync()

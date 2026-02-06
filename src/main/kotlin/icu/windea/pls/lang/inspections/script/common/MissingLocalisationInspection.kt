@@ -24,7 +24,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -83,12 +83,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
-                    is ParadoxScriptDefinitionElement -> visitDefinitionElement(element)
+                    is ParadoxDefinitionElement -> visitDefinitionElement(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
 
-            private fun visitDefinitionElement(element: ParadoxScriptDefinitionElement) {
+            private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
                 val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return

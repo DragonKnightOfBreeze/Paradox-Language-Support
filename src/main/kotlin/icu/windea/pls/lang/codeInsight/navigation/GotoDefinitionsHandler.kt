@@ -20,7 +20,7 @@ import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
@@ -59,13 +59,13 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
+        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.or.anonymous()
         return PlsBundle.message("script.goto.definitions.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
+        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.or.anonymous()
         return PlsBundle.message("script.goto.definitions.findUsagesTitle", definitionName.escapeXml())
     }

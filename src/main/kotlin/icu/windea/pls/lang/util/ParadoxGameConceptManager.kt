@@ -17,25 +17,25 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.propertyValue
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
-    fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptDefinitionElement? {
+    fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxDefinitionElement? {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
             .filterBy { getName(it) == nameOrAlias || getAlias(it).contains(nameOrAlias) }
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String {
+    fun getName(element: ParadoxDefinitionElement): String {
         return element.name // = element.definitionInfo?.name
     }
 
-    fun getAlias(element: ParadoxScriptDefinitionElement): Set<String> {
+    fun getAlias(element: ParadoxDefinitionElement): Set<String> {
         return element.getDefinitionData<StellarisGameConceptData>()?.alias.orEmpty()
     }
 

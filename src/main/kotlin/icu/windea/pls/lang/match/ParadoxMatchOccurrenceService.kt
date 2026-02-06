@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -57,7 +57,7 @@ object ParadoxMatchOccurrenceService {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val blockElement = when (element) {
-            is ParadoxScriptDefinitionElement -> element.block
+            is ParadoxDefinitionElement -> element.block
             is ParadoxScriptBlockElement -> element
             else -> null
         }

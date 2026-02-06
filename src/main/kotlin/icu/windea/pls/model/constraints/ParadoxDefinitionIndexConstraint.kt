@@ -3,14 +3,14 @@ package icu.windea.pls.model.constraints
 import com.intellij.psi.stubs.StubIndexKey
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 enum class ParadoxDefinitionIndexConstraint(
-    override val indexKey: StubIndexKey<String, ParadoxScriptDefinitionElement>,
+    override val indexKey: StubIndexKey<String, ParadoxDefinitionElement>,
     val definitionType: String,
     override val ignoreCase: Boolean = false,
     override val inferred: Boolean = false,
-) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
+) : ParadoxIndexConstraint<ParadoxDefinitionElement> {
     Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.resource),
     EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.economicCategory),
     GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.gameConcept),

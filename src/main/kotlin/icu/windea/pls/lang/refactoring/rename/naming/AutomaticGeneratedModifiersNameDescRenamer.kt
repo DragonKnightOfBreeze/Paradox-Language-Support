@@ -15,14 +15,14 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正的作为名字和描述的本地化（如果存在）。
  */
 class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxScriptDefinitionElement
+        element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
@@ -41,7 +41,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
 
     override fun entityName() = PlsBundle.message("rename.generatedModifiersNameDesc.entityName")
 
-    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.modifiers.orNull() ?: return
         val project = definitionInfo.project

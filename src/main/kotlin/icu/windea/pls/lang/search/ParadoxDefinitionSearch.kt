@@ -4,12 +4,12 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 定义的查询。
  */
-class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionElement, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 定义的名字。
      * @property typeExpression 定义的类型表达式。
@@ -19,13 +19,13 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
     class SearchParameters(
         val name: String?,
         val typeExpression: String?,
-        override val selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>,
+        override val selector: ParadoxSearchSelector<ParadoxDefinitionElement>,
         val forFile: Boolean = true,
-    ) : ParadoxSearchParameters<ParadoxScriptDefinitionElement>
+    ) : ParadoxSearchParameters<ParadoxDefinitionElement>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
         @JvmField
         val INSTANCE = ParadoxDefinitionSearch()
 
@@ -36,9 +36,9 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         fun search(
             name: String?,
             typeExpression: String?,
-            selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>,
+            selector: ParadoxSearchSelector<ParadoxDefinitionElement>,
             forFile: Boolean = true,
-        ): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
+        ): ParadoxQuery<ParadoxDefinitionElement, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
         }
     }

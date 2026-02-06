@@ -72,7 +72,7 @@ import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
@@ -165,14 +165,14 @@ object ParadoxParameterManager {
      *
      * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
-    fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = doGetContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
     }
 
-    private fun doGetContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    private fun doGetContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序

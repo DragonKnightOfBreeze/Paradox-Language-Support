@@ -22,7 +22,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
@@ -62,11 +62,11 @@ object ParadoxLocalisationManager {
         return result
     }
 
-    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
+    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
         return doGetRelatedDefinitions(element) // 直接获取
     }
 
-    private fun doGetRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
+    private fun doGetRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element) ?: return emptyList()
@@ -78,7 +78,7 @@ object ParadoxLocalisationManager {
         }
         if (namesToSearch.isEmpty()) return emptyList()
         val selector = selector(project, element).definition().contextSensitive()
-        val result = mutableListOf<ParadoxScriptDefinitionElement>()
+        val result = mutableListOf<ParadoxDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
             // op: only search definitions declared by a property, rather than by a file, to optimize performance

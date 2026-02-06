@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -83,7 +83,7 @@ class ParadoxScriptAnnotator : Annotator {
         }
     }
 
-    private fun annotateDefinition(element: ParadoxScriptDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
+    private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
         if (element is ParadoxScriptProperty) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY).create()
         }

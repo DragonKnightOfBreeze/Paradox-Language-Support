@@ -8,26 +8,26 @@ import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.model.index.ParadoxFilePathIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object PlsIndexKeys {
     val ScriptedVariableName = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
-    val DefinitionName = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index")
-    val DefinitionType = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")
+    val DefinitionName = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index")
+    val DefinitionType = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.type.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
     val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
-    val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.resource")
-    val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.economicCategory")
-    val DefinitionNameForEventNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.eventNamespace")
-    val DefinitionNameForEvent = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.event")
-    val DefinitionNameForGameConcept = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.gameConcept")
-    val DefinitionNameForSprite = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.sprite")
-    val DefinitionNameForTextColor = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.textColor")
-    val DefinitionNameForTextIcon = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.textIcon")
-    val DefinitionNameForTextFormat = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.textFormat")
+    val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.resource")
+    val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.economicCategory")
+    val DefinitionNameForEventNamespace = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.eventNamespace")
+    val DefinitionNameForEvent = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.event")
+    val DefinitionNameForGameConcept = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.gameConcept")
+    val DefinitionNameForSprite = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.sprite")
+    val DefinitionNameForTextColor = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textColor")
+    val DefinitionNameForTextIcon = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textIcon")
+    val DefinitionNameForTextFormat = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textFormat")
 
     val LocalisationNameForModifier = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")

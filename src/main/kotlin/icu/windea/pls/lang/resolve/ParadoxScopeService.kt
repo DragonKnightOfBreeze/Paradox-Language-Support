@@ -15,13 +15,13 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.overriddenProvider
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxScopeService {
     /**
      * @see ParadoxDefinitionSupportedScopesProvider.getSupportedScopes
      */
-    fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
+    fun getSupportedScopes(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionSupportedScopesProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
@@ -33,7 +33,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDefinitionScopeContextProvider.getScopeContext
      */
-    fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
+    fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
@@ -45,7 +45,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDefinitionInferredScopeContextProvider.getScopeContext
      */
-    fun getInferredScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
+    fun getInferredScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val gameType = definitionInfo.gameType
         var map: Map<String, String>? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
@@ -68,7 +68,7 @@ object ParadoxScopeService {
      * @see ParadoxDefinitionInferredScopeContextProvider.getMessage
      */
     @Suppress("unused")
-    fun getInferenceMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    fun getInferenceMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val gameType = definitionInfo.gameType
         var message: String? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
@@ -88,7 +88,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDefinitionInferredScopeContextProvider.getErrorMessage
      */
-    fun getInferenceErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    fun getInferenceErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val gameType = definitionInfo.gameType
         var errorMessage: String? = null
         ParadoxDefinitionInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->

@@ -22,7 +22,7 @@ import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
 import icu.windea.pls.lang.project
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.text.MessageFormat
 import javax.swing.JTree
@@ -51,7 +51,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
         val name = when {
             element is ParadoxScriptScriptedVariable -> element.name
-            element is ParadoxScriptDefinitionElement -> element.definitionInfo?.name.or.anonymous()
+            element is ParadoxDefinitionElement -> element.definitionInfo?.name.or.anonymous()
             element is ParadoxLocalisationProperty -> element.name.or.anonymous()
             else -> return null
         }
@@ -63,12 +63,12 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     }
 
     override fun isApplicableElement(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptDefinitionElement || element is ParadoxLocalisationProperty
+        return element is ParadoxScriptScriptedVariable || element is ParadoxDefinitionElement || element is ParadoxLocalisationProperty
     }
 
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
         val baseDescriptor = ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)
-        val baseDefinitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+        val baseDefinitionInfo = psiElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo
         return when (type) {
             getCallerType() -> ParadoxCallerHierarchyTreeStructure(myProject, baseDescriptor, baseDefinitionInfo)
             getCalleeType() -> ParadoxCalleeHierarchyTreeStructure(myProject, baseDescriptor, baseDefinitionInfo)

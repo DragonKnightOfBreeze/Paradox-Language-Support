@@ -9,7 +9,7 @@ import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找定义。
@@ -31,7 +31,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter
-        val requiredClass = ParadoxScriptDefinitionElement::class.java
+        val requiredClass = ParadoxDefinitionElement::class.java
         // for non-file definitions only
         StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass, processor)
     }

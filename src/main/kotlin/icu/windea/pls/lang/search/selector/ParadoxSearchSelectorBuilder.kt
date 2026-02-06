@@ -8,7 +8,7 @@ import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -18,7 +18,7 @@ class ParadoxSearchSelectorBuilder(
 ) {
     fun scriptedVariable() = ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context)
 
-    fun definition() = ParadoxSearchSelector<ParadoxScriptDefinitionElement>(project, context)
+    fun definition() = ParadoxSearchSelector<ParadoxDefinitionElement>(project, context)
 
     fun localisation() = ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context)
 

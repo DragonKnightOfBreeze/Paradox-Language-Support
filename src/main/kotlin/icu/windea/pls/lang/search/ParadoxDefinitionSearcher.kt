@@ -13,6 +13,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
@@ -21,14 +22,13 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 定义的查询器。
  */
-class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
+class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxDefinitionElement>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsStates.resolveForMergedIndex.get() == true) return
 
@@ -62,7 +62,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         }
     }
 
-    private fun ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?.optimized(typeExpression: ParadoxDefinitionTypeExpression?): ParadoxIndexConstraint<ParadoxScriptDefinitionElement>? {
+    private fun ParadoxIndexConstraint<ParadoxDefinitionElement>?.optimized(typeExpression: ParadoxDefinitionTypeExpression?): ParadoxIndexConstraint<ParadoxDefinitionElement>? {
         // 如果没有默认选用的约束，且存在指定的定义类型对应的约束，则自动选用
         if (this != null) return this
         if (typeExpression == null) return null
@@ -75,8 +75,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         configGroup: CwtConfigGroup,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
         scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
-        processor: Processor<in ParadoxScriptDefinitionElement>
+        constraint: ParadoxIndexConstraint<ParadoxDefinitionElement>?,
+        processor: Processor<in ParadoxDefinitionElement>
     ): Boolean {
         if (queryParameters.forFile && typePerFile(typeExpression, configGroup)) {
             return processQueryForFileDefinitions(name, typeExpression, queryParameters, scope, constraint) { processor.process(it) }
@@ -89,7 +89,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         typeExpression: ParadoxDefinitionTypeExpression?,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
         scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
+        constraint: ParadoxIndexConstraint<ParadoxDefinitionElement>?,
         processor: Processor<ParadoxScriptFile>
     ): Boolean {
         ProgressManager.checkCanceled()
@@ -112,8 +112,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         typeExpression: ParadoxDefinitionTypeExpression?,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
         scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
-        processor: Processor<in ParadoxScriptDefinitionElement>
+        constraint: ParadoxIndexConstraint<ParadoxDefinitionElement>?,
+        processor: Processor<in ParadoxDefinitionElement>
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = queryParameters.project
@@ -170,15 +170,15 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         return subtypes.isNullOrEmpty() || definitionInfo.subtypes.containsAll(subtypes)
     }
 
-    // private fun matchesName(element: ParadoxScriptDefinitionElement, name: String?, ignoreCase: Boolean = false): Boolean {
+    // private fun matchesName(element: ParadoxDefinitionElement, name: String?, ignoreCase: Boolean = false): Boolean {
     //     return name == null || ParadoxDefinitionManager.getName(element).equals(name, ignoreCase)
     // }
 
-    private fun matchesType(element: ParadoxScriptDefinitionElement, type: String?): Boolean {
+    private fun matchesType(element: ParadoxDefinitionElement, type: String?): Boolean {
         return type == null || ParadoxDefinitionManager.getType(element) == type
     }
 
-    private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>?): Boolean {
+    private fun matchesSubtypes(element: ParadoxDefinitionElement, subtypes: List<String>?): Boolean {
         return subtypes.isNullOrEmpty() || ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
     }
 }

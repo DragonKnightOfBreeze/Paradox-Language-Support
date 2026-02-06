@@ -23,7 +23,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.awt.Font
@@ -56,7 +56,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val name = element.name.or.anonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
-            is ParadoxScriptDefinitionElement -> {
+            is ParadoxDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
                 val name = definitionInfo.name.or.anonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
@@ -105,7 +105,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
             is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableManager.getLocalizedName(element)
-            is ParadoxScriptDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
             else -> null
         }
     }

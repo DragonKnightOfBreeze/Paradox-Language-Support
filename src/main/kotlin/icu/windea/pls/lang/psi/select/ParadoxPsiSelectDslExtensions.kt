@@ -25,7 +25,7 @@ import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -34,7 +34,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.script.psi.parentBlock
 
 // region Walks
 
@@ -231,14 +230,14 @@ fun PsiElement.parentMemberContainer(orSelf: Boolean = false): ParadoxScriptMemb
 
 // TODO 2.1.1 further refactoring
 /**
- * 向上得到第一个属性。可能为 `null`，可能是定义，可能是脚本文件。
+ * 向上得到第一个属性或文件。
  *
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = true, fromBlock: Boolean = false): ParadoxScriptDefinitionElement? {
+fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = true, fromBlock: Boolean = false): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     var current = this
     when {
@@ -246,7 +245,7 @@ fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = t
         current is ParadoxScriptMember -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
-        if (current is ParadoxScriptDefinitionElement) {
+        if (current is ParadoxDefinitionElement) {
             if (propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
         }
         if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
@@ -259,22 +258,22 @@ fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = t
 
 // TODO 2.1.1 further refactoring
 /**
- * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
+ * 基于路径向上查找指定的属性、值或文件。如果路径为空，则返回查找到的第一个属性或值（块）。
  *
- * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
+ * @param definitionType 如果不为 null 则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
  *
  * @see ParadoxMemberPath
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = true, definitionType: String? = null): PsiElement? {
+fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = true, definitionType: String? = null): ParadoxScriptMemberContainer? {
     // if (language !is ParadoxScriptLanguage) return null
-    var current = this
+    var current: ParadoxScriptMemberContainer = this
     if (path.isNotEmpty()) {
         val memberPath = ParadoxMemberPath.resolve(path)
         for (subPath in memberPath.subPaths.reversed()) {
             current = when (subPath) {
-                "-" -> current.parentBlock ?: return null
+                "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
                 else -> current.parentOfKey(subPath, ignoreCase) ?: return null
             }
             ProgressManager.checkCanceled()
@@ -298,7 +297,7 @@ fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = tr
 /** @see CwtTypeConfig.nameField */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun ParadoxScriptDefinitionElement.nameElement(nameField: String?): ParadoxScriptExpressionElement? {
+fun ParadoxDefinitionElement.nameElement(nameField: String?): ParadoxScriptExpressionElement? {
     // no conditional or inline here
     if (nameField == null) return asProperty()?.propertyKey
     return nameFieldElement(nameField)
@@ -307,7 +306,7 @@ fun ParadoxScriptDefinitionElement.nameElement(nameField: String?): ParadoxScrip
 /** @see CwtTypeConfig.nameField */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun ParadoxScriptDefinitionElement.nameFieldElement(nameField: String?): ParadoxScriptValue? {
+fun ParadoxDefinitionElement.nameFieldElement(nameField: String?): ParadoxScriptValue? {
     // no conditional or inline here
     return when (nameField) {
         null -> null
@@ -324,7 +323,7 @@ fun ParadoxScriptDefinitionElement.nameFieldElement(nameField: String?): Paradox
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinition(orSelf: Boolean = true): ParadoxScriptDefinitionElement? {
+fun PsiElement.parentDefinition(orSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = orSelf) p@{
         if (ParadoxPsiMatcher.isDefinition(it)) return it
@@ -357,7 +356,7 @@ fun PsiElement.parentDefinitionInjection(orSelf: Boolean = true): ParadoxScriptP
  */
 context(_: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinitionOrInjection(orSelf: Boolean = true): ParadoxScriptDefinitionElement? {
+fun PsiElement.parentDefinitionOrInjection(orSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = orSelf) p@{
         if (ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it)) return it

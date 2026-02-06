@@ -69,7 +69,7 @@ import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -603,7 +603,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
+    private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
         val prefix = usePrefix ?: PlsStrings.definitionPrefix
@@ -628,7 +628,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
         val categories = ReferenceLinkType.CwtConfig.Categories
         appendIndent().append(PlsBundle.message("inherits")).append(" ")
@@ -720,7 +720,7 @@ object ParadoxDocumentationManager {
                 if (render && sections != null) {
                     // 渲染图片
                     val url = when {
-                        resolveElement is ParadoxScriptDefinitionElement && resolveElement.definitionInfo != null -> {
+                        resolveElement is ParadoxDefinitionElement && resolveElement.definitionInfo != null -> {
                             ParadoxImageManager.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
                         }
                         resolveElement is PsiFile -> {
@@ -893,7 +893,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addParameters(element: ParadoxScriptDefinitionElement) {
+    private fun DocumentationBuilder.addParameters(element: ParadoxDefinitionElement) {
         if (!PlsSettings.getInstance().state.documentation.showParameters) return
 
         val sections = getSections(SECTIONS_INFO) ?: return

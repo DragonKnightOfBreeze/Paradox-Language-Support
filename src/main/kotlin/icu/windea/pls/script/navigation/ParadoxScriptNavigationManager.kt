@@ -15,7 +15,7 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -140,7 +140,7 @@ object ParadoxScriptNavigationManager {
         }
     }
 
-    private fun getDefinitionLocationString(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
+    private fun getDefinitionLocationString(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
         return buildString {
             append(": ").append(definitionInfo.typesText)
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(element)

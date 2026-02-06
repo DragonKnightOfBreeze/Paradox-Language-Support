@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class ParadoxDefinitionUsageGroupingRule(
@@ -26,7 +26,7 @@ class ParadoxDefinitionUsageGroupingRule(
         return ParadoxDefinitionUsageGroup(element, info.name, info.type, info.project, usageViewSettings)
     }
 
-    private fun getDefinition(usage: Usage): ParadoxScriptDefinitionElement? {
+    private fun getDefinition(usage: Usage): ParadoxDefinitionElement? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
         if (element.language !is ParadoxScriptLanguage) return null
         if (element is ParadoxScriptFile) {

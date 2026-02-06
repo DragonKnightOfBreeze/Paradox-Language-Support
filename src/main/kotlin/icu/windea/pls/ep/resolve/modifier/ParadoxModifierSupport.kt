@@ -13,7 +13,7 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 提供对修正的支持。
@@ -47,7 +47,7 @@ interface ParadoxModifierSupport {
      *
      * @return 此扩展点是否适用。
      */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
+    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
 
     object Keys : KeyRegistryWithSync()
 

@@ -71,7 +71,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
-    "icu.windea.pls.script.psi.ParadoxScriptDefinitionElement"
+    "icu.windea.pls.script.psi.ParadoxDefinitionElement"
   ]
   methods=[
     property_key="property_key" property_value="value"

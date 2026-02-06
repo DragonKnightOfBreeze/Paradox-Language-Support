@@ -15,7 +15,7 @@ import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxModifierService {
     /**
@@ -76,7 +76,7 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition
      */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
+    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
         val gameType = definitionInfo.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f false

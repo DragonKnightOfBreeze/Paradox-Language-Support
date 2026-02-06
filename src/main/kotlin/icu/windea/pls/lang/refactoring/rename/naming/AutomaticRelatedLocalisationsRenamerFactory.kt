@@ -7,14 +7,14 @@ import com.intellij.usageView.UsageInfo
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在重命名定义时自动重命名相关本地化（如果存在且需要）。
  */
 class AutomaticRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if (element !is ParadoxScriptDefinitionElement) return false
+        if (element !is ParadoxDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
         return definitionInfo.localisations.isNotEmpty()
     }

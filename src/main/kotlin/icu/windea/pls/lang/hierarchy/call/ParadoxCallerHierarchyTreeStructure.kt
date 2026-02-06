@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 // com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
@@ -37,7 +37,7 @@ class ParadoxCallerHierarchyTreeStructure(
             element is ParadoxScriptScriptedVariable -> {
                 searchElement(element, descriptor, descriptors)
             }
-            element is ParadoxScriptDefinitionElement -> {
+            element is ParadoxDefinitionElement -> {
                 searchElement(element, descriptor, descriptors)
             }
             element is ParadoxLocalisationProperty -> {

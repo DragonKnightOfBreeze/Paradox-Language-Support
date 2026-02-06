@@ -47,7 +47,7 @@ import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -331,7 +331,7 @@ object ParadoxPsiManager {
     /**
      * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
      */
-    fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
+    fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = containerElement.findParentAndAnchorToIntroduceLocalScriptedVariable()
         var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
         val newLine = ParadoxScriptElementFactory.createLine(project)
@@ -340,7 +340,7 @@ object ParadoxPsiManager {
         return newVariable
     }
 
-    private fun ParadoxScriptDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
+    private fun ParadoxDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
         if (this is ParadoxScriptFile) {
             val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
             if (anchor == null) return this to this.lastChild

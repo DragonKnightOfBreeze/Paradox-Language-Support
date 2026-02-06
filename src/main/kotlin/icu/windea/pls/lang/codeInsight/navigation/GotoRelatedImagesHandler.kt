@@ -26,7 +26,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
@@ -97,7 +97,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
                 }
@@ -118,7 +118,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())
                 }

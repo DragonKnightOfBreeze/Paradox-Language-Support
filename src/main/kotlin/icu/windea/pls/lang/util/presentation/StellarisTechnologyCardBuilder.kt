@@ -15,7 +15,7 @@ import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
@@ -27,7 +27,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 class StellarisTechnologyCardBuilder(
-    private val element: ParadoxScriptDefinitionElement
+    private val element: ParadoxDefinitionElement
 ) {
     @Suppress("UseJBColor")
     object Constants {
@@ -145,7 +145,7 @@ class StellarisTechnologyCardBuilder(
         return ParadoxPresentationUtil.getIcon(sprite)
     }
 
-    private fun selector(): ParadoxSearchSelector<ParadoxScriptDefinitionElement> {
+    private fun selector(): ParadoxSearchSelector<ParadoxDefinitionElement> {
         return icu.windea.pls.lang.search.selector.selector(definitionInfo.project, element).definition().contextSensitive()
     }
 }

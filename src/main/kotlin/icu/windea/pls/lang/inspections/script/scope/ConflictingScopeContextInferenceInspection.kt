@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -16,10 +16,10 @@ class ConflictingScopeContextInferenceInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptDefinitionElement) visitDefinitionElement(element)
+                if (element is ParadoxDefinitionElement) visitDefinitionElement(element)
             }
 
-            private fun visitDefinitionElement(element: ParadoxScriptDefinitionElement) {
+            private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
                 val definitionInfo = element.definitionInfo ?: return
                 val description = ParadoxScopeService.getInferenceErrorMessage(element, definitionInfo)

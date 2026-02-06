@@ -10,7 +10,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -105,18 +105,18 @@ object ParadoxRecursionManager {
     }
 
     fun isRecursiveDefinition(
-        element: ParadoxScriptDefinitionElement,
+        element: ParadoxDefinitionElement,
         recursions: MutableCollection<PsiElement>? = null,
-        predicate: ((ParadoxScriptDefinitionElement, PsiElement) -> Boolean)? = null,
+        predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)? = null,
     ): Boolean {
         return doIsRecursiveDefinition(element, recursions, ArrayDeque(), predicate)
     }
 
     private fun doIsRecursiveDefinition(
-        element: ParadoxScriptDefinitionElement,
+        element: ParadoxDefinitionElement,
         recursions: MutableCollection<PsiElement>?,
         stack: ArrayDeque<String>,
-        predicate: ((ParadoxScriptDefinitionElement, PsiElement) -> Boolean)? = null,
+        predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)? = null,
     ): Boolean {
         var result = recursions.isNotNullOrEmpty()
         if (result) return true
@@ -138,7 +138,7 @@ object ParadoxRecursionManager {
                     e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
                         if (!ParadoxResolveConstraint.Definition.canResolve(r)) return@f
-                        val resolved = r.resolve()?.castOrNull<ParadoxScriptDefinitionElement>() ?: return@f
+                        val resolved = r.resolve()?.castOrNull<ParadoxDefinitionElement>() ?: return@f
                         val resolvedDefinition = resolved.definitionInfo ?: return@f
                         if (resolvedDefinition.type != type) return@f
                         if (resolved.name in stack) {

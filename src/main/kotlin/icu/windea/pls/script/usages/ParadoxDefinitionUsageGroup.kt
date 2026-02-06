@@ -11,12 +11,12 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
 import javax.swing.Icon
 
 class ParadoxDefinitionUsageGroup(
-    element: ParadoxScriptDefinitionElement,
+    element: ParadoxDefinitionElement,
     private val name: String,
     private val type: String,
     private val project: Project,

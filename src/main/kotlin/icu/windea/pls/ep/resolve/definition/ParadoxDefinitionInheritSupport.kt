@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 提供对定义的继承逻辑的支持。
@@ -25,7 +25,7 @@ interface ParadoxDefinitionInheritSupport {
      *
      * **注意**：需要避免递归。
      */
-    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
+    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement?
 
     /**
      * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。

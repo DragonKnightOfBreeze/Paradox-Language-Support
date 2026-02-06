@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
 import java.awt.Font
 import javax.swing.Icon
@@ -67,7 +67,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
                 return@run
             }
 
-            if (nodeType != NodeType.Definition || element !is ParadoxScriptDefinitionElement) return@run
+            if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!(hierarchySettings.showLocalizedName)) return@run
             val localizedName = getLocalizedName(element)
             if (localizedName.isNullOrEmpty()) return@run
@@ -75,7 +75,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         }
         run {
             if (type != Type.EventTreeInvoker && type != Type.EventTreeInvoked) return@run
-            if (nodeType != NodeType.Definition || element !is ParadoxScriptDefinitionElement) return@run
+            if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showEventInfo) return@run
             val definitionInfo = element.definitionInfo ?: return@run
             val gameType = definitionInfo.gameType
@@ -97,7 +97,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         }
         run {
             if (type != Type.TechTreePre && type != Type.TechTreePost) return@run
-            if (nodeType != NodeType.Definition || element !is ParadoxScriptDefinitionElement) return@run
+            if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showTechInfo) return@run
             val definitionInfo = element.definitionInfo ?: return@run
             if (definitionInfo.gameType != ParadoxGameType.Stellaris) return@run
@@ -139,7 +139,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
                 return@run
             }
 
-            if (nodeType != NodeType.Definition || element !is ParadoxScriptDefinitionElement) return@run
+            if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showLocationInfo) return@run
             val fileInfo = file.fileInfo ?: return@run
             val text = buildString {
@@ -164,7 +164,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     private fun getLocalizedName(element: PsiElement): String? {
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
-            is ParadoxScriptDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
             else -> null
         }
     }

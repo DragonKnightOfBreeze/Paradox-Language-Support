@@ -9,14 +9,14 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在重命名定义时自动重命名相关图片（重命名文件名，如果存在且需要）。
  */
 class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxScriptDefinitionElement
+        element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
@@ -35,7 +35,7 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
 
     override fun entityName() = PlsBundle.message("rename.relatedImages.entityName")
 
-    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {

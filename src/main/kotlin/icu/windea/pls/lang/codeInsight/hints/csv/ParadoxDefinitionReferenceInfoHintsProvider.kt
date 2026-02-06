@@ -9,7 +9,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 通过内嵌提示显示定义引用信息，包括类型和子类型。
@@ -23,7 +23,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvi
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return
         val resolved = reference.resolve() ?: return
-        if (resolved !is ParadoxScriptDefinitionElement) return
+        if (resolved !is ParadoxDefinitionElement) return
         val definitionInfo = resolved.definitionInfo ?: return
 
         // 省略定义名

@@ -40,7 +40,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicInteger
@@ -215,7 +215,7 @@ class ParadoxLocalisationTextInlayRenderer(
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
                 resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }

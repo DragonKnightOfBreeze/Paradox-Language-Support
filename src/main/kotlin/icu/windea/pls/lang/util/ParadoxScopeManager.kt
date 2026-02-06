@@ -74,7 +74,7 @@ import icu.windea.pls.model.scope.promotions
 import icu.windea.pls.model.scope.toScopeIdMap
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -181,7 +181,7 @@ object ParadoxScopeManager {
 
     fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMember? {
         return element.parents(withSelf)
-            .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
+            .find { it is ParadoxDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
             .castOrNull<ParadoxScriptMember>()
     }
 
@@ -190,7 +190,7 @@ object ParadoxScopeManager {
      */
     fun isScopeContextSupported(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
         // some definitions, such as on_action, also support scope context on definition level
-        if (element is ParadoxScriptDefinitionElement) {
+        if (element is ParadoxDefinitionElement) {
             val definitionInfo = element.definitionInfo
             if (definitionInfo != null) {
                 val configGroup = definitionInfo.configGroup
@@ -271,9 +271,9 @@ object ParadoxScopeManager {
 
     private fun doGetSwitchedScopeContextOfDefinition(element: ParadoxScriptMember): ParadoxScopeContext? {
         // should be a definition
-        val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
+        val definitionInfo = element.castOrNull<ParadoxDefinitionElement>()?.definitionInfo
         if (definitionInfo != null) {
-            element as ParadoxScriptDefinitionElement
+            element as ParadoxDefinitionElement
 
             // 使用提供的作用域上下文
             val scopeContext = ParadoxScopeService.getScopeContext(element, definitionInfo)

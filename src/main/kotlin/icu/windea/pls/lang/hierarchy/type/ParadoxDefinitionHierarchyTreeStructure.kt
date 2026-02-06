@@ -23,7 +23,7 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
@@ -234,7 +234,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             }.optimized()
     }
 
-    private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxScriptDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {
+    private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {
         val definitionInfo = definition.definitionInfo ?: return false
         if (descriptor.nodeType == NodeType.NoSubtype && !definitionInfo.subtypes.isEmpty()) return false
         for ((nodeType, name) in groupingRules) {
@@ -263,7 +263,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun buildNestedDefinitionChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
         val project = myProject
-        val definition = descriptor.psiElement?.castOrNull<ParadoxScriptDefinitionElement>() ?: return
+        val definition = descriptor.psiElement?.castOrNull<ParadoxDefinitionElement>() ?: return
         val definitionInfo = definition.definitionInfo ?: return
         if (!type.predicate(definitionInfo)) return
         val searchScopeType = getHierarchySettings().scopeType
@@ -285,7 +285,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     override fun getLeafState(element: Any): LeafState {
-        if (element is ParadoxScriptDefinitionElement && (type == Type.Type || type == Type.TypeAndSubtypes)) {
+        if (element is ParadoxDefinitionElement && (type == Type.Type || type == Type.TypeAndSubtypes)) {
             return LeafState.NEVER
         }
         return LeafState.ASYNC

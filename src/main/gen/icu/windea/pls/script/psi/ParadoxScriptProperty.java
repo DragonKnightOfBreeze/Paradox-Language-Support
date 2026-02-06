@@ -1,19 +1,20 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
-import javax.swing.Icon;
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMemberContainer, ParadoxScriptMember, ParadoxScriptDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
+import javax.swing.*;
+import java.util.List;
+
+public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptMemberContainer, ParadoxScriptMember, ParadoxDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
 
   @NotNull
   ParadoxScriptPropertyKey getPropertyKey();

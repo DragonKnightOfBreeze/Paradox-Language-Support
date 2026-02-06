@@ -24,7 +24,7 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxTagType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -45,7 +45,7 @@ inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalysisManager
 
 inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.selectLocale(from)
 
-inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
+inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
 
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
 
@@ -53,9 +53,9 @@ inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxCom
 
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, relax)
+inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, relax)
 
-inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.getDefinitionPresentation(this)
+inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.getDefinitionPresentation(this)
 
 // Language Extensions
 

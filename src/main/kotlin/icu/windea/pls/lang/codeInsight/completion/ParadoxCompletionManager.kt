@@ -82,7 +82,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -884,7 +884,7 @@ object ParadoxCompletionManager {
 
     // region Process Methods
 
-    fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
+    fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
         val definitionInfo = element.definitionInfo ?: return true
         if (definitionInfo.name.isEmpty()) return true // skip anonymous definitions

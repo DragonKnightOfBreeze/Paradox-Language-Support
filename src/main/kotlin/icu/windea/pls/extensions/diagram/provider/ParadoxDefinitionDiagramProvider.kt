@@ -24,7 +24,7 @@ import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
@@ -39,13 +39,13 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
     ) : ParadoxDiagramEdge(source, target, relationship)
 
     open class Node(
-        element: ParadoxScriptDefinitionElement,
+        element: ParadoxDefinitionElement,
         override val provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDiagramNode(element, provider) {
         val definitionInfo get() = identifyingElement.definitionInfo
 
-        override fun getIdentifyingElement(): ParadoxScriptDefinitionElement {
-            return super.getIdentifyingElement() as ParadoxScriptDefinitionElement
+        override fun getIdentifyingElement(): ParadoxDefinitionElement {
+            return super.getIdentifyingElement() as ParadoxDefinitionElement
         }
 
         override fun getTooltip(): String? {
@@ -62,7 +62,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         file: VirtualFile?,
         override val provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDiagramDataModel(project, file, provider) {
-        protected fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
+        protected fun getDefinitions(typeExpression: String): Set<ParadoxDefinitionElement> {
             val originalFile = originalFile
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
             val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
@@ -81,7 +81,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
             return ParadoxDefinitionSearch.search(null, typeExpression, selector).findAll()
         }
 
-        protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
+        protected abstract fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
 
         protected fun showNodeBySettings(settings: Map<String, Boolean>, value: String?): Boolean {
             val v = value ?: return true

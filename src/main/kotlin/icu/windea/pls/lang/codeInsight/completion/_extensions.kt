@@ -28,7 +28,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -93,7 +93,7 @@ fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: 
     return this
 }
 
-fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxScriptDefinitionElement): LookupElementBuilder {
+fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxDefinitionElement): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)

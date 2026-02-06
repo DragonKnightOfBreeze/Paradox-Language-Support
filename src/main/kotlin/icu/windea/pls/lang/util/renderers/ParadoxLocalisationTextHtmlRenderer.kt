@@ -44,7 +44,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import javax.imageio.ImageIO
@@ -178,7 +178,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
                 resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }
@@ -280,7 +280,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
         renderRichTexts(richTextList)
         context.builder = oldBuilder
         val conceptText = newBuilder.toString()
-        if (referenceElement !is ParadoxScriptDefinitionElement) return
+        if (referenceElement !is ParadoxDefinitionElement) return
         val definitionInfo = referenceElement.definitionInfo ?: return
         val definitionName = definitionInfo.name.or.anonymous()
         val definitionType = definitionInfo.type

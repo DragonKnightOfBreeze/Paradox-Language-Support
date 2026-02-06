@@ -12,7 +12,7 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxSearchScopeTypes {
     private val map = mutableMapOf<String, ParadoxSearchScopeType>()
@@ -95,7 +95,7 @@ object ParadoxSearchScopeTypes {
         ParadoxSearchScope.allScope(project, context)
     }.also { map.put(it.id, it) }
 
-    private fun findRootDefinition(project: Project, context: Any?): ParadoxScriptDefinitionElement? {
+    private fun findRootDefinition(project: Project, context: Any?): ParadoxDefinitionElement? {
         val contextElement = when {
             context is PsiElement -> context
             context is ParadoxComplexEnumValueIndexInfo -> findContextElement(project, context) ?: return null

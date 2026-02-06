@@ -16,7 +16,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes as T
 
 /**
@@ -26,7 +26,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes as T
  * - 切换类型一般嵌套在基础类型的定义中，例如，`swapped_civic`。
  */
 class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
-    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         val baseType = getBaseType(definitionInfo)
         if (baseType == null) return null
         return getSuperDefinition(definitionInfo, baseType)
@@ -36,7 +36,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
         return definitionInfo.typeConfig.baseType
     }
 
-    private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxScriptDefinitionElement? {
+    private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseType) a@{
                 val superDefinition = selectScope { definitionInfo.element.parentOfKey() }
@@ -64,7 +64,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
 class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
 
-    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         if (definitionInfo.type != T.event) return null
         val data = getData(definitionInfo) ?: return null
         val baseName = data.base
@@ -104,7 +104,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         return definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true)
     }
 
-    private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxScriptDefinitionElement? {
+    private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseName) a@{
                 val selector = selector(definitionInfo.project, definitionInfo.element).definition().contextSensitive()

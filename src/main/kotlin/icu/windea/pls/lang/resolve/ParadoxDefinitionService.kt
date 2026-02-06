@@ -23,11 +23,11 @@ import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 
 object ParadoxDefinitionService {
-    fun resolveName(element: ParadoxScriptDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
+    fun resolveName(element: ParadoxDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
         // NOTE 2.0.6 inline logic is not applied here
         // `name_from_file = yes` - use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property `starts_with`)
         // no `name_field` - use type key (aka property name), remove prefix if exists (while the prefix is declared by config property `starts_with`)
@@ -137,7 +137,7 @@ object ParadoxDefinitionService {
     /**
      * @see ParadoxDefinitionInheritSupport.getSuperDefinition
      */
-    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null

@@ -28,7 +28,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.greenStub
@@ -37,7 +37,7 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 /**
  * 用于处理定义。
  *
- * @see ParadoxScriptDefinitionElement
+ * @see ParadoxDefinitionElement
  * @see ParadoxDefinitionInfo
  */
 object ParadoxDefinitionManager {
@@ -54,14 +54,14 @@ object ParadoxDefinitionManager {
 
     // get info & match methods
 
-    fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
+    fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // type key must be valid
         if (getTypeKey(element).isNullOrEmpty()) return null
         // get from cache
         return doGetInfoFromCache(element)
     }
 
-    private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
+    private fun doGetInfoFromCache(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
@@ -74,12 +74,12 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+    private fun doGetInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         doGetInfoFromStub(element, file)?.let { return it }
         return doGetInfoFromPsi(element, file)
     }
 
-    fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+    fun doGetInfoFromStub(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val stub = getStub(element) ?: return null
         val name = stub.definitionName
         val type = stub.definitionType
@@ -93,7 +93,7 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, rootKeys.optimized())
     }
 
-    private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+    private fun doGetInfoFromPsi(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
         val path = fileInfo.path
@@ -108,7 +108,7 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
     }
 
-    fun getTypeKey(element: ParadoxScriptDefinitionElement): String? {
+    fun getTypeKey(element: ParadoxDefinitionElement): String? {
         if (element is ParadoxScriptFile) return element.name.substringBeforeLast('.')
         val typeKey = element.name
         if (!typeKey.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
@@ -116,37 +116,37 @@ object ParadoxDefinitionManager {
         return typeKey
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String? {
+    fun getName(element: ParadoxDefinitionElement): String? {
         val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.definitionName }
         return element.definitionInfo?.name
     }
 
-    fun getType(element: ParadoxScriptDefinitionElement): String? {
+    fun getType(element: ParadoxDefinitionElement): String? {
         val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.definitionType }
         return element.definitionInfo?.type
     }
 
-    fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
+    fun getSubtypes(element: ParadoxDefinitionElement): List<String>? {
         // 定义的子类型可能需要通过访问索引获取，不能在索引时就获取
         return element.definitionInfo?.subtypes
     }
 
-    fun getStub(element: ParadoxScriptDefinitionElement): ParadoxScriptPropertyStub.Definition? {
+    fun getStub(element: ParadoxDefinitionElement): ParadoxScriptPropertyStub.Definition? {
         return element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull()
     }
 
-    fun getLocalizedNames(element: ParadoxScriptDefinitionElement): Set<String> {
+    fun getLocalizedNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
         return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
     }
 
-    fun getPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
+    fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         return doGetPrimaryLocalisationKeyFromCache(element)
     }
 
-    private fun doGetPrimaryLocalisationKeyFromCache(element: ParadoxScriptDefinitionElement): String? {
+    private fun doGetPrimaryLocalisationKeyFromCache(element: ParadoxDefinitionElement): String? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
@@ -157,7 +157,7 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
+    private fun doGetPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
@@ -170,11 +170,11 @@ object ParadoxDefinitionManager {
         return null
     }
 
-    fun getPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return doGetPrimaryLocalisationFromCache(element)
     }
 
-    private fun doGetPrimaryLocalisationFromCache(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    private fun doGetPrimaryLocalisationFromCache(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
@@ -185,7 +185,7 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    private fun doGetPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
@@ -198,11 +198,11 @@ object ParadoxDefinitionManager {
         return null
     }
 
-    fun getPrimaryLocalisations(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
+    fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
         return doGetPrimaryLocalisationsFromCache(element)
     }
 
-    private fun doGetPrimaryLocalisationsFromCache(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
+    private fun doGetPrimaryLocalisationsFromCache(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
@@ -213,7 +213,7 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetPrimaryLocalisations(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
+    private fun doGetPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
         val definitionInfo = element.definitionInfo ?: return emptySet()
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
@@ -227,11 +227,11 @@ object ParadoxDefinitionManager {
         return result
     }
 
-    fun getPrimaryImage(element: ParadoxScriptDefinitionElement): PsiFile? {
+    fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
         return doGetPrimaryImageFromCache(element)
     }
 
-    private fun doGetPrimaryImageFromCache(element: ParadoxScriptDefinitionElement): PsiFile? {
+    private fun doGetPrimaryImageFromCache(element: ParadoxDefinitionElement): PsiFile? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
@@ -242,7 +242,7 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetPrimaryImage(element: ParadoxScriptDefinitionElement): PsiFile? {
+    private fun doGetPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善

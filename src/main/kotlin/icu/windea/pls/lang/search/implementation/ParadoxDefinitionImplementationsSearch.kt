@@ -11,7 +11,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.concurrent.Callable
 
 /**
@@ -21,7 +21,7 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
-        if (sourceElement !is ParadoxScriptDefinitionElement) return true
+        if (sourceElement !is ParadoxDefinitionElement) return true
         val definitionInfo = runReadAction { sourceElement.definitionInfo }
         if (definitionInfo == null) return true
         val name = definitionInfo.name

@@ -35,7 +35,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -74,19 +74,19 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
+    fun getEvents(selector: ParadoxSearchSelector<ParadoxDefinitionElement>): Set<ParadoxDefinitionElement> {
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String {
+    fun getName(element: ParadoxDefinitionElement): String {
         return element.definitionInfo?.name.or.anonymous()
     }
 
-    fun getNamespace(element: ParadoxScriptDefinitionElement): String {
+    fun getNamespace(element: ParadoxDefinitionElement): String {
         return getName(element).substringBefore('.') // enough
     }
 
-    fun getMatchedNamespace(event: ParadoxScriptDefinitionElement): ParadoxScriptProperty? {
+    fun getMatchedNamespace(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while (true) {
             if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
@@ -124,7 +124,7 @@ object ParadoxEventManager {
         return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }
     }
 
-    fun getType(element: ParadoxScriptDefinitionElement): String? {
+    fun getType(element: ParadoxDefinitionElement): String? {
         return element.definitionInfo?.let { getType(it) }
     }
 
@@ -134,7 +134,7 @@ object ParadoxEventManager {
         }
     }
 
-    fun getAttributes(element: ParadoxScriptDefinitionElement): Set<String> {
+    fun getAttributes(element: ParadoxDefinitionElement): Set<String> {
         return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
     }
 
@@ -144,7 +144,7 @@ object ParadoxEventManager {
         }
     }
 
-    fun getScope(element: ParadoxScriptDefinitionElement): String {
+    fun getScope(element: ParadoxDefinitionElement): String {
         return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeManager.anyScopeId
     }
 
@@ -154,11 +154,11 @@ object ParadoxEventManager {
         }
     }
 
-    fun getLocalizedNameElement(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getLocalizedNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
-    fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
+    fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
 
@@ -167,14 +167,14 @@ object ParadoxEventManager {
      *
      * TODO 考虑兼容需要内联和事件继承的情况。
      */
-    fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
+    fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
     }
 
-    private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
+    private fun doGetInvocations(definition: ParadoxDefinitionElement): Set<String> {
         val result = mutableSetOf<String>()
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -206,7 +206,7 @@ object ParadoxEventManager {
     /**
      * 得到作为调用者的事件列表。
      */
-    fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
         // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -235,7 +235,7 @@ object ParadoxEventManager {
     /**
      * 得到调用的事件列表。
      */
-    fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
         // NOTE 1. 目前不兼容封装变量引用
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 

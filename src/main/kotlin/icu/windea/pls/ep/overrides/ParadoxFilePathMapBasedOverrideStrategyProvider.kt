@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxScriptedVariableType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
@@ -49,7 +49,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 if (!p.matchesPath(targetPath)) return null
                 setOf(p)
             }
-            target is ParadoxScriptDefinitionElement -> {
+            target is ParadoxDefinitionElement -> {
                 val definitionInfo = target.definitionInfo ?: return null
                 val definitionType = definitionInfo.type
                 val configGroup = definitionInfo.configGroup

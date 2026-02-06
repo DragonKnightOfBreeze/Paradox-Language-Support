@@ -16,7 +16,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 支持符合以下条件的定义的数据：
@@ -29,7 +29,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         createKey("cached.paradox.definition.data:$shortKey")
     }
 
-    override fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
+    override fun <T : ParadoxDefinitionData> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
         if (relax) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
@@ -37,11 +37,11 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         return true
     }
 
-    override fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    override fun <T : ParadoxDefinitionData> get(element: ParadoxDefinitionElement, type: Class<T>): T? {
         return doGetDataFromCache(element, type)
     }
 
-    private fun <T : ParadoxDefinitionData> doGetDataFromCache(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    private fun <T : ParadoxDefinitionData> doGetDataFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
         val key = doGetDataKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetData(element, type)
@@ -56,7 +56,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         return keyCache.get(type).cast()
     }
 
-    private fun <T : ParadoxDefinitionData> doGetData(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    private fun <T : ParadoxDefinitionData> doGetData(element: ParadoxDefinitionElement, type: Class<T>): T? {
         try {
             val scriptData = ParadoxScriptDataResolver.INLINE.resolve(element) ?: return null
             val data = type.getConstructor(ParadoxScriptData::class.java).newInstance(scriptData)

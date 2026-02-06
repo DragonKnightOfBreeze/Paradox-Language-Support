@@ -26,7 +26,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -41,12 +41,12 @@ object ParadoxEconomicCategoryManager {
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
      */
-    fun getInfo(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
+    fun getInfo(definition: ParadoxDefinitionElement): ParadoxEconomicCategoryInfo? {
         if (selectGameType(definition) != ParadoxGameType.Stellaris) return null
         return doGetInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
+    private fun doGetInfoFromCache(definition: ParadoxDefinitionElement): ParadoxEconomicCategoryInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()

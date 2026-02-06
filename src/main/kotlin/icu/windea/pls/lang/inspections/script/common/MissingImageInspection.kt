@@ -16,7 +16,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -55,12 +55,12 @@ class MissingImageInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
-                    is ParadoxScriptDefinitionElement -> visitDefinitionElement(element)
+                    is ParadoxDefinitionElement -> visitDefinitionElement(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
 
-            private fun visitDefinitionElement(definition: ParadoxScriptDefinitionElement) {
+            private fun visitDefinitionElement(definition: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
                 val context = ParadoxImageCodeInsightContextBuilder.fromDefinition(definition, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return

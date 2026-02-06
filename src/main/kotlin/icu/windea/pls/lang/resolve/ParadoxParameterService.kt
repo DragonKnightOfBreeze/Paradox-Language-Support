@@ -16,28 +16,28 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.findContext
      */
-    fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
+    fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element) }
     }
 
     /**
      * @see ParadoxParameterSupport.getContextKeyFromContext
      */
-    fun getContextKeyFromContext(element: ParadoxScriptDefinitionElement): String? {
+    fun getContextKeyFromContext(element: ParadoxDefinitionElement): String? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { it.getContextKeyFromContext(element) }
     }
 
     /**
      * @see ParadoxParameterSupport.getContextInfo
      */
-    fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.getContextInfo(element)
         }
@@ -82,7 +82,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.processContext
      */
-    fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         return ParadoxParameterSupport.EP_NAME.extensionList.any { ep ->
             ep.processContext(parameterElement, onlyMostRelevant, processor)
         }
@@ -91,7 +91,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.processContextReference
      */
-    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         return ParadoxParameterSupport.EP_NAME.extensionList.any { ep ->
             ep.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
         }

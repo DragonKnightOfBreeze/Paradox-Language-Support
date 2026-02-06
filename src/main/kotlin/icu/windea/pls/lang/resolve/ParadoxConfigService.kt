@@ -61,7 +61,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxMemberRole
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -396,7 +396,7 @@ object ParadoxConfigService {
         if (contextConfigs.isEmpty()) return emptyList()
 
         // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
-        if (element is ParadoxScriptDefinitionElement && configContext.isRootForDefinition()) {
+        if (element is ParadoxDefinitionElement && configContext.isRootForDefinition()) {
             if (ParadoxMatchOptionsUtil.acceptDefinition(options)) return contextConfigs
         }
 

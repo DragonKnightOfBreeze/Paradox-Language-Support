@@ -26,7 +26,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -90,7 +90,7 @@ object ParadoxPsiFileManager {
         return findScriptedVariable(file, offset, ScriptedVariableOptions.optionsProvider())
     }
 
-    fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptDefinitionElement? {
+    fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxDefinitionElement? {
         val expressionElement by lazy {
             file.findElementAt(offset) {
                 it.parentOfType<ParadoxScriptExpressionElement>(false)
@@ -104,13 +104,13 @@ object ParadoxPsiFileManager {
 
         if (BitUtil.isSet(options, DefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = expressionReference
-            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()?.takeIf { it.definitionInfo != null }
+            val resolved = reference?.resolve()?.castOrNull<ParadoxDefinitionElement>()?.takeIf { it.definitionInfo != null }
             if (resolved != null) return resolved
         }
         if (file.language !is ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, DefinitionOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
-                it.parents(false).findIsInstance<ParadoxScriptDefinitionElement> { p -> p.definitionInfo != null }
+                it.parents(false).findIsInstance<ParadoxDefinitionElement> { p -> p.definitionInfo != null }
             }
             if (result != null) return result
         } else {
@@ -130,7 +130,7 @@ object ParadoxPsiFileManager {
         return null
     }
 
-    inline fun findDefinition(file: PsiFile, offset: Int, optionsProvider: DefinitionOptions.() -> Int): ParadoxScriptDefinitionElement? {
+    inline fun findDefinition(file: PsiFile, offset: Int, optionsProvider: DefinitionOptions.() -> Int): ParadoxDefinitionElement? {
         return findDefinition(file, offset, DefinitionOptions.optionsProvider())
     }
 

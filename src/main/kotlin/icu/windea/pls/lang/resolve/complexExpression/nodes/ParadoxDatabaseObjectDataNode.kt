@@ -32,7 +32,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDatabaseObjectDataNode(
     override val text: String,
@@ -96,7 +96,7 @@ class ParadoxDatabaseObjectDataNode(
         }
 
         if (config.type == null) return false
-        if (element !is ParadoxScriptDefinitionElement) return false
+        if (element !is ParadoxDefinitionElement) return false
         if (isForcedBase()) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (definitionInfo.name.isEmpty()) return false

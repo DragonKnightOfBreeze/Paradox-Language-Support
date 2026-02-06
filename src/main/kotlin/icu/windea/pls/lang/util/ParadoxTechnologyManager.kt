@@ -36,7 +36,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 @Suppress("unused")
@@ -47,19 +47,19 @@ object ParadoxTechnologyManager {
         val technologyAttributes by registerKey<Set<String>>(Keys)
     }
 
-    fun getTechnologies(selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
+    fun getTechnologies(selector: ParadoxSearchSelector<ParadoxDefinitionElement>): Set<ParadoxDefinitionElement> {
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technology, selector).findAll()
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String {
+    fun getName(element: ParadoxDefinitionElement): String {
         return element.name // = element.definitionInfo.name
     }
 
-    fun getLocalizedNameElement(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getLocalizedNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
-    fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
+    fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
 
@@ -67,7 +67,7 @@ object ParadoxTechnologyManager {
     object Stellaris {
         private val gameType = ParadoxGameType.Stellaris
 
-        fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+        fun getAllTiers(project: Project, context: Any?): Set<ParadoxDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search(null, "technology_tier", selector).findAll()
         }
@@ -80,7 +80,7 @@ object ParadoxTechnologyManager {
             return PlsFacade.getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
         }
 
-        fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+        fun getAllCategories(project: Project, context: Any?): Set<ParadoxDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }
@@ -97,19 +97,19 @@ object ParadoxTechnologyManager {
             return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.TechnologyAttribute }
         }
 
-        fun getTier(element: ParadoxScriptDefinitionElement): String? {
+        fun getTier(element: ParadoxDefinitionElement): String? {
             return element.getDefinitionData<StellarisTechnologyData>()?.tier
         }
 
-        fun getArea(element: ParadoxScriptDefinitionElement): String? {
+        fun getArea(element: ParadoxDefinitionElement): String? {
             return element.getDefinitionData<StellarisTechnologyData>()?.area
         }
 
-        fun getCategories(element: ParadoxScriptDefinitionElement): Set<String> {
+        fun getCategories(element: ParadoxDefinitionElement): Set<String> {
             return element.getDefinitionData<StellarisTechnologyData>()?.category.orEmpty()
         }
 
-        fun getAttributes(element: ParadoxScriptDefinitionElement): Set<String> {
+        fun getAttributes(element: ParadoxDefinitionElement): Set<String> {
             return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
         }
 
@@ -122,14 +122,14 @@ object ParadoxTechnologyManager {
         /**
          * 得到指定科技的作为其前提条件的所有科技的名字。
          */
-        fun getPrerequisites(definition: ParadoxScriptDefinitionElement): Set<String> {
+        fun getPrerequisites(definition: ParadoxDefinitionElement): Set<String> {
             return CachedValuesManager.getCachedValue(definition, Keys.cachedPrerequisites) {
                 val value = doGetPrerequisites(definition)
                 CachedValueProvider.Result(value, definition)
             }
         }
 
-        private fun doGetPrerequisites(definition: ParadoxScriptDefinitionElement): Set<String> {
+        private fun doGetPrerequisites(definition: ParadoxDefinitionElement): Set<String> {
             val data = ParadoxScriptDataResolver.DEFAULT.resolve(definition) ?: return emptySet()
             val names: Set<String> by data.get("prerequisites", emptySet())
             return names
@@ -138,7 +138,7 @@ object ParadoxTechnologyManager {
         /**
          * 得到作为前提条件的科技列表。
          */
-        fun getPreTechnologies(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        fun getPreTechnologies(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
             // NOTE 1. 目前不兼容封装变量引用
 
             val name = definition.definitionInfo?.name
@@ -162,7 +162,7 @@ object ParadoxTechnologyManager {
         /**
          * 得到后续的科技列表。
          */
-        fun getPostTechnologies(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        fun getPostTechnologies(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
             // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
 
             val name = definition.definitionInfo?.name

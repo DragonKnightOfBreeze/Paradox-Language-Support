@@ -8,7 +8,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
@@ -34,7 +34,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element, definitionInfo)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String?
+        abstract fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String?
     }
 
     abstract class ComplexEnumValue : ParadoxQuickDocTextProviderBase() {

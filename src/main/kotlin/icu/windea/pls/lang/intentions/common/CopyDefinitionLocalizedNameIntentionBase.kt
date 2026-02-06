@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 复制定义的本地化名称到剪贴板。
@@ -32,7 +32,7 @@ abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, Dumb
         return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
     }
 
-    private fun findElement(context: ActionContext): ParadoxScriptDefinitionElement? {
+    private fun findElement(context: ActionContext): ParadoxDefinitionElement? {
         return ParadoxPsiFileManager.findDefinition(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

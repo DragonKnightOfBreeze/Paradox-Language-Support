@@ -19,7 +19,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @property rootKeys 定义的一组顶级键。
  */
 class ParadoxDefinitionInfo(
-    val element: ParadoxScriptDefinitionElement, // use element directly here
+    val element: ParadoxDefinitionElement, // use element directly here
     val typeConfig: CwtTypeConfig,
     name0: String?, // null -> lazy get
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get

@@ -62,7 +62,7 @@ import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // region Extensions
@@ -313,7 +313,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return true
     }
 
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifiers = definitionInfo.modifiers
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
@@ -456,7 +456,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return true
     }
 
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = selector(project, definition).definition().contextSensitive()

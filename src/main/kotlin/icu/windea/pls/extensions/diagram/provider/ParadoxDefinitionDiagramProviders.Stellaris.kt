@@ -19,7 +19,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -44,7 +44,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         file: VirtualFile?, // umlFile
         override val provider: StellarisEventTreeDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
+        override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is StellarisEventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
 
@@ -110,7 +110,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
         file: VirtualFile?, // umlFile
         override val provider: StellarisTechTreeDiagramProvider
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
+        override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is StellarisTechTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
             val data = definition.getDefinitionData<StellarisTechnologyData>() ?: return false

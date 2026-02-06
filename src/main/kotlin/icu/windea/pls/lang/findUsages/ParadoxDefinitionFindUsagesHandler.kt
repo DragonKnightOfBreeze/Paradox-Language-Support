@@ -2,10 +2,10 @@ package icu.windea.pls.lang.findUsages
 
 import com.intellij.find.findUsages.AbstractFindUsagesDialog
 import com.intellij.openapi.actionSystem.DataContext
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDefinitionFindUsagesHandler(
-    private val element: ParadoxScriptDefinitionElement,
+    private val element: ParadoxDefinitionElement,
     private val factory: ParadoxFindUsagesHandlerFactory
 ) : ParadoxFindUsagesHandler(element, factory) {
     override fun getFindUsagesDialog(isSingleFile: Boolean, toShowInNewTab: Boolean, mustOpenInNewTab: Boolean): AbstractFindUsagesDialog {

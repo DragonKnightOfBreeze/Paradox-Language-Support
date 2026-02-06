@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFactory() {
     val findOptions = ParadoxFindUsagesOptions(project)
@@ -20,7 +20,7 @@ class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFacto
 
     override fun createFindUsagesHandler(element: PsiElement, forHighlightUsages: Boolean): FindUsagesHandler {
         return when {
-            element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> {
+            element is ParadoxDefinitionElement && element.definitionInfo != null -> {
                 ParadoxDefinitionFindUsagesHandler(element, this)
             }
             element is ParadoxLocalisationProperty && element.type != null -> {

@@ -20,13 +20,13 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlin.experimental.or
 
 /**
  * 定义的用法的查询。
  *
- * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字被称为定义的类型键（typeKey），它不一定是定义的名字（definitionName）。
+ * 定义对应的 PSI（[ParadoxDefinitionElement]） 的名字被称为定义的类型键（typeKey），它不一定是定义的名字（definitionName）。
  * 因此，这里需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
@@ -34,7 +34,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         // TODO SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持
 
         val target = queryParameters.elementToSearch
-        if (target !is ParadoxScriptDefinitionElement) return
+        if (target !is ParadoxDefinitionElement) return
 
         val definitionInfo = target.definitionInfo
         if (definitionInfo == null) return
@@ -52,7 +52,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         }
     }
 
-    private fun getWords(target: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
+    private fun getWords(target: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val words = mutableSetOf<String>()
         words.add(definitionInfo.name)
 

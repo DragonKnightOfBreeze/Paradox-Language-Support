@@ -12,14 +12,14 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
  */
 class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxScriptDefinitionElement
+        element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
@@ -38,7 +38,7 @@ class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: Strin
 
     override fun entityName() = PlsBundle.message("rename.generatedModifiersIcon.entityName")
 
-    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.modifiers.orNull() ?: return
         val project = definitionInfo.project

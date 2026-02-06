@@ -26,7 +26,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
 import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxTextColorManager {
@@ -63,7 +63,7 @@ object ParadoxTextColorManager {
     }
 
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
-        if (element is ParadoxScriptDefinitionElement) {
+        if (element is ParadoxDefinitionElement) {
             val info = doGetInfoFromCache(element)
             if (info != null) return info
         }
@@ -80,7 +80,7 @@ object ParadoxTextColorManager {
         return doGetInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun doGetInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
@@ -88,7 +88,7 @@ object ParadoxTextColorManager {
         }
     }
 
-    private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun doGetInfo(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         // 要求输入的名字必须是单个字母或数字
         val name = definition.name

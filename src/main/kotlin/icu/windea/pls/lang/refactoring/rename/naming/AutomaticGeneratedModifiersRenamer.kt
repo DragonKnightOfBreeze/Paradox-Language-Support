@@ -9,14 +9,14 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。
  */
 class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxScriptDefinitionElement
+        element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
@@ -35,7 +35,7 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
 
     override fun entityName() = PlsBundle.message("rename.generatedModifiers.entityName")
 
-    private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.modifiers.orNull() ?: return
         for (info in infos) {

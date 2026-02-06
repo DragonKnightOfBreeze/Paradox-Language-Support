@@ -20,7 +20,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
 import icu.windea.pls.lang.project
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.text.MessageFormat
 import java.util.function.Supplier
 import javax.swing.JPanel
@@ -42,7 +42,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
 
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
-        val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
+        val definitionInfo = psiElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return null
         val typeConfig = definitionInfo.typeConfig
         val typeElement = typeConfig.pointer.element ?: return null
         val finalType = this.type
@@ -53,11 +53,11 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
 
     override fun isApplicableElement(element: PsiElement): Boolean {
-        return element is CwtProperty || element is ParadoxScriptDefinitionElement
+        return element is CwtProperty || element is ParadoxDefinitionElement
     }
 
     override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
-        val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
+        val definitionInfo = element.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return null
         val type = definitionInfo.type
         return MessageFormat.format(typeName, type)
     }

@@ -33,7 +33,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -50,16 +50,16 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
-    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+    override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type in Constants.DEFINITION_TYPES
     }
 
-    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+    override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContext) return null
         return doGetScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
@@ -70,12 +70,12 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         }
     }
 
-    private fun getTracker(definition: ParadoxScriptDefinitionElement): ModificationTracker {
+    private fun getTracker(definition: ParadoxDefinitionElement): ModificationTracker {
         val configGroup = definition.definitionInfo?.configGroup ?: return ParadoxModificationTrackers.ScriptFile
         return configGroup.definitionScopeContextModificationTracker
     }
 
-    private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
 
         // optimize search scope
@@ -138,11 +138,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         } ?: false
     }
 
-    override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.0", definitionInfo.name)
     }
 
-    override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.0.conflict", definitionInfo.name)
     }
 }
@@ -156,16 +156,16 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
-    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+    override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type == ParadoxDefinitionTypes.event
     }
 
-    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+    override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
@@ -176,7 +176,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
@@ -240,12 +240,12 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         } ?: false
     }
 
-    override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         val eventId = definitionInfo.name
         return PlsBundle.message("script.annotator.scopeContext.1", eventId)
     }
 
-    override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         val eventId = definitionInfo.name
         return PlsBundle.message("script.annotator.scopeContext.1.conflict", eventId)
     }
@@ -265,16 +265,16 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
-    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+    override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type == ParadoxDefinitionTypes.event
     }
 
-    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+    override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
@@ -285,7 +285,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
@@ -389,11 +389,11 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         } ?: false
     }
 
-    override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.2", definitionInfo.name)
     }
 
-    override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.2.conflict", definitionInfo.name)
     }
 }
@@ -412,16 +412,16 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
-    override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
+    override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type == ParadoxDefinitionTypes.onAction
     }
 
-    override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
+    override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForOnActions) return null
         return doGetScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
@@ -432,7 +432,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
@@ -539,11 +539,11 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         } ?: false
     }
 
-    override fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.3", definitionInfo.name)
     }
 
-    override fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
+    override fun getErrorMessage(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, info: ParadoxScopeContextInferenceInfo): String {
         return PlsBundle.message("script.annotator.scopeContext.3.conflict", definitionInfo.name)
     }
 }

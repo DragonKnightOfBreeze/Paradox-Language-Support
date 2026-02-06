@@ -15,7 +15,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
@@ -43,7 +43,7 @@ class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider() {
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return
         val resolved = reference.resolve() ?: return
-        if (resolved !is ParadoxScriptDefinitionElement) return
+        if (resolved !is ParadoxDefinitionElement) return
 
         val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)

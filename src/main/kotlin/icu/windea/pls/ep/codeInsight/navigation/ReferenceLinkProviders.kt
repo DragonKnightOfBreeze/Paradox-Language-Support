@@ -30,7 +30,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class CwtConfigLinkProvider : ReferenceLinkProvider {
@@ -212,7 +212,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
-        if (element !is ParadoxScriptDefinitionElement) return null
+        if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // skip anonymous definitions
         val gameType = definitionInfo.gameType

@@ -60,7 +60,7 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -71,26 +71,26 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 // NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
 
 open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
-    override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
+    override fun isContext(element: ParadoxDefinitionElement): Boolean {
         if (element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
         // NOTE 简单判断 - 目前不需要兼容子类型
         return definitionInfo.type in definitionInfo.configGroup.definitionTypesModel.supportParameters
     }
 
-    override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
+    override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 `injectionHost`）
         val finalElement = PlsInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = selectScope { finalElement.parentDefinition() }
         return context?.takeIf { isContext(it) }
     }
 
-    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String? {
+    override fun getContextKeyFromContext(context: ParadoxDefinitionElement): String? {
         val definitionInfo = context.definitionInfo ?: return null
         return "${definitionInfo.types.joinToString(".")}@${definitionInfo.name}"
     }
 
-    override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    override fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         if (!isContext(element)) return null
         return ParadoxParameterManager.getContextInfo(element)
     }
@@ -218,7 +218,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return result
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val definitionName = parameterElement.definitionName ?: return false
         val definitionTypes = parameterElement.definitionTypes ?: return false
         if (definitionName.isParameterized()) return false // skip if context name is parameterized
@@ -229,7 +229,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return true
     }
 
-    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val definitionName = contextReferenceInfo.definitionName ?: return false
         val definitionTypes = contextReferenceInfo.definitionTypes ?: return false
         if (definitionName.isParameterized()) return false // skip if context name is parameterized
@@ -287,17 +287,17 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
  * @see icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
-    override fun isContext(element: ParadoxScriptDefinitionElement) = false
+    override fun isContext(element: ParadoxDefinitionElement) = false
 
     override fun findContext(element: PsiElement) = null
 
-    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement) = null
+    override fun getContextKeyFromContext(context: ParadoxDefinitionElement) = null
 
     override fun resolveParameter(element: ParadoxParameter) = null
 
     override fun resolveConditionParameter(element: ParadoxConditionParameter) = null
 
-    override fun getContextInfo(element: ParadoxScriptDefinitionElement) = null
+    override fun getContextInfo(element: ParadoxDefinitionElement) = null
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         var expressionElement: ParadoxScriptStringExpressionElement?
@@ -408,31 +408,31 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         return result
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean) = false
+    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
 
-    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean) = false
+    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
 }
 
 open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
-    override fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
+    override fun isContext(element: ParadoxDefinitionElement): Boolean {
         if (element !is ParadoxScriptFile) return false
         return ParadoxInlineScriptManager.getInlineScriptExpression(element) != null
     }
 
-    override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
+    override fun findContext(element: PsiElement): ParadoxDefinitionElement? {
         // NOTE 这里需要兼容通过语言注入注入到脚本文件中的脚本片段中的参数（此时需要先获取最外面的 injectionHost）
         val finalElement = PlsInjectionManager.findTopHostElementOrThis(element, element.project)
         val context = finalElement.containingFile?.castOrNull<ParadoxScriptFile>()
         return context?.takeIf { isContext(it) }
     }
 
-    override fun getContextKeyFromContext(context: ParadoxScriptDefinitionElement): String? {
+    override fun getContextKeyFromContext(context: ParadoxDefinitionElement): String? {
         if (context !is ParadoxScriptFile) return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         return "inline_script@$expression"
     }
 
-    override fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    override fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         if (!isContext(element)) return null
         return ParadoxParameterManager.getContextInfo(element)
     }
@@ -556,7 +556,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return result
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val expression = parameterElement.inlineScriptExpression ?: return false
         if (expression.isParameterized()) return false // skip if context name is parameterized
         val project = parameterElement.project
@@ -564,7 +564,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
 
-    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+    override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val expression = contextReferenceInfo.inlineScriptExpression ?: return false
         if (expression.isParameterized()) return false // skip if context name is parameterized
         val project = contextReferenceInfo.project

@@ -31,7 +31,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
@@ -85,7 +85,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
             override fun visitElement(element: PsiElement) {
                 extensionList.forEach { ep -> ep.indexData(element, fileData) }
 
-                if (element is ParadoxScriptDefinitionElement) {
+                if (element is ParadoxDefinitionElement) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
                         element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)

@@ -32,7 +32,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
@@ -133,7 +133,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
                 }
@@ -158,7 +158,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
                 }

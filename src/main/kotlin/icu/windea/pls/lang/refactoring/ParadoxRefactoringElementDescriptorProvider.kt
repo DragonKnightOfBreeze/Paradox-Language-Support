@@ -10,7 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
@@ -18,7 +18,7 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
         return when {
             element is ParadoxLocalisationProperty ->
                 PlsBundle.message("refactoring.localisation.desc", CommonRefactoringUtil.htmlEmphasize(element.name))
-            element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> {
+            element is ParadoxDefinitionElement && element.definitionInfo != null -> {
                 val definitionInfo = element.definitionInfo ?: return null
                 when {
                     definitionInfo.type == ParadoxDefinitionTypes.sprite -> PlsBundle.message("refactoring.sprite.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
