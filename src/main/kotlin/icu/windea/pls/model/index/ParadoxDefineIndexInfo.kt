@@ -12,4 +12,3 @@ data class ParadoxDefineIndexInfo(
     @Volatile
     override var virtualFile: VirtualFile? = null
 }
-
