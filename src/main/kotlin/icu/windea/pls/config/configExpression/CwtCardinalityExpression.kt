@@ -1,7 +1,8 @@
 package icu.windea.pls.config.configExpression
 
-import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResolverImpl
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.core.cache.CacheBuilder
 
 /**
  * 基数表达式。
@@ -49,3 +50,52 @@ interface CwtCardinalityExpression : CwtConfigExpression {
 
     companion object : Resolver by CwtCardinalityExpressionResolverImpl()
 }
+
+// region Implementations
+
+private class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
+    private val logger = thisLogger()
+    private val cache = CacheBuilder("expireAfterAccess=30m")
+        .build<String, CwtCardinalityExpression> { key -> doResolve(key) }
+
+    private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
+
+    override fun resolveEmpty(): CwtCardinalityExpression = emptyExpression
+
+    override fun resolve(expressionString: String): CwtCardinalityExpression {
+        if (expressionString.isEmpty()) return emptyExpression
+        return cache.get(expressionString)
+    }
+
+    private fun doResolve(expressionString: String): CwtCardinalityExpression {
+        // 以 ".." 分隔最小/最大值；缺失分隔符视为非法，回空
+        val i = expressionString.indexOf("..")
+        if (i == -1) return emptyExpression
+        val s1 = expressionString.substring(0, i)
+        val s2 = expressionString.substring(i + 2)
+        // 支持 "~" 宽松标记；min 解析失败时回退为 0；max 不区分大小写的 "inf" 视为无限
+        val min = s1.removePrefix("~").let { n -> n.toIntOrNull()?.coerceAtLeast(0) ?: 0 }
+        val max = s2.removePrefix("~").let { n -> if (n.equals("inf", true)) null else n.toIntOrNull()?.coerceAtLeast(0) }
+        if (max != null && min > max) {
+            logger.warn("Invalid cardinality expression $expressionString, fallback to default")
+            return emptyExpression
+        }
+        val relaxMin = s1.startsWith('~')
+        val relaxMax = s2.startsWith('~')
+        return CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin, relaxMax)
+    }
+}
+
+private class CwtCardinalityExpressionImpl(
+    override val expressionString: String,
+    override val min: Int,
+    override val max: Int?,
+    override val relaxMin: Boolean,
+    override val relaxMax: Boolean
+) : CwtCardinalityExpression {
+    override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
+}
+
+// endregion

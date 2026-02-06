@@ -5,30 +5,3 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
-
-internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver, CwtConfigResolverScope {
-    // no logger here (unnecessary)
-
-    override fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)
-
-    private fun doResolve(config: CwtPropertyConfig): CwtLocationConfig? {
-        // default to optional
-        // default to primary for `name` and `title` if it represents a localisation location (by inference)
-        // default to primary for `icon` if it represents an image location (by inference)
-        val key = config.key
-        val expression = config.stringValue ?: return null
-        val required = config.optionData.required
-        val primary = config.optionData.primary
-        return CwtLocationConfigImpl(config, key, expression, required, primary)
-    }
-}
-
-private class CwtLocationConfigImpl(
-    override val config: CwtPropertyConfig,
-    override val key: String,
-    override val value: String,
-    override val required: Boolean = false,
-    override val primary: Boolean = false
-) : UserDataHolderBase(), CwtLocationConfig {
-    override fun toString() = "CwtLocationConfigImpl(key='$key', value='$value')"
-}

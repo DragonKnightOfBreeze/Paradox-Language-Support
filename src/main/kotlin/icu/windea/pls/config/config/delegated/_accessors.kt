@@ -1,6 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
-// region CwtLinkConfig Extensions
+// region CwtLinkConfig Accessors
 
 /** 是否为静态链接。 */
 val CwtLinkConfig.isStatic: Boolean get() = dataSources.isEmpty()

@@ -1,6 +1,7 @@
 package icu.windea.pls.model.scope
 
 import com.intellij.openapi.util.UserDataHolder
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -33,7 +34,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * @see CwtScopeGroupConfig
  * @see CwtSystemScopeConfig
  */
-interface ParadoxScopeContext : UserDataHolder {
+sealed interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
     val root: ParadoxScopeContext?
     val from: ParadoxScopeContext?
@@ -62,6 +63,58 @@ interface ParadoxScopeContext : UserDataHolder {
         return ParadoxScopeContextResolver.resolveNext(this, links)
     }
 
+    class Simple(
+        override val scope: ParadoxScope
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        override val root: ParadoxScopeContext? get() = null
+        override val from: ParadoxScopeContext? get() = null
+        override val fromFrom: ParadoxScopeContext? get() = null
+        override val fromFromFrom: ParadoxScopeContext? get() = null
+        override val fromFromFromFrom: ParadoxScopeContext? get() = null
+        override val prevStack: List<ParadoxScopeContext> get() = emptyList()
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
+
+        override fun toString(): String {
+            return "SimpleParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    class Default(
+        override val scope: ParadoxScope,
+        override val root: ParadoxScopeContext? = null,
+        override val from: ParadoxScopeContext? = null,
+        override val fromFrom: ParadoxScopeContext? = null,
+        override val fromFromFrom: ParadoxScopeContext? = null,
+        override val fromFromFromFrom: ParadoxScopeContext? = null,
+        override val prevStack: List<ParadoxScopeContext> = emptyList()
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
+
+        override fun toString(): String {
+            return "DefaultParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    class Linked(
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>,
+        override val prevStack: List<ParadoxScopeContext> = emptyList()
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        private val last = links.lastOrNull()?.second ?: throw IllegalArgumentException()
+
+        override val scope: ParadoxScope get() = last.scope
+        override val root: ParadoxScopeContext? get() = last.root
+        override val from: ParadoxScopeContext? get() = last.from
+        override val fromFrom: ParadoxScopeContext? get() = last.fromFrom
+        override val fromFromFrom: ParadoxScopeContext? get() = last.fromFromFrom
+        override val fromFromFromFrom: ParadoxScopeContext? get() = last.fromFromFromFrom
+
+        override fun toString(): String {
+            return "LinkedParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    object Keys : KeyRegistry()
+
     companion object {
         @JvmStatic
         fun get(thisScope: String): ParadoxScopeContext {
@@ -78,7 +131,5 @@ interface ParadoxScopeContext : UserDataHolder {
             return ParadoxScopeContextResolver.get(map)
         }
     }
-
-    object Keys : KeyRegistry()
 }
 

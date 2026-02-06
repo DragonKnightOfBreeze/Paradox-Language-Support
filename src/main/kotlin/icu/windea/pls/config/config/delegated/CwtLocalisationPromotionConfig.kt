@@ -1,12 +1,19 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.impl.CwtLocalisationPromotionConfigResolverImpl
+import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.util.ParadoxScopeManager
 
 /**
  * 本地化提升规则。
@@ -61,3 +68,31 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
 
     companion object : Resolver by CwtLocalisationPromotionConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromotionConfig.Resolver, CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    override fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig = doResolve(config)
+
+    private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
+        val name = config.key
+        val supportedScopes = buildSet {
+            config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+        }.optimized()
+        logger.debug { "Resolved localisation promotion config (name: $name).".withLocationPrefix(config) }
+        return CwtLocalisationPromotionConfigImpl(config, name, supportedScopes)
+    }
+}
+
+private class CwtLocalisationPromotionConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+    override val supportedScopes: Set<String>
+) : UserDataHolderBase(), CwtLocalisationPromotionConfig {
+    override fun toString() = "CwtLocalisationPromotionConfigImpl(name='$name')"
+}
+
+// endregion
