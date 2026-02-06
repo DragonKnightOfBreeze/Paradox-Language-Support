@@ -19,6 +19,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -102,7 +103,8 @@ object ParadoxDefinitionManager {
         if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, typeKey, rootKeys, typeKeyPrefix) ?: return null
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
     }
 

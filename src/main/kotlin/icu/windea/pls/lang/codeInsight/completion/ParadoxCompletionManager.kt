@@ -43,6 +43,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -296,11 +297,13 @@ object ParadoxCompletionManager {
                 val typeKeyPrefix = typeConfig.typeKeyPrefix
                 if (typeKeyPrefix == null) return@run
                 if (rootKeyPrefix.value != null) return@run // avoid complete prefix again after an existing prefix
-                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path)) return@run
+                val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) return@run
                 infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
             }
 
-            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, typeKeyPrefix = rootKeyPrefix)) continue
+            val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKeyPrefix = rootKeyPrefix)
+            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isEmpty()) {
                 if (memberPath.isEmpty()) {
@@ -830,7 +833,8 @@ object ParadoxCompletionManager {
         val file = context.parameters?.originalFile ?: return
         val fileInfo = file.fileInfo ?: return
         val path = fileInfo.path
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return
 
         ProgressManager.checkCanceled()
         val keyword = context.keyword

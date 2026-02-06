@@ -18,12 +18,12 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.select.*
@@ -86,9 +86,6 @@ object ParadoxEventManager {
         return getName(element).substringBefore('.') // enough
     }
 
-    /**
-     * 得到event的需要匹配的namespace。
-     */
     fun getMatchedNamespace(event: ParadoxScriptDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while (true) {

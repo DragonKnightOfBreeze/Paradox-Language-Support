@@ -18,6 +18,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
@@ -145,7 +146,8 @@ object ParadoxDefinitionInjectionManager {
         run {
             if (target.isNullOrEmpty()) return@run
             val path = fileInfo.path
-            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return@run
+            val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return@run
             val type = typeConfig.name
             return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
         }

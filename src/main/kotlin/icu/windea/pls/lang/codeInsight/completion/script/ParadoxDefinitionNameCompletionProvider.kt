@@ -26,6 +26,7 @@ import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -89,7 +90,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, rootKeys, typeKeyPrefix)) continue
+                    val matchContext = CwtTypeConfigMatchContext(configGroup, path, null, rootKeys, typeKeyPrefix)
+                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
                     val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
 

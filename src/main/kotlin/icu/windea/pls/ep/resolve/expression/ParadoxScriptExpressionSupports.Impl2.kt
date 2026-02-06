@@ -30,6 +30,7 @@ import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
@@ -377,7 +378,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val configExpression = config.configExpression
         val aliasName = configExpression?.value ?: return
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, false) ?: return
+        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expressionText, false) ?: return
         val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
         ParadoxScriptExpressionService.annotate(element, rangeInElement, expressionText, holder, aliasConfig)
     }
@@ -386,7 +387,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
+        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
         return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey, exact)
     }
@@ -395,7 +396,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasName = config.configExpression?.value ?: return emptySet()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
+        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expressionText, element.text.isLeftQuoted())
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
         return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
     }

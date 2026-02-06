@@ -14,6 +14,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -50,7 +51,8 @@ object ParadoxComplexEnumValueManager {
         val gameType = fileInfo.rootInfo.gameType
         if (ParadoxInlineScriptManager.isMatched(value, gameType)) return null // 排除是内联脚本用法的情况
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val config = ParadoxConfigMatchService.getMatchedComplexEnumConfig(element, configGroup, path) ?: return null
+        val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
+        val config = ParadoxConfigMatchService.getMatchedComplexEnumConfig(matchContext, element) ?: return null
         val name = getName(value) ?: return null
         val enumName = config.name
         return ParadoxComplexEnumValueInfo(name, enumName, config)

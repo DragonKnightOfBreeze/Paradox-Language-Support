@@ -18,7 +18,6 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
@@ -251,7 +250,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val (element, expression, configExpression, _, configGroup, options) = context
         val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
+        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
         val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
         return ParadoxMatchService.matchScriptExpression(nextContext)
     }

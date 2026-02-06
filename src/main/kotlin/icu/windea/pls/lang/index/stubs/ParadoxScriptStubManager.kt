@@ -13,6 +13,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -128,7 +129,8 @@ object ParadoxScriptStubManager {
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
         val rootKeys = ParadoxMemberService.getRootKeys(node, tree, vFile, maxDepth = maxDepth) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(node, tree) }
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, typeKey, rootKeys, typeKeyPrefix) ?: return null
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, node, tree) ?: return null
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
         val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
@@ -207,7 +209,8 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(configGroup, path) ?: return null
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return null
         return typeConfig.name
     }
 }

@@ -20,6 +20,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -59,7 +60,8 @@ object ParadoxCsvManager {
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(configGroup, path)
+        val matchContext = CwtRowConfigMatchContext(configGroup, path)
+        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
         return rowConfig
     }
 
