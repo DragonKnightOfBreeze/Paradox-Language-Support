@@ -15,11 +15,11 @@ import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.images.dds.DdsFileType

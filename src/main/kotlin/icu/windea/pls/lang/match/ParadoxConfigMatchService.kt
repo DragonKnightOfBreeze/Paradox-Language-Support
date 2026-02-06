@@ -40,10 +40,10 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat

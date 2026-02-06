@@ -42,8 +42,8 @@ import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.argumentNodes
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nestedScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -58,9 +58,9 @@ import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile

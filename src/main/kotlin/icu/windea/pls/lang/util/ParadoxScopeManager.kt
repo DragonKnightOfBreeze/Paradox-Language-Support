@@ -72,9 +72,9 @@ import icu.windea.pls.model.scope.isExact
 import icu.windea.pls.model.scope.overriddenProvider
 import icu.windea.pls.model.scope.promotions
 import icu.windea.pls.model.scope.toScopeIdMap
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

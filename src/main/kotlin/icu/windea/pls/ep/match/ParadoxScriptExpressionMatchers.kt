@@ -8,7 +8,6 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
-import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier

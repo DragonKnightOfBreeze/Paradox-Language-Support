@@ -7,12 +7,12 @@ import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.RegistedKey
-import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.core.util.copy
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
 

@@ -45,10 +45,10 @@ import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.values.singletonList
-import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard

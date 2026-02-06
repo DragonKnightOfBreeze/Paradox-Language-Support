@@ -67,9 +67,9 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.core.util.tupleOf
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.reflect.KProperty

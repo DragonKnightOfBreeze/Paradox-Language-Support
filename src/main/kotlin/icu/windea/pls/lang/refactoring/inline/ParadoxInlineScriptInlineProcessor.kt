@@ -20,9 +20,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
-import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService

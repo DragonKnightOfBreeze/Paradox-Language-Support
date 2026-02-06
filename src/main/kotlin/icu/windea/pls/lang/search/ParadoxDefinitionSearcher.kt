@@ -13,7 +13,6 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
@@ -22,6 +21,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
