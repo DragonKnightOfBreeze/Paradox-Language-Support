@@ -95,7 +95,6 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
 
                 if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                     extensionList.forEach { ep -> ep.indexData(element, fileData) }
-
                     run {
                         if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
@@ -128,7 +127,9 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
                     extensionList.forEach { ep -> ep.indexData(element, fileData) }
+                    return
                 }
+
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
             }

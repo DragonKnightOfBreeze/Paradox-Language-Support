@@ -43,8 +43,8 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
-        val gameType = selectGameType(psiFile) ?: return
         if (psiFile !is ParadoxScriptFile) return
+        val gameType = selectGameType(psiFile) ?: return
         psiFile.properties().forEach f1@{ prop1 ->
             val prop1Block = prop1.propertyValue<ParadoxScriptBlock>() ?: return@f1
 

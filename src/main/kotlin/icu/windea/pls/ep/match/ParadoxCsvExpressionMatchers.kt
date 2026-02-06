@@ -7,7 +7,6 @@ import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
@@ -78,8 +77,6 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         run {
             // match complex enums
             val complexEnumConfig = context.configGroup.complexEnums[enumName] ?: return@run
-            // complexEnumValue的值必须合法
-            if (ParadoxComplexEnumValueManager.getName(value) == null) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, value, enumName, complexEnumConfig)
         }
         return ParadoxMatchResult.NotMatch

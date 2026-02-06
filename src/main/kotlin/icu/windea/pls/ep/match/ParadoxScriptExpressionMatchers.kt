@@ -8,6 +8,7 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -16,7 +17,6 @@ import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxType
 
@@ -186,8 +186,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         // match complex enums
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
-            // complexEnumValue的值必须合法
-            if (ParadoxComplexEnumValueManager.getName(context.expression.value) == null) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
         }
         return ParadoxMatchResult.NotMatch
@@ -196,7 +194,6 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchDynamicValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (context.expression.type.isBlockLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        // dynamicValue的值必须合法
         val name = ParadoxDynamicValueManager.getName(context.expression.value) ?: return ParadoxMatchResult.NotMatch
         if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
         val dynamicValueType = context.configExpression.value

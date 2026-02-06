@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -16,15 +17,19 @@ import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 import java.io.DataInput
@@ -57,37 +62,40 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
-        val gameType = selectGameType(psiFile) ?: return
         if (psiFile !is ParadoxScriptFile) return
+        val gameType = selectGameType(psiFile) ?: return
 
-        val definitionStack = ArrayDeque<ParadoxScriptDefinitionElement>()
+        // 要求存在候选项
+        val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
+        val path = psiFile.fileInfo?.path ?: return
+        val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
+        val candidates = ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
+        if (candidates.isEmpty()) return
+        matchContext.matchPath = false
+
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptDefinitionElement) {
-                    definitionStack.addLast(element)
-                }
-
                 if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    val info0 = ParadoxComplexEnumValueManager.getInfo(element)
-                    if (info0 != null) {
-                        val definitionElementOffset = when {
-                            // TODO 2.1.0+ 考虑兼容定义注入
-                            info0.config.perDefinition -> definitionStack.lastOrNull()?.startOffset ?: -1
-                            else -> -1
-                        }
-                        val info = ParadoxComplexEnumValueIndexInfo(info0.name, info0.enumName, definitionElementOffset, gameType)
-                        val list = fileData.getOrPut(info.enumName) { mutableListOf() } as MutableList
-                        list.add(info)
-                    }
+                    indexData(element)
                 }
 
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
-            override fun elementFinished(element: PsiElement) {
-                if (element is ParadoxScriptDefinitionElement) {
-                    definitionStack.removeLastOrNull()
-                }
+            private fun indexData(element: ParadoxScriptStringExpressionElement) {
+                // 2.1.3 直接匹配，不经过缓存数据，以优化性能
+                val name = element.value
+                if (name.isParameterized()) return // 排除可能带参数的情况
+                if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
+                val config = candidates.find { matchesComplexEnum(matchContext, element, it) } ?: return
+                val enumName = config.name
+
+                // 2.1.3 兼容定义注入
+                val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
+                val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
+                val list = fileData.getOrPut(info.enumName) { mutableListOf() } as MutableList
+                list.add(info)
             }
         })
 

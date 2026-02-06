@@ -6,7 +6,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -43,23 +42,18 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {
-        val value = element.value
-        if (value.isParameterized()) return null // 排除可能带参数的情况
+        val name = element.value
+        if (name.isParameterized()) return null // 排除可能带参数的情况
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
-        if (ParadoxInlineScriptManager.isMatched(value, gameType)) return null // 排除是内联脚本用法的情况
+        if (ParadoxInlineScriptManager.isMatched(name, gameType)) return null // 排除是内联脚本用法的情况
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
         val config = ParadoxConfigMatchService.getMatchedComplexEnumConfig(matchContext, element) ?: return null
-        val name = getName(value) ?: return null
         val enumName = config.name
         return ParadoxComplexEnumValueInfo(name, enumName, config)
-    }
-
-    fun getName(expression: String): String? {
-        return expression.orNull()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {

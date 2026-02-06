@@ -7,8 +7,7 @@ object PlsIndexVersions {
     const val FilePath = 83 // 2.1.2
     const val FileLocale = 83 // 2.1.2
     const val ConfigSymbol = 83 // 2.1.2
+    const val ComplexEnumValue = 85 // 2.1.3
     const val Define = 83 // 2.1.2
     const val Merged = 85 // 2.1.3
-
-    const val ComplexEnumValue = 85
 }

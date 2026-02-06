@@ -45,8 +45,7 @@ object PlsIndexKeys {
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val FilePath = ID.create<String, ParadoxFilePathIndexInfo>("paradox.file.path.index")
+    val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
     val Define = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
-
-    val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
 }

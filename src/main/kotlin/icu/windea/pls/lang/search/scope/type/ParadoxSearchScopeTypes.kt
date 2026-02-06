@@ -101,8 +101,8 @@ object ParadoxSearchScopeTypes {
             context is ParadoxComplexEnumValueIndexInfo -> findContextElement(project, context) ?: return null
             else -> return null
         }
-        // TODO 2.1.0+ 考虑兼容定义注入
-        return selectScope { contextElement.parentDefinition() }
+        // 2.1.3 兼容定义注入
+        return selectScope { contextElement.parentDefinitionOrInjection() }
     }
 
     private fun findContextElement(project: Project, context: ParadoxComplexEnumValueIndexInfo): PsiElement? {
