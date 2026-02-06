@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
@@ -35,28 +36,29 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
                 val map = fileData[namespace] ?: return@p true
                 if (variable != null) {
                     val info = map[variable] ?: return@p true
-                    info.virtualFile = file
-                    consumer.process(info)
+                    processInfo(info, file, consumer)
                 } else {
-                    map.values.process { info ->
-                        info.virtualFile = file
-                        consumer.process(info)
-                    }
+                    map.values.process { info -> processInfo(info, file, consumer) }
                 }
             } else {
-                fileData.values.process { map ->
+                fileData.values.process p1@{ map ->
                     if (variable != null) {
-                        val info = map[variable] ?: return@p true
-                        info.virtualFile = file
-                        consumer.process(info)
+                        val info = map[variable] ?: return@p1 true
+                        processInfo(info, file, consumer)
                     } else {
-                        map.values.process { info ->
-                            info.virtualFile = file
-                            consumer.process(info)
-                        }
+                        map.values.process { info -> processInfo(info, file, consumer) }
                     }
                 }
             }
         }
+    }
+
+    private fun processInfo(
+        info: ParadoxDefineIndexInfo,
+        file: VirtualFile,
+        consumer: Processor<in ParadoxDefineIndexInfo>
+    ): Boolean {
+        info.virtualFile = file
+        return consumer.process(info)
     }
 }
