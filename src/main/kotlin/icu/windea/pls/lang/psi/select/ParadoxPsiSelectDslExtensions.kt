@@ -23,9 +23,9 @@ import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -232,12 +232,12 @@ fun PsiElement.parentMemberContainer(orSelf: Boolean = false): ParadoxScriptMemb
 /**
  * 向上得到第一个属性或文件。
  *
- * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
+ * @param propertyName 要查找到的属性的名字。如果为 null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = true, fromBlock: Boolean = false): ParadoxDefinitionElement? {
+fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = true, fromBlock: Boolean = false): ParadoxScriptMemberContainer? {
     if (language !is ParadoxScriptLanguage) return null
     var current = this
     when {
@@ -281,6 +281,7 @@ fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = tr
     }
     if (definitionType != null) {
         val result = current.parentOfKey(null) ?: return null
+        if (result !is ParadoxDefinitionElement) return null
         val definitionInfo = result.definitionInfo ?: return null
         if (definitionType.isNotEmpty()) {
             if (!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null
