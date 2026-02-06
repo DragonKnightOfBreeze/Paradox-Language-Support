@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -19,6 +20,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -30,7 +32,6 @@ import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isExpression
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -41,10 +42,14 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
 
     override val type = ParadoxComplexEnumValueIndexInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        if (element !is ParadoxScriptStringExpressionElement) return
-        if (!element.isExpression()) return
-        val info = ParadoxComplexEnumValueManager.getInfo(element) ?: return
+    override fun indexData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val info0 = ParadoxComplexEnumValueManager.getInfo(element) ?: return
+        val definitionElementOffset = when {
+            // TODO 2.1.0+ 考虑兼容定义注入
+            info0.config.perDefinition -> selectScope { element.parentDefinition() }?.startOffset ?: -1
+            else -> -1
+        }
+        val info = ParadoxComplexEnumValueIndexInfo(info0.name, info0.enumName, definitionElementOffset, info0.gameType)
         addToFileData(info, fileData)
     }
 
@@ -55,16 +60,14 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
     override fun saveData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forAccess()))
         storage.writeIntFast(info.definitionElementOffset)
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forAccess())
         val definitionElementOffset = storage.readIntFast()
-        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)
+        return ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
     }
 }
 
@@ -75,14 +78,10 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
 
     override val type = ParadoxDynamicValueIndexInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun indexData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
-        // use expression references only for expression elements to optimize indexing performance
-        val references = when {
-            element is ParadoxExpressionElement -> ParadoxExpressionManager.getExpressionReferences(element)
-            else -> element.references
-        }
+        val references = ParadoxExpressionManager.getExpressionReferences(element)
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
@@ -94,7 +93,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         }
     }
 
-    override fun indexLocalisationExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun indexData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance
@@ -135,7 +134,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
 
     override val type = ParadoxParameterIndexInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun indexData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance
@@ -178,7 +177,7 @@ class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<Par
 
     override val type = ParadoxLocalisationParameterIndexInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun indexData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance

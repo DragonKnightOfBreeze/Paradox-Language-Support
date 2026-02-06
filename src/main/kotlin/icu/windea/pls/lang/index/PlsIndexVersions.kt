@@ -8,5 +8,5 @@ object PlsIndexVersions {
     const val FileLocale = 83 // 2.1.2
     const val ConfigSymbol = 83 // 2.1.2
     const val Define = 83 // 2.1.2
-    const val Merged = 83 // 2.1.2
+    const val Merged = 84 // 2.1.3
 }

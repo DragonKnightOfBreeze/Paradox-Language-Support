@@ -32,7 +32,7 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
             val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
-            val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo, element.project)
+            val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo)
             return arrayOf(reference)
         }
 

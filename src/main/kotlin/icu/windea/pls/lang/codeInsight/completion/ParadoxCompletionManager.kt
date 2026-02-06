@@ -2,6 +2,7 @@ package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressManager
@@ -582,10 +583,13 @@ object ParadoxCompletionManager {
     }
 
     fun completeEnumValue(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+
+        val configGroup = context.configGroup ?: return
+        val project = configGroup.project
+        val gameType = configGroup.gameType
         val config = context.config ?: return
         val enumName = config.configExpression?.value ?: return
-        val configGroup = config.configGroup
-        val project = configGroup.project
         val contextElement = context.contextElement!!
         val tailText = getExpressionTailText(context, config)
         // 提示简单枚举
@@ -621,7 +625,8 @@ object ParadoxCompletionManager {
             ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync { info ->
                 ProgressManager.checkCanceled()
                 val name = info.name
-                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, info.readWriteAccess, info.gameType, project)
+                val readWriteAccess = Access.Write // write (declaration)
+                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
@@ -640,6 +645,9 @@ object ParadoxCompletionManager {
     fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
 
+        val configGroup = context.configGroup ?: return
+        val project = configGroup.project
+        val gameType = configGroup.gameType
         val config = context.config
         val configs = context.configs
         val finalConfigs = configs.ifEmpty { config.to.singletonListOrEmpty() }
@@ -647,8 +655,6 @@ object ParadoxCompletionManager {
         for (finalConfig in finalConfigs) {
             val keyword = context.keyword
             val contextElement = context.contextElement!!
-            val configGroup = context.configGroup!!
-            val project = configGroup.project
             val configExpression = finalConfig.configExpression ?: return
             val dynamicValueType = configExpression.value ?: return
 
@@ -680,7 +686,8 @@ object ParadoxCompletionManager {
                     ProgressManager.checkCanceled()
                     val name = info.name
                     if (name == keyword) return@p true // 排除和当前输入的同名的
-                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, info.readWriteAccess, info.gameType, project)
+                    val readWriteAccess = info.readWriteAccess
+                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)

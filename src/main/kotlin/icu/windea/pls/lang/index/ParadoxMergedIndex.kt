@@ -83,9 +83,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                extensionList.forEach { ep ->
-                    ep.indexScriptElement(element, fileData)
-                }
+                extensionList.forEach { ep -> ep.indexData(element, fileData) }
 
                 if (element is ParadoxScriptDefinitionElement) {
                     val definitionInfo = element.definitionInfo
@@ -95,16 +93,16 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     }
                 }
 
-                run {
-                    if (definitionInfoStack.isEmpty()) return@run
-                    if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                    extensionList.forEach { ep -> ep.indexData(element, fileData) }
+
+                    run {
+                        if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
                         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions.DUMB)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
-                        extensionList.forEach { ep ->
-                            ep.indexScriptExpression(element, configs, definitionInfo, fileData)
-                        }
+                        extensionList.forEach { ep -> ep.indexData(element, fileData, configs, definitionInfo) }
                     }
                 }
 
@@ -129,9 +127,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    extensionList.forEach f@{ ep ->
-                        ep.indexLocalisationExpression(element, fileData)
-                    }
+                    extensionList.forEach { ep -> ep.indexData(element, fileData) }
                 }
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)

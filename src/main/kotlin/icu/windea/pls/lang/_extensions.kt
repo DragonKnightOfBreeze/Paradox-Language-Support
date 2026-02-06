@@ -17,13 +17,13 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
+import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxTagType
-import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -49,7 +49,7 @@ inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
 
-inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
