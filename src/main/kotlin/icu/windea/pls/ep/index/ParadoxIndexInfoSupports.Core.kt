@@ -21,12 +21,10 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.psi.select.*
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
@@ -34,42 +32,6 @@ import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
-
-class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxComplexEnumValueIndexInfo> {
-    private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
-
-    override val id = ParadoxIndexInfoType.ComplexEnumValue.id
-
-    override val type = ParadoxComplexEnumValueIndexInfo::class.java
-
-    override fun indexData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val info0 = ParadoxComplexEnumValueManager.getInfo(element) ?: return
-        val definitionElementOffset = when {
-            // TODO 2.1.0+ 考虑兼容定义注入
-            info0.config.perDefinition -> selectScope { element.parentDefinition() }?.startOffset ?: -1
-            else -> -1
-        }
-        val info = ParadoxComplexEnumValueIndexInfo(info0.name, info0.enumName, definitionElementOffset, info0.gameType)
-        addToFileData(info, fileData)
-    }
-
-    override fun compressData(value: List<ParadoxComplexEnumValueIndexInfo>): List<ParadoxComplexEnumValueIndexInfo> {
-        return value.sortedWith(compressComparator).distinct()
-    }
-
-    override fun saveData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
-        storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
-        storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
-        storage.writeIntFast(info.definitionElementOffset)
-    }
-
-    override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueIndexInfo {
-        val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
-        val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
-        val definitionElementOffset = storage.readIntFast()
-        return ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
-    }
-}
 
 class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynamicValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })

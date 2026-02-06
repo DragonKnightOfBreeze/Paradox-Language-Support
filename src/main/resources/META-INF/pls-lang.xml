@@ -307,8 +307,9 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefineIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
 
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>

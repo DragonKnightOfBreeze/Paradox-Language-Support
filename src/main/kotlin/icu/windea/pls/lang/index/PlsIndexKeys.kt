@@ -4,6 +4,7 @@ import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.model.index.ParadoxFilePathIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
@@ -46,4 +47,6 @@ object PlsIndexKeys {
     val FilePath = ID.create<String, ParadoxFilePathIndexInfo>("paradox.file.path.index")
     val Define = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
+
+    val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
 }

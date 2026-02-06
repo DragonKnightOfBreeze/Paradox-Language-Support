@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.lang.index.ParadoxIndexInfoType
+import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
@@ -22,10 +22,13 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
-
         val gameType = queryParameters.selector.gameType
-        val indexInfoType = ParadoxIndexInfoType.ComplexEnumValue
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
+
+        val enumName = queryParameters.enumName
+
+        val keys = setOf(enumName, ParadoxComplexEnumValueIndex.LazyIndexKey)
+        PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, gameType) { file, fileData ->
+            val infos = fileData[enumName].orEmpty()
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }
@@ -42,4 +45,3 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         return consumer.process(info)
     }
 }
-
