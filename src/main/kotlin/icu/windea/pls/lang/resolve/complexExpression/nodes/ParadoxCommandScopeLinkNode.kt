@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
-sealed interface ParadoxCommandScopeLinkNode : ParadoxLinkNode {
+interface ParadoxCommandScopeLinkNode : ParadoxLinkNode {
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeLinkNode {
             ParadoxSystemCommandScopeNode.resolve(text, textRange, configGroup)?.let { return it }

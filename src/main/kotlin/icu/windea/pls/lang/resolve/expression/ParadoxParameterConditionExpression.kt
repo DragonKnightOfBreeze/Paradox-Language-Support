@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.expression
 
 import icu.windea.pls.core.util.values.ReversibleValue
-import icu.windea.pls.lang.resolve.expression.impl.ParadoxParameterConditionExpressionResolverImpl
+import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 
 /**
  * 参数条件表达式。
@@ -14,6 +14,8 @@ import icu.windea.pls.lang.resolve.expression.impl.ParadoxParameterConditionExpr
  * PARAM
  * !PARAM
  * ```
+ *
+ * @see ParadoxScriptParameterConditionExpression
  */
 interface ParadoxParameterConditionExpression {
     val text: String
@@ -31,3 +33,27 @@ interface ParadoxParameterConditionExpression {
 
     companion object : Resolver by ParadoxParameterConditionExpressionResolverImpl()
 }
+
+// region Implementations
+
+private class ParadoxParameterConditionExpressionResolverImpl : ParadoxParameterConditionExpression.Resolver {
+    override fun resolve(expressionString: String): ParadoxParameterConditionExpression {
+        return ParadoxParameterConditionExpressionImpl(expressionString)
+    }
+}
+
+private class ParadoxParameterConditionExpressionImpl(
+    override val text: String
+) : ParadoxParameterConditionExpression {
+    override val snippet: ReversibleValue<String> = ReversibleValue.from(text)
+
+    override fun matches(argumentNames: Set<String>?): Boolean {
+        return snippet.withOperator { argumentNames != null && it in argumentNames }
+    }
+
+    override fun equals(other: Any?) = this === other || other is ParadoxParameterConditionExpression && text == other.text
+    override fun hashCode() = text.hashCode()
+    override fun toString() = text
+}
+
+// endregion

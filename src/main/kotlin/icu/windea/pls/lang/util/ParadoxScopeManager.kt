@@ -43,6 +43,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.dynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
@@ -64,6 +65,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefi
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.scopeNodes
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.isExact
@@ -426,9 +428,11 @@ object ParadoxScopeManager {
                     }
                 }
             }
-            is ParadoxCommandFieldNode -> return inputScopeContext
-            else -> return getUnknownScopeContext(inputScopeContext)
+            is ParadoxCommandFieldNode -> {
+                return inputScopeContext
+            }
         }
+        return getUnknownScopeContext(inputScopeContext)
     }
 
     private fun getSwitchedScopeContextOfParameterizedScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
@@ -594,8 +598,8 @@ object ParadoxScopeManager {
                     }
                 }
             }
-            else -> return null
         }
+        return null
     }
 
     fun getScopeContextFromConfigOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {

@@ -41,7 +41,10 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.argumentNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
+import icu.windea.pls.lang.resolve.complexExpression.nestedScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -344,7 +347,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val gameType = configGroup.gameType
         val project = configGroup.project
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-        val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
+        val scriptValueExpression = valueFieldExpression.nestedScriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf("script_value")
@@ -382,7 +385,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if (!expressionString.contains("value:")) return null // 快速判断
         val configGroup = config.configGroup
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-        val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
+        val scriptValueExpression = valueFieldExpression.nestedScriptValueExpression ?: return null
         val scriptValueNode = scriptValueExpression.scriptValueNode
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
