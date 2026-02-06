@@ -1,8 +1,7 @@
-package icu.windea.pls.lang.tools.impl
+package icu.windea.pls.lang.tools
 
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.toPath
-import icu.windea.pls.lang.tools.PlsGitService
 import java.nio.file.Path
 import kotlin.io.path.exists
 

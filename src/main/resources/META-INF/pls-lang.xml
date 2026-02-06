@@ -364,10 +364,10 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsPathServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsUrlServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsGitServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsSqliteServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.PlsPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.PlsUrlServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.PlsGitServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.PlsSqliteServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.tools.game.launch.ParadoxLaunchGameService" serviceImplementation="icu.windea.pls.tools.game.launch.ParadoxLaunchGameServiceImpl"/>
   </extensions>
 

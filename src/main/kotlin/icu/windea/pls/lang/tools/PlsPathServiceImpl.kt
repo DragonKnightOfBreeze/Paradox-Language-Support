@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.tools.impl
+package icu.windea.pls.lang.tools
 
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.ide.CopyPasteManager
@@ -10,7 +10,6 @@ import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.launch

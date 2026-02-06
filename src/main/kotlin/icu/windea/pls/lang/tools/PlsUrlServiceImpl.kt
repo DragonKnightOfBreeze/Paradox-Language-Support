@@ -1,8 +1,7 @@
-package icu.windea.pls.lang.tools.impl
+package icu.windea.pls.lang.tools
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.ide.CopyPasteManager
-import icu.windea.pls.lang.tools.PlsUrlService
 import java.awt.datatransfer.StringSelection
 
 class PlsUrlServiceImpl : PlsUrlService {
