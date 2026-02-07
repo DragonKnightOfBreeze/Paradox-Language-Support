@@ -21,8 +21,7 @@ import icu.windea.pls.lang.selectGameType
  */
 class ParadoxTypedHandler : TypedHandlerDelegate() {
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        val matched = ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
-            || ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        val matched = ParadoxPsiFileMatcher.isScriptFile(file, injectable = true) || ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
         if (!matched) return Result.CONTINUE
         charTypedInComplexExpression(c, project, editor, file)?.let { return it }
         return Result.CONTINUE

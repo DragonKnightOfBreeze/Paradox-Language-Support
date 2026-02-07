@@ -23,6 +23,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -42,7 +43,7 @@ class ParadoxDefinitionInjectionExpressionCompletionProvider : CompletionProvide
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
         val gameType = selectGameType(file) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file)) return
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
 
         val position = parameters.position

@@ -26,6 +26,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -44,7 +45,7 @@ class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<Completion
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
         val gameType = selectGameType(file) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file)) return
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return
 
         val extension = file.name.substringAfterLast('.').lowercase()

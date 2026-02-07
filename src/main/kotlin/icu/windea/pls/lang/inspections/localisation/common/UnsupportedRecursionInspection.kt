@@ -23,8 +23,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是符合条件的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

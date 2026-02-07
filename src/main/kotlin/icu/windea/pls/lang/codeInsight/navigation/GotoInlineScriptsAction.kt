@@ -11,6 +11,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -29,7 +30,7 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)) return
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
         if (ParadoxPsiFileMatcher.isTopFile(file)) return // 忽略直接位于游戏或模组目录（或者对应的入口目录）中的文件
         val gameType = selectGameType(file)
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况

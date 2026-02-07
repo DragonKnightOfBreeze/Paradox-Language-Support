@@ -19,7 +19,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
+class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

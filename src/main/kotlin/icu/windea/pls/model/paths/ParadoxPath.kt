@@ -1,6 +1,7 @@
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
@@ -43,6 +44,23 @@ interface ParadoxPath : Iterable<String> {
     }
 
     companion object : Resolver by ParadoxPathResolverImpl()
+}
+
+fun ParadoxPath.matchesParent(path: String, strict: Boolean = false): Boolean {
+    return if (strict) this.parent == path else path.matchesPath(this.path)
+}
+
+fun ParadoxPath.matchesExtension(extension: String): Boolean {
+    return this.fileExtension?.lowercase() == extension
+}
+
+fun ParadoxPath.matchesExtensions(extensions: Array<String>): Boolean {
+    return this.fileExtension?.lowercase() in extensions
+}
+
+@Suppress("unused")
+fun ParadoxPath.matchesExtensions(extensions: Collection<String>): Boolean {
+    return this.fileExtension?.lowercase() in extensions
 }
 
 // region Implementations

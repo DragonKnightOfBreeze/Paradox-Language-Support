@@ -22,6 +22,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.inlineScriptHasConflict
 import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
@@ -34,9 +35,14 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptString
 
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
@@ -68,6 +74,17 @@ object ParadoxInlineScriptManager {
         if (context == null) return false
         if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
         return isSupported(selectGameType(context))
+    }
+
+    /**
+     * 检查内联脚本用法在 [element] 对应的位置是否可用（不一定实际受游戏支持，格式也不一定正确）。这意味着至少会提供代码高亮。
+     */
+    fun isAvailable(element: ParadoxScriptProperty): Boolean {
+        val propertyValue = element.propertyValue
+        if (propertyValue !is ParadoxScriptString && propertyValue !is ParadoxScriptScriptedVariableReference && propertyValue !is ParadoxScriptBlock) return false
+        val file = element.containingFile ?: return false
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return false // 额外检查
+        return true
     }
 
     /**

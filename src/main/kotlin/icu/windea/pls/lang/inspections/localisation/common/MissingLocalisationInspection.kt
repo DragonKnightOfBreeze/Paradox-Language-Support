@@ -42,8 +42,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是符合条件的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

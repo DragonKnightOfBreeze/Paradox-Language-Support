@@ -153,6 +153,7 @@ object ParadoxPsiMatcher {
         if (element !is ParadoxScriptProperty) return false
         if (gameType == null) return false
         if (!ParadoxInlineScriptManager.isMatched(element.name, gameType)) return false
+        if (!ParadoxInlineScriptManager.isAvailable(element)) return false
         return true
     }
 

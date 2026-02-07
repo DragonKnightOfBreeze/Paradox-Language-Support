@@ -28,6 +28,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -74,13 +75,16 @@ object ParadoxDefinitionInjectionManager {
     }
 
     /**
-     * 检查内联脚本用法在 [element] 对应的位置是否可用（但不一定支持或正确）。这意味着至少会提供代码高亮。
+     * 检查定义注入在 [element] 对应的位置是否可用（不一定实际受游戏支持，格式也不一定正确）。这意味着至少会提供代码高亮。
      */
     fun isAvailable(element: ParadoxScriptProperty): Boolean {
         if (element.parent !is ParadoxScriptRootBlock) return false // 属性必须位于文件顶级（就目前看来）
-        if (element.propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
-        if (!ParadoxPsiFileMatcher.isScriptFile(element.containingFile)) return false // 额外检查
-        return true // 这里目前不继续检查当前位置是否匹配任意定义类型
+        val propertyValue = element.propertyValue ?: return false
+        if (propertyValue !is ParadoxScriptBlock) return false // 属性的值必须是子句
+        val file = element.containingFile ?: return false
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptDefinitionInjection)) return false // 额外检查
+        // 这里目前不继续检查当前位置是否匹配任意定义类型
+        return true
     }
 
     fun getModeFromExpression(expression: String): String? {

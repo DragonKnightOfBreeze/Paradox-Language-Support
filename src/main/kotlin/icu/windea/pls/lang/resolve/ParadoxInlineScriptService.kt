@@ -22,9 +22,9 @@ import kotlin.contracts.contract
 
 object ParadoxInlineScriptService {
     @OptIn(ExperimentalContracts::class)
-    private fun canBeExpressionElement(v1: PsiElement): Boolean {
-        contract { returns(true) implies (v1 is ParadoxScriptValue) }
-        return v1 is ParadoxScriptString || v1 is ParadoxScriptScriptedVariableReference
+    private fun canBeExpressionElement(element: PsiElement): Boolean {
+        contract { returns(true) implies (element is ParadoxScriptValue) }
+        return element is ParadoxScriptString || element is ParadoxScriptScriptedVariableReference
     }
 
     /**
