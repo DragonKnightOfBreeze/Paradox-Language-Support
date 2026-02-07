@@ -40,6 +40,8 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
         const val LazyIndexKey = "__lazy__"
     }
 
+    private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
+
     override fun getName() = PlsIndexKeys.ComplexEnumValue
 
     override fun getVersion() = PlsIndexVersions.ComplexEnumValue
@@ -106,7 +108,7 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
         if (fileData.isEmpty()) return
         for ((key, value) in fileData) {
             if (value.size <= 1) continue
-            val newValue = value.sortedWith(compareBy({ it.name }, { it.enumName }, { it.definitionElementOffset })).distinct()
+            val newValue = value.sortedWith(compressComparator)
             fileData[key] = newValue
         }
     }
