@@ -30,9 +30,9 @@ class ParadoxSearchSelectorBuilder(
 
     fun complexEnumValue() = ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
 
-    fun dynamicValue() = ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context)
-
     fun define() = ParadoxSearchSelector<ParadoxDefineIndexInfo>(project, context)
+
+    fun dynamicValue() = ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context)
 
     fun parameter() = ParadoxSearchSelector<ParadoxParameterIndexInfo>(project, context)
 
