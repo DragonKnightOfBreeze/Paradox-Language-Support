@@ -6,7 +6,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
-import icu.windea.pls.model.index.ParadoxFilePathIndexInfo
+import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -44,7 +44,7 @@ object PlsIndexKeys {
 
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
-    val FilePath = ID.create<String, ParadoxFilePathIndexInfo>("paradox.file.path.index")
+    val FilePath = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
     val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
     val Define = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
