@@ -20,6 +20,8 @@ data class ParadoxComplexEnumValueIndexInfo(
         get() = PlsFacade.getConfigGroup(gameType).complexEnums[enumName]
     val caseInsensitive: Boolean
         get() = config?.caseInsensitive ?: false
+    val id: String
+        get() = if (caseInsensitive) name.lowercase() else name // # 261
 
     val definitionElement: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, definitionElementOffset) }

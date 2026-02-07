@@ -16,11 +16,12 @@ import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionName
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByFilePath
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -87,7 +88,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
+        val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctBy { it.definitionName }
         ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -128,7 +129,8 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         val tailText = " from image file"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val fileSelector = selector(project, originalFile).file().contextSensitive().distinctByFilePath()
+        val fileSelector = selector(project, originalFile).file().contextSensitive()
+            .distinctBy { it.fileInfo?.path }
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension

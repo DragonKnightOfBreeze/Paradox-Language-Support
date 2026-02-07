@@ -17,3 +17,4 @@ data class ParadoxComplexEnumValueInfo(
         return "ParadoxComplexEnumValueInfo(name=$name, enumName=$enumName, gameType=$gameType)"
     }
 }
+

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -35,6 +36,7 @@ object ParadoxComplexEnumValueManager {
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = doGetInfo(element, file)
             value.withDependencyItems(file)

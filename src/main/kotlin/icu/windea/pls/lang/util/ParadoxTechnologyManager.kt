@@ -21,13 +21,14 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -68,7 +69,7 @@ object ParadoxTechnologyManager {
         private val gameType = ParadoxGameType.Stellaris
 
         fun getAllTiers(project: Project, context: Any?): Set<ParadoxDefinitionElement> {
-            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
+            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctBy { it.definitionName }
             return ParadoxDefinitionSearch.search(null, "technology_tier", selector).findAll()
         }
 
@@ -81,7 +82,7 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxDefinitionElement> {
-            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
+            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctBy { it.definitionName }
             return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.technologyCategory, selector).findAll()
         }
 

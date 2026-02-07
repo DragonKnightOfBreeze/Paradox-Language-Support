@@ -13,11 +13,12 @@ import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
+import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
@@ -38,7 +39,8 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 提示concept的name或alias
-        val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
+        val conceptSelector = selector(project, file).definition().contextSensitive()
+            .distinctBy { it.definitionName }
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"

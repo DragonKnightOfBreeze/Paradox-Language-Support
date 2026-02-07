@@ -11,6 +11,7 @@ import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -18,6 +19,7 @@ import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
+import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxFileInfo
@@ -45,9 +47,16 @@ inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalysisManager
 
 inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.selectLocale(from)
 
+inline val ParadoxScriptProperty.defineInfo: ParadoxDefineInfo? get() = ParadoxDefineManager.getInfo(this)
+inline val ParadoxScriptProperty.defineExpression: String? get() = ParadoxDefineManager.getExpression(this)
+
 inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
+inline val ParadoxDefinitionElement.definitionName: String? get() = ParadoxDefinitionManager.getName(this)
+inline val ParadoxDefinitionElement.definitionType: String? get() = ParadoxDefinitionManager.getType(this)
 
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
+inline val ParadoxScriptProperty.definitionInjectionTarget: String? get() = ParadoxDefinitionInjectionManager.getTarget(this)
+inline val ParadoxScriptProperty.definitionInjectionType: String? get() = ParadoxDefinitionInjectionManager.getType(this)
 
 inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
 
@@ -64,7 +73,7 @@ fun Char.isIdentifierChar(extraChars: String = ""): Boolean {
 }
 
 fun String.isIdentifier(extraChars: String = ""): Boolean {
-    if(isEmpty()) return false
+    if (isEmpty()) return false
     for ((_, c) in this.withIndex()) {
         if (c.isIdentifierChar(extraChars)) continue
         return false
@@ -74,7 +83,7 @@ fun String.isIdentifier(extraChars: String = ""): Boolean {
 
 fun String.isParameterAwareIdentifier(extraChars: String = ""): Boolean {
     // 优化：仅在必要时获取参数范围
-    if(isEmpty()) return false
+    if (isEmpty()) return false
     var parameterRanges: List<TextRange>? = null
     for ((i, c) in this.withIndex()) {
         if (c.isIdentifierChar(extraChars)) continue

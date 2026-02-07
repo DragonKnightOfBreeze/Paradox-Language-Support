@@ -20,6 +20,8 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.defineExpression
+import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -60,8 +62,7 @@ import icu.windea.pls.lang.resolve.complexExpression.valueNode
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByExpression
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -1197,7 +1198,8 @@ object ParadoxComplexExpressionCompletionManager {
         val valueNode = dsNode.expression.valueNode ?: return
         val project = configGroup.project
         val contextElement = context.contextElement
-        val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
+        val selector = selector(project, contextElement).definition().contextSensitive()
+            .distinctBy { it.definitionName }
         ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)
         }
@@ -1216,7 +1218,8 @@ object ParadoxComplexExpressionCompletionManager {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
         val tailText = " from define namespaces"
-        val selector = selector(project, contextElement).define().distinctByExpression()
+        val selector = selector(project, contextElement).define()
+            .distinctBy { it.defineExpression }
         ParadoxDefineSearch.search(null, "", selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val namespace = info.namespace
@@ -1237,7 +1240,8 @@ object ParadoxComplexExpressionCompletionManager {
         val namespaceNode = node.expression.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"
-        val selector = selector(project, contextElement).define().distinctByExpression()
+        val selector = selector(project, contextElement).define()
+            .distinctBy { it.defineExpression }
         ParadoxDefineSearch.search(namespace, null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val variable = info.variable ?: return@p true

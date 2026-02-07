@@ -159,7 +159,6 @@ object ParadoxDefinitionInjectionManager {
         return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
     }
 
-    @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
         val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.target }

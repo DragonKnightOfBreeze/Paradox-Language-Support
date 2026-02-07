@@ -41,6 +41,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -63,8 +64,7 @@ import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByFilePath
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withFileExtensions
@@ -518,7 +518,8 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
+        val selector = selector(project, contextElement).definition().contextSensitive()
+            .distinctBy { it.definitionName }
         ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -564,7 +565,7 @@ object ParadoxCompletionManager {
             // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在
             val selector = selector(project, contextElement).file().contextSensitive()
                 .withFileExtensions(fileExtensions)
-                .distinctByFilePath()
+                .distinctBy { it.fileInfo?.path }
             ParadoxFilePathSearch.search(null, configExpression, selector).processAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
@@ -624,7 +625,7 @@ object ParadoxCompletionManager {
             val selector = selector(project, contextElement).complexEnumValue()
                 .withSearchScopeType(searchScopeType)
                 .contextSensitive()
-                .distinctByName()
+                .distinctBy { it.id }
             ParadoxComplexEnumValueSearch.search(null, enumName, selector).processAsync { info ->
                 ProgressManager.checkCanceled()
                 val name = info.name
@@ -684,7 +685,7 @@ object ParadoxCompletionManager {
             run {
                 ProgressManager.checkCanceled()
                 val tailText = " by $configExpression"
-                val selector = selector(project, contextElement).dynamicValue().distinctByName()
+                val selector = selector(project, contextElement).dynamicValue().distinctBy { it.name }
                 ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     val name = info.name
@@ -871,7 +872,8 @@ object ParadoxCompletionManager {
             context.expressionTailText = ""
             context.keyword = keywordToUse
             val project = configGroup.project
-            val selector = selector(project, file).definition().contextSensitive().distinctByName()
+            val selector = selector(project, file).definition().contextSensitive()
+                .distinctBy { it.definitionName }
             ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                 processDefinition(context, resultToUse, it)
             }

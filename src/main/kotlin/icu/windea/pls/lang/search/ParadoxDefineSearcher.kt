@@ -2,16 +2,16 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.greenStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
@@ -19,12 +19,15 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 /**
  * 预定义的命名空间与变量的查询器。
  */
-class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxDefineSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo>) {
+class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDefineSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxScriptProperty>) {
+        // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if (PlsStates.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = GlobalSearchScope.projectScope(project)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
         val variable = queryParameters.variable
@@ -152,9 +155,8 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
     private fun processElement(
         queryParameters: ParadoxDefineSearch.SearchParameters,
         element: ParadoxScriptProperty,
-        consumer: Processor<in ParadoxDefineIndexInfo>
+        consumer: Processor<in ParadoxScriptProperty>
     ): Boolean {
-        val project = queryParameters.project
         val file = element.containingFile?.virtualFile ?: return true
         val stub = element.greenStub?.castOrNull<ParadoxScriptPropertyStub>()
 
@@ -187,9 +189,6 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
             expectedVariable == "" -> if (variable != null) return true
             expectedVariable != null -> if (variable != expectedVariable) return true
         }
-
-        val info = ParadoxDefineIndexInfo(namespace, variable, element.startOffset, gameType)
-        info.bind(file, project)
-        return consumer.process(info)
+        return consumer.process(element)
     }
 }

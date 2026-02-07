@@ -6,19 +6,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.isSamePosition
-import icu.windea.pls.core.letIf
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
-import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
-import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
     if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
@@ -58,49 +48,6 @@ fun <S : ParadoxSearchSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S 
 
 fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
     return filterBy { element == null || !element.isSamePosition(it) }
-}
-
-@JvmName("distinctByName_scriptedVariable")
-fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_definition")
-fun <S : ParadoxSearchSelector<ParadoxDefinitionElement>> S.distinctByName(): S {
-    return distinctBy { ParadoxDefinitionManager.getName(it) }
-}
-
-@JvmName("distinctByName_localisation")
-fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_complexEnumValue")
-fun <S : ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } } // # 261
-}
-
-@JvmName("distinctByName_dynamicValue")
-fun <S : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_parameter")
-fun <S : ParadoxSearchSelector<ParadoxParameterIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_localisationParameter")
-fun <S : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-fun <S : ParadoxSearchSelector<VirtualFile>> S.distinctByFilePath(): S {
-    return distinctBy { it.fileInfo?.path }
-}
-
-fun <S : ParadoxSearchSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(): S {
-    return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
 }
 
 fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {

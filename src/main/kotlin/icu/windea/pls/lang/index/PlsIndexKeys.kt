@@ -3,9 +3,9 @@ package icu.windea.pls.lang.index
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -17,11 +17,6 @@ object PlsIndexKeys {
     val DefinitionType = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.type.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
     val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-
-    // for defines, namespace -> ParadoxScriptProperty
-    val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")
-    // for defines, namespace\u0000variable -> ParadoxScriptProperty
-    val DefineVariable = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.variable.index")
 
     val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.resource")
     val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.economicCategory")
@@ -36,6 +31,11 @@ object PlsIndexKeys {
     val LocalisationNameForModifier = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")
     val LocalisationNameForTech = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.tech")
+
+    // for defines, namespace -> ParadoxScriptProperty
+    val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")
+    // for defines, namespace\u0000variable -> ParadoxScriptProperty
+    val DefineVariable = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.variable.index")
 
     // for inline script usages, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptUsage = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptUsage.index")

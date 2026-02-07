@@ -24,6 +24,7 @@ import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -33,7 +34,7 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.distinctBy
 import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
@@ -101,7 +102,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
-                        .distinctByName()
+                        .distinctBy { it.definitionName }
                     ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
@@ -121,12 +122,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = false
                     context.expressionTailText = ""
-                    // 这里需要基于rootKey过滤结果
+                    // 基于类型键过滤结果
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
-                        .distinctByName()
+                        .distinctBy { it.definitionName }
                     ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
