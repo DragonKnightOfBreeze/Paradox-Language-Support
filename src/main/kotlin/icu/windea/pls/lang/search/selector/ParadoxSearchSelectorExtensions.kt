@@ -9,6 +9,7 @@ import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
@@ -63,12 +64,12 @@ fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: Ps
 
 @JvmName("distinctByScriptedVariableName")
 fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
-    return distinctByName()
+    return distinctBy { it.name }
 }
 
 @JvmName("distinctByDefinitionName")
 fun <S : ParadoxSearchSelector<ParadoxDefinitionElement>> S.distinctByDefinitionName(): S {
-    return distinctByDefinitionName()
+    return distinctBy { ParadoxDefinitionManager.getName(it) }
 }
 
 @JvmName("distinctByDefineExpression")
@@ -76,13 +77,14 @@ fun <S : ParadoxSearchSelector<ParadoxScriptProperty>> S.distinctByDefineExpress
     return distinctBy { ParadoxDefineManager.getExpression(it) }
 }
 
+@Suppress("unused")
 @JvmName("distinctByLocalisationName")
 fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
-    return distinctByName()
+    return distinctBy { it.name }
 }
 
 @JvmName("distinctByIndexInfoName")
-fun <S : ParadoxSearchSelector<I>, I : ParadoxIndexInfo> S.distinctByName(): S {
+fun <S : ParadoxSearchSelector<T>, T : ParadoxIndexInfo> S.distinctByName(): S {
     return distinctBy {
         when (it) {
             is ParadoxComplexEnumValueIndexInfo -> it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } // #261
