@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.index
 
 object PlsIndexVersions {
-    const val ScriptStub = 83 // 2.1.2
+    const val ScriptStub = 86 // 2.1.3
     const val LocalisationStub = 83 // 2.1.2
 
     const val FilePath = 83 // 2.1.2

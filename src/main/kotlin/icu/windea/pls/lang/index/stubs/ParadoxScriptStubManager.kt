@@ -8,6 +8,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -22,12 +23,16 @@ import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 
@@ -50,28 +55,39 @@ object ParadoxScriptStubManager {
         // 排除为空或者带参数的情况
         val name = psi.name
         if (name.isEmpty() || name.isParameterized()) return ParadoxScriptPropertyStub.createDummy(parentStub)
-        run {
-            val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return@run
-            if (parentStub is ParadoxScriptPropertyStub.InlineScriptUsage) {
+        val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType
+        if (gameType == null) return ParadoxScriptPropertyStub.create(parentStub, name)
+        when {
+            ParadoxDefineManager.isDefineFile(psi.containingFile) -> {
+                when (parentStub) {
+                    is ParadoxScriptPropertyStub.DefineNamespace -> {
+                        val stub = ParadoxScriptPropertyStub.createDefineVariable(parentStub, name)
+                        return stub
+                    }
+                    is ParadoxScriptFileStub -> {
+                        if (psi.propertyValue is ParadoxScriptBlock) {
+                            val stub = ParadoxScriptPropertyStub.createDefineNamespace(parentStub, name)
+                            return stub
+                        }
+                    }
+                }
+            }
+            parentStub is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                 val stub = createInlineScriptArgumentStub(parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name)) {
+            ParadoxInlineScriptManager.isMatched(name) -> {
                 val stub = createInlineScriptUsageStub(psi, parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            if (ParadoxDefinitionInjectionManager.isMatched(name, gameType)) {
+            ParadoxDefinitionInjectionManager.isMatched(name, gameType) -> {
                 val stub = createDefinitionInjectionStub(psi, parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            val definitionInjectionStub = createDefinitionInjectionStub(psi, parentStub, name)
-            if (definitionInjectionStub != null) return definitionInjectionStub
-            val stub = createDefinitionStub(psi, parentStub, name)
-            if (stub != null) return stub
-
+            else -> {
+                val stub = createDefinitionStub(psi, parentStub, name)
+                if (stub != null) return stub
+            }
         }
         return ParadoxScriptPropertyStub.create(parentStub, name)
     }
@@ -80,25 +96,39 @@ object ParadoxScriptStubManager {
         // 排除为空或者带参数的情况
         val name = ParadoxScriptLightTreeUtil.getNameFromPropertyNode(node, tree).orEmpty()
         if (name.isEmpty() || name.isParameterized()) return ParadoxScriptPropertyStub.createDummy(parentStub)
-        run {
-            val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return@run
-            if (parentStub is ParadoxScriptPropertyStub.InlineScriptUsage) {
+        val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType
+        if (gameType == null) return ParadoxScriptPropertyStub.create(parentStub, name)
+        when {
+            ParadoxDefineManager.isDefineFile(parentStub.psi.containingFile) -> {
+                when (parentStub) {
+                    is ParadoxScriptPropertyStub.DefineNamespace -> {
+                        val stub = ParadoxScriptPropertyStub.createDefineVariable(parentStub, name)
+                        return stub
+                    }
+                    is ParadoxScriptFileStub -> {
+                        if (node.firstChild(tree, BLOCK) != null) {
+                            val stub = ParadoxScriptPropertyStub.createDefineNamespace(parentStub, name)
+                            return stub
+                        }
+                    }
+                }
+            }
+            parentStub is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                 val stub = createInlineScriptArgumentStub(parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name, gameType)) {
+            ParadoxInlineScriptManager.isMatched(name, gameType) -> {
                 val stub = createInlineScriptUsageStub(tree, node, parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            if (ParadoxDefinitionInjectionManager.isMatched(name, gameType)) {
+            ParadoxDefinitionInjectionManager.isMatched(name, gameType) -> {
                 val stub = createDefinitionInjectionStub(parentStub, name)
                 if (stub != null) return stub
-                return@run
             }
-            val definitionStub = createDefinitionStub(tree, node, parentStub, name)
-            if (definitionStub != null) return definitionStub
+            else -> {
+                val stub = createDefinitionStub(tree, node, parentStub, name)
+                if (stub != null) return stub
+            }
         }
         return ParadoxScriptPropertyStub.create(parentStub, name)
     }

@@ -5,7 +5,6 @@ import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -18,6 +17,11 @@ object PlsIndexKeys {
     val DefinitionType = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.type.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
     val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
+
+    // for defines, namespace -> ParadoxScriptProperty
+    val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")
+    // for defines, namespace\u0000variable -> ParadoxScriptProperty
+    val DefineVariable = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.variable.index")
 
     val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.resource")
     val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.economicCategory")
@@ -46,6 +50,5 @@ object PlsIndexKeys {
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val FilePath = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
     val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
-    val Define = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 }

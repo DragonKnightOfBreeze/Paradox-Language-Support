@@ -142,6 +142,14 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     dataStream.writeInt(rootKeys.size)
                     rootKeys.forEach { dataStream.writeName(it) }
                 }
+                is ParadoxScriptPropertyStub.DefineNamespace -> {
+                    dataStream.writeByte(Flags.defineNamespace)
+                    dataStream.writeName(stub.name)
+                }
+                is ParadoxScriptPropertyStub.DefineVariable -> {
+                    dataStream.writeByte(Flags.defineVariable)
+                    dataStream.writeName(stub.name)
+                }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     dataStream.writeByte(Flags.inlineScriptUsage)
                     dataStream.writeName(stub.name)
@@ -186,6 +194,16 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     }
                     ParadoxScriptPropertyStub.createDefinition(parentStub, name, definitionName, definitionType, definitionSubtypes, rootKeys)
                 }
+                Flags.defineNamespace -> {
+                    val name = dataStream.readNameString().orEmpty()
+                    if (name.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
+                    ParadoxScriptPropertyStub.createDefineNamespace(parentStub, name)
+                }
+                Flags.defineVariable -> {
+                    val name = dataStream.readNameString().orEmpty()
+                    if (name.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
+                    ParadoxScriptPropertyStub.createDefineVariable(parentStub, name)
+                }
                 Flags.inlineScriptUsage -> {
                     val name = dataStream.readNameString().orEmpty()
                     val inlineScriptExpression = dataStream.readNameString().orEmpty()
@@ -229,6 +247,16 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                         sink.occurrence(PlsIndexKeys.DefinitionType, definitionType)
                     }
                 }
+                is ParadoxScriptPropertyStub.DefineNamespace -> {
+                    if (stub.namespace.isEmpty()) return
+                    sink.occurrence(PlsIndexKeys.DefineNamespace, stub.namespace)
+                }
+                is ParadoxScriptPropertyStub.DefineVariable -> {
+                    if (stub.namespace.isEmpty()) return
+                    if (stub.variable.isEmpty()) return
+                    val key = stub.namespace + "\u0000" + stub.variable
+                    sink.occurrence(PlsIndexKeys.DefineVariable, key)
+                }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     if (stub.expression.isEmpty()) return
                     sink.occurrence(PlsIndexKeys.InlineScriptUsage, stub.expression)
@@ -249,6 +277,8 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         private object Flags {
             const val property: Byte = 0
             const val definition: Byte = 1
+            const val defineNamespace: Byte = 6
+            const val defineVariable: Byte = 7
             const val inlineScriptUsage: Byte = 2
             const val inlineScriptArgument: Byte = 3
             const val definitionNamed: Byte = 4

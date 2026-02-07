@@ -300,6 +300,8 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextColorIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextIconIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineNamespaceIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineVariableIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex"/>
@@ -308,7 +310,6 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefineIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
 
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>

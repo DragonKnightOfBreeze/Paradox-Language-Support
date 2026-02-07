@@ -6,14 +6,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.orNull
-import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -21,15 +19,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxDefineManager {
-    val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
-
     fun isDefineFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
         if (fileType != ParadoxScriptFileType) return false
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path.path
-        val configExpression = definePathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull() != null
+        return ParadoxPathConstraint.ForDefine.test(fileInfo.path)
     }
 
     fun isDefineFile(file: PsiFile): Boolean {

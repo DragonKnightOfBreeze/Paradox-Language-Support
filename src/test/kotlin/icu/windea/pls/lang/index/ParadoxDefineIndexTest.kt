@@ -1,14 +1,15 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
@@ -36,24 +37,16 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
+        val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val values = FileBasedIndex.getInstance().getValues(
-            PlsIndexKeys.Define,
-            "NGameplay",
-            scope
-        )
+        val namespaces = StubIndex.getElements(PlsIndexKeys.DefineNamespace, "NGameplay", project, scope, ParadoxScriptProperty::class.java)
+        Assert.assertEquals(1, namespaces.size)
+        Assert.assertEquals("NGameplay", namespaces.single().name)
 
-        // assert
-        Assert.assertTrue(values.isNotEmpty())
-        val map = values.single()
-        Assert.assertTrue(map.containsKey("")) // namespace info
-        Assert.assertTrue(map.containsKey("MARINE"))
-        Assert.assertTrue(map.containsKey("FLEET_POWER"))
-        val info: ParadoxDefineIndexInfo = map.getValue("MARINE")
-        Assert.assertEquals("NGameplay", info.namespace)
-        Assert.assertEquals("MARINE", info.variable)
-        Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
-        Assert.assertTrue(info.elementOffset >= 0)
+        val marineKey = "NGameplay\u0000MARINE"
+        val variables = StubIndex.getElements(PlsIndexKeys.DefineVariable, marineKey, project, scope, ParadoxScriptProperty::class.java)
+        Assert.assertEquals(1, variables.size)
+        Assert.assertEquals("MARINE", variables.single().name)
     }
 
     @Test
@@ -70,7 +63,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         }
 
         // assert
-        Assert.assertEquals(1, results.size)
+        Assert.assertEquals("results=$results", 1, results.size)
         val info = results.single()
         Assert.assertEquals("NGameplay", info.namespace)
         Assert.assertEquals("MARINE", info.variable)
