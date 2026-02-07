@@ -6,7 +6,6 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
@@ -34,8 +33,6 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。
@@ -102,8 +99,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
-                PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
-                    val psiFile = file.toPsiFile(project) ?: return@p true
+                PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
                         // TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
@@ -111,9 +107,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         if (definitionName != definitionInfo.name) return@f // matches definition name
                         val eventType = info.typeExpression.substringBefore('.')
                         if (eventType != definitionInfo.type) return@f // matches definition type
-                        val e = psiFile.findElementAt(info.elementOffset) ?: return@f
-                        val m = e.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return@f
-                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(m) ?: return@f
+                        val definition = info.definitionElement ?: return@f
+                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(definition) ?: return@f
                         val map = with(scopeContext) {
                             buildMap {
                                 put("this", scope.id)
@@ -318,23 +313,20 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.EventInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
-                val psiFile = file.toPsiFile(project) ?: return@p true
+            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
                     val eventName = info.eventName
                     if (eventName != thisEventName) return@f
                     val containingEventName = info.containingEventName
                     withRecursionCheck(containingEventName) {
-                        val scopesElementOffset = info.scopesElementOffset
-                        if (scopesElementOffset != -1) {
-                            // 从scopes = { ... }中推断
-                            ProgressManager.checkCanceled()
-                            val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
-                            val scopesBlockElement = scopesElement.block ?: return@p false
+                        val scopesElement = info.scopesElement
+                        if (scopesElement != null) {
+                            // 从 `scopes = { ... }` 中推断
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
+                            ProgressManager.checkCanceled()
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties(inline = true).forEach f@{
+                            scopesElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
@@ -350,6 +342,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }
+                            if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
                                 val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
@@ -468,23 +461,20 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.OnActionInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
-                val psiFile = file.toPsiFile(project) ?: return@p true
+            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ _, infos ->
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
                     val onActionName = info.onActionName
                     if (onActionName != thisOnActionName) return@f
                     val containingEventName = info.containingEventName
                     withRecursionCheck(containingEventName) {
-                        val scopesElementOffset = info.scopesElementOffset
-                        if (scopesElementOffset != -1) {
-                            // 从scopes = { ... }中推断
-                            ProgressManager.checkCanceled()
-                            val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
-                            val scopesBlockElement = scopesElement.block ?: return@p false
+                        val scopesElement = info.scopesElement
+                        if (scopesElement != null) {
+                            // 从 `scopes = { ... }` 中推断
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
+                            ProgressManager.checkCanceled()
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties(inline = true).forEach f@{
+                            scopesElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
@@ -500,6 +490,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }
+                            if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
                                 val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)

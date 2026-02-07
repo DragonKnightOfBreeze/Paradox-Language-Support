@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.select.*
@@ -12,7 +11,6 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxSearchScopeTypes {
     private val map = mutableMapOf<String, ParadoxSearchScopeType>()
@@ -59,8 +57,13 @@ object ParadoxSearchScopeTypes {
 
     // scope types
 
-    val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { project, context ->
-        findRootDefinition(project, context)
+    val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { _, context ->
+        // 2.1.3 兼容定义注入
+        when {
+            context is PsiElement -> selectScope { context.parentDefinitionOrInjection() }
+            context is ParadoxComplexEnumValueIndexInfo -> context.definitionElement
+            else -> null
+        }
     }.also { map.put(it.id, it) }
 
     val File = ParadoxSearchScopeType.FromFiles("file", PlsBundle.message("search.scope.type.name.file")) { project, context ->
@@ -94,20 +97,4 @@ object ParadoxSearchScopeTypes {
     val All = ParadoxSearchScopeType.FromFiles("all", PlsBundle.message("search.scope.type.name.all")) { project, context ->
         ParadoxSearchScope.allScope(project, context)
     }.also { map.put(it.id, it) }
-
-    private fun findRootDefinition(project: Project, context: Any?): ParadoxDefinitionElement? {
-        val contextElement = when {
-            context is PsiElement -> context
-            context is ParadoxComplexEnumValueIndexInfo -> findContextElement(project, context) ?: return null
-            else -> return null
-        }
-        // 2.1.3 兼容定义注入
-        return selectScope { contextElement.parentDefinitionOrInjection() }
-    }
-
-    private fun findContextElement(project: Project, context: ParadoxComplexEnumValueIndexInfo): PsiElement? {
-        if (context.definitionElementOffset < 0) return null
-        val file = context.virtualFile
-        return file?.toPsiFile(project)?.findElementAt(context.definitionElementOffset)
-    }
 }

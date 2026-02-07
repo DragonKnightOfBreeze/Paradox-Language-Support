@@ -70,7 +70,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
     override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
-        storage.writeIntFast(info.elementOffset)
+        storage.writeIntFast(info.definitionElementOffset)
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType): ParadoxInferredScopeContextAwareDefinitionIndexInfo {
