@@ -1,4 +1,4 @@
-CwtFile: code_settings.test.cwt(0,560)
+CwtFile: code_style_settings.test.cwt(0,560)
   CwtRootBlock(0,560)
     CwtProperty: boolean_value(0,19)
       CwtPropertyKey: boolean_value(0,13)

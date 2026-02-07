@@ -1,4 +1,4 @@
-package icu.windea.pls.script.codeStyle
+package icu.windea.pls.script.formatter
 
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings

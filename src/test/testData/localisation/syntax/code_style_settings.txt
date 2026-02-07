@@ -1,4 +1,4 @@
-ParadoxLocalisationFile: code_settings.test.yml(0,625)
+ParadoxLocalisationFile: code_style_settings.test.yml(0,625)
   ParadoxLocalisationPropertyList(0,625)
     ParadoxLocalisationLocale: l_english(0,10)
       PsiElement(LOCALE_TOKEN)('l_english')(0,9)

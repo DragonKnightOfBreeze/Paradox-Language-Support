@@ -14,7 +14,6 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.core.processChild
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtBlock(

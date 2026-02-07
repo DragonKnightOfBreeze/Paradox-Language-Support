@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.codeStyle
+package icu.windea.pls.localisation.formatter
 
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings

@@ -1,18 +1,18 @@
-package icu.windea.pls.cwt.codeStyle
+package icu.windea.pls.script.formatter
 
 import com.intellij.application.options.GenerationCodeStylePanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
 import com.intellij.psi.codeStyle.CodeStyleSettings
-import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.script.ParadoxScriptLanguage
 
-class CwtCodeStylePanel(
+class ParadoxScriptCodeStylePanel(
     currentSettings: CodeStyleSettings,
     settings: CodeStyleSettings
-) : TabbedLanguageCodeStylePanel(CwtLanguage, currentSettings, settings) {
+) : TabbedLanguageCodeStylePanel(ParadoxScriptLanguage, currentSettings, settings) {
     override fun initTabs(settings: CodeStyleSettings) {
         addIndentOptionsTab(settings)
         addSpacesTab(settings)
         addBlankLinesTab(settings)
-        addTab(GenerationCodeStylePanel(settings, CwtLanguage))
+        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
     }
 }

@@ -1,7 +1,10 @@
-package icu.windea.pls.script.codeStyle
+package icu.windea.pls.cwt.formatter
 
+import com.intellij.application.options.CodeStyleAbstractConfigurable
+import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.SmartIndentOptionsEditor
 import com.intellij.openapi.util.NlsContexts
+import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
@@ -10,20 +13,29 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
-import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.model.constants.PlsPreviewTexts
 import kotlin.reflect.KMutableProperty1
-import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Settings
 
-class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-    override fun getLanguage() = ParadoxScriptLanguage
+class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
+    override fun getLanguage() = CwtLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxScriptCodeStyleSettingsSample
+    override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
 
-    override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
+    override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
+        return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
+            override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+                return CwtCodeStylePanel(currentSettings, settings)
+            }
+        }
+    }
 
-    // 需要重载这个方法以显示 indentOptions 设置页面
-    override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
+    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.cwtCodeStyleSettings
+
+    override fun getIndentOptionsEditor(): IndentOptionsEditor {
+        // 需要重载这个方法以显示 indentOptions 设置页面
+        return IndentOptionsEditor(this)
+    }
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
         indentOptions.INDENT_SIZE = 4
@@ -55,17 +67,12 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
         val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(Settings::SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR, PlsBundle.message("script.codeStyleSettings.spacing.around.scriptedVariableSeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(Settings::SPACE_AROUND_PROPERTY_SEPARATOR, PlsBundle.message("script.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(Settings::SPACE_AROUND_INLINE_MATH_OPERATOR, PlsBundle.message("script.codeStyleSettings.spacing.around.inlineMathOperator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_OPTION_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_AROUND_PROPERTY_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
 
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(Settings::SPACE_WITHIN_BRACES, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
-        consumer.showCustomOption(Settings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("script.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
-        consumer.showCustomOption(Settings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("script.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
-        consumer.showCustomOption(Settings::SPACE_WITHIN_PARAMETER_CONDITION_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(Settings::SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.parameterConditionExpressionBrackets"), spacesWithinGroup)
-        consumer.showCustomOption(Settings::SPACE_WITHIN_INLINE_MATH_BRACKETS, PlsBundle.message("script.codeStyleSettings.spacing.withIn.inlineMathBrackets"), spacesWithinGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
     }
 
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {
@@ -79,10 +86,13 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
             CommenterOption.LINE_COMMENT_ADD_SPACE.name,
         )
+        val commentsGroup = CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_COMMENTS
+        consumer.showCustomOption(CwtCodeStyleSettings::OPTION_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
+        consumer.showCustomOption(CwtCodeStyleSettings::DOC_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
     }
 
-    fun CodeStyleSettingsCustomizable.showCustomOption(property: KMutableProperty1<Settings, Boolean>, title: @NlsContexts.Label String, groupName: @NlsContexts.Label String?) {
-        showCustomOption(Settings::class.java, property.name, title, groupName)
+    fun CodeStyleSettingsCustomizable.showCustomOption(property: KMutableProperty1<CwtCodeStyleSettings, Boolean>, title: @NlsContexts.Label String, groupName: @NlsContexts.Label String?) {
+        showCustomOption(CwtCodeStyleSettings::class.java, property.name, title, groupName)
     }
 
     class IndentOptionsEditor(

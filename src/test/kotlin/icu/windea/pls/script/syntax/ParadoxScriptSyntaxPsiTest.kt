@@ -20,7 +20,7 @@ class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt",
     fun setup() = markIntegrationTest()
 
     @Test
-    fun code_settings() = doTest(true)
+    fun code_style_settings() = doTest(true)
 
     @Test
     fun advanced_nested() = doTest(true)

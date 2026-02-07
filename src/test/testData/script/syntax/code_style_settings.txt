@@ -1,4 +1,4 @@
-ParadoxScriptFile: code_settings.test.txt(0,376)
+ParadoxScriptFile: code_style_settings.test.txt(0,376)
   ParadoxScriptRootBlock(0,376)
     ParadoxScriptScriptedVariable: var(0,8)
       ParadoxScriptScriptedVariableName: var(0,4)

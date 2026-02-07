@@ -33,25 +33,25 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testFilePathIndex_Basic() {
-        val relPath = "common/scripted_variables/code_settings.test.txt"
+        val relPath = "common/code_style_settings.test.txt"
         markFileInfo(ParadoxGameType.Stellaris, relPath)
-        myFixture.configureByFile("script/syntax/code_settings.test.txt")
+        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.FilePath, relPath, scope)
         Assert.assertTrue(values.isNotEmpty())
         val info = values.single()
-        Assert.assertEquals("common/scripted_variables", info.directory)
+        Assert.assertEquals("common", info.directory)
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertTrue(info.included)
     }
 
     @Test
     fun testFilePathSearcher_ExactPath() {
-        val relPath = "common/scripted_variables/code_settings.test.txt"
+        val relPath = "common/code_style_settings.test.txt"
         markFileInfo(ParadoxGameType.Stellaris, relPath)
-        myFixture.configureByFile("script/syntax/code_settings.test.txt")
+        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
 
         val project = project
         val selector = selector(project, myFixture.file).file()
@@ -127,14 +127,14 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     @Test
     fun testFilePathIndex_HiddenFile() {
         // hidden files (name starts with dot) should be marked as included=false
-        val relPath = "common/scripted_variables/.hidden.test.txt"
+        val relPath = "common/.hidden.test.txt"
         markFileInfo(ParadoxGameType.Stellaris, relPath)
-        myFixture.configureByFile("features/index/common/scripted_variables/.hidden.test.txt")
+        myFixture.configureByFile("features/index/common/.hidden.test.txt")
         val scope = GlobalSearchScope.projectScope(this.project)
         val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.FilePath, relPath, scope)
         Assert.assertTrue(values.isNotEmpty())
         val info = values.single()
-        Assert.assertEquals("common/scripted_variables", info.directory)
+        Assert.assertEquals("common", info.directory)
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertFalse("Expected included=false for hidden file", info.included)
     }

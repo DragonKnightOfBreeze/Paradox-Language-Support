@@ -1,16 +1,17 @@
-package icu.windea.pls.csv.codeStyle
+package icu.windea.pls.localisation.formatter
 
 import com.intellij.application.options.GenerationCodeStylePanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
 import com.intellij.psi.codeStyle.CodeStyleSettings
-import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
-class ParadoxCsvCodeStylePanel(
+class ParadoxLocalisationCodeStylePanel(
     currentSettings: CodeStyleSettings,
     settings: CodeStyleSettings
-) : TabbedLanguageCodeStylePanel(ParadoxCsvLanguage, currentSettings, settings) {
+) : TabbedLanguageCodeStylePanel(ParadoxLocalisationLanguage, currentSettings, settings) {
     override fun initTabs(settings: CodeStyleSettings) {
+        addIndentOptionsTab(settings)
         addBlankLinesTab(settings)
-        addTab(GenerationCodeStylePanel(settings, ParadoxCsvLanguage))
+        addTab(GenerationCodeStylePanel(settings, ParadoxLocalisationLanguage))
     }
 }

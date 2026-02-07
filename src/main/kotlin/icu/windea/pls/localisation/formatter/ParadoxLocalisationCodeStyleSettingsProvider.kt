@@ -1,6 +1,9 @@
-package icu.windea.pls.localisation.codeStyle
+package icu.windea.pls.localisation.formatter
 
+import com.intellij.application.options.CodeStyleAbstractConfigurable
+import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.SmartIndentOptionsEditor
+import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
@@ -8,17 +11,27 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.core.pass
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.PlsPreviewTexts
 
-class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
+class ParadoxLocalisationCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxLocalisationLanguage
-
-    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxLocalisationCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
 
-    // 需要重载这个方法以显示indentOptions设置页面
-    override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
+    override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
+        return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
+            override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+                return ParadoxLocalisationCodeStylePanel(currentSettings, settings)
+            }
+        }
+    }
+
+    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.localisationCodeStyleSettings
+
+    override fun getIndentOptionsEditor(): IndentOptionsEditor {
+        // 需要重载这个方法以显示 indentOptions 设置页面
+        return IndentOptionsEditor(this)
+    }
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
         indentOptions.INDENT_SIZE = 1

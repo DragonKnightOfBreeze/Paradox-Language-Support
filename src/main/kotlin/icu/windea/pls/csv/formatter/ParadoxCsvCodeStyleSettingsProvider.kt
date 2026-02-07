@@ -1,5 +1,8 @@
-package icu.windea.pls.csv.codeStyle
+package icu.windea.pls.csv.formatter
 
+import com.intellij.application.options.CodeStyleAbstractConfigurable
+import com.intellij.application.options.CodeStyleAbstractPanel
+import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
@@ -7,14 +10,22 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.core.pass
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.PlsPreviewTexts
 
-class ParadoxCsvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
+class ParadoxCsvCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxCsvLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsStrings.paradoxCsvCodeStyleSettingsSample
-
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxCsvCodeStyleSettings(settings)
+
+    override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
+        return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
+            override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+                return ParadoxCsvCodeStylePanel(currentSettings, settings)
+            }
+        }
+    }
+
+    override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.csvCodeStyleSettings
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
         commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false

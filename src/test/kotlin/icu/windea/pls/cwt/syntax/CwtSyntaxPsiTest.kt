@@ -15,7 +15,7 @@ class CwtSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefi
     override fun includeRanges() = true
 
     @Test
-    fun code_settings() = doTest(true)
+    fun code_style_settings() = doTest(true)
 
     @Test
     fun advanced_nested() = doTest(true)

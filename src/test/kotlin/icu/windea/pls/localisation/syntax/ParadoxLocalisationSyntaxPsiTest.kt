@@ -20,7 +20,7 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun setup() = markIntegrationTest()
 
     @Test
-    fun code_settings() = doTest(true)
+    fun code_style_settings() = doTest(true)
 
     @Test
     fun advanced_combined() = doTest(true)

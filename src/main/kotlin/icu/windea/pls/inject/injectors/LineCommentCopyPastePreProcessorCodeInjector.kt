@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.DocumentUtil
 import com.intellij.util.text.CharArrayUtil
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
+import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.cwt.editor.CwtCommenter
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
