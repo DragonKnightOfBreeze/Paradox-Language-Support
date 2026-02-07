@@ -53,7 +53,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("NGameplay", info.namespace)
         Assert.assertEquals("MARINE", info.variable)
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
-        Assert.assertTrue(info.elementOffsets.isNotEmpty())
+        Assert.assertTrue(info.elementOffset >= 0)
     }
 
     @Test

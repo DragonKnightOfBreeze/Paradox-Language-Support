@@ -6,17 +6,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -41,33 +38,17 @@ object ParadoxDefineManager {
         return isDefineFile(vFile)
     }
 
-    fun isDefineElement(define: ParadoxDefineIndexInfo, defineElement: ParadoxScriptProperty): Boolean {
-        if (define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
+    fun isDefineElement(element: ParadoxScriptProperty, namespace: String, variable: String?): Boolean {
+        if(namespace.isEmpty()) return false
+        if(variable == null) return element.propertyValue is ParadoxScriptBlock
+        if(variable.isEmpty()) return false
         return true
-    }
-
-    fun getDefineElement(define: ParadoxDefineIndexInfo, project: Project): ParadoxScriptProperty? {
-        val file = define.virtualFile?.toPsiFile(project) ?: return null
-        val elementOffset = define.elementOffsets.lastOrNull() ?: return null
-        return file.findElementAt(elementOffset)?.parentOfType<ParadoxScriptProperty>()?.takeIf { isDefineElement(define, it) }
-    }
-
-    fun getDefineElements(define: ParadoxDefineIndexInfo, project: Project): List<ParadoxScriptProperty> {
-        val file = define.virtualFile?.toPsiFile(project) ?: return emptyList()
-        val elementOffsets = define.elementOffsets
-        return elementOffsets.mapNotNull { elementOffset ->
-            file.findElementAt(elementOffset)?.parentOfType<ParadoxScriptProperty>()?.takeIf { isDefineElement(define, it) }
-        }
-    }
-
-    fun getDefineElements(defines: Collection<ParadoxDefineIndexInfo>, project: Project): List<ParadoxScriptProperty> {
-        return defines.flatMap { define -> getDefineElements(define, project) }
     }
 
     fun findDefineElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
         val defineSelector = selector(project, contextElement).define().contextSensitive()
         val defineInfo = ParadoxDefineSearch.search(expression, defineSelector).find() ?: return null
-        return getDefineElement(defineInfo, project)
+        return defineInfo.element
     }
 
     fun findDefineValueElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptValue? {

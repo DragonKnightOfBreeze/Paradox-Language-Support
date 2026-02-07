@@ -64,7 +64,6 @@ import icu.windea.pls.lang.search.selector.distinctByExpression
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -1221,7 +1220,7 @@ object ParadoxComplexExpressionCompletionManager {
         ParadoxDefineSearch.search(null, "", selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val namespace = info.namespace
-            val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true
+            val element = info.element ?: return@p true
             val lookupElement = LookupElementBuilder.create(element, namespace)
                 .withPatchableIcon(PlsIcons.Nodes.DefineNamespace)
                 .withPatchableTailText(tailText)
@@ -1242,7 +1241,7 @@ object ParadoxComplexExpressionCompletionManager {
         ParadoxDefineSearch.search(namespace, null, selector).processAsync p@{ info ->
             ProgressManager.checkCanceled()
             val variable = info.variable ?: return@p true
-            val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true
+            val element = info.element ?: return@p true
             val lookupElement = LookupElementBuilder.create(element, variable)
                 .withPatchableIcon(PlsIcons.Nodes.DefineVariable)
                 .withPatchableTailText(tailText)

@@ -50,13 +50,11 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
 
             val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f1
             val map = fileData.getOrPut(namespace) { mutableMapOf() } as MutableMap
-            val info1 = map.getOrPut("") { ParadoxDefineIndexInfo(namespace, null, sortedSetOf(), gameType) }
-            (info1.elementOffsets as MutableSet) += prop1.startOffset
+            map.putIfAbsent("", ParadoxDefineIndexInfo(namespace, null, prop1.startOffset, gameType))
 
             prop1Block.properties().forEach f2@{ prop2 ->
                 val variable = prop2.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f2
-                val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo(namespace, variable, sortedSetOf(), gameType) }
-                (info2.elementOffsets as MutableSet) += prop2.startOffset
+                map.putIfAbsent(variable, ParadoxDefineIndexInfo(namespace, variable, prop2.startOffset, gameType))
             }
         }
     }
@@ -66,8 +64,7 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
         value.forEach { (_, info) ->
             storage.writeUTFFast(info.namespace)
             storage.writeUTFFast(info.variable.orEmpty())
-            storage.writeIntFast(info.elementOffsets.size)
-            info.elementOffsets.forEach { storage.writeIntFast(it) }
+            storage.writeIntFast(info.elementOffset)
             storage.writeByte(info.gameType.optimized(OptimizerRegistry.forGameType()))
         }
     }
@@ -78,10 +75,9 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
         repeat(size) {
             val namespace = storage.readUTFFast()
             val variable = storage.readUTFFast().orNull()
-            val elementOffsetsSize = storage.readIntFast()
-            val elementOffsets = if (elementOffsetsSize != 0) sortedSetOf<Int>().apply { repeat(elementOffsetsSize) { this += storage.readIntFast() } } else emptySet()
+            val elementOffset = storage.readIntFast()
             val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
-            map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffsets, gameType))
+            map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffset, gameType))
         }
         return map
     }
