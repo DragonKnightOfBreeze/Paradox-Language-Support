@@ -1,6 +1,5 @@
 package icu.windea.pls.model.index
 
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxEventInOnActionIndexInfo(
@@ -8,7 +7,4 @@ data class ParadoxEventInOnActionIndexInfo(
     val typeExpression: String,
     val containingOnActionName: String,
     override val gameType: ParadoxGameType,
-) : ParadoxIndexInfo {
-    @Volatile
-    override var virtualFile: VirtualFile? = null
-}
+) : ParadoxIndexInfo()

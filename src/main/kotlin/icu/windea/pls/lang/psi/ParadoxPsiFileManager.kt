@@ -33,6 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
@@ -40,6 +41,26 @@ import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
 
 object ParadoxPsiFileManager {
+    // region Find Extensions (from elementOffset)
+
+    fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+        if (offset < 0) return null
+        if (file.language != ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS }
+            ?.parentOfType<ParadoxScriptStringExpressionElement>()
+    }
+
+    fun findPropertyFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        if (offset < 0) return null
+        if (file.language != ParadoxScriptLanguage) return null
+        return file.findElementAt(offset)
+            ?.takeIf { it.elementType == ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN }
+            ?.parentOfType<ParadoxScriptProperty>()
+    }
+
+    // endregion
+
     // region Find Extensions
 
     object ScriptedVariableOptions {
@@ -62,6 +83,7 @@ object ParadoxPsiFileManager {
     }
 
     fun findScriptedVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
+        if (offset < 0) return null
         if (BitUtil.isSet(options, ScriptedVariableOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
                 ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
@@ -69,7 +91,7 @@ object ParadoxPsiFileManager {
             val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
             if (resolved != null) return resolved
         }
-        if (file.language !is ParadoxScriptLanguage) return null
+        if (file.language != ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, ScriptedVariableOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parentOfType<ParadoxScriptScriptedVariable>()
@@ -91,6 +113,7 @@ object ParadoxPsiFileManager {
     }
 
     fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxDefinitionElement? {
+        if (offset < 0) return null
         val expressionElement by lazy {
             file.findElementAt(offset) {
                 it.parentOfType<ParadoxScriptExpressionElement>(false)
@@ -107,7 +130,7 @@ object ParadoxPsiFileManager {
             val resolved = reference?.resolve()?.castOrNull<ParadoxDefinitionElement>()?.takeIf { it.definitionInfo != null }
             if (resolved != null) return resolved
         }
-        if (file.language !is ParadoxScriptLanguage) return null
+        if (file.language != ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, DefinitionOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).findIsInstance<ParadoxDefinitionElement> { p -> p.definitionInfo != null }
@@ -135,6 +158,7 @@ object ParadoxPsiFileManager {
     }
 
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
+        if (offset < 0) return null
         if (BitUtil.isSet(options, LocalisationOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
                 ParadoxResolveConstraint.Localisation.canResolve(it)
@@ -142,7 +166,7 @@ object ParadoxPsiFileManager {
             val resolved = reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved
         }
-        if (file.language !is ParadoxLocalisationLanguage) return null
+        if (file.language != ParadoxLocalisationLanguage) return null
         if (BitUtil.isSet(options, LocalisationOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parentOfType<ParadoxLocalisationProperty>()
@@ -164,7 +188,8 @@ object ParadoxPsiFileManager {
     }
 
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) t@{
             if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.COLOR_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationColorfulText>(false)
@@ -172,7 +197,8 @@ object ParadoxPsiFileManager {
     }
 
     fun findLocalisationLocale(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationLocale? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) t@{
             if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationLocale>(false)
@@ -180,7 +206,8 @@ object ParadoxPsiFileManager {
     }
 
     fun findScriptProperty(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxScriptProperty? {
-        if (file.language !is ParadoxScriptLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxScriptLanguage) return null
         return file.findElementAt(offset) t@{
             if (fromToken && it.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@t null
             it.parentOfType<ParadoxScriptProperty>(false)
@@ -188,30 +215,34 @@ object ParadoxPsiFileManager {
     }
 
     fun findScriptExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxScriptExpressionElement? {
-        if (file.language !is ParadoxScriptLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxScriptLanguage) return null
         return file.findElementAt(offset) t@{
-            if(fromToken && it.elementType !in ParadoxScriptTokenSets.EXPRESSION_TOKENS) return@t null
+            if (fromToken && it.elementType !in ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS) return@t null
             it.parentOfType<ParadoxScriptExpressionElement>(false)
         }?.takeIf { it.isExpression() }
     }
 
     fun findLocalisationExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxLocalisationExpressionElement? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) t@{
-            if(fromToken && it.elementType !in ParadoxLocalisationTokenSets.EXPRESSION_TOKENS) return@t null
+            if (fromToken && it.elementType !in ParadoxLocalisationTokenSets.EXPRESSION_TOKENS) return@t null
             it.parentOfType<ParadoxLocalisationExpressionElement>(false)
         }?.takeIf { it.isComplexExpression() }
     }
 
     fun findCsvExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxCsvExpressionElement? {
-        if (file.language !is ParadoxCsvLanguage) return null
+        if (offset < 0) return null
+        if (file.language != ParadoxCsvLanguage) return null
         return file.findElementAt(offset) t@{
-            if(fromToken && it.elementType !in ParadoxCsvTokenSets.EXPRESSION_TOKENS) return@t null
+            if (fromToken && it.elementType !in ParadoxCsvTokenSets.EXPRESSION_TOKENS) return@t null
             it.parentOfType<ParadoxCsvExpressionElement>(false)
         }
     }
 
     fun findExpressionForComplexExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxExpressionElement? {
+        if (offset < 0) return null
         return when (file.language) {
             is ParadoxScriptLanguage -> findScriptExpression(file, offset, fromToken)
             is ParadoxLocalisationLanguage -> findLocalisationExpression(file, offset, fromToken)

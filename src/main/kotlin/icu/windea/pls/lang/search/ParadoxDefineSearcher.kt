@@ -25,28 +25,29 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
         if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType
+        val gameType = queryParameters.gameType
 
         val variable = queryParameters.variable
         val namespace = queryParameters.namespace
 
         val keys = namespace.to.singletonSetOrEmpty()
         PlsIndexService.processAllFileData(ParadoxDefineIndex::class.java, keys, project, scope, gameType) p@{ file, fileData ->
+            if (fileData.isEmpty()) return@p true
             if (namespace != null) {
-                val map = fileData[namespace] ?: return@p true
+                val map = fileData[namespace].orEmpty()
                 if (variable != null) {
-                    val info = map[variable] ?: return@p true
-                    processInfo(info, file, consumer)
+                    val info = map[variable]
+                    processInfo(queryParameters, file, info, consumer)
                 } else {
-                    map.values.process { info -> processInfo(info, file, consumer) }
+                    map.values.process { info -> processInfo(queryParameters, file, info, consumer) }
                 }
             } else {
-                fileData.values.process p1@{ map ->
+                fileData.values.process { map ->
                     if (variable != null) {
-                        val info = map[variable] ?: return@p1 true
-                        processInfo(info, file, consumer)
+                        val info = map[variable]
+                        processInfo(queryParameters, file, info, consumer)
                     } else {
-                        map.values.process { info -> processInfo(info, file, consumer) }
+                        map.values.process { info -> processInfo(queryParameters, file, info, consumer) }
                     }
                 }
             }
@@ -54,11 +55,13 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
     }
 
     private fun processInfo(
-        info: ParadoxDefineIndexInfo,
+        queryParameters: ParadoxDefineSearch.SearchParameters,
         file: VirtualFile,
+        info: ParadoxDefineIndexInfo?,
         consumer: Processor<in ParadoxDefineIndexInfo>
     ): Boolean {
-        info.virtualFile = file
+        if (info == null) return true
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

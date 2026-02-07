@@ -1,7 +1,6 @@
 package icu.windea.pls.model.index
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxParameterIndexInfo(
@@ -9,7 +8,4 @@ data class ParadoxParameterIndexInfo(
     val contextKey: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
-) : ParadoxIndexInfo {
-    @Volatile
-    override var virtualFile: VirtualFile? = null
-}
+) : ParadoxIndexInfo()

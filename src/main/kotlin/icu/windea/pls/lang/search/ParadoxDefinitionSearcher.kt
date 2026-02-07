@@ -40,7 +40,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionElement, Pa
 
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-        val gameType = queryParameters.selector.gameType
+        val gameType = queryParameters.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val constraint0 = queryParameters.selector.getConstraint()
 

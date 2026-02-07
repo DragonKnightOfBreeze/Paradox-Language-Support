@@ -1,7 +1,8 @@
 package icu.windea.pls.model.index
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
-import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.psi.CwtPsiFileManager
 import icu.windea.pls.model.ParadoxGameType
 
 data class CwtConfigSymbolIndexInfo(
@@ -11,7 +12,7 @@ data class CwtConfigSymbolIndexInfo(
     val offset: Int,
     val elementOffset: Int,
     override val gameType: ParadoxGameType
-) : CwtConfigIndexInfo {
-    @Volatile
-    override var virtualFile: VirtualFile? = null
+) : CwtConfigIndexInfo() {
+    val element: CwtStringExpressionElement?
+        get() = file?.let { file -> CwtPsiFileManager.findStringExpressionElementFromStartOfffset(file, elementOffset) }
 }

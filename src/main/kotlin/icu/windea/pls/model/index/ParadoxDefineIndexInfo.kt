@@ -1,6 +1,5 @@
 package icu.windea.pls.model.index
 
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxDefineIndexInfo(
@@ -8,7 +7,4 @@ data class ParadoxDefineIndexInfo(
     val variable: String?,
     val elementOffsets: Set<Int>,
     override val gameType: ParadoxGameType,
-) : ParadoxIndexInfo {
-    @Volatile
-    override var virtualFile: VirtualFile? = null
-}
+) : ParadoxIndexInfo()

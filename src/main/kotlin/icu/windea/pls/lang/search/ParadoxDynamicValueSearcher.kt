@@ -24,23 +24,22 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val gameType = queryParameters.selector.gameType
-
         val indexInfoType = ParadoxIndexInfoType.DynamicValue
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
-            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) p@{ file, infos ->
+            if (infos.isEmpty()) return@p true
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }
 
     private fun processInfo(
         queryParameters: ParadoxDynamicValueSearch.SearchParameters,
-        info: ParadoxDynamicValueIndexInfo,
         file: VirtualFile,
+        info: ParadoxDynamicValueIndexInfo,
         consumer: Processor<in ParadoxDynamicValueIndexInfo>
     ): Boolean {
         if (info.dynamicValueType !in queryParameters.dynamicValueTypes) return true
         if (queryParameters.name != null && queryParameters.name != info.name) return true
-        info.virtualFile = file
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

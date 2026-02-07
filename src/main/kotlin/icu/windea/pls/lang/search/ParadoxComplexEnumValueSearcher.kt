@@ -22,26 +22,25 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (project.isDefault) return
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType
 
-        val enumName = queryParameters.enumName
-
-        val keys = setOf(enumName, ParadoxComplexEnumValueIndex.LazyIndexKey)
-        PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, gameType) { file, fileData ->
-            val infos = fileData[enumName].orEmpty()
-            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
+        val keys = setOf(queryParameters.enumName, ParadoxComplexEnumValueIndex.LazyIndexKey)
+        PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
+            if (fileData.isEmpty()) return@p true
+            val infos = fileData[queryParameters.enumName].orEmpty()
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }
 
     private fun processInfo(
         queryParameters: ParadoxComplexEnumValueSearch.SearchParameters,
-        info: ParadoxComplexEnumValueIndexInfo,
         file: VirtualFile,
+        info: ParadoxComplexEnumValueIndexInfo?,
         consumer: Processor<in ParadoxComplexEnumValueIndexInfo>
     ): Boolean {
+        if (info == null) return true
         if (queryParameters.enumName != info.enumName) return true
         if (queryParameters.name != null && !queryParameters.name.equals(info.name, info.caseInsensitive)) return true // # 261
-        info.virtualFile = file
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

@@ -23,9 +23,9 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val gameType = queryParameters.selector.gameType
         val indexInfoType = ParadoxIndexInfoType.LocalisationParameter
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) p@{ file, infos ->
+            if (infos.isEmpty()) return@p true
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }
@@ -38,7 +38,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
     ): Boolean {
         if (queryParameters.localisationName != info.localisationName) return true
         if (queryParameters.name != null && queryParameters.name != info.name) return true
-        info.virtualFile = file
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

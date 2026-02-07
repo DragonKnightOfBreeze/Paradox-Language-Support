@@ -7,6 +7,6 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * @property gameType 对应的游戏类型。
  */
-interface ParadoxIndexInfo : IndexInfo {
-    val gameType: ParadoxGameType
+sealed class ParadoxIndexInfo : IndexInfo() {
+    abstract val gameType: ParadoxGameType
 }
