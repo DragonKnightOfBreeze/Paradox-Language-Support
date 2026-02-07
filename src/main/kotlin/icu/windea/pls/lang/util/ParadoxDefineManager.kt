@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -89,12 +90,18 @@ object ParadoxDefineManager {
         val gameType = selectGameType(file) ?: return null
         val parent = element.parent
         if (parent is ParadoxScriptRootBlock) {
-            return ParadoxDefineInfo(element.name, null, gameType)
+            val namespace = element.name
+            if (namespace.isEmpty() || namespace.isParameterized()) return null
+            return ParadoxDefineInfo(namespace, null, gameType)
         } else if (parent is ParadoxScriptBlock) {
             val namespaceElement = parent.parent
             if (namespaceElement !is ParadoxScriptProperty) return null
             if (namespaceElement.parent !is ParadoxScriptRootBlock) return null
-            return ParadoxDefineInfo(namespaceElement.name, element.name, gameType)
+            val namespace = namespaceElement.name
+            if (namespace.isEmpty() || namespace.isParameterized()) return null
+            val variable = element.name
+            if (variable.isEmpty() || variable.isParameterized()) return null
+            return ParadoxDefineInfo(namespace, variable, gameType)
         }
         return null
     }
