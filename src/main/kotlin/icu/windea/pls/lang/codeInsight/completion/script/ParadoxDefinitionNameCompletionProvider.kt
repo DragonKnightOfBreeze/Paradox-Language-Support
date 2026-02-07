@@ -24,7 +24,6 @@ import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.definitionName
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -34,7 +33,7 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctBy
+import icu.windea.pls.lang.search.selector.distinctByDefinitionName
 import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
@@ -102,7 +101,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
-                        .distinctBy { it.definitionName }
+                        .distinctByDefinitionName()
                     ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
@@ -127,7 +126,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
-                        .distinctBy { it.definitionName }
+                        .distinctByDefinitionName()
                     ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }

@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 
 data class ParadoxDefinitionInjectionInfo(
     val mode: String, // must be valid
@@ -19,7 +20,7 @@ data class ParadoxDefinitionInjectionInfo(
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = type?.orNull()?.let { configGroup.declarations.get(it) }
 
-    val expression: String get() = mode + ":" + type.orEmpty()
+    val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
     override fun toString(): String {
         return "ParadoxDefinitionInjectionInfo(mode=$mode, target=$target, type=$type, gameType=$gameType)"

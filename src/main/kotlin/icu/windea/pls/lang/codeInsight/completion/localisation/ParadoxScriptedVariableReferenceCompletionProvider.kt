@@ -13,7 +13,7 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctBy
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -36,7 +36,7 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
         val element = parameters.position
         val project = parameters.originalFile.project
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-            .distinctBy { it.name }
+            .distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(it, result) }
     }
 

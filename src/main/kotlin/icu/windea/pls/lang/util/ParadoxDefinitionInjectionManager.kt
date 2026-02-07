@@ -99,6 +99,10 @@ object ParadoxDefinitionInjectionManager {
         return expression.substring(index + 1)
     }
 
+    fun getExpression(mode: String, target: String? = null): String {
+        return mode + ":" + target.orEmpty()
+    }
+
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
@@ -159,6 +163,7 @@ object ParadoxDefinitionInjectionManager {
         return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
     }
 
+    @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
         val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.target }

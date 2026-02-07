@@ -271,6 +271,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     val targetKey = stub.type + "@" + stub.target
                     sink.occurrence(PlsIndexKeys.DefinitionInjectionTarget, targetKey)
                 }
+                else -> {}
             }
         }
 

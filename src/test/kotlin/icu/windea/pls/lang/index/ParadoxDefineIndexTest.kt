@@ -5,10 +5,10 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.process
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
@@ -56,17 +56,18 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
 
         // act
         val selector = selector(project, myFixture.file).define()
-        val results = mutableListOf<ParadoxDefineIndexInfo>()
-        ParadoxDefineSearch.search("NGameplay", "MARINE", selector).process { info ->
-            results += info
+        val results = mutableListOf<ParadoxScriptProperty>()
+        ParadoxDefineSearch.search("NGameplay", "MARINE", selector).process { element ->
+            results += element
             true
         }
 
         // assert
         Assert.assertEquals("results=$results", 1, results.size)
-        val info = results.single()
+        val info = results.single().defineInfo
+        Assert.assertNotNull(info)
+        info!!
         Assert.assertEquals("NGameplay", info.namespace)
         Assert.assertEquals("MARINE", info.variable)
-        Assert.assertEquals("defines_basic_stellaris.test.txt", info.virtualFile?.name)
     }
 }

@@ -55,26 +55,26 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
                 if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
                 val startOffset = queryParameters.selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
                 val fileScope = GlobalSearchScope.fileScope(project, file)
-                doProcessAllElements(queryParameters.name, project, fileScope) p@{ element ->
+                processAllElements(queryParameters.name, project, fileScope) p@{ element ->
                     if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current position
                     consumer.process(element)
                 }.let { if (!it) return }
 
                 val processedFiles = mutableSetOf(file)
-                doProcessQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
+                processQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
             }
             ParadoxScriptedVariableType.Global -> {
                 val globalScope = queryParameters.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
                 if (SearchScope.isEmptyScope(globalScope)) return
-                doProcessAllElements(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
+                processAllElements(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
             }
             null -> {
-                doProcessAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
+                processAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
             }
         }
     }
 
-    private fun doProcessQueryForInlineScripts(
+    private fun processQueryForInlineScripts(
         queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         processedFiles: MutableSet<VirtualFile>,
@@ -95,7 +95,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
                 val parameterElement = injectionInfo.parameterElement ?: return@run
                 if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be argument value, rather than parameter default value
                 val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run
-                return doProcessQueryForInlineScriptFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+                return processQueryForInlineScriptFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
             }
             return true
         }
@@ -104,10 +104,10 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
 
         // input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true
-        return doProcessQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+        return processQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
     }
 
-    private fun doProcessQueryForInlineScriptFiles(
+    private fun processQueryForInlineScriptFiles(
         queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         inlineScriptExpression: String,
@@ -122,17 +122,17 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         ParadoxInlineScriptManager.processInlineScriptFile(inlineScriptExpression, project, context) p@{ inlineScriptFile ->
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, inlineScriptFile.virtualFile)
-            doProcessAllElements(name, project, fileScope) p@{ element ->
+            processAllElements(name, project, fileScope) p@{ element ->
                 // do not skip scripted variables after related parameter, do not check that currently
                 consumer.process(element)
             }.let { if (!it) return@p false }
             true
         }
 
-        return doProcessQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+        return processQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
     }
 
-    private fun doProcessQueryForInlineScriptUsageFiles(
+    private fun processQueryForInlineScriptUsageFiles(
         queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         inlineScriptExpression: String,
@@ -157,16 +157,16 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         return uFile2StartOffsetMap.process p@{ (uFile, startOffset) ->
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, uFile)
-            doProcessAllElements(name, project, fileScope) p@{ element ->
+            processAllElements(name, project, fileScope) p@{ element ->
                 if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script usage
                 consumer.process(element)
             }.let { if (!it) return@p false }
 
-            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script usage can be recursive
+            processQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script usage can be recursive
         }
     }
 
-    private fun doProcessAllElements(
+    private fun processAllElements(
         name: String?,
         project: Project,
         scope: GlobalSearchScope,

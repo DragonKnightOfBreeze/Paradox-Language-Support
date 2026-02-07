@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -54,15 +56,8 @@ object ParadoxDefineManager {
         return element.parent is ParadoxScriptRootBlock
     }
 
-    fun findDefineElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
-        val defineSelector = selector(project, contextElement).define().contextSensitive()
-        val defineInfo = ParadoxDefineSearch.search(expression, defineSelector).find() ?: return null
-        return defineInfo
-    }
-
-    fun findDefineValueElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptValue? {
-        val defineElement = findDefineElement(expression, contextElement, project) ?: return null
-        return defineElement.propertyValue
+    fun getExpression(namespace: String, variable: String?): String {
+        return if (variable == null) namespace else "$namespace.$variable"
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
@@ -85,16 +80,8 @@ object ParadoxDefineManager {
     }
 
     private fun doGetInfoFromStub(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        val stub = element.greenStub ?: return null
-        return when (stub) {
-            is ParadoxScriptPropertyStub.DefineNamespace -> {
-                ParadoxDefineInfo(stub.namespace, null, stub.gameType)
-            }
-            is ParadoxScriptPropertyStub.DefineVariable -> {
-                ParadoxDefineInfo(stub.namespace, stub.variable, stub.gameType)
-            }
-            else -> null
-        }
+        val stub = getStub(element) ?: return null
+        return ParadoxDefineInfo(stub.namespace, stub.variable, stub.gameType)
     }
 
     private fun doGetInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
@@ -105,14 +92,30 @@ object ParadoxDefineManager {
             return ParadoxDefineInfo(element.name, null, gameType)
         } else if (parent is ParadoxScriptBlock) {
             val namespaceElement = parent.parent
-            if (namespaceElement is ParadoxScriptProperty) {
-                return ParadoxDefineInfo(namespaceElement.name, element.name, gameType)
-            }
+            if (namespaceElement !is ParadoxScriptProperty) return null
+            if (namespaceElement.parent !is ParadoxScriptRootBlock) return null
+            return ParadoxDefineInfo(namespaceElement.name, element.name, gameType)
         }
         return null
     }
 
     fun getExpression(element: ParadoxScriptProperty): String? {
+        val stub = runReadActionSmartly { getStub(element) }
+        stub?.let { return getExpression(stub.namespace, stub.variable) }
         return getInfo(element)?.expression
+    }
+
+    fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.Define? {
+        return element.greenStub?.castOrNull()
+    }
+
+    fun findDefineElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
+        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        return ParadoxDefineSearch.search(expression, defineSelector).find()
+    }
+
+    fun findDefineValueElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptValue? {
+        val defineElement = findDefineElement(expression, contextElement, project) ?: return null
+        return defineElement.propertyValue
     }
 }

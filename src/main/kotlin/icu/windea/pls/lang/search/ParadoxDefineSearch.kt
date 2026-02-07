@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineSearch.SearchParameters>(EP_NAME) {
     /**
      * @property namespace 命名空间。
-     * @property variable 变量名。
+     * @property variable 变量名。如果为空字符串，则表示查询命名空间。
      * @property selector 查询选择器。
      */
     class SearchParameters(

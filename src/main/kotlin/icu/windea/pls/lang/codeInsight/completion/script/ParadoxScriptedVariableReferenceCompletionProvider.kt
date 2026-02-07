@@ -19,7 +19,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctBy
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -38,7 +38,7 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
 
         // 需要同时查找当前文件中的和全局的
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-            .distinctBy { it.name }
+            .distinctByName()
         ParadoxScriptedVariableSearch.searchLocal(null, selector).processAsync { processScriptedVariable(context, result, it) }
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
 

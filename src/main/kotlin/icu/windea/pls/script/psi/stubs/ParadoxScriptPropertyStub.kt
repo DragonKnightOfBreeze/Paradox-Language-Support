@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @property name 脚本属性的名字。注意这不一定是定义的名字。
  */
 @Suppress("UnstableApiUsage")
-interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
+sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
     val name: String
 
     /**
@@ -27,7 +27,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property rootKeys 定义的一组顶级键（不含参数）。
      *
      */
-    interface Definition : ParadoxScriptPropertyStub {
+    sealed interface Definition : ParadoxScriptPropertyStub {
         val definitionName: String?
         val definitionType: String
         val definitionSubtypes: List<String>?
@@ -40,8 +40,19 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      *
      * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
-    interface InlineScriptUsage : ParadoxScriptPropertyStub {
+    sealed interface InlineScriptUsage : ParadoxScriptPropertyStub {
         val expression: String
+    }
+
+    /**
+     * （作为脚本属性的）定值（命名空间/变量）的存根。
+     *
+     * @property namespace 命名空间。
+     * @property variable 变量名。如果当前存根对应命名空间，则为 `null`。
+     */
+    sealed interface Define : ParadoxScriptPropertyStub {
+        val namespace: String
+        val variable: String?
     }
 
     /**
@@ -49,8 +60,9 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      *
      * @property namespace 命名空间。等同于 [ParadoxScriptPropertyStub.name]。
      */
-    interface DefineNamespace : ParadoxScriptPropertyStub {
-        val namespace: String
+    sealed interface DefineNamespace : Define {
+        override val namespace: String
+        override val variable: String? get() = null
     }
 
     /**
@@ -59,9 +71,9 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property namespace 命名空间。来自父存根（[DefineNamespace]）。
      * @property variable 变量名。等同于 [ParadoxScriptPropertyStub.name]。
      */
-    interface DefineVariable : ParadoxScriptPropertyStub {
-        val namespace: String
-        val variable: String
+    sealed interface DefineVariable : Define {
+        override val namespace: String
+        override val variable: String
 
         override fun getParentStub(): DefineNamespace
     }
@@ -72,7 +84,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property argumentName 传入参数的名字。等同于 [ParadoxScriptPropertyStub.name]。
      * @property expression 内联脚本表达式。来自父存根（[ParadoxLocalisationPropertyListStub]）。
      */
-    interface InlineScriptArgument : ParadoxScriptPropertyStub {
+    sealed interface InlineScriptArgument : ParadoxScriptPropertyStub {
         val argumentName: String
         val expression: String
 
@@ -88,7 +100,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property type 目标定义的类型。
      *
      */
-    interface DefinitionInjection : ParadoxScriptPropertyStub {
+    sealed interface DefinitionInjection : ParadoxScriptPropertyStub {
         val expression: String
         val mode: String
         val target: String?

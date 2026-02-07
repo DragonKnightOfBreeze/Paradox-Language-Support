@@ -2,19 +2,17 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
-import com.intellij.psi.stubs.StubIndex
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 /**
  * 预定义的命名空间与变量的查询器。
@@ -33,161 +31,79 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
         val variable = queryParameters.variable
         val namespace = queryParameters.namespace
 
+        processQueryForDefines(namespace, variable, project, scope, consumer)
+    }
+
+    private fun processQueryForDefines(
+        namespace: String?,
+        variable: String?,
+        project: Project,
+        scope: GlobalSearchScope,
+        consumer: Processor<in ParadoxScriptProperty>
+    ) {
         val separator = "\u0000"
 
         // variable == "" 表示要查询命名空间本身
         when {
             namespace != null && variable != null -> {
                 if (variable.isEmpty()) {
-                    val elements = StubIndex.getElements(PlsIndexKeys.DefineNamespace, namespace, project, scope, ParadoxScriptProperty::class.java)
-                    elements.forEach { element ->
-                        ProgressManager.checkCanceled()
-                        if (!processElement(queryParameters, element, consumer)) return
+                    PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
+                        processElement(namespace, variable, element, consumer)
                     }
                 } else {
                     val key = namespace + separator + variable
-                    val elements = StubIndex.getElements(PlsIndexKeys.DefineVariable, key, project, scope, ParadoxScriptProperty::class.java)
-                    elements.forEach { element ->
-                        ProgressManager.checkCanceled()
-                        if (!processElement(queryParameters, element, consumer)) return
+                    PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, project, scope) { element ->
+                        processElement(namespace, variable, element, consumer)
                     }
                 }
             }
             namespace != null -> {
                 // namespace specified, query all variables under it + namespace element
-                run {
-                    val elements = StubIndex.getElements(PlsIndexKeys.DefineNamespace, namespace, project, scope, ParadoxScriptProperty::class.java)
-                    elements.forEach { element ->
-                        ProgressManager.checkCanceled()
-                        if (!processElement(queryParameters, element, consumer)) return
-                    }
+                PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
+                    processElement(namespace, null, element, consumer)
                 }
                 val prefix = namespace + separator
-                val keys = mutableSetOf<String>()
-                StubIndex.getInstance().processAllKeys(PlsIndexKeys.DefineVariable, Processor { key ->
-                    ProgressManager.checkCanceled()
-                    if (key.startsWith(prefix)) keys.add(key)
-                    true
-                }, scope)
-                keys.forEach { key ->
-                    ProgressManager.checkCanceled()
-                    val elements = StubIndex.getElements(PlsIndexKeys.DefineVariable, key, project, scope, ParadoxScriptProperty::class.java)
-                    elements.forEach { element ->
-                        ProgressManager.checkCanceled()
-                        if (!processElement(queryParameters, element, consumer)) return
-                    }
+                PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.startsWith(prefix) }) { _, element ->
+                    processElement(namespace, null, element, consumer)
                 }
             }
             variable != null -> {
                 if (variable.isEmpty()) {
                     // all namespaces
-                    val keys = mutableSetOf<String>()
-                    StubIndex.getInstance().processAllKeys(PlsIndexKeys.DefineNamespace, Processor { key ->
-                        ProgressManager.checkCanceled()
-                        keys.add(key)
-                        true
-                    }, scope)
-                    keys.forEach { key ->
-                        ProgressManager.checkCanceled()
-                        val elements = StubIndex.getElements(PlsIndexKeys.DefineNamespace, key, project, scope, ParadoxScriptProperty::class.java)
-                        elements.forEach { element ->
-                            ProgressManager.checkCanceled()
-                            if (!processElement(queryParameters, element, consumer)) return
-                        }
+                    PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, project, scope) { _, element ->
+                        processElement(namespace, variable, element, consumer)
                     }
                 } else {
                     // variable specified but namespace not specified: filter keys by suffix
                     val suffix = separator + variable
-                    val keys = mutableSetOf<String>()
-                    StubIndex.getInstance().processAllKeys(PlsIndexKeys.DefineVariable, Processor { key ->
-                        ProgressManager.checkCanceled()
-                        if (key.endsWith(suffix)) keys.add(key)
-                        true
-                    }, scope)
-                    keys.forEach { key ->
-                        ProgressManager.checkCanceled()
-                        val elements = StubIndex.getElements(PlsIndexKeys.DefineVariable, key, project, scope, ParadoxScriptProperty::class.java)
-                        elements.forEach { element ->
-                            ProgressManager.checkCanceled()
-                            if (!processElement(queryParameters, element, consumer)) return
-                        }
+                    PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.endsWith(suffix) }) { _, element ->
+                        processElement(namespace, variable, element, consumer)
                     }
                 }
             }
             else -> {
                 // all defines
-                run {
-                    val keys = mutableSetOf<String>()
-                    StubIndex.getInstance().processAllKeys(PlsIndexKeys.DefineNamespace, Processor { key ->
-                        ProgressManager.checkCanceled()
-                        keys.add(key)
-                        true
-                    }, scope)
-                    keys.forEach { key ->
-                        ProgressManager.checkCanceled()
-                        val elements = StubIndex.getElements(PlsIndexKeys.DefineNamespace, key, project, scope, ParadoxScriptProperty::class.java)
-                        elements.forEach { element ->
-                            ProgressManager.checkCanceled()
-                            if (!processElement(queryParameters, element, consumer)) return
-                        }
-                    }
+                PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, project, scope) { _, element ->
+                    processElement(namespace, variable, element, consumer)
                 }
-                run {
-                    val keys = mutableSetOf<String>()
-                    StubIndex.getInstance().processAllKeys(PlsIndexKeys.DefineVariable, Processor { key ->
-                        ProgressManager.checkCanceled()
-                        keys.add(key)
-                        true
-                    }, scope)
-                    keys.forEach { key ->
-                        ProgressManager.checkCanceled()
-                        val elements = StubIndex.getElements(PlsIndexKeys.DefineVariable, key, project, scope, ParadoxScriptProperty::class.java)
-                        elements.forEach { element ->
-                            ProgressManager.checkCanceled()
-                            if (!processElement(queryParameters, element, consumer)) return
-                        }
-                    }
+                PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope) { _, element ->
+                    processElement(namespace, variable, element, consumer)
                 }
             }
         }
     }
 
     private fun processElement(
-        queryParameters: ParadoxDefineSearch.SearchParameters,
+        namespace: String?,
+        variable: String?,
         element: ParadoxScriptProperty,
         consumer: Processor<in ParadoxScriptProperty>
     ): Boolean {
-        val file = element.containingFile?.virtualFile ?: return true
-        val stub = element.greenStub?.castOrNull<ParadoxScriptPropertyStub>()
-
-        val gameType = stub?.gameType
-            ?: selectGameType(file)
-            ?: return true
-        if (queryParameters.gameType != null && queryParameters.gameType != gameType) return true
-
-        val (namespace, variable) = when (stub) {
-            is ParadoxScriptPropertyStub.DefineNamespace -> stub.namespace to null
-            is ParadoxScriptPropertyStub.DefineVariable -> stub.namespace to stub.variable
-            else -> {
-                // fallback: infer from PSI tree
-                val namespaceProperty = if (element.block != null) {
-                    element
-                } else {
-                    element.parentOfType<ParadoxScriptProperty>(withSelf = false)
-                } ?: return true
-                val inferredNamespace = namespaceProperty.name
-                if (inferredNamespace.isEmpty()) return true
-                val inferredVariable = if (namespaceProperty === element) null else element.name
-                inferredNamespace to inferredVariable
-            }
-        }
-
-        val expectedNamespace = queryParameters.namespace
-        if (expectedNamespace != null && expectedNamespace != namespace) return true
-        val expectedVariable = queryParameters.variable
+        val defineInfo = ParadoxDefineManager.getInfo(element) ?: return true
+        if (namespace != null && namespace != defineInfo.namespace) return true
         when {
-            expectedVariable == "" -> if (variable != null) return true
-            expectedVariable != null -> if (variable != expectedVariable) return true
+            variable == "" -> if (defineInfo.variable != null) return true
+            variable != null -> if (defineInfo.variable != variable) return true
         }
         return consumer.process(element)
     }

@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  * 脚本文件的存根。
  */
 @Suppress("UnstableApiUsage")
-interface ParadoxScriptFileStub : PsiFileStub<ParadoxScriptFile>, ParadoxStub<ParadoxScriptFile> {
+sealed interface ParadoxScriptFileStub : PsiFileStub<ParadoxScriptFile>, ParadoxStub<ParadoxScriptFile> {
     private class Impl(
         file: ParadoxScriptFile?,
         override val gameType: ParadoxGameType,

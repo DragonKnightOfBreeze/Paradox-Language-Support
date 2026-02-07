@@ -79,15 +79,13 @@ class ParadoxDefineNamespaceNode(
 
         private fun doResolve(): PsiElement? {
             val selector = selector(project, element).define().contextSensitive()
-            val defineInfo = ParadoxDefineSearch.search(namespace, "", selector).find() ?: return null
-            val resolved = defineInfo.element
+            val resolved = ParadoxDefineSearch.search(namespace, "", selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val selector = selector(project, element).define().contextSensitive()
-            val defineInfos = ParadoxDefineSearch.search(namespace, "", selector).findAll()
-            val resolved = defineInfos.mapNotNull { defineInfo -> defineInfo.element }
+            val resolved = ParadoxDefineSearch.search(namespace, "", selector).findAll()
             return resolved.createResults()
         }
     }
