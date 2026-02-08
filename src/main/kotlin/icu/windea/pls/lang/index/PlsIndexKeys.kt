@@ -6,6 +6,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -42,13 +43,10 @@ object PlsIndexKeys {
     // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
 
-    // #252
-    // for definition injections, definitionName -> ParadoxScriptProperty
-    val DefinitionInjectionTarget = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definitionInjection.name.index")
-
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val FilePath = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
     val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
+    val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 }

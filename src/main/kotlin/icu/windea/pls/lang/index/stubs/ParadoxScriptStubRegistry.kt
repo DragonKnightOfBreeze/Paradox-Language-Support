@@ -159,13 +159,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     dataStream.writeByte(Flags.inlineScriptArgument)
                     dataStream.writeName(stub.name)
                 }
-                is ParadoxScriptPropertyStub.DefinitionInjection -> { // #252
-                    dataStream.writeByte(Flags.definitionInjection)
-                    dataStream.writeName(stub.name)
-                    dataStream.writeName(stub.mode)
-                    dataStream.writeName(stub.target)
-                    dataStream.writeName(stub.type)
-                }
                 else -> {
                     dataStream.writeByte(Flags.property)
                     dataStream.writeName(stub.name)
@@ -213,13 +206,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     val name = dataStream.readNameString().orEmpty()
                     ParadoxScriptPropertyStub.createInlineScriptArgument(parentStub, name)
                 }
-                Flags.definitionInjection -> { // #252
-                    val name = dataStream.readNameString().orEmpty()
-                    val mode = dataStream.readNameString().orEmpty()
-                    val target = dataStream.readNameString()
-                    val type = dataStream.readNameString()
-                    ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
-                }
                 else -> {
                     val name = dataStream.readNameString().orEmpty()
                     if (name.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
@@ -265,12 +251,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     if (stub.expression.isEmpty()) return
                     sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.expression)
                 }
-                is ParadoxScriptPropertyStub.DefinitionInjection -> { // #252
-                    if (stub.target.isNullOrEmpty()) return
-                    if (stub.type.isNullOrEmpty()) return
-                    val targetKey = stub.type + "@" + stub.target
-                    sink.occurrence(PlsIndexKeys.DefinitionInjectionTarget, targetKey)
-                }
                 else -> {}
             }
         }
@@ -283,7 +263,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             const val inlineScriptUsage: Byte = 2
             const val inlineScriptArgument: Byte = 3
             const val definitionNamed: Byte = 4
-            const val definitionInjection: Byte = 5 // #252
+            // const val definitionInjection: Byte = 5 // #252
         }
     }
 }

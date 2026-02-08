@@ -46,7 +46,7 @@ class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemL
         val targetKey = definitionInfo.type + "@" + definitionInfo.name
         val project = element.project
         val selector = selector(project, element).definitionInjection().contextSensitive()
-        val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+        val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll().mapNotNull { it.element }
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()
         ProgressManager.checkCanceled()

@@ -39,7 +39,7 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
                 val targetKey = info.type + "@" + info.target
                 val selector = selector(project, element).definitionInjection().contextSensitive()
                 val resolved = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
-                targets.addAll(resolved)
+                targets.addAll(resolved.mapNotNull { it.element })
             }
         }
         return GotoData(element, targets.distinct().toTypedArray(), emptyList())

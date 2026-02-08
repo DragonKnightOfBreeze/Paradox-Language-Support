@@ -11,7 +11,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -24,7 +23,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -80,10 +78,6 @@ object ParadoxScriptStubManager {
                 val stub = createInlineScriptUsageStub(psi, parentStub, name)
                 if (stub != null) return stub
             }
-            ParadoxDefinitionInjectionManager.isMatched(name, gameType) -> {
-                val stub = createDefinitionInjectionStub(psi, parentStub, name)
-                if (stub != null) return stub
-            }
             else -> {
                 val stub = createDefinitionStub(psi, parentStub, name)
                 if (stub != null) return stub
@@ -119,10 +113,6 @@ object ParadoxScriptStubManager {
             }
             ParadoxInlineScriptManager.isMatched(name, gameType) -> {
                 val stub = createInlineScriptUsageStub(tree, node, parentStub, name)
-                if (stub != null) return stub
-            }
-            ParadoxDefinitionInjectionManager.isMatched(name, gameType) -> {
-                val stub = createDefinitionInjectionStub(parentStub, name)
                 if (stub != null) return stub
             }
             else -> {
@@ -201,46 +191,5 @@ object ParadoxScriptStubManager {
         // if (parentStub !is ParadoxScriptPropertyStub.InlineScriptUsage) return null
         if (name.equals("script", true)) return null
         return ParadoxScriptPropertyStub.createInlineScriptArgument(parentStub, name)
-    }
-
-    private fun createDefinitionInjectionStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
-        // 排除带参数的情况
-        // 目标或目标类型为空时，也会创建存根
-        if (name.isParameterized()) return null
-        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
-        if (mode.isNullOrEmpty()) return null
-        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        val type = getDefinitionInjectionTypeWhenCreateStub(psi)
-        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
-    }
-
-    private fun createDefinitionInjectionStub(parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
-        // 排除带参数的情况
-        // 目标或目标类型为空时，也会创建存根
-        if (name.isParameterized()) return null
-        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
-        if (mode.isNullOrEmpty()) return null
-        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        val type = getDefinitionInjectionTypeWhenCreateStub(parentStub, target)
-        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
-    }
-
-    private fun getDefinitionInjectionTypeWhenCreateStub(psi: ParadoxScriptProperty): String? {
-        return psi.definitionInjectionInfo?.type
-    }
-
-    private fun getDefinitionInjectionTypeWhenCreateStub(parentStub: StubElement<out PsiElement>, target: String?): String? {
-        if (target.isNullOrEmpty()) return null
-        val psi = parentStub.psi
-        val file = psi.containingFile
-        val project = file.project
-        val vFile = selectFile(file) ?: return null
-        val fileInfo = vFile.fileInfo ?: return null
-        val gameType = selectGameType(vFile) ?: return null
-        val path = fileInfo.path
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return null
-        return typeConfig.name
     }
 }
