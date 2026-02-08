@@ -24,8 +24,8 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     @Before
     fun setup() {
         markIntegrationTest()
-        markRootDirectory("features/inlayPreviews")
-        markConfigDirectory("features/inlayPreviews/.config")
+        markRootDirectory("features/inlayHints")
+        markConfigDirectory("features/inlayHints/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
@@ -35,7 +35,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     @Test
     fun preview() {
         markFileInfo(ParadoxGameType.Stellaris, "common/species/00_species.txt")
-        myFixture.configureByFile("features/inlayPreviews/common/species/00_species.txt")
+        myFixture.configureByFile("features/inlayHints/common/species/00_species.txt")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/characters/00_characters.txt")
         val text = loadText("/inlayProviders/paradox.script.definitionReferenceInfo/preview.txt")

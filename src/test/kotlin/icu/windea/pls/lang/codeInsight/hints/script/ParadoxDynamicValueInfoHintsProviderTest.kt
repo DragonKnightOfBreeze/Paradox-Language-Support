@@ -24,8 +24,8 @@ class ParadoxDynamicValueInfoHintsProviderTest: DeclarativeInlayHintsProviderTes
     @Before
     fun setup() {
         markIntegrationTest()
-        markRootDirectory("features/inlayPreviews")
-        markConfigDirectory("features/inlayPreviews/.config")
+        markRootDirectory("features/inlayHints")
+        markConfigDirectory("features/inlayHints/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
