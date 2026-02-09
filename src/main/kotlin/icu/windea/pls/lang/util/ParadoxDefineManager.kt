@@ -52,11 +52,6 @@ object ParadoxDefineManager {
         return isDefineFile(vFile)
     }
 
-    fun isDefineElement(element: ParadoxScriptProperty, namespace: String, variable: String?): Boolean {
-        if (variable == null) return element.propertyValue is ParadoxScriptBlock
-        return element.parent is ParadoxScriptRootBlock
-    }
-
     fun getExpression(namespace: String, variable: String?): String {
         return if (variable == null) namespace else "$namespace.$variable"
     }
