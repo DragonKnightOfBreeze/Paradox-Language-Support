@@ -1,0 +1,27 @@
+INJECT:tome_of_flames = {
+    extra_pages = 12
+}
+
+REPLACE:tome_of_ice = {
+    rarity = 5
+}
+
+TRY_INJECT:shared_name = {
+    echo = yes
+}
+
+INJECT:tome_scalar = 1
+
+UNKNOWN_MODE:should_be_ignored = {
+    foo = bar
+}
+
+INJECT:A_$PARAM$_B = {
+    foo = bar
+}
+
+wrapper = {
+    INJECT:nested_should_be_ignored = {
+        foo = bar
+    }
+}

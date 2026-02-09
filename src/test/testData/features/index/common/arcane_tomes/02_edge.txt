@@ -1,0 +1,11 @@
+INJECT: = {
+    foo = bar
+}
+
+INJECT:= {
+    foo = bar
+}
+
+INJECT:   = {
+    foo = bar
+}

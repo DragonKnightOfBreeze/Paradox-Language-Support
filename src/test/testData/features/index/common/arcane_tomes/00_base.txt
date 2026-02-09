@@ -1,0 +1,7 @@
+tome_of_flames = {
+    rarity = 3
+}
+
+tome_of_ice = {
+    rarity = 2
+}
