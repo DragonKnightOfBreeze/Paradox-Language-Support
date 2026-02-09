@@ -74,18 +74,18 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
     private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsStates.processMergedIndex) {
             when (file) {
-                is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
-                is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
+                is ParadoxScriptFile -> buildDataForScriptFile(file, fileData)
+                is ParadoxLocalisationFile -> buildDataForLocalisationFile(file, fileData)
             }
         }
     }
 
-    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                extensionList.forEach { ep -> ep.indexData(element, fileData) }
+                extensionList.forEach { ep -> ep.buildData(element, fileData) }
 
                 if (element is ParadoxDefinitionElement) {
                     val definitionInfo = element.definitionInfo
@@ -96,14 +96,14 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                 }
 
                 if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    extensionList.forEach { ep -> ep.indexData(element, fileData) }
+                    extensionList.forEach { ep -> ep.buildData(element, fileData) }
                     run {
                         if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
                         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions.DUMB)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
-                        extensionList.forEach { ep -> ep.indexData(element, fileData, configs, definitionInfo) }
+                        extensionList.forEach { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
                     }
                 }
 
@@ -123,12 +123,12 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         })
     }
 
-    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    extensionList.forEach { ep -> ep.indexData(element, fileData) }
+                    extensionList.forEach { ep -> ep.buildData(element, fileData) }
                     return
                 }
 

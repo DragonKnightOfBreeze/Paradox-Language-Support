@@ -36,7 +36,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
 
     override val type = ParadoxDynamicValueIndexInfo::class.java
 
-    override fun indexData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element)
@@ -51,7 +51,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         }
     }
 
-    override fun indexData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance
@@ -92,7 +92,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
 
     override val type = ParadoxParameterIndexInfo::class.java
 
-    override fun indexData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance
@@ -135,7 +135,7 @@ class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<Par
 
     override val type = ParadoxLocalisationParameterIndexInfo::class.java
 
-    override fun indexData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter
         if (!constraint.canResolveReference(element)) return
         // use expression references only for expression elements to optimize indexing performance
