@@ -32,7 +32,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
         fun search(
             expression: String?,
             selector: ParadoxSearchSelector<ParadoxScriptProperty>
-        ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.createParadoxQuery(SearchParameters(expression, selector))
         }
     }

@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  *
  * @see ParadoxOverrideStrategy
  * @see ParadoxOverrideService
- * @see icu.windea.pls.lang.search.ParadoxQuery
+ * @see icu.windea.pls.lang.search.ParadoxQueryImpl
  */
 class ParadoxOverrideComparator<T>(
     val searchParameters: ParadoxSearchParameters<T>

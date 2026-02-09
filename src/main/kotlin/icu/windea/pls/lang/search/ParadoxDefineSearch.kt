@@ -37,7 +37,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, Parado
             namespace: String?,
             variable: String?,
             selector: ParadoxSearchSelector<ParadoxScriptProperty>
-        ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptProperty> {
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
         }
 
@@ -47,7 +47,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, Parado
         fun search(
             expression: String,
             selector: ParadoxSearchSelector<ParadoxScriptProperty>
-        ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptProperty> {
             val (namespace, variable) = expression.splitToPair('.') ?: tupleOf(expression, null)
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
         }

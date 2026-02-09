@@ -5,6 +5,7 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定义注入的查询。
@@ -38,8 +39,21 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
             target: String?,
             type: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
-        ): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxDefinitionInjectionIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(mode, target, type, selector))
+        }
+
+        /**
+         * @see ParadoxDefinitionInjectionSearch.SearchParameters
+         */
+        @JvmStatic
+        fun searchElement(
+            mode: String?,
+            target: String?,
+            type: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
+        ): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, ParadoxScriptProperty> {
+            return INSTANCE.createParadoxQuery(SearchParameters(mode, target, type, selector)).withTransform { it.element }
         }
     }
 }

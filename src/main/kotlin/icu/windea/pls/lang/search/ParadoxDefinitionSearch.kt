@@ -38,7 +38,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionElement,
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionElement>,
             forFile: Boolean = true,
-        ): ParadoxQuery<ParadoxDefinitionElement, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxDefinitionElement> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
         }
     }

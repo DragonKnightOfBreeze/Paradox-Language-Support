@@ -42,7 +42,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
             configExpression: CwtDataExpression? = null,
             selector: ParadoxSearchSelector<VirtualFile>,
             ignoreLocale: Boolean = false
-        ): ParadoxQuery<VirtualFile, SearchParameters> {
+        ): ParadoxUnaryQuery<VirtualFile> {
             return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, selector, ignoreLocale))
         }
 
@@ -54,7 +54,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
             filePath: String?,
             selector: ParadoxSearchSelector<VirtualFile>,
             ignoreLocale: Boolean = false
-        ): ParadoxQuery<VirtualFile, SearchParameters> {
+        ): ParadoxUnaryQuery<VirtualFile> {
             return search(filePath, iconExpression, selector, ignoreLocale)
         }
 
@@ -65,7 +65,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         fun searchInlineScript(
             expression: String,
             selector: ParadoxSearchSelector<VirtualFile>
-        ): ParadoxQuery<VirtualFile, SearchParameters> {
+        ): ParadoxUnaryQuery<VirtualFile> {
             return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)
         }
     }

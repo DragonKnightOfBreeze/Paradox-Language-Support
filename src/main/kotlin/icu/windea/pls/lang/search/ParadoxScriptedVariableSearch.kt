@@ -36,7 +36,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
             name: String?,
             type: ParadoxScriptedVariableType?,
             selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
-        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
 
@@ -47,7 +47,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         fun searchLocal(
             name: String?,
             selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
-        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return search(name, ParadoxScriptedVariableType.Local, selector)
         }
 
@@ -58,7 +58,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         fun searchGlobal(
             name: String?,
             selector: ParadoxSearchSelector<ParadoxScriptScriptedVariable>
-        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxScriptScriptedVariable> {
             return search(name, ParadoxScriptedVariableType.Global, selector)
         }
     }
