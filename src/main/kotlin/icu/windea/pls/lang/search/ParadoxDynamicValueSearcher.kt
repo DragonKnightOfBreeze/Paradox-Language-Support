@@ -25,8 +25,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         if (SearchScope.isEmptyScope(scope)) return
 
         val indexInfoType = ParadoxIndexInfoType.DynamicValue
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) p@{ file, infos ->
-            if (infos.isEmpty()) return@p true
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) { file, infos ->
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }

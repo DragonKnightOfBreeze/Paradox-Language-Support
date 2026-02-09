@@ -24,8 +24,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         if (SearchScope.isEmptyScope(scope)) return
 
         val keys = setOf(queryParameters.enumName, ParadoxComplexEnumValueIndex.LazyIndexKey)
-        PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
-            if (fileData.isEmpty()) return@p true
+        PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, queryParameters.gameType) { file, fileData ->
             val infos = fileData[queryParameters.enumName].orEmpty()
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }

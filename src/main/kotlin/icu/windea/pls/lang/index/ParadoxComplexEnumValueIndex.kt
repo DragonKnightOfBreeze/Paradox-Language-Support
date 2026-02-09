@@ -40,7 +40,7 @@ import java.io.DataOutput
 /**
  * 复杂枚举值的索引。使用枚举名作为索引键。
  */
-class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>>() {
+class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>, ParadoxComplexEnumValueIndexInfo>() {
     companion object {
         const val LazyIndexKey = "__lazy__"
     }

@@ -18,28 +18,27 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 用于存储索引信息的文件索引。
- *
- * @see IndexInfo
+ * 各种索引信息的文件索引基类。
  */
-abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
+sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
     private val inputFilter = IndexInputFilter { filterFile(it) }
-    private val indexer = DataIndexer<String, T, FileContent> { indexData(it) }
+    private val indexer = DataIndexer<String, V, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
-    private val valueExternalizer = object : DataExternalizer<T> {
-        override fun save(storage: DataOutput, value: T) = saveValue(storage, value)
+    private val valueExternalizer = object : DataExternalizer<V> {
+        override fun save(storage: DataOutput, value: V) = saveValue(storage, value)
         override fun read(storage: DataInput) = readValue(storage)
     }
 
     // NOTE 2.0.6 优先使用 `VirtualFileGist`（验证发现 `PsiFileGist` 有时会不稳定）
     private val gistValueExternalizer by lazy {
-        object : DataExternalizer<Map<String, T>> {
-            override fun save(storage: DataOutput, value: Map<String, T>) = saveGistValue(storage, value)
+        object : DataExternalizer<Map<String, V>> {
+            override fun save(storage: DataOutput, value: Map<String, V>) = saveGistValue(storage, value)
             override fun read(storage: DataInput) = readGistValue(storage)
         }
     }
@@ -49,7 +48,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         GistManager.getInstance().newVirtualFileGist(gistName, gistVersion, gistValueExternalizer) { project, file -> calculateGistData(project, file) }
     }
 
-    abstract override fun getName(): ID<String, T>
+    abstract override fun getName(): ID<String, V>
 
     override fun getInputFilter() = inputFilter
 
@@ -65,7 +64,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
-    protected open fun indexData(fileContent: FileContent): Map<String, T> {
+    protected open fun indexData(fileContent: FileContent): Map<String, V> {
         val fileData = when {
             useLazyIndex(fileContent.file) -> indexLazyData(fileContent.psiFile)
             else -> indexData(fileContent.psiFile)
@@ -74,21 +73,21 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         return fileData
     }
 
-    protected open fun indexData(psiFile: PsiFile): Map<String, T> = emptyMap()
+    protected open fun indexData(psiFile: PsiFile): Map<String, V> = emptyMap()
 
-    protected open fun indexLazyData(psiFile: PsiFile): Map<String, T> = emptyMap()
+    protected open fun indexLazyData(psiFile: PsiFile): Map<String, V> = emptyMap()
 
-    protected abstract fun saveValue(storage: DataOutput, value: T)
+    protected abstract fun saveValue(storage: DataOutput, value: V)
 
-    protected abstract fun readValue(storage: DataInput): T
+    protected abstract fun readValue(storage: DataInput): V
 
-    private fun calculateGistData(project: Project, file: VirtualFile): Map<String, T> {
+    private fun calculateGistData(project: Project, file: VirtualFile): Map<String, V> {
         if (!filterFile(file)) return emptyMap()
         val psiFile = file.toPsiFile(project) ?: return emptyMap()
         return indexData(psiFile)
     }
 
-    private fun saveGistValue(storage: DataOutput, value: Map<String, T>) {
+    private fun saveGistValue(storage: DataOutput, value: Map<String, V>) {
         storage.writeIntFast(value.size)
         value.forEach { (k, infos) ->
             storage.writeUTFFast(k)
@@ -96,7 +95,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         }
     }
 
-    private fun readGistValue(storage: DataInput): Map<String, T> {
+    private fun readGistValue(storage: DataInput): Map<String, V> {
         val fileData = buildMap {
             repeat(storage.readIntFast()) {
                 val key = storage.readUTFFast()
@@ -108,20 +107,24 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         return fileData
     }
 
-    fun getFileData(file: VirtualFile, project: Project): Map<String, T> {
+    open fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {
+        return true
+    }
+
+    fun getFileData(file: VirtualFile, project: Project): Map<String, V> {
         if (useLazyIndex(file)) {
             return gist.getFileData(project, file)
         }
         return FileBasedIndex.getInstance().getFileData(name, file, project)
     }
 
-    fun getFileDataWithKey(file: VirtualFile, project: Project, key: String): T? {
+    fun getFileDataWithKey(file: VirtualFile, project: Project, key: String): V? {
         if (useLazyIndex(file)) {
             val fileData = gist.getFileData(project, file) ?: return null
             return fileData[key]
         }
         // use fast return value processor to optimize performance
-        val valueProcessor = FastReturnValueProcessor<T>()
+        val valueProcessor = FastReturnValueProcessor<V>()
         FileBasedIndex.getInstance().processValues(name, key, file, valueProcessor, GlobalSearchScope.fileScope(project, file))
         return valueProcessor.result
     }
@@ -135,3 +138,4 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         }
     }
 }
+

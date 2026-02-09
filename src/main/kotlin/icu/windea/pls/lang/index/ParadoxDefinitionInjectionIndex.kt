@@ -40,7 +40,7 @@ import java.io.DataOutput
  *
  * @see ParadoxDefinitionInjectionIndexInfo
  */
-class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>>() {
+class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>, ParadoxDefinitionInjectionIndexInfo>() {
     companion object {
         const val AllIndexKey = "__all__"
         const val TypeIndexKeyPrefix = "__type__:"

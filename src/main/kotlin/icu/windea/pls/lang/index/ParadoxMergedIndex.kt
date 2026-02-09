@@ -46,7 +46,7 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  * @see ParadoxIndexInfoSupport
  */
-class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>() {
+class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>, ParadoxIndexInfo>() {
     override fun getName() = PlsIndexKeys.Merged
 
     override fun getVersion() = PlsIndexVersions.Merged

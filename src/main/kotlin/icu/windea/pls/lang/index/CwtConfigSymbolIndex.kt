@@ -27,7 +27,7 @@ import java.io.DataOutput
  *
  * @see CwtConfigSymbolIndexInfo
  */
-class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
+class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>, CwtConfigSymbolIndexInfo>() {
     override fun getName() = PlsIndexKeys.ConfigSymbol
 
     override fun getVersion() = PlsIndexVersions.ConfigSymbol
