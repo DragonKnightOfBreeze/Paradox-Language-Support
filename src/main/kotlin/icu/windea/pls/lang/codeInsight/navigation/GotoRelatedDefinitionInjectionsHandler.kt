@@ -43,9 +43,8 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                val targetKey = definitionInfo.type + "@" + definitionInfo.name
                 val selector = selector(project, definition).definitionInjection().contextSensitive()
-                val resolved = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+                val resolved = ParadoxDefinitionInjectionSearch.search(null, definitionInfo.name, definitionInfo.type, selector).findAll()
                 targets.addAll(resolved.mapNotNull { it.element })
             }
         }

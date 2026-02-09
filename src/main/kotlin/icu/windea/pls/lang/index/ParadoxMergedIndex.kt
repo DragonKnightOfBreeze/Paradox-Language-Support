@@ -65,7 +65,10 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+            compressData(this)
+        }
     }
 
     private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
@@ -75,7 +78,6 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                 is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
             }
         }
-        compressData(fileData)
     }
 
     private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {

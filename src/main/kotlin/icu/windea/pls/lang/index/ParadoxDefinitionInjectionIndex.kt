@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -33,11 +35,20 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 定义注入的索引。使用目标键（如 `type@name`）作为索引键。
+ * 定义注入的索引。
+ *
+ * @see ParadoxDefinitionInjectionIndexInfo
  */
 class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>>() {
     companion object {
+        const val AllIndexKey = "__all__"
+        const val TypeIndexKeyPrefix = "__type__:"
+        const val TargetIndexKeyPrefix = "__target__:"
         const val LazyIndexKey = "__lazy__"
+
+        fun typeIndexKey(type: String) = TypeIndexKeyPrefix + type
+
+        fun targetIndexKey(target: String) = TargetIndexKeyPrefix + target
     }
 
     override fun getName() = PlsIndexKeys.DefinitionInjection
@@ -57,7 +68,9 @@ class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<Parado
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+        }
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
@@ -76,7 +89,7 @@ class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<Parado
         if (type.isEmpty()) return
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: com.intellij.psi.PsiElement) {
+            override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) {
                     indexData(element)
                 }
@@ -99,14 +112,20 @@ class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<Parado
                 if (target.isEmpty()) return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
-                val list = fileData.getOrPut(info.targetKey) { mutableListOf() } as MutableList
-                list.add(info)
+                fileData.getOrPut(AllIndexKey) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(info.targetKey) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(typeIndexKey(info.type)) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(targetIndexKey(info.target)) { mutableListOf() }.asMutable() += info
             }
         })
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
-        return mapOf(LazyIndexKey to emptyList())
+        // 仅用于让 injected file 能通过 key 过滤进入候选集，真实数据通过 gist 计算
+        return mapOf(
+            LazyIndexKey to emptyList(),
+            AllIndexKey to emptyList()
+        )
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxDefinitionInjectionIndexInfo>) {

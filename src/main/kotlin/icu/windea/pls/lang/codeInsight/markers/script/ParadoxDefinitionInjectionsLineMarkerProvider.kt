@@ -42,11 +42,10 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         val prefix = PlsStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
         val targets by lazy {
-            val targetKey = info.type + "@" + info.target
             val project = element.project
             val selector = selector(project, element).definitionInjection().contextSensitive()
-            val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll().mapNotNull { it.element }
-            targets0.optimized()
+            val targets0 = ParadoxDefinitionInjectionSearch.search(null, info.target, info.type, selector).findAll()
+            targets0.mapNotNull { it.element }.optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)

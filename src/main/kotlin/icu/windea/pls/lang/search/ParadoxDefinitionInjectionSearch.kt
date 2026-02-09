@@ -12,12 +12,14 @@ import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitionInjectionIndexInfo, ParadoxDefinitionInjectionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property mode 注入模式。
-     * @property targetKey 目标键，包括目标定义的名字和类型信息（如 `type@name`）。
+     * @property target 目标定义的名字。
+     * @property type 目标定义的类型。
      * @property selector 查询选择器。
      */
     class SearchParameters(
         val mode: String?,
-        val targetKey: String?,
+        val target: String?,
+        val type: String?,
         override val selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
     ) : ParadoxSearchParameters<ParadoxDefinitionInjectionIndexInfo>
 
@@ -33,10 +35,11 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
         @JvmStatic
         fun search(
             mode: String?,
-            targetKey: String?,
+            target: String?,
+            type: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
         ): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(mode, targetKey, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(mode, target, type, selector))
         }
     }
 }

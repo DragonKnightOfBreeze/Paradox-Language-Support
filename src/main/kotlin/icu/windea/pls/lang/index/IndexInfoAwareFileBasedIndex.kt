@@ -18,13 +18,14 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.model.index.IndexInfo
 import java.io.DataInput
 import java.io.DataOutput
 
 /**
  * 用于存储索引信息的文件索引。
  *
- * @see icu.windea.pls.model.index.IndexInfo
+ * @see IndexInfo
  */
 abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     private val inputFilter = IndexInputFilter { filterFile(it) }
@@ -65,10 +66,12 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
     protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
     protected open fun indexData(fileContent: FileContent): Map<String, T> {
-        if (useLazyIndex(fileContent.file)) {
-            return indexLazyData(fileContent.psiFile)
+        val fileData = when {
+            useLazyIndex(fileContent.file) -> indexLazyData(fileContent.psiFile)
+            else -> indexData(fileContent.psiFile)
         }
-        return indexData(fileContent.psiFile)
+        if (fileData.isEmpty()) return emptyMap()
+        return fileData
     }
 
     protected open fun indexData(psiFile: PsiFile): Map<String, T> = emptyMap()
@@ -93,12 +96,16 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         }
     }
 
-    private fun readGistValue(storage: DataInput): Map<String, T> = buildMap {
-        repeat(storage.readIntFast()) {
-            val key = storage.readUTFFast()
-            val value = readValue(storage)
-            put(key, value)
+    private fun readGistValue(storage: DataInput): Map<String, T> {
+        val fileData = buildMap {
+            repeat(storage.readIntFast()) {
+                val key = storage.readUTFFast()
+                val value = readValue(storage)
+                put(key, value)
+            }
         }
+        if (fileData.isEmpty()) return emptyMap()
+        return fileData
     }
 
     fun getFileData(file: VirtualFile, project: Project): Map<String, T> {

@@ -3,8 +3,8 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.search.SearchScope
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.PlsStates
@@ -29,28 +29,42 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         if (SearchScope.isEmptyScope(scope)) return
 
         val mode = queryParameters.mode
-        val targetKey = queryParameters.targetKey
-        val keys = setOfNotNull(targetKey, ParadoxDefinitionInjectionIndex.LazyIndexKey)
-        PlsIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
-            val infos = if (targetKey == null) {
-                fileData.values.asSequence().flatten().toList()
-            } else {
-                fileData[targetKey].orEmpty()
+        val target = queryParameters.target
+        val type = queryParameters.type
+        val keys = buildSet {
+            // injected file 必须依赖 LazyIndexKey 才能进入候选集（IndexInfoAwareFileBasedIndex 的 lazy 实现）
+            add(ParadoxDefinitionInjectionIndex.LazyIndexKey)
+
+            when {
+                !type.isNullOrEmpty() && !target.isNullOrEmpty() -> add(type + "@" + target)
+                !type.isNullOrEmpty() -> add(ParadoxDefinitionInjectionIndex.typeIndexKey(type))
+                !target.isNullOrEmpty() -> add(ParadoxDefinitionInjectionIndex.targetIndexKey(target))
+                else -> add(ParadoxDefinitionInjectionIndex.AllIndexKey)
             }
-            infos.process { info -> processInfo(mode, targetKey, project, file, info, consumer) }
+        }
+        PlsIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
+            val infos = when {
+                !type.isNullOrEmpty() && !target.isNullOrEmpty() -> fileData[type + "@" + target].orEmpty()
+                !type.isNullOrEmpty() -> fileData[ParadoxDefinitionInjectionIndex.typeIndexKey(type)].orEmpty()
+                !target.isNullOrEmpty() -> fileData[ParadoxDefinitionInjectionIndex.targetIndexKey(target)].orEmpty()
+                else -> fileData[ParadoxDefinitionInjectionIndex.AllIndexKey].orEmpty()
+            }
+            infos.process { info -> processInfo(mode, target, type, project, file, info, consumer) }
         }
     }
 
     private fun processInfo(
         mode: String?,
-        targetKey: String?,
+        target: String?,
+        type: String?,
         project: Project,
         file: VirtualFile,
         info: ParadoxDefinitionInjectionIndexInfo,
         consumer: Processor<in ParadoxDefinitionInjectionIndexInfo>
     ): Boolean {
-        if (targetKey != null && info.targetKey != targetKey) return true
         if (mode != null && !info.mode.equals(mode, true)) return true
+        if (target != null && info.target != target) return true
+        if (type != null && info.type != type) return true
         info.bind(file, project)
         if (info.element == null) return true
         return consumer.process(info)

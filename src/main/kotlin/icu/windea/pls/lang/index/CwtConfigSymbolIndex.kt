@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.util.CwtConfigSymbolManager
+import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -38,7 +39,9 @@ class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIn
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<CwtConfigSymbolIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+        }
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
@@ -55,8 +58,7 @@ class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIn
                 val infos = CwtConfigSymbolManager.getInfos(element)
                 if (infos.isEmpty()) return
                 infos.forEach { info ->
-                    val list = fileData.getOrPut(info.type) { mutableListOf() } as MutableList
-                    list += info
+                    fileData.getOrPut(info.type) { mutableListOf() }.asMutable() += info
                 }
             }
         })

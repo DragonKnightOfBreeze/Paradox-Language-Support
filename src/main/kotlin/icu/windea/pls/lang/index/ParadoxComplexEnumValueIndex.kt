@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -63,7 +64,10 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+            compressData(this)
+        }
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
@@ -99,12 +103,9 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
                 // 2.1.3 兼容定义注入
                 val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
-                val list = fileData.getOrPut(info.enumName) { mutableListOf() } as MutableList
-                list.add(info)
+                fileData.getOrPut(info.enumName) { mutableListOf() }.asMutable() += info
             }
         })
-
-        compressData(fileData)
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
