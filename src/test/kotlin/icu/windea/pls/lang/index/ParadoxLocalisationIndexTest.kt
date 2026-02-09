@@ -4,9 +4,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.process
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -48,20 +45,6 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testLocalisationSearch_ByName() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        val project = project
-        val selector = selector(project, myFixture.file).localisation()
-        val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchNormal("UI_OK", selector).process { p ->
-            results += p.name
-            true
-        }
-        Assert.assertEquals(listOf("UI_OK"), results)
-    }
-
-    @Test
     fun testSyncedLocalisationNameIndex_Basic() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
@@ -76,47 +59,5 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         )
         Assert.assertEquals(1, elements.size)
         Assert.assertEquals("SYNC_TITLE", elements.single().name)
-    }
-
-    @Test
-    fun testSyncedLocalisationSearch_ByName() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
-        val selector = selector(project, myFixture.file).localisation()
-        val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).process { p ->
-            results += p.name
-            true
-        }
-        Assert.assertEquals(listOf("SYNC_TITLE"), results)
-    }
-
-    @Test
-    fun testLocalisationSearch_NotFound() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        val project = project
-        val selector = selector(project, myFixture.file).localisation()
-        val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchNormal("NOT_EXISTS", selector).process { p ->
-            results += p.name
-            true
-        }
-        Assert.assertTrue(results.isEmpty())
-    }
-
-    @Test
-    fun testSyncedLocalisationSearch_NotFound() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
-        val selector = selector(project, myFixture.file).localisation()
-        val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchSynced("NOT_EXISTS", selector).process { p ->
-            results += p.name
-            true
-        }
-        Assert.assertTrue(results.isEmpty())
     }
 }

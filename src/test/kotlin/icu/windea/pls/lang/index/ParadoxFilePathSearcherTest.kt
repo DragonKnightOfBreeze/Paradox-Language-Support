@@ -35,6 +35,38 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     fun clear() = clearIntegrationTest()
 
     @Test
+    fun testFilePathSearcher_ExactPath() {
+        val relPath = "common/code_style_settings.test.txt"
+        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
+
+        val project = project
+        val selector = selector(project, myFixture.file).file()
+        val results = mutableListOf<String>()
+        ParadoxFilePathSearch.search(relPath, selector = selector).process { vf ->
+            results += vf.path
+            true
+        }
+        Assert.assertEquals(1, results.size)
+    }
+
+    @Test
+    fun testFilePathSearcher_NotFound_ReturnsEmpty() {
+        val relPath = "localisation/ui/ui_l_english.test.yml"
+        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
+        val project = project
+        val selector = selector(project, myFixture.file).file()
+        val results = mutableListOf<String>()
+        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).process { vf ->
+            results += vf.path
+            true
+        }
+        Assert.assertTrue(results.isEmpty())
+    }
+
+    @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")

@@ -4,9 +4,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.core.process
-import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
@@ -48,22 +45,6 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testFilePathSearcher_ExactPath() {
-        val relPath = "common/code_style_settings.test.txt"
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
-        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
-
-        val project = project
-        val selector = selector(project, myFixture.file).file()
-        val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search(relPath, selector = selector).process { vf ->
-            results += vf.path
-            true
-        }
-        Assert.assertEquals(1, results.size)
-    }
-
-    @Test
     fun testFilePathIndex_Localisation() {
         // index should record localisation yml files as included with correct directory and gameType
         val relPath = "localisation/ui/ui_l_english.test.yml"
@@ -78,22 +59,6 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("localisation/ui", info.directory)
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertTrue(info.included)
-    }
-
-    @Test
-    fun testFilePathSearcher_NotFound_ReturnsEmpty() {
-        val relPath = "localisation/ui/ui_l_english.test.yml"
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-
-        val project = project
-        val selector = selector(project, myFixture.file).file()
-        val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).process { vf ->
-            results += vf.path
-            true
-        }
-        Assert.assertTrue(results.isEmpty())
     }
 
     @Test
