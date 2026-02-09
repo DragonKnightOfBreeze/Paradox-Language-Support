@@ -11,7 +11,6 @@ import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -47,61 +46,46 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
                 if (variable.isEmpty()) {
                     // namespace only
                     PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
-                        processElement(namespace, variable, element, consumer)
+                        consumer.process(element)
                     }
                 } else {
                     val key = PlsIndexUtil.createDefineVariableKey(namespace, variable)
                     PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, project, scope) { element ->
-                        processElement(namespace, variable, element, consumer)
+                        consumer.process(element)
                     }
                 }
             }
             namespace != null -> {
                 // namespace specified, query all variables under it + namespace element
                 PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
-                    processElement(namespace, null, element, consumer)
+                    consumer.process(element)
                 }
                 PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.namespace == namespace }) { _, element ->
-                    processElement(namespace, null, element, consumer)
+                    consumer.process(element)
                 }
             }
             variable != null -> {
                 if (variable.isEmpty()) {
                     // all namespaces
                     PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, project, scope) { _, element ->
-                        processElement(namespace, variable, element, consumer)
+                        consumer.process(element)
                     }
                 } else {
                     // variable specified but namespace not specified
                     PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.variable == variable }) { _, element ->
-                        processElement(namespace, variable, element, consumer)
+                        consumer.process(element)
                     }
                 }
             }
             else -> {
                 // all defines
                 PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineNamespace, project, scope) { _, element ->
-                    processElement(namespace, variable, element, consumer)
+                    consumer.process(element)
                 }
                 PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope) { _, element ->
-                    processElement(namespace, variable, element, consumer)
+                    consumer.process(element)
                 }
             }
         }
-    }
-
-    private fun processElement(
-        namespace: String?,
-        variable: String?,
-        element: ParadoxScriptProperty,
-        consumer: Processor<in ParadoxScriptProperty>
-    ): Boolean {
-        val defineInfo = ParadoxDefineManager.getInfo(element) ?: return true
-        if (namespace != null && namespace != defineInfo.namespace) return true
-        when {
-            variable == "" -> if (defineInfo.variable != null) return true
-            variable != null -> if (defineInfo.variable != variable) return true
-        }
-        return consumer.process(element)
     }
 }
