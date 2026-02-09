@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.search.selector
 
-import icu.windea.pls.lang.search.ParadoxQueryImpl
+import icu.windea.pls.lang.search.ParadoxQuery
 import java.util.function.Function
 
 /**
@@ -8,7 +8,7 @@ import java.util.function.Function
  *
  * 用于指定如何选择目标，涉及过滤、回退、去重、排序等。
  *
- * @see ParadoxQueryImpl
+ * @see ParadoxQuery
  */
 interface ParadoxSelector<T> {
     /**
