@@ -41,10 +41,6 @@ import java.io.DataOutput
  * 复杂枚举值的索引。使用枚举名作为索引键。
  */
 class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>, ParadoxComplexEnumValueIndexInfo>() {
-    companion object {
-        const val LazyIndexKey = "__lazy__"
-    }
-
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
 
     override fun getName() = PlsIndexKeys.ComplexEnumValue
@@ -85,7 +81,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement ) visitStringExpressionElement(element)
+                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
@@ -104,7 +100,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 // 2.1.3 兼容定义注入
                 val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
-                fileData.getOrPut(info.enumName) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(PlsIndexUtil.createTypeKey(info.enumName)) { mutableListOf() }.asMutable() += info
             }
         })
     }
@@ -119,8 +115,8 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     }
 
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxComplexEnumValueIndexInfo>> {
-        // 用于兼容懒加载的索引
-        return mapOf(LazyIndexKey to emptyList())
+        // 用于兼容懒加载的索引，真实数据通过 gist 计算
+        return mapOf(PlsIndexUtil.createLazyKey() to emptyList())
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxComplexEnumValueIndexInfo>) {

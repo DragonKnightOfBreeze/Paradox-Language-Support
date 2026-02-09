@@ -8,6 +8,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -23,11 +24,19 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val keys = setOf(queryParameters.enumName, ParadoxComplexEnumValueIndex.LazyIndexKey)
+        val keys = buildSet {
+            add(createActualKey(queryParameters))
+            add(PlsIndexUtil.createLazyKey())
+        }
         PlsIndexService.processAllFileData(ParadoxComplexEnumValueIndex::class.java, keys, project, scope, queryParameters.gameType) { file, fileData ->
-            val infos = fileData[queryParameters.enumName].orEmpty()
+            val actualKey = createActualKey(queryParameters)
+            val infos = fileData[actualKey].orEmpty()
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
+    }
+
+    private fun createActualKey(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters): String {
+        return PlsIndexUtil.createTypeKey(queryParameters.enumName)
     }
 
     private fun processInfo(

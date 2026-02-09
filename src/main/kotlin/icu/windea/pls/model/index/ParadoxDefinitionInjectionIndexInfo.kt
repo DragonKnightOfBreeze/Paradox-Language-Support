@@ -14,8 +14,6 @@ data class ParadoxDefinitionInjectionIndexInfo(
     val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
-    val targetKey: String get() = "$type@$target"
-
     val element: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
             ?.takeIf { it.parent is ParadoxScriptRootBlock }

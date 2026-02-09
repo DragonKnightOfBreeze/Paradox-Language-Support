@@ -12,9 +12,11 @@ import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -37,20 +39,9 @@ import java.io.DataOutput
 
 /**
  * 定义注入的索引。
- *
- * @see ParadoxDefinitionInjectionIndexInfo
  */
 class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>, ParadoxDefinitionInjectionIndexInfo>() {
-    companion object {
-        const val AllIndexKey = "__all__"
-        const val TypeIndexKeyPrefix = "__type__:"
-        const val TargetIndexKeyPrefix = "__target__:"
-        const val LazyIndexKey = "__lazy__"
-
-        fun typeIndexKey(type: String) = TypeIndexKeyPrefix + type
-
-        fun targetIndexKey(target: String) = TargetIndexKeyPrefix + target
-    }
+    private val compressComparator = compareBy<ParadoxDefinitionInjectionIndexInfo>({ it.mode }, { it.type })
 
     override fun getName() = PlsIndexKeys.DefinitionInjection
 
@@ -71,6 +62,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
         return buildMap {
             buildData(psiFile, this)
+            compressData(this)
         }
     }
 
@@ -115,20 +107,26 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
                 if (target.isEmpty()) return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
-                fileData.getOrPut(AllIndexKey) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(info.targetKey) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(typeIndexKey(info.type)) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(targetIndexKey(info.target)) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(PlsIndexUtil.createNameKey(info.target)) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(PlsIndexUtil.createTypeKey(info.type)) { mutableListOf() }.asMutable() += info
+                fileData.getOrPut(PlsIndexUtil.createNameTypeKey(info.target, info.type)) { mutableListOf() }.asMutable() += info
             }
         })
     }
 
+    private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
+        if (fileData.isEmpty()) return
+        for ((key, value) in fileData) {
+            if (value.size <= 1) continue
+            val newValue = value.sortedWith(compressComparator)
+            fileData[key] = newValue
+        }
+    }
+
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxDefinitionInjectionIndexInfo>> {
-        // 仅用于让 injected file 能通过 key 过滤进入候选集，真实数据通过 gist 计算
-        return mapOf(
-            LazyIndexKey to emptyList(),
-            AllIndexKey to emptyList()
-        )
+        // 用于兼容懒加载的索引，真实数据通过 gist 计算
+        return mapOf(PlsIndexUtil.createLazyKey() to emptyList())
     }
 
     override fun saveValue(storage: DataOutput, value: List<ParadoxDefinitionInjectionIndexInfo>) {
@@ -137,11 +135,13 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
+        var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
         value.forEach { info ->
-            storage.writeUTFFast(info.mode)
+            storage.writeOrWriteFrom(info, previousInfo, { it.mode }, { storage.writeUTFFast(it) })
             storage.writeUTFFast(info.target)
-            storage.writeUTFFast(info.type)
+            storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })
             storage.writeIntFast(info.elementOffset)
+            previousInfo = info
         }
     }
 
@@ -150,12 +150,13 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (size == 0) return emptyList()
 
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
         return MutableList(size) {
-            val mode = storage.readUTFFast()
+            val mode = storage.readOrReadFrom(previousInfo, { it.mode }, { storage.readUTFFast() })
             val target = storage.readUTFFast()
-            val type = storage.readUTFFast()
+            val type = storage.readOrReadFrom(previousInfo, { it.type }, { storage.readUTFFast() })
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionInjectionIndexInfo(mode, target, type, elementOffset, gameType)
+            ParadoxDefinitionInjectionIndexInfo(mode, target, type, elementOffset, gameType).also { previousInfo = it }
         }
     }
 }

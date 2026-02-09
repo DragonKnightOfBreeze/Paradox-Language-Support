@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
@@ -10,6 +9,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -28,45 +28,36 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val mode = queryParameters.mode
-        val target = queryParameters.target
-        val type = queryParameters.type
         val keys = buildSet {
-            // injected file 必须依赖 LazyIndexKey 才能进入候选集（IndexInfoAwareFileBasedIndex 的 lazy 实现）
-            add(ParadoxDefinitionInjectionIndex.LazyIndexKey)
-
-            when {
-                !type.isNullOrEmpty() && !target.isNullOrEmpty() -> add(type + "@" + target)
-                !type.isNullOrEmpty() -> add(ParadoxDefinitionInjectionIndex.typeIndexKey(type))
-                !target.isNullOrEmpty() -> add(ParadoxDefinitionInjectionIndex.targetIndexKey(target))
-                else -> add(ParadoxDefinitionInjectionIndex.AllIndexKey)
-            }
+            add(createActualKey(queryParameters))
+            add(PlsIndexUtil.createLazyKey())
         }
         PlsIndexService.processAllFileData(ParadoxDefinitionInjectionIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
-            val infos = when {
-                !type.isNullOrEmpty() && !target.isNullOrEmpty() -> fileData[type + "@" + target].orEmpty()
-                !type.isNullOrEmpty() -> fileData[ParadoxDefinitionInjectionIndex.typeIndexKey(type)].orEmpty()
-                !target.isNullOrEmpty() -> fileData[ParadoxDefinitionInjectionIndex.targetIndexKey(target)].orEmpty()
-                else -> fileData[ParadoxDefinitionInjectionIndex.AllIndexKey].orEmpty()
-            }
-            infos.process { info -> processInfo(mode, target, type, project, file, info, consumer) }
+            val actualKey = createActualKey(queryParameters)
+            val infos = fileData[actualKey].orEmpty()
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
+        }
+    }
+
+    private fun createActualKey(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters): String {
+        return when {
+            !queryParameters.type.isNullOrEmpty() && !queryParameters.target.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(queryParameters.target, queryParameters.type)
+            !queryParameters.target.isNullOrEmpty() -> PlsIndexUtil.createNameKey(queryParameters.target)
+            !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(queryParameters.type)
+            else -> PlsIndexUtil.createAllKey()
         }
     }
 
     private fun processInfo(
-        mode: String?,
-        target: String?,
-        type: String?,
-        project: Project,
+        queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters,
         file: VirtualFile,
         info: ParadoxDefinitionInjectionIndexInfo,
         consumer: Processor<in ParadoxDefinitionInjectionIndexInfo>
     ): Boolean {
-        if (mode != null && !info.mode.equals(mode, true)) return true
-        if (target != null && info.target != target) return true
-        if (type != null && info.type != type) return true
-        info.bind(file, project)
-        if (info.element == null) return true
+        if (queryParameters.mode != null && !queryParameters.mode.equals(info.mode, true)) return true
+        if (queryParameters.target != null && queryParameters.target != info.target) return true
+        if (queryParameters.type != null && queryParameters.type != info.type) return true
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

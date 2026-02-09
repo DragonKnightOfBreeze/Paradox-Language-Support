@@ -24,8 +24,6 @@ import java.io.DataOutput
 
 /**
  * 规则文件中的各种符号信息的索引。
- *
- * @see CwtConfigSymbolIndexInfo
  */
 class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>, CwtConfigSymbolIndexInfo>() {
     override fun getName() = PlsIndexKeys.ConfigSymbol

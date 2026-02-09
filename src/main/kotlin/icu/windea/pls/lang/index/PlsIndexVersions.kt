@@ -8,6 +8,6 @@ object PlsIndexVersions {
     const val FileLocale = 83 // 2.1.2
     const val ConfigSymbol = 83 // 2.1.2
     const val ComplexEnumValue = 85 // 2.1.3
-    const val DefinitionInjection = 86 // 2.1.3
+    const val DefinitionInjection = 87 // 2.1.3
     const val Merged = 85 // 2.1.3
 }
