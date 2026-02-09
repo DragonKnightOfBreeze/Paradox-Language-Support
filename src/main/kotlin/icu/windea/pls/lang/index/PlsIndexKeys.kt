@@ -33,14 +33,14 @@ object PlsIndexKeys {
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")
     val LocalisationNameForTech = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.tech")
 
-    // for defines, namespace -> ParadoxScriptProperty
+    // for define namespaces, namespace -> ParadoxScriptProperty
     val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")
-    // for defines, namespace\u0000variable -> ParadoxScriptProperty
-    val DefineVariable = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.variable.index")
+    // for define variables, (namespace, variable) -> ParadoxScriptProperty
+    val DefineVariable = StubIndexKey.createIndexKey<ParadoxDefineVariableIndex.Key, ParadoxScriptProperty>("paradox.define.variable.index")
 
-    // for inline script usages, inlineScriptExpression -> ParadoxScriptProperty
+    // for inline script usages, expression -> ParadoxScriptProperty
     val InlineScriptUsage = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptUsage.index")
-    // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
+    // for inline script arguments, expression -> `ParadoxScriptProperty`
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
 
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")

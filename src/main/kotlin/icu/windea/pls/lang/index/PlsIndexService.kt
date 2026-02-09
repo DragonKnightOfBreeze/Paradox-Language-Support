@@ -33,12 +33,11 @@ object PlsIndexService {
         gameType: ParadoxGameType?,
         processor: (file: VirtualFile, fileData: Map<String, V>) -> Boolean
     ): Boolean {
-        if (keys.isEmpty()) return true
-
         if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
         ProgressManager.checkCanceled()
 
+        if (keys.isEmpty()) return true
         val index = EXTENSION_POINT_NAME.findExtensionOrFail(indexType)
         val indexId = index.name
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->

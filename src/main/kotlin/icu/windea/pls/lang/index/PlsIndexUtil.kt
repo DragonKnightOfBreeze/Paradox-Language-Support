@@ -6,6 +6,10 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.constants.PlsConstants
 
 object PlsIndexUtil {
+    fun createDefineVariableKey(namespace: String, variable: String): ParadoxDefineVariableIndex.Key {
+        return ParadoxDefineVariableIndex.Key(namespace, variable)
+    }
+
     private val excludeDirectoriesForFilePathIndex = listOf(
         "_CommonRedist",
         "binaries",

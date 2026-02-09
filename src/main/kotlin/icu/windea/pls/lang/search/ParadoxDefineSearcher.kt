@@ -9,6 +9,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -41,17 +42,15 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
         scope: GlobalSearchScope,
         consumer: Processor<in ParadoxScriptProperty>
     ) {
-        val separator = "\u0000"
-
-        // variable == "" 表示要查询命名空间本身
         when {
             namespace != null && variable != null -> {
                 if (variable.isEmpty()) {
+                    // namespace only
                     PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
                         processElement(namespace, variable, element, consumer)
                     }
                 } else {
-                    val key = namespace + separator + variable
+                    val key = PlsIndexUtil.createDefineVariableKey(namespace, variable)
                     PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, project, scope) { element ->
                         processElement(namespace, variable, element, consumer)
                     }
@@ -62,8 +61,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
                 PlsIndexService.processElements(PlsIndexKeys.DefineNamespace, namespace, project, scope) { element ->
                     processElement(namespace, null, element, consumer)
                 }
-                val prefix = namespace + separator
-                PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.startsWith(prefix) }) { _, element ->
+                PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.namespace == namespace }) { _, element ->
                     processElement(namespace, null, element, consumer)
                 }
             }
@@ -74,9 +72,8 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
                         processElement(namespace, variable, element, consumer)
                     }
                 } else {
-                    // variable specified but namespace not specified: filter keys by suffix
-                    val suffix = separator + variable
-                    PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.endsWith(suffix) }) { _, element ->
+                    // variable specified but namespace not specified
+                    PlsIndexService.processElementsByKeys(PlsIndexKeys.DefineVariable, project, scope, { it.variable == variable }) { _, element ->
                         processElement(namespace, variable, element, consumer)
                     }
                 }

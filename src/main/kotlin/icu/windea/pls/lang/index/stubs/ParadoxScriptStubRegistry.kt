@@ -18,6 +18,7 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -240,8 +241,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                 is ParadoxScriptPropertyStub.DefineVariable -> {
                     if (stub.namespace.isEmpty()) return
                     if (stub.variable.isEmpty()) return
-                    val key = stub.namespace + "\u0000" + stub.variable
-                    sink.occurrence(PlsIndexKeys.DefineVariable, key)
+                    sink.occurrence(PlsIndexKeys.DefineVariable, PlsIndexUtil.createDefineVariableKey(stub.namespace, stub.variable))
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
                     if (stub.expression.isEmpty()) return
