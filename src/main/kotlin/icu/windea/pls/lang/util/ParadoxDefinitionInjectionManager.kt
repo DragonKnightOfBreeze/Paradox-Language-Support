@@ -7,7 +7,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -32,8 +31,6 @@ import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
-import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
@@ -121,24 +118,6 @@ object ParadoxDefinitionInjectionManager {
     }
 
     private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
-        doGetInfoFromStub(element, file)?.let { return it }
-        return doGetInfoFromPsi(element, file)
-    }
-
-    fun doGetInfoFromStub(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
-        val stub = getStub(element) ?: return null
-        val mode = stub.mode
-        val target = stub.target
-        val type = stub.type
-        val gameType = stub.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
-        val config = configGroup.directivesModel.definitionInjection ?: return null
-        val modeConfig = config.modeConfigs[mode] ?: return null
-        val typeConfig = configGroup.types[type]
-        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
-    }
-
-    private fun doGetInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
         val expression = element.name
@@ -165,19 +144,11 @@ object ParadoxDefinitionInjectionManager {
 
     @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
-        val stub = runReadActionSmartly { getStub(element) }
-        stub?.let { return it.target }
         return element.definitionInjectionInfo?.target
     }
 
     fun getType(element: ParadoxScriptProperty): String? {
-        val stub = runReadActionSmartly { getStub(element) }
-        stub?.let { return it.type }
         return element.definitionInjectionInfo?.type
-    }
-
-    fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.DefinitionInjection? {
-        return element.greenStub?.castOrNull()
     }
 
     fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {

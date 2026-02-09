@@ -91,22 +91,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
         override fun getParentStub(): InlineScriptUsage
     }
 
-    /**
-     * （作为脚本属性的）定义注入的存根。
-     *
-     * @property expression 宏表达式。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property mode 注入模式。
-     * @property target 目标定义的名字。等同于目标定义的类型键。
-     * @property type 目标定义的类型。
-     *
-     */
-    sealed interface DefinitionInjection : ParadoxScriptPropertyStub {
-        val expression: String
-        val mode: String
-        val target: String?
-        val type: String?
-    }
-
     private sealed class Base(
         parent: StubElement<*>?,
     ) : StubBase<ParadoxScriptProperty>(parent, PROPERTY), ParadoxScriptPropertyStub {
@@ -208,25 +192,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
         }
     }
 
-    private class DefinitionInjectionImpl(
-        parent: StubElement<*>?,
-        override val name: String,
-        override val mode: String,
-        override val target: String?,
-        override val type: String?,
-    ) : Base(parent), DefinitionInjection {
-        override val expression: String get() = name
-
-        override fun toString(): String {
-            return "ParadoxScriptPropertyStub.DefinitionInjection(" +
-                "expression=$expression, " +
-                "mode=$mode, " +
-                "definitionName=$target, " +
-                "definitionType=$type, " +
-                "gameType=$gameType)"
-        }
-    }
-
     companion object {
         fun create(parent: StubElement<*>?, name: String): ParadoxScriptPropertyStub {
             return Impl(parent, name)
@@ -274,16 +239,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
             name: String,
         ): InlineScriptArgument {
             return InlineScriptArgumentImpl(parent, name)
-        }
-
-        fun createDefinitionInjection(
-            parent: StubElement<*>?,
-            expression: String,
-            mode: String,
-            target: String?,
-            type: String?,
-        ): DefinitionInjection {
-            return DefinitionInjectionImpl(parent, expression, mode, target, type)
         }
     }
 }
