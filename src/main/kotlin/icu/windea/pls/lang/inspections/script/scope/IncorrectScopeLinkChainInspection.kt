@@ -22,6 +22,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -33,6 +34,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
                 val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.configExpression.type
                 val value = element.value

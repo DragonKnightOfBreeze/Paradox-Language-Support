@@ -40,6 +40,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 @Suppress("unused")
 object ParadoxEventManager {
@@ -185,6 +186,7 @@ object ParadoxEventManager {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
                 val value = element.value
                 if (result.contains(value)) return
                 if (!isValidEventId(value)) return // 排除非法的事件ID

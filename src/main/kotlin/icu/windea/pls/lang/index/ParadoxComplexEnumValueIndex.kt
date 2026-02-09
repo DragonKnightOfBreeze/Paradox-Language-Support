@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -84,15 +85,15 @@ class ParadoxComplexEnumValueIndex : IndexInfoAwareFileBasedIndex<List<ParadoxCo
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    indexData(element)
-                }
-
+                if (element is ParadoxScriptStringExpressionElement ) visitStringExpressionElement(element)
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
-            private fun indexData(element: ParadoxScriptStringExpressionElement) {
+            private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
+
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
                 val name = element.value
                 if (name.isParameterized()) return // 排除可能带参数的情况

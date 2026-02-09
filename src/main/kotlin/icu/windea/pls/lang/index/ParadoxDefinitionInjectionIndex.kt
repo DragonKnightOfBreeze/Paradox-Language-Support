@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -91,14 +92,16 @@ class ParadoxDefinitionInjectionIndex : IndexInfoAwareFileBasedIndex<List<Parado
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) {
-                    indexData(element)
+                    visitProperty(element)
                 }
 
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
-            private fun indexData(element: ParadoxScriptProperty) {
+            private fun visitProperty(element: ParadoxScriptProperty) {
+                ProgressManager.checkCanceled()
+
                 if (element.parent !is ParadoxScriptRootBlock) return
                 val propertyValue = element.propertyValue
                 if (propertyValue !is ParadoxScriptBlock) return
