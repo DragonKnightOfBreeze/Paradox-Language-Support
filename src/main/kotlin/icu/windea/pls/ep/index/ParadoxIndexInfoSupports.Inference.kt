@@ -173,6 +173,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         if (scopesConfig == null) return -1
         val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
+        if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
     }
 
@@ -240,6 +241,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         if (scopesConfig == null) return -1
         val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
+        if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
     }
 

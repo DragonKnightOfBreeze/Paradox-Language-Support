@@ -44,8 +44,8 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
             // need read actions here if necessary
             readAction {
                 val selector = selector(project, definition).definitionInjection().contextSensitive()
-                val resolved = ParadoxDefinitionInjectionSearch.search(null, definitionInfo.name, definitionInfo.type, selector).findAll()
-                targets.addAll(resolved.mapNotNull { it.element })
+                val resolved = ParadoxDefinitionInjectionSearch.search(null, definitionInfo.name, definitionInfo.type, selector).findAll().mapNotNull { it.element }
+                targets.addAll(resolved)
             }
         }
         return GotoData(definition, targets.distinct().toTypedArray(), emptyList())

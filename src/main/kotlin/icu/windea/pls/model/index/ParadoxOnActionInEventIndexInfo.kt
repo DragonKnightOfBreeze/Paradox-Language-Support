@@ -13,5 +13,4 @@ data class ParadoxOnActionInEventIndexInfo(
 ) : ParadoxIndexInfo() {
     val scopesElement: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, scopesElementOffset) }
-            ?.takeIf { it.block != null }
 }
