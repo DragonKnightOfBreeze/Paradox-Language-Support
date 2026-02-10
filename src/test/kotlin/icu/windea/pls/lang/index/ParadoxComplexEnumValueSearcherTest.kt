@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
@@ -37,7 +38,7 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
-    private fun configureScriptFile(relPath: String, testDataPath: String) {
+    private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String) {
         markFileInfo(ParadoxGameType.Stellaris, relPath)
         myFixture.configureByFile(testDataPath)
     }

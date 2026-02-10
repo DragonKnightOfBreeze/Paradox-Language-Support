@@ -2,6 +2,7 @@ package icu.windea.pls.lang.index
 
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
@@ -27,7 +28,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
-    private fun configureDefineFile(testDataPath: String) {
+    private fun configureDefineFile(@TestDataFile testDataPath: String) {
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/${testDataPath.substringAfterLast('/')}")
         myFixture.configureByFile(testDataPath)
     }
