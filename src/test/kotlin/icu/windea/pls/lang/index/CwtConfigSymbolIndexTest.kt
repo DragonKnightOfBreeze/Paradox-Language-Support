@@ -46,6 +46,15 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.DynamicValueType.id, "test_value", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.SingleAlias.id, "test_single_alias", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Alias.id, "test_modifier", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertNoSymbol(scope, CwtConfigTypes.Alias.id, "some_test_modifier")
+        assertSymbol(scope, CwtConfigTypes.Alias.id, "modifier", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Modifier.id, "modifier_const", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Alias.id, "trigger", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Trigger.id, "trigger_const", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Alias.id, "effect", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Effect.id, "effect_const", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
+        assertNoSymbol(scope, CwtConfigTypes.Trigger.id, "enum[not_const]")
+        assertSymbol(scope, CwtConfigTypes.Alias.id, "alias_no_colon", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Directive.id, "test_directive", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
     }
 
@@ -64,6 +73,28 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.SingleAlias.id, "ref_single_alias", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Type.id, "ref_type", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Subtype.id, "ref_subtype", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Type.id, "ref_type2", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Subtype.id, "sub1", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Subtype.id, "sub2", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertNoSymbol(scope, CwtConfigTypes.Enum.id, "ignored_enum")
+        assertNoSymbol(scope, CwtConfigTypes.Alias.id, "ignored_alias")
+
+        // referenced in alias[*:*] tail (for alias config type)
+        assertSymbol(scope, CwtConfigTypes.Type.id, "ref_type_in_alias", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Subtype.id, "ref_sub_in_alias", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Enum.id, "enum_in_alias", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.DynamicValue.id, "dynamic_in_alias", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+
+        // quoted expression should still be indexed (quoteOffset)
+        assertSymbol(scope, CwtConfigTypes.Enum.id, "quoted_enum", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Type.id, "quoted_type", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Subtype.id, "quoted_sub", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
+
+        // not a full match
+        assertNoSymbol(scope, CwtConfigTypes.Enum.id, "bad_enum")
+
+        // should not index empty name
+        assertNoEmptyName(scope)
     }
 
     @Test
@@ -81,5 +112,25 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         Assert.assertNotNull("Expected symbol '$name' of type '$type'", info)
         Assert.assertEquals(access, info!!.readWriteAccess)
         Assert.assertEquals(gameType, info.gameType)
+    }
+
+    private fun assertNoSymbol(scope: GlobalSearchScope, type: String, name: String) {
+        val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
+        Assert.assertNull("Did not expect symbol '$name' of type '$type'", infos.find { it.name == name })
+    }
+
+    private fun assertNoEmptyName(scope: GlobalSearchScope) {
+        val types = listOf(
+            CwtConfigTypes.Enum.id,
+            CwtConfigTypes.DynamicValue.id,
+            CwtConfigTypes.Alias.id,
+            CwtConfigTypes.SingleAlias.id,
+            CwtConfigTypes.Type.id,
+            CwtConfigTypes.Subtype.id
+        )
+        types.forEach { type ->
+            val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
+            Assert.assertTrue("Should not index empty name for type '$type'", infos.none { it.name.isEmpty() })
+        }
     }
 }

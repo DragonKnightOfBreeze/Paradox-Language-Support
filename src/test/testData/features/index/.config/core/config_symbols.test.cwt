@@ -22,7 +22,17 @@ single_alias[test_single_alias] = {
     alias_name[alias_test] = alias_match_left[alias_test]
 }
 
-alias[test_modifier:some_modifier] = float
+alias[test_modifier:some_test_modifier] = float
+alias[modifier:modifier_const] = float
+alias[trigger:trigger_const] = bool
+alias[effect:effect_const] = bool
+alias[trigger:enum[not_const]] = bool
+
+alias[ref_alias_def:<ref_type_in_alias.ref_sub_in_alias>] = scalar
+alias[ref_alias_enum:enum[enum_in_alias]] = scalar
+alias[ref_alias_value:value[dynamic_in_alias]] = scalar
+
+alias[alias_no_colon] = scalar
 
 directive[test_directive] = scalar
 
@@ -48,4 +58,26 @@ references = {
     alias_keys_ref = alias_keys_field[ref_alias_keys]
     single_alias_ref = single_alias_right[ref_single_alias]
     type_ref = <ref_type.ref_subtype>
+    type_ref_multi = <ref_type2.sub1.sub2>
+
+    quoted_enum_ref = "enum[quoted_enum]"
+    quoted_type_ref = "<quoted_type.quoted_sub>"
+    bad_enum_ref = "xxenum[bad_enum]"
+
+    empty_string = ""
+    blank_string = " "
+    empty_definition = "<>"
+    empty_enum = "enum[]"
+    empty_value = "value[]"
+    empty_value_set = "value_set[]"
+    empty_dynamic_value = "dynamic_value[]"
+    empty_alias_name = "alias_name[]"
+    empty_alias_match_left = "alias_match_left[]"
+    empty_alias_keys_field = "alias_keys_field[]"
+    empty_single_alias_right = "single_alias_right[]"
+}
+
+options = {
+    ## enum_ref = enum[ignored_enum]
+    ## alias_name[ignored_alias] = alias_match_left[ignored_alias]
 }

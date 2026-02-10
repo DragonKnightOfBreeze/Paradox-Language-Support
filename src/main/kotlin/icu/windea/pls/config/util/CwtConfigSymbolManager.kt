@@ -94,8 +94,8 @@ object CwtConfigSymbolManager {
             // aliases
             val n1 = name.substringBefore(':').orNull() ?: return@b
             add(tupleOf(n1, nameOffset, symbolConfigType))
-            // effects & triggers
-            if (configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
+            // modifiers & effects & triggers
+            if (configType != CwtConfigTypes.Modifier && configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
             val n2 = name.substringAfter(':').orNull() ?: return@b
             if (CwtDataExpression.resolve(n2, false).type != CwtDataTypes.Constant) return@b
             add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
@@ -206,7 +206,7 @@ object CwtConfigSymbolManager {
         val patternSet = CwtConfigTextPatternSets.aliasReference
         patternSet.forEach f@{ pattern ->
             val (prefix, suffix) = pattern
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return@f
+            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@f
             val nextOffset = offset + prefix.length
             val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Alias.id, readWriteAccess, nextOffset, element.startOffset, gameType)
             infos += info
@@ -223,7 +223,7 @@ object CwtConfigSymbolManager {
             CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
-            CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> CwtConfigTypes.Alias
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias
             CwtConfigTypes.Directive -> configType
             else -> null
         }
@@ -231,7 +231,7 @@ object CwtConfigSymbolManager {
 
     private fun getSymbolName(text: String, configType: CwtConfigType): String? {
         return when (configType) {
-            CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
             else -> CwtConfigManager.getNameByConfigType(text, configType)
         }
     }
