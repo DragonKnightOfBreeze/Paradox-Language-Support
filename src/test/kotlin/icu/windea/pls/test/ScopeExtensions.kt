@@ -16,14 +16,14 @@ context(_: UsefulTestCase)
 fun markRootDirectory(relPath: String) {
     val testDataPath = "src/test/testData".toPathOrNull() ?: return
     val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markRootDirectory(path)
+    ParadoxAnalysisInjector.markRootDirectory(relPath, path)
 }
 
 context(_: UsefulTestCase)
 fun markConfigDirectory(relPath: String) {
     val testDataPath = "src/test/testData".toPathOrNull() ?: return
     val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markConfigDirectory(path)
+    ParadoxAnalysisInjector.markConfigDirectory(relPath, path)
 }
 
 context(_: UsefulTestCase)

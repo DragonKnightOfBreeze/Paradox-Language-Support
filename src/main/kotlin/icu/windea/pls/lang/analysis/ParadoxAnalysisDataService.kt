@@ -39,9 +39,13 @@ class ParadoxAnalysisDataService : Disposable {
     @Volatile var markedRootInfo: ParadoxRootInfo? = null
     /** 接下来需要注入的文件信息。需要匹配可能的规则分组（[ParadoxFileGroup]）。可用于集成测试。 */
     @Volatile var markedFileInfo: ParadoxFileInfo? = null
+    /** 接下来需要注入的游戏或模组的根目录的路径（相对于上下文根目录），可用于集成测试。 */
+    @Volatile var markedRootPath: String? = null
     /** 接下来需要注入的游戏或模组的根目录。可用于集成测试。 */
     @Volatile var markedRootDirectory: Path? = null
-    /** 接下来需要注入的规则目录，需要在加载规则数据前，预先手动指定。可用于集成测试。 */
+    /** 接下来需要注入的规则目录的路径（相对于上下文根目录）。需要在加载规则数据前预先手动指定。可用于集成测试。 */
+    @Volatile var markedConfigPath: String? = null
+    /** 接下来需要注入的规则目录。需要在加载规则数据前预先手动指定。可用于集成测试。 */
     @Volatile var markedConfigDirectory: Path? = null
 
     // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）
