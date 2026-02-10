@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.config.util
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
