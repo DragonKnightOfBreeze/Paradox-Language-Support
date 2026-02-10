@@ -224,6 +224,7 @@ object CwtConfigSymbolManager {
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
             CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> CwtConfigTypes.Alias
+            CwtConfigTypes.Directive -> configType
             else -> null
         }
     }

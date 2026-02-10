@@ -363,6 +363,7 @@ object CwtConfigManager {
             CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
             CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
             CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
+            CwtConfigTypes.DynamicValueType -> text.removeSurroundingOrNull("value[", "]")
             CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
             CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
             CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")

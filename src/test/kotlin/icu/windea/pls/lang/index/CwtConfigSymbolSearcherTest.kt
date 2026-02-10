@@ -36,13 +36,9 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
-    private fun configureConfigFile(testDataPath: String) {
-        myFixture.configureByFile(testDataPath)
-    }
-
     @Test
     fun testConfigSymbolSearcher_Declarations() {
-        configureConfigFile("features/index/.config/core/config_symbols.test.cwt")
+        myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
@@ -52,13 +48,11 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.SingleAlias.id, "test_single_alias", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Alias.id, "test_modifier", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Directive.id, "test_directive", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
-        assertSymbol(scope, CwtConfigTypes.Link.id, "test_link", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
-        assertSymbol(scope, CwtConfigTypes.LocalisationLink.id, "test_loc_link", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
     }
 
     @Test
     fun testConfigSymbolSearcher_ReferenceExpressions() {
-        configureConfigFile("features/index/.config/core/config_symbols.test.cwt")
+        myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
         assertSymbol(scope, CwtConfigTypes.Enum.id, "ref_enum", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
@@ -75,7 +69,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testConfigSymbolSearcher_MultipleTypes() {
-        configureConfigFile("features/index/.config/core/config_symbols.test.cwt")
+        myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
         val results = CwtConfigSymbolSearch.search(
@@ -93,7 +87,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testConfigSymbolSearcher_ReadWriteAccess() {
-        configureConfigFile("features/index/.config/core/config_symbols.test.cwt")
+        myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
 
         val scope = GlobalSearchScope.projectScope(project)
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)

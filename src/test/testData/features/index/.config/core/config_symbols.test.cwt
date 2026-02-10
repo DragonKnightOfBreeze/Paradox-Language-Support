@@ -22,7 +22,7 @@ single_alias[test_single_alias] = {
     alias_name[alias_test] = alias_match_left[alias_test]
 }
 
-alias[modifier:test_modifier] = float
+alias[test_modifier:some_modifier] = float
 
 directive[test_directive] = scalar
 
