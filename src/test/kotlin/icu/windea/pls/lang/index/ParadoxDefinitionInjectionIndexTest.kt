@@ -38,6 +38,10 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    private fun Collection<ParadoxDefinitionInjectionIndexInfo>.sorted(): List<ParadoxDefinitionInjectionIndexInfo> {
+        return sortedWith(compareBy({ it.type }, { it.target }, { it.mode }))
+    }
+
     @Test
     fun testDefinitionInjectionIndex_Basic() {
         // https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/blob/master/config/common/ai_strategies.cwt
@@ -85,8 +89,8 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         val nameKey1 = PlsIndexUtil.createNameKey("tome_of_flames")
         val nameTypeKey1 = PlsIndexUtil.createNameTypeKey("tome_of_flames", "arcane_tome")
 
-        Assert.assertEquals(expectedInfos.sortedWith(compareBy({ it.mode }, { it.type })), fileData[allKey])
-        Assert.assertEquals(expectedInfos.sortedWith(compareBy({ it.mode }, { it.type })), fileData[typeKey])
+        Assert.assertEquals(expectedInfos.sorted(), fileData[allKey].orEmpty().sorted())
+        Assert.assertEquals(expectedInfos.sorted(), fileData[typeKey].orEmpty().sorted())
         Assert.assertEquals(listOf(expectedInfos[0]), fileData[nameKey1])
         Assert.assertEquals(listOf(expectedInfos[0]), fileData[nameTypeKey1])
 

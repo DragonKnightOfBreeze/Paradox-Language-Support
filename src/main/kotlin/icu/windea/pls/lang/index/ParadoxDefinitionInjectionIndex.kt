@@ -41,7 +41,7 @@ import java.io.DataOutput
  * 定义注入的索引。
  */
 class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>, ParadoxDefinitionInjectionIndexInfo>() {
-    private val compressComparator = compareBy<ParadoxDefinitionInjectionIndexInfo>({ it.mode }, { it.type })
+    private val compressComparator = compareBy<ParadoxDefinitionInjectionIndexInfo>({ it.type }, { it.mode })
 
     override fun getName() = PlsIndexKeys.DefinitionInjection
 

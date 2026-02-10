@@ -37,24 +37,27 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
-    private fun configureVic3ScriptFile(relPath: String, testDataPath: String) {
+    private fun configureScriptFile(relPath: String, testDataPath: String) {
         markFileInfo(ParadoxGameType.Vic3, relPath)
         myFixture.configureByFile(testDataPath)
+    }
+
+    private fun Collection<ParadoxDefinitionInjectionIndexInfo>.sorted(): List<ParadoxDefinitionInjectionIndexInfo> {
+        return sortedWith(compareBy({ it.type }, { it.target }, { it.mode }))
     }
 
     @Test
     fun testDefinitionInjectionSearcher_All() {
         // Arrange
-        configureVic3ScriptFile("common/ai_strategies/00_default.txt", "features/index/common/ai_strategies/00_default.txt")
-        configureVic3ScriptFile("common/ai_strategies/01_inject.txt", "features/index/common/ai_strategies/01_inject.txt")
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
-        configureVic3ScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
+        configureScriptFile("common/ai_strategies/00_default.txt", "features/index/common/ai_strategies/00_default.txt")
+        configureScriptFile("common/ai_strategies/01_inject.txt", "features/index/common/ai_strategies/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, null, null, selector).findAll()
-            .sortedWith(compareBy({ it.target }, { it.type }, { it.mode }))
 
         // Assert
         Assert.assertEquals(6, results.size)
@@ -69,30 +72,27 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionSearcher_ByTargetAcrossTypes() {
         // Arrange
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
-        configureVic3ScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, "shared_name", null, selector).findAll()
-            .sortedWith(compareBy({ it.type }, { it.mode }))
-
         // Assert
         Assert.assertEquals(2, results.size)
-        Assert.assertEquals(listOf("academy_spell", "arcane_tome"), results.map { it.type })
+        Assert.assertEquals(listOf("academy_spell", "arcane_tome"), results.sorted().map { it.type })
     }
 
     @Test
     fun testDefinitionInjectionSearcher_ByType() {
         // Arrange
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, null, "arcane_tome", selector).findAll()
-            .sortedWith(compareBy({ it.target }, { it.mode }))
 
         // Assert
         Assert.assertEquals(3, results.size)
@@ -102,7 +102,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionSearcher_ByTargetAndType() {
         // Arrange
-        configureVic3ScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
+        configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
@@ -120,7 +120,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionSearcher_ByMode_CaseInsensitive() {
         // Arrange
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
@@ -135,7 +135,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionSearcher_SearchElement() {
         // Arrange
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(GlobalSearchScope.projectScope(project))
 
@@ -150,9 +150,9 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionSearcher_WithFileScope() {
         // Arrange
-        configureVic3ScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
+        configureScriptFile("common/arcane_tomes/01_inject.txt", "features/index/common/arcane_tomes/01_inject.txt")
         val arcaneFile = myFixture.file.virtualFile
-        configureVic3ScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
+        configureScriptFile("common/academy_spells/01_inject.txt", "features/index/common/academy_spells/01_inject.txt")
 
         val selector = selector(project, myFixture.file).definitionInjection()
             .withSearchScope(GlobalSearchScope.fileScope(project, arcaneFile))

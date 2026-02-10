@@ -1,0 +1,11 @@
+tome_of_flames = {
+    tags = {
+        fire
+    }
+}
+
+tome_of_ice = {
+    tags = {
+        ice
+    }
+}

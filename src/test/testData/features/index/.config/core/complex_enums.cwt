@@ -1,0 +1,42 @@
+enums = {
+    complex_enum[spell_school] = {
+        path = "common/spell_schools"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+    complex_enum[tome_tag] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        name = {
+            scalar = {
+                tags = {
+                    enum_name
+                }
+            }
+        }
+    }
+
+    ## case_insensitive
+    complex_enum[whispered_word] = {
+        path = "common/whispered_words"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+
+    ## per_definition
+    complex_enum[ritual_phrase] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        name = {
+            scalar = {
+                keyword = enum_name
+            }
+        }
+    }
+}

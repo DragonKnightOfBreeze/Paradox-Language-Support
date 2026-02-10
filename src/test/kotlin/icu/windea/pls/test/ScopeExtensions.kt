@@ -28,10 +28,10 @@ fun markConfigDirectory(relPath: String) {
 
 context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-    val servconfigGroupService = CwtConfigGroupService.getInstance(project)
-    val configGroups = servconfigGroupService.getConfigGroups().values
+    val configGroupService = CwtConfigGroupService.getInstance(project)
+    val configGroups = configGroupService.getConfigGroups().values
         .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-    runBlocking { servconfigGroupService.init(configGroups, project) }
+    runBlocking { configGroupService.init(configGroups, project) }
 }
 
 context(_: UsefulTestCase)
