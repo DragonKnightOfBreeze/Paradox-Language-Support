@@ -3,6 +3,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
@@ -53,6 +54,10 @@ dependencies {
 
         // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.8.0")
+
+        // plugin("Docker:253.29346.125")
+        // bundledPlugins("com.intellij.microservices.jvm")
+        // plugin("intellij.ktor:253.28294.251")
     }
 
     // kotlin test junit - https://kotlinlang.org
@@ -354,8 +359,10 @@ tasks {
     runIde {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
-        systemProperty("idea.log.debug.categories", "icu.windea.pls")
-        systemProperty("pls.is.debug", "true")
+        // systemProperty("idea.log.debug.categories", "icu.windea.pls")
+        // systemProperty("pls.is.debug", "true")
+        // systemProperty("pls.refresh.builtIn", "true")
+        jvmArgs("-Xmx4096m")
     }
     withType<Test> {
         useJUnit()
