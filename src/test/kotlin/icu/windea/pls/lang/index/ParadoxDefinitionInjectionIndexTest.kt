@@ -51,8 +51,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         markFileInfo(ParadoxGameType.Vic3, "common/ai_strategies/01_inject.txt")
         myFixture.configureByFile("features/index/common/ai_strategies/01_inject.txt")
-
-
+        
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val allData = FileBasedIndex.getInstance().getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createAllKey(), scope).flatten()

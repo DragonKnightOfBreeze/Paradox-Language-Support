@@ -5,3 +5,139 @@ tome_of_flames = {
 tome_of_ice = {
     rarity = 2
 }
+
+tome_of_rain = {
+    name = "tome_of_rain"
+}
+
+tome_for_list_enum = {
+    list_holder = {
+        list_enum_entry
+    }
+}
+
+tome_for_key_enum = {
+    key_enum_entry = key_enum_value
+}
+
+outer_block = {
+    inner_block = {
+        filter = ok
+        deep_enum_value
+    }
+}
+
+outer_holder = {
+    entry = {
+        id = prop_value_enum_value
+    }
+}
+
+group = {
+    kind = arcane
+    level = 2
+    sibling_enum_value
+}
+
+holder = {
+    key_block_enum_value = {
+        tag = ok
+    }
+}
+
+mix_root = {
+    mix_key = {
+        tag = ok
+    }
+    label = mix_value
+    mix_member
+}
+
+type_holder = {
+    tag = ok
+    count = 2
+    ratio = 1.5
+    enabled = yes
+    mode = fast
+    type_combo_value
+}
+
+multi_root = {
+    multi_first
+    multi_second
+}
+
+value_mix_root = {
+    id = value_mix_entry
+    count = 3
+    ratio = 2.5
+    enabled = no
+}
+
+ci_root = {
+    token = {
+        Ci_Entry
+    }
+}
+
+outer_level = {
+    outer_entry
+    inner_level = {
+        inner_entry
+    }
+}
+
+cross_root = {
+    cross_outer
+    inner = {
+        code = cross_inner
+        flag = yes
+    }
+}
+
+ci_multi_root = {
+    tag = ok
+    count = 5
+    Ci_Multi_Outer
+    inner = {
+        Ci_Multi_Inner
+    }
+}
+
+level_a = {
+    level_a_entry
+    level_b = {
+        level_b_entry
+        level_c = {
+            level_c_entry
+        }
+    }
+}
+
+pvb_root = {
+    mode = fast
+    pvb_key = {
+        flag = yes
+        label = pvb_label
+    }
+    pvb_member
+}
+
+ci_deep_root = {
+    outer = {
+        Ci_Deep_Outer
+        middle = {
+            Ci_Deep_Middle
+            inner = {
+                Ci_Deep_Inner
+            }
+        }
+    }
+}
+
+repeat_root = {
+    count = 7
+    repeat_first
+    ratio = 3.5
+    repeat_second
+}
