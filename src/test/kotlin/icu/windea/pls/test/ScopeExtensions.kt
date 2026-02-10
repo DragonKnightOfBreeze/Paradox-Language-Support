@@ -13,20 +13,6 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 
 context(_: UsefulTestCase)
-fun markRootDirectory(relPath: String) {
-    val testDataPath = "src/test/testData".toPathOrNull() ?: return
-    val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markRootDirectory(relPath, path)
-}
-
-context(_: UsefulTestCase)
-fun markConfigDirectory(relPath: String) {
-    val testDataPath = "src/test/testData".toPathOrNull() ?: return
-    val path = testDataPath.resolve(relPath)
-    ParadoxAnalysisInjector.markConfigDirectory(relPath, path)
-}
-
-context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
     val configGroupService = CwtConfigGroupService.getInstance(project)
     val configGroups = configGroupService.getConfigGroups().values
@@ -45,7 +31,26 @@ fun markIntegrationTest() {
 
 context(_: UsefulTestCase)
 fun clearIntegrationTest() {
+    ParadoxAnalysisInjector.configureUseDefaultFileExtensions(false)
+    ParadoxAnalysisInjector.configureUseGameTypeInference(false)
+    ParadoxAnalysisInjector.clearMarkedRootInfo()
     ParadoxAnalysisInjector.clearMarkedFileInfo()
+    ParadoxAnalysisInjector.clearMarkedRootDirectory()
+    ParadoxAnalysisInjector.clearMarkedConfigDirectory()
+}
+
+context(_: UsefulTestCase)
+fun markRootDirectory(relPath: String) {
+    val testDataPath = "src/test/testData".toPathOrNull() ?: return
+    val path = testDataPath.resolve(relPath)
+    ParadoxAnalysisInjector.markRootDirectory(relPath, path)
+}
+
+context(_: UsefulTestCase)
+fun markConfigDirectory(relPath: String) {
+    val testDataPath = "src/test/testData".toPathOrNull() ?: return
+    val path = testDataPath.resolve(relPath)
+    ParadoxAnalysisInjector.markConfigDirectory(relPath, path)
 }
 
 context(_: UsefulTestCase)
