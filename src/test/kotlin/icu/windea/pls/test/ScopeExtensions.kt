@@ -31,7 +31,10 @@ fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
     val configGroupService = CwtConfigGroupService.getInstance(project)
     val configGroups = configGroupService.getConfigGroups().values
         .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
-    runBlocking { configGroupService.init(configGroups, project) }
+    runBlocking {
+        configGroupService.refreshBuiltInConfigFiles(project)
+        configGroupService.init(configGroups, project)
+    }
 }
 
 context(_: UsefulTestCase)
