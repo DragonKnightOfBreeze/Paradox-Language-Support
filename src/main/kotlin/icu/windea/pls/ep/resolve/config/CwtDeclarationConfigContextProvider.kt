@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
  *
  * 说明：
  * - 通过 [CwtDeclarationConfigContext] 可以得到声明规则对应的处理后的顶级成员规则。
- * - 最终得到的顶级成员规则可用于确定定义声明的结构，另外也会作为定义的顶级上下文规则。
+ * - 最终得到的顶级成员规则可以直接用于确定定义声明的结构，另外也会作为定义的顶级上下文规则。
  *
  * @see CwtConfigContext
  * @see CwtDeclarationConfigContext

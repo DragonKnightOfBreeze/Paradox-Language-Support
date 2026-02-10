@@ -48,7 +48,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * ```
  *
  * @property name 名称。
- * @property configForDeclaration 可直接用于检查定义声明的结构，经过处理后的属性规则。
+ * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  * @property subtypesUsedInDeclaration 其中的子类型表达式（[ParadoxDefinitionSubtypeExpression]）中使用到的子类型的集合。
  *
  * @see CwtTypeConfig

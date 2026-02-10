@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * @property name 名称。
  * @property hint 额外提示信息（可选）。
- * @property configForDeclaration 可直接用于检查定义声明的结构，经过处理后的属性规则（如果重载了声明规则）。
+ * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  */
 interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey

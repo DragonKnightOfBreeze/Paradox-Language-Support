@@ -136,10 +136,10 @@ object ParadoxDefinitionInjectionManager {
             val matchContext = CwtTypeConfigMatchContext(configGroup, path)
             val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return@run
             val type = typeConfig.name
-            return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
+            return ParadoxDefinitionInjectionInfo(mode, target, type, emptyList(), modeConfig, typeConfig, emptyList())
         }
         // 兼容目标为空或者目标类型无法解析的情况
-        return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
+        return ParadoxDefinitionInjectionInfo(mode, target, null, emptyList(), modeConfig, null, emptyList())
     }
 
     @Suppress("unused")
@@ -149,13 +149,6 @@ object ParadoxDefinitionInjectionManager {
 
     fun getType(element: ParadoxScriptProperty): String? {
         return element.definitionInjectionInfo?.type
-    }
-
-    fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
-        if (definitionInfo.name.isEmpty()) return false
-        if (definitionInfo.type.isEmpty()) return false
-        if (!ParadoxConfigMatchService.canApplyForInjection(definitionInfo.typeConfig)) return false // 排除不期望匹配的类型规则
-        return true
     }
 
     fun getDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
@@ -178,5 +171,12 @@ object ParadoxDefinitionInjectionManager {
         val typeExpression = definitionInjectionInfo.type
         val selector = selector(definitionInjectionInfo.project, context).definition()
         return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
+    }
+
+    fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
+        if (definitionInfo.name.isEmpty()) return false
+        if (definitionInfo.type.isEmpty()) return false
+        if (!ParadoxConfigMatchService.canApplyForInjection(definitionInfo.typeConfig)) return false // 排除不期望匹配的类型规则
+        return true
     }
 }
