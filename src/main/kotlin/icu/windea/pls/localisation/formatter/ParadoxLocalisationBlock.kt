@@ -21,6 +21,7 @@ class ParadoxLocalisationBlock(
     private val settings: CodeStyleSettings
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
     companion object {
+        private val MEMBERS = TokenSet.create(PROPERTY, COMMENT)
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(PROPERTY_LIST)
         private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(PROPERTY_LIST)
@@ -34,8 +35,9 @@ class ParadoxLocalisationBlock(
         }
 
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-            // 属性数字和属性值之间有一个空格，冒号和属性值之间也有
+            // 属性/注释之间需要有空格或者换行，属性数字和属性值之间有一个空格，冒号和属性值之间也有
             return SpacingBuilder(settings, ParadoxLocalisationLanguage)
+                .between(MEMBERS, MEMBERS).spaces(1)
                 .between(COLON, PROPERTY_VALUE).spaces(1)
                 .between(PROPERTY_NUMBER, PROPERTY_VALUE).spaces(1)
         }
