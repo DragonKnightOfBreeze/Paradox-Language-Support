@@ -9,6 +9,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -25,7 +26,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
         if (SearchScope.isEmptyScope(scope)) return
 
         val variable = queryParameters.variable
