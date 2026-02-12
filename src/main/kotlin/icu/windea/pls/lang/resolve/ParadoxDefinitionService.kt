@@ -4,6 +4,7 @@ import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -12,6 +13,7 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
@@ -22,11 +24,68 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 
 object ParadoxDefinitionService {
+    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
+        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
+
+        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
+        if (fromInherit != null) return fromInherit
+        return null
+    }
+
+    /**
+     * @see ParadoxDefinitionInheritSupport.getSuperDefinition
+     */
+    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
+        val gameType = definitionInfo.gameType
+        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.getSuperDefinition(definitionInfo)
+        }
+    }
+
+    /**
+     * @see ParadoxDefinitionInheritSupport.getModificationTracker
+     */
+    fun getModificationTrackerFromInherit(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        val gameType = definitionInfo.gameType
+        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.getModificationTracker(definitionInfo)
+        }
+    }
+
+    /**
+     * @see ParadoxDefinitionInheritSupport.processSubtypeConfigs
+     */
+    fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
+        val gameType = definitionInfo.gameType
+        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@p true
+            ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
+        }
+    }
+
+    /**
+     * @see ParadoxDefinitionModifierProvider.getModifierCategories
+     */
+    fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
+        val gameType = definitionInfo.gameType
+        return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.getModifierCategories(definitionInfo)
+        }
+    }
+
     fun resolveName(element: ParadoxDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
         // NOTE 2.0.6 inline logic is not applied here
         // `name_from_file = yes` - use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property `starts_with`)
@@ -87,7 +146,7 @@ object ParadoxDefinitionService {
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
-    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
+    fun resolveRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
         val mergedConfigs = definitionInfo.typeConfig.localisation?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
         val result = buildList(mergedConfigs.size) {
             for (config in mergedConfigs) {
@@ -99,7 +158,7 @@ object ParadoxDefinitionService {
         return result
     }
 
-    fun resolveRelatedImages(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
+    fun resolveRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
         val mergedConfigs = definitionInfo.typeConfig.images?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
         val result = buildList(mergedConfigs.size) {
             for (config in mergedConfigs) {
@@ -111,7 +170,7 @@ object ParadoxDefinitionService {
         return result
     }
 
-    fun resolveModifiers(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.ModifierInfo> {
+    fun resolveModifierInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.ModifierInfo> {
         val result = buildList {
             definitionInfo.configGroup.type2ModifiersMap.get(definitionInfo.type)?.forEach { (_, v) ->
                 this += ParadoxDefinitionInfo.ModifierInfo(CwtConfigExpressionManager.extract(v.template, definitionInfo.name), v)
@@ -125,56 +184,66 @@ object ParadoxDefinitionService {
         return result
     }
 
-    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
-        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
-
-        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
-        if (fromInherit != null) return fromInherit
+    fun resolvePrimaryLocalisationKey(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): String? {
+        val primaryLocalisations = definitionInfo.primaryLocalisations
+        if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        for (primaryLocalisation in primaryLocalisations) {
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val key = resolveResult?.name ?: continue
+            return key
+        }
         return null
     }
 
-    /**
-     * @see ParadoxDefinitionInheritSupport.getSuperDefinition
-     */
-    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement? {
-        val gameType = definitionInfo.gameType
-        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getSuperDefinition(definitionInfo)
+    fun resolvePrimaryLocalisation(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+        val primaryLocalisations = definitionInfo.primaryLocalisations
+        if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        for (primaryLocalisation in primaryLocalisations) {
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val localisation = resolveResult?.element ?: continue
+            return localisation
         }
+        return null
     }
 
-    /**
-     * @see ParadoxDefinitionInheritSupport.getModificationTracker
-     */
-    fun getModificationTrackerFromInherit(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        val gameType = definitionInfo.gameType
-        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getModificationTracker(definitionInfo)
+    fun resolvePrimaryLocalisations(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
+        val primaryLocalisations = definitionInfo.primaryLocalisations
+        if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
+        val result = mutableSetOf<ParadoxLocalisationProperty>()
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        for (primaryLocalisation in primaryLocalisations) {
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val localisations = resolveResult?.elements ?: continue
+            result.addAll(localisations)
         }
+        return result
     }
 
-    /**
-     * @see ParadoxDefinitionInheritSupport.processSubtypeConfigs
-     */
-    fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
-        val gameType = definitionInfo.gameType
-        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@p true
-            ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
+    fun resolvePrimaryImage(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): PsiFile? {
+        val primaryImages = definitionInfo.primaryImages
+        if (primaryImages.isEmpty()) return null // 没有或者规则不完善
+        for (primaryImage in primaryImages) {
+            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            val file = resolved?.element?.castOrNull<PsiFile>()
+            if (file == null) continue
+            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            return file
         }
+        return null
     }
 
-    /**
-     * @see ParadoxDefinitionModifierProvider.getModifierCategories
-     */
-    fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
-        val gameType = definitionInfo.gameType
-        return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getModifierCategories(definitionInfo)
+    fun resolvePrimaryImages(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): Set<PsiFile> {
+        val primaryImages = definitionInfo.primaryImages
+        if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
+        val result = mutableSetOf<PsiFile>()
+        for (primaryImage in primaryImages) {
+            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            val files = resolved?.elements?.filterIsInstance<PsiFile>() ?: continue
+            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            result.addAll(files)
         }
+        return result
     }
 }

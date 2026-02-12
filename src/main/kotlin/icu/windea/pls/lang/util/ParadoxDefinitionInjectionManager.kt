@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
@@ -15,9 +14,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
@@ -32,6 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
+@Suppress("unused")
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
@@ -100,49 +97,6 @@ object ParadoxDefinitionInjectionManager {
         return mode + ":" + target.orEmpty()
     }
 
-    fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
-        // mode must exist
-        if (getModeFromExpression(element.name).isNullOrEmpty()) return null
-        // get from cache
-        return doGetInfoFromCache(element)
-    }
-
-    private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
-            ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = runReadActionSmartly { doGetInfo(element, file) }
-            val tracker = ParadoxModificationTrackers.ScriptFile
-            value.withDependencyItems(tracker)
-        }
-    }
-
-    private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
-        val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
-        val expression = element.name
-        if (!isMatched(expression, gameType)) return null
-        if (!isAvailable(element)) return null
-        if (expression.isParameterized()) return null // 忽略带参数的情况
-        val mode = getModeFromExpression(expression)
-        if (mode.isNullOrEmpty()) return null
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
-        val config = configGroup.directivesModel.definitionInjection ?: return null
-        val modeConfig = config.modeConfigs[mode] ?: return null
-        val target = getTargetFromExpression(expression)
-        run {
-            if (target.isNullOrEmpty()) return@run
-            val path = fileInfo.path
-            val matchContext = CwtTypeConfigMatchContext(configGroup, path)
-            val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return@run
-            val type = typeConfig.name
-            return ParadoxDefinitionInjectionInfo(mode, target, type, emptyList(), modeConfig, typeConfig, emptyList())
-        }
-        // 兼容目标为空或者目标类型无法解析的情况
-        return ParadoxDefinitionInjectionInfo(mode, target, null, emptyList(), modeConfig, null, emptyList())
-    }
-
-    @Suppress("unused")
     fun getTarget(element: ParadoxScriptProperty): String? {
         return element.definitionInjectionInfo?.target
     }
@@ -151,7 +105,20 @@ object ParadoxDefinitionInjectionManager {
         return element.definitionInjectionInfo?.type
     }
 
-    fun getDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
+    fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
+        // mode must exist
+        if (getModeFromExpression(element.name).isNullOrEmpty()) return null
+        // from cache (invalidated on ScriptFileTracker)
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
+            ProgressManager.checkCanceled()
+            val file = element.containingFile
+            val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveInfo(element, file) }
+            val tracker = ParadoxModificationTrackers.ScriptFile
+            value.withDependencyItems(tracker)
+        }
+    }
+
+    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: PsiElement): CwtPropertyConfig? {
         return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo)
     }
 

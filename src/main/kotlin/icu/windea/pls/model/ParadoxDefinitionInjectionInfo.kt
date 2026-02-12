@@ -1,6 +1,8 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -25,6 +27,10 @@ data class ParadoxDefinitionInjectionInfo(
     val declarationConfig: CwtDeclarationConfig? get() = type?.orNull()?.let { configGroup.declarations.get(it) }
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
+
+    fun getDeclaration(element: PsiElement): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, element)
+    fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)
+    fun isTargetExist(context: Any? = null): Boolean = ParadoxDefinitionInjectionManager.isTargetExist(this, context)
 
     override fun toString(): String {
         return "ParadoxDefinitionInjectionInfo(mode=$mode, target=$target, type=$type, subtypes=$subtypes, gameType=$gameType)"

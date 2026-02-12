@@ -112,17 +112,17 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedLocalisations(this)
+        val result = ParadoxDefinitionService.resolveRelatedLocalisationInfos(this)
         return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetImages(): List<RelatedImageInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedImages(this)
+        val result = ParadoxDefinitionService.resolveRelatedImageInfos(this)
         return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetModifiers(): List<ModifierInfo> {
-        val result = ParadoxDefinitionService.resolveModifiers(this)
+        val result = ParadoxDefinitionService.resolveModifierInfos(this)
         return result.optimized() // optimized to optimize memory
     }
 

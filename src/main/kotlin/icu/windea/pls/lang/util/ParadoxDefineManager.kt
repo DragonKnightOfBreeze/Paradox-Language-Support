@@ -56,6 +56,12 @@ object ParadoxDefineManager {
         return if (variable == null) namespace else "$namespace.$variable"
     }
 
+    fun getExpression(element: ParadoxScriptProperty): String? {
+        val stub = runReadActionSmartly { getStub(element) }
+        stub?.let { return getExpression(stub.namespace, stub.variable) }
+        return getInfo(element)?.expression
+    }
+
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
         // get from cache
         return doGetInfoFromCache(element)
@@ -99,12 +105,6 @@ object ParadoxDefineManager {
             return ParadoxDefineInfo(namespace, variable, gameType)
         }
         return null
-    }
-
-    fun getExpression(element: ParadoxScriptProperty): String? {
-        val stub = runReadActionSmartly { getStub(element) }
-        stub?.let { return getExpression(stub.namespace, stub.variable) }
-        return getInfo(element)?.expression
     }
 
     fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.Define? {
