@@ -3,7 +3,6 @@ package icu.windea.pls.model.index
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -27,5 +26,5 @@ data class ParadoxComplexEnumValueIndexInfo(
 
     val definitionElement: ParadoxScriptProperty?
         get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, definitionElementOffset) }
-            ?.takeIf { ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it) }
+            // ?.takeIf { ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it) }
 }
