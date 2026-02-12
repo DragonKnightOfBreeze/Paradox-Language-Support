@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxRecursionManager {
     // 由于需要处理引用传递的情况，考虑性能问题，目前仅检测第一个递归引用
-    // 这里需要避免StackOverflowError
+    // 这里需要避免 StackOverflowError
 
     fun isRecursiveScriptedVariable(
         element: ParadoxScriptScriptedVariable,

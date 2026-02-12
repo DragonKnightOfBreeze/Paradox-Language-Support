@@ -40,7 +40,7 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
-    fun createString(project: Project, text: String): ParadoxLocalisationText {
+    fun createText(project: Project, text: String): ParadoxLocalisationText {
         return createPropertyValue(project, text).tokenElement
             ?.findChild<ParadoxLocalisationText>() ?: throw IncorrectOperationException()
     }

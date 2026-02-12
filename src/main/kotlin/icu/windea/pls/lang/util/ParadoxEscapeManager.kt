@@ -6,7 +6,6 @@ import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxEscapeManager {
-
     fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
         var isEscape = false
         for (c in value) {
