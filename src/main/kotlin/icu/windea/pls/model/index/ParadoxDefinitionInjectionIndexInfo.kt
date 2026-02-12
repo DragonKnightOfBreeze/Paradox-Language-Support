@@ -7,6 +7,9 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
+/**
+ * @see icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex
+ */
 data class ParadoxDefinitionInjectionIndexInfo(
     val mode: String,
     val target: String,

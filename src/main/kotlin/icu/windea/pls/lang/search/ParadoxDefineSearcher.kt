@@ -9,8 +9,8 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -49,7 +49,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
                         consumer.process(element)
                     }
                 } else {
-                    val key = PlsIndexUtil.createDefineVariableKey(namespace, variable)
+                    val key = ParadoxDefineVariableKey(namespace, variable)
                     PlsIndexService.processElements(PlsIndexKeys.DefineVariable, key, project, scope) { element ->
                         consumer.process(element)
                     }

@@ -13,8 +13,8 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ParadoxFilePathInfo
 import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.index.ParadoxFilePathData
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
@@ -22,14 +22,14 @@ import java.util.*
 /**
  * 文件的路径信息的索引。
  *
- * @see ParadoxFilePathInfo
+ * @see ParadoxFilePathData
  */
-class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
+class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathData>() {
     private val inputFilter = IndexInputFilter { it.fileInfo != null }
-    private val indexer = DataIndexer<String, ParadoxFilePathInfo, FileContent> { indexData(it) }
+    private val indexer = DataIndexer<String, ParadoxFilePathData, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
-    private val valueExternalizer = object : DataExternalizer<ParadoxFilePathInfo> {
-        override fun save(storage: DataOutput, value: ParadoxFilePathInfo) = saveValue(storage, value)
+    private val valueExternalizer = object : DataExternalizer<ParadoxFilePathData> {
+        override fun save(storage: DataOutput, value: ParadoxFilePathData) = saveValue(storage, value)
         override fun read(storage: DataInput) = readValue(storage)
     }
 
@@ -49,7 +49,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
 
     override fun indexDirectories() = true
 
-    private fun indexData(fileContent: FileContent): Map<String, ParadoxFilePathInfo> {
+    private fun indexData(fileContent: FileContent): Map<String, ParadoxFilePathData> {
         // 这里索引的路径，使用相对于入口目录的路径
         val file = fileContent.file
         val fileInfo = file.fileInfo ?: return emptyMap()
@@ -57,20 +57,20 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         val directoryPath = fileInfo.path.parent
         val gameType = fileInfo.rootInfo.gameType
         val included = PlsIndexUtil.includeForFilePathIndex(file)
-        val info = ParadoxFilePathInfo(directoryPath, included, gameType)
-        return Collections.singletonMap(path, info)
+        val data = ParadoxFilePathData(directoryPath, included, gameType)
+        return Collections.singletonMap(path, data)
     }
 
-    private fun saveValue(storage: DataOutput, value: ParadoxFilePathInfo) {
+    private fun saveValue(storage: DataOutput, value: ParadoxFilePathData) {
         storage.writeUTFFast(value.directory)
         storage.writeByte(value.gameType.optimized(OptimizerRegistry.forGameType()))
         storage.writeBoolean(value.included)
     }
 
-    private fun readValue(storage: DataInput): ParadoxFilePathInfo {
+    private fun readValue(storage: DataInput): ParadoxFilePathData {
         val directory = storage.readUTFFast()
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         val included = storage.readBoolean()
-        return ParadoxFilePathInfo(directory, included, gameType)
+        return ParadoxFilePathData(directory, included, gameType)
     }
 }

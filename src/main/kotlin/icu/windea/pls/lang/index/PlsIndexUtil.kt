@@ -6,8 +6,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.constants.PlsConstants
 
 object PlsIndexUtil {
-    fun createDefineVariableKey(namespace: String, variable: String) = ParadoxDefineVariableIndex.Key(namespace, variable)
-
     fun createLazyKey() = "__lazy__"
     fun createAllKey() = "__all__"
     fun createNameKey(type: String) = "name:$type"

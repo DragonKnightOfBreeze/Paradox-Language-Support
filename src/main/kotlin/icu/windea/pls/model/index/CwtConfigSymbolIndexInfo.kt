@@ -5,6 +5,9 @@ import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.psi.CwtPsiFileManager
 import icu.windea.pls.model.ParadoxGameType
 
+/**
+ * @see icu.windea.pls.lang.index.CwtConfigIndexInfoAwareFileBasedIndex
+ */
 data class CwtConfigSymbolIndexInfo(
     val name: String,
     val type: String,

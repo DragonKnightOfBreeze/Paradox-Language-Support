@@ -24,7 +24,7 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 各种索引信息的文件索引基类。
+ * 各种索引信息的文件索引的基类。
  */
 sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndexExtension<String, V>() {
     private val inputFilter = IndexInputFilter { filterFile(it) }

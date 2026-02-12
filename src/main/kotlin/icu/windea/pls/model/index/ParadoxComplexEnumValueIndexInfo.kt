@@ -9,6 +9,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * @property definitionElementOffset 所属的定义的 PSI 偏移。仅对应的 [CwtComplexEnumConfig] 附有 `## per_definition` 时才有值。
+ *
+ * @see icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
  */
 data class ParadoxComplexEnumValueIndexInfo(
     val name: String,

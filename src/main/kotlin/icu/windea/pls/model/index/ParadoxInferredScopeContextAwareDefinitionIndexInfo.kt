@@ -5,6 +5,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+/**
+ * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+ * @see icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport
+ */
 data class ParadoxInferredScopeContextAwareDefinitionIndexInfo(
     val definitionName: String,
     val typeExpression: String,

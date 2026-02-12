@@ -4,6 +4,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+/**
+ * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+ * @see icu.windea.pls.ep.index.ParadoxOnActionInEventIndexInfoSupport
+ */
 data class ParadoxOnActionInEventIndexInfo(
     val onActionName: String,
     val containingEventName: String,
