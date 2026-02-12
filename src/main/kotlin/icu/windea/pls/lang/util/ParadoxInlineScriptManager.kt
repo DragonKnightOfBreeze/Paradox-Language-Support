@@ -1,33 +1,23 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.lang.resolve.inlineScriptHasConflict
-import icu.windea.pls.lang.resolve.inlineScriptHasRecursion
+import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
@@ -44,6 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 
+@Suppress("unused")
 object ParadoxInlineScriptManager {
     const val inlineScriptKey = "inline_script"
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
@@ -151,59 +142,38 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 得到指定的内联脚本表达式对应的内联脚本的推断的规则上下文。
+     * 尝试推断得到内联脚本的上下文规则。基于用法和扩展规则。
      *
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        if (!PlsSettings.getInstance().state.inference.configContextForInlineScripts) return emptyList()
-        return withRecursionGuard {
-            withRecursionCheck(expression) {
-                context.inlineScriptHasConflict = false
-                context.inlineScriptHasRecursion = false
-                doGetInferredContextConfigs(expression, contextElement, context, options)
-            }
-        } ?: run {
-            context.inlineScriptHasRecursion = true
-            emptyList()
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForInlineScripts) return emptyList()
+        val fast = inferenceSettings.configContextForInlineScriptsFast
+
+        if (inferenceSettings.configContextForInlineScriptsFromConfig) {
+            val fromConfig = ParadoxInlineScriptService.getInferredContextConfigsFromConfig(expression, contextElement, context, options, fast)
+            if (fromConfig.isNotEmpty()) return fromConfig
         }
-    }
 
-    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
-        val fromConfig = doGetInferredContextConfigsFromConfig(expression, contextElement, context, options)
-        if (fromConfig.isNotEmpty()) return fromConfig
-
-        return doGetInferredContextConfigsFromUsages(expression, contextElement, context, options)
-    }
-
-    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
-        val configGroup = context.configGroup
-        val config = configGroup.extendedInlineScripts.findByPattern(expression, contextElement, configGroup, options) ?: return emptyList()
-        return config.getContextConfigs()
-    }
-
-    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
-        // infer & merge
-        val fastInference = PlsSettings.getInstance().state.inference.configContextForInlineScriptsFast
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        val project = context.configGroup.project
-        val selector = selector(project, contextElement).inlineScriptUsage()
-        ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
-            if (!isMatched(p.name)) return@p true // 再次确认
-            val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
-            val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
-            val usageConfigs = usageConfigContext.getConfigs(options).orNull()
-            if (fastInference && usageConfigs.isNotNullOrEmpty()) {
-                result.set(usageConfigs)
-                return@p false
-            }
-            // merge
-            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                if (it) return@also
-                context.inlineScriptHasConflict = true
-                result.set(null)
-            }
+        if (inferenceSettings.configContextForInlineScriptsFromUsages) {
+            val fromUsages = ParadoxInlineScriptService.getInferredContextConfigsFromUsages(expression, contextElement, context, options, fast)
+            if (fromUsages.isNotEmpty()) return fromUsages
         }
-        return result.get().orEmpty()
+
+        return emptyList()
+    }
+
+    /**
+     * 尝试推断得到内联脚本的上下文规则。基于扩展规则。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     */
+    fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForInlineScripts) return emptyList()
+        val fast = inferenceSettings.configContextForInlineScriptsFast
+
+        return ParadoxInlineScriptService.getInferredContextConfigsFromConfig(expression, contextElement, context, options, fast)
     }
 }

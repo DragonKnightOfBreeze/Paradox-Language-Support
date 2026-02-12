@@ -284,17 +284,19 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
-     *
-     * @property injectionForParameterValue 是否在必要时为参数值进行自动语言注入（注入为脚本片段）。
-     * @property injectionForLocalisationText 是否在必要时为字符串字面量进行自动语言注入（注入为本地化文本）。
-     * @property configContextForParameters 是否推断参数值的规则上下文。
-     * @property configContextForParametersFast 推断参数的规则上下文时，是否进行快速推断。
+     * @property injectionForParameterValue 是否在必要时对参数值进行自动语言注入（作为脚本片段）。
+     * @property injectionForLocalisationText 是否在必要时对字符串字面量进行自动语言注入（作为本地化文本）。
+     * @property configContextForParameters 是否推断参数的规则上下文。
+     * @property configContextForParametersFast 推断参数的规则上下文时，是否仅使用第一个有效的推断结果。
+     * @property configContextForParametersFromUsages 推断参数的规则上下文时，是否基于用法。
+     * @property configContextForParametersFromConfig 推断参数的规则上下文时，是否基于扩展规则。
      * @property configContextForInlineScripts 是否推断内联脚本的规则上下文。
-     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否进行快速推断。
-     * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
-     * @property scopeContextForEvents 是否推断event的作用域上下文。
-     * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
+     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否仅使用第一个有效的推断结果。
+     * @property configContextForInlineScriptsFromUsages 推断参数的规则上下文时，是否基于用法。
+     * @property configContextForInlineScriptsFromConfig 推断参数的规则上下文时，是否基于扩展规则。
+     * @property scopeContext 是否推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。
+     * @property scopeContextForEvents 是否推断 `event` 的作用域上下文。
+     * @property scopeContextForOnActions 是否推断 `on_action` 的作用域上下文。
      */
     @Tag("inference")
     class InferenceState : BaseState() {
@@ -302,8 +304,12 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var injectionForLocalisationText by property(true)
         var configContextForParameters by property(true)
         var configContextForParametersFast by property(true)
+        var configContextForParametersFromUsages by property(true)
+        var configContextForParametersFromConfig by property(true)
         var configContextForInlineScripts by property(true)
         var configContextForInlineScriptsFast by property(true)
+        var configContextForInlineScriptsFromUsages by property(true)
+        var configContextForInlineScriptsFromConfig by property(true)
         var scopeContext by property(false)
         var scopeContextForEvents by property(false)
         var scopeContextForOnActions by property(false)

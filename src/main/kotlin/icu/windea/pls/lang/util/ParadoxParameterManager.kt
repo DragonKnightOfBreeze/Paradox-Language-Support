@@ -6,7 +6,6 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -17,26 +16,19 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
-import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
@@ -45,7 +37,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -56,8 +47,6 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -65,7 +54,6 @@ import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpressio
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
@@ -378,91 +366,57 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试推断得到参数的类型（仅用于显示）。
+     * 尝试推断得到参数的上下文规则。基于用法和扩展规则。
+     */
+    fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForParameters) return emptyList()
+        val fast = inferenceSettings.configContextForParametersFast
+
+        if (inferenceSettings.configContextForParametersFromConfig) {
+            val fromConfig = ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
+            if (fromConfig.isNotEmpty()) return fromConfig
+        }
+
+        if (inferenceSettings.configContextForParametersFromUsages) {
+            val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
+            val fromUsages = parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
+                ProgressManager.checkCanceled()
+                ParadoxParameterService.getInferredContextConfigsFromUsages(parameterElement, fast)
+            }
+            if (fromUsages.isNotEmpty()) return fromUsages
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * 尝试推断得到参数的上下文规则。基于扩展规则。
+     */
+    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForParameters) return emptyList()
+        val fast = inferenceSettings.configContextForParametersFast
+
+        return ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
+    }
+
+    /**
+     * 尝试推断得到参数的类型。仅用于显示。
      */
     fun getInferredType(parameterElement: ParadoxParameterElement): String? {
         val contextConfigs = getInferredContextConfigs(parameterElement)
-        if (contextConfigs.isEmpty()) return null
-        val configs = contextConfigs.singleOrNull()?.configs
-        if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtType.Block }) return PlsBundle.message("complex")
-        return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
+        return ParadoxParameterService.getInferredType(contextConfigs)
     }
 
     /**
-     * 尝试推断得到参数对应的上下文规则。
+     * 尝试推断得到带参数的键对应的匹配的规则。
      */
-    fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
-        if (fromConfig.isNotEmpty()) return fromConfig
-
-        if (!PlsSettings.getInstance().state.inference.configContextForParameters) return emptyList()
-        val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
-            ProgressManager.checkCanceled()
-            withRecursionGuard {
-                withRecursionCheck(parameterElement) {
-                    doGetInferredContextConfigsFromUsages(parameterElement)
-                }
-            } ?: emptyList()
-        }
-    }
-
-    /**
-     * 尝试（从扩展的规则）推断得到参数对应的上下文规则。
-     */
-    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        return doGetInferredContextConfigsFromConfig(parameterElement)
-    }
-
-    private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
-        val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
-        return config.getContextConfigs(parameterElement)
-    }
-
-    private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        ParadoxParameterService.processContext(parameterElement, true) p@{ context ->
-            ProgressManager.checkCanceled()
-            val contextInfo = ParadoxParameterService.getContextInfo(context) ?: return@p true
-            val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo).orNull()
-            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
-        }
-        return result.get().orEmpty()
-    }
-
-    private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
-        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
-        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
-        if (parameterInfos.isNullOrEmpty()) return emptyList()
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        parameterInfos.process p@{ parameterInfo ->
-            ProgressManager.checkCanceled()
-            val contextConfigs = ParadoxParameterService.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
-        }
-        return result.get().orEmpty()
-    }
-
     fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
         val propertyKey = element.propertyKey
         val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
-        val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
-        if (configs.isNullOrEmpty()) return emptyList()
-        return configs.cast()
+        return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
     }
 }
