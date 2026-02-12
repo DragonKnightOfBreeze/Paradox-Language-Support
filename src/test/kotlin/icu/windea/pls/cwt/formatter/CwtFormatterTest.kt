@@ -69,7 +69,6 @@ class CwtFormatterTest : BasePlatformTestCase() {
     @Test
     fun testSpaceAroundPropertySeparator_notEqualSign() {
         getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = true
-        // 输入需要预留空格：词法分析器会将 `k!=v` 解析为键 `k!`、分隔符 `=`、值 `v`
         val before = "k  !=  v"
         val after = reformat(before)
         assertEquals("k != v", after)
@@ -78,9 +77,10 @@ class CwtFormatterTest : BasePlatformTestCase() {
     @Test
     fun testSpaceAroundPropertySeparator_notEqualSign_disabled() {
         getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = false
+        // `!=` 周围始终保留空格：移除空格会导致词法分析器将 `k!=v` 解析为键 `k!`、分隔符 `=`、值 `v`
         val before = "k != v"
         val after = reformat(before)
-        assertEquals("k!=v", after)
+        assertEquals("k != v", after)
     }
 
     @Test
@@ -93,10 +93,27 @@ class CwtFormatterTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testSpaceAroundPropertySeparator_doubleEqualSign_disabled() {
+        getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = false
+        // `==` 是 EQUAL_SIGN，可以安全移除空格
+        val before = "k == v"
+        val after = reformat(before)
+        assertEquals("k==v", after)
+    }
+
+    @Test
     fun testSpaceAroundPropertySeparator_diamondSign() {
         getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = true
-        // `<>` 和 `!=` 同为 NOT_EQUAL_SIGN，同样需要预留空格
         val before = "k  <>  v"
+        val after = reformat(before)
+        assertEquals("k <> v", after)
+    }
+
+    @Test
+    fun testSpaceAroundPropertySeparator_diamondSign_disabled() {
+        getCustomSettings().SPACE_AROUND_PROPERTY_SEPARATOR = false
+        // `<>` 周围始终保留空格：移除空格会导致 `k<>v` 被解析为单个 STRING_TOKEN
+        val before = "k <> v"
         val after = reformat(before)
         assertEquals("k <> v", after)
     }
@@ -161,6 +178,32 @@ class CwtFormatterTest : BasePlatformTestCase() {
         val before = "## severity  =  warning"
         val after = reformat(before)
         assertEquals("## severity = warning", after)
+    }
+
+    @Test
+    fun testSpaceAroundOptionSeparator_notEqualSign() {
+        getCustomSettings().SPACE_AROUND_OPTION_SEPARATOR = true
+        val before = "## key  !=  value"
+        val after = reformat(before)
+        assertEquals("## key != value", after)
+    }
+
+    @Test
+    fun testSpaceAroundOptionSeparator_notEqualSign_disabled() {
+        getCustomSettings().SPACE_AROUND_OPTION_SEPARATOR = false
+        // `!=` 周围始终保留空格，与属性分隔符的行为一致
+        val before = "## key != value"
+        val after = reformat(before)
+        assertEquals("## key != value", after)
+    }
+
+    @Test
+    fun testSpaceAroundOptionSeparator_diamondSign_disabled() {
+        getCustomSettings().SPACE_AROUND_OPTION_SEPARATOR = false
+        // `<>` 周围始终保留空格，与属性分隔符的行为一致
+        val before = "## key <> value"
+        val after = reformat(before)
+        assertEquals("## key <> value", after)
     }
 
     // endregion

@@ -22,7 +22,8 @@ class CwtBlock(
 ) : AbstractBlock(node, createWrap(), createAlignment()) {
     companion object {
         private val MEMBERS = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK)
-        private val SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
+        private val EQUAL_SIGNS = TokenSet.create(EQUAL_SIGN)
+        private val NOT_EQUAL_SIGNS = TokenSet.create(NOT_EQUAL_SIGN)
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK)
         private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOC_COMMENT, OPTION_COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK)
@@ -40,8 +41,10 @@ class CwtBlock(
             val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
             return SpacingBuilder(settings, CwtLanguage)
                 .between(MEMBERS, MEMBERS).spaces(1) // 属性/值之间需要有空格或者换行
-                .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) // 间隔符周围按情况可能需要空格
-                .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .aroundInside(EQUAL_SIGNS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) // = == 周围按情况可能需要空格
+                .aroundInside(EQUAL_SIGNS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // = == 周围按情况可能需要空格
+                .aroundInside(NOT_EQUAL_SIGNS, OPTION).spaces(1) // != <> 周围始终保留空格（移除空格会改变词法解析结果）
+                .aroundInside(NOT_EQUAL_SIGNS, PROPERTY).spaces(1) // != <> 周围始终保留空格（移除空格会改变词法解析结果）
                 .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
         }
