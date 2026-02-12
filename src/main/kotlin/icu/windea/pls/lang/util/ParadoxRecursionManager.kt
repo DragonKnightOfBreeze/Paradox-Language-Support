@@ -19,18 +19,11 @@ object ParadoxRecursionManager {
     // 由于需要处理引用传递的情况，考虑性能问题，目前仅检测第一个递归引用
     // 这里需要避免 StackOverflowError
 
-    fun isRecursiveScriptedVariable(
-        element: ParadoxScriptScriptedVariable,
-        recursions: MutableCollection<PsiElement>? = null,
-    ): Boolean {
-        return doIsRecursiveScriptedVariable(element, recursions, ArrayDeque())
+    fun checkScriptedVariable(element: ParadoxScriptScriptedVariable, recursions: MutableCollection<PsiElement>? = null): Boolean {
+        return doCheckScriptedVariable(element, recursions, ArrayDeque())
     }
 
-    private fun doIsRecursiveScriptedVariable(
-        element: ParadoxScriptScriptedVariable,
-        recursions: MutableCollection<PsiElement>?,
-        stack: ArrayDeque<String>,
-    ): Boolean {
+    private fun doCheckScriptedVariable(element: ParadoxScriptScriptedVariable, recursions: MutableCollection<PsiElement>?, stack: ArrayDeque<String>): Boolean {
         var result = recursions.isNotNullOrEmpty()
         if (result) return true
         val name = element.name ?: return false
@@ -49,7 +42,7 @@ object ParadoxRecursionManager {
                             recursions?.add(e)
                             result = true
                         } else {
-                            result = doIsRecursiveScriptedVariable(resolved, recursions, stack)
+                            result = doCheckScriptedVariable(resolved, recursions, stack)
                         }
                         if (result) return
                     }
@@ -61,63 +54,11 @@ object ParadoxRecursionManager {
         return result
     }
 
-    fun isRecursiveLocalisation(
-        element: ParadoxLocalisationProperty,
-        recursions: MutableCollection<PsiElement>? = null,
-    ): Boolean {
-        return doIsRecursiveLocalisation(element, recursions, ArrayDeque())
+    fun checkDefinition(element: ParadoxDefinitionElement, recursions: MutableCollection<PsiElement>? = null, predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)? = null): Boolean {
+        return doCheckDefinition(element, recursions, ArrayDeque(), predicate)
     }
 
-    private fun doIsRecursiveLocalisation(
-        element: ParadoxLocalisationProperty,
-        recursions: MutableCollection<PsiElement>?,
-        stack: ArrayDeque<String>,
-    ): Boolean {
-        var result = recursions.isNotNullOrEmpty()
-        if (result) return true
-        val name = element.name.orNull() ?: return false
-        val entryElement = element.propertyValue ?: return false
-        ProgressManager.checkCanceled()
-        stack.addLast(name)
-        entryElement.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(e: PsiElement) {
-                run {
-                    if (!ParadoxResolveConstraint.Localisation.canResolveReference(e)) return@run
-                    e.references.orNull()?.forEach f@{ r ->
-                        ProgressManager.checkCanceled()
-                        if (!ParadoxResolveConstraint.Localisation.canResolve(r)) return@f
-                        val resolved = r.resolve()?.castOrNull<ParadoxLocalisationProperty>()
-                        if (resolved == null) return@f
-                        if (resolved.name in stack) {
-                            recursions?.add(e)
-                            result = true
-                        } else {
-                            result = doIsRecursiveLocalisation(resolved, recursions, stack)
-                        }
-                        if (result) return
-                    }
-                }
-                super.visitElement(e)
-            }
-        })
-        stack.removeLast()
-        return result
-    }
-
-    fun isRecursiveDefinition(
-        element: ParadoxDefinitionElement,
-        recursions: MutableCollection<PsiElement>? = null,
-        predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)? = null,
-    ): Boolean {
-        return doIsRecursiveDefinition(element, recursions, ArrayDeque(), predicate)
-    }
-
-    private fun doIsRecursiveDefinition(
-        element: ParadoxDefinitionElement,
-        recursions: MutableCollection<PsiElement>?,
-        stack: ArrayDeque<String>,
-        predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)? = null,
-    ): Boolean {
+    private fun doCheckDefinition(element: ParadoxDefinitionElement, recursions: MutableCollection<PsiElement>?, stack: ArrayDeque<String>, predicate: ((ParadoxDefinitionElement, PsiElement) -> Boolean)?): Boolean {
         var result = recursions.isNotNullOrEmpty()
         if (result) return true
         val definitionInfo = element.definitionInfo ?: return false // skip non-definition
@@ -145,7 +86,43 @@ object ParadoxRecursionManager {
                             recursions?.add(e)
                             result = true
                         } else {
-                            result = doIsRecursiveDefinition(resolved, recursions, stack)
+                            result = doCheckDefinition(resolved, recursions, stack, predicate)
+                        }
+                        if (result) return
+                    }
+                }
+                super.visitElement(e)
+            }
+        })
+        stack.removeLast()
+        return result
+    }
+
+    fun checkLocalisation(element: ParadoxLocalisationProperty, recursions: MutableCollection<PsiElement>? = null): Boolean {
+        return doCheckLocalisation(element, recursions, ArrayDeque())
+    }
+
+    private fun doCheckLocalisation(element: ParadoxLocalisationProperty, recursions: MutableCollection<PsiElement>?, stack: ArrayDeque<String>): Boolean {
+        var result = recursions.isNotNullOrEmpty()
+        if (result) return true
+        val name = element.name.orNull() ?: return false
+        val entryElement = element.propertyValue ?: return false
+        ProgressManager.checkCanceled()
+        stack.addLast(name)
+        entryElement.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(e: PsiElement) {
+                run {
+                    if (!ParadoxResolveConstraint.Localisation.canResolveReference(e)) return@run
+                    e.references.orNull()?.forEach f@{ r ->
+                        ProgressManager.checkCanceled()
+                        if (!ParadoxResolveConstraint.Localisation.canResolve(r)) return@f
+                        val resolved = r.resolve()?.castOrNull<ParadoxLocalisationProperty>()
+                        if (resolved == null) return@f
+                        if (resolved.name in stack) {
+                            recursions?.add(e)
+                            result = true
+                        } else {
+                            result = doCheckLocalisation(resolved, recursions, stack)
                         }
                         if (result) return
                     }

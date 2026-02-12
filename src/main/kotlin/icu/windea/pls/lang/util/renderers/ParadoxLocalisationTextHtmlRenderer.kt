@@ -116,7 +116,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
 
     context(context: Context)
     override fun renderText(element: ParadoxLocalisationText) {
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text.escapeXml(), EscapeType.Html)
+        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text.escapeXml(), EscapeType.Html)
         context.builder.append(text)
     }
 

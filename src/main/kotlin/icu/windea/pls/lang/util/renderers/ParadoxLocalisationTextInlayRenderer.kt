@@ -141,7 +141,7 @@ class ParadoxLocalisationTextInlayRenderer(
     context(context: Context)
     override fun renderText(element: ParadoxLocalisationText) {
         if (context.truncated) return
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, EscapeType.Inlay)
+        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Inlay)
         context.builder.add(context.factory.truncatedSmallText(text))
         updateTruncationState()
     }

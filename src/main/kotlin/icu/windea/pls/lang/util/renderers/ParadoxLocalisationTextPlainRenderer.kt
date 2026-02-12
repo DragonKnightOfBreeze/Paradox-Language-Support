@@ -49,7 +49,7 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
 
     context(context: Context)
     override fun renderText(element: ParadoxLocalisationText) {
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, EscapeType.Default)
+        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Default)
         context.builder.append(text)
     }
 

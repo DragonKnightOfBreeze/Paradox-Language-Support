@@ -34,7 +34,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 val name = element.name
                 if (name.isEmpty()) return
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.isRecursiveLocalisation(element, recursions)
+                ParadoxRecursionManager.checkLocalisation(element, recursions)
                 if (recursions.isEmpty()) return
                 val location = element.propertyKey
                 val description = PlsBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
