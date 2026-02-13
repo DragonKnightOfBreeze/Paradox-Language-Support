@@ -40,10 +40,12 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
     }
 
     private fun createActualKey(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters): String {
+        val name = queryParameters.target
+        val type = queryParameters.type
         return when {
-            !queryParameters.target.isNullOrEmpty() && !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(queryParameters.target, queryParameters.type)
-            !queryParameters.target.isNullOrEmpty() -> PlsIndexUtil.createNameKey(queryParameters.target)
-            !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(queryParameters.type)
+            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(name, type)
+            !name.isNullOrEmpty() -> PlsIndexUtil.createNameKey(name)
+            !type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(type)
             else -> PlsIndexUtil.createAllKey()
         }
     }
@@ -54,10 +56,25 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         info: ParadoxDefinitionInjectionIndexInfo,
         consumer: Processor<in ParadoxDefinitionInjectionIndexInfo>
     ): Boolean {
-        if (queryParameters.mode != null && !queryParameters.mode.equals(info.mode, true)) return true
-        if (queryParameters.target != null && queryParameters.target != info.target) return true
-        if (queryParameters.type != null && queryParameters.type != info.type) return true
+        if (!matchesMode(queryParameters, info)) return true
+        if (!matchesTarget(queryParameters, info)) return true
+        if (!matchesType(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesMode(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters, info: ParadoxDefinitionInjectionIndexInfo): Boolean {
+        if (queryParameters.mode == null) return true
+        return queryParameters.mode.equals(info.mode, true)
+    }
+
+    private fun matchesTarget(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters, info: ParadoxDefinitionInjectionIndexInfo): Boolean {
+        if (queryParameters.target == null) return true
+        return queryParameters.target == info.target
+    }
+
+    private fun matchesType(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters, info: ParadoxDefinitionInjectionIndexInfo): Boolean {
+        if (queryParameters.type == null) return true
+        return queryParameters.type == info.type
     }
 }

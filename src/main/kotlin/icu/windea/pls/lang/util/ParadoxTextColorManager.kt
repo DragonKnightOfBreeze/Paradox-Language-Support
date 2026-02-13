@@ -19,6 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -26,6 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
 import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -75,6 +77,7 @@ object ParadoxTextColorManager {
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = selector(project, contextElement).definition().contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
         return doGetInfoFromCache(definition)
@@ -102,6 +105,7 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name

@@ -9,6 +9,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.orNull
@@ -72,7 +73,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val gameType = fileInfo.rootInfo.gameType
         ProgressManager.checkCanceled()
 
-        // 要求存在候选项
+        // 2.1.3 要求存在候选项
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
@@ -80,7 +81,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (fileLevelTypeConfigs.isEmpty()) return
         fileLevelMatchContext.matchPath = false
 
-        // 这里使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
+        // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxDefinitionElement) visitDefinitionElement(element)
@@ -107,33 +108,21 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                     else -> return // unexpected
                 }
 
-                val source = ParadoxDefinitionSource.Property
                 val info = ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, element.startOffset, gameType)
-                fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
-                if (name.isNotEmpty()) {
-                    indexName(fileData, info, name, type)
-                }
+                addToFileData(info, fileData)
             }
         })
     }
 
-    private fun indexName(fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>, info: ParadoxDefinitionIndexInfo, name: String, type: String) {
-        val caseInsensitive = ParadoxDefinitionIndexConstraint.get(type)?.ignoreCase == true
-        val nameKey = PlsIndexUtil.createNameKey(name)
-        val nameTypeKey = PlsIndexUtil.createNameTypeKey(name, type)
-        fileData.getOrPut(nameKey) { mutableListOf() }.asMutable() += info
-        fileData.getOrPut(nameTypeKey) { mutableListOf() }.asMutable() += info
-
-        if (caseInsensitive) {
-            val lowercasedName = name.lowercase()
-            if (lowercasedName != name) {
-                val lowercasedNameKey = PlsIndexUtil.createNameKey(lowercasedName)
-                val lowercasedNameTypeKey = PlsIndexUtil.createNameTypeKey(lowercasedName, type)
-                fileData.getOrPut(lowercasedNameKey) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(lowercasedNameTypeKey) { mutableListOf() }.asMutable() += info
-            }
-        }
+    private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
+        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
+        val name = info.name.letIf(ignoreCase) { it.lowercase() }
+        val type = info.type
+        fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        if (name.isEmpty()) return
+        fileData.getOrPut(PlsIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(PlsIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {

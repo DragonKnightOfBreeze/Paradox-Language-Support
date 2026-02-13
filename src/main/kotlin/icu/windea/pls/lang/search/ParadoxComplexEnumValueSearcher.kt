@@ -40,7 +40,8 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
     }
 
     private fun createActualKey(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters): String {
-        return PlsIndexUtil.createTypeKey(queryParameters.enumName)
+        val type = queryParameters.enumName
+        return PlsIndexUtil.createTypeKey(type)
     }
 
     private fun processInfo(
@@ -50,9 +51,18 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         consumer: Processor<in ParadoxComplexEnumValueIndexInfo>
     ): Boolean {
         if (info == null) return true
-        if (queryParameters.enumName != info.enumName) return true
-        if (queryParameters.name != null && !queryParameters.name.equals(info.name, info.caseInsensitive)) return true // # 261
+        if (!matchesEnumName(queryParameters, info)) return true
+        if (!matchesName(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, info: ParadoxComplexEnumValueIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name.equals(info.name, info.caseInsensitive) // # 261
+    }
+
+    private fun matchesEnumName(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, info: ParadoxComplexEnumValueIndexInfo): Boolean {
+        return queryParameters.enumName == info.enumName
     }
 }

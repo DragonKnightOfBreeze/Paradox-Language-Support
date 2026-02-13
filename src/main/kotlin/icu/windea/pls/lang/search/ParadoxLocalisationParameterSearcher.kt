@@ -35,9 +35,18 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         info: ParadoxLocalisationParameterIndexInfo,
         consumer: Processor<in ParadoxLocalisationParameterIndexInfo>
     ): Boolean {
-        if (queryParameters.localisationName != info.localisationName) return true
-        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        if (!matchesLocalisationName(queryParameters, info)) return true
+        if (!matchesName(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, info: ParadoxLocalisationParameterIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name == info.name
+    }
+
+    private fun matchesLocalisationName(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, info: ParadoxLocalisationParameterIndexInfo): Boolean {
+        return queryParameters.localisationName == info.localisationName
     }
 }

@@ -71,7 +71,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val gameType = fileInfo.rootInfo.gameType
         ProgressManager.checkCanceled()
 
-        // 要求存在候选项
+        // 2.1.3 要求存在候选项
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
         val path = fileInfo.path
         val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
@@ -102,9 +102,14 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
 
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
-                fileData.getOrPut(PlsIndexUtil.createTypeKey(info.enumName)) { mutableListOf() }.asMutable() += info
+                addToFileData(info, fileData)
             }
         })
+    }
+
+    private fun addToFileData(info: ParadoxComplexEnumValueIndexInfo, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
+        val type = info.enumName
+        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {

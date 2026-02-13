@@ -11,9 +11,11 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 
 /**
  * 本地化文本图标的PSI引用。
@@ -54,6 +56,7 @@ class ParadoxLocalisationTextIconPsiReference(
         val definitionName = element.name?.orNull() ?: return null
         val definitionType = ParadoxDefinitionTypes.textIcon
         val definitionSelector = selector(project, element).definition().contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon)
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).find()
         return resolved
     }
@@ -63,6 +66,7 @@ class ParadoxLocalisationTextIconPsiReference(
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
         val definitionType = ParadoxDefinitionTypes.textIcon
         val definitionSelector = selector(project, element).definition().contextSensitive()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextIcon)
         val resolved = ParadoxDefinitionSearch.searchProperty(definitionName, definitionType, definitionSelector).findAll()
         return resolved.createResults()
     }

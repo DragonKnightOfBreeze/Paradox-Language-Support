@@ -36,8 +36,13 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         consumer: Processor<in CwtConfigSymbolIndexInfo>
     ): Boolean {
         if (info == null) return true
-        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        if (!matchesName(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: CwtConfigSymbolSearch.SearchParameters, info: CwtConfigSymbolIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name == info.name
     }
 }

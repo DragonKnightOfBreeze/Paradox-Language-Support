@@ -36,9 +36,18 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         info: ParadoxDynamicValueIndexInfo,
         consumer: Processor<in ParadoxDynamicValueIndexInfo>
     ): Boolean {
-        if (info.dynamicValueType !in queryParameters.dynamicValueTypes) return true
-        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        if (!matchesType(queryParameters, info)) return true
+        if (!matchesName(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: ParadoxDynamicValueSearch.SearchParameters, info: ParadoxDynamicValueIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name == info.name
+    }
+
+    private fun matchesType(queryParameters: ParadoxDynamicValueSearch.SearchParameters, info: ParadoxDynamicValueIndexInfo): Boolean {
+        return queryParameters.dynamicValueTypes.contains(info.dynamicValueType)
     }
 }

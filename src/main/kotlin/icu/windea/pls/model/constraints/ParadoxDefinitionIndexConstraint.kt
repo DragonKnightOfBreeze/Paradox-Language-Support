@@ -14,12 +14,4 @@ enum class ParadoxDefinitionIndexConstraint(
     ;
 
     open fun test(definitionType: String): Boolean = definitionType == this.definitionType
-
-    companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.definitionType }
-
-        @JvmStatic
-        fun get(definitionType: String): ParadoxDefinitionIndexConstraint? = map[definitionType]
-    }
 }

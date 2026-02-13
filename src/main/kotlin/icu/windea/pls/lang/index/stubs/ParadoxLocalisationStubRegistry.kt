@@ -12,6 +12,7 @@ import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.pass
@@ -131,7 +132,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
                     sink.occurrence(PlsIndexKeys.LocalisationName, stub.name)
                     ParadoxLocalisationIndexConstraint.entries.forEach { constraint ->
                         if (constraint.test(stub.name)) {
-                            val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
+                            val name = stub.name.letIf(constraint.ignoreCase) { it.lowercase() }
                             sink.occurrence(constraint.indexKey, name)
                         }
                     }

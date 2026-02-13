@@ -106,12 +106,19 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
                 if (target.isEmpty()) return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
-                fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(PlsIndexUtil.createNameKey(info.target)) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(PlsIndexUtil.createTypeKey(info.type)) { mutableListOf() }.asMutable() += info
-                fileData.getOrPut(PlsIndexUtil.createNameTypeKey(info.target, info.type)) { mutableListOf() }.asMutable() += info
+                addToFileData(info, fileData)
             }
         })
+    }
+
+    private fun addToFileData(info: ParadoxDefinitionInjectionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
+        val name = info.target
+        val type = info.type
+        fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
+        if (name.isEmpty()) return
+        fileData.getOrPut(PlsIndexUtil.createNameKey(name)) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(PlsIndexUtil.createNameTypeKey(name, type)) { mutableListOf() }.asMutable() += info
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
