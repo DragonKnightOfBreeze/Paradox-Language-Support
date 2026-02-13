@@ -19,13 +19,11 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
      * @property name 定义的名字。
      * @property typeExpression 定义的类型表达式。
      * @property selector 查询选择器。
-     * @property forFile 是否查询作为文件的定义。默认为 `true`。
      */
     class SearchParameters(
         val name: String?,
         val typeExpression: String?,
         override val selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
-        val forFile: Boolean = true,
     ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo> {
         private val _typeExpression = typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val type = _typeExpression?.type
@@ -46,9 +44,8 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             name: String?,
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
-            forFile: Boolean = true,
         ): ParadoxUnaryQuery<ParadoxDefinitionIndexInfo> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
+            return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector))
         }
 
         /**
@@ -59,9 +56,8 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             name: String?,
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
-            forFile: Boolean = true,
         ): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxDefinitionElement> {
-            return search(name, typeExpression, selector, forFile).withTransform { it.element }
+            return search(name, typeExpression, selector).withTransform { it.element }
         }
 
         /**
@@ -72,9 +68,8 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             name: String?,
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
-            forFile: Boolean = true,
         ): ParadoxQuery<ParadoxDefinitionIndexInfo, PsiFile> {
-            return search(name, typeExpression, selector, forFile).withTransform { it.fileElement }
+            return search(name, typeExpression, selector).withTransform { it.fileElement }
         }
 
         /**
@@ -85,9 +80,8 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             name: String?,
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
-            forFile: Boolean = true,
         ): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxScriptProperty> {
-            return search(name, typeExpression, selector, forFile).withTransform { it.propertyElement }
+            return search(name, typeExpression, selector).withTransform { it.propertyElement }
         }
     }
 }

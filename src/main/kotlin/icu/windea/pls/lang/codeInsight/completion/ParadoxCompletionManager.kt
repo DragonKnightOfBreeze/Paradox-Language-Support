@@ -874,7 +874,7 @@ object ParadoxCompletionManager {
             val project = configGroup.project
             val selector = selector(project, file).definition().contextSensitive()
                 .distinctByName()
-            ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
+            ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                 processDefinition(context, resultToUse, it)
             }
 

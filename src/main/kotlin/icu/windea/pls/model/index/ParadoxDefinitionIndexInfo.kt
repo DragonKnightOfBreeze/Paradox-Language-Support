@@ -21,11 +21,17 @@ data class ParadoxDefinitionIndexInfo(
 ) : ParadoxIndexInfo() {
     val element: ParadoxDefinitionElement?
         get() = when (source) {
-            ParadoxDefinitionSource.File -> fileElement
-            else -> propertyElement
+            ParadoxDefinitionSource.File -> file as? ParadoxScriptFile
+            else -> file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
         }
     val fileElement: ParadoxScriptFile?
-        get() = file as? ParadoxScriptFile
+        get() = when (source) {
+            ParadoxDefinitionSource.File -> file as? ParadoxScriptFile
+            else -> null
+        }
     val propertyElement: ParadoxScriptProperty?
-        get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
+        get() = when (source) {
+            ParadoxDefinitionSource.File -> null
+            else -> file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, elementOffset) }
+        }
 }

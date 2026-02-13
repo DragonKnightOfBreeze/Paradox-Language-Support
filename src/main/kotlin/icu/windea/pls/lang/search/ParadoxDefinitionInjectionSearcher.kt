@@ -57,8 +57,8 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
         consumer: Processor<in ParadoxDefinitionInjectionIndexInfo>
     ): Boolean {
         if (!matchesMode(queryParameters, info)) return true
-        if (!matchesTarget(queryParameters, info)) return true
         if (!matchesType(queryParameters, info)) return true
+        if (!matchesTarget(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
     }

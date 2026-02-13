@@ -48,8 +48,8 @@ object ParadoxLocalisationService {
         val result = mutableListOf<ParadoxDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
-            // op: only search definitions declared by a property, rather than by a file, to optimize performance
-            ParadoxDefinitionSearch.searchElement(nameToSearch, null, selector, forFile = false).findAll().forEach f2@{ definition ->
+            // NOTE 2.1.3 skip file definitions
+            ParadoxDefinitionSearch.searchProperty(nameToSearch, null, selector).findAll().forEach f2@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2

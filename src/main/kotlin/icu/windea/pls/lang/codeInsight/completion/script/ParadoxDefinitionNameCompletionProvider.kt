@@ -96,11 +96,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = true
                     context.expressionTailText = ""
-                    // 排除正在输入的那一个
+                    // 排除与正在输入的同名的定义
+                    // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
+                        .filterBy { it.name != element.name }
                         .distinctByName()
-                    ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
+                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
@@ -119,12 +120,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = false
                     context.expressionTailText = ""
-                    // 基于类型键过滤结果
-                    // 排除正在输入的那一个
+                    // 排除与正在输入的同名的定义
+                    // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it.name != element.name } // 排除与正在输入的同名的
                         .distinctByName()
-                    ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
+                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 

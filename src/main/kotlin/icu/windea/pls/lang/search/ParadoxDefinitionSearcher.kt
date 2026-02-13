@@ -14,7 +14,6 @@ import icu.windea.pls.lang.index.PlsIndexUtil
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -64,16 +63,11 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         constraint: ParadoxDefinitionIndexConstraint?,
         consumer: Processor<in ParadoxDefinitionIndexInfo>
     ): Boolean {
-        if (!matchesSource(queryParameters, info)) return true
-        if (!matchesName(queryParameters, info, constraint)) return true
         if (!matchesType(queryParameters, info)) return true
+        if (!matchesName(queryParameters, info, constraint)) return true
         if (!matchesSubtypes(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
         return consumer.process(info)
-    }
-
-    private fun matchesSource(queryParameters: ParadoxDefinitionSearch.SearchParameters, info: ParadoxDefinitionIndexInfo): Boolean {
-        return !queryParameters.forFile || info.source == ParadoxDefinitionSource.File
     }
 
     private fun matchesName(queryParameters: ParadoxDefinitionSearch.SearchParameters, info: ParadoxDefinitionIndexInfo, constraint: ParadoxDefinitionIndexConstraint?): Boolean {
