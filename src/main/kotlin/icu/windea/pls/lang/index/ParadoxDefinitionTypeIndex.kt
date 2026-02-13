@@ -6,6 +6,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 定义声明的类型的索引。
  */
+@Deprecated("Use file-based definition indexes instead.")
 class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxDefinitionElement>() {
     override fun getKey() = PlsIndexKeys.DefinitionType
 

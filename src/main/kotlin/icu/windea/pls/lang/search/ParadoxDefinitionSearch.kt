@@ -1,15 +1,18 @@
 package icu.windea.pls.lang.search
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定义的查询。
  */
-class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionElement, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 定义的名字。
      * @property typeExpression 定义的类型表达式。
@@ -19,13 +22,13 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionElement,
     class SearchParameters(
         val name: String?,
         val typeExpression: String?,
-        override val selector: ParadoxSearchSelector<ParadoxDefinitionElement>,
+        override val selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
         val forFile: Boolean = true,
-    ) : ParadoxSearchParameters<ParadoxDefinitionElement>
+    ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionIndexInfo, SearchParameters>>("icu.windea.pls.search.definitionSearch")
         @JvmField
         val INSTANCE = ParadoxDefinitionSearch()
 
@@ -36,10 +39,40 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionElement,
         fun search(
             name: String?,
             typeExpression: String?,
-            selector: ParadoxSearchSelector<ParadoxDefinitionElement>,
+            selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
             forFile: Boolean = true,
-        ): ParadoxUnaryQuery<ParadoxDefinitionElement> {
+        ): ParadoxUnaryQuery<ParadoxDefinitionIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
+        }
+
+        @JvmStatic
+        fun searchElement(
+            name: String?,
+            typeExpression: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
+            forFile: Boolean = true,
+        ): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxDefinitionElement> {
+            return search(name, typeExpression, selector, forFile).withTransform { it.element }
+        }
+
+        @JvmStatic
+        fun searchFile(
+            name: String?,
+            typeExpression: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
+            forFile: Boolean = true,
+        ): ParadoxQuery<ParadoxDefinitionIndexInfo, PsiFile> {
+            return search(name, typeExpression, selector, forFile).withTransform { it.file }
+        }
+
+        @JvmStatic
+        fun searchProperty(
+            name: String?,
+            typeExpression: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
+            forFile: Boolean = true,
+        ): ParadoxQuery<ParadoxDefinitionIndexInfo, ParadoxScriptProperty> {
+            return search(name, typeExpression, selector, forFile).withTransform { it.propertyElement }
         }
     }
 }

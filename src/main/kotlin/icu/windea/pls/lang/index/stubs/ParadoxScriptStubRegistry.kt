@@ -18,7 +18,7 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -223,11 +223,10 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     if (!definitionName.isNullOrEmpty()) {
                         // notte that definition name can be empty (aka anonymous), and skipped for definition name indices here
                         sink.occurrence(PlsIndexKeys.DefinitionName, definitionName)
-                        ParadoxDefinitionIndexConstraint.entries.forEach { constraint ->
-                            if (constraint.test(definitionType)) {
-                                val name = if (constraint.ignoreCase) definitionName.lowercase() else definitionName
-                                sink.occurrence(constraint.indexKey, name)
-                            }
+                        when (definitionType) {
+                            ParadoxDefinitionTypes.textColor -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextColor, definitionName)
+                            ParadoxDefinitionTypes.textIcon -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextIcon, definitionName)
+                            ParadoxDefinitionTypes.textFormat -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextFormat, definitionName.lowercase())
                         }
                     }
                     if (definitionType.isNotEmpty()) {

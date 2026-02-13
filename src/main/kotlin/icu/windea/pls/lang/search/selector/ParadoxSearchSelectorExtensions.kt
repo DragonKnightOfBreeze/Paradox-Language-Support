@@ -14,11 +14,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -68,8 +68,8 @@ fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(
 }
 
 @JvmName("distinctByDefinitionName")
-fun <S : ParadoxSearchSelector<ParadoxDefinitionElement>> S.distinctByDefinitionName(): S {
-    return distinctBy { ParadoxDefinitionManager.getName(it) }
+fun <S : ParadoxSearchSelector<ParadoxDefinitionIndexInfo>> S.distinctByDefinitionName(): S {
+    return distinctBy { it.name }
 }
 
 @JvmName("distinctByDefineExpression")
@@ -101,12 +101,12 @@ fun <S : ParadoxSearchSelector<VirtualFile>> S.distinctByFilePath(): S {
     return distinctBy { it.fileInfo?.path }
 }
 
-fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
     if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
     return this
 }
 
-fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIndexConstraint<T>? {
+fun <S : ParadoxSearchSelector<T>, T> S.getConstraint(): ParadoxIndexConstraint<T>? {
     return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
 }
 

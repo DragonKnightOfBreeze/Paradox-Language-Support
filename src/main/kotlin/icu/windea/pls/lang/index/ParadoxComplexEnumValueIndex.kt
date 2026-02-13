@@ -75,8 +75,8 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
         val path = psiFile.fileInfo?.path ?: return
         val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
-        val candidates = ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
-        if (candidates.isEmpty()) return
+        val configCandicates = ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
+        if (configCandicates.isEmpty()) return
         matchContext.matchPath = false
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -94,7 +94,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 val name = element.value
                 if (name.isParameterized()) return // 排除可能带参数的情况
                 if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
-                val config = candidates.find { matchesComplexEnum(matchContext, element, it) } ?: return
+                val config = configCandicates.find { matchesComplexEnum(matchContext, element, it) } ?: return
                 val enumName = config.name
 
                 // 2.1.3 兼容定义注入

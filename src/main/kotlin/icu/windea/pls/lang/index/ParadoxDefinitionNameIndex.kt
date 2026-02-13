@@ -7,6 +7,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 定义声明的名字的索引。
  */
+@Deprecated("Use file-based definition indexes instead.")
 class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxDefinitionElement>() {
     override fun getKey() = PlsIndexKeys.DefinitionName
 

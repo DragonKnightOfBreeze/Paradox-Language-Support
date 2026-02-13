@@ -5,7 +5,7 @@ import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 enum class ParadoxLocalisationIndexConstraint(
-    override val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
+    val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
     override val ignoreCase: Boolean = false,
     override val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxLocalisationProperty> {
