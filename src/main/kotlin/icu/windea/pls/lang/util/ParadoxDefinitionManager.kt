@@ -5,7 +5,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
@@ -28,9 +27,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 /**
  * 用于处理定义。
@@ -61,20 +57,15 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxDefinitionElement): String? {
-        val stub = runReadActionSmartly { getStub(element) }
-        stub?.let { return it.definitionName }
-        return element.definitionInfo?.name
+        return getInfo(element)?.name
     }
 
     fun getType(element: ParadoxDefinitionElement): String? {
-        val stub = runReadActionSmartly { getStub(element) }
-        stub?.let { return it.definitionType }
-        return element.definitionInfo?.type
+        return getInfo(element)?.type
     }
 
     fun getSubtypes(element: ParadoxDefinitionElement): List<String>? {
-        // 定义的子类型可能需要通过访问索引获取，不能在索引时就获取
-        return element.definitionInfo?.subtypes
+        return getInfo(element)?.subtypes
     }
 
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
@@ -98,27 +89,8 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
-        doGetInfoFromStub(element, file)?.let { return it }
-        return doGetInfoFromPsi(element, file)
-    }
-
-    fun doGetInfoFromStub(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
-        val stub = getStub(element) ?: return null
-        val name = stub.definitionName
-        val type = stub.definitionType
-        val gameType = stub.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
-        val typeConfig = configGroup.types[type] ?: return null
-        val subtypes = stub.definitionSubtypes
-        val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
-        val typeKey = stub.typeKey
-        val rootKeys = stub.rootKeys
-        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, rootKeys.optimized())
-    }
-
-    private fun doGetInfoFromPsi(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
+        val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
         val typeKey = getTypeKey(element) ?: return null
@@ -129,10 +101,6 @@ object ParadoxDefinitionManager {
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
-    }
-
-    fun getStub(element: ParadoxDefinitionElement): ParadoxScriptPropertyStub.Definition? {
-        return element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull()
     }
 
     fun getLocalizedName(element: ParadoxDefinitionElement): String? {

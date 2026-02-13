@@ -7,19 +7,23 @@ import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.IndexInputFilter
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxFileDefinitionData
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -60,33 +64,37 @@ class ParadoxFileDefinitionIndex : FileBasedIndexExtension<String, ParadoxFileDe
     private fun indexData(fileContent: FileContent): Map<String, ParadoxFileDefinitionData> {
         val psiFile = fileContent.psiFile
         if (psiFile !is ParadoxScriptFile) return emptyMap()
+        val fileInfo = psiFile.fileInfo ?: return emptyMap()
+        val gameType = fileInfo.rootInfo.gameType
         ProgressManager.checkCanceled()
 
-        val definitionInfo = psiFile.definitionInfo ?: return emptyMap()
-        val typeConfig = definitionInfo.typeConfig
-        if (!typeConfig.typePerFile) return emptyMap()
+        val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
+        val path = fileInfo.path
+        val typeKey = ParadoxDefinitionManager.getTypeKey(psiFile) ?: return emptyMap()
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, psiFile)?.takeIf { it.typePerFile }
+        if (typeConfig == null) return emptyMap()
 
-        val typeKey = definitionInfo.typeKey
-        val name = definitionInfo.name
-        val type = definitionInfo.type
-        val subtypes = run {
-            if (typeConfig.subtypes.isEmpty()) return@run null
-            val result = mutableListOf<CwtSubtypeConfig>()
-            for (subtypeConfig in typeConfig.subtypes.values) {
-                val fastResult = ParadoxConfigMatchService.matchesSubtypeFast(subtypeConfig, result, typeKey) ?: return@run null
-                if (fastResult) result.add(subtypeConfig)
-            }
-            result.map { it.name }
-        }
+        val type = typeConfig.name.orNull() ?: return emptyMap()
+        val name = ParadoxDefinitionService.resolveName(psiFile, typeKey, typeConfig)
+        val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey)?.map { it.name }?.optimized()
 
-        val data = ParadoxFileDefinitionData(name, type, subtypes, typeKey, definitionInfo.gameType)
-
+        val data = ParadoxFileDefinitionData(name, type, subtypes, typeKey, gameType)
         val fileData = mutableMapOf<String, ParadoxFileDefinitionData>()
         fileData[PlsIndexUtil.createAllKey()] = data
         fileData[PlsIndexUtil.createTypeKey(type)] = data
         if (name.isNotEmpty()) {
             fileData[PlsIndexUtil.createNameKey(name)] = data
             fileData[PlsIndexUtil.createNameTypeKey(name, type)] = data
+
+            val caseInsensitive = ParadoxDefinitionIndexConstraint.get(type)?.ignoreCase == true
+            if (caseInsensitive) {
+                val lowercasedName = name.lowercase()
+                if (lowercasedName != name) {
+                    fileData[PlsIndexUtil.createNameKey(lowercasedName)] = data
+                    fileData[PlsIndexUtil.createNameTypeKey(lowercasedName, type)] = data
+                }
+            }
         }
         return fileData
     }

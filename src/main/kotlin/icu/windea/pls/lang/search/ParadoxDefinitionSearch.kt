@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -25,7 +26,11 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         val typeExpression: String?,
         override val selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
         val forFile: Boolean = true,
-    ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo>
+    ) : ParadoxSearchParameters<ParadoxDefinitionIndexInfo> {
+        private val _typeExpression = typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
+        val type = _typeExpression?.type
+        val subtypes = _typeExpression?.subtypes
+    }
 
     companion object {
         @JvmField

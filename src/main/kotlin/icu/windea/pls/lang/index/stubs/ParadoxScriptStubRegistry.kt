@@ -18,7 +18,6 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -119,30 +118,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         override fun serialize(stub: ParadoxScriptPropertyStub, dataStream: StubOutputStream) {
             when (stub) {
-                is ParadoxScriptPropertyStub.Definition -> {
-                    val named = stub.definitionName == stub.typeKey
-                    if (named) {
-                        dataStream.writeByte(Flags.definitionNamed)
-                    } else {
-                        dataStream.writeByte(Flags.definition)
-                    }
-                    dataStream.writeName(stub.definitionName)
-                    dataStream.writeName(stub.definitionType)
-                    if (stub.definitionType.isEmpty()) return
-                    val definitionSubtypes = stub.definitionSubtypes
-                    if (definitionSubtypes == null) {
-                        dataStream.writeInt(-1)
-                    } else {
-                        dataStream.writeInt(definitionSubtypes.size)
-                        definitionSubtypes.forEach { dataStream.writeName(it) }
-                    }
-                    if (!named) {
-                        dataStream.writeName(stub.name)
-                    }
-                    val rootKeys = stub.rootKeys
-                    dataStream.writeInt(rootKeys.size)
-                    rootKeys.forEach { dataStream.writeName(it) }
-                }
                 is ParadoxScriptPropertyStub.DefineNamespace -> {
                     dataStream.writeByte(Flags.defineNamespace)
                     dataStream.writeName(stub.name)
@@ -170,24 +145,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<out PsiElement>?): ParadoxScriptPropertyStub {
             val flag = dataStream.readByte()
             return when (flag) {
-                Flags.definition, Flags.definitionNamed -> {
-                    val definitionName = dataStream.readNameString().orEmpty()
-                    val definitionType = dataStream.readNameString().orEmpty()
-                    if (definitionType.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
-                    val definitionSubtypesSize = dataStream.readInt()
-                    val definitionSubtypes = when (definitionSubtypesSize) {
-                        -1 -> null
-                        0 -> emptyList()
-                        else -> MutableList(definitionSubtypesSize) { dataStream.readNameString().orEmpty() }
-                    }
-                    val name = if (flag == Flags.definitionNamed) definitionName else dataStream.readNameString().orEmpty()
-                    val rootKeysSize = dataStream.readInt()
-                    val rootKeys = when (rootKeysSize) {
-                        0 -> emptyList()
-                        else -> MutableList(rootKeysSize) { dataStream.readNameString().orEmpty() }
-                    }
-                    ParadoxScriptPropertyStub.createDefinition(parentStub, name, definitionName, definitionType, definitionSubtypes, rootKeys)
-                }
                 Flags.defineNamespace -> {
                     val name = dataStream.readNameString().orEmpty()
                     if (name.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
@@ -217,22 +174,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
             when (stub) {
-                is ParadoxScriptPropertyStub.Definition -> {
-                    val definitionName = stub.definitionName
-                    val definitionType = stub.definitionType
-                    if (!definitionName.isNullOrEmpty()) {
-                        // notte that definition name can be empty (aka anonymous), and skipped for definition name indices here
-                        sink.occurrence(PlsIndexKeys.DefinitionName, definitionName)
-                        when (definitionType) {
-                            ParadoxDefinitionTypes.textColor -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextColor, definitionName)
-                            ParadoxDefinitionTypes.textIcon -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextIcon, definitionName)
-                            ParadoxDefinitionTypes.textFormat -> sink.occurrence(PlsIndexKeys.DefinitionNameForTextFormat, definitionName.lowercase())
-                        }
-                    }
-                    if (definitionType.isNotEmpty()) {
-                        sink.occurrence(PlsIndexKeys.DefinitionType, definitionType)
-                    }
-                }
                 is ParadoxScriptPropertyStub.DefineNamespace -> {
                     if (stub.namespace.isEmpty()) return
                     sink.occurrence(PlsIndexKeys.DefineNamespace, stub.namespace)
@@ -256,13 +197,10 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         private object Flags {
             const val property: Byte = 0
-            const val definition: Byte = 1
-            const val defineNamespace: Byte = 6
-            const val defineVariable: Byte = 7
-            const val inlineScriptUsage: Byte = 2
-            const val inlineScriptArgument: Byte = 3
-            const val definitionNamed: Byte = 4
-            // const val definitionInjection: Byte = 5 // #252
+            const val defineNamespace: Byte = 1
+            const val defineVariable: Byte = 2
+            const val inlineScriptUsage: Byte = 3
+            const val inlineScriptArgument: Byte = 4
         }
     }
 }

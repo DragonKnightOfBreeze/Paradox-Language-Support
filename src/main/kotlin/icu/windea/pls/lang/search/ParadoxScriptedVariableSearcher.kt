@@ -55,7 +55,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
                 if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
                 val startOffset = queryParameters.selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
                 val fileScope = GlobalSearchScope.fileScope(project, file)
-                processAllElements(queryParameters.name, project, fileScope) p@{ element ->
+                processQueryForScriptVariables(queryParameters.name, project, fileScope) p@{ element ->
                     if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current position
                     consumer.process(element)
                 }.let { if (!it) return }
@@ -66,10 +66,10 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             ParadoxScriptedVariableType.Global -> {
                 val globalScope = queryParameters.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
                 if (SearchScope.isEmptyScope(globalScope)) return
-                processAllElements(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
+                processQueryForScriptVariables(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
             }
             null -> {
-                processAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
+                processQueryForScriptVariables(queryParameters.name, project, scope) { element -> consumer.process(element) }
             }
         }
     }
@@ -122,7 +122,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         ParadoxInlineScriptManager.processInlineScriptFile(inlineScriptExpression, project, context) p@{ inlineScriptFile ->
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, inlineScriptFile.virtualFile)
-            processAllElements(name, project, fileScope) p@{ element ->
+            processQueryForScriptVariables(name, project, fileScope) p@{ element ->
                 // do not skip scripted variables after related parameter, do not check that currently
                 consumer.process(element)
             }.let { if (!it) return@p false }
@@ -157,7 +157,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         return uFile2StartOffsetMap.process p@{ (uFile, startOffset) ->
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, uFile)
-            processAllElements(name, project, fileScope) p@{ element ->
+            processQueryForScriptVariables(name, project, fileScope) p@{ element ->
                 if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script usage
                 consumer.process(element)
             }.let { if (!it) return@p false }
@@ -166,7 +166,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         }
     }
 
-    private fun processAllElements(
+    private fun processQueryForScriptVariables(
         name: String?,
         project: Project,
         scope: GlobalSearchScope,

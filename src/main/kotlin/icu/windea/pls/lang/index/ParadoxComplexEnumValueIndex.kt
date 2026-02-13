@@ -22,9 +22,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum
 import icu.windea.pls.lang.psi.select.*
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.forGameType
@@ -69,15 +67,17 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxComplexEnumValueIndexInfo>>) {
         if (psiFile !is ParadoxScriptFile) return
-        val gameType = selectGameType(psiFile) ?: return
+        val fileInfo = psiFile.fileInfo ?: return
+        val gameType = fileInfo.rootInfo.gameType
+        ProgressManager.checkCanceled()
 
         // 要求存在候选项
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
-        val path = psiFile.fileInfo?.path ?: return
-        val matchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
-        val configCandicates = ParadoxConfigMatchService.getComplexEnumConfigCandidates(matchContext)
-        if (configCandicates.isEmpty()) return
-        matchContext.matchPath = false
+        val path = fileInfo.path
+        val fileLevelMatchContext = CwtComplexEnumConfigMatchContext(configGroup, path)
+        val fileLevelConfigs = ParadoxConfigMatchService.getComplexEnumConfigCandidates(fileLevelMatchContext)
+        if (fileLevelConfigs.isEmpty()) return
+        fileLevelMatchContext.matchPath = false
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -94,11 +94,13 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 val name = element.value
                 if (name.isParameterized()) return // 排除可能带参数的情况
                 if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
-                val config = configCandicates.find { matchesComplexEnum(matchContext, element, it) } ?: return
+                val matchContext = fileLevelMatchContext/*.copy()*/
+                val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) } ?: return
                 val enumName = config.name
 
                 // 2.1.3 兼容定义注入
                 val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
+
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
                 fileData.getOrPut(PlsIndexUtil.createTypeKey(info.enumName)) { mutableListOf() }.asMutable() += info
             }

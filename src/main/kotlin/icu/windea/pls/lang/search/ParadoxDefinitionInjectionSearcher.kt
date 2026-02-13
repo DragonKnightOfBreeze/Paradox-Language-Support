@@ -41,7 +41,7 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxDefinitionIn
 
     private fun createActualKey(queryParameters: ParadoxDefinitionInjectionSearch.SearchParameters): String {
         return when {
-            !queryParameters.type.isNullOrEmpty() && !queryParameters.target.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(queryParameters.target, queryParameters.type)
+            !queryParameters.target.isNullOrEmpty() && !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(queryParameters.target, queryParameters.type)
             !queryParameters.target.isNullOrEmpty() -> PlsIndexUtil.createNameKey(queryParameters.target)
             !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(queryParameters.type)
             else -> PlsIndexUtil.createAllKey()

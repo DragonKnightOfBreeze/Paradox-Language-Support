@@ -5,8 +5,8 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 
 enum class ParadoxDefinitionIndexConstraint(
     val definitionType: String,
-    override val ignoreCase: Boolean = false,
-    override val inferred: Boolean = false,
+    val ignoreCase: Boolean = false,
+    val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxDefinitionIndexInfo> {
     TextColor(ParadoxDefinitionTypes.textColor),
     TextIcon(ParadoxDefinitionTypes.textIcon),

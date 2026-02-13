@@ -11,29 +11,26 @@ data class CwtTypeConfigMatchContext(
     val typeKey: String? = null,
     val rootKeys: List<String>? = null,
     val typeKeyPrefix: Lazy<String?>? = null,
+    var matchPath: Boolean = true,
 ) {
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
-
-    var matchPath: Boolean = true
 }
 
 data class CwtComplexEnumConfigMatchContext(
     val configGroup: CwtConfigGroup,
     val path: ParadoxPath? = null,
+    var matchPath: Boolean = true,
 ) {
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
-
-    var matchPath: Boolean = true
 }
 
 data class CwtRowConfigMatchContext(
     val configGroup: CwtConfigGroup,
     val path: ParadoxPath? = null,
+    var matchPath: Boolean = true,
 ) {
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
-
-    var matchPath: Boolean = true
 }

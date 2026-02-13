@@ -18,33 +18,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
     val name: String
 
     /**
-     * （作为脚本属性的）定义的存根。
-     *
-     * @property definitionName 定义的名字。可以为空，表示匿名。可以为 `null`，表示无法获取。
-     * @property definitionType 定义的类型。
-     * @property definitionSubtypes 定义的子类型。可以为 `null`，表示需延后解析。
-     * @property typeKey 定义的类型键。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property rootKeys 定义的一组顶级键（不含参数）。
-     *
-     */
-    sealed interface Definition : ParadoxScriptPropertyStub {
-        val definitionName: String?
-        val definitionType: String
-        val definitionSubtypes: List<String>?
-        val typeKey: String
-        val rootKeys: List<String>
-    }
-
-    /**
-     * （作为脚本属性的）内联脚本用法的存根。
-     *
-     * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
-     */
-    sealed interface InlineScriptUsage : ParadoxScriptPropertyStub {
-        val expression: String
-    }
-
-    /**
      * （作为脚本属性的）定值（命名空间/变量）的存根。
      *
      * @property namespace 命名空间。
@@ -79,6 +52,15 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
     }
 
     /**
+     * （作为脚本属性的）内联脚本用法的存根。
+     *
+     * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     */
+    sealed interface InlineScriptUsage : ParadoxScriptPropertyStub {
+        val expression: String
+    }
+
+    /**
      * （作为脚本属性的）内联脚本的传入参数的存根。
      *
      * @property argumentName 传入参数的名字。等同于 [ParadoxScriptPropertyStub.name]。
@@ -110,26 +92,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
 
         override fun toString(): String {
             return "ParadoxScriptPropertyStub.Dummy(gameType=$gameType)"
-        }
-    }
-
-    private class DefinitionImpl(
-        parent: StubElement<*>?,
-        override val name: String,
-        override val definitionName: String?,
-        override val definitionType: String,
-        override val definitionSubtypes: List<String>?,
-        override val rootKeys: List<String>,
-    ) : Base(parent), Definition {
-        override val typeKey get() = name
-
-        override fun toString(): String {
-            return "ParadoxScriptPropertyStub.Definition(" +
-                "definitionName=$definitionName, " +
-                "definitionType=$definitionType, " +
-                "definitionSubtypes=$definitionSubtypes, " +
-                "rootKeys=$rootKeys, " +
-                "gameType=$gameType)"
         }
     }
 
@@ -201,17 +163,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
             return Dummy(parent)
         }
 
-        fun createDefinition(
-            parent: StubElement<*>?,
-            name: String,
-            definitionName: String?,
-            definitionType: String,
-            definitionSubtypes: List<String>?,
-            rootKeys: List<String>,
-        ): Definition {
-            return DefinitionImpl(parent, name, definitionName, definitionType, definitionSubtypes, rootKeys)
-        }
-
         fun createDefineNamespace(
             parent: StubElement<*>?,
             name: String,
@@ -229,9 +180,9 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
         fun createInlineScriptUsage(
             parent: StubElement<*>?,
             name: String,
-            inlineScriptExpression: String,
+            expression: String,
         ): InlineScriptUsage {
-            return InlineScriptUsageImpl(parent, name, inlineScriptExpression)
+            return InlineScriptUsageImpl(parent, name, expression)
         }
 
         fun createInlineScriptArgument(

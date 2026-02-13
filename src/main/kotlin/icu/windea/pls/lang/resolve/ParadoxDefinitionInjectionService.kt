@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 object ParadoxDefinitionInjectionService {
     fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
+        val gameType = fileInfo.rootInfo.gameType
         val expression = element.name
         if (!isMatched(expression, gameType)) return null
         if (!isAvailable(element)) return null

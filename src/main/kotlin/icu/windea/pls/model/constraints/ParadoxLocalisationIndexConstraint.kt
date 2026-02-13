@@ -6,8 +6,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 enum class ParadoxLocalisationIndexConstraint(
     val indexKey: StubIndexKey<String, ParadoxLocalisationProperty>,
-    override val ignoreCase: Boolean = false,
-    override val inferred: Boolean = false,
+    val ignoreCase: Boolean = false,
+    val inferred: Boolean = false,
 ) : ParadoxIndexConstraint<ParadoxLocalisationProperty> {
     Modifier(PlsIndexKeys.LocalisationNameForModifier, ignoreCase = true) {
         override fun test(name: String) = name.startsWith("mod_", true)

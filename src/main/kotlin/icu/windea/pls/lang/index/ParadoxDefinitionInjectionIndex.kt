@@ -22,7 +22,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -68,13 +67,13 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {
         if (psiFile !is ParadoxScriptFile) return
-        val gameType = selectGameType(psiFile) ?: return
-        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
-
         val fileInfo = psiFile.fileInfo ?: return
+        val gameType = fileInfo.rootInfo.gameType
+        ProgressManager.checkCanceled()
+
+        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
         val config = configGroup.directivesModel.definitionInjection ?: return
-
         val path = fileInfo.path
         val matchContext = CwtTypeConfigMatchContext(configGroup, path)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return

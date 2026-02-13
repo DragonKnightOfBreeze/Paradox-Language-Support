@@ -8,33 +8,18 @@ import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
-import icu.windea.pls.model.index.ParadoxFileDefinitionData
 import icu.windea.pls.model.index.ParadoxFilePathData
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object PlsIndexKeys {
     val ScriptedVariableName = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
-    val DefinitionName = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index")
-    val DefinitionType = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.type.index")
     val LocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-    val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-
-    val DefinitionNameForResource = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.resource")
-    val DefinitionNameForEconomicCategory = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.economicCategory")
-    val DefinitionNameForEventNamespace = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.eventNamespace")
-    val DefinitionNameForEvent = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.event")
-    val DefinitionNameForGameConcept = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.gameConcept")
-    val DefinitionNameForSprite = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.sprite")
-    val DefinitionNameForTextColor = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textColor")
-    val DefinitionNameForTextIcon = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textIcon")
-    val DefinitionNameForTextFormat = StubIndexKey.createIndexKey<String, ParadoxDefinitionElement>("paradox.definition.name.index.textFormat")
-
     val LocalisationNameForModifier = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")
     val LocalisationNameForTech = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.tech")
+    val SyncedLocalisationName = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
     // for define namespaces, namespace -> ParadoxScriptProperty
     val DefineNamespace = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.define.namespace.index")
@@ -49,7 +34,6 @@ object PlsIndexKeys {
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val FilePath = ID.create<String, ParadoxFilePathData>("paradox.file.path.index")
-    val FileDefinition = ID.create<String, ParadoxFileDefinitionData>("paradox.file.definition.index")
     val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
     val Definition = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index")
     val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252

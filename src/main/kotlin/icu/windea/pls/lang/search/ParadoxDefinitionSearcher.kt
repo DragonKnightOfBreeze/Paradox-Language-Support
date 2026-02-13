@@ -2,24 +2,16 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
-import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.search.selector.getConstraint
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
@@ -37,116 +29,36 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val name = queryParameters.name
-        val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-        val constraint0 = queryParameters.selector.getConstraint()
-
-        val constraint = constraint0.optimized(typeExpression)
-        val r = processQueryForDefinitions(name, typeExpression, queryParameters, scope, constraint, consumer)
-        if (!r) return
-    }
-
-    private fun ParadoxIndexConstraint<ParadoxDefinitionIndexInfo>?.optimized(typeExpression: ParadoxDefinitionTypeExpression?): ParadoxIndexConstraint<ParadoxDefinitionIndexInfo>? {
-        // 简化：仅在指定类型且存在对应约束时自动选用
-        if (this != null) return this
-        if (typeExpression == null) return null
-        return ParadoxDefinitionIndexConstraint.get(typeExpression.type)
-    }
-
-    private fun processQueryForDefinitions(
-        name: String?,
-        typeExpression: ParadoxDefinitionTypeExpression?,
-        queryParameters: ParadoxDefinitionSearch.SearchParameters,
-        scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxDefinitionIndexInfo>?,
-        processor: Processor<in ParadoxDefinitionIndexInfo>
-    ): Boolean {
-        if (queryParameters.forFile) {
-            val r = processQueryForFileDefinitions(name, typeExpression, queryParameters, scope, constraint) { processor.process(it) }
-            if (!r) return false
-        }
-        return processQueryForPropertyDefinitions(name, typeExpression, queryParameters, scope, constraint) { processor.process(it) }
-    }
-
-    private fun processQueryForFileDefinitions(
-        name: String?,
-        typeExpression: ParadoxDefinitionTypeExpression?,
-        queryParameters: ParadoxDefinitionSearch.SearchParameters,
-        scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxDefinitionIndexInfo>?,
-        processor: Processor<ParadoxDefinitionIndexInfo>
-    ): Boolean {
-        ProgressManager.checkCanceled()
-        val project = queryParameters.project
-        val ignoreCase = constraint?.ignoreCase == true
-        val finalName = if (ignoreCase) name?.lowercase() else name
-        val actualKey = createActualKey(finalName, typeExpression?.type)
-        val keys = setOf(actualKey)
-
-        return FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FileDefinition, keys, scope, null, null) p@{ file ->
-            ProgressManager.checkCanceled()
-            ParadoxAnalysisManager.getFileInfo(file) ?: return@p true
-            if (queryParameters.gameType != null && selectGameType(file) != queryParameters.gameType) return@p true
-
-            val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FileDefinition, file, project)
-            val data = fileData[actualKey] ?: return@p true
-            if (!matchesName(data.name, finalName, ignoreCase)) return@p true
-            if (!matchesType(data.type, typeExpression?.type)) return@p true
-
-            val source = ParadoxDefinitionSource.File
-            val info = ParadoxDefinitionIndexInfo(source, data.name, data.type, data.subtypes, data.typeKey, -1, data.gameType)
-            info.bind(file, project)
-            if (!matchesSubtypes(info, typeExpression?.subtypes)) return@p true
-            processor.process(info)
-        }
-    }
-
-    private fun processQueryForPropertyDefinitions(
-        name: String?,
-        typeExpression: ParadoxDefinitionTypeExpression?,
-        queryParameters: ParadoxDefinitionSearch.SearchParameters,
-        scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxDefinitionIndexInfo>?,
-        processor: Processor<in ParadoxDefinitionIndexInfo>
-    ): Boolean {
-        ProgressManager.checkCanceled()
-        val project = queryParameters.project
-        val ignoreCase = constraint?.ignoreCase == true
-        val finalName = if (ignoreCase) name?.lowercase() else name
-        val actualKey = createActualKey(finalName, typeExpression?.type)
         val keys = buildSet {
-            add(actualKey)
+            add(createActualKey(queryParameters))
             add(PlsIndexUtil.createLazyKey())
         }
-        val r = PlsIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
+        PlsIndexService.processAllFileData(ParadoxDefinitionIndex::class.java, keys, project, scope, queryParameters.gameType) p@{ file, fileData ->
+            val actualKey = createActualKey(queryParameters)
             val infos = fileData[actualKey].orEmpty()
-            infos.forEach { info ->
-                ProgressManager.checkCanceled()
-                if (!matchesName(info.name, finalName, ignoreCase)) return@forEach
-                if (!matchesType(info.type, typeExpression?.type)) return@forEach
-                val bound = info.copy(source = ParadoxDefinitionSource.Property)
-                bound.bind(file, project)
-                if (!matchesSubtypes(bound, typeExpression?.subtypes)) return@forEach
-                processor.process(bound)
-            }
-            true
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
-        if (!r) return false
-
-        if (constraint != null && constraint.inferred) {
-            return processQueryForPropertyDefinitions(name, typeExpression, queryParameters, scope, null, processor)
-        }
-
-        return true
     }
 
-    private fun createActualKey(name: String?, type: String?): String {
+    private fun createActualKey(queryParameters: ParadoxDefinitionSearch.SearchParameters) : String {
         return when {
-            !name.isNullOrEmpty() && !type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(name, type)
-            !name.isNullOrEmpty() -> PlsIndexUtil.createNameKey(name)
-            !type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(type)
+            !queryParameters.name.isNullOrEmpty() && !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createNameTypeKey(queryParameters.name, queryParameters.type)
+            !queryParameters.name.isNullOrEmpty() -> PlsIndexUtil.createNameKey(queryParameters.name)
+            !queryParameters.type.isNullOrEmpty() -> PlsIndexUtil.createTypeKey(queryParameters.type)
             else -> PlsIndexUtil.createAllKey()
         }
+    }
+
+    private fun processInfo(
+        queryParameters: ParadoxDefinitionSearch.SearchParameters,
+        file: VirtualFile,
+        info: ParadoxDefinitionIndexInfo,
+        consumer: Processor<in ParadoxDefinitionIndexInfo>
+    ): Boolean {
+        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        if (queryParameters.type != null && queryParameters.type != info.type) return true
+        info.bind(file, queryParameters.project)
+        return consumer.process(info)
     }
 
     private fun matchesName(valueName: String, name: String?, ignoreCase: Boolean): Boolean {
@@ -166,3 +78,4 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
         return resolvedSubtypes.containsAll(subtypes)
     }
 }
+

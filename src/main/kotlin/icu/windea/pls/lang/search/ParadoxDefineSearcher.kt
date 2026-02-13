@@ -29,9 +29,8 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDe
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt") // optimized
         if (SearchScope.isEmptyScope(scope)) return
 
-        val variable = queryParameters.variable
         val namespace = queryParameters.namespace
-
+        val variable = queryParameters.variable
         processQueryForDefines(namespace, variable, project, scope, consumer)
     }
 

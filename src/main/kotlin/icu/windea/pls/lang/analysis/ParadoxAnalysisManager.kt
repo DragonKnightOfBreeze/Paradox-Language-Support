@@ -3,6 +3,7 @@ package icu.windea.pls.lang.analysis
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -305,6 +306,18 @@ object ParadoxAnalysisManager {
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()
         }
+    }
+
+    // endregion
+
+    // region Inference Methods
+
+    fun getInferredCurrentGameType(project: Project): ParadoxGameType? {
+        val fileEditorManager = FileEditorManager.getInstance(project)
+        fileEditorManager.selectedEditor?.let { selectGameType(it.file) }?.let { return it }
+        fileEditorManager.selectedEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
+        fileEditorManager.allEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
+        return null
     }
 
     // endregion

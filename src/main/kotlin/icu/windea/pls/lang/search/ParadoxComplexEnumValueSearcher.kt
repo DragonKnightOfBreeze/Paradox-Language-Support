@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil
@@ -18,6 +19,9 @@ import icu.windea.pls.script.ParadoxScriptFileType
  */
 class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueIndexInfo>) {
+        // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if (PlsStates.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
