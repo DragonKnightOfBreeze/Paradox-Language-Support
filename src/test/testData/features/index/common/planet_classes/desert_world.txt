@@ -1,0 +1,2 @@
+climate = arid
+habitability = 0.6

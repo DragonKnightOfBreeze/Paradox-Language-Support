@@ -1,0 +1,49 @@
+types = {
+    # 基础：属性定义，name = type key
+    type[starship] = {
+        path = "common/starships"
+        path_extension = .txt
+    }
+
+    # type_per_file：文件级定义
+    type[planet_class] = {
+        path = "common/planet_classes"
+        path_extension = .txt
+        type_per_file = yes
+    }
+
+    # name_field：从指定子属性取名
+    type[alien_species] = {
+        path = "common/alien_species"
+        path_extension = .txt
+        name_field = "species_name"
+    }
+
+    # name_field = ""：匿名定义
+    type[star_system] = {
+        path = "common/star_systems"
+        path_extension = .txt
+        name_field = ""
+    }
+
+    # skip_root_key：跳过顶级键
+    type[space_station] = {
+        path = "common/space_stations"
+        path_extension = .txt
+        skip_root_key = stations
+    }
+
+    # type_key_filter（包含）
+    ## type_key_filter = { warp_drive hyperdrive }
+    type[ftl_drive] = {
+        path = "common/drives"
+        path_extension = .txt
+    }
+
+    # type_key_filter（排除），与 ftl_drive 同路径
+    ## type_key_filter <> { warp_drive hyperdrive }
+    type[sublight_drive] = {
+        path = "common/drives"
+        path_extension = .txt
+    }
+}
