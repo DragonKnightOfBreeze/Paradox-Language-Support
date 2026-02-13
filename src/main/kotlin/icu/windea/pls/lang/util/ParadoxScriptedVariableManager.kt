@@ -9,9 +9,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-/**
- * 用于处理封装变量。
- */
 object ParadoxScriptedVariableManager {
     fun isGlobalFilePath(path: ParadoxPath): Boolean {
         return "common/scripted_variables".matchesPath(path.path)

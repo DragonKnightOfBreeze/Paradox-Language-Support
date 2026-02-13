@@ -81,9 +81,6 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
-/**
- * 用于处理作用域。
- */
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
     object Keys : KeyRegistry() {

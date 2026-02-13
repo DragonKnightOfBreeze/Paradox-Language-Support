@@ -20,12 +20,6 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
-/**
- * 用于处理定义。
- *
- * @see ParadoxDefinitionElement
- * @see ParadoxDefinitionInfo
- */
 @Suppress("unused")
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
