@@ -164,7 +164,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     private fun getLocalizedName(element: PsiElement): String? {
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
-            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedName(element)
             else -> null
         }
     }

@@ -12,14 +12,11 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+@Suppress("unused")
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
         val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo>>(Keys)
@@ -35,14 +32,11 @@ object ParadoxComplexEnumValueManager {
         }
     }
 
-    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).find()
+    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
+        return ParadoxComplexEnumValueService.resolveNameLocalisation(name, contextElement, locale)
     }
 
-    @Suppress("unused")
-    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): Set<ParadoxLocalisationProperty> {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+        return ParadoxComplexEnumValueService.resolveNameLocalisations(name, contextElement, locale)
     }
 }

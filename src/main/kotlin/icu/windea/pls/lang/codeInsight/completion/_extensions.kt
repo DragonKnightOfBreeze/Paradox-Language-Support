@@ -21,8 +21,6 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.util.values.singletonSetOrEmpty
-import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -88,7 +86,7 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
 fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
-        localizedNames = ParadoxScriptedVariableManager.getLocalizedName(element).to.singletonSetOrEmpty()
+        localizedNames = ParadoxScriptedVariableManager.getLocalizedNames(element)
     }
     return this
 }

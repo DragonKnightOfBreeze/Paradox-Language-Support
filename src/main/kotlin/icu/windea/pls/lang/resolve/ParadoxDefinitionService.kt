@@ -1,10 +1,9 @@
 package icu.windea.pls.lang.resolve
 
-import com.intellij.lang.LighterAST
-import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -19,29 +18,24 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
+import icu.windea.pls.lang.util.ParadoxDefinitionManager.getTypeKey
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 
 object ParadoxDefinitionService {
-    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
-        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
-
-        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
-        if (fromInherit != null) return fromInherit
-        return null
-    }
-
     /**
      * @see ParadoxDefinitionInheritSupport.getSuperDefinition
      */
@@ -86,6 +80,30 @@ object ParadoxDefinitionService {
         }
     }
 
+    fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+        val fileInfo = file.fileInfo ?: return null
+        val gameType = fileInfo.rootInfo.gameType
+        val path = fileInfo.path
+        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val typeKey = getTypeKey(element) ?: return null
+        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
+        if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
+        val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
+    }
+
+    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
+        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
+
+        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
+        if (fromInherit != null) return fromInherit
+        return null
+    }
+
     fun resolveName(element: ParadoxDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
         // NOTE 2.0.6 inline logic is not applied here
         // `name_from_file = yes` - use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property `starts_with`)
@@ -97,23 +115,6 @@ object ParadoxDefinitionService {
             typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
             typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
             else -> selectScope { element.nameFieldElement(typeConfig.nameField) }?.stringValue().orEmpty()
-        }
-    }
-
-    fun resolveName(node: LighterASTNode, tree: LighterAST, typeKey: String, typeConfig: CwtTypeConfig): String? {
-        // NOTE 2.0.6 inline logic is not applied here
-        // `name_from_file = yes` - use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property `starts_with`)
-        // no `name_field` - use type key (aka property name), remove prefix if exists (while the prefix is declared by config property `starts_with`)
-        // `name_field = ""` - force empty (aka anonymous)
-        // `name_field = "-"` - from property value (which should be a string)
-        // else - from specific property value in definition declaration (while the property name is declared by config property `name_field`)
-        return when {
-            typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            typeConfig.nameField == "" -> ""
-            typeConfig.nameField == "-" -> ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
-            else -> ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, typeConfig.nameField!!)
-                ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
         }
     }
 

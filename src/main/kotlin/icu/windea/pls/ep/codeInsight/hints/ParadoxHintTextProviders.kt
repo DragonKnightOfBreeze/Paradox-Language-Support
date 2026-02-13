@@ -24,6 +24,7 @@ class ParadoxDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition
     override val source: Source get() = Source.PrimaryLocalisation
 
     override fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+        // raw localisation text
         return doGetHintLocalisation(element, definitionInfo, locale)?.value?.orNull()
     }
 
@@ -36,7 +37,8 @@ class ParadoxInferredScriptedVariableHintTextProvider : ParadoxHintTextProviderB
     override val source: Source get() = Source.NameLocalisation
 
     override fun doGetHintText(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): String? {
-        return ParadoxScriptedVariableManager.getLocalizedName(element)
+        // raw localisation text
+        return doGetHintLocalisation(element, name, locale)?.value?.orNull()
     }
 
     override fun doGetHintLocalisation(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {

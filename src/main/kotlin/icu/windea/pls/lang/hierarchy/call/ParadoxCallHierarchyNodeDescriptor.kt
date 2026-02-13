@@ -105,7 +105,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
             is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableManager.getLocalizedName(element)
-            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            is ParadoxDefinitionElement -> ParadoxDefinitionManager.getLocalizedName(element)
             else -> null
         }
     }

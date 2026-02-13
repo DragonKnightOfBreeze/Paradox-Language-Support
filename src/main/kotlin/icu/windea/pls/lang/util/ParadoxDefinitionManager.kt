@@ -4,8 +4,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -15,14 +13,8 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxMemberService
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -71,36 +63,18 @@ object ParadoxDefinitionManager {
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // type key must be valid
         if (getTypeKey(element).isNullOrEmpty()) return null
-        // get from cache
-        return doGetInfoFromCache(element)
-    }
-
-    private fun doGetInfoFromCache(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = runReadActionSmartly { doGetInfo(element, file) }
+            val value = runReadActionSmartly { ParadoxDefinitionService.resolveInfo(element, file) }
+            // TODO 2.1.3 定义信息本身只需要依赖 file 即可（子类型信息和声明信息可能有不同的依赖）
             val trackers = listOfNotNull(
                 file,
                 value?.let { v -> ParadoxDefinitionService.getModificationTracker(v) },
             )
             value.withDependencyItems(trackers)
         }
-    }
-
-    private fun doGetInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
-        val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
-        val path = fileInfo.path
-        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-        val typeKey = getTypeKey(element) ?: return null
-        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
-        if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
-        val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
     }
 
     fun getLocalizedName(element: ParadoxDefinitionElement): String? {

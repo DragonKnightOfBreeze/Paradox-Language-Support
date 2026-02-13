@@ -12,7 +12,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -108,13 +107,12 @@ object ParadoxDefinitionInjectionManager {
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
-        // from cache (invalidated on ScriptFileTracker)
+        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveInfo(element, file) }
-            val tracker = ParadoxModificationTrackers.ScriptFile
-            value.withDependencyItems(tracker)
+            value.withDependencyItems(file)
         }
     }
 

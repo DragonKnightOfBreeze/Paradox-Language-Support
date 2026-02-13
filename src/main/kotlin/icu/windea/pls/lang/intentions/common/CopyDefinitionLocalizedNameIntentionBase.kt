@@ -29,7 +29,7 @@ abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, Dumb
     private fun getText(context: ActionContext): String? {
         val element = findElement(context) ?: return null
         // ParadoxHintTextProvider.getHintText(element)?.let { return it }
-        return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+        return ParadoxDefinitionManager.getLocalizedName(element)
     }
 
     private fun findElement(context: ActionContext): ParadoxDefinitionElement? {
