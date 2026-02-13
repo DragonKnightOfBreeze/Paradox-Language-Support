@@ -12,9 +12,9 @@ import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * on action 的扩展规则。
+ * 动作触发（on action）的扩展规则。
  *
- * 用于为对应的 on action 提供额外的提示信息（如文档注释、内嵌提示），以及指定事件类型。
+ * 用于为对应的动作触发（on action）提供额外的提示信息（如文档注释、内嵌提示），以及指定事件类型。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。

@@ -13,7 +13,7 @@ import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 游戏规则的扩展规则。
+ * 游戏规则（game rule）的扩展规则。
  *
  * 用于为对应的游戏规则（game rule）提供额外的提示信息（如文档注释、内嵌提示），以及重载声明规则。
  *

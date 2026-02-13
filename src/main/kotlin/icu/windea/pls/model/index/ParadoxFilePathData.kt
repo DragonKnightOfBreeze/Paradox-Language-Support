@@ -7,7 +7,7 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * @property directory 文件所在目录。相对于入口目录，参见 [icu.windea.pls.model.ParadoxEntryInfo]。
  * @property included 是否被包含。被包含意味着会显示在文件视图中，并提供目录补全。
- * @property gameType 对应的游戏类型。
+ * @property gameType 游戏类型。
  *
  * @see icu.windea.pls.lang.index.ParadoxFilePathIndex
  */

@@ -31,7 +31,6 @@ data class ParadoxDefinitionInjectionInfo(
     val configGroup: CwtConfigGroup get() = modeConfig.configGroup
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
-
     val declarationConfig: CwtDeclarationConfig? get() = type?.let { configGroup.declarations.get(it) }
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)

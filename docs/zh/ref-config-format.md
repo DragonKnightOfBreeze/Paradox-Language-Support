@@ -892,17 +892,17 @@ definitions = {
 - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
 - 此扩展用于“提示与上下文增强”，并不直接改变“声明”的结构；与声明的协作发生在使用侧的上下文构建与检查/文档阶段。
 
-#### 游戏规则的扩展规则 {#config-extended-game-rule}
+#### 游戏规则（game rule）的扩展规则 {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
 
-- **用途**：为“游戏规则（game rule）”（类型为 `game_rule` 的定义）提供文档/提示增强，并可“重载声明规则”。
+- **用途**：为游戏规则（game rule，即类型为 `game_rule` 的定义）提供文档/提示增强，并可“重载声明规则”。
 - **路径定位**：`game_rules/{name}`。
 - **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
 
 - **字段与语义**：
-  - `name`：游戏规则名或其匹配模式。
+  - `name`：名称或其匹配模式。
   - `hint: string?`：可选提示文本（用于快速文档/内嵌提示）。
   - `configForDeclaration: CwtPropertyConfig?`：若当前条目是“属性节点”，其值/子块将作为“声明规则重载”在使用处生效；值内若为 `single_alias_right[...]` 将被内联展开。
 
@@ -942,17 +942,17 @@ game_rules = {
 - 若值为 `single_alias_right[...]`，会先被内联，再作为重载规则生效。
 - 该扩展仅影响“声明规则的来源/结构”与“提示信息”，不改变整体优先级与覆盖方式。
 
-#### on action 的扩展规则 {#config-extended-on-action}
+#### 动作触发（on action）的扩展规则 {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
 
-- **用途**：为具体的 `on_action` 定义提供文档/提示增强，并指定“事件类型”以影响声明上下文中与事件有关的引用。
+- **用途**：为动作触发（on action，即类型为 `on_action` 的定义）提供文档/提示增强，并指定“事件类型”以影响声明上下文中与事件有关的引用。
 - **路径定位**：`on_actions/{name}`。
 - **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
 
 - **字段与语义**：
-  - `name`：on_action 名称或其匹配模式。
+  - `name`：名称或其匹配模式。
   - `event_type: string`（必填）：事件类型。用于在声明上下文中将与事件相关的数据表达式（例如 `<event>`）替换为该事件类型对应的表达式。
   - `hint: string?`：可选提示文本（用于快速文档/内嵌提示）。
 

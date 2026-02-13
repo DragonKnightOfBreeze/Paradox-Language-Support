@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 内联脚本的扩展规则。
+ * 内联脚本（inline script）的扩展规则。
  *
  * 用于为对应的内联脚本（inline script）指定规则上下文与作用域上下文。
  *
