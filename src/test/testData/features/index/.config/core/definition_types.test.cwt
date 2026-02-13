@@ -46,4 +46,33 @@ types = {
         path = "common/drives"
         path_extension = .txt
     }
+
+    # starts_with：名称去除前缀
+    ## starts_with = d_
+    type[district] = {
+        path = "common/districts"
+        path_extension = .txt
+    }
+
+    # type_key_regex：正则匹配 type key
+    ## type_key_regex = "^fleet_.*"
+    type[fleet_template] = {
+        path = "common/fleets"
+        path_extension = .txt
+    }
+
+    # skip_root_key 多选项：两种可选根键
+    type[garrison] = {
+        path = "common/garrisons"
+        path_extension = .txt
+        skip_root_key = ground_forces
+        skip_root_key = naval_forces
+    }
+
+    # name_field = "-"：名称取自属性值
+    type[anomaly] = {
+        path = "common/anomalies"
+        path_extension = .txt
+        name_field = "-"
+    }
 }

@@ -300,4 +300,275 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    // region Search Starts With
+
+    @Test
+    fun testDefinitionSearch_StartsWith() {
+        // Arrange
+        configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 用去除前缀后的名称搜索
+        val result = ParadoxDefinitionSearch.search("city", "district", selector).findFirst()
+
+        // Assert
+        Assert.assertNotNull(result)
+        result!!
+        Assert.assertEquals("city", result.name)
+        Assert.assertEquals("district", result.type)
+        Assert.assertEquals("d_city", result.typeKey)
+    }
+
+    @Test
+    fun testDefinitionSearch_StartsWith_AllByType() {
+        // Arrange
+        configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val results = ParadoxDefinitionSearch.search(null, "district", selector).findAll()
+
+        // Assert
+        Assert.assertEquals(3, results.size)
+        Assert.assertEquals(setOf("city", "mining", "generator"), results.map { it.name }.toSet())
+    }
+
+    // endregion
+
+    // region Search Type Key Regex
+
+    @Test
+    fun testDefinitionSearch_TypeKeyRegex() {
+        // Arrange
+        configureScriptFile("common/fleets/00_fleets.txt", "features/index/common/fleets/00_fleets.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val results = ParadoxDefinitionSearch.search(null, "fleet_template", selector).findAll()
+
+        // Assert: 仅匹配正则的定义
+        Assert.assertEquals(2, results.size)
+        Assert.assertEquals(setOf("fleet_assault", "fleet_patrol"), results.map { it.name }.toSet())
+    }
+
+    @Test
+    fun testDefinitionSearch_TypeKeyRegex_ByName() {
+        // Arrange
+        configureScriptFile("common/fleets/00_fleets.txt", "features/index/common/fleets/00_fleets.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 不匹配正则的属性名搜索不到结果
+        val result = ParadoxDefinitionSearch.search("solo_corvette", "fleet_template", selector).findFirst()
+
+        // Assert
+        Assert.assertNull(result)
+    }
+
+    // endregion
+
+    // region Search Skip Root Key Alternatives
+
+    @Test
+    fun testDefinitionSearch_SkipRootKey_Alternatives() {
+        // Arrange
+        configureScriptFile("common/garrisons/00_garrisons.txt", "features/index/common/garrisons/00_garrisons.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val results = ParadoxDefinitionSearch.search(null, "garrison", selector).findAll()
+
+        // Assert: 跨两种根键，所有子定义均可搜到
+        Assert.assertEquals(3, results.size)
+        Assert.assertEquals(setOf("militia", "elite_guard", "coastal_battery"), results.map { it.name }.toSet())
+    }
+
+    // endregion
+
+    // region Search Name Field Dash
+
+    @Test
+    fun testDefinitionSearch_NameFieldDash() {
+        // Arrange
+        configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 用属性值（name_field = "-"）搜索
+        val result = ParadoxDefinitionSearch.search("alien_signal", "anomaly", selector).findFirst()
+
+        // Assert
+        Assert.assertNotNull(result)
+        result!!
+        Assert.assertEquals("alien_signal", result.name)
+        Assert.assertEquals("anomaly_1", result.typeKey)
+    }
+
+    @Test
+    fun testDefinitionSearch_NameFieldDash_TypeKeyNotSearchable() {
+        // Arrange
+        configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 用属性键搜索应返回空（因为 name 取自属性值）
+        val result = ParadoxDefinitionSearch.search("anomaly_1", "anomaly", selector).findFirst()
+
+        // Assert
+        Assert.assertNull(result)
+    }
+
+    // endregion
+
+    // region searchFile / searchProperty
+
+    @Test
+    fun testDefinitionSearch_SearchFile_TypePerFile() {
+        // Arrange
+        configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val files = ParadoxDefinitionSearch.searchFile("ocean_world", "planet_class", selector).findAll()
+
+        // Assert: 文件级定义通过 searchFile 可获取 PsiFile
+        Assert.assertEquals(1, files.size)
+        Assert.assertTrue(files.single() is icu.windea.pls.script.psi.ParadoxScriptFile)
+    }
+
+    @Test
+    fun testDefinitionSearch_SearchFile_PropertyDefinition() {
+        // Arrange
+        configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 属性级定义通过 searchFile 应返回空
+        val files = ParadoxDefinitionSearch.searchFile("explorer", "starship", selector).findAll()
+
+        // Assert
+        Assert.assertTrue(files.isEmpty())
+    }
+
+    @Test
+    fun testDefinitionSearch_SearchProperty() {
+        // Arrange
+        configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val properties = ParadoxDefinitionSearch.searchProperty("explorer", "starship", selector).findAll()
+
+        // Assert: 属性级定义通过 searchProperty 可获取 ParadoxScriptProperty
+        Assert.assertEquals(1, properties.size)
+        Assert.assertEquals("explorer", properties.single().name)
+    }
+
+    @Test
+    fun testDefinitionSearch_SearchProperty_FileDefinition() {
+        // Arrange
+        configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 文件级定义通过 searchProperty 应返回空
+        val properties = ParadoxDefinitionSearch.searchProperty("ocean_world", "planet_class", selector).findAll()
+
+        // Assert
+        Assert.assertTrue(properties.isEmpty())
+    }
+
+    // endregion
+
+    // region Comprehensive Cross-Type Search
+
+    @Test
+    fun testDefinitionSearch_Comprehensive_AllTypes() {
+        // Arrange: 加载所有类型的测试文件
+        configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
+        configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
+        configureScriptFile("common/planet_classes/desert_world.txt", "features/index/common/planet_classes/desert_world.txt")
+        configureScriptFile("common/alien_species/00_species.txt", "features/index/common/alien_species/00_species.txt")
+        configureScriptFile("common/star_systems/00_systems.txt", "features/index/common/star_systems/00_systems.txt")
+        configureScriptFile("common/space_stations/00_stations.txt", "features/index/common/space_stations/00_stations.txt")
+        configureScriptFile("common/drives/00_drives.txt", "features/index/common/drives/00_drives.txt")
+        configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
+        configureScriptFile("common/fleets/00_fleets.txt", "features/index/common/fleets/00_fleets.txt")
+        configureScriptFile("common/garrisons/00_garrisons.txt", "features/index/common/garrisons/00_garrisons.txt")
+        configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
+
+        // Assert: 各类型定义总数
+        // starship(3) + planet_class(2) + alien_species(2) + star_system(2)
+        // + space_station(2) + ftl_drive(2) + sublight_drive(1)
+        // + district(3) + fleet_template(2) + garrison(3) + anomaly(3)
+        Assert.assertEquals(25, results.size)
+
+        // 验证每种类型的数量
+        val byType = results.groupBy { it.type }
+        Assert.assertEquals(3, byType["starship"]?.size)
+        Assert.assertEquals(2, byType["planet_class"]?.size)
+        Assert.assertEquals(2, byType["alien_species"]?.size)
+        Assert.assertEquals(2, byType["star_system"]?.size)
+        Assert.assertEquals(2, byType["space_station"]?.size)
+        Assert.assertEquals(2, byType["ftl_drive"]?.size)
+        Assert.assertEquals(1, byType["sublight_drive"]?.size)
+        Assert.assertEquals(3, byType["district"]?.size)
+        Assert.assertEquals(2, byType["fleet_template"]?.size)
+        Assert.assertEquals(3, byType["garrison"]?.size)
+        Assert.assertEquals(3, byType["anomaly"]?.size)
+    }
+
+    @Test
+    fun testDefinitionSearch_Comprehensive_MixedSourceTypes() {
+        // Arrange: 加载文件级和属性级定义
+        configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
+        configureScriptFile("common/planet_classes/ocean_world.txt", "features/index/common/planet_classes/ocean_world.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act
+        val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
+
+        // Assert: 混合 source 类型
+        Assert.assertEquals(4, results.size)
+        val fileSources = results.filter { it.source == ParadoxDefinitionSource.File }
+        val propertySources = results.filter { it.source == ParadoxDefinitionSource.Property }
+        Assert.assertEquals(1, fileSources.size)
+        Assert.assertEquals("planet_class", fileSources.single().type)
+        Assert.assertEquals(3, propertySources.size)
+        Assert.assertTrue(propertySources.all { it.type == "starship" })
+    }
+
+    @Test
+    fun testDefinitionSearch_Comprehensive_MultiFileScope() {
+        // Arrange
+        configureScriptFile("common/starships/00_starships.txt", "features/index/common/starships/00_starships.txt")
+        val starshipsFile = myFixture.file.virtualFile
+        configureScriptFile("common/districts/00_districts.txt", "features/index/common/districts/00_districts.txt")
+        val districtsFile = myFixture.file.virtualFile
+        configureScriptFile("common/anomalies/00_anomalies.txt", "features/index/common/anomalies/00_anomalies.txt")
+
+        // Act: 仅搜索 starships + districts 两个文件
+        val unionScope = GlobalSearchScope.filesScope(project, listOf(starshipsFile, districtsFile))
+        val selector = selector(project, myFixture.file).definition().withSearchScope(unionScope)
+        val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
+
+        // Assert: 3 starship + 3 district = 6（排除 anomaly）
+        Assert.assertEquals(6, results.size)
+        Assert.assertEquals(setOf("starship", "district"), results.map { it.type }.toSet())
+    }
+
+    // endregion
 }

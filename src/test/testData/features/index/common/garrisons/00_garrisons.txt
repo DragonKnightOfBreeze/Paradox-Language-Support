@@ -1,0 +1,18 @@
+ground_forces = {
+    militia = {
+        strength = 10
+        upkeep = 1
+    }
+
+    elite_guard = {
+        strength = 50
+        upkeep = 5
+    }
+}
+
+naval_forces = {
+    coastal_battery = {
+        strength = 30
+        upkeep = 3
+    }
+}
