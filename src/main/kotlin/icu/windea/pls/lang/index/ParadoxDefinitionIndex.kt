@@ -27,7 +27,6 @@ import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsFileManager
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.forDefinitionSource
 import icu.windea.pls.model.forGameType
@@ -35,7 +34,6 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import java.io.DataInput
 import java.io.DataOutput
@@ -93,6 +91,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 ProgressManager.checkCanceled()
 
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
+                val source = ParadoxDefinitionService.resolveSource(element) ?: return
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return
                 if (rootKeys.any { it.isParameterized() }) return // 排除顶级键可能带参数的情况
@@ -102,11 +101,6 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val type = typeConfig.name.orNull() ?: return
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
                 val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey)?.map { it.name }?.optimized()
-                val source = when (element) {
-                    is ParadoxScriptFile -> ParadoxDefinitionSource.File
-                    is ParadoxScriptProperty -> ParadoxDefinitionSource.Property
-                    else -> return // unexpected
-                }
 
                 val info = ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, element.startOffset, gameType)
                 addToFileData(info, fileData)

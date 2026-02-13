@@ -33,7 +33,10 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager.getTypeKey
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxDefinitionService {
     /**
@@ -85,6 +88,7 @@ object ParadoxDefinitionService {
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val source = resolveSource(element) ?: return null
         val typeKey = getTypeKey(element) ?: return null
         val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
         if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
@@ -92,7 +96,7 @@ object ParadoxDefinitionService {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized())
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized(), source)
     }
 
     fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
@@ -102,6 +106,14 @@ object ParadoxDefinitionService {
         val fromInherit = getModificationTrackerFromInherit(definitionInfo)
         if (fromInherit != null) return fromInherit
         return null
+    }
+
+    fun resolveSource(element: ParadoxDefinitionElement): ParadoxDefinitionSource? {
+        return when (element) {
+            is ParadoxScriptFile -> ParadoxDefinitionSource.File
+            is ParadoxScriptProperty -> ParadoxDefinitionSource.Property
+            else -> null // unexpected
+        }
     }
 
     fun resolveName(element: ParadoxDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {

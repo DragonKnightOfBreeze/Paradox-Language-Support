@@ -14,7 +14,6 @@ import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -24,11 +23,15 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 定义信息。
+ * 定义的解析信息。
  *
- * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。
- * @property typeKey 定义的类型键（不一定是定义的名字）。
- * @property rootKeys 定义的一组顶级键。
+ * @property source 来源。
+ * @property name 名字。如果是空字符串，则表示此定义是匿名的。
+ * @property type 类型。
+ * @property typeKey 类型键（不一定是定义的名字）。
+ * @property rootKeys 一组顶级键。
+ * @property typeConfig 对应的类型规则。
+ * @property memberPath 成员路径。作为文件的定义的成员路径始终为空。
  */
 class ParadoxDefinitionInfo(
     val element: ParadoxDefinitionElement, // use element directly here
@@ -37,6 +40,7 @@ class ParadoxDefinitionInfo(
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
     val rootKeys: List<String>,
+    val source: ParadoxDefinitionSource,
 ) : UserDataHolderBase() {
     val configGroup: CwtConfigGroup get() = typeConfig.configGroup
     val project: Project get() = configGroup.project
@@ -87,7 +91,7 @@ class ParadoxDefinitionInfo(
 
     private fun doGetMemberPath(): ParadoxMemberPath {
         // NOTE 2.1.2 file definition has empty member path
-        if(typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
+        if (typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
 
         return ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
     }
@@ -146,10 +150,8 @@ class ParadoxDefinitionInfo(
     }
 
     override fun toString(): String {
-        return "ParadoxDefinitionInfo(name=$name, types=$typesText, gameType=$gameType)"
+        return "ParadoxDefinitionInfo(source=$source, name=$name, types=$typesText, gameType=$gameType)"
     }
-
-    object Keys : KeyRegistry()
 
     data class RelatedImageInfo(
         val key: String,

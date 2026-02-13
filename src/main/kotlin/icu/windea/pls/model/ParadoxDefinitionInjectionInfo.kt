@@ -11,6 +11,15 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 
+/**
+ * 定义注入的解析信息。
+ *
+ * @property mode 注入模式。必须合法。
+ * @property target 目标定义的名字。可以为 `null`。
+ * @property type 目标定义的类型。
+ * @property modeConfig 注入模式对应的规则。
+ * @property typeConfig 目标定义的类型对应的规则。
+ */
 data class ParadoxDefinitionInjectionInfo(
     val mode: String, // must be valid
     val target: String?,
