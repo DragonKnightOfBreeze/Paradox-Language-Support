@@ -28,6 +28,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.model.forDefinitionSource
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -106,7 +107,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                     else -> return // unexpected
                 }
 
-                val info = ParadoxDefinitionIndexInfo(ParadoxDefinitionSource.Property, name, type, subtypes, typeKey, element.startOffset, gameType)
+                val source = ParadoxDefinitionSource.Property
+                val info = ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, element.startOffset, gameType)
                 fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
                 fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
                 if (name.isNotEmpty()) {
@@ -154,7 +156,6 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         value.forEach { info ->
-            storage.writeUTFFast(info.source.name)
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
             val subtypes = info.subtypes
@@ -165,6 +166,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 subtypes.forEach { storage.writeUTFFast(it) }
             }
             storage.writeUTFFast(info.typeKey)
+            storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeIntFast(info.elementOffset)
         }
     }
@@ -175,14 +177,14 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         return MutableList(size) {
-            val source = ParadoxDefinitionSource.valueOf(storage.readUTFFast())
             val name = storage.readUTFFast()
             val type = storage.readUTFFast()
             val subtypesSize = storage.readIntFast()
             val subtypes = if (subtypesSize < 0) null else List(subtypesSize) { storage.readUTFFast() }
             val typeKey = storage.readUTFFast()
+            val source = storage.readByte().deoptimized(OptimizerRegistry.forDefinitionSource())
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, elementOffset, gameType)
+            ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, elementOffset, gameType)
         }
     }
 }

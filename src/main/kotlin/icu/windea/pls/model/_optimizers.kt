@@ -6,6 +6,7 @@ import icu.windea.pls.core.optimizer.OptimizerRegistry
 fun OptimizerRegistry.forCwtType() = register(CwtTypeOptimizer)
 fun OptimizerRegistry.forCwtSeparatorType() = register(CwtSeparatorTypeOptimizer)
 fun OptimizerRegistry.forGameType() = register(ParadoxGameTypeOptimizer)
+fun OptimizerRegistry.forDefinitionSource() = register(ParadoxDefinitionSourceOptimizer)
 fun OptimizerRegistry.forLocalisationType() = register(ParadoxLocalisationTypeOptimizer)
 
 private object CwtTypeOptimizer : Optimizer<CwtType, Byte> {
@@ -35,6 +36,16 @@ private object ParadoxGameTypeOptimizer : Optimizer<ParadoxGameType, Byte> {
 
     override fun deoptimize(input: Byte): ParadoxGameType {
         return ParadoxGameType.getAll(withCore = true)[input.toInt() + 1]
+    }
+}
+
+private object ParadoxDefinitionSourceOptimizer : Optimizer<ParadoxDefinitionSource, Byte> {
+    override fun optimize(input: ParadoxDefinitionSource): Byte {
+        return input.ordinal.toByte()
+    }
+
+    override fun deoptimize(input: Byte): ParadoxDefinitionSource {
+        return ParadoxDefinitionSource.entries[input.toInt()]
     }
 }
 
