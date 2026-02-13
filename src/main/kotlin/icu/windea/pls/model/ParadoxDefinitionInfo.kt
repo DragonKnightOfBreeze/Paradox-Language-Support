@@ -35,12 +35,12 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class ParadoxDefinitionInfo(
     val element: ParadoxDefinitionElement, // use element directly here
+    val source: ParadoxDefinitionSource,
     val typeConfig: CwtTypeConfig,
     name0: String?, // null -> lazy get
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
     val rootKeys: List<String>,
-    val source: ParadoxDefinitionSource,
 ) : UserDataHolderBase() {
     val configGroup: CwtConfigGroup get() = typeConfig.configGroup
     val project: Project get() = configGroup.project

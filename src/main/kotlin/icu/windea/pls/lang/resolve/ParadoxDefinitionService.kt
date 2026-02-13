@@ -96,7 +96,7 @@ object ParadoxDefinitionService {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, rootKeys.optimized(), source)
+        return ParadoxDefinitionInfo(element, source, typeConfig, null, null, typeKey, rootKeys.optimized())
     }
 
     fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {

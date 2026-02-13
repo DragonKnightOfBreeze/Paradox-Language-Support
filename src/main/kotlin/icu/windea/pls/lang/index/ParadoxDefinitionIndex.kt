@@ -102,7 +102,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
                 val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey)?.map { it.name }?.optimized()
 
-                val info = ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, element.startOffset, gameType)
+                val info = ParadoxDefinitionIndexInfo(source,name, type, subtypes, typeKey, element.startOffset, gameType)
                 addToFileData(info, fileData)
             }
         })
@@ -139,6 +139,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         value.forEach { info ->
+            storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
             val subtypes = info.subtypes
@@ -149,7 +150,6 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 subtypes.forEach { storage.writeUTFFast(it) }
             }
             storage.writeUTFFast(info.typeKey)
-            storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeIntFast(info.elementOffset)
         }
     }
@@ -160,14 +160,14 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         return MutableList(size) {
+            val source = storage.readByte().deoptimized(OptimizerRegistry.forDefinitionSource())
             val name = storage.readUTFFast()
             val type = storage.readUTFFast()
             val subtypesSize = storage.readIntFast()
             val subtypes = if (subtypesSize < 0) null else List(subtypesSize) { storage.readUTFFast() }
             val typeKey = storage.readUTFFast()
-            val source = storage.readByte().deoptimized(OptimizerRegistry.forDefinitionSource())
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionIndexInfo(name, type, subtypes, typeKey, source, elementOffset, gameType)
+            ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, elementOffset, gameType)
         }
     }
 }

@@ -11,11 +11,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @see icu.windea.pls.lang.index.ParadoxDefinitionIndex
  */
 data class ParadoxDefinitionIndexInfo(
+    val source: ParadoxDefinitionSource,
     val name: String,
     val type: String,
     val subtypes: List<String>?,
     val typeKey: String,
-    val source: ParadoxDefinitionSource,
     val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo() {
