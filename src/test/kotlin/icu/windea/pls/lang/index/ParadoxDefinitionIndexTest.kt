@@ -481,11 +481,25 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region No Matched Type
+    // region Edge Cases
+
+    @Test
+    fun testDefinitionIndex_EmptyFile() {
+        // Arrange: 文件仅含注释，无任何属性
+        markFileInfo(ParadoxGameType.Stellaris, "common/starships/02_empty.txt")
+        val psiFile = myFixture.configureByFile("features/index/common/starships/02_empty.txt")
+
+        // Act
+        val project = project
+        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+
+        // Assert: 无索引数据
+        Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
+    }
 
     @Test
     fun testDefinitionIndex_NoMatchedType() {
-        // Arrange: 使用一个没有匹配类型规则的路径
+        // Arrange: 路径无匹配的类型规则
         markFileInfo(ParadoxGameType.Stellaris, "common/no_rule/00_data.txt")
         val psiFile = myFixture.configureByFile("features/index/common/no_rule/01_inject.txt")
 
@@ -495,6 +509,50 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
         // Assert: 无索引数据
         Assert.assertTrue("fileData=$fileData", fileData.isEmpty())
+    }
+
+    @Test
+    fun testDefinitionIndex_TypePerFile_ElementOffset() {
+        // Arrange: 文件级定义的 elementOffset 应为 0
+        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/ocean_world.txt")
+        val psiFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
+
+        // Act
+        val project = project
+        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+
+        // Assert
+        val info = fileData[PlsIndexUtil.createAllKey()].orEmpty().single()
+        Assert.assertEquals(ParadoxDefinitionSource.File, info.source)
+        Assert.assertEquals(0, info.elementOffset)
+    }
+
+    @Test
+    fun testDefinitionIndex_NameTypeKey_CrossTypeIsolation() {
+        // Arrange: 加载不同类型的文件，验证 nameTypeKey 的类型隔离性
+        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        myFixture.configureByFile("features/index/common/starships/00_starships.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        myFixture.configureByFile("features/index/common/drives/00_drives.txt")
+
+        // Act
+        val project = project
+        val scope = GlobalSearchScope.projectScope(project)
+
+        // Assert: nameTypeKey 正确隔离不同类型
+        val explorerStarship = FileBasedIndex.getInstance()
+            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("explorer", "starship"), scope).flatten()
+        Assert.assertEquals(1, explorerStarship.size)
+
+        // explorer 不属于 ftl_drive 类型
+        val explorerFtl = FileBasedIndex.getInstance()
+            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("explorer", "ftl_drive"), scope).flatten()
+        Assert.assertTrue(explorerFtl.isEmpty())
+
+        // warp_drive 属于 ftl_drive 但不属于 starship
+        val warpStarship = FileBasedIndex.getInstance()
+            .getValues(PlsIndexKeys.Definition, PlsIndexUtil.createNameTypeKey("warp_drive", "starship"), scope).flatten()
+        Assert.assertTrue(warpStarship.isEmpty())
     }
 
     // endregion
