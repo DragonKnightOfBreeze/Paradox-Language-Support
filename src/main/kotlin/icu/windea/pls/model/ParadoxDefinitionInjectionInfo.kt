@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 
 /**
@@ -16,7 +15,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
  *
  * @property mode 注入模式。必须合法。
  * @property target 目标定义的名字。可以为 `null`。
- * @property type 目标定义的类型。
+ * @property type 目标定义的类型。可以为 `null`。
  * @property modeConfig 注入模式对应的规则。
  * @property typeConfig 目标定义的类型对应的规则。
  */
@@ -33,7 +32,7 @@ data class ParadoxDefinitionInjectionInfo(
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
 
-    val declarationConfig: CwtDeclarationConfig? get() = type?.orNull()?.let { configGroup.declarations.get(it) }
+    val declarationConfig: CwtDeclarationConfig? get() = type?.let { configGroup.declarations.get(it) }
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
