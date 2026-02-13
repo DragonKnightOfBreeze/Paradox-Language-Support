@@ -34,6 +34,8 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         myFixture.configureByFile(testDataPath)
     }
 
+    // region Basic
+
     @Test
     fun testDefineIndex_Basic() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
@@ -55,6 +57,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(1, variables2.size)
         Assert.assertEquals("FLEET_POWER", variables2.single().name)
     }
+
+    // endregion
+
+    // region Complex (Multiple Namespaces)
 
     @Test
     fun testDefineIndex_Complex() {
@@ -91,6 +97,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(variables3.isEmpty())
     }
 
+    // endregion
+
+    // region Edge Cases
+
     @Test
     fun testDefineIndex_Edge() {
         configureDefineFile("features/index/common/defines/defines_edge_stellaris.test.txt")
@@ -117,4 +127,6 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         val nestedVariables = StubIndex.getElements(PlsIndexKeys.DefineVariable, nestedKey, project, scope, ParadoxScriptProperty::class.java)
         Assert.assertTrue(nestedVariables.isEmpty())
     }
+
+    // endregion
 }

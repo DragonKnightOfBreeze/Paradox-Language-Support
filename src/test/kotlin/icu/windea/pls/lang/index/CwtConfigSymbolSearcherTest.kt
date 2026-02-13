@@ -36,6 +36,8 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Declarations
+
     @Test
     fun testConfigSymbolSearcher_Declarations() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
@@ -58,6 +60,10 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Alias.id, "alias_no_colon", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Directive.id, "test_directive", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
     }
+
+    // endregion
+
+    // region Reference Expressions
 
     @Test
     fun testConfigSymbolSearcher_ReferenceExpressions() {
@@ -98,6 +104,10 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         assertNoEmptyName(scope)
     }
 
+    // endregion
+
+    // region Multiple Types
+
     @Test
     fun testConfigSymbolSearcher_MultipleTypes() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
@@ -116,6 +126,10 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(names.contains("test_subtype"))
     }
 
+    // endregion
+
+    // region Read/Write Access
+
     @Test
     fun testConfigSymbolSearcher_ReadWriteAccess() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
@@ -124,6 +138,8 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Type.id, "ref_type", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
     }
+
+    // endregion
 
     private fun assertSymbol(scope: GlobalSearchScope, type: String, name: String, access: ReadWriteAccessDetector.Access, gameType: ParadoxGameType) {
         val info = search(type, name, scope)

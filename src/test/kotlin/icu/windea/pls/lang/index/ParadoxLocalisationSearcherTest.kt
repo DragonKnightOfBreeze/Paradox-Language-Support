@@ -27,6 +27,8 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Normal Localisation
+
     @Test
     fun testLocalisationSearch_ByName() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
@@ -39,20 +41,6 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
             true
         }
         Assert.assertEquals(listOf("UI_OK"), results)
-    }
-
-    @Test
-    fun testSyncedLocalisationSearch_ByName() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
-        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        val project = project
-        val selector = selector(project, myFixture.file).localisation()
-        val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).process { p ->
-            results += p.name
-            true
-        }
-        Assert.assertEquals(listOf("SYNC_TITLE"), results)
     }
 
     @Test
@@ -69,6 +57,24 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(results.isEmpty())
     }
 
+    // endregion
+
+    // region Synced Localisation
+
+    @Test
+    fun testSyncedLocalisationSearch_ByName() {
+        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
+        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+        val project = project
+        val selector = selector(project, myFixture.file).localisation()
+        val results = mutableListOf<String>()
+        ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).process { p ->
+            results += p.name
+            true
+        }
+        Assert.assertEquals(listOf("SYNC_TITLE"), results)
+    }
+
     @Test
     fun testSyncedLocalisationSearch_NotFound() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
@@ -82,4 +88,6 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
         }
         Assert.assertTrue(results.isEmpty())
     }
+
+    // endregion
 }

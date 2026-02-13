@@ -34,6 +34,8 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Exact Path
+
     @Test
     fun testFilePathSearcher_ExactPath() {
         val relPath = "common/code_style_settings.test.txt"
@@ -65,6 +67,10 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         }
         Assert.assertTrue(results.isEmpty())
     }
+
+    // endregion
+
+    // region Ignore Locale
 
     @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
@@ -115,4 +121,6 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(names.contains("ui_l_english.test.yml"))
         Assert.assertTrue(names.contains("ui_l_simp_chinese.test.yml"))
     }
+
+    // endregion
 }

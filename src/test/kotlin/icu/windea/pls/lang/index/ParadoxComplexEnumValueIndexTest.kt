@@ -34,6 +34,8 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Basic
+
     @Test
     fun testComplexEnumValueIndex_Basic_TopLevelValues() {
         // Arrange
@@ -73,6 +75,10 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
     }
 
+    // endregion
+
+    // region Config Flags
+
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveFlagAndCompression() {
         // Arrange
@@ -110,6 +116,10 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(2, values.map { it.definitionElementOffset }.toSet().size)
     }
 
+    // endregion
+
+    // region Enum Name Source
+
     @Test
     fun testComplexEnumValueIndex_StartFromRootNo_ValueInBlockOnly() {
         markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
@@ -139,6 +149,10 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(values.all { it.enumName == "key_enum" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
     }
+
+    // endregion
+
+    // region Structural Constraints
 
     @Test
     fun testComplexEnumValueIndex_DeepEnum_MultiLevelBlockAndFilterProperty() {
@@ -261,6 +275,10 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(values.all { it.enumName == "value_mix_enum" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
     }
+
+    // endregion
+
+    // region Combined Features
 
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveEnum_ComplexStructure() {
@@ -388,4 +406,6 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(values.all { it.enumName == "repeat_typed_enum" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
     }
+
+    // endregion
 }

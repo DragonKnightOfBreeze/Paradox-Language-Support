@@ -35,6 +35,8 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Declarations
+
     @Test
     fun testConfigSymbolIndex_Declarations() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
@@ -57,6 +59,10 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Alias.id, "alias_no_colon", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Directive.id, "test_directive", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
     }
+
+    // endregion
+
+    // region Reference Expressions
 
     @Test
     fun testConfigSymbolIndex_ReferenceExpressions() {
@@ -97,6 +103,10 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertNoEmptyName(scope)
     }
 
+    // endregion
+
+    // region Read/Write Access
+
     @Test
     fun testConfigSymbolIndex_ReadWriteAccess() {
         myFixture.configureByFile("features/index/.config/core/config_symbols.test.cwt")
@@ -105,6 +115,8 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Type.id, "test_type", ReadWriteAccessDetector.Access.Write, ParadoxGameType.Core)
         assertSymbol(scope, CwtConfigTypes.Type.id, "ref_type", ReadWriteAccessDetector.Access.Read, ParadoxGameType.Core)
     }
+
+    // endregion
 
     private fun assertSymbol(scope: GlobalSearchScope, type: String, name: String, access: ReadWriteAccessDetector.Access, gameType: ParadoxGameType) {
         val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()

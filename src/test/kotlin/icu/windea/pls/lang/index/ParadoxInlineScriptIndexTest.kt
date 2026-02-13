@@ -31,6 +31,8 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Usage Index
+
     @Test
     fun testUsageIndex_DirectForm() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
@@ -55,6 +57,10 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("inline_script", p.name)
     }
 
+    // endregion
+
+    // region Argument Index
+
     @Test
     fun testArgumentIndex_BlockForm_All() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_block_stellaris.test.txt")
@@ -65,6 +71,10 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         val names = elements.map { it.name }.sorted()
         Assert.assertEquals(listOf("EVENT_ID", "SOME_FLAG"), names)
     }
+
+    // endregion
+
+    // region Edge Cases
 
     @Test
     fun testUsageIndex_Parameterized_ShouldSkip() {
@@ -89,4 +99,6 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
         val arguments = StubIndex.getElements(PlsIndexKeys.InlineScriptArgument, "test_inline", project, scope, ParadoxScriptProperty::class.java)
         Assert.assertEquals(0, arguments.size)
     }
+
+    // endregion
 }

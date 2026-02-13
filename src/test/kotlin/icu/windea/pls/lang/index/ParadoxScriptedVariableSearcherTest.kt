@@ -27,6 +27,8 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Local
+
     @Test
     fun testScriptedVariableSearcher_Local() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
@@ -79,6 +81,10 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
         }
     }
 
+    // endregion
+
+    // region Global
+
     @Test
     fun testScriptedVariableSearcher_Global() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
@@ -92,4 +98,6 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
         }
         Assert.assertTrue(results.contains("var"))
     }
+
+    // endregion
 }

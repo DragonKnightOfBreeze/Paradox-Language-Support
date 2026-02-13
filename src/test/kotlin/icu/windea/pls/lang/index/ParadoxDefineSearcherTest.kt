@@ -40,6 +40,8 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue("infos=$infos", infos.isEmpty())
     }
 
+    // region Search By Namespace And Variable
+
     @Test
     fun testDefineSearcher_ByNamespaceAndVariable() {
         configureDefineFile("features/index/common/defines/defines_basic_stellaris.test.txt")
@@ -60,6 +62,10 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals("NGameplay", info.namespace)
         Assert.assertEquals("MARINE", info.variable)
     }
+
+    // endregion
+
+    // region Search By Namespace
 
     @Test
     fun testDefineSearcher_ByNamespaceOnly() {
@@ -102,6 +108,10 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(results.all { it.variable == null })
     }
 
+    // endregion
+
+    // region Search By Variable
+
     @Test
     fun testDefineSearcher_ByVariableAcrossNamespaces() {
         configureDefineFile("features/index/common/defines/defines_complex_stellaris.test.txt")
@@ -114,6 +124,10 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals(2, results.size)
         Assert.assertEquals(listOf("NEconomy.MARINE", "NGameplay.MARINE"), results.map { it.expression })
     }
+
+    // endregion
+
+    // region Search All
 
     @Test
     fun testDefineSearcher_AllDefines() {
@@ -128,6 +142,10 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         Assert.assertFalse(results.any { it.namespace == "NOT_A_DEFINE" })
         Assert.assertFalse(results.any { it.variable == "NOT_A_DEFINE" })
     }
+
+    // endregion
+
+    // region Edge Cases
 
     @Test
     fun testDefineSearcher_Edge_AllDefines() {
@@ -170,4 +188,6 @@ class ParadoxDefineSearcherTest : BasePlatformTestCase() {
         val elements = ParadoxDefineSearch.search("NGameplay", "INSIDE", selector).findAll()
         assertNoDefineInfo(elements)
     }
+
+    // endregion
 }

@@ -43,6 +43,8 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         myFixture.configureByFile(testDataPath)
     }
 
+    // region Basic
+
     @Test
     fun testComplexEnumValueSearcher_ByEnumName() {
         // Arrange
@@ -69,6 +71,10 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals(2, results.size)
         Assert.assertEquals(setOf("Hush", "hush"), results.map { it.name }.toSet())
     }
+
+    // endregion
+
+    // region Config Flags
 
     @Test
     fun testComplexEnumValueSearcher_NestedMatch() {
@@ -123,6 +129,10 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals(2, results.map { it.definitionElementOffset }.toSet().size)
     }
 
+    // endregion
+
+    // region Enum Name Source
+
     @Test
     fun testComplexEnumValueSearcher_StartFromRootNo_ValueInBlockOnly() {
         configureScriptFile("common/arcane_tomes/00_base.txt", "features/index/common/arcane_tomes/00_base.txt")
@@ -146,6 +156,10 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals("key_enum_entry", results.single().name)
         Assert.assertEquals("key_enum", results.single().enumName)
     }
+
+    // endregion
+
+    // region Structural Constraints
 
     @Test
     fun testComplexEnumValueSearcher_DeepEnum_MultiLevelBlockAndFilterProperty() {
@@ -242,6 +256,10 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals("value_mix_entry", results.single().name)
         Assert.assertEquals("value_mix_enum", results.single().enumName)
     }
+
+    // endregion
+
+    // region Combined Features
 
     @Test
     fun testComplexEnumValueSearcher_CaseInsensitiveEnum_ComplexStructure() {
@@ -343,4 +361,6 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         Assert.assertEquals("repeat_first", results.single().name)
         Assert.assertEquals("repeat_typed_enum", results.single().enumName)
     }
+
+    // endregion
 }

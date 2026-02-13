@@ -27,6 +27,8 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Local
+
     @Test
     fun testScriptedVariableNameIndex_Local() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
@@ -44,6 +46,10 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(elements.any { it.containingFile.virtualFile.name == "local_vars.test.txt" })
     }
 
+    // endregion
+
+    // region Global
+
     @Test
     fun testScriptedVariableNameIndex_Global() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
@@ -59,4 +65,6 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
         )
         Assert.assertTrue(elements.any { it.containingFile.virtualFile.name == "global_vars.test.txt" })
     }
+
+    // endregion
 }

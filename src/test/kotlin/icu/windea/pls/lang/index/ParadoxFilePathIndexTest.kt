@@ -28,6 +28,8 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Basic
+
     @Test
     fun testFilePathIndex_Basic() {
         val relPath = "common/code_style_settings.test.txt"
@@ -60,6 +62,10 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertTrue(info.included)
     }
+
+    // endregion
+
+    // region Edge Cases
 
     @Test
     fun testFilePathIndex_ExcludedTopDirectory() {
@@ -103,4 +109,6 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertFalse("Expected included=false for hidden file", info.included)
     }
+
+    // endregion
 }

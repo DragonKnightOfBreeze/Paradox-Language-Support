@@ -27,6 +27,8 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Normal Localisation
+
     @Test
     fun testLocalisationNameIndex_Basic() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
@@ -44,6 +46,10 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("UI_OK", elements.single().name)
     }
 
+    // endregion
+
+    // region Synced Localisation
+
     @Test
     fun testSyncedLocalisationNameIndex_Basic() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
@@ -60,4 +66,6 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(1, elements.size)
         Assert.assertEquals("SYNC_TITLE", elements.single().name)
     }
+
+    // endregion
 }

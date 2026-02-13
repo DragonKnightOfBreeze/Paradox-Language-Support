@@ -25,6 +25,8 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Basic
+
     @Test
     fun testFileLocaleIndex_English() {
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
@@ -42,4 +44,6 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_simp_chinese", key)
     }
+
+    // endregion
 }
