@@ -111,7 +111,7 @@ object ParadoxScriptNavigationManager {
         return when (element) {
             is ParadoxScriptFile -> {
                 run {
-                    // 定义的类型信息和本地化后的名字
+                    // 定义的类型信息和显示名称
                     if (element.name.endsWith(".mod", true)) return@run // 排除模组描述符文件
                     val definitionInfo = element.definitionInfo ?: return@run
                     return getDefinitionLocationString(element, definitionInfo)
@@ -125,7 +125,7 @@ object ParadoxScriptNavigationManager {
                     return ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {
-                    // 定义的类型信息和本地化后的名字
+                    // 定义的类型信息和显示名称
                     val definitionInfo = element.definitionInfo ?: return@run
                     return getDefinitionLocationString(element, definitionInfo)
                 }
