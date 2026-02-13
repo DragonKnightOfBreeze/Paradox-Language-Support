@@ -22,19 +22,9 @@ import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptString
-import java.util.concurrent.atomic.AtomicLong
 
 object ParadoxMatchProvider {
-    private val keyCounter = AtomicLong()
-    private val intCounter = AtomicLong()
-    private val floatCounter = AtomicLong()
-    private val stringCounter = AtomicLong()
-
     fun matchesBlock(element: ParadoxScriptBlock, config: CwtMemberConfig<*>): Boolean {
         val keys = CwtConfigManipulator.getInBlockKeys(config)
         if (keys.isEmpty()) return true
@@ -47,13 +37,6 @@ object ParadoxMatchProvider {
     }
 
     fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
-        when (element) {
-            is ParadoxScriptPropertyKey -> keyCounter.incrementAndGet()
-            is ParadoxScriptInt -> intCounter.incrementAndGet()
-            is ParadoxScriptFloat -> floatCounter.incrementAndGet()
-            is ParadoxScriptString -> stringCounter.incrementAndGet()
-        }
-
         val selector = selector(project, element).definition()
         return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findFirst() != null
     }
