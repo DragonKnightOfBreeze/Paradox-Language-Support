@@ -6,19 +6,24 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.PlsFileManager
-import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -73,6 +78,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val typeConfig = definitionInfo.typeConfig
                 if (typeConfig.typePerFile) return
 
+                val typeKey = definitionInfo.typeKey
                 val name = definitionInfo.name
                 val type = definitionInfo.type
                 if (type.isEmpty()) return
@@ -80,7 +86,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val subtypes = run {
                     if (typeConfig.subtypes.isEmpty()) return@run null
                     val typeKey = definitionInfo.typeKey
-                    val result = mutableListOf<icu.windea.pls.config.config.delegated.CwtSubtypeConfig>()
+                    val result = mutableListOf<CwtSubtypeConfig>()
                     for (subtypeConfig in typeConfig.subtypes.values) {
                         val fastResult = ParadoxConfigMatchService.matchesSubtypeFast(subtypeConfig, result, typeKey)
                         if (fastResult == null) return@run null
@@ -89,7 +95,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                     result.map { it.name }
                 }
 
-                val info = ParadoxDefinitionIndexInfo(ParadoxDefinitionSource.Property, name, type, subtypes, element.startOffset, gameType)
+                val info = ParadoxDefinitionIndexInfo(ParadoxDefinitionSource.Property, name, type, subtypes, typeKey, element.startOffset, gameType)
                 fileData.getOrPut(PlsIndexUtil.createAllKey()) { mutableListOf() }.asMutable() += info
                 fileData.getOrPut(PlsIndexUtil.createTypeKey(type)) { mutableListOf() }.asMutable() += info
                 if (name.isNotEmpty()) {
@@ -145,8 +151,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             val type = storage.readUTFFast()
             val subtypesSize = storage.readIntFast()
             val subtypes = if (subtypesSize < 0) null else List(subtypesSize) { storage.readUTFFast() }
+            val typeKey = storage.readUTFFast()
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionIndexInfo(source, name, type, subtypes, elementOffset, gameType)
+            ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, elementOffset, gameType)
         }
     }
 }

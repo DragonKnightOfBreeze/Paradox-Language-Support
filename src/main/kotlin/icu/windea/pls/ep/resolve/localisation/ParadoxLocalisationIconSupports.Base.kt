@@ -19,8 +19,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
 import icu.windea.pls.lang.search.selector.distinctByFilePath
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -71,7 +71,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return null
         val definitionSelector = selector(project, element).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
+        val definition = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).find()
         return definition
     }
 
@@ -79,7 +79,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return emptySet()
         val definitionSelector = selector(project, element).definition().contextSensitive()
-        val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).findAll()
+        val definitions = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).findAll()
         return definitions
     }
 
@@ -87,8 +87,8 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByDefinitionName()
-        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
+        val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
+        ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = nameGetter(definitionInfo.name)

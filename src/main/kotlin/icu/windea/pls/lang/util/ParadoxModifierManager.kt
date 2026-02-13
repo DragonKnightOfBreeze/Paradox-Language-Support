@@ -38,7 +38,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
@@ -118,8 +117,8 @@ object ParadoxModifierManager {
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
                 val selector = selector(project, contextElement).definition().contextSensitive()
-                    .distinctByDefinitionName()
-                ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
+                    .distinctByName()
+                ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
                     ProgressManager.checkCanceled()
                     val name = definition.definitionInfo?.name
                     if (name.isNullOrEmpty()) return@p true

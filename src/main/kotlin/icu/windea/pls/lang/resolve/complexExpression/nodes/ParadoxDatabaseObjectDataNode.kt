@@ -168,7 +168,7 @@ class ParadoxDatabaseObjectDataNode(
             }
 
             val selector = selector(project, element).definition().contextSensitive()
-            return ParadoxDefinitionSearch.search(name, typeToSearch, selector).find()
+            return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
                 ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
 
@@ -189,7 +189,7 @@ class ParadoxDatabaseObjectDataNode(
             }
 
             val selector = selector(project, element).definition().contextSensitive()
-            return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
+            return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()
         }

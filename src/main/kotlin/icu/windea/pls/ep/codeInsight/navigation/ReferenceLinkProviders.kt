@@ -204,7 +204,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
         val project = contextElement.project
         val selector = selector(project, contextElement).definition().contextSensitive()
             .withGameType(gameType)
-        return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
+        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).find()
     }
 
     override fun getUnresolvedMessage(link: String): String {

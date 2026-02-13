@@ -31,10 +31,7 @@ object ParadoxLocalisationManager {
     }
 
     fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
-        return doGetLocalizedTextFromCache(element)
-    }
-
-    private fun doGetLocalizedTextFromCache(element: ParadoxLocalisationProperty): String? {
+        // from cache (invalidate on element modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedLocalizedName) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedText(element)
@@ -47,7 +44,7 @@ object ParadoxLocalisationManager {
     }
 
     fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
-        return doGetRelatedScriptedVariables(element) // 直接获取
+        return doGetRelatedScriptedVariables(element)
     }
 
     private fun doGetRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
@@ -63,7 +60,7 @@ object ParadoxLocalisationManager {
     }
 
     fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
-        return doGetRelatedDefinitions(element) // 直接获取
+        return doGetRelatedDefinitions(element)
     }
 
     private fun doGetRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
@@ -82,7 +79,7 @@ object ParadoxLocalisationManager {
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
             // op: only search definitions declared by a property, rather than by a file, to optimize performance
-            ParadoxDefinitionSearch.search(nameToSearch, null, selector, forFile = false).findAll().forEach f2@{ definition ->
+            ParadoxDefinitionSearch.searchElement(nameToSearch, null, selector, forFile = false).findAll().forEach f2@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2

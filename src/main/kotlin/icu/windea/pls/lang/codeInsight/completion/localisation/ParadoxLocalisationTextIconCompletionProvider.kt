@@ -17,7 +17,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.ParadoxGameType
@@ -35,8 +35,8 @@ class ParadoxLocalisationTextIconCompletionProvider : CompletionProvider<Complet
         val originalFile = parameters.originalFile
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive()
-            .distinctByDefinitionName()
-        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
+            .distinctByName()
+        ParadoxDefinitionSearch.searchProperty(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = definitionInfo.name

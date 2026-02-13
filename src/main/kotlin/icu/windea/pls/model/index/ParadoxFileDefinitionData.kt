@@ -11,5 +11,6 @@ data class ParadoxFileDefinitionData(
     val name: String,
     val type: String,
     val subtypes: List<String>?,
+    val typeKey: String,
     val gameType: ParadoxGameType,
 )

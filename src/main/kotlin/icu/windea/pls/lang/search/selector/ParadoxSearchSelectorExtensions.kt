@@ -9,7 +9,6 @@ import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
@@ -67,11 +66,6 @@ fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(
     return distinctBy { it.name }
 }
 
-@JvmName("distinctByDefinitionName")
-fun <S : ParadoxSearchSelector<ParadoxDefinitionIndexInfo>> S.distinctByDefinitionName(): S {
-    return distinctBy { it.name }
-}
-
 @JvmName("distinctByDefineExpression")
 fun <S : ParadoxSearchSelector<ParadoxScriptProperty>> S.distinctByDefineExpression(): S {
     return distinctBy { ParadoxDefineManager.getExpression(it) }
@@ -87,6 +81,7 @@ fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName():
 fun <S : ParadoxSearchSelector<T>, T : ParadoxIndexInfo> S.distinctByName(): S {
     return distinctBy {
         when (it) {
+            is ParadoxDefinitionIndexInfo -> it.name
             is ParadoxComplexEnumValueIndexInfo -> it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } // #261
             is ParadoxDynamicValueIndexInfo -> it.name
             is ParadoxParameterIndexInfo -> it.name

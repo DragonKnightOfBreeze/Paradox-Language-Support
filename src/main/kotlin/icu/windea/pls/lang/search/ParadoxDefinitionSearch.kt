@@ -12,6 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 定义的查询。
  */
+@Suppress("unused")
 class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 定义的名字。
@@ -45,6 +46,9 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
         }
 
+        /**
+         * @see ParadoxDefinitionSearch.SearchParameters
+         */
         @JvmStatic
         fun searchElement(
             name: String?,
@@ -55,6 +59,9 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             return search(name, typeExpression, selector, forFile).withTransform { it.element }
         }
 
+        /**
+         * @see ParadoxDefinitionSearch.SearchParameters
+         */
         @JvmStatic
         fun searchFile(
             name: String?,
@@ -62,9 +69,12 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
             forFile: Boolean = true,
         ): ParadoxQuery<ParadoxDefinitionIndexInfo, PsiFile> {
-            return search(name, typeExpression, selector, forFile).withTransform { it.file }
+            return search(name, typeExpression, selector, forFile).withTransform { it.fileElement }
         }
 
+        /**
+         * @see ParadoxDefinitionSearch.SearchParameters
+         */
         @JvmStatic
         fun searchProperty(
             name: String?,

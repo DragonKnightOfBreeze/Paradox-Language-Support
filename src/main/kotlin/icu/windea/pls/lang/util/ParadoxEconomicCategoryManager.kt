@@ -26,7 +26,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -39,15 +38,14 @@ object ParadoxEconomicCategoryManager {
     private val logger = logger<ParadoxEconomicCategoryManager>()
 
     /**
-     * 输入[definition]的定义类型应当保证是`economic_category`。
+     * 输入的 [definition] 的定义类型应当保证是 `economic_category`。
      */
-    fun getInfo(definition: ParadoxDefinitionElement): ParadoxEconomicCategoryInfo? {
+    fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         if (selectGameType(definition) != ParadoxGameType.Stellaris) return null
         return doGetInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxDefinitionElement): ParadoxEconomicCategoryInfo? {
-        if (definition !is ParadoxScriptProperty) return null
+    private fun doGetInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly { doGetInfo(definition) }
@@ -118,7 +116,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.resource, selector).findAll()
+        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.resource, selector).findAll()
             .mapNotNullTo(mutableSetOf()) { it.name.orNull() }  // it.name is ok
     }
 
@@ -127,7 +125,7 @@ object ParadoxEconomicCategoryManager {
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
+                ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)

@@ -73,7 +73,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                 prefix.isEmpty() -> {
                     run {
                         val selector = selector(element.project, element).definition().contextSensitive()
-                        val result = ParadoxDefinitionSearch.search(name, null, selector).find() ?: return@run
+                        val result = ParadoxDefinitionSearch.searchElement(name, null, selector).find() ?: return@run
                         return result.asSymbol().to.singletonSet()
                     }
                     run {

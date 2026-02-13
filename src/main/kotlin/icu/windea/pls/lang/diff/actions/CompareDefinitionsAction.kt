@@ -125,7 +125,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             readAction {
                 val selector = selector(project, file).definition()
                 // pass main type only
-                val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
+                val result = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
                 definitions.addAll(result)
             }
         }

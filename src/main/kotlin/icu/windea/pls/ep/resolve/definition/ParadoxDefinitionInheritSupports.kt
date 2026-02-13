@@ -109,7 +109,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         val result = withRecursionGuard {
             withRecursionCheck(baseName) a@{
                 val selector = selector(definitionInfo.project, definitionInfo.element).definition().contextSensitive()
-                val superDefinition = ParadoxDefinitionSearch.search(baseName, T.event, selector).find() ?: return@a null
+                val superDefinition = ParadoxDefinitionSearch.searchElement(baseName, T.event, selector).find() ?: return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
 
                 // 事件类型不匹配 - 不处理

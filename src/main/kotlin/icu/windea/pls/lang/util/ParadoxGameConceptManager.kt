@@ -10,32 +10,31 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.propertyValue
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
-    fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxDefinitionElement? {
-        val definitionSelector = selector(project, contextElement).definition()
-            .contextSensitive()
-            .filterBy { getName(it) == nameOrAlias || getAlias(it).contains(nameOrAlias) }
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
+    fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptProperty? {
+        val definitionSelector = selector(project, contextElement).definition().contextSensitive()
+        val fromName = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
+        if (fromName != null) return fromName
+        val all = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).findAll()
+        return all.find { nameOrAlias == getName(it) || nameOrAlias in getAlias(it) }
     }
 
-    fun getName(element: ParadoxDefinitionElement): String {
+    fun getName(element: ParadoxScriptProperty): String {
         return element.name // = element.definitionInfo?.name
     }
 
-    fun getAlias(element: ParadoxDefinitionElement): Set<String> {
+    fun getAlias(element: ParadoxScriptProperty): Set<String> {
         return element.getDefinitionData<StellarisGameConceptData>()?.alias.orEmpty()
     }
 

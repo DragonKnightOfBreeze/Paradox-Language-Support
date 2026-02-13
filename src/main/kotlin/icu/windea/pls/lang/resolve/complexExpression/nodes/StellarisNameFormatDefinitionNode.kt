@@ -81,13 +81,13 @@ class StellarisNameFormatDefinitionNode(
 
         private fun doResolve(): PsiElement? {
             val selector = selector(project, element).definition().contextSensitive()
-            val resolved = ParadoxDefinitionSearch.search(name, typeToSearch, selector).find()
+            val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val selector = selector(project, element).definition().contextSensitive()
-            val resolved = ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
+            val resolved = ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
             return resolved.createResults()
         }
 

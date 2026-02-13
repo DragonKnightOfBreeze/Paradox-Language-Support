@@ -17,7 +17,7 @@ import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
@@ -75,7 +75,7 @@ object ParadoxTextColorManager {
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.textColor, selector).find()
+        val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
         return doGetInfoFromCache(definition)
     }
@@ -101,8 +101,8 @@ object ParadoxTextColorManager {
     }
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
-        val selector = selector(project, contextElement).definition().contextSensitive().distinctByDefinitionName()
-        val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.textColor, selector).findAll()
+        val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
+        val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }

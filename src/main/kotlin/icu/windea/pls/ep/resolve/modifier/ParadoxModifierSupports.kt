@@ -49,7 +49,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
@@ -344,8 +344,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
-        val selector = selector(project, element).definition().contextSensitive().distinctByDefinitionName()
-        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
+        val selector = selector(project, element).definition().contextSensitive().distinctByName()
+        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -361,8 +361,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val selector = selector(project, element).definition().contextSensitive().distinctByDefinitionName()
-        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
+        val selector = selector(project, element).definition().contextSensitive().distinctByName()
+        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -385,8 +385,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 
-        val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByDefinitionName()
-        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
+        val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
+        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
@@ -460,9 +460,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = selector(project, definition).definition().contextSensitive()
-        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector)
-            .find()
-            ?: return false
+        val economicCategory = ParadoxDefinitionSearch.searchProperty(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector).find() ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {

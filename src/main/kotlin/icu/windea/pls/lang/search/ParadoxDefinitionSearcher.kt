@@ -5,23 +5,23 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
+import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.index.ParadoxDefinitionIndex
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.index.PlsIndexUtil
-import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptFileType
-import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.lang.selectGameType
 
 /**
  * 定义的查询器。
@@ -93,7 +93,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
             if (!matchesName(data.name, finalName, ignoreCase)) return@p true
             if (!matchesType(data.type, typeExpression?.type)) return@p true
 
-            val info = ParadoxDefinitionIndexInfo(ParadoxDefinitionSource.File, data.name, data.type, data.subtypes, -1, data.gameType)
+            val source = ParadoxDefinitionSource.File
+            val info = ParadoxDefinitionIndexInfo(source, data.name, data.type, data.subtypes, data.typeKey, -1, data.gameType)
             info.bind(file, project)
             if (!matchesSubtypes(info, typeExpression?.subtypes)) return@p true
             processor.process(info)

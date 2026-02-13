@@ -33,15 +33,13 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -100,9 +98,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.expressionTailText = ""
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
-                        .notSamePosition(element)
-                        .distinctByDefinitionName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
+                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
+                        .distinctByName()
+                    ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
@@ -124,10 +122,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     // 基于类型键过滤结果
                     // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
-                        .notSamePosition(definition)
-                        .distinctByDefinitionName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
+                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
+                        .distinctByName()
+                    ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 

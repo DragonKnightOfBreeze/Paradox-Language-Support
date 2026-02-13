@@ -32,7 +32,7 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
             // 这里不进行排序
             val selector = selector(project, sourceElement).definition()
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
-            ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
+            ParadoxDefinitionSearch.searchElement(name, type, selector).forEach(consumer)
         }
         ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
         return true

@@ -210,7 +210,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
         val element = elementPointer.element
         val searchScopeType = getHierarchySettings().scopeType
         val selector = selector(project, element).definition().withSearchScopeType(searchScopeType)
-        val definitions = ParadoxDefinitionSearch.search(null, typeName, selector).findAll()
+        val definitions = ParadoxDefinitionSearch.searchElement(null, typeName, selector).findAll()
         if (definitions.isEmpty()) return
         val groupingRules = getGroupingRules(descriptor)
         definitions.forEach f@{ definition ->

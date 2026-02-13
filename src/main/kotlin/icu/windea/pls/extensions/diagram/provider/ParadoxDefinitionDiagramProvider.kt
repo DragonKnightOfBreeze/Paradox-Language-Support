@@ -18,7 +18,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.lang.search.selector.withSearchScope
@@ -77,8 +77,8 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 .withSearchScope(searchScope)
                 .withSearchScopeType(finalSearchScopeType)
                 .contextSensitive()
-                .distinctByDefinitionName()
-            return ParadoxDefinitionSearch.search(null, typeExpression, selector).findAll()
+                .distinctByName()
+            return ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).findAll()
         }
 
         protected abstract fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean

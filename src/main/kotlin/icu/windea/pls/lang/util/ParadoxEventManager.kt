@@ -35,6 +35,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
@@ -75,8 +76,8 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ParadoxSearchSelector<ParadoxDefinitionElement>): Set<ParadoxDefinitionElement> {
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).findAll()
+    fun getEvents(selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): Set<ParadoxScriptProperty> {
+        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
     fun getName(element: ParadoxDefinitionElement): String {
@@ -208,7 +209,7 @@ object ParadoxEventManager {
     /**
      * 得到作为调用者的事件列表。
      */
-    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
+    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -216,7 +217,7 @@ object ParadoxEventManager {
         if (name.isNullOrEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
+            ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
                 ProgressManager.checkCanceled()
                 ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
@@ -237,7 +238,7 @@ object ParadoxEventManager {
     /**
      * 得到调用的事件列表。
      */
-    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionElement>): List<ParadoxDefinitionElement> {
+    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -247,7 +248,7 @@ object ParadoxEventManager {
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
+            ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                 if (rDefinitionInfo.name.isEmpty()) return@p true

@@ -130,7 +130,7 @@ object ParadoxConfigExpressionService {
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
                     val definitionSelector = selector(project, definition).definition().contextSensitive()
-                    val resolved = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
+                    val resolved = ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
@@ -204,10 +204,10 @@ object ParadoxConfigExpressionService {
     ): CwtImageLocationResolveResult {
         return CwtImageLocationResolveResult(spriteName, frameInfo, null, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
+            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
+            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
         })
     }
 

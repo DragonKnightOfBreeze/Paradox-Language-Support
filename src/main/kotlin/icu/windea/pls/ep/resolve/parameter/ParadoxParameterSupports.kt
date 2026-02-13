@@ -225,7 +225,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
         val selector = selector(project, parameterElement).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
+        ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }
 
@@ -236,7 +236,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
         val selector = selector(project, element).definition().contextSensitive()
-        ParadoxDefinitionSearch.search(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
+        ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
     }
 

@@ -62,7 +62,7 @@ import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByDefineExpression
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
+import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -1199,8 +1199,8 @@ object ParadoxComplexExpressionCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val selector = selector(project, contextElement).definition().contextSensitive()
-            .distinctByDefinitionName()
-        ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processAsync {
+            .distinctByName()
+        ParadoxDefinitionSearch.searchElement(valueNode.text, config.type, selector).processAsync {
             ParadoxCompletionManager.processDefinition(context, result, it)
         }
     }

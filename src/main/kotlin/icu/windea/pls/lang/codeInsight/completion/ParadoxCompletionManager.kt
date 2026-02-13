@@ -63,8 +63,6 @@ import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.distinctBy
-import icu.windea.pls.lang.search.selector.distinctByDefinitionName
 import icu.windea.pls.lang.search.selector.distinctByFilePath
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -521,8 +519,8 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         val selector = selector(project, contextElement).definition().contextSensitive()
-            .distinctByDefinitionName()
-        ParadoxDefinitionSearch.search(null, typeExpression, selector).processAsync p@{ definition ->
+            .distinctByName()
+        ParadoxDefinitionSearch.searchElement(null, typeExpression, selector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             if (definitionInfo.name.isEmpty()) return@p true // skip anonymous definitions
@@ -875,8 +873,8 @@ object ParadoxCompletionManager {
             context.keyword = keywordToUse
             val project = configGroup.project
             val selector = selector(project, file).definition().contextSensitive()
-                .distinctByDefinitionName()
-            ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
+                .distinctByName()
+            ParadoxDefinitionSearch.searchElement(null, type, selector, forFile = false).processAsync {
                 processDefinition(context, resultToUse, it)
             }
 

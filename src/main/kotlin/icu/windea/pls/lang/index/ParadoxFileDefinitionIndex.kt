@@ -2,22 +2,25 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.indexing.FileContent
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.IndexInputFilter
 import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxFileDefinitionData
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -63,21 +66,20 @@ class ParadoxFileDefinitionIndex : FileBasedIndexExtension<String, ParadoxFileDe
         val typeConfig = definitionInfo.typeConfig
         if (!typeConfig.typePerFile) return emptyMap()
 
+        val typeKey = definitionInfo.typeKey
         val name = definitionInfo.name
         val type = definitionInfo.type
         val subtypes = run {
             if (typeConfig.subtypes.isEmpty()) return@run null
-            val typeKey = definitionInfo.typeKey
-            val result = mutableListOf<icu.windea.pls.config.config.delegated.CwtSubtypeConfig>()
+            val result = mutableListOf<CwtSubtypeConfig>()
             for (subtypeConfig in typeConfig.subtypes.values) {
-                val fastResult = ParadoxConfigMatchService.matchesSubtypeFast(subtypeConfig, result, typeKey)
-                if (fastResult == null) return@run null
+                val fastResult = ParadoxConfigMatchService.matchesSubtypeFast(subtypeConfig, result, typeKey) ?: return@run null
                 if (fastResult) result.add(subtypeConfig)
             }
             result.map { it.name }
         }
 
-        val data = ParadoxFileDefinitionData(name, type, subtypes, definitionInfo.gameType)
+        val data = ParadoxFileDefinitionData(name, type, subtypes, typeKey, definitionInfo.gameType)
 
         val fileData = mutableMapOf<String, ParadoxFileDefinitionData>()
         fileData[PlsIndexUtil.createAllKey()] = data
@@ -100,6 +102,7 @@ class ParadoxFileDefinitionIndex : FileBasedIndexExtension<String, ParadoxFileDe
             storage.writeIntFast(subtypes.size)
             subtypes.forEach { storage.writeUTFFast(it) }
         }
+        storage.writeUTFFast(value.typeKey)
     }
 
     private fun readValue(storage: DataInput): ParadoxFileDefinitionData {
@@ -108,6 +111,7 @@ class ParadoxFileDefinitionIndex : FileBasedIndexExtension<String, ParadoxFileDe
         val type = storage.readUTFFast()
         val size = storage.readIntFast()
         val subtypes = if (size < 0) null else List(size) { storage.readUTFFast() }
-        return ParadoxFileDefinitionData(name, type, subtypes, gameType)
+        val typeKey = storage.readUTFFast()
+        return ParadoxFileDefinitionData(name, type, subtypes, typeKey, gameType)
     }
 }

@@ -135,6 +135,11 @@ object ParadoxDefinitionManager {
         return element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull()
     }
 
+    fun getLocalizedName(element: ParadoxDefinitionElement): String? {
+        val primaryLocalisation = getPrimaryLocalisation(element)
+        return primaryLocalisation?.let { ParadoxLocalisationManager.getLocalizedText(it) }
+    }
+
     fun getLocalizedNames(element: ParadoxDefinitionElement): Set<String> {
         val primaryLocalisations = getPrimaryLocalisations(element)
         return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()

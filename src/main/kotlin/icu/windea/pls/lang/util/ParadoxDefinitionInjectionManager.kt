@@ -137,7 +137,7 @@ object ParadoxDefinitionInjectionManager {
         val name = definitionInjectionInfo.target
         val typeExpression = definitionInjectionInfo.type
         val selector = selector(definitionInjectionInfo.project, context).definition()
-        return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
+        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).findFirst() != null
     }
 
     fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
