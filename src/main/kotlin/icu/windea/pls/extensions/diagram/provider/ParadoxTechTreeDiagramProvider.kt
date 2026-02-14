@@ -291,7 +291,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         private fun preloadLocalisations(technology: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             run {
-                val result = technology.definitionInfo?.typesText
+                val result = technology.definitionInfo?.typeText
                 technology.putUserData(Keys.typeText, result)
             }
             run {

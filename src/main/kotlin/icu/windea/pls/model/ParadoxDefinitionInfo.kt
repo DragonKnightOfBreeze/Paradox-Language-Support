@@ -17,6 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
@@ -52,9 +53,10 @@ class ParadoxDefinitionInfo(
 
     val name: String by lazy { name0 ?: doGetName() }
     val type: String = typeConfig.name
-    val subtypes: List<String> by lazy { doGetSubtypes() }
-    val types: List<String> by lazy { doGetTypes() }
-    val typesText: String by lazy { types.joinToString(", ") }
+
+    val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
+    val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
+    val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
     val memberPath: ParadoxMemberPath = doGetMemberPath()
 
@@ -77,16 +79,6 @@ class ParadoxDefinitionInfo(
 
     private fun doGetName(): String {
         return ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
-    }
-
-    private fun doGetSubtypes(): List<String> {
-        val result = subtypeConfigs.map { it.name }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetTypes(): List<String> {
-        val result = buildList(subtypes.size + 1) { add(type); addAll(subtypes) }
-        return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetMemberPath(): ParadoxMemberPath {
@@ -142,15 +134,15 @@ class ParadoxDefinitionInfo(
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionInfo
-            && name == other.name && typesText == other.typesText && gameType == other.gameType
+            && name == other.name && type == other.type && typeKey == other.typeKey && rootKeys == other.rootKeys && gameType == other.gameType
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, typesText, gameType)
+        return Objects.hash(name, type, typeKey, rootKeys, gameType)
     }
 
     override fun toString(): String {
-        return "ParadoxDefinitionInfo(source=$source, name=$name, types=$typesText, gameType=$gameType)"
+        return "ParadoxDefinitionInfo(source=$source, name=$name, type=$type, typeKey=$typeKey, rootKeys=$rootKeys, gameType=$gameType)"
     }
 
     data class RelatedImageInfo(

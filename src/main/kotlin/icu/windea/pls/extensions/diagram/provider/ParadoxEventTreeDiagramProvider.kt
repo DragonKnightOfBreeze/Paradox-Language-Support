@@ -258,7 +258,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         private fun preloadData(event: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             run {
-                val result = event.definitionInfo?.typesText
+                val result = event.definitionInfo?.typeText
                 event.putUserData(Keys.typeText, result)
             }
             run {

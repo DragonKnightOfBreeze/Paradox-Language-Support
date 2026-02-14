@@ -141,7 +141,7 @@ object ParadoxScriptNavigationManager {
 
     private fun getDefinitionLocationString(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
         return buildString {
-            append(": ").append(definitionInfo.typesText)
+            append(": ").append(definitionInfo.typeText)
             val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
             if (localizedName != null) append(" ").append(localizedName)
         }.optimized() // optimized to optimize memory

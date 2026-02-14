@@ -159,7 +159,7 @@ object ParadoxTypeManager {
         val property = element.parentProperty ?: return null
 
         val definitionInfo = property.definitionInfo
-        if (definitionInfo != null) return definitionInfo.typesText
+        if (definitionInfo != null) return definitionInfo.typeText
 
         // #252 兼容定义注入
         val definitionInjectionInfo = property.definitionInjectionInfo

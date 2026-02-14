@@ -43,7 +43,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
         ProgressManager.checkCanceled()
         val prefix = PlsStrings.relatedDefinitionPrefix
         val tooltipLines = targets.mapNotNull { target ->
-            target.definitionInfo?.let { "$prefix ${it.name}: ${it.typesText}" }
+            target.definitionInfo?.let { "$prefix ${it.name}: ${it.typeText}" }
         }
         val icon = PlsIcons.Gutter.RelatedDefinitions
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

@@ -1,14 +1,16 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定义注入的解析信息。
@@ -23,23 +25,32 @@ data class ParadoxDefinitionInjectionInfo(
     val mode: String, // must be valid
     val target: String?,
     val type: String?,
-    val subtypes: List<String>,
     val modeConfig: CwtValueConfig,
     val typeConfig: CwtTypeConfig?,
-    val subtypeConfigs: List<CwtSubtypeConfig>,
 ) {
+    @Volatile var element: ParadoxScriptProperty? = null
+
     val configGroup: CwtConfigGroup get() = modeConfig.configGroup
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = type?.let { configGroup.declarations.get(it) }
 
+    val subtypeConfigs: List<CwtSubtypeConfig> get() = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, element)
+    val declaration: CwtPropertyConfig? get() = ParadoxDefinitionInjectionManager.getDeclaration(this, element)
+
+    val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
+    val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
+    val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
+
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
-    fun getDeclaration(element: PsiElement): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, element)
+    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, element, options)
+    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, element, options)
+
     fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)
     fun isTargetExist(context: Any? = null): Boolean = ParadoxDefinitionInjectionManager.isTargetExist(this, context)
 
     override fun toString(): String {
-        return "ParadoxDefinitionInjectionInfo(mode=$mode, target=$target, type=$type, subtypes=$subtypes, gameType=$gameType)"
+        return "ParadoxDefinitionInjectionInfo(mode=$mode, target=$target, type=$type, gameType=$gameType)"
     }
 }

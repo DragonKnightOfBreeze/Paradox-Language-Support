@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -14,6 +14,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -116,8 +117,16 @@ object ParadoxDefinitionInjectionManager {
         }
     }
 
-    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: PsiElement): CwtPropertyConfig? {
-        return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo)
+    fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: ParadoxScriptProperty?, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+        val candicates = definitionInjectionInfo.typeConfig?.subtypes
+        if (candicates.isNullOrEmpty()) return emptyList()
+        if (element == null) return emptyList()
+        return emptyList() // TODO 2.1.3
+    }
+
+    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: ParadoxScriptProperty?, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        if (element == null) return null
+        return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo) // TODO 2.1.3
     }
 
     fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {

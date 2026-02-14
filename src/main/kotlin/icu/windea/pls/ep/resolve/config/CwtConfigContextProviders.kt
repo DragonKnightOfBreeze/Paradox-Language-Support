@@ -299,8 +299,8 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val memberPath = context.memberPath ?: return null
         val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
-        val declarationConfig = definitionInjectionInfo.getDeclaration(context.element) ?: return null
-        val rootConfigs = declarationConfig.to.singletonList()
+        val declaration = definitionInjectionInfo.declaration ?: return null
+        val rootConfigs = declaration.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 

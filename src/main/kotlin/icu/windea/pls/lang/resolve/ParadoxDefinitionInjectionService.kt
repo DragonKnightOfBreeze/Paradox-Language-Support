@@ -36,10 +36,10 @@ object ParadoxDefinitionInjectionService {
             val matchContext = CwtTypeConfigMatchContext(configGroup, path)
             val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return@run
             val type = typeConfig.name
-            return ParadoxDefinitionInjectionInfo(mode, target, type, emptyList(), modeConfig, typeConfig, emptyList())
+            return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
         }
         // 兼容目标为空或者目标类型无法解析的情况
-        return ParadoxDefinitionInjectionInfo(mode, target, null, emptyList(), modeConfig, null, emptyList())
+        return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
     }
 
     fun resolveDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
