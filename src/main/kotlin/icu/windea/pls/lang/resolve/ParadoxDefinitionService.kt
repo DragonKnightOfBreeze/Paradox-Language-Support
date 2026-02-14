@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve
 
-import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
@@ -115,11 +114,6 @@ object ParadoxDefinitionService {
         }
     }
 
-    fun getSubtypeConfigsModificationTracker(): ModificationTracker {
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return ParadoxModificationTrackers.ScriptFile
-    }
-
     fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val element = definitionInfo.element ?: return emptyList()
         val subtypesConfig = definitionInfo.typeConfig.subtypes
@@ -134,11 +128,6 @@ object ParadoxDefinitionService {
             processSubtypeConfigsFromInherit(definitionInfo, result)
         }
         return result.distinctBy { it.name } // it's necessary to distinct by name
-    }
-
-    fun getDeclarationModificationTracker(): ModificationTracker {
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return ParadoxModificationTrackers.ScriptFile
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
@@ -263,5 +252,30 @@ object ParadoxDefinitionService {
             result.addAll(files)
         }
         return result
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+        return listOf(file)
+    }
+
+    fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
+        // 如果没有子类型候选项，则没有额外的 tracker
+        if (definitionInfo.subtypeConfigs.isEmpty()) return listOf(element.containingFile)
+
+        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+    }
+
+    fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile)
+    }
+
+    fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+    }
+
+    fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
     }
 }

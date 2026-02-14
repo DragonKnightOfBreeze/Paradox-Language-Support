@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve
 
-import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -23,6 +22,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromE
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.isAvailable
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.isMatched
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxDefinitionInjectionService {
@@ -51,11 +51,6 @@ object ParadoxDefinitionInjectionService {
         return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null).also { it.element = element }
     }
 
-    fun getSubtypeConfigsModificationTracker(): ModificationTracker {
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return ParadoxModificationTrackers.ScriptFile
-    }
-
     fun resolveSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         // 从目标定义获取子类型信息
         val element = definitionInjectionInfo.element ?: return emptyList()
@@ -69,11 +64,6 @@ object ParadoxDefinitionInjectionService {
         return targetInfo.getSubtypeConfigs(options)
     }
 
-    fun getDeclarationModificationTracker(): ModificationTracker {
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return ParadoxModificationTrackers.ScriptFile
-    }
-
     fun resolveDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
         val element = definitionInjectionInfo.element ?: return null
         val name = definitionInjectionInfo.target?.orNull() ?: return null
@@ -84,5 +74,18 @@ object ParadoxDefinitionInjectionService {
         val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
         val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, name, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+        return listOf(file)
+    }
+
+    fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): List<Any> {
+        // 如果没有子类型候选项，则没有额外的 tracker
+        if (definitionInjectionInfo.subtypeConfigs.isEmpty()) return listOf(element.containingFile)
+
+        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
     }
 }

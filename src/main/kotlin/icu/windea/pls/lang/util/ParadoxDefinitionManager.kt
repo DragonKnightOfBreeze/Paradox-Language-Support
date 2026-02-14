@@ -16,7 +16,6 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -67,12 +66,15 @@ object ParadoxDefinitionManager {
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // type key must be valid
         if (getTypeKey(element).isNullOrEmpty()) return null
-        // from cache (invalidated on file modification)
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = runReadActionSmartly { ParadoxDefinitionService.resolveInfo(element, file) }
-            value.withDependencyItems(file)
+            runReadActionSmartly {
+                val file = element.containingFile
+                val value = ParadoxDefinitionService.resolveInfo(element, file)
+                val dependencies = ParadoxDefinitionService.getDependencies(element, file)
+                value.withDependencyItems(dependencies)
+            }
         }
     }
 
@@ -85,13 +87,17 @@ object ParadoxDefinitionManager {
             // 经过缓存
             CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null) }
-                val tracker = ParadoxDefinitionService.getSubtypeConfigsModificationTracker()
-                value.withDependencyItems(element, tracker)
-            }.optimized()
+                runReadActionSmartly {
+                    val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null).optimized()
+                    val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
+                    value.withDependencyItems(element.containingFile, dependencies)
+                }
+            }
         } else {
             // 不经过缓存
-            runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, options) }.optimized()
+            runReadActionSmartly {
+                ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, options).optimized()
+            }
         }
     }
 
@@ -102,13 +108,17 @@ object ParadoxDefinitionManager {
             // 经过缓存
             CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionDeclaration) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(definitionInfo, null) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
-                (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
+                runReadActionSmartly {
+                    val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, null) ?: EMPTY_OBJECT
+                    val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
+                    value.withDependencyItems(element.containingFile, dependencies)
+                }
             }.castOrNull()
         } else {
             // 不经过缓存
-            runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(definitionInfo, options) }
+            runReadActionSmartly {
+                ParadoxDefinitionService.resolveDeclaration(definitionInfo, options)
+            }
         }
     }
 
@@ -151,70 +161,55 @@ object ParadoxDefinitionManager {
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly r@{
-                val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisationKey(definitionInfo)
+            runReadActionSmartly {
+                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
+                val dependencies = ParadoxDefinitionService.getRelatedLocalisationKeyAwareDependencies(element)
+                value.withDependencyItems(dependencies)
             }
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(element, LocalisationFile)
-            }
-            value.withDependencyItems(trackers)
         }
     }
 
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly r@{
-                val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisation(definitionInfo)
+            runReadActionSmartly {
+                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
+                val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
+                value.withDependencyItems(dependencies)
             }
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(element, LocalisationFile, PreferredLocale)
-            }
-            value.withDependencyItems(trackers)
         }
     }
 
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly r@{
-                val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisations(definitionInfo)
+            runReadActionSmartly {
+                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
+                val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
+                value.withDependencyItems(dependencies)
             }
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(element, LocalisationFile, PreferredLocale)
-            }
-            value.withDependencyItems(trackers)
         }
     }
 
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly r@{
-                val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryImage(definitionInfo)
+            runReadActionSmartly {
+                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
+                val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
+                value.withDependencyItems(dependencies)
             }
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(element, ScriptFile)
-            }
-            value.withDependencyItems(trackers)
         }
     }
 
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImages) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly r@{
-                val definitionInfo = element.definitionInfo ?: return@r emptySet()
-                ParadoxDefinitionService.resolvePrimaryImages(definitionInfo)
+            runReadActionSmartly {
+                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
+                val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
+                value.withDependencyItems(dependencies)
             }
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(element, ScriptFile)
-            }
-            value.withDependencyItems(trackers)
         }
     }
 }

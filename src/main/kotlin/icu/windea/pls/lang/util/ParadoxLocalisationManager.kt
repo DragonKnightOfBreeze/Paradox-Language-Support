@@ -25,8 +25,10 @@ object ParadoxLocalisationManager {
         // from cache (invalidate on element modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedLocalizedName) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly { ParadoxLocalisationService.resolveLocalizedText(element) }
-            value.withDependencyItems(element)
+            runReadActionSmartly {
+                val value = ParadoxLocalisationService.resolveLocalizedText(element)
+                value.withDependencyItems(element)
+            }
         }
     }
 

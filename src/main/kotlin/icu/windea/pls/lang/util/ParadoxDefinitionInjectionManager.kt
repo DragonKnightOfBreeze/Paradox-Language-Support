@@ -114,12 +114,15 @@ object ParadoxDefinitionInjectionManager {
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
-        // from cache (invalidated on file modification)
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveInfo(element, file) }
-            value.withDependencyItems(file)
+            runReadActionSmartly {
+                val file = element.containingFile
+                val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
+                val dependencies = ParadoxDefinitionInjectionService.getDependencies(element, file)
+                value.withDependencyItems(dependencies)
+            }
         }
     }
 
@@ -132,13 +135,17 @@ object ParadoxDefinitionInjectionManager {
             // 经过缓存
             CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo) }
-                val tracker = ParadoxDefinitionInjectionService.getSubtypeConfigsModificationTracker()
-                value.withDependencyItems(element, tracker)
-            }.optimized()
+                runReadActionSmartly {
+                    val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo).optimized()
+                    val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
+                    value.withDependencyItems(element, dependencies)
+                }
+            }
         } else {
             // 不经过缓存
-            runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, options) }.optimized()
+            runReadActionSmartly {
+                ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, options).optimized()
+            }
         }
     }
 
@@ -149,13 +156,17 @@ object ParadoxDefinitionInjectionManager {
             // 经过缓存
             CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionDeclaration) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, null) }
-                val tracker = ParadoxDefinitionInjectionService.getDeclarationModificationTracker()
-                (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
+                runReadActionSmartly {
+                    val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, null) ?: EMPTY_OBJECT
+                    val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
+                    value.withDependencyItems(element, dependencies)
+                }
             }.castOrNull()
         } else {
             // 不经过缓存
-            runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, options) }
+            runReadActionSmartly {
+                ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, options)
+            }
         }
     }
 

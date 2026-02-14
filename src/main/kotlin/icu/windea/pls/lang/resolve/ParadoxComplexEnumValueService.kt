@@ -43,4 +43,9 @@ object ParadoxComplexEnumValueService {
         val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getDependencies(element: ParadoxScriptStringExpressionElement, file: PsiFile): List<Any> {
+        return listOf(file)
+    }
 }

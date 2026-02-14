@@ -48,8 +48,10 @@ object ParadoxEconomicCategoryManager {
     private fun doGetInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly { doGetInfo(definition) }
-            value.withDependencyItems(definition)
+            runReadActionSmartly {
+                val value = doGetInfo(definition)
+                value.withDependencyItems(definition)
+            }
         }
     }
 

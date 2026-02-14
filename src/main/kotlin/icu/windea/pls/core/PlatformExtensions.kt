@@ -131,12 +131,12 @@ fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provide
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
-fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, *dependencyItems)
+fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
+    return CachedValueProvider.Result.create(this, *dependencies)
 }
 
-fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, dependencyItems)
+fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
+    return CachedValueProvider.Result.create(this, dependencies)
 }
 
 fun <T> Query<T>.process(consumer: Processor<in T>): Boolean {

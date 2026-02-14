@@ -23,12 +23,15 @@ object ParadoxComplexEnumValueManager {
     }
 
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
-        // from cache (invalidated on file modification)
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = runReadActionSmartly { ParadoxComplexEnumValueService.resolveInfo(element, file) }
-            value.withDependencyItems(file)
+            runReadActionSmartly {
+                val file = element.containingFile
+                val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
+                val dependencies = ParadoxComplexEnumValueService.getDependencies(element, file)
+                value.withDependencyItems(dependencies)
+            }
         }
     }
 

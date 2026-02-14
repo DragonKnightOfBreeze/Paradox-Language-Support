@@ -70,9 +70,11 @@ object ParadoxDefineManager {
     private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxDefineInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = doGetInfo(element, file)
-            value.withDependencyItems(file)
+            runReadActionSmartly {
+                val file = element.containingFile
+                val value = doGetInfo(element, file)
+                value.withDependencyItems(file)
+            }
         }
     }
 
