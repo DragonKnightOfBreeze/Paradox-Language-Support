@@ -40,7 +40,7 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
         val icon = PlsIcons.Gutter.DefinitionInjections
         val prefix = PlsStrings.definitionInjectionPrefix
-        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
+        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.typeText}"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definitionInjection().contextSensitive()

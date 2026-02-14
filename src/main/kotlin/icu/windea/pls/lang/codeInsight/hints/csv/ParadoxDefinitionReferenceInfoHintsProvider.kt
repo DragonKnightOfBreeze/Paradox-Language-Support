@@ -26,14 +26,15 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvi
         if (resolved !is ParadoxDefinitionElement) return
         val definitionInfo = resolved.definitionInfo ?: return
 
+        val typeConfig = definitionInfo.typeConfig
+        val subtypeConfigs = definitionInfo.subtypeConfigs
+
         // 省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
         sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": ")
-            val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
             run {
-                val subtypeConfigs = definitionInfo.subtypeConfigs
                 if (subtypeConfigs.isEmpty()) return@run
                 if (!settings.showSubtypesForCsvDefinitionReference) return@run
                 if (!settings.truncateSubtypesForCsvDefinitionReference) {

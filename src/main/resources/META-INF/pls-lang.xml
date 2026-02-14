@@ -188,6 +188,10 @@
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.script.definitionReferenceInfo"/>
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoSettingsProvider"
+        providerId="paradox.script.definitionInjectionInfo"/>
+    <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_CSV"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.csv.definitionReferenceInfo"/>

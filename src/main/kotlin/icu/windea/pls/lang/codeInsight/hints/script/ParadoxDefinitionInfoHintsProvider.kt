@@ -27,6 +27,9 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         // 忽略类似 `event_namespace` 这样的定义的值不是子句的定义
         if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return
 
+        val typeConfig = definitionInfo.typeConfig
+        val subtypeConfigs = definitionInfo.subtypeConfigs
+
         // 如果定义名等同于类型键，则省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
         sink.addInlinePresentation(element.endOffset, priority = 1) {
@@ -35,10 +38,8 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
             } else {
                 text(": ")
             }
-            val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
             run {
-                val subtypeConfigs = definitionInfo.subtypeConfigs
                 if (subtypeConfigs.isEmpty()) return@run
                 if (!settings.showSubtypesForDefinition) return@run
                 if (!settings.truncateSubtypesForDefinition) {
