@@ -4,11 +4,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.isAvailable
@@ -40,6 +45,18 @@ object ParadoxDefinitionInjectionService {
         }
         // 兼容目标为空或者目标类型无法解析的情况
         return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null)
+    }
+
+    fun resolveSubtypeConfigs(element: ParadoxScriptProperty, definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+        // 从目标定义获取子类型信息
+        val target = definitionInjectionInfo.target?.orNull() ?: return emptyList()
+        val type = definitionInjectionInfo.type?.orNull() ?: return emptyList()
+        val typeConfig = definitionInjectionInfo.typeConfig ?: return emptyList()
+        if (typeConfig.subtypes.isEmpty()) return emptyList()
+        val selector = selector(definitionInjectionInfo.project, element).definition()
+        val targetDefinition = ParadoxDefinitionSearch.searchProperty(target, type, selector).findFirst() ?: return emptyList()
+        val targetInfo = targetDefinition.definitionInfo ?: return emptyList()
+        return targetInfo.getSubtypeConfigs(options)
     }
 
     fun resolveDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {

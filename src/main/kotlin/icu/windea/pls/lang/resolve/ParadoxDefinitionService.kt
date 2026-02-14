@@ -15,8 +15,10 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -96,16 +98,8 @@ object ParadoxDefinitionService {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
-        return ParadoxDefinitionInfo(element, source, typeConfig, null, null, typeKey, rootKeys.optimized())
-    }
-
-    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
-        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
-
-        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
-        if (fromInherit != null) return fromInherit
-        return null
+        val name = resolveName(element, typeKey, typeConfig)
+        return ParadoxDefinitionInfo(element, source, typeConfig, name, typeKey, rootKeys.optimized())
     }
 
     fun resolveSource(element: ParadoxDefinitionElement): ParadoxDefinitionSource? {
@@ -143,6 +137,29 @@ object ParadoxDefinitionService {
             processSubtypeConfigsFromInherit(definitionInfo, result)
         }
         return result.distinctBy { it.name } // it's necessary to distinct by name
+    }
+
+    /**
+     * 获取用于定义信息的子类型和声明缓存的修改追踪器。
+     *
+     * 依赖：类型规则的路径模式匹配的脚本文件 + 内联脚本文件 + 继承相关追踪器（如果存在）。
+     */
+    fun getDeclarationModificationTracker(typeConfig: CwtTypeConfig, definitionInfo: ParadoxDefinitionInfo? = null): ModificationTracker {
+        val trackers = mutableListOf<ModificationTracker>()
+        // 依赖类型规则路径匹配的脚本文件
+        for (path in typeConfig.paths) {
+            val pathExtension = typeConfig.pathExtension ?: ".txt"
+            val pattern = "$path/**/*$pathExtension"
+            trackers += ParadoxModificationTrackers.ScriptFile(pattern)
+        }
+        // 依赖内联脚本文件
+        trackers += ParadoxModificationTrackers.InlineScripts
+        // 依赖继承相关追踪器
+        if (definitionInfo != null) {
+            val fromInherit = getModificationTrackerFromInherit(definitionInfo)
+            if (fromInherit != null) trackers += fromInherit
+        }
+        return MergedModificationTracker(*trackers.toTypedArray())
     }
 
     fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {

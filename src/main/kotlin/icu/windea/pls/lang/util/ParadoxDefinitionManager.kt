@@ -4,6 +4,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -14,6 +19,8 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -24,6 +31,8 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
         val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
+        val cachedDefinitionSubtypeConfigs by registerKey<CachedValue<List<CwtSubtypeConfig>>>(Keys)
+        val cachedDefinitionDeclaration by registerKey<CachedValue<Any>>(Keys) // Any: CwtPropertyConfig | EMPTY_OBJECT
         val cachedDefinitionPrimaryLocalisationKey by registerKey<CachedValue<String>>(Keys)
         val cachedDefinitionPrimaryLocalisation by registerKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
         val cachedDefinitionPrimaryLocalisations by registerKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
@@ -57,17 +66,47 @@ object ParadoxDefinitionManager {
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
         // type key must be valid
         if (getTypeKey(element).isNullOrEmpty()) return null
-        // from cache
+        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = runReadActionSmartly { ParadoxDefinitionService.resolveInfo(element, file) }
-            // TODO 2.1.3 定义信息本身只需要依赖 file 即可（子类型信息和声明信息可能有不同的依赖）
-            val trackers = listOfNotNull(
-                file,
-                value?.let { v -> ParadoxDefinitionService.getModificationTracker(v) },
-            )
-            value.withDependencyItems(trackers)
+            value.withDependencyItems(file)
+        }
+    }
+
+    fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+        if (definitionInfo.typeConfig.subtypes.isEmpty()) return emptyList()
+        val finalOptions = options.orDefault()
+        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+            // 经过缓存
+            val element = definitionInfo.element
+            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionSubtypeConfigs) {
+                ProgressManager.checkCanceled()
+                val value = runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null) }
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker(definitionInfo.typeConfig, definitionInfo)
+                value.withDependencyItems(element, tracker)
+            }.optimized()
+        } else {
+            // 不经过缓存
+            return ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, options).optimized()
+        }
+    }
+
+    fun getDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        val finalOptions = options.orDefault()
+        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+            // 经过缓存
+            val element = definitionInfo.element
+            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionDeclaration) {
+                ProgressManager.checkCanceled()
+                val value = runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(element, definitionInfo, null) }
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker(definitionInfo.typeConfig, definitionInfo)
+                (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
+            }.castOrNull()
+        } else {
+            // 不经过缓存
+            return ParadoxDefinitionService.resolveDeclaration(definitionInfo.element, definitionInfo, options)
         }
     }
 

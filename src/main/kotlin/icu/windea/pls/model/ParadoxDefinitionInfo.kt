@@ -10,18 +10,15 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 定义的解析信息。
@@ -38,8 +35,7 @@ class ParadoxDefinitionInfo(
     val element: ParadoxDefinitionElement, // use element directly here
     val source: ParadoxDefinitionSource,
     val typeConfig: CwtTypeConfig,
-    name0: String?, // null -> lazy get
-    subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
+    val name: String,
     val typeKey: String,
     val rootKeys: List<String>,
 ) : UserDataHolderBase() {
@@ -48,10 +44,6 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
 
-    private val subtypeConfigsCache = ConcurrentHashMap<String, List<CwtSubtypeConfig>>()
-    private val declarationConfigsCache = ConcurrentHashMap<String, Any>()
-
-    val name: String by lazy { name0 ?: doGetName() }
     val type: String = typeConfig.name
 
     val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
@@ -60,8 +52,8 @@ class ParadoxDefinitionInfo(
 
     val memberPath: ParadoxMemberPath = doGetMemberPath()
 
-    val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
-    val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
+    val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
+    val declaration: CwtPropertyConfig? get() = getDeclaration()
 
     val localisations: List<RelatedLocalisationInfo> by lazy { doGetLocalisations() }
     val images: List<RelatedImageInfo> by lazy { doGetImages() }
@@ -70,15 +62,11 @@ class ParadoxDefinitionInfo(
     val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
 
     fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        return doGetSubtypeConfigs(options)
+        return ParadoxDefinitionManager.getSubtypeConfigs(this, options)
     }
 
     fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        return doGetDeclaration(options)
-    }
-
-    private fun doGetName(): String {
-        return ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
+        return ParadoxDefinitionManager.getDeclaration(this, options)
     }
 
     private fun doGetMemberPath(): ParadoxMemberPath {
@@ -86,25 +74,6 @@ class ParadoxDefinitionInfo(
         if (typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
 
         return ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
-    }
-
-    private fun doGetSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
-        if (typeConfig.subtypes.isEmpty()) return emptyList()
-        val cache = subtypeConfigsCache
-        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
-        val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveSubtypeConfigs(this, options)
-        }
-        return result.optimized()
-    }
-
-    private fun doGetDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? {
-        val cache = declarationConfigsCache
-        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
-        val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveDeclaration(element, this, options) ?: EMPTY_OBJECT
-        }
-        return result.castOrNull()
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
