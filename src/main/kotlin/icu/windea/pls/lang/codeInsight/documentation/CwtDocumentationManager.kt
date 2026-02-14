@@ -15,14 +15,6 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
-import icu.windea.pls.core.codeInsight.documentation.buildSections
-import icu.windea.pls.core.codeInsight.documentation.content
-import icu.windea.pls.core.codeInsight.documentation.definition
-import icu.windea.pls.core.codeInsight.documentation.getSections
-import icu.windea.pls.core.codeInsight.documentation.grayed
-import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
@@ -30,6 +22,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
@@ -55,6 +49,13 @@ import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.builders.appendConfigFileInfoHeader
+import icu.windea.pls.lang.util.builders.appendImgTag
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.util.builders.getModifierCategoriesText
+import icu.windea.pls.lang.util.builders.getScopeContextText
+import icu.windea.pls.lang.util.builders.getScopeText
+import icu.windea.pls.lang.util.builders.getScopesText
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
@@ -135,7 +136,7 @@ object CwtDocumentationManager {
 
     private fun DocumentationBuilder.buildConfigSymbolDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType, configGroup: CwtConfigGroup) {
         definition {
-            appendCwtConfigFileInfoHeader(element)
+            appendConfigFileInfoHeader(element)
 
             val prefix = configType.prefix
 
@@ -148,7 +149,7 @@ object CwtDocumentationManager {
 
     private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
         definition {
-            appendCwtConfigFileInfoHeader(element)
+            appendConfigFileInfoHeader(element)
 
             val config = element.getUserData(CwtConfigManager.Keys.config)
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType

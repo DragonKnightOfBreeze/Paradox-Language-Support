@@ -7,15 +7,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
-import icu.windea.pls.lang.codeInsight.documentation.appendBr
-import icu.windea.pls.lang.codeInsight.documentation.appendIndent
-import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager

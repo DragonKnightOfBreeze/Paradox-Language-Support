@@ -5,20 +5,19 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
-import icu.windea.pls.lang.codeInsight.documentation.appendImgTag
-import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.mock.MockPsiElement
@@ -29,6 +28,8 @@ import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.lang.util.builders.appendImgTag
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer.*
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -56,7 +57,7 @@ import javax.swing.UIManager
 @Suppress("unused")
 class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<Context, String>() {
     data class Context(
-        var builder: DocumentationBuilder = DocumentationBuilder()
+        var builder: DocumentationBuilder = buildDocumentation()
     ) {
         val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
         val colorStack: ArrayDeque<Color> = ArrayDeque()
@@ -274,7 +275,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
 
     context(context: Context)
     private fun renderRichTextsForConceptCommand(richTextList: List<ParadoxLocalisationRichText>, referenceElement: PsiElement?, conceptColor: Color) {
-        val newBuilder = DocumentationBuilder()
+        val newBuilder = buildDocumentation()
         val oldBuilder = context.builder
         context.builder = newBuilder
         renderRichTexts(richTextList)

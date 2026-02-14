@@ -11,11 +11,11 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.mergeValue
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport

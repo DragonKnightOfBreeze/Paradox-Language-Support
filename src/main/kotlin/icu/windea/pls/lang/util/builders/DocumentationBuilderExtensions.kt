@@ -1,19 +1,18 @@
-@file:Suppress("UnusedReceiverParameter")
+@file:Suppress("unused")
 
-package icu.windea.pls.lang.codeInsight.documentation
+package icu.windea.pls.lang.util.builders
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
-import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
@@ -28,16 +27,6 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.toScopeMap
-
-fun DocumentationBuilder.appendBr(): DocumentationBuilder {
-    append("<br>")
-    return this
-}
-
-fun DocumentationBuilder.appendIndent(): DocumentationBuilder {
-    append("&nbsp;&nbsp;&nbsp;&nbsp;")
-    return this
-}
 
 fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
     append("<icon src='ide/external_link_arrow.svg'/>")
@@ -56,19 +45,16 @@ fun DocumentationBuilder.appendLink(refText: String, label: String): Documentati
 }
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
-    DocumentationManagerUtil.createHyperlink(this.content, refText, label, plainLink)
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
     return this
 }
 
 fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
     if (context != null && ReferenceLinkService.resolve(refText, context) == null) return appendUnresolvedLink(label)
-    DocumentationManagerUtil.createHyperlink(this.content, refText, label, plainLink)
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
     return this
 }
 
-/**
- * @param local 输入的[url]是否是本地绝对路径。
- */
 fun DocumentationBuilder.appendImgTag(url: String, local: Boolean = true): DocumentationBuilder {
     val finalUrl = if (local) url.toFileUrl() else url
     append("<img src=\"").append(finalUrl).append("\"/>")
@@ -134,7 +120,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     return this
 }
 
-fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
+fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
     if (element.language !is CwtLanguage) return this
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
@@ -197,6 +183,7 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     return this
 }
 
+@Suppress("UnusedReceiverParameter")
 fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
     if (modifierCategories.isEmpty()) return ""
     return buildDocumentation {
@@ -212,6 +199,7 @@ fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<Strin
     }
 }
 
+@Suppress("UnusedReceiverParameter")
 fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): String {
     return buildDocumentation {
         append("<pre>")
@@ -220,6 +208,7 @@ fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType
     }
 }
 
+@Suppress("UnusedReceiverParameter")
 fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
     if (scopeIds.isEmpty()) return ""
     return buildDocumentation {
@@ -233,6 +222,7 @@ fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxG
     }
 }
 
+@Suppress("UnusedReceiverParameter")
 fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): String {
     return buildDocumentation {
         append("<pre>")
@@ -240,4 +230,3 @@ fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, 
         append("</pre>")
     }
 }
-
