@@ -42,22 +42,22 @@ object ParadoxEconomicCategoryManager {
      */
     fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         if (selectGameType(definition) != ParadoxGameType.Stellaris) return null
-        return doGetInfoFromCache(definition)
+        return getInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+    private fun getInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             runReadActionSmartly {
-                val value = doGetInfo(definition)
+                val value = resolveInfo(definition)
                 value.withDependencyItems(definition)
             }
         }
     }
 
-    private fun doGetInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+    private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         // 这种写法可能存在一定性能问题，但是问题不大
-        // 兼容继承的mult修正
+        // 兼容继承的 mult 修正
         try {
             val name = definition.name.orNull() ?: return null
             val resources = getResources(definition).orNull() ?: return null // unexpected

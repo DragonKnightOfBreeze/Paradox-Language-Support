@@ -38,13 +38,13 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
     }
 
     override fun <T : ParadoxDefinitionData> get(element: ParadoxDefinitionElement, type: Class<T>): T? {
-        return doGetDataFromCache(element, type)
+        return getFromCache(element, type)
     }
 
-    private fun <T : ParadoxDefinitionData> doGetDataFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
-        val key = doGetDataKey(type)
+    private fun <T : ParadoxDefinitionData> getFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
+        val key = getKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
-            val value = doGetData(element, type)
+            val value = getData(element, type)
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptedVariables, InlineScripts)
             }
@@ -52,11 +52,11 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         }
     }
 
-    private fun <T : ParadoxDefinitionData> doGetDataKey(type: Class<T>): Key<CachedValue<T>> {
+    private fun <T : ParadoxDefinitionData> getKey(type: Class<T>): Key<CachedValue<T>> {
         return keyCache.get(type).cast()
     }
 
-    private fun <T : ParadoxDefinitionData> doGetData(element: ParadoxDefinitionElement, type: Class<T>): T? {
+    private fun <T : ParadoxDefinitionData> getData(element: ParadoxDefinitionElement, type: Class<T>): T? {
         try {
             val scriptData = ParadoxScriptDataResolver.INLINE.resolve(element) ?: return null
             val data = type.getConstructor(ParadoxScriptData::class.java).newInstance(scriptData)

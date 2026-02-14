@@ -90,7 +90,7 @@ object ParadoxDefinitionManager {
                 runReadActionSmartly {
                     val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null).optimized()
                     val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                    value.withDependencyItems(element.containingFile, dependencies)
+                    value.withDependencyItems(dependencies)
                 }
             }
         } else {
@@ -111,7 +111,7 @@ object ParadoxDefinitionManager {
                 runReadActionSmartly {
                     val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, null) ?: EMPTY_OBJECT
                     val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                    value.withDependencyItems(element.containingFile, dependencies)
+                    value.withDependencyItems(dependencies)
                 }
             }.castOrNull()
         } else {

@@ -138,7 +138,7 @@ object ParadoxDefinitionInjectionManager {
                 runReadActionSmartly {
                     val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo).optimized()
                     val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                    value.withDependencyItems(element, dependencies)
+                    value.withDependencyItems(dependencies)
                 }
             }
         } else {
@@ -159,7 +159,7 @@ object ParadoxDefinitionInjectionManager {
                 runReadActionSmartly {
                     val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, null) ?: EMPTY_OBJECT
                     val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                    value.withDependencyItems(element, dependencies)
+                    value.withDependencyItems(dependencies)
                 }
             }.castOrNull()
         } else {

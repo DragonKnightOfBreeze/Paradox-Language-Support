@@ -254,10 +254,10 @@ object ParadoxScopeManager {
     }
 
     fun getSwitchedScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
-        return doGetSwitchedScopeContextFromCache(element)
+        return getSwitchedScopeContextFromCache(element)
     }
 
-    private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
+    private fun getSwitchedScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             val value = doGetSwitchedScopeContextOfDefinition(element)
@@ -316,11 +316,11 @@ object ParadoxScopeManager {
 
     fun getSwitchedScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         // only receive push scope (this scope), ignore others (like root scope, etc.)
-        val scopeContext = doGetSwitchedScopeContextFromCache(element)
+        val scopeContext = getSwitchedScopeContextFromCache(element)
         return inputScopeContext.resolveNext(scopeContext.scope.id)
     }
 
-    private fun doGetSwitchedScopeContextFromCache(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+    private fun getSwitchedScopeContextFromCache(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             val value = doGetSwitchedScopeContext(element)

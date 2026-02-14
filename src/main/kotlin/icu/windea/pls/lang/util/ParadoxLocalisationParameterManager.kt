@@ -39,18 +39,18 @@ object ParadoxLocalisationParameterManager {
     }
 
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
-        return doGetParameterNamesFromCache(element)
+        return getParameterNamesFromCache(element)
     }
 
-    private fun doGetParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
+    private fun getParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
-            val value = doGetParameters(element)
-            val trackers = with(ParadoxModificationTrackers) { listOf(element, ScriptFile) }
-            value.withDependencyItems(trackers)
+            val value = resolveParameters(element)
+            val dependencies = with(ParadoxModificationTrackers) { listOf(element, ScriptFile) }
+            value.withDependencyItems(dependencies)
         }
     }
 
-    private fun doGetParameters(element: ParadoxLocalisationProperty): Set<String> {
+    private fun resolveParameters(element: ParadoxLocalisationProperty): Set<String> {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
         val selector = selector(element.project, element).localisationParameter()

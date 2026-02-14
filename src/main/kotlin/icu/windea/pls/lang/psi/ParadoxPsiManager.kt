@@ -93,11 +93,11 @@ object ParadoxPsiManager {
     }
 
     fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
-        val r = doGetArgumentTupleListFromCache(element)
+        val r = getArgumentTupleListFromCache(element)
         return if (excludeNames.isEmpty()) r else r.filter { (k) -> k !in excludeNames }
     }
 
-    private fun doGetArgumentTupleListFromCache(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
+    private fun getArgumentTupleListFromCache(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedArgumentTupleList) {
             val value = doGetArgumentTupleList(element)
             value.withDependencyItems(element)

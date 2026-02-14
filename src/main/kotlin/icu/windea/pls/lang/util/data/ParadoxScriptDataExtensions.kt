@@ -64,10 +64,10 @@ object ParadoxScriptDataValueProvider {
     private val cacheKey = createKey<MutableMap<KType, Any?>>("paradox.script.data.value.cache")
 
     fun getValue(data: ParadoxScriptData, type: KType): Any? {
-        return doGetValueFromCache(data, type)
+        return getValueFromCache(data, type)
     }
 
-    private fun doGetValueFromCache(data: ParadoxScriptData, type: KType): Any? {
+    private fun getValueFromCache(data: ParadoxScriptData, type: KType): Any? {
         val propertyValues = data.getOrPutUserData(cacheKey) { mutableMapOf() }
         return propertyValues.getOrPut(type) { doGetValue(data, type) ?: EMPTY_OBJECT }.takeUnless { it === EMPTY_OBJECT }
     }

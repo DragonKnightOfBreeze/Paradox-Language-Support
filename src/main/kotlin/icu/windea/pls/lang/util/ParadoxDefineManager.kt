@@ -63,32 +63,28 @@ object ParadoxDefineManager {
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        // get from cache
-        return doGetInfoFromCache(element)
-    }
-
-    private fun doGetInfoFromCache(element: ParadoxScriptProperty): ParadoxDefineInfo? {
+        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
             ProgressManager.checkCanceled()
             runReadActionSmartly {
                 val file = element.containingFile
-                val value = doGetInfo(element, file)
+                val value = resolveInfo(element, file)
                 value.withDependencyItems(file)
             }
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
-        doGetInfoFromStub(element)?.let { return it }
-        return doGetInfoFromPsi(element, file)
+    private fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
+        resolveInfoFromStub(element)?.let { return it }
+        return resolveInfoFromPsi(element, file)
     }
 
-    private fun doGetInfoFromStub(element: ParadoxScriptProperty): ParadoxDefineInfo? {
+    private fun resolveInfoFromStub(element: ParadoxScriptProperty): ParadoxDefineInfo? {
         val stub = getStub(element) ?: return null
         return ParadoxDefineInfo(stub.namespace, stub.variable, stub.gameType)
     }
 
-    private fun doGetInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
+    private fun resolveInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
         if (!isDefineFile(file)) return null
         val gameType = selectGameType(file) ?: return null
         val parent = element.parent

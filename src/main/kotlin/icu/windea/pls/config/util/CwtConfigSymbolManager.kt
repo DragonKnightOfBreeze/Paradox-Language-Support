@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.util.PsiModificationTracker.*
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
@@ -43,29 +43,29 @@ object CwtConfigSymbolManager {
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         if (!element.isExpression()) return emptyList()
         ProgressManager.checkCanceled()
-        val infos = doGetInfoFromCache(element)
+        val infos = getInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-        ProgressManager.checkCanceled()
-        val infos = doGetInfoFromCache(element)
+        val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
         if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
         return references.toTypedArray()
     }
 
-    private fun doGetInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+    private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedSymbolInfos) {
-            val value = doGetInfos(element)
-            val trackers = listOf(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
-            value.withDependencyItems(trackers)
+            ProgressManager.checkCanceled()
+            val value = resolveInfos(element)
+            val dependencies = listOf(element, getInstance(element.project).forLanguage(CwtLanguage))
+            value.withDependencyItems(dependencies)
         }
     }
 
-    private fun doGetInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+    private fun resolveInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
         collectInfos(element, infos)
         return infos.optimized()

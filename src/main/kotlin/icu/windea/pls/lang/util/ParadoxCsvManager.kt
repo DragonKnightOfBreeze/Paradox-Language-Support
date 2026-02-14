@@ -37,24 +37,24 @@ object ParadoxCsvManager {
     }
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
-        return doGetRowConfigFromCache(file)
+        return getRowConfigFromCache(file)
     }
 
     fun getRowConfig(element: ParadoxCsvRowElement): CwtRowConfig? {
         val file = element.containingFile
         if (file !is ParadoxCsvFile) return null
-        return doGetRowConfigFromCache(file)
+        return getRowConfigFromCache(file)
     }
 
-    private fun doGetRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
+    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
-            val value = doGetRowConfig(file)
+            val value = resolveRowConfig(file)
             val tracker = ComputedModificationTracker { file.fileInfo } // 文件内容发生变化时，这里的缓存并不需要刷新
             value.withDependencyItems(tracker)
         }
     }
 
-    private fun doGetRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
+    private fun resolveRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path

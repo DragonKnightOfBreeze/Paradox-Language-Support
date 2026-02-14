@@ -205,10 +205,10 @@ object ParadoxExpressionManager {
     }
 
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        return doGetParameterRangesInExpressionFromCache(element)
+        return getParameterRangesInExpressionFromCache(element)
     }
 
-    private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
+    private fun getParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterRanges) {
             val value = doGetParameterRangesInExpression(element)
             value.withDependencyItems(element)
@@ -345,28 +345,28 @@ object ParadoxExpressionManager {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
                 if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             is ParadoxLocalisationExpressionElement -> {
                 if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             is ParadoxCsvExpressionElement -> {
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             else -> PsiReference.EMPTY_ARRAY
         }
     }
 
-    private fun doGetExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
-        val cacheKey = doGetExpressionReferencesCacheKey()
+    private fun getExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
+        val cacheKey = getExpressionReferencesCacheKey()
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
-    private fun doGetExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
+    private fun getExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return key
@@ -413,7 +413,7 @@ object ParadoxExpressionManager {
     }
 
     fun cleanUpExpressionReferencesCache(element: ParadoxExpressionElement) {
-        val cacheKey = doGetExpressionReferencesCacheKey()
+        val cacheKey = getExpressionReferencesCacheKey()
         element.putUserData(cacheKey, null)
     }
 

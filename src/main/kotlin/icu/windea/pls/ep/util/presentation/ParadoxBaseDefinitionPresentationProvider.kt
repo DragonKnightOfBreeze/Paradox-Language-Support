@@ -36,13 +36,13 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
     }
 
     override fun <T : ParadoxDefinitionPresentation> get(element: ParadoxDefinitionElement, type: Class<T>): T? {
-        return doGetPresentationFromCache(element, type)
+        return getFromCache(element, type)
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentationFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
-        val key = doGetPresentationKey(type)
+    private fun <T : ParadoxDefinitionPresentation> getFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
+        val key = getKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
-            val value = doGetPresentation(element, type)
+            val value = getPresentation(element, type)
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptFile, LocalisationFile)
             }
@@ -50,11 +50,11 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         }
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentationKey(type: Class<T>): Key<CachedValue<T>> {
+    private fun <T : ParadoxDefinitionPresentation> getKey(type: Class<T>): Key<CachedValue<T>> {
         return keyCache.get(type).cast()
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentation(element: ParadoxDefinitionElement, type: Class<T>): T? {
+    private fun <T : ParadoxDefinitionPresentation> getPresentation(element: ParadoxDefinitionElement, type: Class<T>): T? {
         try {
             val presentation = type.getConstructor(ParadoxDefinitionElement::class.java).newInstance(element)
             return presentation

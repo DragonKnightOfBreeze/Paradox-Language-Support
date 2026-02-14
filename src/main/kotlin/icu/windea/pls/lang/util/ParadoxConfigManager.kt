@@ -40,10 +40,10 @@ object ParadoxConfigManager {
      */
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return null
-        return doGetConfigContextFromCache(memberElement)
+        return getConfigContextFromCache(memberElement)
     }
 
-    private fun doGetConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
+    private fun getConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = ParadoxConfigService.getConfigContext(element)
@@ -57,12 +57,12 @@ object ParadoxConfigManager {
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         ProgressManager.checkCanceled()
-        val cache = doGetConfigsCacheFromCache(memberElement)
+        val cache = getConfigsCacheFromCache(memberElement)
         val cacheKey = options.orDefault().toHashString(forMatched = true).optimized() // optimized to optimize memory
         return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
     }
 
-    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
+    private fun getConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
@@ -83,12 +83,12 @@ object ParadoxConfigManager {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
-        val cache = doGetChildOccurrencesCacheFromCache(element)
+        val cache = getChildOccurrencesCacheFromCache(element)
         val cacheKey = CwtConfigManipulator.getIdentifierKey(childConfigs, maxDepth = 1).optimized() // optimized to optimize memory
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }
 
-    private fun doGetChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
+    private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             val value = doGetChildOccurrencesCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)

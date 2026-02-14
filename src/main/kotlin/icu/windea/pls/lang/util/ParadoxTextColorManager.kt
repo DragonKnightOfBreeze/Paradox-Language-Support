@@ -66,7 +66,7 @@ object ParadoxTextColorManager {
 
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
         if (element is ParadoxDefinitionElement) {
-            val info = doGetInfoFromCache(element)
+            val info = getInfoFromCache(element)
             if (info != null) return info
         }
 
@@ -80,10 +80,10 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
-        return doGetInfoFromCache(definition)
+        return getInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
+    private fun getInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
@@ -108,7 +108,7 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name
+        return definitions.mapNotNull { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }
 
     fun isId(c: Char): Boolean {

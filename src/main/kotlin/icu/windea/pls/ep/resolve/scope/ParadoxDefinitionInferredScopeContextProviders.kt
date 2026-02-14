@@ -2,7 +2,6 @@ package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
@@ -10,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -53,41 +53,41 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContext) return null
-        return doGetScopeContextFromCache(definition)
+        return getScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetScopeContext(definition)
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(DefinitionScopeContextInference, getTracker(definition))
+            runReadActionSmartly {
+                val value = resolveScopeContext(definition)
+                val dependencies = getDependencies(definition)
+                value.withDependencyItems(dependencies)
             }
-            value.withDependencyItems(trackers)
         }
     }
 
-    private fun getTracker(definition: ParadoxDefinitionElement): ModificationTracker {
-        val configGroup = definition.definitionInfo?.configGroup ?: return ParadoxModificationTrackers.ScriptFile
-        return configGroup.definitionScopeContextModificationTracker
-    }
-
-    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
 
         // optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?: return null
+        val searchScope = ParadoxSearchScope.fromElement(definition) ?: return null
         val configGroup = definitionInfo.configGroup
         val scopeContextMap = mutableMapOf<String, String>()
         var hasConflict = false
-        val r = doProcessQuery(definitionInfo, searchScope, scopeContextMap, configGroup)
+        val r = processQuery(definitionInfo, searchScope, scopeContextMap, configGroup)
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.orNull() ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
 
-    private fun doProcessQuery(
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val configGroup = definition.definitionInfo?.configGroup
+        val scriptTracker = configGroup?.definitionScopeContextModificationTracker ?: ParadoxModificationTrackers.ScriptFile
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+    }
+
+    private fun processQuery(
         definitionInfo: ParadoxDefinitionInfo,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
@@ -157,39 +157,43 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
-        return doGetScopeContextFromCache(definition)
+        return getScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetScopeContext(definition)
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(DefinitionScopeContextInference, ScriptFile("common/on_actions/**/*.txt"))
+            runReadActionSmartly {
+                val value = resolveScopeContext(definition)
+                val dependencies = getDependencies(definition)
+                value.withDependencyItems(dependencies)
             }
-            value.withDependencyItems(trackers)
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventType = ParadoxEventManager.getType(definitionInfo)
         // optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?.withFilePath("common/on_actions", "txt")
-            ?: return null
+        val searchScope = ParadoxSearchScope.fromElement(definition)?.withFilePath("common/on_actions", "txt") ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
         var hasConflict = false
-        val r = doProcessQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
+        val r = processQuery(thisEventName, thisEventType, searchScope, scopeContextMap, configGroup)
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.orNull() ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
 
-    private fun doProcessQuery(
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ParadoxModificationTrackers.ScriptFile("common/on_actions/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+    }
+
+    private fun processQuery(
         thisEventName: String,
         thisEventType: String?,
         searchScope: GlobalSearchScope,
@@ -266,39 +270,44 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
-        return doGetScopeContextFromCache(definition)
+        return getScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetScopeContext(definition)
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(DefinitionScopeContextInference, ScriptFile("events/**/*.txt"))
+            runReadActionSmartly {
+                val value = resolveScopeContext(definition)
+                val dependencies = getDependencies(definition)
+                value.withDependencyItems(dependencies)
             }
-            value.withDependencyItems(trackers)
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventScope = ParadoxEventManager.getScope(definitionInfo)
         // optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?: return null
+        val searchScope = ParadoxSearchScope.fromElement(definition) ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
         scopeContextMap.put("this", thisEventScope)
         scopeContextMap.put("root", thisEventScope)
         var hasConflict = false
-        val r = doProcessQuery(thisEventName, searchScope, scopeContextMap, configGroup)
+        val r = processQuery(thisEventName, searchScope, scopeContextMap, configGroup)
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.takeIf { it.size > 2 } ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
 
-    private fun doProcessQuery(
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ParadoxModificationTrackers.ScriptFile("events/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+    }
+
+    private fun processQuery(
         thisEventName: String,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
@@ -373,7 +382,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 scopeContextMap.put(toRef, refScope)
                             }
                             if (depth >= 4) return@p true
-                            doProcessQuery(containingEventName, searchScope, scopeContextMap, configGroup, depth + 1)
+                            processQuery(containingEventName, searchScope, scopeContextMap, configGroup, depth + 1)
                         }
                     }
                 }
@@ -411,21 +420,21 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!PlsSettings.getInstance().state.inference.scopeContextForOnActions) return null
-        return doGetScopeContextFromCache(definition)
+        return getScopeContextFromCache(definition)
     }
 
-    private fun doGetScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetScopeContext(definition)
-            val trackers = with(ParadoxModificationTrackers) {
-                listOf(DefinitionScopeContextInference, ScriptFile("events/**/*.txt"))
+            runReadActionSmartly {
+                val value = resolveScopeContext(definition)
+                val dependencies = getDependencies(definition)
+                value.withDependencyItems(dependencies)
             }
-            value.withDependencyItems(trackers)
         }
     }
 
-    private fun doGetScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+    private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
@@ -434,19 +443,24 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         if (config != null) return null
         val thisOnActionName = definitionInfo.name
         // optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
-            ?: return null
+        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) } ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
         scopeContextMap.put("this", ParadoxScopeManager.anyScopeId)
         scopeContextMap.put("root", ParadoxScopeManager.anyScopeId)
         var hasConflict = false
-        val r = doProcessQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
+        val r = processQuery(thisOnActionName, searchScope, scopeContextMap, configGroup)
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.takeIf { it.size > 2 } ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
     }
 
-    private fun doProcessQuery(
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ParadoxModificationTrackers.ScriptFile("events/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+    }
+    
+    private fun processQuery(
         thisOnActionName: String,
         searchScope: GlobalSearchScope,
         scopeContextMap: MutableMap<String, String>,
@@ -521,7 +535,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 scopeContextMap.put(toRef, refScope)
                             }
                             if (depth >= 4) return@p true
-                            doProcessQuery(containingEventName, searchScope, scopeContextMap, configGroup, depth + 1)
+                            processQuery(containingEventName, searchScope, scopeContextMap, configGroup, depth + 1)
                         }
                     }
                 }
