@@ -15,8 +15,8 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 interface ParadoxDefinitionElement : PsiNameIdentifierOwner, NavigatablePsiElement, ParadoxScriptMemberContainer {
     /**
      * 注意：
-     * 如果是定义，这里得到的是定义的类型键（[ParadoxDefinitionInfo.typeKey]），
-     * 不一定是定义的名字（[ParadoxDefinitionInfo.name]）。
+     * 如果是定义，这里得到的是定义的类型键（[typeKey]），
+     * 不一定是定义的名字（[name]）。
      */
     override fun getName(): String
 

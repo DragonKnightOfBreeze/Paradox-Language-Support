@@ -30,11 +30,14 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  */
 data class ParadoxDefinitionInfo(
     val source: ParadoxDefinitionSource,
-    val typeConfig: CwtTypeConfig,
     val name: String,
+    val type: String,
     val typeKey: String,
     val rootKeys: List<String>,
+    val typeConfig: CwtTypeConfig,
 ) : UserDataHolderBase() {
+    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
+
     @Volatile var element: ParadoxDefinitionElement? = null
 
     val configGroup: CwtConfigGroup get() = typeConfig.configGroup
@@ -42,29 +45,26 @@ data class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
 
-    val type: String = typeConfig.name
-
     val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
     val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
     val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
-    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
-
     val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
     val declaration: CwtPropertyConfig? get() = getDeclaration()
 
-    val localisations: List<RelatedLocalisationInfo> by lazy { ParadoxDefinitionManager.getRelatedLocalisationInfos(this) }
-    val images: List<RelatedImageInfo> by lazy { ParadoxDefinitionManager.getRelatedImageInfos(this) }
-    val modifiers: List<ModifierInfo> by lazy { ParadoxDefinitionManager.getModifierInfos(this) }
-    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this) }
-    val primaryImages: List<RelatedImageInfo> by lazy { ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this) }
+    // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
+    val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
+    val images: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getRelatedImageInfos(this)
+    val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
+    val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
+    val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
-    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        return ParadoxDefinitionManager.getSubtypeConfigs(this, options)
-    }
+    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
 
-    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        return ParadoxDefinitionManager.getDeclaration(this, options)
+    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionManager.getDeclaration(this, options)
+
+    override fun toString(): String {
+        return "ParadoxDefinitionInfo(source=$source, name=$name, type=$type, typeKey=$typeKey, rootKeys=$rootKeys, gameType=$gameType)"
     }
 
     data class RelatedImageInfo(

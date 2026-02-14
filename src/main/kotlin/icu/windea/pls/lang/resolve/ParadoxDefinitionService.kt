@@ -29,6 +29,8 @@ import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.getTypeKey
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -87,9 +89,8 @@ object ParadoxDefinitionService {
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
-        val info = ParadoxDefinitionInfo(source, typeConfig, name, typeKey, rootKeys.optimized())
-        info.element = element
-        return info
+        val type = typeConfig.name
+        return ParadoxDefinitionInfo(source, name, type, typeKey, rootKeys.optimized(), typeConfig).also { it.element = element }
     }
 
     fun resolveSource(element: ParadoxDefinitionElement): ParadoxDefinitionSource? {
@@ -114,6 +115,11 @@ object ParadoxDefinitionService {
         }
     }
 
+    fun getSubtypeConfigsModificationTracker(): ModificationTracker {
+        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
+        return ParadoxModificationTrackers.ScriptFile
+    }
+
     fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val element = definitionInfo.element ?: return emptyList()
         val subtypesConfig = definitionInfo.typeConfig.subtypes
@@ -130,25 +136,24 @@ object ParadoxDefinitionService {
         return result.distinctBy { it.name } // it's necessary to distinct by name
     }
 
-    /**
-     * 获取用于定义信息的子类型和声明缓存的修改追踪器。
-     *
-     * TODO 考虑优化为仅依赖类型规则匹配的脚本文件和内联脚本文件，而非所有脚本文件。
-     *  考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-     */
     fun getDeclarationModificationTracker(): ModificationTracker {
+        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
         return ParadoxModificationTrackers.ScriptFile
     }
 
-    fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+    fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        val element = definitionInfo.element ?: return null
+        val name = definitionInfo.name
+        val type = definitionInfo.type
         val configGroup = definitionInfo.configGroup
-        val declarationConfig = configGroup.declarations.get(definitionInfo.type) ?: return null
-        val subtypes = resolveSubtypeConfigs(definitionInfo, options).map { it.name }.optimized() // optimized to optimize memory
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
+        val declarationConfig = configGroup.declarations.get(type) ?: return null
+        val subtypeConfigs = ParadoxDefinitionManager.getSubtypeConfigs(definitionInfo, options)
+        val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, name, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
-    fun resolveDeclaration(element: PsiElement, configGroup: CwtConfigGroup, type: String, subtypes: List<String>? = null): CwtPropertyConfig? {
+    fun resolveDeclaration(element: PsiElement, type: String, subtypes: List<String>? = null, configGroup: CwtConfigGroup): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
@@ -192,7 +197,8 @@ object ParadoxDefinitionService {
         return result
     }
 
-    fun resolvePrimaryLocalisationKey(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): String? {
+    fun resolvePrimaryLocalisationKey(definitionInfo: ParadoxDefinitionInfo): String? {
+        val element = definitionInfo.element ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
@@ -204,7 +210,8 @@ object ParadoxDefinitionService {
         return null
     }
 
-    fun resolvePrimaryLocalisation(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
+    fun resolvePrimaryLocalisation(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationProperty? {
+        val element = definitionInfo.element ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
@@ -216,7 +223,8 @@ object ParadoxDefinitionService {
         return null
     }
 
-    fun resolvePrimaryLocalisations(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
+    fun resolvePrimaryLocalisations(definitionInfo: ParadoxDefinitionInfo): Set<ParadoxLocalisationProperty> {
+        val element = definitionInfo.element ?: return emptySet()
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<ParadoxLocalisationProperty>()
@@ -229,7 +237,8 @@ object ParadoxDefinitionService {
         return result
     }
 
-    fun resolvePrimaryImage(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): PsiFile? {
+    fun resolvePrimaryImage(definitionInfo: ParadoxDefinitionInfo): PsiFile? {
+        val element = definitionInfo.element ?: return null
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         for (primaryImage in primaryImages) {
@@ -242,7 +251,8 @@ object ParadoxDefinitionService {
         return null
     }
 
-    fun resolvePrimaryImages(definitionInfo: ParadoxDefinitionInfo, element: ParadoxDefinitionElement): Set<PsiFile> {
+    fun resolvePrimaryImages(definitionInfo: ParadoxDefinitionInfo): Set<PsiFile> {
+        val element = definitionInfo.element ?: return emptySet()
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<PsiFile>()

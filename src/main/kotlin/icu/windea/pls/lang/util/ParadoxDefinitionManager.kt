@@ -73,42 +73,42 @@ object ParadoxDefinitionManager {
             val file = element.containingFile
             val value = runReadActionSmartly { ParadoxDefinitionService.resolveInfo(element, file) }
             value.withDependencyItems(file)
-        }?.also { it.element = element } // rebind element
+        }
     }
 
     fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        if (definitionInfo.typeConfig.subtypes.isEmpty()) return emptyList()
+        val candidates = definitionInfo.typeConfig.subtypes
+        if (candidates.isEmpty()) return emptyList()
+        val element = definitionInfo.element ?: return emptyList()
         val finalOptions = options.orDefault()
-        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+        return if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            val element = definitionInfo.element ?: return emptyList()
-            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionSubtypeConfigs) {
+            CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
                 val value = runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
+                val tracker = ParadoxDefinitionService.getSubtypeConfigsModificationTracker()
                 value.withDependencyItems(element, tracker)
             }.optimized()
         } else {
             // 不经过缓存
-            return ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, options).optimized()
+            runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, options) }.optimized()
         }
     }
 
     fun getDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        val element = definitionInfo.element ?: return null
         val finalOptions = options.orDefault()
-        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+        return if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            val element = definitionInfo.element ?: return null
-            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionDeclaration) {
+            CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionDeclaration) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(element, definitionInfo, null) }
+                val value = runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(definitionInfo, null) }
                 val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
                 (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
             }.castOrNull()
         } else {
             // 不经过缓存
-            val element = definitionInfo.element ?: return null
-            return ParadoxDefinitionService.resolveDeclaration(element, definitionInfo, options)
+            runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(definitionInfo, options) }
         }
     }
 
@@ -153,7 +153,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly r@{
                 val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisationKey(definitionInfo, element)
+                ParadoxDefinitionService.resolvePrimaryLocalisationKey(definitionInfo)
             }
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, LocalisationFile)
@@ -167,7 +167,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly r@{
                 val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisation(definitionInfo, element)
+                ParadoxDefinitionService.resolvePrimaryLocalisation(definitionInfo)
             }
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, LocalisationFile, PreferredLocale)
@@ -181,7 +181,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly r@{
                 val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryLocalisations(definitionInfo, element)
+                ParadoxDefinitionService.resolvePrimaryLocalisations(definitionInfo)
             }
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, LocalisationFile, PreferredLocale)
@@ -195,7 +195,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly r@{
                 val definitionInfo = element.definitionInfo ?: return@r null
-                ParadoxDefinitionService.resolvePrimaryImage(definitionInfo, element)
+                ParadoxDefinitionService.resolvePrimaryImage(definitionInfo)
             }
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptFile)
@@ -209,7 +209,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val value = runReadActionSmartly r@{
                 val definitionInfo = element.definitionInfo ?: return@r emptySet()
-                ParadoxDefinitionService.resolvePrimaryImages(definitionInfo, element)
+                ParadoxDefinitionService.resolvePrimaryImages(definitionInfo)
             }
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptFile)

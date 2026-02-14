@@ -370,7 +370,7 @@ object ParadoxCompletionManager {
             val config = when {
                 typeToUse == null -> null
                 typeConfigToUse.typeKeyPrefix != null -> typeConfigToUse.typeKeyPrefixConfig
-                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement!!, configGroup, typeToUse, subtypesToUse)
+                else -> ParadoxDefinitionService.resolveDeclaration(context.contextElement!!, typeToUse, subtypesToUse, configGroup)
             }
             val element = config?.pointer?.element
             val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
@@ -866,7 +866,7 @@ object ParadoxCompletionManager {
             val keywordToUse = keyword.substring(index + 1)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val type = typeConfig.name
-            val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
+            val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
             context.config = config
             context.isKey = true
             context.expressionTailText = ""

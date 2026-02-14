@@ -21,7 +21,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
-import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
@@ -124,39 +123,39 @@ object ParadoxDefinitionInjectionManager {
         }
     }
 
-    fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: ParadoxScriptProperty?, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+    fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInjectionInfo.typeConfig?.subtypes
         if (candidates.isNullOrEmpty()) return emptyList()
-        if (element == null) return emptyList()
+        val element = definitionInjectionInfo.element ?: return emptyList()
         val finalOptions = options.orDefault()
-        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+        return if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionSubtypeConfigs) {
+            CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(element, definitionInjectionInfo) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
+                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo) }
+                val tracker = ParadoxDefinitionInjectionService.getSubtypeConfigsModificationTracker()
                 value.withDependencyItems(element, tracker)
             }.optimized()
         } else {
             // 不经过缓存
-            return ParadoxDefinitionInjectionService.resolveSubtypeConfigs(element, definitionInjectionInfo, options).optimized()
+            runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, options) }.optimized()
         }
     }
 
-    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, element: ParadoxScriptProperty?, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        if (element == null) return null
+    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        val element = definitionInjectionInfo.element ?: return null
         val finalOptions = options.orDefault()
-        if (finalOptions == ParadoxMatchOptions.DEFAULT) {
+        return if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionDeclaration) {
+            CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionDeclaration) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo, null) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
+                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, null) }
+                val tracker = ParadoxDefinitionInjectionService.getDeclarationModificationTracker()
                 (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
             }.castOrNull()
         } else {
             // 不经过缓存
-            return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo, options)
+            runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, options) }
         }
     }
 

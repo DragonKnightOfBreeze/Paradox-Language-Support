@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @property typeConfig 目标定义的类型对应的规则。
  */
 data class ParadoxDefinitionInjectionInfo(
-    val mode: String, // must be valid
+    val mode: String,
     val target: String?,
     val type: String?,
     val modeConfig: CwtValueConfig,
@@ -35,8 +35,8 @@ data class ParadoxDefinitionInjectionInfo(
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = type?.let { configGroup.declarations.get(it) }
 
-    val subtypeConfigs: List<CwtSubtypeConfig> get() = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, element)
-    val declaration: CwtPropertyConfig? get() = ParadoxDefinitionInjectionManager.getDeclaration(this, element)
+    val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
+    val declaration: CwtPropertyConfig? get() = getDeclaration()
 
     val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
     val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
@@ -44,10 +44,12 @@ data class ParadoxDefinitionInjectionInfo(
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
-    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, element, options)
-    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, element, options)
+    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, options)
+
+    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, options)
 
     fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)
+
     fun isTargetExist(context: Any? = null): Boolean = ParadoxDefinitionInjectionManager.isTargetExist(this, context)
 
     override fun toString(): String {

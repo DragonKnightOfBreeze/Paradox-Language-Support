@@ -91,7 +91,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val matchContext = CwtTypeConfigMatchContext(configGroup, path, null, rootKeys, typeKeyPrefix)
                     if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
-                    val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
+                    val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
 
                     context.config = config
                     context.isKey = true

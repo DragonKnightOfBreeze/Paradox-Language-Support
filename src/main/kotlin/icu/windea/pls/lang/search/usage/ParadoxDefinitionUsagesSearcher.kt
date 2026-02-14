@@ -26,8 +26,8 @@ import kotlin.experimental.or
 /**
  * 定义的用法的查询。
  *
- * 定义对应的 PSI 元素（[ParadoxDefinitionElement]） 的名字是定义的类型键（[ParadoxDefinitionInfo.typeKey]），
- * 不一定是定义的名字（[ParadoxDefinitionInfo.name]）。
+ * 定义对应的 PSI 元素（[ParadoxDefinitionElement]） 的名字是定义的类型键（[typeKey]），
+ * 不一定是定义的名字（[name]）。
  * 因此这里需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
