@@ -134,10 +134,8 @@ object ParadoxDefinitionInjectionManager {
             return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
                 val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveSubtypeConfigs(element, definitionInjectionInfo) }
-                val tracker = definitionInjectionInfo.typeConfig?.let { typeConfig ->
-                    ParadoxDefinitionService.getDeclarationModificationTracker(typeConfig)
-                }
-                value.withDependencyItems(listOfNotNull(element, tracker))
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
+                value.withDependencyItems(element, tracker)
             }.optimized()
         } else {
             // 不经过缓存
@@ -152,15 +150,13 @@ object ParadoxDefinitionInjectionManager {
             // 经过缓存
             return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionDeclaration) {
                 ProgressManager.checkCanceled()
-                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo) }
-                val tracker = definitionInjectionInfo.typeConfig?.let { typeConfig ->
-                    ParadoxDefinitionService.getDeclarationModificationTracker(typeConfig)
-                }
-                (value ?: EMPTY_OBJECT).withDependencyItems(listOfNotNull(element, tracker))
+                val value = runReadActionSmartly { ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo, null) }
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
+                (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
             }.castOrNull()
         } else {
             // 不经过缓存
-            return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo)
+            return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo, options)
         }
     }
 

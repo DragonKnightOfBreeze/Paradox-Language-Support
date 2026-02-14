@@ -11,14 +11,11 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import java.util.*
 
 /**
  * 定义的解析信息。
@@ -31,14 +28,15 @@ import java.util.*
  * @property typeConfig 对应的类型规则。
  * @property memberPath 成员路径。作为文件的定义的成员路径始终为空。
  */
-class ParadoxDefinitionInfo(
-    val element: ParadoxDefinitionElement, // use element directly here
+data class ParadoxDefinitionInfo(
     val source: ParadoxDefinitionSource,
     val typeConfig: CwtTypeConfig,
     val name: String,
     val typeKey: String,
     val rootKeys: List<String>,
 ) : UserDataHolderBase() {
+    @Volatile var element: ParadoxDefinitionElement? = null
+
     val configGroup: CwtConfigGroup get() = typeConfig.configGroup
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
@@ -50,16 +48,16 @@ class ParadoxDefinitionInfo(
     val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
     val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
-    val memberPath: ParadoxMemberPath = doGetMemberPath()
+    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 
     val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
     val declaration: CwtPropertyConfig? get() = getDeclaration()
 
-    val localisations: List<RelatedLocalisationInfo> by lazy { doGetLocalisations() }
-    val images: List<RelatedImageInfo> by lazy { doGetImages() }
-    val modifiers: List<ModifierInfo> by lazy { doGetModifiers() }
-    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { doGetPrimaryLocalisations() }
-    val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
+    val localisations: List<RelatedLocalisationInfo> by lazy { ParadoxDefinitionManager.getRelatedLocalisationInfos(this) }
+    val images: List<RelatedImageInfo> by lazy { ParadoxDefinitionManager.getRelatedImageInfos(this) }
+    val modifiers: List<ModifierInfo> by lazy { ParadoxDefinitionManager.getModifierInfos(this) }
+    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this) }
+    val primaryImages: List<RelatedImageInfo> by lazy { ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this) }
 
     fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         return ParadoxDefinitionManager.getSubtypeConfigs(this, options)
@@ -67,51 +65,6 @@ class ParadoxDefinitionInfo(
 
     fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
         return ParadoxDefinitionManager.getDeclaration(this, options)
-    }
-
-    private fun doGetMemberPath(): ParadoxMemberPath {
-        // NOTE 2.1.2 file definition has empty member path
-        if (typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
-
-        return ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
-    }
-
-    private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedLocalisationInfos(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetImages(): List<RelatedImageInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedImageInfos(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetModifiers(): List<ModifierInfo> {
-        val result = ParadoxDefinitionService.resolveModifierInfos(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetPrimaryLocalisations(): List<RelatedLocalisationInfo> {
-        val result = localisations.filter { it.primary || it.primaryByInference }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetPrimaryImages(): List<RelatedImageInfo> {
-        val result = images.filter { it.primary || it.primaryByInference }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxDefinitionInfo
-            && name == other.name && type == other.type && typeKey == other.typeKey && rootKeys == other.rootKeys && gameType == other.gameType
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(name, type, typeKey, rootKeys, gameType)
-    }
-
-    override fun toString(): String {
-        return "ParadoxDefinitionInfo(source=$source, name=$name, type=$type, typeKey=$typeKey, rootKeys=$rootKeys, gameType=$gameType)"
     }
 
     data class RelatedImageInfo(

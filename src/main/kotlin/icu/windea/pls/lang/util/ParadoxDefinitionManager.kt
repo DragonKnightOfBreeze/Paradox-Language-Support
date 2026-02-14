@@ -24,6 +24,7 @@ import icu.windea.pls.lang.match.orDefault
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -72,7 +73,7 @@ object ParadoxDefinitionManager {
             val file = element.containingFile
             val value = runReadActionSmartly { ParadoxDefinitionService.resolveInfo(element, file) }
             value.withDependencyItems(file)
-        }
+        }?.also { it.element = element } // rebind element
     }
 
     fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
@@ -80,11 +81,11 @@ object ParadoxDefinitionManager {
         val finalOptions = options.orDefault()
         if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            val element = definitionInfo.element
+            val element = definitionInfo.element ?: return emptyList()
             return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionSubtypeConfigs) {
                 ProgressManager.checkCanceled()
                 val value = runReadActionSmartly { ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, null) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker(definitionInfo.typeConfig, definitionInfo)
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
                 value.withDependencyItems(element, tracker)
             }.optimized()
         } else {
@@ -97,17 +98,44 @@ object ParadoxDefinitionManager {
         val finalOptions = options.orDefault()
         if (finalOptions == ParadoxMatchOptions.DEFAULT) {
             // 经过缓存
-            val element = definitionInfo.element
+            val element = definitionInfo.element ?: return null
             return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionDeclaration) {
                 ProgressManager.checkCanceled()
                 val value = runReadActionSmartly { ParadoxDefinitionService.resolveDeclaration(element, definitionInfo, null) }
-                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker(definitionInfo.typeConfig, definitionInfo)
+                val tracker = ParadoxDefinitionService.getDeclarationModificationTracker()
                 (value ?: EMPTY_OBJECT).withDependencyItems(element, tracker)
             }.castOrNull()
         } else {
             // 不经过缓存
-            return ParadoxDefinitionService.resolveDeclaration(definitionInfo.element, definitionInfo, options)
+            val element = definitionInfo.element ?: return null
+            return ParadoxDefinitionService.resolveDeclaration(element, definitionInfo, options)
         }
+    }
+
+    fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
+        // NOTE 2.1.2 file definition has empty member path
+        if (definitionInfo.typeConfig.typePerFile) return ParadoxMemberPath.resolveEmpty()
+        return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey).normalize()
+    }
+
+    fun getRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
+        return ParadoxDefinitionService.resolveRelatedLocalisationInfos(definitionInfo).optimized()
+    }
+
+    fun getRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
+        return ParadoxDefinitionService.resolveRelatedImageInfos(definitionInfo).optimized()
+    }
+
+    fun getModifierInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.ModifierInfo> {
+        return ParadoxDefinitionService.resolveModifierInfos(definitionInfo).optimized()
+    }
+
+    fun getPrimaryRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {
+        return definitionInfo.localisations.filter { it.primary || it.primaryByInference }.optimized()
+    }
+
+    fun getPrimaryRelatedImageInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedImageInfo> {
+        return definitionInfo.images.filter { it.primary || it.primaryByInference }.optimized()
     }
 
     fun getLocalizedName(element: ParadoxDefinitionElement): String? {

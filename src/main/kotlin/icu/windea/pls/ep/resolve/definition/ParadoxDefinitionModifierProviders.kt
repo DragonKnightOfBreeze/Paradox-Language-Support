@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 class StellarisScriptedModifierDefinitionModifierProvider : ParadoxDefinitionModifierProvider {
     override fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         if (definitionInfo.type != "scripted_modifier") return null
-        val definition = definitionInfo.element
+        val definition = definitionInfo.element ?: return null
         return ParadoxScriptedModifierManager.resolveModifierCategory(definition, definitionInfo)
     }
 }

@@ -15,7 +15,6 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -49,17 +48,6 @@ object ParadoxDefinitionService {
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
             ep.getSuperDefinition(definitionInfo)
-        }
-    }
-
-    /**
-     * @see ParadoxDefinitionInheritSupport.getModificationTracker
-     */
-    fun getModificationTrackerFromInherit(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        val gameType = definitionInfo.gameType
-        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getModificationTracker(definitionInfo)
         }
     }
 
@@ -99,7 +87,9 @@ object ParadoxDefinitionService {
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
-        return ParadoxDefinitionInfo(element, source, typeConfig, name, typeKey, rootKeys.optimized())
+        val info = ParadoxDefinitionInfo(source, typeConfig, name, typeKey, rootKeys.optimized())
+        info.element = element
+        return info
     }
 
     fun resolveSource(element: ParadoxDefinitionElement): ParadoxDefinitionSource? {
@@ -125,10 +115,11 @@ object ParadoxDefinitionService {
     }
 
     fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
+        val element = definitionInfo.element ?: return emptyList()
         val subtypesConfig = definitionInfo.typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, subtypeConfig, result, definitionInfo.typeKey, options)) {
+            if (ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, definitionInfo.typeKey, options)) {
                 result += subtypeConfig
             }
         }
@@ -142,24 +133,11 @@ object ParadoxDefinitionService {
     /**
      * 获取用于定义信息的子类型和声明缓存的修改追踪器。
      *
-     * 依赖：类型规则的路径模式匹配的脚本文件 + 内联脚本文件 + 继承相关追踪器（如果存在）。
+     * TODO 考虑优化为仅依赖类型规则匹配的脚本文件和内联脚本文件，而非所有脚本文件。
+     *  考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
      */
-    fun getDeclarationModificationTracker(typeConfig: CwtTypeConfig, definitionInfo: ParadoxDefinitionInfo? = null): ModificationTracker {
-        val trackers = mutableListOf<ModificationTracker>()
-        // 依赖类型规则路径匹配的脚本文件
-        for (path in typeConfig.paths) {
-            val pathExtension = typeConfig.pathExtension ?: ".txt"
-            val pattern = "$path/**/*$pathExtension"
-            trackers += ParadoxModificationTrackers.ScriptFile(pattern)
-        }
-        // 依赖内联脚本文件
-        trackers += ParadoxModificationTrackers.InlineScripts
-        // 依赖继承相关追踪器
-        if (definitionInfo != null) {
-            val fromInherit = getModificationTrackerFromInherit(definitionInfo)
-            if (fromInherit != null) trackers += fromInherit
-        }
-        return MergedModificationTracker(*trackers.toTypedArray())
+    fun getDeclarationModificationTracker(): ModificationTracker {
+        return ParadoxModificationTrackers.ScriptFile
     }
 
     fun resolveDeclaration(element: PsiElement, definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {

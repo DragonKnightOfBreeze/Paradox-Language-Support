@@ -59,11 +59,11 @@ object ParadoxDefinitionInjectionService {
         return targetInfo.getSubtypeConfigs(options)
     }
 
-    fun resolveDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
+    fun resolveDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
         val declarationConfig = definitionInjectionInfo.declarationConfig ?: return null
         val definitionName = definitionInjectionInfo.target?.orNull() ?: return null
         val definitionType = definitionInjectionInfo.type?.orNull() ?: return null
-        val definitionSubtypes = definitionInjectionInfo.subtypes
+        val definitionSubtypes = definitionInjectionInfo.getSubtypeConfigs(options).map { it.name }
         val configGroup = definitionInjectionInfo.configGroup
         val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, definitionName, definitionType, definitionSubtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)

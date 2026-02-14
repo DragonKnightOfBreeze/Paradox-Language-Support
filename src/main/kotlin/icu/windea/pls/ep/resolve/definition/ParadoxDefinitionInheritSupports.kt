@@ -1,11 +1,9 @@
 package icu.windea.pls.ep.resolve.definition
 
-import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEventData
-import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
@@ -39,7 +37,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseType: String): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseType) a@{
-                val superDefinition = selectScope { definitionInfo.element.parentOfKey() }
+                val superDefinition = selectScope { definitionInfo.element?.parentOfKey() }
                 if (superDefinition !is ParadoxDefinitionElement) return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
                 if (!ParadoxDefinitionTypeExpression.resolve(baseType).matches(superDefinitionInfo)) return@a null
@@ -76,17 +74,6 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         return getSuperDefinition(definitionInfo, baseName, definitionInfo.subtypeConfigs)
     }
 
-    override fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        if (definitionInfo.type != T.event) return null
-        val data = getData(definitionInfo) ?: return null
-        val baseName = data.base
-        if (baseName.isNullOrEmpty()) return null
-        val subtypeConfigs = definitionInfo.subtypeConfigs // NOTE 2.1.2 有一定的耗时，因此延后获取
-        if (subtypeConfigs.none { it.name == "inherited" }) return null
-
-        return ParadoxModificationTrackers.ScriptFile("events/**/*.txt") // 任意事件脚本文件
-    }
-
     override fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean {
         if (definitionInfo.type != T.event) return true
         val data = getData(definitionInfo) ?: return true
@@ -102,13 +89,14 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     private fun getData(definitionInfo: ParadoxDefinitionInfo): StellarisEventData? {
-        return definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true)
+        return definitionInfo.element?.getDefinitionData<StellarisEventData>(relax = true)
     }
 
     private fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo, baseName: String, subtypeConfigs: List<CwtSubtypeConfig>): ParadoxDefinitionElement? {
         val result = withRecursionGuard {
             withRecursionCheck(baseName) a@{
-                val selector = selector(definitionInfo.project, definitionInfo.element).definition().contextSensitive()
+                val element = definitionInfo.element ?: return@a null
+                val selector = selector(definitionInfo.project, element).definition().contextSensitive()
                 val superDefinition = ParadoxDefinitionSearch.searchElement(baseName, T.event, selector).find() ?: return@a null
                 val superDefinitionInfo = superDefinition.definitionInfo ?: return@a null
 
