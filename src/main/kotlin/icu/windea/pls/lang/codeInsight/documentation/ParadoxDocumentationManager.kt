@@ -52,7 +52,6 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.builders.appendFileInfoHeader
-import icu.windea.pls.lang.util.builders.appendImage
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.builders.getModifierCategoriesText
 import icu.windea.pls.lang.util.builders.getScopeContextText

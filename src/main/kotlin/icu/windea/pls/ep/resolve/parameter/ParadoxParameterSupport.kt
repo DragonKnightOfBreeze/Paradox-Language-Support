@@ -7,8 +7,8 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.KeyRegistryWithSync
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
