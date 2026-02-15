@@ -3,7 +3,6 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
@@ -308,7 +307,7 @@ tasks {
         // 统一依赖规则准备任务：确保在打包前完成本地检查与必要的下载/解压
         dependsOn(prepareCwtConfigs)
         // 添加项目文档和许可证
-        from("README.md", "README_en.md", "LICENSE")
+        from("README_zh.md", "README.md", "LICENSE")
         // 排除特定文件
         excludesInJar.forEach { exclude(it) }
 
@@ -337,7 +336,7 @@ tasks {
         }
         // 添加相关的文档和许可证
         into("config") {
-            from("cwt/README.md", "cwt/LICENSE")
+            from("cwt/README_zh.md", "cwt/LICENSE")
         }
     }
     instrumentedJar {

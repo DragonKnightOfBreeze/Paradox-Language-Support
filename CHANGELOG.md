@@ -935,9 +935,7 @@
 
 ## 1.0.0
 
-- [x] 
-  提示定义和修正时，也可以基于它们的显示名称进行提示。（在插件配置页面中勾选`Code Completion > Complete by localized names`
-  以启用此功能）
+- [x] 提示定义和修正时，也可以基于它们的显示名称进行提示。（在插件配置页面中勾选`Code Completion > Complete by localized names` 以启用此功能）
 - [x] 尝试基于在其他事件中的调用推断事件的作用域上下文（如果推断发生递归或者存在冲突则取消推断）
 - [x] 完善Stellaris的CWT规则文件 - 完善`localisation.cwt`
 - [x] 尝试优化性能
