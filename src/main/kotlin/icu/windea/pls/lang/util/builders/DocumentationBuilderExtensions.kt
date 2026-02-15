@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util.builders
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
@@ -9,7 +7,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
@@ -28,24 +25,13 @@ import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.toScopeMap
 
-fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
-    append("<icon src='ide/external_link_arrow.svg'/>")
+fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
     return this
 }
 
 fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuilder {
     append(label) // 直接显示对应的标签文本
-    return this
-}
-
-fun DocumentationBuilder.appendLink(refText: String, label: String): DocumentationBuilder {
-    // 不自动转义 `link` 的 `label`
-    append("<a href=\"").append(refText).append("\">").append(label).append("</a>")
-    return this
-}
-
-fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
-    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
     return this
 }
 
@@ -55,18 +41,8 @@ fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: Strin
     return this
 }
 
-fun DocumentationBuilder.appendImgTag(url: String, local: Boolean = true): DocumentationBuilder {
-    val finalUrl = if (local) url.toFileUrl() else url
-    append("<img src=\"").append(finalUrl).append("\"/>")
-    return this
-}
-
-fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder {
-    // NOTE 这里不能使用 `style="..."`
-    val finalUrl = if (local) url.toFileUrl() else url
-    append("<img src=\"").append(finalUrl).append("\"")
-    append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
-    append("/>")
+fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
+    append("<icon src='ide/external_link_arrow.svg'/>")
     return this
 }
 

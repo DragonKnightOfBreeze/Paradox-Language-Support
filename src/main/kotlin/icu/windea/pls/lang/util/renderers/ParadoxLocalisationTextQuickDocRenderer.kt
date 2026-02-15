@@ -28,7 +28,7 @@ import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.lang.util.builders.appendImgTag
+import icu.windea.pls.lang.util.builders.appendImage
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -205,7 +205,7 @@ class ParadoxLocalisationTextQuickDocRenderer : ParadoxLocalisationTextRendererB
             val scale = scaleByDocFontSize * scaleByIcon
             val finalIconWidth = (iconWidth * scale).toInt()
             val finalIconHeight = (iconHeight * scale).toInt()
-            context.builder.appendImgTag(iconUrl, finalIconWidth, finalIconHeight)
+            context.builder.appendImage(iconUrl, finalIconWidth, finalIconHeight)
             return
         }
 

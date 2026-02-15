@@ -1,6 +1,8 @@
 package icu.windea.pls.core.util.builders
 
 import com.intellij.lang.documentation.DocumentationMarkup
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.toFileUrl
 import java.util.*
 
 fun buildDocumentation(): DocumentationBuilder {
@@ -25,6 +27,12 @@ interface DocumentationBuilder {
     fun appendBr(): DocumentationBuilder
 
     fun appendIndent(): DocumentationBuilder
+
+    fun appendLink(refText: String, label: String, escapeLabel: Boolean = true): DocumentationBuilder
+
+    fun appendImage(url: String, local: Boolean = true): DocumentationBuilder
+
+    fun appendImage(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder
 
     fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
@@ -59,6 +67,28 @@ private class DocumentationBuilderImpl : DocumentationBuilder {
     override fun appendBr() = append("<br>")
 
     override fun appendIndent() = append("&nbsp;&nbsp;&nbsp;&nbsp;")
+
+    override fun appendLink(refText: String, label: String, escapeLabel: Boolean): DocumentationBuilder {
+        append("<a href=\"").append(refText).append("\">")
+        if (escapeLabel) append(label.escapeXml()) else append(label)
+        append("</a>")
+        return this
+    }
+
+    override fun appendImage(url: String, local: Boolean): DocumentationBuilder {
+        val finalUrl = if (local) url.toFileUrl() else url
+        append("<img src=\"").append(finalUrl).append("\"/>")
+        return this
+    }
+
+    override fun appendImage(url: String, width: Int, height: Int, local: Boolean): DocumentationBuilder {
+        // NOTE 这里存在限制，不能使用 `style="..."`
+        val finalUrl = if (local) url.toFileUrl() else url
+        append("<img src=\"").append(finalUrl).append("\"")
+        append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
+        append("/>")
+        return this
+    }
 
     override fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {
         append(DocumentationMarkup.DEFINITION_START)

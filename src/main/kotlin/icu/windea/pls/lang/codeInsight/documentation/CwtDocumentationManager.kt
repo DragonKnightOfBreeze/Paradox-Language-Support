@@ -50,7 +50,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.builders.appendConfigFileInfoHeader
-import icu.windea.pls.lang.util.builders.appendImgTag
+import icu.windea.pls.lang.util.builders.appendImage
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.builders.getModifierCategoriesText
 import icu.windea.pls.lang.util.builders.getScopeContextText
@@ -293,7 +293,7 @@ object CwtDocumentationManager {
             run {
                 if (iconFile == null) return@run
                 val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { appendImgTag(url) }
+                sections["icon"] = buildDocumentation { appendImage(url) }
             }
         }
     }
