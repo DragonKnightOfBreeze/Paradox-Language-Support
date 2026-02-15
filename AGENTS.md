@@ -264,7 +264,8 @@ When implementing new features, be explicit about which layer you are operating 
 
 ### Documentation and comments
 
-- **Write KDoc/docstrings in Chinese by default**, unless the user explicitly requests English or the local context is English-only.
+- Write documentation comments in Chinese by default, unless explicitly requested, or need to be consistent with the context or relevant location.
+- Write normal comments in Chinese or English, based on the context or relevant location.
 - Prefer KDoc style for Kotlin.
 - When referencing types like `PsiElement` in KDoc, prefer KDoc links: `[PsiElement]`.
 - Avoid overly long parameter-by-parameter docs unless truly necessary; prefer describing the method as a whole.
@@ -291,7 +292,7 @@ When implementing new features, be explicit about which layer you are operating 
 
 ### Tooling preferences (important)
 
-This repo prefers **tool-assisted** workflows over ad-hoc shell usage.
+Prefers **tool-assisted** workflows over ad-hoc shell usage.
 
 #### General file/text operations
 
@@ -312,10 +313,6 @@ When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP 
 - **Type hierarchy**: use `ide_type_hierarchy`
 - **Finding implementations**: use `ide_find_implementations`
 - **Diagnostics**: use `ide_diagnostics`
-- Optional helpers:
-  - `ide_find_symbol`, `ide_find_class`
-  - `ide_call_hierarchy`, `ide_find_super_methods`
-  - `ide_refactor_safe_delete` (when supported)
 
 Notes:
 
@@ -330,20 +327,9 @@ When you need to **drive IDE actions** (not just code intelligence), prefer the 
 - Run configurations: list via `get_run_configurations`, run via `execute_run_configuration`
 - IDE inspections / file problems: `get_file_problems`
 - Reformatting: `reformat_file`
-- IDE-side search / file listing (index-backed): `find_files_by_name_keyword`, `find_files_by_glob`, `search_in_files_by_text`, `search_in_files_by_regex`, `list_directory_tree`
-- Reading/modifying files via IDE documents:
-  - Read: `get_file_text_by_path`
-  - Targeted edit: `replace_text_in_file`
-
-Be careful with **brave mode** (running shell commands or run configurations without confirmation): only enable it if you fully trust the client and the current workflow.
 
 #### Shell usage
 
 - Use the shell mainly for running Gradle tasks/tests.
 - Prefer the Gradle wrapper: use `./gradlew` for all Gradle tasks.
 - Prefer non-destructive commands and minimal output.
-
-#### Style reminder
-
-- Avoid non-word abbreviations in code unless the local context uses them:
-  - Prefer `context` over `ctx`.
