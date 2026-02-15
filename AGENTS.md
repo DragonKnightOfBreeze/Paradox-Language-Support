@@ -27,7 +27,6 @@ In addition to language features, PLS also includes:
 - `cwt/`: CWT config repositories (core + per-game downstream repos)
 - `docs/`: user-facing documentation (zh/en)
 - `documents/notes/`: maintainer notes (coding conventions, domain model notes)
-- `documents/ai-rules/`: agent-facing behavioral rules used by this repo
 - `src/test/...`: tests and test data
 
 ## Setup and build commands (Windows)
@@ -72,14 +71,94 @@ Gradle properties controlling this behavior:
 
 ## Testing guidance
 
-From `documents/ai-rules/test.md`:
+### Test taxonomy
 
 - Prefer Kotlin for tests.
 - **Unit tests**: for pure components/tools/extensions; usually no IntelliJ API.
-- **Integration tests**: for PSI/index/query/semantic match/resolve/integrations; uses IntelliJ test framework.
-- Frameworks/tooling: **JUnit4 + IntelliJ test framework**.
+- **Platform / integration tests**: for PSI/index/query/semantic match/resolve/integrations; uses the IntelliJ test framework.
+- Tooling: **JUnit4 + IntelliJ test framework**.
 
-When running tests during iterative work, start with a “warning-level” run (keep logs readable). If needed, re-run with more logging.
+### Test data conventions
+
+- Most platform/integration tests use test data under `src/test/testData`.
+- Naming convention is typically `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`.
+- Some feature tests provide a test-local `.config/` directory under test data to simulate config groups.
+
+### IntelliJ platform test patterns
+
+- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase` and compare the parsed tree output.
+- **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByFile(...)`.
+- **Index tests**:
+  - `StubIndex`-based indices (stub-driven PSI data).
+  - `FileBasedIndex`-based indices (file-level computed data).
+
+### Config-driven integration tests (config groups + context injection)
+
+PLS is config-driven. Many features (e.g. directives like `inline_script`, definition injection modes, type inference) depend on **CWT config groups** and a simulated “game/mod context”.
+
+Test helpers exist to make these tests deterministic:
+
+- `initConfigGroups(project, ...)` initializes the required built-in config groups for the specified game types.
+- `markIntegrationTest()` / `clearIntegrationTest()` toggles integration-test-only behavior and cleans up injected state.
+- `markRootDirectory(...)` and `markConfigDirectory(...)` allow integration tests to inject “root/config directory” information.
+- `markFileInfo(...)` (and `VirtualFile.injectFileInfo(...)`) allow integration tests to inject per-file metadata (game type, logical path, etc.) without requiring a real game installation.
+
+Minimal setup example (typical for index/resolve tests):
+
+```kotlin
+@Before
+fun setup() {
+    markIntegrationTest()
+    markRootDirectory("features/index")
+    markConfigDirectory("features/index/.config")
+    initConfigGroups(project, ParadoxGameType.Stellaris)
+}
+
+@After
+fun tearDown() = clearIntegrationTest()
+```
+
+Typical per-test file arrangement pattern:
+
+```kotlin
+markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
+myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
+```
+
+> Note: the intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
+
+### Optional / on-demand tests (assume-based)
+
+Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties.
+
+- Gatekeeping is done via `Assume` predicates (e.g. AI tests, local-environment-only tests, benchmarks).
+- Enable categories using system properties:
+  - `-Dpls.test.include.all=true`
+  - `-Dpls.test.include.ai=true`
+  - `-Dpls.test.include.local.env=true`
+  - `-Dpls.test.include.benchmark=true`
+  - `-Dpls.test.include.config.generator=true`
+
+Example (run only AI tests when you have local credentials configured):
+
+```bash
+./gradlew test -Dpls.test.include.ai=true --tests "*ChatModelProviderTest*"
+```
+
+### Best practices
+
+- Prefer **targeted** test runs during development:
+  - `./gradlew test --tests "<fully.qualified.TestClass>"`
+  - `./gradlew test --tests "*SomeKeyword*"`
+- Prefer adding or updating tests when behavior changes:
+  - Unit tests for pure logic.
+  - Integration tests for PSI/index/config-driven resolution.
+- Be aware this plugin is **config-driven**:
+  - If your change affects config parsing, config group loading, indexing, or resolve semantics, you may need broader integration coverage.
+  - If your change impacts bundled CWT configs, run `./gradlew prepareCwtConfigs` (or a full `./gradlew test`) to catch packaging/index regressions.
+- Keep test logs actionable:
+  - Avoid introducing tests that rely on external network calls.
+  - If a feature depends on environment variables/keys, tests should be guarded to avoid false failures.
 
 ## Coding conventions (repo-specific)
 
@@ -171,22 +250,38 @@ PLS distinguishes syntax-level PSI elements (properties/values/blocks, inline ma
 
 When implementing new features, be explicit about which layer you are operating on.
 
-## Documentation and comments (agent instructions)
+## Agent instructions
 
-From `documents/ai-rules/docstring.md` and `documents/ai-rules/be-more-lovely.md`:
+### Communication
+
+- Prefer Chinese when talking to the main maintainer.
+
+### Markdown output conventions (when you generate or edit Markdown)
+
+- Prefer `-` for unordered lists.
+- Prefer `**bold**` for emphasis.
+- If you include headings in Markdown responses, prefer starting from `###` (H3) unless there is a strong reason to use `#`/`##`.
+
+### Documentation and comments
 
 - **Write KDoc/docstrings in Chinese by default**, unless the user explicitly requests English or the local context is English-only.
 - Prefer KDoc style for Kotlin.
 - When referencing types like `PsiElement` in KDoc, prefer KDoc links: `[PsiElement]`.
 - Avoid overly long parameter-by-parameter docs unless truly necessary; prefer describing the method as a whole.
 
-## IntelliJ plugin specifics
+### Working style
+
+- If a task is large/complex and needs a detailed plan, consider writing it into `documents/ai-plans/`.
+- If the task is analysis/evaluation/exploration, consider writing a report into `documents/ai-reports/`.
+- If you notice existing conversation notes in opened files, you may use them to guide the work and suggest next steps, but do not execute unrelated tasks unless explicitly requested.
+
+### IntelliJ plugin specifics
 
 - Many registrations live under `src/main/resources/META-INF/pls-*.xml` included by `plugin.xml`.
 - Optional dependencies (enabled only when present): Markdown, Diagrams (Ultimate), Translation plugin.
 - There is an internal **code injection** subsystem; avoid changing it casually unless you understand the impact.
 
-## When changing code
+### Making changes safely
 
 - Keep changes minimal and localized.
 - Prefer extending via existing EPs and config-driven mechanisms instead of hard-coding game-specific behavior.
@@ -194,8 +289,61 @@ From `documents/ai-rules/docstring.md` and `documents/ai-rules/be-more-lovely.md
 - Add/update tests when feasible; distinguish unit vs integration tests.
 - Run `./gradlew test` (or a targeted test task) before finishing.
 
-## Safety and secrets
+### Tooling preferences (important)
 
-- Do not commit API keys or credentials.
-- AI-related tests or features may depend on environment variables (example in build script: `DEEPSEEK_KEY` in a commented-out task).
-- Plugin signing/publishing uses environment variables (`CERTIFICATE_CHAIN_PLS`, `PRIVATE_KEY_PLS`, `IDEA_TOKEN`, etc.). Never log them.
+This repo prefers **tool-assisted** workflows over ad-hoc shell usage.
+
+#### General file/text operations
+
+- Prefer built-in repo tools for common operations:
+  - Find files by name/glob
+  - Search text/regex across the repo
+  - Read files before editing
+  - Apply minimal, well-scoped patches
+- Avoid blind edits and avoid scanning via shell commands when structured search is available.
+
+#### IDE Index MCP server (semantic code intelligence)
+
+When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep:
+
+- **Finding references**: use `ide_find_references`
+- **Go to definition**: use `ide_find_definition`
+- **Renaming symbols**: use `ide_refactor_rename` (safe, project-wide)
+- **Type hierarchy**: use `ide_type_hierarchy`
+- **Finding implementations**: use `ide_find_implementations`
+- **Diagnostics**: use `ide_diagnostics`
+- Optional helpers:
+  - `ide_find_symbol`, `ide_find_class`
+  - `ide_call_hierarchy`, `ide_find_super_methods`
+  - `ide_refactor_safe_delete` (when supported)
+
+Notes:
+
+- Prefer IDE tools because they understand PSI/AST and indices, which is far more accurate than plain text search.
+- If the IDE is still indexing, check readiness first via `ide_index_status` (wait/retry when in dumb mode).
+- If multiple projects are open in one IDE window, always pass the `project_path` parameter to avoid ambiguity.
+
+#### JetBrains official MCP server (IDE actions)
+
+When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
+
+- Run configurations: list via `get_run_configurations`, run via `execute_run_configuration`
+- IDE inspections / file problems: `get_file_problems`
+- Reformatting: `reformat_file`
+- IDE-side search / file listing (index-backed): `find_files_by_name_keyword`, `find_files_by_glob`, `search_in_files_by_text`, `search_in_files_by_regex`, `list_directory_tree`
+- Reading/modifying files via IDE documents:
+  - Read: `get_file_text_by_path`
+  - Targeted edit: `replace_text_in_file`
+
+Be careful with **brave mode** (running shell commands or run configurations without confirmation): only enable it if you fully trust the client and the current workflow.
+
+#### Shell usage
+
+- Use the shell mainly for running Gradle tasks/tests.
+- Prefer the Gradle wrapper: use `./gradlew` for all Gradle tasks.
+- Prefer non-destructive commands and minimal output.
+
+#### Style reminder
+
+- Avoid non-word abbreviations in code unless the local context uses them:
+  - Prefer `context` over `ctx`.
