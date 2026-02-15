@@ -9,6 +9,7 @@ import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.test.markRootDirectory
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -22,11 +23,12 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     private val counter = AtomicInteger()
-    private val gameType = ParadoxGameType.Vic3
+    private val gameType = ParadoxGameType.Stellaris
 
     @Before
     fun setup() {
         markIntegrationTest()
+        markRootDirectory("features/renderers")
         initConfigGroups(project, gameType)
     }
 
@@ -52,7 +54,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
     @Test
     fun colorfulText() {
         markFileInfo(gameType, "interface/fonts.gfx")
-        myFixture.configureByText("fonts.gfx", mapOf("R" to "{ 252 86 70 }").asTextColors())
+        myFixture.configureByFile("features/renderers/interface/fonts.gfx")
 
         assertResult("Colorful text: Red text", "Colorful text: §RRed text§!")
         assertResult("Colorful text: Green text", "Colorful text: §GGreen text§!")
@@ -61,10 +63,10 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
     @Test
     fun parameter() {
         markFileInfo(gameType, "interface/fonts.gfx")
-        myFixture.configureByText("fonts.gfx", mapOf("B" to "{ 51 167 255 }").asTextColors())
+        myFixture.configureByFile("features/renderers/interface/fonts.gfx")
 
         markFileInfo(gameType, "localisation/main.yml")
-        myFixture.configureByText("main.yml", mapOf("name_windea" to "Windea", "title_windea" to "The Unfading").asLocalisations())
+        myFixture.configureByFile("features/renderers/localisation/main.yml")
 
         assertResult("Parameter: \$KEY$ and \$KEY|Y$", "Parameter: \$KEY$ and \$KEY|Y$")
         assertResult("Unresolved: \$unresolved$", "Unresolved: \$unresolved$")
@@ -77,16 +79,6 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
     @Test
     fun simpleCommand() {
         assertResult("Command: [Root.GetName]", "Command: [Root.GetName]")
-    }
-
-    private fun Map<String, String>.asTextColors(): String {
-        val itemsString = entries.joinToString(" ") { (k, v) -> "$k = $v" }
-        return """bitmapfonts = { textcolors = { $itemsString } }"""
-    }
-
-    private fun Map<String, String>.asLocalisations(): String {
-        val itemsString = entries.joinToString("\n", " ") { (k, v) -> " $k:0 \"$v\"" }
-        return "l_english:\n$itemsString"
     }
 
     private inline fun assertResult(expect: String, input: String, configure: ParadoxLocalisationTextPlainRenderer.() -> Unit = {}) {

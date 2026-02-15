@@ -1,0 +1,6 @@
+bitmapfonts = {
+    textcolors = {
+        R = { 252 86 70 }
+        B = { 51 167 255 }
+    }
+}

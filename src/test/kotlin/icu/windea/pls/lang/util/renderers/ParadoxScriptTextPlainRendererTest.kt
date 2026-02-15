@@ -8,7 +8,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -24,15 +23,17 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     private val counter = AtomicInteger()
-    private val gameType = ParadoxGameType.Vic3
+    private val gameType = ParadoxGameType.Stellaris
     private val unresolved = FallbackStrings.unresolved
     private val blockFolder = PlsStrings.blockFolder
 
     @Before
     fun setup() {
         markIntegrationTest()
-        initConfigGroups(project, gameType)
     }
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun conditional_inBlock_fullExample_fromRendererTest() {
@@ -65,9 +66,6 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
             multiline = false
         }
     }
-
-    @After
-    fun clear() = clearIntegrationTest()
 
     @Test
     fun emptyFile() {
