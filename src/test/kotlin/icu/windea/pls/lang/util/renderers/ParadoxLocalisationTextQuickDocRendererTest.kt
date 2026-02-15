@@ -47,6 +47,11 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun text_empty() {
+        assertResult("", "")
+    }
+
+    @Test
     fun text_escapeXml() {
         assertResult("Value &lt;b&gt; &amp;", "Value <b> &")
     }
@@ -55,6 +60,16 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     fun text_withQuotes() {
         // HTML output should escape quotes.
         assertResult("Value &quot;quoted&quot;", "Value \"quoted\"")
+    }
+
+    @Test
+    fun text_escapedTab() {
+        assertResult("a&emsp;b", "a\\tb")
+    }
+
+    @Test
+    fun text_doubleBracketEscape() {
+        assertResult("[text", "[[text")
     }
 
     @Test
@@ -118,6 +133,13 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
             // `X` is not defined in fonts.gfx -> should not apply any span, but should strip markers
             assertResult("Colorful text: Unknown", "Colorful text: §XUnknown§!")
+        }
+    }
+
+    @Test
+    fun colorfulText_empty() {
+        withColorful(true) {
+            assertResult("Colorful text: ", "Colorful text: §R§!")
         }
     }
 
