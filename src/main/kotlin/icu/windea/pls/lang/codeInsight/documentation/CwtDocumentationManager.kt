@@ -56,7 +56,7 @@ import icu.windea.pls.lang.util.builders.getModifierCategoriesText
 import icu.windea.pls.lang.util.builders.getScopeContextText
 import icu.windea.pls.lang.util.builders.getScopeText
 import icu.windea.pls.lang.util.builders.getScopesText
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
@@ -255,12 +255,12 @@ object CwtDocumentationManager {
             if (sections == null || render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(descLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
                 sections["desc"] = richText
             }
         }

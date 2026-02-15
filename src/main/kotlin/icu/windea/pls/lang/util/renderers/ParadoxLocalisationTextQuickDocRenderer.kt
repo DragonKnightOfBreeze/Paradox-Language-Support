@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
@@ -10,11 +11,16 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.EscapeType
-import icu.windea.pls.core.util.builders.HtmlBuilder
-import icu.windea.pls.core.util.builders.buildHtml
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
+import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -23,6 +29,7 @@ import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.builders.appendImgTag
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
@@ -36,18 +43,22 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import javax.imageio.ImageIO
+import javax.swing.UIManager
 
 /**
- * 用于将本地化文本渲染为通用的 HTML 文本。
+ * 用于将本地化文本渲染为快速文档中使用的 HTML 文本。
+ *
+ * 使用基于 PSI 超链接协议（`psi_element://`）的链接实现目标导航。
  */
 @Suppress("unused")
-class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<ParadoxLocalisationTextHtmlRenderer.Context, String>() {
+class ParadoxLocalisationTextQuickDocRenderer : ParadoxLocalisationTextRendererBase<ParadoxLocalisationTextQuickDocRenderer.Context, String>() {
     data class Context(
-        var builder: HtmlBuilder = buildHtml()
+        var builder: DocumentationBuilder = buildDocumentation()
     ) {
         val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
         val colorStack: ArrayDeque<Color> = ArrayDeque()
@@ -147,7 +158,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
                 return
             }
 
-            // 回退：直接显示原始文本
+            // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
             context.builder.append("<code>")
             renderElementText(element)
             context.builder.append("</code>")
@@ -198,7 +209,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
             return
         }
 
-        // 回退：直接显示原始文本
+        // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
         context.builder.append("<code>")
         renderElementText(element)
         context.builder.append("</code>")
@@ -210,7 +221,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (shouldRenderColurfulText()) element.argumentElement?.colorInfo?.color else null
         withColorSpan(color) {
-            // 直接显示命令文本，适用对应的颜色高亮
+            // 直接显示命令文本，适用对应的颜色高亮（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
             context.builder.append("<code>")
             element.forEachChild { c ->
                 if (c is ParadoxLocalisationCommandText) {
@@ -253,7 +264,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
         }
 
         withColorSpan(conceptColor) {
-            // 回退：直接显示原始文本
+            // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
             context.builder.append("<code>")
             renderElementText(element)
             context.builder.append("</code>")
@@ -262,14 +273,19 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
 
     context(context: Context)
     private fun renderRichTextsForConceptCommand(richTextList: List<ParadoxLocalisationRichText>, referenceElement: PsiElement?, conceptColor: Color) {
-        val newBuilder = buildHtml()
+        val newBuilder = buildDocumentation()
         val oldBuilder = context.builder
         context.builder = newBuilder
         renderRichTexts(richTextList)
         context.builder = oldBuilder
         val conceptText = newBuilder.toString()
+        if (referenceElement !is ParadoxDefinitionElement) return
+        val definitionInfo = referenceElement.definitionInfo ?: return
+        val definitionName = definitionInfo.name.or.anonymous()
+        val definitionType = definitionInfo.type
         withColorSpan(conceptColor) {
-            context.builder.append(conceptText)
+            val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)
+            context.builder.appendPsiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
         }
     }
 
@@ -277,7 +293,7 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
     override fun renderTextIcon(element: ParadoxLocalisationTextIcon) {
         // TODO 1.4.1+ 更完善的支持（渲染文本图标）
 
-        // 直接显示原始文本
+        // 直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
         context.builder.append("<code>")
         renderElementText(element)
         context.builder.append("</code>")
@@ -295,6 +311,46 @@ class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<
 
     context(context: Context)
     private fun renderElementText(element: PsiElement) {
-        context.builder.append(element.text.escapeXml())
+        val defaultColor = UIManager.getColor("EditorPane.foreground")
+
+        val text = element.text
+        val references = element.references
+        if (references.isEmpty()) {
+            context.builder.append(text.escapeXml())
+            return
+        }
+        var i = 0
+        for (reference in references) {
+            ProgressManager.checkCanceled()
+            val startOffset = reference.rangeInElement.startOffset
+            if (startOffset != i) {
+                val s = text.substring(i, startOffset)
+                context.builder.append(s.escapeXml())
+            }
+            i = reference.rangeInElement.endOffset
+            val resolved = reference.resolve()
+            // 不要尝试跳转到 dynamicValue 的声明处
+            if (resolved == null || resolved is MockPsiElement) {
+                val s = reference.rangeInElement.substring(text)
+                context.builder.append(s.escapeXml())
+            } else {
+                val link = ReferenceLinkService.createPsiLink(resolved)
+                if (link != null) {
+                    // 如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
+                    val usedColor = if (context.colorStack.isEmpty()) defaultColor else null
+                    withColorSpan(usedColor) {
+                        context.builder.append(link)
+                    }
+                } else {
+                    val s = reference.rangeInElement.substring(text)
+                    context.builder.append(s.escapeXml())
+                }
+            }
+        }
+        val endOffset = references.last().rangeInElement.endOffset
+        if (endOffset != text.length) {
+            val s = text.substring(endOffset)
+            context.builder.append(s.escapeXml())
+        }
     }
 }

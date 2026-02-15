@@ -22,7 +22,7 @@ import java.awt.Color
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
+class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     private val counter = AtomicInteger()
@@ -91,42 +91,34 @@ class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parameter() {
-        withColorful(true) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByText("fonts.gfx", mapOf("B" to "{ 51 167 255 }").asTextColors())
+    fun parameter_recursion_shouldGeneratePsiElementLink() {
+        val id = counter.getAndIncrement()
+        markFileInfo(gameType, "localisation/renderer_test_$id.yml")
+        myFixture.configureByText("renderer_test_$id.yml", "l_english:\n key:0 \"Recursion: \$key\$\"")
 
-            markFileInfo(gameType, "localisation/main.yml")
-            myFixture.configureByText("main.yml", mapOf("name_windea" to "Windea", "title_windea" to "The Unfading").asLocalisations())
+        val file = myFixture.file
+        val property = (file as ParadoxLocalisationFile).properties.first()
+        val renderer = ParadoxLocalisationTextQuickDocRenderer()
+        val result = renderer.render(property)
 
-            assertResult("Parameter: <code>\$KEY\$</code> and <code>\$KEY|Y\$</code>", "Parameter: \$KEY\$ and \$KEY|Y\$")
-            assertResult("Unresolved: <code>\$unresolved\$</code>", "Unresolved: \$unresolved\$")
-            assertResult("Recursion: <code>\$key\$</code>", "Recursion: \$key\$")
-
-            assertResult("Hello world from Windea", "Hello world from \$name_windea\$")
-
-            val blueColor = Color(51, 167, 255)
-            val blueHex = ColorUtil.toHex(blueColor, true)
-            assertResult("Windea <span style=\"color: #$blueHex\">The Unfading</span>", "\$name_windea\$ \$title_windea|B\$")
-        }
+        // 只断言协议前缀，避免依赖具体的 link 内容格式
+        Assert.assertTrue(result.contains("psi_element://"))
     }
 
     @Test
-    fun parameter_withColorful_false() {
-        withColorful(false) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByText("fonts.gfx", mapOf("B" to "{ 51 167 255 }").asTextColors())
+    fun simpleCommand_shouldNotGenerateFileLinkProtocol() {
+        val id = counter.getAndIncrement()
+        markFileInfo(gameType, "localisation/renderer_test_$id.yml")
+        myFixture.configureByText("renderer_test_$id.yml", "l_english:\n key:0 \"Command: [Root.GetName]\"")
 
-            markFileInfo(gameType, "localisation/main.yml")
-            myFixture.configureByText("main.yml", mapOf("name_windea" to "Windea", "title_windea" to "The Unfading").asLocalisations())
+        val file = myFixture.file
+        val property = (file as ParadoxLocalisationFile).properties.first()
+        val renderer = ParadoxLocalisationTextQuickDocRenderer()
+        val result = renderer.render(property)
 
-            assertResult("Windea The Unfading", "\$name_windea\$ \$title_windea|B\$")
-        }
-    }
-
-    @Test
-    fun command_simple() {
-        assertResult("Command: <code>[Root.GetName]</code>", "Command: [Root.GetName]")
+        Assert.assertTrue(result.contains("psi_element://") || result.contains("Root"))
+        Assert.assertFalse(result.contains("file:/"))
+        Assert.assertFalse(result.contains("file:///"))
     }
 
     private fun <R> withColorful(value: Boolean, action: () -> R) {

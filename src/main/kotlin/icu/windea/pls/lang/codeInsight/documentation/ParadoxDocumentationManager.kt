@@ -57,7 +57,7 @@ import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.util.builders.getModifierCategoriesText
 import icu.windea.pls.lang.util.builders.getScopeContextText
 import icu.windea.pls.lang.util.builders.getScopesText
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -316,7 +316,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -369,7 +369,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -436,12 +436,12 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(descLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
                 sections["desc"] = richText
             }
         }
@@ -548,7 +548,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -674,7 +674,7 @@ object ParadoxDocumentationManager {
                 sectionKeys.add(key)
                 if (sections != null && PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
                     // 加上渲染后的相关本地化文本
-                    val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(resolvedElement)
+                    val richText = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
                     sections[key] = richText
                 }
             }
@@ -868,7 +868,7 @@ object ParadoxDocumentationManager {
                 found ?: element
             }
         }
-        val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(usedElement)
+        val richText = ParadoxLocalisationTextQuickDocRenderer().render(usedElement)
         if (richText.isEmpty()) return
         sections[PlsBundle.message("sectionTitle.text")] = richText
     }

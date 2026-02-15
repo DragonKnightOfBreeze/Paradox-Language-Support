@@ -3,13 +3,12 @@ package icu.windea.pls.core.util.builders
 import com.intellij.lang.documentation.DocumentationMarkup
 import java.util.*
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun buildDocumentation(): DocumentationBuilder {
+fun buildDocumentation(): DocumentationBuilder {
     return DocumentationBuilderImpl()
 }
 
 inline fun buildDocumentation(block: DocumentationBuilder.() -> Unit): String {
-    val builder = DocumentationBuilderImpl()
+    val builder = buildDocumentation()
     builder.block()
     return builder.toString()
 }
@@ -46,7 +45,7 @@ interface DocumentationBuilder {
 
 // region Implementations
 
-class DocumentationBuilderImpl : DocumentationBuilder {
+private class DocumentationBuilderImpl : DocumentationBuilder {
     private var sectionGroup: SortedMap<Int, MutableMap<String, String>>? = null
 
     override val content: StringBuilder = StringBuilder()
