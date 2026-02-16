@@ -395,7 +395,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Definition Injection (definition_mode)
+    // region Definition Injection (create_mode)
 
     @Test
     fun testGetInfo_DefinitionInjection_ReplaceOrCreate() {
@@ -418,12 +418,12 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
 
-        // INJECT:titan_mk3 - 不是 definition_mode，不应该获取到 definitionInfo
+        // INJECT:titan_mk3 - 不是 create_mode，不应该获取到 definitionInfo
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() }!!
         val injectInfo = ParadoxDefinitionManager.getInfo(injectProperty)
         Assert.assertNull(injectInfo)
 
-        // REPLACE:phantom - 不是 definition_mode，不应该获取到 definitionInfo
+        // REPLACE:phantom - 不是 create_mode，不应该获取到 definitionInfo
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() }!!
         val replaceInfo = ParadoxDefinitionManager.getInfo(replaceProperty)
         Assert.assertNull(replaceInfo)

@@ -82,7 +82,7 @@ object ParadoxDefinitionService {
         val source = resolveSource(element) ?: return null
         val typeKey = getTypeKey(element) ?: return null
 
-        // 检查是否是 definition_mode 的定义注入
+        // 检查是否是 create_mode 的定义注入
         if (element is ParadoxScriptProperty) {
             val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(typeKey)
             if (mode != null && ParadoxDefinitionInjectionManager.isDefinitionMode(mode, gameType)) {
@@ -102,7 +102,7 @@ object ParadoxDefinitionService {
     }
 
     /**
-     * 从定义注入（definition_mode）解析定义信息。
+     * 从定义注入（create_mode）解析定义信息。
      */
     private fun resolveInfoFromInjection(element: ParadoxScriptProperty, file: PsiFile, expression: String): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null

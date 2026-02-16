@@ -97,7 +97,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return
 
-                // 2.1.3 检查是否是 definition_mode 的定义注入
+                // 2.1.3 检查是否是 create_mode 的定义注入
                 if (element is ParadoxScriptProperty) {
                     val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(typeKey)
                     if (mode != null && ParadoxDefinitionInjectionManager.isDefinitionMode(mode, gameType)) {

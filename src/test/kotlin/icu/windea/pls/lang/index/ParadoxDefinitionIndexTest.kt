@@ -557,7 +557,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Definition Injection (definition_mode)
+    // region Definition Injection (create_mode)
 
     @Test
     fun testDefinitionIndex_DefinitionInjection_ReplaceOrCreate() {
@@ -588,7 +588,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testDefinitionIndex_DefinitionInjection_NonDefinitionModes_NotIndexed() {
-        // Arrange: INJECT/REPLACE/TRY_INJECT 等非 definition_mode 不应被索引为定义
+        // Arrange: INJECT/REPLACE/TRY_INJECT 等非 create_mode 不应被索引为定义
         markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 

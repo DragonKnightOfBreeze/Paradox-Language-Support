@@ -195,7 +195,7 @@ object ParadoxDefinitionInjectionManager {
         val gameType = definitionInjectionInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(gameType)
         val config = configGroup.directivesModel.definitionInjection ?: return false
-        return mode in config.definitionModes
+        return mode in config.createModes
     }
 
     /**
@@ -206,7 +206,7 @@ object ParadoxDefinitionInjectionManager {
         if (mode.isEmpty()) return false
         val configGroup = PlsFacade.getConfigGroup(gameType)
         val config = configGroup.directivesModel.definitionInjection ?: return false
-        return mode in config.definitionModes
+        return mode in config.createModes
     }
 
     fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
