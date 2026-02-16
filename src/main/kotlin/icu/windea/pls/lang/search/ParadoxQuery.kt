@@ -129,13 +129,14 @@ private class ParadoxQueryImpl<T : Any, P : ParadoxSearchParameters<T>>(
 
         // 为了优化性能，目前不再先得到处理后的最终结果再遍历，而是直接遍历并进行必要的过滤和去重（不进行排序）
         // 注意最终的 `forEach()` 的行为和 `find()` `findFirst()` `findAll()` 并不相同
+        // 注意如果 `keySelector` 为 null，去重逻辑应直接跳过，`keysToDistinct` 应直接为 null
 
         val selector = searchParameters.selector
         val keySelector = selector.keySelector()
-        val keysToDistinct = mutableSetOf<Any?>().synced()
+        val keysToDistinct = if (keySelector == null) null else mutableSetOf<Any?>().synced()
         return delegateProcessResults(original) {
             ProgressManager.checkCanceled()
-            if (selector.select(it) && keysToDistinct.add(keySelector?.apply(it) ?: it)) {
+            if (selector.select(it) && (keysToDistinct == null || keysToDistinct.add(keySelector?.apply(it)))) {
                 consumer.process(it)
             } else {
                 true
