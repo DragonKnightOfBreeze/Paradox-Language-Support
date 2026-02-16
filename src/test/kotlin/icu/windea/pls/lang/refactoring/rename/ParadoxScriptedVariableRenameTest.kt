@@ -109,16 +109,16 @@ class ParadoxScriptedVariableRenameTest: BasePlatformTestCase() {
         val mainTestDataPath = "features/refactoring/scripted_variables/neuro_vars_1.test.txt"
         myFixture.configureByFile(mainTestDataPath)
 
-        val localisationEnglishPath = "localisation/sv_localisation_l_english.test.yml"
+        val localisationEnglishPath = "localisation/scripted_variables_l_english.test.yml"
         val localisationEnglishFile = myFixture.copyFileToProject(
-            "features/refactoring/scripted_variables/sv_localisation_l_english.test.yml",
+            "features/refactoring/scripted_variables/scripted_variables_l_english.test.yml",
             localisationEnglishPath
         )
         localisationEnglishFile.injectFileInfo(gameType, localisationEnglishPath)
 
-        val localisationChinesePath = "localisation/sv_localisation_l_simp_chinese.test.yml"
+        val localisationChinesePath = "localisation/scripted_variables_l_simp_chinese.test.yml"
         val localisationChineseFile = myFixture.copyFileToProject(
-            "features/refactoring/scripted_variables/sv_localisation_l_simp_chinese.test.yml",
+            "features/refactoring/scripted_variables/scripted_variables_l_simp_chinese.test.yml",
             localisationChinesePath
         )
         localisationChineseFile.injectFileInfo(gameType, localisationChinesePath)
@@ -145,9 +145,9 @@ class ParadoxScriptedVariableRenameTest: BasePlatformTestCase() {
         myFixture.checkResultByFile("features/refactoring/scripted_variables/neuro_vars_1.after.test.txt")
 
         myFixture.configureFromTempProjectFile(localisationEnglishPath)
-        myFixture.checkResultByFile("features/refactoring/scripted_variables/sv_localisation_l_english.after.test.yml")
+        myFixture.checkResultByFile("features/refactoring/scripted_variables/scripted_variables_l_english.after.test.yml")
 
         myFixture.configureFromTempProjectFile(localisationChinesePath)
-        myFixture.checkResultByFile("features/refactoring/scripted_variables/sv_localisation_l_simp_chinese.after.test.yml")
+        myFixture.checkResultByFile("features/refactoring/scripted_variables/scripted_variables_l_simp_chinese.after.test.yml")
     }
 }
