@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -35,6 +36,8 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val expression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element) ?: return
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.InlineScripts
         val prefix = PlsStrings.inlineScriptPrefix
         val tooltip = "$prefix <b>${expression.escapeXml()}"

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -38,6 +39,8 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.DefinitionInjectionTargets
         val prefix = PlsStrings.definitionInjectionTargetPrefix
         val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.typeText}"

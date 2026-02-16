@@ -37,7 +37,9 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val definitionInfo = element.definitionInfo ?: return
         val localisationInfos = definitionInfo.localisations
         if (localisationInfos.isEmpty()) return
+
         // 显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.RelatedLocalisations
         val prefix = PlsStrings.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()

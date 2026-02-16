@@ -37,8 +37,6 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
         val name = element.name?.orNull() ?: return
-        val prefix = PlsStrings.scriptedVariablePrefix
-        val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         // 目标：同名封装变量
         val targets by lazy {
             val project = element.project
@@ -50,8 +48,11 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets0.addAll(it) }
             targets0.optimized()
         }
+
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.ScriptedVariable
+        val prefix = PlsStrings.scriptedVariablePrefix
+        val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariable.title"))
