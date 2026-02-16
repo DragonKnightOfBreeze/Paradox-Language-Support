@@ -5,12 +5,11 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.process
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.process
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -19,7 +18,7 @@ class AutomaticScriptedVariablesRenamerFactory : AutomaticRenamerFactory {
         if (element !is ParadoxScriptScriptedVariable) return false
         val name = element.name?.orNull() ?: return false
 
-        val selector = selector(element.project, element).scriptedVariable().contextSensitive()
+        val selector = selector(element.project, element).scriptedVariable()
         val processor = Processors.duplicate<ParadoxScriptScriptedVariable>()
         ParadoxScriptedVariableSearch.searchLocal(name, selector).process(processor)
         if (!processor.duplicated) {
