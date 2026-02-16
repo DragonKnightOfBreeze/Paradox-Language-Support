@@ -132,6 +132,7 @@ object CwtConfigManager {
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedConfigType) {
+            ProgressManager.checkCanceled()
             runReadActionSmartly {
                 val file = memberElement.containingFile
                 val value = CwtConfigService.resolveConfigType(memberElement, file)
@@ -148,6 +149,7 @@ object CwtConfigManager {
         val memberElement = config.pointer.element ?: return null
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedDocumentation) {
+            ProgressManager.checkCanceled()
             runReadActionSmartly {
                 val file = memberElement.containingFile
                 val value = CwtConfigService.getDocumentation(memberElement)

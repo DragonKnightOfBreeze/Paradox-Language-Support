@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vfs.VfsUtil
@@ -92,6 +93,7 @@ object CwtConfigService {
         val root = parents.find { it.findChild(".git") != null } ?: return null
         val rootPsi = root.toPsiDirectory(project) ?: return null
         val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
+            ProgressManager.checkCanceled()
             runCatching {
                 val command = "git remote -v"
                 val workDirectory = root.toNioPath().toFile()

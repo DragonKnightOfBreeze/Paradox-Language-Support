@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.psi.properties
@@ -36,7 +37,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
-    private fun configureScriptFile(relPath: String, testDataPath: String): ParadoxScriptFile {
+    private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String): ParadoxScriptFile {
         markFileInfo(ParadoxGameType.Stellaris, relPath)
         myFixture.configureByFile(testDataPath)
         return myFixture.file as ParadoxScriptFile
@@ -98,9 +99,10 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
 
-        val subtypes = info.subtypes
-        Assert.assertEquals(listOf("heavy"), subtypes)
-        Assert.assertEquals("mech.heavy", info.typeText)
+        Assert.assertEquals("mech", info.type)
+        Assert.assertEquals(listOf("heavy"), info.subtypes)
+        Assert.assertEquals(listOf("mech", "heavy"), info.types)
+        Assert.assertEquals("mech, heavy", info.typeText)
     }
 
     @Test
@@ -112,8 +114,10 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
 
-        val subtypes = info.subtypes
-        Assert.assertEquals(listOf("stealth"), subtypes)
+        Assert.assertEquals("mech", info.type)
+        Assert.assertEquals(listOf("stealth"), info.subtypes)
+        Assert.assertEquals(listOf("mech", "stealth"), info.types)
+        Assert.assertEquals("mech, stealth", info.typeText)
     }
 
     // endregion
@@ -134,6 +138,78 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val replaceInfo = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
         Assert.assertFalse(replaceInfo.isRelaxMode())
+    }
+
+    // endregion
+
+    // region Declaration
+
+    @Test
+    fun testDeclaration_InjectMode_InheritsFromTarget() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // INJECT:titan_mk3 - 应继承目标定义的声明（含 heavy 子类型字段）
+        val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
+        val info = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
+
+        val declaration = info.declaration
+        Assert.assertNotNull(declaration)
+        declaration!!
+
+        val key = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        // 应包含基础字段
+        Assert.assertTrue(key.contains("armor"))
+        Assert.assertTrue(key.contains("speed"))
+        // 应包含 heavy 子类型字段（从目标定义继承）
+        Assert.assertTrue(key.contains("shield"))
+        Assert.assertTrue(key.contains("weight_class"))
+        // 不应包含 stealth 子类型字段
+        Assert.assertFalse(key.contains("cloaking"))
+    }
+
+    @Test
+    fun testDeclaration_ReplaceMode_InheritsFromTarget() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // REPLACE:phantom - 应继承目标定义的声明（含 stealth 子类型字段）
+        val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
+        val info = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
+
+        val declaration = info.declaration
+        Assert.assertNotNull(declaration)
+        declaration!!
+
+        val key = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        // 应包含基础字段
+        Assert.assertTrue(key.contains("armor"))
+        Assert.assertTrue(key.contains("speed"))
+        // 应包含 stealth 子类型字段（从目标定义继承）
+        Assert.assertTrue(key.contains("cloaking"))
+        // 不应包含 heavy 子类型字段
+        Assert.assertFalse(key.contains("shield"))
+        Assert.assertFalse(key.contains("weight_class"))
+    }
+
+    @Test
+    fun testDeclaration_MatchesTargetStructure() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val baseFile = configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // 获取目标定义的声明
+        val titan = selectScope { baseFile.ofPath("titan_mk3").asProperty().one() }!!
+        val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
+        val titanKey = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
+
+        // 获取注入的声明
+        val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
+        val injectInfo = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
+        val injectKey = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(injectInfo.declaration!!, "\u0000", -1)
+
+        // 注入的声明结构应与目标定义的声明结构一致
+        Assert.assertEquals(titanKey, injectKey)
     }
 
     // endregion
