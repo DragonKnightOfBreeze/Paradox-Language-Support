@@ -1,0 +1,10 @@
+types = {
+    type[vtuber] = {
+        path = "common/vtubers"
+        path_extension = .txt
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+    }
+}

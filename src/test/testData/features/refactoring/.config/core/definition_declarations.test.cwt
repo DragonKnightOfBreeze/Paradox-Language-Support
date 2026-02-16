@@ -1,0 +1,3 @@
+vtuber = {
+    is_evil = bool
+}

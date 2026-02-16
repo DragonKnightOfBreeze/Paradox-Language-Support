@@ -1,0 +1,3 @@
+neuro_sama = {
+    is_evil = yes
+}

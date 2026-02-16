@@ -1,0 +1,3 @@
+<caret>neuro_sama = {
+    is_evil = no
+}
