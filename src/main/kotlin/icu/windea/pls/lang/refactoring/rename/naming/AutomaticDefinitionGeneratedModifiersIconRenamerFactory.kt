@@ -24,11 +24,11 @@ class AutomaticDefinitionGeneratedModifiersIconRenamerFactory : AutomaticRenamer
     }
 
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIcon
+        return ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIconForDefinitions
     }
 
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIcon = enabled
+        ParadoxRefactoringSettings.getInstance().renameGeneratedModifierIconForDefinitions = enabled
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {

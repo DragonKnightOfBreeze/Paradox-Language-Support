@@ -264,11 +264,15 @@
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationParameterRenameInputValidator"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticScriptedVariableRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticScriptedVariablesRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedLocalisationsRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedImagesRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersNameDescRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersIconRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticLocalisationsRenamerFactory"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
