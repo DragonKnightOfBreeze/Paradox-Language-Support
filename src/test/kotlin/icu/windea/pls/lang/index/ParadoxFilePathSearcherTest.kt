@@ -22,13 +22,15 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun setup() {
         markIntegrationTest()
         // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -39,7 +41,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testFilePathSearcher_ExactPath() {
         val relPath = "common/code_style_settings.test.txt"
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
 
         val project = project
@@ -55,7 +57,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testFilePathSearcher_NotFound_ReturnsEmpty() {
         val relPath = "localisation/ui/ui_l_english.test.yml"
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
@@ -75,7 +77,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
@@ -99,11 +101,11 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_BothLocales_ReturnsBoth() {
         // Arrange: english and chinese files both exist
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         // configure chinese file as well and inject file info
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_simp_chinese.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_simp_chinese.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
 
         val project = project

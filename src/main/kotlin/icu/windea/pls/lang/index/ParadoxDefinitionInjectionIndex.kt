@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
@@ -75,38 +76,42 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
         val config = configGroup.directivesModel.definitionInjection ?: return
         val path = fileInfo.path
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return
-        val type = typeConfig.name
-        if (type.isEmpty()) return
+        val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
+        val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
+        if (fileLevelTypeConfigs.isEmpty()) return
+        val typeConfigForInjection = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(fileLevelMatchContext, it) } ?: return
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptProperty) {
-                    visitProperty(element)
-                }
-
+                if (element is ParadoxScriptProperty) visitProperty(element)
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
             private fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
+                processDefinitionInjection(element)
+            }
 
-                if (element.parent !is ParadoxScriptRootBlock) return
+            private fun processDefinitionInjection(element: ParadoxScriptProperty): Boolean {
+                // 可用性检查
+                if (element.parent !is ParadoxScriptRootBlock) return true
                 val propertyValue = element.propertyValue
-                if (propertyValue !is ParadoxScriptBlock) return
+                if (propertyValue !is ParadoxScriptBlock) return true
 
+                // 匹配性检查
                 val expression = element.name
-                if (expression.isEmpty() || expression.isParameterized()) return
-                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expression) ?: return
-                if (mode.isEmpty()) return
-                if (config.modeConfigs[mode] == null) return
-                val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return
-                if (target.isEmpty()) return
+                if (expression.isEmpty() || expression.isParameterized()) return true
+                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expression) ?: return true
+                if (mode.isEmpty()) return false
+                if (config.modeConfigs[mode] == null) return false
+                val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return false
+                if (target.isEmpty()) return false
+                val type = typeConfigForInjection.name.orNull() ?: return false
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
                 addToFileData(info, fileData)
+                return false
             }
         })
     }

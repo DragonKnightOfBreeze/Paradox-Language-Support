@@ -24,10 +24,10 @@ import java.awt.Color
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
-    override fun getTestDataPath() = "src/test/testData"
-
-    private val counter = AtomicInteger()
     private val gameType = ParadoxGameType.Stellaris
+    private val counter = AtomicInteger()
+
+    override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun setup() {

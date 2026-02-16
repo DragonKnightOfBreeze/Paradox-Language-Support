@@ -64,8 +64,6 @@ object ParadoxDefinitionManager {
     }
 
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
-        // type key must be valid
-        if (getTypeKey(element).isNullOrEmpty()) return null
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()

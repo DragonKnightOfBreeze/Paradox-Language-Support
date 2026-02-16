@@ -30,6 +30,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -37,14 +39,14 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/resolve")
         markConfigDirectory("features/resolve/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, testDataPath: String): ParadoxScriptFile {
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
         return myFixture.file as ParadoxScriptFile
     }

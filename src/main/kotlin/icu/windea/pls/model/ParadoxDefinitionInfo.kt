@@ -59,8 +59,10 @@ data class ParadoxDefinitionInfo(
     val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
+    /** @see ParadoxDefinitionManager.getSubtypeConfigs */
     fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
 
+    /** @see ParadoxDefinitionManager.getDeclaration */
     fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionManager.getDeclaration(this, options)
 
     override fun toString(): String {

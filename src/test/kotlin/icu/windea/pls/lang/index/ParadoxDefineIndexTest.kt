@@ -21,6 +21,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefineIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -30,7 +32,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     fun clear() = clearIntegrationTest()
 
     private fun configureDefineFile(@TestDataFile testDataPath: String) {
-        markFileInfo(ParadoxGameType.Stellaris, "common/defines/${testDataPath.substringAfterLast('/')}")
+        markFileInfo(gameType, "common/defines/${testDataPath.substringAfterLast('/')}")
         myFixture.configureByFile(testDataPath)
     }
 

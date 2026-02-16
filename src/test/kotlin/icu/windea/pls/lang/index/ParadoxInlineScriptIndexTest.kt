@@ -20,11 +20,13 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun setup() {
-        initConfigGroups(project, ParadoxGameType.Stellaris) // required (depends on `directive[inline_script]` configs)
+        initConfigGroups(project, gameType) // required (depends on `directive[inline_script]` configs)
         markIntegrationTest()
     }
 
@@ -35,7 +37,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testUsageIndex_DirectForm() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
+        markFileInfo(gameType, "common/test/usage_direct_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -47,7 +49,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testUsageIndex_BlockForm() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_block_stellaris.test.txt")
+        markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -63,7 +65,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testArgumentIndex_BlockForm_All() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_block_stellaris.test.txt")
+        markFileInfo(gameType, "common/test/usage_block_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -78,7 +80,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testUsageIndex_Parameterized_ShouldSkip() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_parameterized_stellaris.test.txt")
+        markFileInfo(gameType, "common/test/usage_parameterized_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -90,7 +92,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testUsageIndex_VariableRef_ShouldSkip() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_variable_ref_stellaris.test.txt")
+        markFileInfo(gameType, "common/test/usage_variable_ref_stellaris.test.txt")
         myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)

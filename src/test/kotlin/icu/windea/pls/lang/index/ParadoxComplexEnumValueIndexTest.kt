@@ -21,6 +21,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -28,7 +30,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -39,7 +41,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueIndex_Basic_TopLevelValues() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/spell_schools/00_spell_schools.txt")
+        markFileInfo(gameType, "common/spell_schools/00_spell_schools.txt")
         myFixture.configureByFile("features/index/common/spell_schools/00_spell_schools.txt")
 
         // Act
@@ -53,13 +55,13 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(expectedNames, values.map { it.name }.toSet())
         Assert.assertTrue(values.all { it.enumName == "spell_school" })
         Assert.assertTrue(values.all { it.definitionElementOffset == -1 })
-        Assert.assertTrue(values.all { it.gameType == ParadoxGameType.Stellaris })
+        Assert.assertTrue(values.all { it.gameType == gameType })
     }
 
     @Test
     fun testComplexEnumValueIndex_Nested_ByScalarMatch() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/03_complex_enum.txt")
+        markFileInfo(gameType, "common/arcane_tomes/03_complex_enum.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/03_complex_enum.txt")
 
         // Act
@@ -82,7 +84,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveFlagAndCompression() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/whispered_words/00_words.txt")
+        markFileInfo(gameType, "common/whispered_words/00_words.txt")
         myFixture.configureByFile("features/index/common/whispered_words/00_words.txt")
 
         // Act
@@ -100,7 +102,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     @Test
     fun testComplexEnumValueIndex_PerDefinitionAndSkipParameterized() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/04_per_definition.txt")
+        markFileInfo(gameType, "common/arcane_tomes/04_per_definition.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/04_per_definition.txt")
 
         // Act
@@ -122,7 +124,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_StartFromRootNo_ValueInBlockOnly() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -137,7 +139,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_EnumNameAsPropertyKey() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -156,7 +158,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_DeepEnum_MultiLevelBlockAndFilterProperty() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -171,7 +173,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_EnumNameAsPropertyValue() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -186,7 +188,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_SiblingEnum_MultiPropertyConstraints() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -201,7 +203,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_KeyBlockEnum_PropertyKeyWithBlockConstraint() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -216,7 +218,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_MixEnum_MixedKeyValueBlock() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -232,7 +234,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_TypeComboEnum_TypedConstraints() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -247,7 +249,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_MultiEnum_MultipleEnumNameConfigs() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -263,7 +265,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_ValueMixEnum_ValueEnumNameAndTypedConstraints() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -282,7 +284,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveEnum_ComplexStructure() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -297,7 +299,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_MultiLevelEnum_MultipleLevels() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -313,7 +315,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_CrossLevelMixEnum_CrossLevelConstraints() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -329,7 +331,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveMultiEnum_ComplexAndTyped() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -345,7 +347,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_MultiLevelMultiEnum_MultipleLevels() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -361,7 +363,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_CrossPvbEnum_CrossLevelPropertyValueBlock() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -377,7 +379,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_CaseInsensitiveDeepEnum_MultipleLevels() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project
@@ -393,7 +395,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testComplexEnumValueIndex_RepeatTypedEnum_RepeatedEnumNameAndTypedConstraints() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/00_base.txt")
+        markFileInfo(gameType, "common/arcane_tomes/00_base.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/00_base.txt")
 
         val project = project

@@ -24,6 +24,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Vic3
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -31,14 +33,14 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Vic3)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String) {
-        markFileInfo(ParadoxGameType.Vic3, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
     }
 
@@ -57,11 +59,12 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         // Act
         val results = ParadoxDefinitionInjectionSearch.search(null, null, null, selector).findAll()
 
-        // Assert: ai_strategy(1) + arcane_tome(3) + academy_spell(2) = 6
-        Assert.assertEquals(6, results.size)
+        // Assert: ai_strategy(1) + arcane_tome(4) + academy_spell(2) = 7
+        Assert.assertEquals(7, results.size)
         Assert.assertTrue(results.any { it.target == "ai_strategy_default" && it.type == "ai_strategy" && it.mode == "INJECT" })
         Assert.assertTrue(results.any { it.target == "tome_of_flames" && it.type == "arcane_tome" && it.mode == "INJECT" })
         Assert.assertTrue(results.any { it.target == "tome_of_ice" && it.type == "arcane_tome" && it.mode == "REPLACE" })
+        Assert.assertTrue(results.any { it.target == "tome_of_new" && it.type == "arcane_tome" && it.mode == "REPLACE_OR_CREATE" })
         Assert.assertTrue(results.any { it.target == "shared_name" && it.type == "arcane_tome" && it.mode == "TRY_INJECT" })
         Assert.assertTrue(results.any { it.target == "shared_name" && it.type == "academy_spell" && it.mode == "INJECT" })
         Assert.assertTrue(results.any { it.target == "spell_of_mists" && it.type == "academy_spell" && it.mode == "INJECT" })
@@ -134,10 +137,10 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         val results = ParadoxDefinitionInjectionSearch.search(null, null, "arcane_tome", selector).findAll()
 
         // Assert
-        Assert.assertEquals(3, results.size)
+        Assert.assertEquals(4, results.size)
         Assert.assertTrue(results.all { it.type == "arcane_tome" })
         Assert.assertEquals(
-            setOf("tome_of_flames", "tome_of_ice", "shared_name"),
+            setOf("tome_of_flames", "tome_of_ice", "tome_of_new", "shared_name"),
             results.map { it.target }.toSet()
         )
     }
@@ -283,8 +286,8 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
         val selector = selector(project, myFixture.file).definitionInjection().withSearchScope(unionScope)
         val results = ParadoxDefinitionInjectionSearch.search(null, null, null, selector).findAll()
 
-        // Assert: arcane_tome(3) + academy_spell(2) = 5（排除 ai_strategy）
-        Assert.assertEquals(5, results.size)
+        // Assert: arcane_tome(4) + academy_spell(2) = 5（排除 ai_strategy）
+        Assert.assertEquals(6, results.size)
         Assert.assertEquals(setOf("arcane_tome", "academy_spell"), results.map { it.type }.toSet())
     }
 

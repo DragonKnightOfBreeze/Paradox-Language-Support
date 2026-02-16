@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,14 +34,14 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/resolve")
         markConfigDirectory("features/resolve/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String): ParadoxScriptFile {
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
         return myFixture.file as ParadoxScriptFile
     }
@@ -60,7 +62,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         Assert.assertEquals("mech", titanInfo.type)
         Assert.assertEquals("titan_mk3", titanInfo.typeKey)
         Assert.assertEquals(ParadoxDefinitionSource.Property, titanInfo.source)
-        Assert.assertEquals(ParadoxGameType.Stellaris, titanInfo.gameType)
+        Assert.assertEquals(gameType, titanInfo.gameType)
         Assert.assertEquals(listOf<String>(), titanInfo.rootKeys)
     }
 
@@ -395,7 +397,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Definition Injection (create_mode)
+    // region From Injection (create_mode)
 
     @Test
     fun testGetInfo_DefinitionInjection_ReplaceOrCreate() {

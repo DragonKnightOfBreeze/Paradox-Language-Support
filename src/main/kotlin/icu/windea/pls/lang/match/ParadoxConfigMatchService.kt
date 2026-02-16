@@ -105,7 +105,7 @@ object ParadoxConfigMatchService {
         val candicates = getTypeConfigCandidates(context)
         if (candicates.isEmpty()) return null
         context.matchPath = false
-        return candicates.find { canApplyForInjection(it) && matchesTypeByUnknownDeclaration(context, it) }
+        return candicates.find { matchesTypeForInjection(context, it) }
     }
 
     fun matchesType(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfig: CwtTypeConfig): Boolean {
@@ -165,6 +165,10 @@ object ParadoxConfigMatchService {
         }
 
         return true
+    }
+
+    fun matchesTypeForInjection(context: CwtTypeConfigMatchContext, typeConfig: CwtTypeConfig): Boolean {
+        return canApplyForInjection(typeConfig) && matchesTypeByUnknownDeclaration(context, typeConfig)
     }
 
     fun matchesTypeByUnknownDeclaration(context: CwtTypeConfigMatchContext, typeConfig: CwtTypeConfig): Boolean {

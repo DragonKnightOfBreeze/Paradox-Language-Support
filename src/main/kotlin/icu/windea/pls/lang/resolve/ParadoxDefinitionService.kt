@@ -14,6 +14,7 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -29,6 +30,8 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.getTypeKey
@@ -36,6 +39,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -76,20 +80,12 @@ object ParadoxDefinitionService {
 
     fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
+        resolveInfoFromInjection(element, file, fileInfo)?.let { return it }
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
-        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
         val source = resolveSource(element) ?: return null
         val typeKey = getTypeKey(element) ?: return null
-
-        // 检查是否是 create_mode 的定义注入
-        if (element is ParadoxScriptProperty) {
-            val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(typeKey)
-            if (mode != null && ParadoxDefinitionInjectionManager.isDefinitionMode(mode, gameType)) {
-                return resolveInfoFromInjection(element, file, typeKey)
-            }
-        }
-
+        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
         val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
         if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
@@ -97,26 +93,31 @@ object ParadoxDefinitionService {
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
-        val type = typeConfig.name
+        val type = typeConfig.name.orNull() ?: return null
         return ParadoxDefinitionInfo(source, name, type, typeKey, rootKeys.optimized(), typeConfig).also { it.element = element }
     }
 
-    /**
-     * 从定义注入（create_mode）解析定义信息。
-     */
-    private fun resolveInfoFromInjection(element: ParadoxScriptProperty, file: PsiFile, expression: String): ParadoxDefinitionInfo? {
-        val fileInfo = file.fileInfo ?: return null
+    private fun resolveInfoFromInjection(element: ParadoxDefinitionElement, file: PsiFile, fileInfo: ParadoxFileInfo): ParadoxDefinitionInfo? {
+        if (element !is ParadoxScriptProperty) return null
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
-        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression)
+        val source = ParadoxDefinitionSource.Injection
+        val expression = element.name
+        if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
+        if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null
+        if (expression.isParameterized()) return null // 忽略带参数的情况
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val mode = getModeFromExpression(expression)
+        if (mode.isNullOrEmpty()) return null
+        if (!ParadoxDefinitionInjectionManager.isCreateMode(mode, configGroup)) return null
+        val target = getTargetFromExpression(expression)
         if (target.isNullOrEmpty()) return null
-        if (target.isParameterized()) return null // 忽略带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val matchContext = CwtTypeConfigMatchContext(configGroup, path, target, emptyList(), lazy { null })
-        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
-        val name = resolveName(element, target, typeConfig)
-        val type = typeConfig.name
-        return ParadoxDefinitionInfo(ParadoxDefinitionSource.Injection, name, type, target, emptyList(), typeConfig).also { it.element = element }
+        val matchContext = CwtTypeConfigMatchContext(configGroup, path)
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return null
+        val name = target
+        val type = typeConfig.name.orNull() ?: return null
+        val typeKey = name
+        return ParadoxDefinitionInfo(source, name, type, typeKey, emptyList(), typeConfig).also { it.element = element }
     }
 
     fun resolveSource(element: ParadoxDefinitionElement): ParadoxDefinitionSource? {

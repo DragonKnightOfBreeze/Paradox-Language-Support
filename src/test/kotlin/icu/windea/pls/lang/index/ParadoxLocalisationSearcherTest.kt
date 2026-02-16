@@ -19,6 +19,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -31,7 +33,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testLocalisationSearch_ByName() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
         val selector = selector(project, myFixture.file).localisation()
@@ -45,7 +47,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testLocalisationSearch_NotFound() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
         val selector = selector(project, myFixture.file).localisation()
@@ -63,7 +65,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisationSearch_ByName() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
         val selector = selector(project, myFixture.file).localisation()
@@ -77,7 +79,7 @@ class ParadoxLocalisationSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisationSearch_NotFound() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
         val selector = selector(project, myFixture.file).localisation()

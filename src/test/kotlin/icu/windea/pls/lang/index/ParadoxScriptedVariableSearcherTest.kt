@@ -19,6 +19,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -31,7 +33,7 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableSearcher_Local() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
+        markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file.virtualFile).scriptedVariable()
@@ -45,7 +47,7 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableSearcher_Local_SkipAfterCaret() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
+        markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file.findElementAt(myFixture.caretOffset)!!).scriptedVariable()
@@ -60,7 +62,7 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableSearcher_Local_WithOverride() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
+        markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
         run {
@@ -87,7 +89,7 @@ class ParadoxScriptedVariableSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableSearcher_Global() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
+        markFileInfo(gameType, "common/scripted_variables/global_vars.test.txt")
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file).scriptedVariable()

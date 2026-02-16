@@ -23,6 +23,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -30,7 +32,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -116,7 +118,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
         val results = CwtConfigSymbolSearch.search(
             null,
             setOf(CwtConfigTypes.Type.id, CwtConfigTypes.Subtype.id),
-            ParadoxGameType.Stellaris,
+            gameType,
             project,
             scope
         ).findAll().toList()
@@ -141,6 +143,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
 
     // endregion
 
+    @Suppress("SameParameterValue")
     private fun assertSymbol(scope: GlobalSearchScope, type: String, name: String, access: ReadWriteAccessDetector.Access, gameType: ParadoxGameType) {
         val info = search(type, name, scope)
         Assert.assertEquals(access, info.readWriteAccess)
@@ -148,13 +151,13 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
     }
 
     private fun search(type: String, name: String, scope: GlobalSearchScope): CwtConfigSymbolIndexInfo {
-        val result = CwtConfigSymbolSearch.search(name, type, ParadoxGameType.Stellaris, project, scope).findFirst()
+        val result = CwtConfigSymbolSearch.search(name, type, gameType, project, scope).findFirst()
         Assert.assertNotNull("Expected symbol '$name' of type '$type'", result)
         return result!!
     }
 
     private fun assertNoSymbol(scope: GlobalSearchScope, type: String, name: String) {
-        val result = CwtConfigSymbolSearch.search(name, type, ParadoxGameType.Stellaris, project, scope).findFirst()
+        val result = CwtConfigSymbolSearch.search(name, type, gameType, project, scope).findFirst()
         Assert.assertNull("Did not expect symbol '$name' of type '$type'", result)
     }
 
@@ -168,7 +171,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
             CwtConfigTypes.Subtype.id
         )
         types.forEach { type ->
-            val result = CwtConfigSymbolSearch.search(null, type, ParadoxGameType.Stellaris, project, scope).findAll().toList()
+            val result = CwtConfigSymbolSearch.search(null, type, gameType, project, scope).findAll().toList()
             Assert.assertTrue("Should not index empty name for type '$type'", result.none { it.name.isEmpty() })
         }
     }

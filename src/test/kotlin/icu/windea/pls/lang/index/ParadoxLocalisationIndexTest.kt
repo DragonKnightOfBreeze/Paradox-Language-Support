@@ -19,6 +19,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -31,7 +33,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testLocalisationNameIndex_Basic() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -52,7 +54,7 @@ class ParadoxLocalisationIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testSyncedLocalisationNameIndex_Basic() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation_synced/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation_synced/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)

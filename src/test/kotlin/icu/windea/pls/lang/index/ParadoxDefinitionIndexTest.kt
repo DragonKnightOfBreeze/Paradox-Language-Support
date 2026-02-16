@@ -22,6 +22,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -29,7 +31,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -40,7 +42,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_BasicProperty() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        markFileInfo(gameType, "common/starships/00_starships.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/00_starships.txt")
 
         // Act
@@ -52,7 +54,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(3, allInfos.size)
         Assert.assertTrue(allInfos.all { it.type == "starship" })
         Assert.assertTrue(allInfos.all { it.source == ParadoxDefinitionSource.Property })
-        Assert.assertTrue(allInfos.all { it.gameType == ParadoxGameType.Stellaris })
+        Assert.assertTrue(allInfos.all { it.gameType == gameType })
 
         // Assert: type key
         val typeInfos = fileData[PlsIndexUtil.createTypeKey("starship")].orEmpty()
@@ -73,7 +75,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_BasicProperty_ElementOffset() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        markFileInfo(gameType, "common/starships/00_starships.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/00_starships.txt")
 
         // Act
@@ -94,7 +96,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypePerFile() {
         // Arrange & Act: ocean_world
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/ocean_world.txt")
+        markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         val oceanFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
 
         val project = project
@@ -108,7 +110,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("planet_class", oceanInfo.type)
         Assert.assertEquals("ocean_world", oceanInfo.typeKey)
         Assert.assertEquals(ParadoxDefinitionSource.File, oceanInfo.source)
-        Assert.assertEquals(ParadoxGameType.Stellaris, oceanInfo.gameType)
+        Assert.assertEquals(gameType, oceanInfo.gameType)
 
         // Assert: name key 和 type key
         Assert.assertNotNull(oceanData[PlsIndexUtil.createNameKey("ocean_world")])
@@ -119,9 +121,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypePerFile_MultipleFiles() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/ocean_world.txt")
+        markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/desert_world.txt")
+        markFileInfo(gameType, "common/planet_classes/desert_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/desert_world.txt")
 
         // Act
@@ -143,7 +145,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_NameField() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/alien_species/00_species.txt")
+        markFileInfo(gameType, "common/alien_species/00_species.txt")
         val psiFile = myFixture.configureByFile("features/index/common/alien_species/00_species.txt")
 
         // Act
@@ -178,7 +180,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_AnonymousNameField() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/star_systems/00_systems.txt")
+        markFileInfo(gameType, "common/star_systems/00_systems.txt")
         val psiFile = myFixture.configureByFile("features/index/common/star_systems/00_systems.txt")
 
         // Act
@@ -206,7 +208,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_SkipRootKey() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/space_stations/00_stations.txt")
+        markFileInfo(gameType, "common/space_stations/00_stations.txt")
         val psiFile = myFixture.configureByFile("features/index/common/space_stations/00_stations.txt")
 
         // Act
@@ -235,7 +237,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypeKeyFilter_Inclusion() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
 
         // Act
@@ -251,7 +253,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypeKeyFilter_Exclusion() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
 
         // Act
@@ -267,7 +269,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypeKeyFilter_AllDefinitionsPresent() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        markFileInfo(gameType, "common/drives/00_drives.txt")
         val psiFile = myFixture.configureByFile("features/index/common/drives/00_drives.txt")
 
         // Act
@@ -287,7 +289,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_StartsWith() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/districts/00_districts.txt")
+        markFileInfo(gameType, "common/districts/00_districts.txt")
         val psiFile = myFixture.configureByFile("features/index/common/districts/00_districts.txt")
 
         // Act
@@ -318,7 +320,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     fun testDefinitionIndex_StartsWith_PrefixMismatch() {
         // Arrange: districts 路径但包含不以 "d_" 开头的属性键
         // 由于 starts_with 要求 typeKey 匹配该前缀，不匹配前缀的属性不应被索引
-        markFileInfo(ParadoxGameType.Stellaris, "common/districts/00_districts.txt")
+        markFileInfo(gameType, "common/districts/00_districts.txt")
         val psiFile = myFixture.configureByFile("features/index/common/districts/00_districts.txt")
 
         // Act
@@ -337,7 +339,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypeKeyRegex() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/fleets/00_fleets.txt")
+        markFileInfo(gameType, "common/fleets/00_fleets.txt")
         val psiFile = myFixture.configureByFile("features/index/common/fleets/00_fleets.txt")
 
         // Act
@@ -361,7 +363,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_SkipRootKey_Alternatives() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/garrisons/00_garrisons.txt")
+        markFileInfo(gameType, "common/garrisons/00_garrisons.txt")
         val psiFile = myFixture.configureByFile("features/index/common/garrisons/00_garrisons.txt")
 
         // Act
@@ -388,7 +390,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_NameFieldDash() {
         // Arrange
-        markFileInfo(ParadoxGameType.Stellaris, "common/anomalies/00_anomalies.txt")
+        markFileInfo(gameType, "common/anomalies/00_anomalies.txt")
         val psiFile = myFixture.configureByFile("features/index/common/anomalies/00_anomalies.txt")
 
         // Act
@@ -421,9 +423,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_CrossFileAggregation_ByType() {
         // Arrange: 多个文件的同类型定义
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/ocean_world.txt")
+        markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/desert_world.txt")
+        markFileInfo(gameType, "common/planet_classes/desert_world.txt")
         myFixture.configureByFile("features/index/common/planet_classes/desert_world.txt")
 
         // Act
@@ -441,9 +443,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_CrossFileAggregation_ByName() {
         // Arrange: 跨文件按 name key 聚合
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        markFileInfo(gameType, "common/drives/00_drives.txt")
         myFixture.configureByFile("features/index/common/drives/00_drives.txt")
 
         // Act
@@ -461,11 +463,11 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_CrossFileAggregation_MultipleTypes() {
         // Arrange: 加载不同类型的多个文件
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/districts/00_districts.txt")
+        markFileInfo(gameType, "common/districts/00_districts.txt")
         myFixture.configureByFile("features/index/common/districts/00_districts.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/anomalies/00_anomalies.txt")
+        markFileInfo(gameType, "common/anomalies/00_anomalies.txt")
         myFixture.configureByFile("features/index/common/anomalies/00_anomalies.txt")
 
         // Act
@@ -486,7 +488,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_EmptyFile() {
         // Arrange: 文件仅含注释，无任何属性
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/02_empty.txt")
+        markFileInfo(gameType, "common/starships/02_empty.txt")
         val psiFile = myFixture.configureByFile("features/index/common/starships/02_empty.txt")
 
         // Act
@@ -500,7 +502,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_NoMatchedType() {
         // Arrange: 路径无匹配的类型规则
-        markFileInfo(ParadoxGameType.Stellaris, "common/no_rule/00_data.txt")
+        markFileInfo(gameType, "common/no_rule/00_data.txt")
         val psiFile = myFixture.configureByFile("features/index/common/no_rule/01_inject.txt")
 
         // Act
@@ -514,7 +516,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_TypePerFile_ElementOffset() {
         // Arrange: 文件级定义的 elementOffset 应为 0
-        markFileInfo(ParadoxGameType.Stellaris, "common/planet_classes/ocean_world.txt")
+        markFileInfo(gameType, "common/planet_classes/ocean_world.txt")
         val psiFile = myFixture.configureByFile("features/index/common/planet_classes/ocean_world.txt")
 
         // Act
@@ -530,9 +532,9 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_NameTypeKey_CrossTypeIsolation() {
         // Arrange: 加载不同类型的文件，验证 nameTypeKey 的类型隔离性
-        markFileInfo(ParadoxGameType.Stellaris, "common/starships/00_starships.txt")
+        markFileInfo(gameType, "common/starships/00_starships.txt")
         myFixture.configureByFile("features/index/common/starships/00_starships.txt")
-        markFileInfo(ParadoxGameType.Stellaris, "common/drives/00_drives.txt")
+        markFileInfo(gameType, "common/drives/00_drives.txt")
         myFixture.configureByFile("features/index/common/drives/00_drives.txt")
 
         // Act
@@ -557,12 +559,12 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region Definition Injection (create_mode)
+    // region From Injection (create_mode)
 
     @Test
     fun testDefinitionIndex_DefinitionInjection_ReplaceOrCreate() {
         // Arrange: REPLACE_OR_CREATE 模式的定义注入应被索引为定义
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
@@ -579,7 +581,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("arcane_tome", injectionInfo.type)
         Assert.assertEquals("tome_of_new", injectionInfo.typeKey)
         Assert.assertEquals(ParadoxDefinitionSource.Injection, injectionInfo.source)
-        Assert.assertEquals(ParadoxGameType.Stellaris, injectionInfo.gameType)
+        Assert.assertEquals(gameType, injectionInfo.gameType)
 
         // Assert: name key 和 type key 存在
         Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("tome_of_new")])
@@ -589,7 +591,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionIndex_DefinitionInjection_NonDefinitionModes_NotIndexed() {
         // Arrange: INJECT/REPLACE/TRY_INJECT 等非 create_mode 不应被索引为定义
-        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act

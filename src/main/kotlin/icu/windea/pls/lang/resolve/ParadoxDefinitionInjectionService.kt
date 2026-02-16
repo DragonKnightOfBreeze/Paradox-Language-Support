@@ -20,8 +20,6 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.isAvailable
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.isMatched
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -31,8 +29,8 @@ object ParadoxDefinitionInjectionService {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val expression = element.name
-        if (!isMatched(expression, gameType)) return null
-        if (!isAvailable(element)) return null
+        if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
+        if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
@@ -45,7 +43,7 @@ object ParadoxDefinitionInjectionService {
             val path = fileInfo.path
             val matchContext = CwtTypeConfigMatchContext(configGroup, path)
             val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfigForInjection(matchContext) ?: return@run
-            val type = typeConfig.name
+            val type = typeConfig.name.orNull() ?: return@run
             return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig).also { it.element = element }
         }
         // 兼容目标为空或者目标类型无法解析的情况
@@ -54,7 +52,7 @@ object ParadoxDefinitionInjectionService {
 
     fun resolveSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         // 根据模式决定是从目标声明还是自身声明获取子类型
-        if (ParadoxDefinitionInjectionManager.isReplaceMode(definitionInjectionInfo)) {
+        if (definitionInjectionInfo.isReplaceMode()) {
             return resolveSubtypeConfigsFromSelf(definitionInjectionInfo, options)
         } else {
             return resolveSubtypeConfigsFromTarget(definitionInjectionInfo, options)

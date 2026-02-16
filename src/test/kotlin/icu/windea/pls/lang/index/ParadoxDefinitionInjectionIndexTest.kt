@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Vic3
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,7 +34,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Vic3)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -43,9 +45,9 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_Basic() {
         // Arrange: 基础 INJECT 模式
-        markFileInfo(ParadoxGameType.Vic3, "common/ai_strategies/00_default.txt")
+        markFileInfo(gameType, "common/ai_strategies/00_default.txt")
         myFixture.configureByFile("features/index/common/ai_strategies/00_default.txt")
-        markFileInfo(ParadoxGameType.Vic3, "common/ai_strategies/01_inject.txt")
+        markFileInfo(gameType, "common/ai_strategies/01_inject.txt")
         myFixture.configureByFile("features/index/common/ai_strategies/01_inject.txt")
 
         // Act
@@ -55,7 +57,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Assert
         val expect = listOf(
-            ParadoxDefinitionInjectionIndexInfo("INJECT", "ai_strategy_default", "ai_strategy", 0, ParadoxGameType.Vic3)
+            ParadoxDefinitionInjectionIndexInfo("INJECT", "ai_strategy_default", "ai_strategy", 0, gameType)
         )
         Assert.assertEquals(expect, allData)
     }
@@ -67,18 +69,20 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_MultipleModes() {
         // Arrange: 同一文件中 INJECT / REPLACE / TRY_INJECT 三种模式
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         val properties = PsiTreeUtil.findChildrenOfType(psiFile, ParadoxScriptProperty::class.java)
         val injectFlames = properties.single { it.name == "INJECT:tome_of_flames" }
         val replaceIce = properties.single { it.name == "REPLACE:tome_of_ice" }
+        val new = properties.single { it.name == "REPLACE_OR_CREATE:tome_of_new" }
         val tryInjectShared = properties.single { it.name == "TRY_INJECT:shared_name" }
 
         val expectedInfos = listOf(
-            ParadoxDefinitionInjectionIndexInfo("INJECT", "tome_of_flames", "arcane_tome", injectFlames.startOffset, ParadoxGameType.Vic3),
-            ParadoxDefinitionInjectionIndexInfo("REPLACE", "tome_of_ice", "arcane_tome", replaceIce.startOffset, ParadoxGameType.Vic3),
-            ParadoxDefinitionInjectionIndexInfo("TRY_INJECT", "shared_name", "arcane_tome", tryInjectShared.startOffset, ParadoxGameType.Vic3),
+            ParadoxDefinitionInjectionIndexInfo("INJECT", "tome_of_flames", "arcane_tome", injectFlames.startOffset, gameType),
+            ParadoxDefinitionInjectionIndexInfo("REPLACE", "tome_of_ice", "arcane_tome", replaceIce.startOffset, gameType),
+            ParadoxDefinitionInjectionIndexInfo("REPLACE_OR_CREATE", "tome_of_new", "arcane_tome", new.startOffset, gameType),
+            ParadoxDefinitionInjectionIndexInfo("TRY_INJECT", "shared_name", "arcane_tome", tryInjectShared.startOffset, gameType),
         )
 
         // Act
@@ -87,11 +91,11 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
 
         // Assert: key 分发
         val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
-        Assert.assertEquals(3, allInfos.size)
+        Assert.assertEquals(4, allInfos.size)
         Assert.assertEquals(expectedInfos.toSet(), allInfos.toSet())
 
         val typeInfos = fileData[PlsIndexUtil.createTypeKey("arcane_tome")].orEmpty()
-        Assert.assertEquals(3, typeInfos.size)
+        Assert.assertEquals(4, typeInfos.size)
 
         Assert.assertEquals(listOf(expectedInfos[0]), fileData[PlsIndexUtil.createNameKey("tome_of_flames")])
         Assert.assertEquals(listOf(expectedInfos[0]), fileData[PlsIndexUtil.createNameTypeKey("tome_of_flames", "arcane_tome")])
@@ -100,7 +104,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_MultipleModes_IgnoredCases() {
         // Arrange: 验证非法写法被正确忽略
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
@@ -124,14 +128,14 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_DifferentTypes_ByFilePath() {
         // Arrange: 不同路径对应不同类型
-        markFileInfo(ParadoxGameType.Vic3, "common/academy_spells/01_inject.txt")
+        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
         val properties = PsiTreeUtil.findChildrenOfType(psiFile, ParadoxScriptProperty::class.java)
         val injectShared = properties.single { it.name == "INJECT:shared_name" }
         val injectMists = properties.single { it.name == "INJECT:spell_of_mists" }
         val expectedInfos = listOf(
-            ParadoxDefinitionInjectionIndexInfo("INJECT", "shared_name", "academy_spell", injectShared.startOffset, ParadoxGameType.Vic3),
-            ParadoxDefinitionInjectionIndexInfo("INJECT", "spell_of_mists", "academy_spell", injectMists.startOffset, ParadoxGameType.Vic3),
+            ParadoxDefinitionInjectionIndexInfo("INJECT", "shared_name", "academy_spell", injectShared.startOffset, gameType),
+            ParadoxDefinitionInjectionIndexInfo("INJECT", "spell_of_mists", "academy_spell", injectMists.startOffset, gameType),
         )
 
         // Act
@@ -151,9 +155,9 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_CrossFileAggregation_ByTarget() {
         // Arrange: 同一 target 出现在不同类型的文件中
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markFileInfo(ParadoxGameType.Vic3, "common/academy_spells/01_inject.txt")
+        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
         myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
@@ -170,19 +174,18 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_CrossFileAggregation_ByType() {
         // Arrange: 跨文件按类型聚合
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
-        markFileInfo(ParadoxGameType.Vic3, "common/academy_spells/01_inject.txt")
+        markFileInfo(gameType, "common/academy_spells/01_inject.txt")
         myFixture.configureByFile("features/index/common/academy_spells/01_inject.txt")
 
         // Act
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
-        val allInfos = FileBasedIndex.getInstance()
-            .getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createAllKey(), scope).flatten()
+        val allInfos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.DefinitionInjection, PlsIndexUtil.createAllKey(), scope).flatten()
 
-        // Assert: arcane_tome(3) + academy_spell(2) = 5
-        Assert.assertEquals(5, allInfos.size)
+        // Assert: arcane_tome(4) + academy_spell(2) = 6
+        Assert.assertEquals(6, allInfos.size)
         Assert.assertEquals(setOf("arcane_tome", "academy_spell"), allInfos.map { it.type }.toSet())
     }
 
@@ -193,7 +196,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_NoMatchedTypeConfig() {
         // Arrange: 路径无匹配的类型规则
-        markFileInfo(ParadoxGameType.Vic3, "common/no_rule/01_inject.txt")
+        markFileInfo(gameType, "common/no_rule/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/no_rule/01_inject.txt")
 
         // Act
@@ -207,7 +210,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_WrongExtension() {
         // Arrange: 扩展名不匹配（规则要求 .dat，实际为 .txt）
-        markFileInfo(ParadoxGameType.Vic3, "common/forbidden/01_inject.txt")
+        markFileInfo(gameType, "common/forbidden/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/forbidden/01_inject.txt")
 
         // Act
@@ -221,7 +224,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_EmptyTarget_Ignored() {
         // Arrange: target 为空的注入表达式（如 "INJECT: = {}"）
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/02_edge.txt")
+        markFileInfo(gameType, "common/arcane_tomes/02_edge.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/02_edge.txt")
 
         // Act
@@ -235,7 +238,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefinitionInjectionIndex_ElementOffset() {
         // Arrange: 验证 elementOffset 互不相同且有序
-        markFileInfo(ParadoxGameType.Vic3, "common/arcane_tomes/01_inject.txt")
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
         val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
 
         // Act
@@ -245,7 +248,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
         // Assert
         val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
         val offsets = allInfos.map { it.elementOffset }
-        Assert.assertEquals(3, offsets.size)
+        Assert.assertEquals(4, offsets.size)
         Assert.assertEquals(offsets.toSet().size, offsets.size) // 互不相同
         Assert.assertTrue(offsets.all { it >= 0 })
     }

@@ -6,6 +6,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
@@ -170,41 +171,40 @@ object ParadoxDefinitionInjectionManager {
         }
     }
 
+    /**
+     * 检查定义注入是否允许目标不存在（此时不会报告为错误）。
+     */
     fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
-        val gameType = definitionInjectionInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = definitionInjectionInfo.configGroup
         val config = configGroup.directivesModel.definitionInjection ?: return false
         return mode in config.relaxModes
     }
 
+    /**
+     * 检查定义注入是否应使用自身声明来检测子类型（而非目标定义的声明）。
+     */
     fun isReplaceMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
-        val gameType = definitionInjectionInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val configGroup = definitionInjectionInfo.configGroup
         val config = configGroup.directivesModel.definitionInjection ?: return false
         return mode in config.replaceModes
     }
 
-    /**
-     * 检查定义注入是否应被识别为定义声明（可以被索引和搜索）。
-     * 这适用于 REPLACE_OR_CREATE 等模式。
-     */
-    fun isDefinitionMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
-        val mode = definitionInjectionInfo.mode
-        val gameType = definitionInjectionInfo.gameType
-        val configGroup = PlsFacade.getConfigGroup(gameType)
-        val config = configGroup.directivesModel.definitionInjection ?: return false
-        return mode in config.createModes
-    }
+    // /**
+    //  * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
+    //  */
+    // fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+    //     val mode = definitionInjectionInfo.mode
+    //     val configGroup = definitionInjectionInfo.configGroup
+    //     val config = configGroup.directivesModel.definitionInjection ?: return false
+    //     return mode in config.createModes
+    // }
 
     /**
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
      */
-    fun isDefinitionMode(mode: String, gameType: ParadoxGameType?): Boolean {
-        if (gameType == null) return false
-        if (mode.isEmpty()) return false
-        val configGroup = PlsFacade.getConfigGroup(gameType)
+    fun isCreateMode(mode: String, configGroup: CwtConfigGroup): Boolean {
         val config = configGroup.directivesModel.definitionInjection ?: return false
         return mode in config.createModes
     }

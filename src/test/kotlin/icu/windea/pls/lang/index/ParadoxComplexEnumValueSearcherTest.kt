@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,14 +34,14 @@ class ParadoxComplexEnumValueSearcherTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String) {
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
     }
 

@@ -22,6 +22,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -29,7 +31,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -118,6 +120,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
 
     // endregion
 
+    @Suppress("SameParameterValue")
     private fun assertSymbol(scope: GlobalSearchScope, type: String, name: String, access: ReadWriteAccessDetector.Access, gameType: ParadoxGameType) {
         val infos = FileBasedIndex.getInstance().getValues(PlsIndexKeys.ConfigSymbol, type, scope).flatten()
         val info = infos.find { it.name == name }

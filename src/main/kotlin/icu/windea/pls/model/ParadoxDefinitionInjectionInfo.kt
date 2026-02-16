@@ -44,12 +44,22 @@ data class ParadoxDefinitionInjectionInfo(
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
+    /** @see ParadoxDefinitionInjectionManager.getSubtypeConfigs */
     fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, options)
 
+    /** @see ParadoxDefinitionInjectionManager.getDeclaration */
     fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, options)
 
+    /** @see ParadoxDefinitionInjectionManager.isRelaxMode */
     fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)
 
+    /** @see ParadoxDefinitionInjectionManager.isReplaceMode */
+    fun isReplaceMode(): Boolean = ParadoxDefinitionInjectionManager.isReplaceMode(this)
+
+    // /** @see ParadoxDefinitionInjectionManager.isCreateMode */
+    // fun isCreateMode(): Boolean = ParadoxDefinitionInjectionManager.isCreateMode(this)
+
+    /** @see ParadoxDefinitionInjectionManager.isTargetExist */
     fun isTargetExist(context: Any? = null): Boolean = ParadoxDefinitionInjectionManager.isTargetExist(this, context)
 
     override fun toString(): String {

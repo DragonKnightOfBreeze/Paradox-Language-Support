@@ -19,6 +19,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -31,7 +33,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableNameIndex_Local() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
+        markFileInfo(gameType, "common/test/local_vars.test.txt")
         myFixture.configureByFile("features/index/local_vars.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -52,7 +54,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testScriptedVariableNameIndex_Global() {
-        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
+        markFileInfo(gameType, "common/scripted_variables/global_vars.test.txt")
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)

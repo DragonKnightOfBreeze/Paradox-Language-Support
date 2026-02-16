@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,14 +34,14 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/resolve")
         markConfigDirectory("features/resolve/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String): ParadoxScriptFile {
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
         return myFixture.file as ParadoxScriptFile
     }
@@ -64,7 +66,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         Assert.assertEquals("INJECT", info.mode)
         Assert.assertEquals("titan_mk3", info.target)
         Assert.assertEquals("mech", info.type)
-        Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
+        Assert.assertEquals(gameType, info.gameType)
         Assert.assertEquals("INJECT:titan_mk3", info.expression)
     }
 
@@ -116,7 +118,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
 
-        Assert.assertTrue(ParadoxDefinitionInjectionManager.isReplaceMode(info))
+        Assert.assertTrue(info.isReplaceMode())
         Assert.assertEquals("mech", info.type)
         Assert.assertEquals(listOf("stealth"), info.subtypes)
         Assert.assertEquals(listOf("mech", "stealth"), info.types)
@@ -133,7 +135,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val replaceOrCreateProperty = selectScope { injectFile.properties().ofKey("REPLACE_OR_CREATE:new_mech").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(replaceOrCreateProperty)!!
 
-        Assert.assertTrue(ParadoxDefinitionInjectionManager.isReplaceMode(info))
+        Assert.assertTrue(info.isReplaceMode())
         Assert.assertEquals("mech", info.type)
         Assert.assertEquals(emptyList<String>(), info.subtypes)  // 没有匹配的子类型
         Assert.assertEquals(listOf("mech"), info.types)
@@ -149,7 +151,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
 
-        Assert.assertFalse(ParadoxDefinitionInjectionManager.isReplaceMode(info))
+        Assert.assertFalse(info.isReplaceMode())
     }
 
     // endregion
@@ -256,7 +258,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
     @Test
     fun testIsSupported() {
         // 我们在测试配置中定义了 directive[definition_injection]，所以 Stellaris 应被支持
-        Assert.assertTrue(ParadoxDefinitionInjectionManager.isSupported(ParadoxGameType.Stellaris))
+        Assert.assertTrue(ParadoxDefinitionInjectionManager.isSupported(gameType))
     }
 
     // endregion

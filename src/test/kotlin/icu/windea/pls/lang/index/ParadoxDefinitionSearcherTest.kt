@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -32,14 +34,14 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String) {
-        markFileInfo(ParadoxGameType.Stellaris, relPath)
+        markFileInfo(gameType, relPath)
         myFixture.configureByFile(testDataPath)
     }
 
@@ -635,6 +637,55 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         result!!
         Assert.assertEquals("warp_drive", result.name)
         Assert.assertEquals("ftl_drive", result.type)
+    }
+
+    // endregion
+
+    // region From Injection (create_mode)
+
+    @Test
+    fun testDefinitionIndex_DefinitionInjection_ReplaceOrCreate() {
+        // Arrange: REPLACE_OR_CREATE 模式的定义注入应被索引为定义
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
+        myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+
+        // Act
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+        val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
+
+        // Assert: 应有 1 个来自 REPLACE_OR_CREATE 的定义
+        val injectionInfos = results.filter { it.source == ParadoxDefinitionSource.Injection }
+        Assert.assertEquals(1, injectionInfos.size)
+
+        val injectionInfo = injectionInfos.single()
+        Assert.assertEquals("tome_of_new", injectionInfo.name)
+        Assert.assertEquals("arcane_tome", injectionInfo.type)
+        Assert.assertEquals("tome_of_new", injectionInfo.typeKey)
+        Assert.assertEquals(ParadoxDefinitionSource.Injection, injectionInfo.source)
+        Assert.assertEquals(gameType, injectionInfo.gameType)
+    }
+
+    @Test
+    fun testDefinitionIndex_DefinitionInjection_NonDefinitionModes_NotIndexed() {
+        // Arrange: INJECT/REPLACE/TRY_INJECT 等非 create_mode 不应被索引为定义
+        markFileInfo(gameType, "common/arcane_tomes/01_inject.txt")
+        myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+
+        // Act
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+        val results = ParadoxDefinitionSearch.search(null, null, selector).findAll()
+
+        // Assert: INJECT:tome_of_flames 不应被索引
+        val tomeOfFlamesInfos = results.filter { it.name == "tome_of_flames" }
+        Assert.assertTrue("INJECT mode should not be indexed as definition", tomeOfFlamesInfos.isEmpty())
+
+        // Assert: REPLACE:tome_of_ice 不应被索引
+        val tomeOfIceInfos = results.filter { it.name == "tome_of_ice" }
+        Assert.assertTrue("REPLACE mode should not be indexed as definition", tomeOfIceInfos.isEmpty())
+
+        // Assert: TRY_INJECT:shared_name 不应被索引
+        val sharedNameInfos = results.filter { it.name == "shared_name" }
+        Assert.assertTrue("TRY_INJECT mode should not be indexed as definition", sharedNameInfos.isEmpty())
     }
 
     // endregion
