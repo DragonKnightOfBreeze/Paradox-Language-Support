@@ -1,0 +1,9 @@
+distress_beacon = {
+    frequency = 121.5
+    priority = high
+}
+
+nav_pulse = {
+    frequency = 88.0
+    priority = low
+}

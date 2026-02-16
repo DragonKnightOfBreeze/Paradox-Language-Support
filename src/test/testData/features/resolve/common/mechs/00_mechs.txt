@@ -1,0 +1,16 @@
+titan_mk3 = {
+    weight_class = heavy
+    armor = 500
+    speed = 3
+}
+
+phantom = {
+    cloaking = yes
+    armor = 100
+    speed = 10
+}
+
+vanguard = {
+    armor = 200
+    speed = 7
+}

@@ -1,0 +1,9 @@
+INJECT:titan_mk3 = {
+    shield = 200
+}
+
+REPLACE:phantom = {
+    cloaking = yes
+    armor = 150
+    speed = 9
+}
