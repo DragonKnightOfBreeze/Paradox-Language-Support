@@ -10,7 +10,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名相关本地化（如果存在且需要）。
+ * 用于在重命名定义时，自动重命名相关本地化（如果存在且需要）。
  */
 class AutomaticRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
@@ -20,7 +20,7 @@ class AutomaticRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.relatedLocalisations")
+        return PlsBundle.message("rename.definition.relatedLocalisations")
     }
 
     override fun isEnabled(): Boolean {

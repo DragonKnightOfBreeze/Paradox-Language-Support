@@ -12,7 +12,7 @@ import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名相关图片（重命名文件名，如果存在且需要）。
+ * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
  */
 class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
@@ -29,11 +29,11 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.relatedImages.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.relatedImages.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.relatedImages.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.relatedImages.desc")
 
-    override fun entityName() = PlsBundle.message("rename.relatedImages.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.relatedImages.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return

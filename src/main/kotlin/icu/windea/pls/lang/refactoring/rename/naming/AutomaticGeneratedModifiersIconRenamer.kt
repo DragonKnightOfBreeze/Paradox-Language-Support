@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
  */
 class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
@@ -32,11 +32,11 @@ class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: Strin
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.generatedModifiersIcon.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.generatedModifiersIcon.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.generatedModifiersIcon.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.generatedModifiersIcon.desc")
 
-    override fun entityName() = PlsBundle.message("rename.generatedModifiersIcon.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.generatedModifiersIcon.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
@@ -58,4 +58,3 @@ class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: Strin
         }
     }
 }
-

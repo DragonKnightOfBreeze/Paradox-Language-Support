@@ -10,7 +10,7 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
  */
 class AutomaticGeneratedModifiersIconRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
@@ -20,7 +20,7 @@ class AutomaticGeneratedModifiersIconRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.generatedModifiersIcon")
+        return PlsBundle.message("rename.definition.generatedModifiersIcon")
     }
 
     override fun isEnabled(): Boolean {

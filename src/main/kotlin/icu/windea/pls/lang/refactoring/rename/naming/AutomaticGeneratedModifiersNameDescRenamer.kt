@@ -18,7 +18,7 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名由其生成的修正的作为名字和描述的本地化（如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正的作为名字和描述的本地化（如果存在）。
  */
 class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
@@ -35,11 +35,11 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.generatedModifiersNameDesc.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.generatedModifiersNameDesc.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.generatedModifiersNameDesc.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.generatedModifiersNameDesc.desc")
 
-    override fun entityName() = PlsBundle.message("rename.generatedModifiersNameDesc.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.generatedModifiersNameDesc.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return

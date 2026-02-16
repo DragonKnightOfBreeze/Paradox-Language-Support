@@ -12,7 +12,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正（如果存在）。
  */
 class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
@@ -29,11 +29,11 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.generatedModifiers.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.generatedModifiers.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.generatedModifiers.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.generatedModifiers.desc")
 
-    override fun entityName() = PlsBundle.message("rename.generatedModifiers.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.generatedModifiers.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return

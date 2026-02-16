@@ -134,9 +134,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-        // 仅允许重命名定义，如果定义的名字来自某个定义属性，则修改那个属性的值
+        // 仅允许重命名属性定义，如果定义的名字来自某个定义属性，则修改那个属性的值
         val definitionInfo = element.definitionInfo
         if (definitionInfo == null) throw IncorrectOperationException()
+        if (definitionInfo.source != ParadoxDefinitionSource.Property) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
             val nameFieldElement = selectScope { element.nameFieldElement(nameField) }
@@ -165,7 +166,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getDepth(element: ParadoxScriptProperty): Int {
-        // 得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
+        // 得到相对于 rootBlock 的深度，最大为1（element.parent is ParadoxScriptRootBlock）
         var current: PsiElement? = element
         var depth = 0
         while (true) {
