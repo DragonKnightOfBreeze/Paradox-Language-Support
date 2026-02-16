@@ -689,4 +689,72 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    // region Search By Subtypes (inherited subtypes)
+
+    @Test
+    fun testDefinitionSearch_BySubtypes_Basic() {
+        // Arrange: 加载事件测试数据
+        configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 按 country_event 子类型搜索（使用类型表达式格式 "type.subtype"）
+        val results = ParadoxDefinitionSearch.search(null, "event.country_event", selector).findAll()
+
+        // Assert: parent_event 和 child_event 都是 country_event
+        Assert.assertEquals(2, results.size)
+        Assert.assertEquals(setOf("parent_event", "child_event"), results.map { it.name }.toSet())
+    }
+
+    @Test
+    fun testDefinitionSearch_BySubtypes_InheritedFromParent() {
+        // Arrange: 加载事件测试数据
+        configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 按 triggered 子类型搜索（使用类型表达式格式 "type.subtype"）
+        // parent_event 有 is_triggered_only = yes，所以有 triggered 子类型
+        // child_event 继承自 parent_event，应该继承 triggered 子类型
+        val results = ParadoxDefinitionSearch.search(null, "event.triggered", selector).findAll()
+
+        // Assert: parent_event 和 child_event 都应该有 triggered 子类型
+        // child_event 的 triggered 子类型是从 parent_event 继承的
+        Assert.assertTrue("parent_event should have triggered subtype", results.any { it.name == "parent_event" })
+        Assert.assertTrue("child_event should inherit triggered subtype from parent_event", results.any { it.name == "child_event" })
+    }
+
+    @Test
+    fun testDefinitionSearch_BySubtypes_NotInherited() {
+        // Arrange: 加载事件测试数据
+        configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: simple_event 没有 triggered 子类型
+        // child_simple_event 继承自 simple_event，也不应该有 triggered 子类型
+        val results = ParadoxDefinitionSearch.search(null, "event.triggered", selector).findAll()
+
+        // Assert: simple_event 和 child_simple_event 都不应该在结果中
+        Assert.assertFalse("simple_event should not have triggered subtype", results.any { it.name == "simple_event" })
+        Assert.assertFalse("child_simple_event should not have triggered subtype", results.any { it.name == "child_simple_event" })
+    }
+
+    @Test
+    fun testDefinitionSearch_BySubtypes_MultipleSubtypes() {
+        // Arrange: 加载事件测试数据
+        configureScriptFile("events/00_events.txt", "features/index/events/00_events.txt")
+
+        val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
+
+        // Act: 按 country_event + triggered 两个子类型搜索（使用类型表达式格式 "type.subtype1.subtype2"）
+        val results = ParadoxDefinitionSearch.search(null, "event.country_event.triggered", selector).findAll()
+
+        // Assert: 只有 parent_event 和 child_event 同时满足两个条件
+        Assert.assertEquals(2, results.size)
+        Assert.assertEquals(setOf("parent_event", "child_event"), results.map { it.name }.toSet())
+    }
+
+    // endregion
 }

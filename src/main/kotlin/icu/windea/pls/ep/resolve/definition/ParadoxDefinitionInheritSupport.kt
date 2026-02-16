@@ -30,7 +30,7 @@ interface ParadoxDefinitionInheritSupport {
      * 如果一个定义继承自另一个定义，在解析其子类型时，可能需要进行额外的处理。
      * 例如，依赖于其父定义的子类型，或是其父定义的特定成员属性的值。
      *
-     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。
+     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`，需要改为访问 [subtypeConfigs]。
      */
     fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean = true
 

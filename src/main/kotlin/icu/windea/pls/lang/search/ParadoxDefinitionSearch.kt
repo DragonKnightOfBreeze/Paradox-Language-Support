@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 定义的名字。
-     * @property typeExpression 定义的类型表达式。
+     * @property typeExpression 定义的类型表达式。参见 [ParadoxDefinitionTypeExpression]。
      * @property selector 查询选择器。
      */
     class SearchParameters(
