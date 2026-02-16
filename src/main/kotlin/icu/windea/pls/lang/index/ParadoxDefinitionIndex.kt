@@ -25,8 +25,10 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.forDefinitionSource
 import icu.windea.pls.model.forGameType
@@ -34,6 +36,7 @@ import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import java.io.DataInput
 import java.io.DataOutput
@@ -93,6 +96,16 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return
+
+                // 2.1.3 检查是否是 definition_mode 的定义注入
+                if (element is ParadoxScriptProperty) {
+                    val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(typeKey)
+                    if (mode != null && ParadoxDefinitionInjectionManager.isDefinitionMode(mode, gameType)) {
+                        visitDefinitionInjection(element, typeKey)
+                        return
+                    }
+                }
+
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return
                 if (rootKeys.any { it.isParameterized() }) return // 排除顶级键可能带参数的情况
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
@@ -102,7 +115,24 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
                 val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey)?.map { it.name }?.optimized()
 
-                val info = ParadoxDefinitionIndexInfo(source,name, type, subtypes, typeKey, element.startOffset, gameType)
+                val info = ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, element.startOffset, gameType)
+                addToFileData(info, fileData)
+            }
+
+            private fun visitDefinitionInjection(element: ParadoxScriptProperty, expression: String) {
+                // 从表达式中提取目标名称作为定义名称
+                val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression)
+                if (target.isNullOrEmpty()) return
+                if (target.isParameterized()) return // 排除带参数的情况
+
+                // 匹配类型
+                val matchContext = fileLevelMatchContext.copy(typeKey = target, rootKeys = emptyList(), typeKeyPrefix = lazy { null })
+                val typeConfig = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) } ?: return
+                val type = typeConfig.name.orNull() ?: return
+                val name = ParadoxDefinitionService.resolveName(element, target, typeConfig)
+                val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target)?.map { it.name }?.optimized()
+
+                val info = ParadoxDefinitionIndexInfo(ParadoxDefinitionSource.Injection, name, type, subtypes, target, element.startOffset, gameType)
                 addToFileData(info, fileData)
             }
         })

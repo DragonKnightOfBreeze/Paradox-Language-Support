@@ -394,4 +394,40 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    // region Definition Injection (definition_mode)
+
+    @Test
+    fun testGetInfo_DefinitionInjection_ReplaceOrCreate() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // REPLACE_OR_CREATE:new_mech - 应该获取到 definitionInfo
+        val replaceOrCreateProperty = selectScope { injectFile.properties().ofKey("REPLACE_OR_CREATE:new_mech").one() }!!
+        val info = ParadoxDefinitionManager.getInfo(replaceOrCreateProperty)
+
+        Assert.assertNotNull(info)
+        info!!
+        Assert.assertEquals("new_mech", info.name)
+        Assert.assertEquals("mech", info.type)
+        Assert.assertEquals(ParadoxDefinitionSource.Injection, info.source)
+    }
+
+    @Test
+    fun testGetInfo_DefinitionInjection_NonDefinitionModes_ReturnsNull() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // INJECT:titan_mk3 - 不是 definition_mode，不应该获取到 definitionInfo
+        val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() }!!
+        val injectInfo = ParadoxDefinitionManager.getInfo(injectProperty)
+        Assert.assertNull(injectInfo)
+
+        // REPLACE:phantom - 不是 definition_mode，不应该获取到 definitionInfo
+        val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() }!!
+        val replaceInfo = ParadoxDefinitionManager.getInfo(replaceProperty)
+        Assert.assertNull(replaceInfo)
+    }
+
+    // endregion
 }

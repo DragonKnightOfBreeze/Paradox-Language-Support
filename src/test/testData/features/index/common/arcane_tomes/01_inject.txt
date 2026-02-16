@@ -10,6 +10,12 @@ TRY_INJECT:shared_name = {
     echo = yes
 }
 
+# REPLACE_OR_CREATE 模式应被索引为定义
+REPLACE_OR_CREATE:tome_of_new = {
+    rarity = 3
+    pages = 100
+}
+
 INJECT:tome_scalar = 1
 
 UNKNOWN_MODE:should_be_ignored = {

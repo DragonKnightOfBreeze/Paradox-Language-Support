@@ -51,6 +51,8 @@ interface CwtDirectiveConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig
     val relaxModes: Set<@CaseInsensitive String>
     @FromProperty("replace_modes: string[]")
     val replaceModes: Set<@CaseInsensitive String>
+    @FromProperty("definition_modes: string[]")
+    val definitionModes: Set<@CaseInsensitive String>
 
     interface Resolver {
         /** 由属性规则解析为声明规则。 */
@@ -80,8 +82,11 @@ private class CwtDirectiveConfigResolverImpl : CwtDirectiveConfig.Resolver, CwtC
         val replaceModes = propGroup.getOne("replace_modes")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()
+        val definitionModes = propGroup.getOne("definition_modes")?.let { prop ->
+            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+        }?.optimized().orEmpty()
         logger.debug { "Resolved directive config (name: $name).".withLocationPrefix(config) }
-        return CwtDirectiveConfigImpl(config, name, modeConfigs, relaxModes, replaceModes)
+        return CwtDirectiveConfigImpl(config, name, modeConfigs, relaxModes, replaceModes, definitionModes)
     }
 }
 
@@ -91,6 +96,7 @@ private class CwtDirectiveConfigImpl(
     override val modeConfigs: Map<String, CwtValueConfig>,
     override val relaxModes: Set<String>,
     override val replaceModes: Set<String>,
+    override val definitionModes: Set<String>,
 ) : UserDataHolderBase(), CwtDirectiveConfig {
     override fun toString() = "CwtDirectiveConfigImpl(name='$name')"
 }

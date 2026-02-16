@@ -186,6 +186,29 @@ object ParadoxDefinitionInjectionManager {
         return mode in config.replaceModes
     }
 
+    /**
+     * 检查定义注入是否应被识别为定义声明（可以被索引和搜索）。
+     * 这适用于 REPLACE_OR_CREATE 等模式。
+     */
+    fun isDefinitionMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+        val mode = definitionInjectionInfo.mode
+        val gameType = definitionInjectionInfo.gameType
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val config = configGroup.directivesModel.definitionInjection ?: return false
+        return mode in config.definitionModes
+    }
+
+    /**
+     * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
+     */
+    fun isDefinitionMode(mode: String, gameType: ParadoxGameType?): Boolean {
+        if (gameType == null) return false
+        if (mode.isEmpty()) return false
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val config = configGroup.directivesModel.definitionInjection ?: return false
+        return mode in config.definitionModes
+    }
+
     fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
         if (definitionInjectionInfo.target.isNullOrEmpty()) return false
         if (definitionInjectionInfo.type.isNullOrEmpty()) return false

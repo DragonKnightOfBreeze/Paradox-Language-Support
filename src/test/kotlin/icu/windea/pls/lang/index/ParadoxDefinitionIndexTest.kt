@@ -556,4 +556,58 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    // region Definition Injection (definition_mode)
+
+    @Test
+    fun testDefinitionIndex_DefinitionInjection_ReplaceOrCreate() {
+        // Arrange: REPLACE_OR_CREATE 模式的定义注入应被索引为定义
+        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/01_inject.txt")
+        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+
+        // Act
+        val project = project
+        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+
+        // Assert: 应有 1 个来自 REPLACE_OR_CREATE 的定义
+        val allInfos = fileData[PlsIndexUtil.createAllKey()].orEmpty()
+        val injectionInfos = allInfos.filter { it.source == ParadoxDefinitionSource.Injection }
+        Assert.assertEquals(1, injectionInfos.size)
+
+        val injectionInfo = injectionInfos.single()
+        Assert.assertEquals("tome_of_new", injectionInfo.name)
+        Assert.assertEquals("arcane_tome", injectionInfo.type)
+        Assert.assertEquals("tome_of_new", injectionInfo.typeKey)
+        Assert.assertEquals(ParadoxDefinitionSource.Injection, injectionInfo.source)
+        Assert.assertEquals(ParadoxGameType.Stellaris, injectionInfo.gameType)
+
+        // Assert: name key 和 type key 存在
+        Assert.assertNotNull(fileData[PlsIndexUtil.createNameKey("tome_of_new")])
+        Assert.assertNotNull(fileData[PlsIndexUtil.createNameTypeKey("tome_of_new", "arcane_tome")])
+    }
+
+    @Test
+    fun testDefinitionIndex_DefinitionInjection_NonDefinitionModes_NotIndexed() {
+        // Arrange: INJECT/REPLACE/TRY_INJECT 等非 definition_mode 不应被索引为定义
+        markFileInfo(ParadoxGameType.Stellaris, "common/arcane_tomes/01_inject.txt")
+        val psiFile = myFixture.configureByFile("features/index/common/arcane_tomes/01_inject.txt")
+
+        // Act
+        val project = project
+        val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.Definition, psiFile.virtualFile, project)
+
+        // Assert: INJECT:tome_of_flames 不应被索引
+        val tomeOfFlamesInfos = fileData[PlsIndexUtil.createNameKey("tome_of_flames")].orEmpty()
+        Assert.assertTrue("INJECT mode should not be indexed as definition", tomeOfFlamesInfos.isEmpty())
+
+        // Assert: REPLACE:tome_of_ice 不应被索引
+        val tomeOfIceInfos = fileData[PlsIndexUtil.createNameKey("tome_of_ice")].orEmpty()
+        Assert.assertTrue("REPLACE mode should not be indexed as definition", tomeOfIceInfos.isEmpty())
+
+        // Assert: TRY_INJECT:shared_name 不应被索引
+        val sharedNameInfos = fileData[PlsIndexUtil.createNameKey("shared_name")].orEmpty()
+        Assert.assertTrue("TRY_INJECT mode should not be indexed as definition", sharedNameInfos.isEmpty())
+    }
+
+    // endregion
 }

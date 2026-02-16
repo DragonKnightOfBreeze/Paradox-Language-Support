@@ -7,4 +7,5 @@ directive[definition_injection] = {
     }
     relax_modes = { TRY_INJECT REPLACE_OR_CREATE }
     replace_modes = { REPLACE REPLACE_OR_CREATE }
+    definition_modes = { REPLACE_OR_CREATE }
 }
