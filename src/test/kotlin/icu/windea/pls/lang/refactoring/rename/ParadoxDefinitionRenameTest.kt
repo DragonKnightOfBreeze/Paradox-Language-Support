@@ -6,6 +6,7 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.addAdditionalAllowedRoots
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -17,8 +18,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.File
-import java.nio.file.Path
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -27,23 +26,9 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
 
     override fun getTestDataPath() = "src/test/testData"
 
-    private fun addAllowedRoots() {
-        val additionalAllowedRoots = listOf(Path.of(testDataPath).toAbsolutePath().normalize().toString())
-        val oldValue = System.getProperty("vfs.additional-allowed-roots").orEmpty()
-        val newValue = (listOf(oldValue).filter { it.isNotBlank() } + additionalAllowedRoots)
-            .distinct()
-            .joinToString(File.pathSeparator)
-        System.setProperty("vfs.additional-allowed-roots", newValue)
-    }
-
-    private fun commitAndSaveDocuments() {
-        PsiDocumentManager.getInstance(project).commitAllDocuments()
-        FileDocumentManager.getInstance().saveAllDocuments()
-    }
-
     @Before
     fun setup() {
-        addAllowedRoots()
+        addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
         markRootDirectory("features/refactoring")
         markConfigDirectory("features/refactoring/.config")
@@ -108,6 +93,35 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
         myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
         myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/definitions_l_english.after.test.yml", true)
         myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/definitions_l_simp_chinese.after.test.yml", true)
+    }
+
+    @Test
+    fun testRename_Definition_References() {
+        // Arrange
+        val mainPath = "common/vtubers/vtuber_1.test.txt"
+        markFileInfo(gameType, mainPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
+
+        val otherPath = "common/vtubers/vtuber_2.test.txt"
+        markFileInfo(gameType, otherPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_2.test.txt", otherPath)
+
+        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
+        markFileInfo(gameType, fanPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
+
+        // Ensure indexed
+        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+
+        // Act
+        myFixture.configureFromTempProjectFile(mainPath)
+        val newName = "evil_neuro"
+        myFixture.renameElementAtCaretUsingHandler(newName)
+
+        // Assert
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
+        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/vtuber_2.after.test.txt", true)
+        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_definition.test.txt", true)
     }
 
     // TODO 2.1.3 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正

@@ -9,6 +9,7 @@
 - [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效 / OP: Optimize the formatting of CWT files, always keep spaces around `!=` and `<>`, to avoid syntax inequality before and after formatting
 - [x] 优化：为定义注入检测子类型 #274 / OP: Detect subtypes for definition injection #274
 - [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations #273
+- [x] 优化：与重命名有关的相关优化与BUG修复 / OP: Optimizations and bug fixes related to renaming
 - [x] 优化：补充更多缺失的 AtomaticRenamer（关联重命名） / OP: Add more missing `AutomaticRenamer` (association-rename)
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes

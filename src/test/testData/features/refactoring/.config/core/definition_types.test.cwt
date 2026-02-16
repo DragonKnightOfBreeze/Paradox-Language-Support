@@ -7,4 +7,9 @@ types = {
             desc = "$_desc"
         }
     }
+
+    type[vtuber_fan] = {
+        path = "common/vtuber_fans"
+        path_extension = .txt
+    }
 }

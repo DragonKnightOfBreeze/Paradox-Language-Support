@@ -34,6 +34,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
@@ -47,7 +48,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -113,7 +113,7 @@ object ParadoxPsiManager {
             element.propertyList.mapNotNull f@{ p ->
                 // 对于传入参数的名字，要求不为空，且不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
                 val k = p.propertyKey.name.orNull() ?: return@f null
-                if (!PlsPatterns.argumentName.matches(k)) return@f null
+                if (!PlsNameValidators.checkParameterName(k)) return@f null
                 val v = p.propertyValue?.text ?: return@f null
                 tupleOf(k, v)
             }
@@ -383,11 +383,23 @@ object ParadoxPsiManager {
 
     // region Rename Methods
 
-    fun renameDefinition(
-        element: ParadoxScriptProperty,
-        name: String,
-        definitionInfo: ParadoxDefinitionInfo,
-    ): ParadoxScriptProperty {
+    @Suppress("UNUSED_PARAMETER")
+    fun isInplaceRenameAvailableForDefinition(element: ParadoxScriptProperty, context: PsiElement?, definitionInfo: ParadoxDefinitionInfo): Boolean {
+        return when (definitionInfo.source) {
+            ParadoxDefinitionSource.Property -> {
+                // 不能是并非定义名的类型键（即使 context 来自引用而非声明 - 否则会将类型键作为默认名称）
+                definitionInfo.typeConfig.nameField == null
+            }
+            ParadoxDefinitionSource.Injection -> {
+                // 总是可用
+                true
+            }
+            else -> false
+        }
+    }
+
+    fun renameDefinition(element: ParadoxScriptProperty, name: String, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptProperty {
+        if (!PlsNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
         when (definitionInfo.source) {
             ParadoxDefinitionSource.Property -> {
                 // 如果定义的名字来自某个定义属性，则修改那个属性的值

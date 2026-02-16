@@ -6,11 +6,35 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.nio.file.Path
+
+/** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
+context(_: UsefulTestCase)
+fun addAdditionalAllowedRoots(vararg roots: String?) {
+    val additionalAllowedRoots = roots.mapNotNull { it?.toPath()?.toAbsolutePath()?.normalize()?.toString() }
+    doAddAddtionalAllowedRoots(additionalAllowedRoots)
+}
+
+/** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
+context(_: UsefulTestCase)
+fun addAdditionalAllowedRoots(vararg roots: Path?) {
+    val additionalAllowedRoots = roots.mapNotNull { it?.toAbsolutePath()?.normalize()?.toString() }
+    doAddAddtionalAllowedRoots(additionalAllowedRoots)
+}
+
+private fun doAddAddtionalAllowedRoots(additionalAllowedRoots: List<String>) {
+    val oldValue = System.getProperty("vfs.additional-allowed-roots").orEmpty()
+    val newList = listOf(oldValue).filter { it.isNotBlank() } + additionalAllowedRoots
+    val newValue = newList.distinct().joinToString(File.pathSeparator)
+    System.setProperty("vfs.additional-allowed-roots", newValue)
+}
 
 context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
