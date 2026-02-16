@@ -68,9 +68,9 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
         val nameElement = element.scriptedVariableName
-        if (nameElement.idElement == null) throw IncorrectOperationException() // 不支持重命名
-        val newNameElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name)
-        nameElement.replace(newNameElement)
+        val idElement = nameElement.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
         return element
     }
 
@@ -251,9 +251,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
-        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
-        val newElement = ParadoxScriptElementFactory.createVariableReference(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     // endregion
@@ -461,8 +462,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
-        val newElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement
+        val newIdElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name).idElement
+        idElement.replace(newIdElement)
+        return element
     }
 
     @JvmStatic
@@ -525,9 +528,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
-        val newElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     // endregion
@@ -556,9 +560,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
-        val newElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     @JvmStatic
@@ -604,9 +609,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
-        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
-        val newElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
+        val newIdElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name).idElement ?: throw IncorrectOperationException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     @JvmStatic
