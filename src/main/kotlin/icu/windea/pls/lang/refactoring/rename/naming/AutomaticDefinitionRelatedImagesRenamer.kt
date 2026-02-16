@@ -8,13 +8,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时，自动重命名由其生成的修正（如果存在）。
+ * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
  */
-class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class AutomaticDefinitionRelatedImagesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
@@ -29,22 +29,21 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.definition.generatedModifiers.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.relatedImages.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.definition.generatedModifiers.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.relatedImages.desc")
 
-    override fun entityName() = PlsBundle.message("rename.definition.generatedModifiers.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.relatedImages.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
-        val infos = definitionInfo.modifiers.orNull() ?: return
+        val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val modifierName = info.name
-            val newModifierName = CwtConfigExpressionManager.extract(info.config.template, newName)
-            val modifierElement = ParadoxModifierElement(element, modifierName, definitionInfo.gameType, definitionInfo.project)
-            modifierElement.canRename = true
-            allRenames[modifierElement] = newModifierName
+            val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
+            val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
+            val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
+            resolveResult.elements.forEach { allRenames[it] = finalRename }
         }
     }
 }

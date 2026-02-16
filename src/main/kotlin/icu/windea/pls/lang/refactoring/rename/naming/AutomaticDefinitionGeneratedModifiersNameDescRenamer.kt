@@ -18,9 +18,9 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时，自动重命名由其生成的修正的作为名字和描述的本地化（如果存在）。
+ * 用于在重命名定义时，自动重命名由其生成的修正的作为（显示）名称和描述的本地化（如果存在）。
  */
-class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class AutomaticDefinitionGeneratedModifiersNameDescRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()

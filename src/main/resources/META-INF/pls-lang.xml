@@ -264,11 +264,11 @@
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationParameterRenameInputValidator"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedImagesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersNameDescRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersIconRenamerFactory"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>

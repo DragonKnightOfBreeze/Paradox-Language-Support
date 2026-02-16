@@ -12,9 +12,9 @@ import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
+ * 用于在重命名定义时，自动重命名相关本地化（如果存在且需要）。
  */
-class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class AutomaticDefinitionRelatedLocalisationsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
@@ -29,21 +29,20 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
 
     override fun allowChangeSuggestedName() = false
 
-    override fun getDialogTitle() = PlsBundle.message("rename.definition.relatedImages.title")
+    override fun getDialogTitle() = PlsBundle.message("rename.definition.relatedLocalisations.title")
 
-    override fun getDialogDescription() = PlsBundle.message("rename.definition.relatedImages.desc")
+    override fun getDialogDescription() = PlsBundle.message("rename.definition.relatedLocalisations.desc")
 
-    override fun entityName() = PlsBundle.message("rename.definition.relatedImages.entityName")
+    override fun entityName() = PlsBundle.message("rename.definition.relatedLocalisations.entityName")
 
     private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
-        val infos = definitionInfo.images.orNull() ?: return
+        val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
-            val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
-            resolveResult.elements.forEach { allRenames[it] = finalRename }
+            resolveResult.elements.forEach { allRenames[it] = rename }
         }
     }
 }

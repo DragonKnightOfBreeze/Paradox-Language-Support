@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 用于在重命名定义时，自动重命名由其生成的修正的作为图标的图片（重命名文件名，如果存在）。
  */
-class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
+class AutomaticDefinitionGeneratedModifiersIconRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         element as ParadoxDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()

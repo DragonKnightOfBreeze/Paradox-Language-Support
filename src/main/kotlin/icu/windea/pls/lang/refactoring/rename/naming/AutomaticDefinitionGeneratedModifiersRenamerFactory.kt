@@ -10,28 +10,28 @@ import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于在重命名定义时，自动重命名相关图片（重命名文件名，如果存在且需要）。
+ * 用于在重命名定义时，自动重命名由其生成的修正（如果存在）。
  */
-class AutomaticRelatedImagesRenamerFactory : AutomaticRenamerFactory {
+class AutomaticDefinitionGeneratedModifiersRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
         if (element !is ParadoxDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
-        return definitionInfo.images.isNotEmpty()
+        return definitionInfo.modifiers.isNotEmpty()
     }
 
     override fun getOptionName(): String {
-        return PlsBundle.message("rename.definition.relatedImages")
+        return PlsBundle.message("rename.definition.generatedModifiers")
     }
 
     override fun isEnabled(): Boolean {
-        return ParadoxRefactoringSettings.getInstance().renameRelatedImages
+        return ParadoxRefactoringSettings.getInstance().renameGeneratedModifier
     }
 
     override fun setEnabled(enabled: Boolean) {
-        ParadoxRefactoringSettings.getInstance().renameRelatedImages = enabled
+        ParadoxRefactoringSettings.getInstance().renameGeneratedModifier = enabled
     }
 
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
-        return AutomaticRelatedImagesRenamer(element, newName)
+        return AutomaticDefinitionGeneratedModifiersRenamer(element, newName)
     }
 }
