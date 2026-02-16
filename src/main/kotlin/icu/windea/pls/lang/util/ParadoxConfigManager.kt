@@ -84,7 +84,7 @@ object ParadoxConfigManager {
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
         val cache = getChildOccurrencesCacheFromCache(element)
-        val cacheKey = CwtConfigManipulator.getIdentifierKey(childConfigs, maxDepth = 1).optimized() // optimized to optimize memory
+        val cacheKey = CwtConfigManipulator.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }
 
