@@ -699,12 +699,12 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
 
         val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
 
-        // Act: 按 country_event 子类型搜索（使用类型表达式格式 "type.subtype"）
-        val results = ParadoxDefinitionSearch.search(null, "event.country_event", selector).findAll()
+        // Act: 按 country 子类型搜索（使用类型表达式格式 "type.subtype"）
+        val results = ParadoxDefinitionSearch.search(null, "event.country", selector).findAll()
 
         // Assert: parent_event 和 child_event 都是 country_event
         Assert.assertEquals(2, results.size)
-        Assert.assertEquals(setOf("parent_event", "child_event"), results.map { it.name }.toSet())
+        Assert.assertEquals(setOf("test.parent_event", "test.child_event"), results.map { it.name }.toSet())
     }
 
     @Test
@@ -721,8 +721,8 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
 
         // Assert: parent_event 和 child_event 都应该有 triggered 子类型
         // child_event 的 triggered 子类型是从 parent_event 继承的
-        Assert.assertTrue("parent_event should have triggered subtype", results.any { it.name == "parent_event" })
-        Assert.assertTrue("child_event should inherit triggered subtype from parent_event", results.any { it.name == "child_event" })
+        Assert.assertTrue("parent_event should have triggered subtype", results.any { it.name == "test.parent_event" })
+        Assert.assertTrue("child_event should inherit triggered subtype from parent_event", results.any { it.name == "test.child_event" })
     }
 
     @Test
@@ -737,8 +737,8 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
         val results = ParadoxDefinitionSearch.search(null, "event.triggered", selector).findAll()
 
         // Assert: simple_event 和 child_simple_event 都不应该在结果中
-        Assert.assertFalse("simple_event should not have triggered subtype", results.any { it.name == "simple_event" })
-        Assert.assertFalse("child_simple_event should not have triggered subtype", results.any { it.name == "child_simple_event" })
+        Assert.assertFalse("simple_event should not have triggered subtype", results.any { it.name == "test.simple_event" })
+        Assert.assertFalse("child_simple_event should not have triggered subtype", results.any { it.name == "test.child_simple_event" })
     }
 
     @Test
@@ -748,12 +748,12 @@ class ParadoxDefinitionSearcherTest : BasePlatformTestCase() {
 
         val selector = selector(project, myFixture.file).definition().withSearchScope(GlobalSearchScope.projectScope(project))
 
-        // Act: 按 country_event + triggered 两个子类型搜索（使用类型表达式格式 "type.subtype1.subtype2"）
-        val results = ParadoxDefinitionSearch.search(null, "event.country_event.triggered", selector).findAll()
+        // Act: 按 country + triggered 两个子类型搜索（使用类型表达式格式 "type.subtype1.subtype2"）
+        val results = ParadoxDefinitionSearch.search(null, "event.country.triggered", selector).findAll()
 
         // Assert: 只有 parent_event 和 child_event 同时满足两个条件
         Assert.assertEquals(2, results.size)
-        Assert.assertEquals(setOf("parent_event", "child_event"), results.map { it.name }.toSet())
+        Assert.assertEquals(setOf("test.parent_event", "test.child_event"), results.map { it.name }.toSet())
     }
 
     // endregion

@@ -65,8 +65,8 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
     ): Boolean {
         if (!matchesType(queryParameters, info)) return true
         if (!matchesName(queryParameters, info, constraint)) return true
-        if (!matchesSubtypes(queryParameters, info)) return true
         info.bind(file, queryParameters.project)
+        if (!matchesSubtypes(queryParameters, info)) return true
         return consumer.process(info)
     }
 

@@ -77,26 +77,6 @@ types = {
     }
 
     # 事件：支持继承，用于测试子类型继承逻辑
-    type[event] = {
-        path = "events"
-        path_extension = .txt
-
-        ## 事件类型
-        subtype[country_event] = {
-            type = country_event
-        }
-        subtype[planet_event] = {
-            type = planet_event
-        }
-
-        ## 事件特性
-        subtype[triggered] = {
-            is_triggered_only = yes
-        }
-
-        ## 继承
-        subtype[inherited] = {
-            base = scalar
-        }
-    }
+    # （直接复用游戏的类型规则）
+    # type[event] = {...}
 }
