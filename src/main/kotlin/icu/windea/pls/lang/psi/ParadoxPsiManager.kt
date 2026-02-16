@@ -35,7 +35,9 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
@@ -43,6 +45,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -358,7 +362,7 @@ object ParadoxPsiManager {
     }
 
     /**
-     * 在指定文件的最后一个封装变量声明后或者最后一个PSI元素后另起一行，声明指定名字和值的封装变量。
+     * 在指定文件的最后一个封装变量声明后或者最后一个 PSI 元素后另起一行，声明指定名字和值的封装变量。
      */
     fun introduceGlobalScriptedVariable(name: String, value: String, targetFile: ParadoxScriptFile, project: Project): ParadoxScriptScriptedVariable {
         val (parent, anchor) = targetFile.findParentAndAnchorToIntroduceGlobalScriptedVariable()
@@ -379,7 +383,51 @@ object ParadoxPsiManager {
 
     // region Rename Methods
 
-    fun renameExpressionElement(element: ParadoxExpressionElement, rangeInElement: TextRange, newElementName: String, resolved: PsiElement? = null, configExpression: CwtDataExpression? = null): PsiElement {
+    fun renameDefinition(
+        element: ParadoxScriptProperty,
+        name: String,
+        definitionInfo: ParadoxDefinitionInfo,
+    ): ParadoxScriptProperty {
+        when (definitionInfo.source) {
+            ParadoxDefinitionSource.Property -> {
+                // 如果定义的名字来自某个定义属性，则修改那个属性的值
+                run {
+                    val nameField = definitionInfo.typeConfig.nameField ?: return@run
+                    val nameFieldElement = selectScope { element.nameFieldElement(nameField) }
+                    if (nameFieldElement != null) {
+                        nameFieldElement.setValue(name)
+                        return element
+                    } else {
+                        throw IncorrectOperationException()
+                    }
+                }
+
+                // 否则直接修改类型键
+                val typeKeyElement = element.propertyKey
+                val newTypeKeyElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
+                typeKeyElement.replace(newTypeKeyElement)
+                return element
+            }
+            ParadoxDefinitionSource.Injection -> {
+                // 修改定义注入表达式，保留前缀
+                val expressionElement = element.propertyKey
+                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expressionElement.name)
+                val newExpression = "$mode.$name"
+                val newExpressionElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newExpression)
+                expressionElement.replace(newExpressionElement)
+                return element
+            }
+            else -> throw IncorrectOperationException()
+        }
+    }
+
+    fun handleExpressionElementRename(
+        element: ParadoxExpressionElement,
+        rangeInElement: TextRange,
+        newElementName: String,
+        resolved: PsiElement? = null,
+        configExpression: CwtDataExpression? = null,
+    ): PsiElement {
         return when {
             resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             resolved is PsiFileSystemItem -> {

@@ -61,7 +61,7 @@ class StellarisNameFormatLocalisationNode(
         private val project get() = node.configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.renameExpressionElement(element, rangeInElement, newElementName, resolve())
+            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
         }
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {

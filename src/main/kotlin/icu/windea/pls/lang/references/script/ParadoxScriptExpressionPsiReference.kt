@@ -39,7 +39,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.renameExpressionElement(element, rangeInElement, newElementName, resolve(), config.configExpression)
+        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
     }
 
     override fun isReferenceTo(element: PsiElement): Boolean {

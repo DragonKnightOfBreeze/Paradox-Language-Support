@@ -22,7 +22,7 @@ class ParadoxLocalisationExpressionPsiReference(
     private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return ParadoxPsiManager.renameExpressionElement(element, rangeInElement, newElementName, resolve())
+        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
     }
 
     override fun getReferences(): Array<out PsiReference>? {

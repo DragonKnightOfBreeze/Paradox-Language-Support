@@ -16,6 +16,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.references.*
@@ -134,24 +135,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-        // 仅允许重命名属性定义，如果定义的名字来自某个定义属性，则修改那个属性的值
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo == null) throw IncorrectOperationException()
-        if (definitionInfo.source != ParadoxDefinitionSource.Property) throw IncorrectOperationException()
-        val nameField = definitionInfo.typeConfig.nameField
-        if (nameField != null) {
-            val nameFieldElement = selectScope { element.nameFieldElement(nameField) }
-            if (nameFieldElement != null) {
-                nameFieldElement.setValue(name)
-                return element
-            } else {
-                throw IncorrectOperationException()
-            }
-        }
-        val nameElement = element.propertyKey
-        val newNameElement = ParadoxScriptElementFactory.createPropertyKey(element.project, name)
-        nameElement.replace(newNameElement)
-        return element
+        element.definitionInfo?.let { return ParadoxPsiManager.renameDefinition(element, name, it) }
+        throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -190,7 +175,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement): Boolean {
-        // for definition: definitionName & definitionType & gameType
+        // for definition: definitionInfo
         // for others: never
         if (another !is ParadoxScriptProperty) return false
         if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false

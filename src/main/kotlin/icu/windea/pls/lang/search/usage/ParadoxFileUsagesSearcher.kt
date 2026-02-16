@@ -31,7 +31,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val extraWords = getExtraWords(target, filePath, configGroup)
         if (extraWords.isEmpty()) return
 
-        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         for (extraWord in extraWords) {

@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 脚本属性的存根。
  *
- * @property name 脚本属性的名字。注意这不一定是定义的名字。
+ * @property name 脚本属性的名字（不一定是定义的名字）。
  */
 @Suppress("UnstableApiUsage")
 sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {

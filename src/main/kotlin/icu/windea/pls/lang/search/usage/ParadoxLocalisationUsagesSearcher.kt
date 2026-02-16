@@ -27,7 +27,7 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
         if (name.isEmpty()) return
         val ignoreCase = ParadoxLocalisationIndexConstraint.entries.filter { it.ignoreCase }.any { it.test(name) }
 
-        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)

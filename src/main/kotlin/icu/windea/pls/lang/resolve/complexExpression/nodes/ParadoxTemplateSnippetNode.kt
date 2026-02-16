@@ -68,7 +68,7 @@ class ParadoxTemplateSnippetNode(
         private val project get() = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.renameExpressionElement(element, rangeInElement, newElementName, resolve(), config.configExpression)
+            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
         }
 
         // 缓存解析结果以优化性能

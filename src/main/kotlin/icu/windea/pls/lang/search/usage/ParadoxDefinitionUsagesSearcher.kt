@@ -17,6 +17,7 @@ import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -26,8 +27,8 @@ import kotlin.experimental.or
 /**
  * 定义的用法的查询。
  *
- * 定义对应的 PSI 元素（[ParadoxDefinitionElement]） 的名字是定义的类型键（[typeKey]），
- * 不一定是定义的名字（[name]）。
+ * 定义对应的 PSI 元素（[ParadoxDefinitionElement]） 的名字不一定是定义的名字（[ParadoxDefinitionInfo.name]）。
+ * 也可能只是属性定义的类型键（[ParadoxDefinitionInfo.typeKey]），或者注入定义的表达式（[ParadoxDefinitionInjectionInfo.expression]）。
  * 因此这里需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
@@ -37,13 +38,12 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val target = queryParameters.elementToSearch
         if (target !is ParadoxDefinitionElement) return
 
-        val definitionInfo = target.definitionInfo
-        if (definitionInfo == null) return
+        val definitionInfo = target.definitionInfo ?: return
         if (definitionInfo.name.isEmpty()) return // skip anonymous definitions
         val words = getWords(target, definitionInfo)
         val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(definitionInfo.type) }
 
-        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)
