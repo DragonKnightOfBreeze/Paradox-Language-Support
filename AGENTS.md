@@ -160,7 +160,7 @@ Example (run only AI tests when you have local credentials configured):
   - Avoid introducing tests that rely on external network calls.
   - If a feature depends on environment variables/keys, tests should be guarded to avoid false failures.
 
-## Coding conventions (repo-specific)
+## Coding conventions
 
 This section summarizes `documents/notes/笔记：代码规范.md`.
 
@@ -292,16 +292,21 @@ When implementing new features, be explicit about which layer you are operating 
 
 ### Tooling preferences (important)
 
-Prefers **tool-assisted** workflows over ad-hoc shell usage.
+Prefer **tool-assisted** workflows over ad-hoc shell usage.
 
 #### General file/text operations
 
-- Prefer built-in repo tools for common operations:
-  - Find files by name/glob
-  - Search text/regex across the repo
-  - Read files before editing
-  - Apply minimal, well-scoped patches
+- Prefer built-in tools for common operations (find files by name/glob, search text/regex across the repo, read files before editing, apply well-scoped patches, etc.)
+- Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 - Avoid blind edits and avoid scanning via shell commands when structured search is available.
+
+#### JetBrains official MCP server (IDE actions)
+
+When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
+
+- Run configurations: list via `get_run_configurations`, run via `execute_run_configuration`
+- IDE inspections / file problems: `get_file_problems`
+- Reformatting: `reformat_file`
 
 #### IDE Index MCP server (semantic code intelligence)
 
@@ -319,14 +324,6 @@ Notes:
 - Prefer IDE tools because they understand PSI/AST and indices, which is far more accurate than plain text search.
 - If the IDE is still indexing, check readiness first via `ide_index_status` (wait/retry when in dumb mode).
 - If multiple projects are open in one IDE window, always pass the `project_path` parameter to avoid ambiguity.
-
-#### JetBrains official MCP server (IDE actions)
-
-When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
-
-- Run configurations: list via `get_run_configurations`, run via `execute_run_configuration`
-- IDE inspections / file problems: `get_file_problems`
-- Reformatting: `reformat_file`
 
 #### Shell usage
 
