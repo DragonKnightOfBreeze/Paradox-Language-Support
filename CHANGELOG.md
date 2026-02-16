@@ -4,14 +4,13 @@
 
 ## 2.1.3-dev
 
-- [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题
-- [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 #272
-- [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效
-- [ ] 优化：为定义注入检测子类型（尤其是模式为 `REPLACE` 或 `REPLACE_OR_CREATE` 的） #274
-- [ ] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 #273
-- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） #194
-- [ ] 其他优化与BUG修复
-- [ ] 发布版本
+- [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the correction was not excluded when parsing generated corrections
+- [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified #272
+- [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效 / OP: Optimize the formatting of CWT files, always keep spaces around `!=` and `<>`, to avoid syntax inequality before and after formatting
+- [x] 优化：为定义注入检测子类型 #274 / OP: Detect subtypes for definition injection #274
+- [ ] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Optimize the detection of subtypes for definition injection (especially for modes `REPLACE`, `TRY_REPLACE`, or `REPLACE_OR_CREATE`) #273
+- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.2
 

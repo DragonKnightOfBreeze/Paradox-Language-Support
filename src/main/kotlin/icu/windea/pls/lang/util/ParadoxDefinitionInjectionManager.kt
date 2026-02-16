@@ -178,6 +178,18 @@ object ParadoxDefinitionInjectionManager {
         return mode in config.relaxModes
     }
 
+    /**
+     * 检查定义注入是否使用自身声明来检测子类型（而非目标定义的声明）。
+     * 这适用于 REPLACE、TRY_REPLACE、REPLACE_OR_CREATE 等模式。
+     */
+    fun isSelfSubtypeMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+        val mode = definitionInjectionInfo.mode
+        val gameType = definitionInjectionInfo.gameType
+        val configGroup = PlsFacade.getConfigGroup(gameType)
+        val config = configGroup.directivesModel.definitionInjection ?: return false
+        return mode in config.selfSubtypeModes
+    }
+
     fun isTargetExist(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, context: Any? = null): Boolean {
         if (definitionInjectionInfo.target.isNullOrEmpty()) return false
         if (definitionInjectionInfo.type.isNullOrEmpty()) return false

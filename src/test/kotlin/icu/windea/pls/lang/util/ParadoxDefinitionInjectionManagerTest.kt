@@ -107,18 +107,49 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testSubtypes_ReplaceMode_FromTargetDefinition() {
+    fun testSubtypes_ReplaceMode_FromSelfDeclaration() {
         configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
         val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
 
-        // REPLACE:phantom - 目标定义 phantom 有子类型 "stealth"
+        // REPLACE:phantom - 使用 self_subtype_mode，从自身声明检测子类型
+        // 自身声明中有 cloaking = yes，匹配 stealth 子类型
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val info = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
 
+        Assert.assertTrue(ParadoxDefinitionInjectionManager.isSelfSubtypeMode(info))
         Assert.assertEquals("mech", info.type)
         Assert.assertEquals(listOf("stealth"), info.subtypes)
         Assert.assertEquals(listOf("mech", "stealth"), info.types)
         Assert.assertEquals("mech, stealth", info.typeText)
+    }
+
+    @Test
+    fun testSubtypes_ReplaceOrCreateMode_FromSelfDeclaration() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // REPLACE_OR_CREATE:new_mech - 使用 self_subtype_mode，从自身声明检测子类型
+        // 自身声明中没有 cloaking = yes 也没有 weight_class = heavy，所以没有子类型
+        val replaceOrCreateProperty = selectScope { injectFile.properties().ofKey("REPLACE_OR_CREATE:new_mech").one() } as ParadoxScriptProperty
+        val info = ParadoxDefinitionInjectionManager.getInfo(replaceOrCreateProperty)!!
+
+        Assert.assertTrue(ParadoxDefinitionInjectionManager.isSelfSubtypeMode(info))
+        Assert.assertEquals("mech", info.type)
+        Assert.assertEquals(emptyList<String>(), info.subtypes)  // 没有匹配的子类型
+        Assert.assertEquals(listOf("mech"), info.types)
+        Assert.assertEquals("mech", info.typeText)
+    }
+
+    @Test
+    fun testSubtypes_InjectMode_NotSelfSubtypeMode() {
+        configureScriptFile("common/mechs/00_mechs.txt", "features/resolve/common/mechs/00_mechs.txt")
+        val injectFile = configureScriptFile("common/mechs/01_inject.txt", "features/resolve/common/mechs/01_inject.txt")
+
+        // INJECT:titan_mk3 - 不是 self_subtype_mode，从目标定义获取子类型
+        val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
+        val info = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
+
+        Assert.assertFalse(ParadoxDefinitionInjectionManager.isSelfSubtypeMode(info))
     }
 
     // endregion
@@ -139,6 +170,11 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         val replaceProperty = selectScope { injectFile.properties().ofKey("REPLACE:phantom").one() } as ParadoxScriptProperty
         val replaceInfo = ParadoxDefinitionInjectionManager.getInfo(replaceProperty)!!
         Assert.assertFalse(replaceInfo.isRelaxMode())
+
+        // REPLACE_OR_CREATE 是 relax mode
+        val replaceOrCreateProperty = selectScope { injectFile.properties().ofKey("REPLACE_OR_CREATE:new_mech").one() } as ParadoxScriptProperty
+        val replaceOrCreateInfo = ParadoxDefinitionInjectionManager.getInfo(replaceOrCreateProperty)!!
+        Assert.assertTrue(replaceOrCreateInfo.isRelaxMode())
     }
 
     // endregion
