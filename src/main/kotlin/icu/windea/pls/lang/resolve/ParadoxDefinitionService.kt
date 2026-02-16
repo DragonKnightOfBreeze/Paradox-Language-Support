@@ -256,15 +256,23 @@ object ParadoxDefinitionService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+        // 由于可能有 rootKey 或 typeKeyPrefix，因此这里依赖 file
         return listOf(file)
     }
 
     fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): List<Any> {
-        // 如果没有子类型候选项，则没有额外的 tracker
-        if (definitionInfo.subtypeConfigs.isEmpty()) return listOf(element.containingFile)
+        val subtypes = definitionInfo.typeConfig.subtypes
+        val file = element.containingFile
 
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+        // 无子类型候选项
+        if (subtypes.isEmpty()) return listOf(file)
+
+        // 所有子类型候选项都不依赖声明结构（快速匹配）
+        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
+        if (allFastMatch) return listOf(file)
+
+        // 需要依赖声明结构
+        return listOf(file, ParadoxModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {

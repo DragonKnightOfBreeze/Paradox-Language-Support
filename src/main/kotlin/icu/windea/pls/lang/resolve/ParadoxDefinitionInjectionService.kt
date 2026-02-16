@@ -78,14 +78,22 @@ object ParadoxDefinitionInjectionService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
+        // 由于不能有 rootKey 或 typeKeyPrefix，因此这里可以直接依赖 element，但为了与 definitionInfo 保持一致，仍然依赖 file
         return listOf(file)
     }
 
     fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): List<Any> {
-        // 如果没有子类型候选项，则没有额外的 tracker
-        if (definitionInjectionInfo.subtypeConfigs.isEmpty()) return listOf(element.containingFile)
+        val subtypes = definitionInjectionInfo.typeConfig?.subtypes
+        val file = element.containingFile
 
-        // TODO 2.1.3 考虑到匹配子类型时可能需要检查某个属性值是否是特定的定义类型，目前暂时依赖所有脚本文件。
-        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+        // 无子类型候选项
+        if (subtypes.isNullOrEmpty()) return listOf(file)
+
+        // 所有子类型候选项都不依赖声明结构（快速匹配）
+        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
+        if (allFastMatch) return listOf(file)
+
+        // 需要依赖声明结构
+        return listOf(file, ParadoxModificationTrackers.ScriptFile)
     }
 }
