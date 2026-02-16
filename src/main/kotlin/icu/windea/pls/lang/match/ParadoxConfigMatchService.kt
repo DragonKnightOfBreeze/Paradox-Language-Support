@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.match
 
-import com.intellij.lang.LighterAST
-import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -25,7 +23,6 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -53,7 +50,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.floatValue
@@ -94,13 +90,6 @@ object ParadoxConfigMatchService {
         return candicates.find { matchesType(context, element, it) }
     }
 
-    fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, node: LighterASTNode, tree: LighterAST): CwtTypeConfig? {
-        val candicates = getTypeConfigCandidates(context)
-        if (candicates.isEmpty()) return null
-        context.matchPath = false
-        return candicates.find { matchesType(context, node, tree, it) }
-    }
-
     fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext): CwtTypeConfig? {
         val candicates = getTypeConfigCandidates(context)
         if (candicates.isEmpty()) return null
@@ -133,33 +122,6 @@ object ParadoxConfigMatchService {
                 && propertyValue.isIncomplete()
             if (isIncomplete) return@run
             val isBlock = propertyValue.elementType == BLOCK
-            val expectBlock = declarationConfig.valueExpression.type == CwtDataTypes.Block
-            if (isBlock != expectBlock) return false
-        }
-
-        return true
-    }
-
-    fun matchesType(context: CwtTypeConfigMatchContext, node: LighterASTNode, tree: LighterAST, typeConfig: CwtTypeConfig): Boolean {
-        // 判断 definition 需要是 scriptFile 还是 scriptProperty
-        run {
-            val elementType = node.tokenType
-            if (typeConfig.typePerFile) {
-                if (elementType != ParadoxScriptFile.ELEMENT_TYPE) return false
-            } else {
-                if (elementType != PROPERTY) return false
-            }
-        }
-
-        val fastResult = matchesTypeFast(context, typeConfig)
-        if (fastResult != null) return fastResult
-
-        // 判断 definition 的 propertyValue 是否需要是 block
-        run {
-            val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
-            val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
-            val isBlock = propertyValue.tokenType == BLOCK
             val expectBlock = declarationConfig.valueExpression.type == CwtDataTypes.Block
             if (isBlock != expectBlock) return false
         }
