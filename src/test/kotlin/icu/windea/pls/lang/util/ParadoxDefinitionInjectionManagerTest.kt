@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.model.ParadoxGameType
@@ -157,7 +158,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // 应包含基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -181,7 +182,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // 应包含基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -201,12 +202,12 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         // 获取目标定义的声明
         val titan = selectScope { baseFile.ofPath("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
-        val titanKey = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
+        val titanKey = CwtConfigManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
 
         // 获取注入的声明
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
         val injectInfo = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
-        val injectKey = icu.windea.pls.config.util.manipulators.CwtConfigManipulator.getIdentifierKey(injectInfo.declaration!!, "\u0000", -1)
+        val injectKey = CwtConfigManipulator.getIdentifierKey(injectInfo.declaration!!, "\u0000", -1)
 
         // 注入的声明结构应与目标定义的声明结构一致
         Assert.assertEquals(titanKey, injectKey)
