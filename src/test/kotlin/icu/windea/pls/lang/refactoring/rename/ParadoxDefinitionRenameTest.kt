@@ -124,5 +124,68 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
         myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_definition.test.txt", true)
     }
 
+    @Test
+    fun testRename_Definition_Combined() {
+        // Arrange
+        val mainPath = "common/vtubers/vtuber_1.test.txt"
+        markFileInfo(gameType, mainPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
+
+        val otherPath = "common/vtubers/vtuber_2.test.txt"
+        markFileInfo(gameType, otherPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_2.test.txt", otherPath)
+
+        val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
+        markFileInfo(gameType, localisationEnglishPath)
+        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_english.test.yml", localisationEnglishPath)
+
+        val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
+        markFileInfo(gameType, localisationChinesePath)
+        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_simp_chinese.test.yml", localisationChinesePath)
+
+        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
+        markFileInfo(gameType, fanPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
+
+        // Ensure indexed
+        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+
+        // Act
+        myFixture.configureFromTempProjectFile(mainPath)
+        val newName = "evil_neuro"
+        myFixture.renameElementAtCaretUsingHandler(newName)
+
+        // Assert
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
+        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/vtuber_2.after.test.txt", true)
+        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/definitions_l_english.after.test.yml", true)
+        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/definitions_l_simp_chinese.after.test.yml", true)
+        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_definition_combined.test.txt", true)
+    }
+
+    @Test
+    fun testRename_Definition_ReferencesInScript_Multiple() {
+        // Arrange
+        val mainPath = "common/vtubers/vtuber_1.test.txt"
+        markFileInfo(gameType, mainPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
+
+        val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
+        markFileInfo(gameType, fanPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt", fanPath)
+
+        // Ensure indexed
+        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+
+        // Act
+        myFixture.configureFromTempProjectFile(mainPath)
+        val newName = "evil_neuro"
+        myFixture.renameElementAtCaretUsingHandler(newName)
+
+        // Assert
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/vtuber_1.after.test.txt", true)
+        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_definition.test.txt", true)
+    }
+
     // TODO 2.1.3 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正
 }

@@ -53,6 +53,10 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
         markFileInfo(gameType, localisationChinesePath)
         myFixture.copyFileToProject("features/refactoring/localisation/neuro_l_simp_chinese.test.yml", localisationChinesePath)
 
+        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
+        markFileInfo(gameType, fanPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
+
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
 
@@ -64,5 +68,35 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
         // Assert
         myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/neuro_l_english.after.test.yml", true)
         myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/neuro_l_simp_chinese.after.test.yml", true)
+        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_localisation.test.txt", true)
+    }
+
+    @Test
+    fun testRename_Localisation_ReferencesInScript_Multiple() {
+        // Arrange
+        val localisationEnglishPath = "localisation/neuro_l_english.test.yml"
+        markFileInfo(gameType, localisationEnglishPath)
+        myFixture.copyFileToProject("features/refactoring/localisation/neuro_l_english.test.yml", localisationEnglishPath)
+
+        val localisationChinesePath = "localisation/neuro_l_simp_chinese.test.yml"
+        markFileInfo(gameType, localisationChinesePath)
+        myFixture.copyFileToProject("features/refactoring/localisation/neuro_l_simp_chinese.test.yml", localisationChinesePath)
+
+        val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
+        markFileInfo(gameType, fanPath)
+        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt", fanPath)
+
+        // Ensure indexed
+        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+
+        // Act
+        val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(localisationEnglishPath)
+        myFixture.renameElementAtCaretUsingHandler(newName)
+
+        // Assert
+        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/neuro_l_english.after.test.yml", true)
+        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/neuro_l_simp_chinese.after.test.yml", true)
+        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_localisation.test.txt", true)
     }
 }
