@@ -116,9 +116,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val typeConfig = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) } ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
-                val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey)?.map { it.name }?.optimized()
+                val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey).map { it.name }.optimized()
 
-                val info = ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, element.startOffset, gameType)
+                val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, typeKey, element.startOffset, gameType)
                 addToFileData(info, fileData)
                 return false
             }
@@ -145,9 +145,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 val typeConfig = typeConfigForInjection ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, target, typeConfig)
-                val subtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target)?.map { it.name }?.optimized()
+                val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, target).map { it.name }.optimized()
 
-                val info = ParadoxDefinitionIndexInfo(source, name, type, subtypes, target, element.startOffset, gameType)
+                val info = ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, target, element.startOffset, gameType)
                 addToFileData(info, fileData)
                 return false
             }
@@ -188,13 +188,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
-            val subtypes = info.fastSubtypes
-            if (subtypes == null) {
-                storage.writeIntFast(-1)
-            } else {
-                storage.writeIntFast(subtypes.size)
-                subtypes.forEach { storage.writeUTFFast(it) }
-            }
+            val fastSubtypes = info.fastSubtypes
+            storage.writeIntFast(fastSubtypes.size)
+            if (fastSubtypes.isNotEmpty()) fastSubtypes.forEach { storage.writeUTFFast(it) }
             storage.writeUTFFast(info.typeKey)
             storage.writeIntFast(info.elementOffset)
         }
@@ -210,10 +206,10 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             val name = storage.readUTFFast()
             val type = storage.readUTFFast()
             val subtypesSize = storage.readIntFast()
-            val subtypes = if (subtypesSize < 0) null else List(subtypesSize) { storage.readUTFFast() }
+            val fastSubtypes = if (subtypesSize == 0) emptyList() else List(subtypesSize) { storage.readUTFFast() }
             val typeKey = storage.readUTFFast()
             val elementOffset = storage.readIntFast()
-            ParadoxDefinitionIndexInfo(source, name, type, subtypes, typeKey, elementOffset, gameType)
+            ParadoxDefinitionIndexInfo(source, name, type, fastSubtypes, typeKey, elementOffset, gameType)
         }
     }
 }

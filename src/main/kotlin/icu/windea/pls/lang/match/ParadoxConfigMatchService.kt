@@ -243,12 +243,12 @@ object ParadoxConfigMatchService {
 
     // region Subtype Config
 
-    fun getFastMatchedSubtypeConfigs(typeConfig: CwtTypeConfig, typeKey: String): List<CwtSubtypeConfig>? {
+    fun getFastMatchedSubtypeConfigs(typeConfig: CwtTypeConfig, typeKey: String): List<CwtSubtypeConfig> {
         if (typeConfig.subtypes.isEmpty()) return emptyList()
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in typeConfig.subtypes.values) {
-            val fastResult = matchesSubtypeFast(subtypeConfig, result, typeKey) ?: return null
-            if (fastResult) result.add(subtypeConfig)
+            val fastResult = matchesSubtypeFast(subtypeConfig, result, typeKey)
+            if (fastResult == true) result.add(subtypeConfig)
         }
         return result
     }
