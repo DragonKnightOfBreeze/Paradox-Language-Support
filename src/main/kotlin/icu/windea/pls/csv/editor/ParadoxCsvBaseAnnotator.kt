@@ -16,7 +16,7 @@ import icu.windea.pls.model.ParadoxType
  * - 对于列（头列），提供特殊高亮。
  * - 对于列（非头列），如果格式匹配布尔值或数字，提供对应的高亮。
  */
-class ParadoxCsvBasicAnnotator : Annotator {
+class ParadoxCsvBaseAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is ParadoxCsvColumn -> annotateColumn(element, holder)

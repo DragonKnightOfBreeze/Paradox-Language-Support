@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxLocalisationBasicAnnotatorTest : BasePlatformTestCase() {
+class ParadoxLocalisationBaseAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

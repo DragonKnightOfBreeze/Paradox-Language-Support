@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
-class ParadoxScriptBasicAnnotator : Annotator {
+class ParadoxScriptBaseAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
         annotateParameterValue(element, holder)

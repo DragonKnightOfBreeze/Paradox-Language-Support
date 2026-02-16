@@ -9,7 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.quickfix.InsertStringFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
-class ParadoxLocalisationBasicAnnotator : Annotator {
+class ParadoxLocalisationBaseAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
     }

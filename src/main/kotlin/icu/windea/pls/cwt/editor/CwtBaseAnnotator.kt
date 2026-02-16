@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.quickfix.InsertStringFix
 
-class CwtBasicAnnotator : Annotator {
+class CwtBaseAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
     }
