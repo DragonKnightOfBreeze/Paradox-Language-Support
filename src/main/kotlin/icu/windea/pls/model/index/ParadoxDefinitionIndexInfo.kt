@@ -14,7 +14,7 @@ data class ParadoxDefinitionIndexInfo(
     val source: ParadoxDefinitionSource,
     val name: String,
     val type: String,
-    val subtypes: List<String>?,
+    val fastSubtypes: List<String>?,
     val typeKey: String,
     val elementOffset: Int,
     override val gameType: ParadoxGameType,

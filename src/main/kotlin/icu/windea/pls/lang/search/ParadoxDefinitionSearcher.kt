@@ -83,7 +83,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxDefinitionIndexInfo, 
 
     private fun matchesSubtypes(queryParameters: ParadoxDefinitionSearch.SearchParameters, info: ParadoxDefinitionIndexInfo): Boolean {
         if (queryParameters.subtypes.isNullOrEmpty()) return true
-        val fastSubtypes = info.subtypes
+        val fastSubtypes = info.fastSubtypes
         if (fastSubtypes != null && fastSubtypes.containsAll(queryParameters.subtypes)) return true
         // 索引中的子类型可能不包含继承的子类型，需要通过 PSI 获取完整子类型进行二次检查
         val element = info.element ?: return false

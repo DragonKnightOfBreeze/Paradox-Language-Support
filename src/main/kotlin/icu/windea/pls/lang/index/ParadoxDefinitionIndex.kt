@@ -188,7 +188,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
-            val subtypes = info.subtypes
+            val subtypes = info.fastSubtypes
             if (subtypes == null) {
                 storage.writeIntFast(-1)
             } else {
