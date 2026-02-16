@@ -64,6 +64,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -160,7 +161,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiElement?, hint: Boolean): String? {
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, hint)
 
@@ -173,13 +174,19 @@ object ParadoxDocumentationManager {
     }
 
     private fun getScriptFileDoc(element: ParadoxScriptFile, originalElement: PsiElement?, hint: Boolean): String? {
+        val definitionInfo = element.definitionInfo
+        if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, hint)
+
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element)
         if (expression != null) return getInlineScriptDoc(element, expression, originalElement, hint)
 
         return null // nothing now
     }
 
-    private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getDefinitionDoc(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String? {
+        // 忽略内联或注入的定义
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return null
+
         return buildDocumentation {
             // 对于相关图片的信息，在 definition 部分显示在相关本地化的信息之后，在 sections 部分则显示在之前
             if (!hint) initSections()
@@ -567,7 +574,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
@@ -648,7 +655,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val localisationInfos = definitionInfo.localisations
         if (localisationInfos.isEmpty()) return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -685,7 +692,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val render = PlsSettings.getInstance().state.documentation.renderRelatedImagesForDefinitions
         val imagesInfos = definitionInfo.images
         if (imagesInfos.isEmpty()) return
@@ -741,13 +748,13 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         if (!PlsSettings.getInstance().state.documentation.showGeneratedModifiers) return
 
         ParadoxModifierService.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
     }
 
-    private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
         if (!PlsSettings.getInstance().state.documentation.showScopes) return
 
@@ -763,7 +770,9 @@ object ParadoxDocumentationManager {
         sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
     }
 
-    private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+        if (element !is ParadoxScriptProperty) return
+
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
         // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
@@ -778,7 +787,8 @@ object ParadoxDocumentationManager {
         sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
-    private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+        if (element !is ParadoxScriptProperty) return
         if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return
         // 有些游戏类型直接通过 CWT 文件指定了事件类型，而非 CSV 文件，忽略这种情况
         val configGroup = definitionInfo.configGroup
