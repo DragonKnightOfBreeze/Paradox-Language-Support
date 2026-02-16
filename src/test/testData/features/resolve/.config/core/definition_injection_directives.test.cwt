@@ -6,5 +6,5 @@ directive[definition_injection] = {
         REPLACE_OR_CREATE
     }
     relax_modes = { TRY_INJECT REPLACE_OR_CREATE }
-    self_subtype_modes = { REPLACE REPLACE_OR_CREATE }
+    replace_modes = { REPLACE REPLACE_OR_CREATE }
 }

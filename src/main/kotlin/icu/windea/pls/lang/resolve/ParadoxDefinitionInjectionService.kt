@@ -4,6 +4,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
@@ -52,16 +53,10 @@ object ParadoxDefinitionInjectionService {
     }
 
     fun resolveSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        val element = definitionInjectionInfo.element ?: return emptyList()
-        val typeConfig = definitionInjectionInfo.typeConfig ?: return emptyList()
-        if (typeConfig.subtypes.isEmpty()) return emptyList()
-
-        // 根据模式决定是从目标定义还是自身声明获取子类型
-        if (ParadoxDefinitionInjectionManager.isSelfSubtypeMode(definitionInjectionInfo)) {
-            // REPLACE/TRY_REPLACE/REPLACE_OR_CREATE 模式：直接检查注入自身的声明
+        // 根据模式决定是从目标声明还是自身声明获取子类型
+        if (ParadoxDefinitionInjectionManager.isReplaceMode(definitionInjectionInfo)) {
             return resolveSubtypeConfigsFromSelf(definitionInjectionInfo, options)
         } else {
-            // INJECT/TRY_INJECT/INJECT_OR_CREATE 模式：从目标定义获取子类型信息
             return resolveSubtypeConfigsFromTarget(definitionInjectionInfo, options)
         }
     }
@@ -81,17 +76,15 @@ object ParadoxDefinitionInjectionService {
     private fun resolveSubtypeConfigsFromSelf(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val element = definitionInjectionInfo.element ?: return emptyList()
         val typeConfig = definitionInjectionInfo.typeConfig ?: return emptyList()
-        val subtypes = typeConfig.subtypes
-        if (subtypes.isEmpty()) return emptyList()
-
-        // 对于定义注入，typeKey 使用目标名称
-        val typeKey = definitionInjectionInfo.target.orEmpty()
+        val subtypes = typeConfig.subtypes.orNull() ?: return emptyList()
+        val typeKey = definitionInjectionInfo.target.orEmpty() // use target name as type key
 
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypes.values) {
             val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
-            if (matched) result.add(subtypeConfig)
+            if (matched) result += subtypeConfig
         }
+        // processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.1.3 commented out since it's uncessary for injections
         return result
     }
 
