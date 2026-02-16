@@ -5,7 +5,11 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -14,6 +18,12 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineMathEvaluatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+    
+    @Before
+    fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun simple() {

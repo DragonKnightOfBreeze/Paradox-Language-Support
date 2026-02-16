@@ -7,7 +7,11 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,6 +20,12 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class PlsPsiManagerTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun getAttachedComments() {
