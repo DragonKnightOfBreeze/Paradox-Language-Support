@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.constrained
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
@@ -40,7 +41,7 @@ abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionReso
     }
 
     protected fun fromRanged(type: CwtDataType, prefix: String, action: CwtDataExpression.(String) -> Unit = {}) {
-        providers += TextPatternBasedProvider(TextPattern.withPrefix(prefix)) { _, r -> if (isRangeLike(r.value)) Match(type) { action(r.value) } else null }
+        providers += TextPatternBasedProvider(TextPattern.from(prefix, "")) { _, r -> if (isRangeLike(r.value)) Match(type) { action(r.value) } else null }
     }
 
     private fun isRangeLike(v: String): Boolean {
@@ -70,6 +71,7 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
 
         fromLiteral(CwtDataTypes.Scalar, "scalar")
+        fromLiteral(CwtDataTypes.Scalar, "constrained_scalar") { constrained = true }
 
         fromLiteral(CwtDataTypes.ColorField, "colour_field")
         fromParameterized(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }
