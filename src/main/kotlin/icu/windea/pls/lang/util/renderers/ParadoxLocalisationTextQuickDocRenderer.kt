@@ -10,7 +10,7 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.FallbackStrings

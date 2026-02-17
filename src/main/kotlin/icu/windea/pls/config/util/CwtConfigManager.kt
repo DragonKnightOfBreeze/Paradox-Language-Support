@@ -26,7 +26,7 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupSource
+import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
@@ -81,7 +81,7 @@ object CwtConfigManager {
 
     fun getBuiltInConfigRootDirectories(project: Project): List<VirtualFile> {
         return CwtConfigGroupFileProvider.EP_NAME.extensionList
-            .filter { it.source == CwtConfigGroupSource.BuiltIn }
+            .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
             .mapNotNull { it.getRootDirectory(project) }
     }
 

@@ -41,8 +41,8 @@ interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
         fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression
         fun resolveKey(expressionString: String): CwtDataExpression
         fun resolveValue(expressionString: String): CwtDataExpression
-        fun resolveBlock(): CwtDataExpression
         fun resolveTemplate(expressionString: String): CwtDataExpression
+        fun resolveBlock(): CwtDataExpression
     }
 
     object Keys : KeyRegistry()
@@ -69,7 +69,9 @@ private class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
         return CwtDataExpressionImpl(expressionString, isKey, type)
     }
 
-    override fun resolveEmpty(isKey: Boolean): CwtDataExpression = if (isKey) emptyKeyExpression else emptyValueExpression
+    override fun resolveEmpty(isKey: Boolean): CwtDataExpression {
+        return if (isKey) emptyKeyExpression else emptyValueExpression
+    }
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
         if (expressionString.isEmpty()) return if (isKey) emptyKeyExpression else emptyValueExpression
@@ -77,15 +79,21 @@ private class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
         return cache.get(expressionString)
     }
 
-    override fun resolveKey(expressionString: String): CwtDataExpression = resolve(expressionString, true)
+    override fun resolveKey(expressionString: String): CwtDataExpression {
+        return resolve(expressionString, true)
+    }
 
-    override fun resolveValue(expressionString: String): CwtDataExpression = resolve(expressionString, false)
-
-    override fun resolveBlock(): CwtDataExpression = blockExpression
+    override fun resolveValue(expressionString: String): CwtDataExpression {
+        return resolve(expressionString, false)
+    }
 
     override fun resolveTemplate(expressionString: String): CwtDataExpression {
         if (expressionString.isEmpty()) return emptyValueExpression
         return cacheForTemplate.get(expressionString)
+    }
+
+    override fun resolveBlock(): CwtDataExpression {
+        return blockExpression
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {

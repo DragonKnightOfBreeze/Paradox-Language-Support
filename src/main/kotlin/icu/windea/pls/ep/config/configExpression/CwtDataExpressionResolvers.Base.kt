@@ -2,32 +2,22 @@ package icu.windea.pls.ep.config.configExpression
 
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.util.text.TextPatternBasedBuilder
+import icu.windea.pls.core.util.text.TextPatternMatchResult
 
-abstract class CwtRuleBasedDataExpressionResolver : CwtDataExpressionResolver {
-    sealed interface Rule {
-        val type: CwtDataType
-    }
-
-    data class ConstantRule(
-        override val type: CwtDataType,
-        val constant: String,
-        val applyAction: CwtDataExpression.() -> Unit
-    ) : Rule
-
-    data class DynamicRule(
-        override val type: CwtDataType,
-        val prefix: String = "",
-        val suffix: String = "",
-        val applyAction: CwtDataExpression.(String) -> Unit
-    ) : Rule
+abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
+    protected data class Match(
+        val type: CwtDataType,
+        val applyAction: CwtDataExpression.() -> Unit = {}
+    )
 
     protected fun rule(
         type: CwtDataType,
         constant: String,
         applyAction: CwtDataExpression.() -> Unit = {}
-    ): Rule {
-        return ConstantRule(type, constant, applyAction)
+    ): TextPatternBasedBuilder.Rule<Match, TextPatternMatchResult.Empty> {
+        return TextPatternBasedBuilder.Rule(TextPattern.from(constant)) { _, _ -> Match(type, applyAction) }
     }
 
     protected fun rule(
@@ -35,28 +25,20 @@ abstract class CwtRuleBasedDataExpressionResolver : CwtDataExpressionResolver {
         prefix: String,
         suffix: String,
         applyAction: CwtDataExpression.(String) -> Unit = {}
-    ): Rule {
-        return DynamicRule(type, prefix, suffix, applyAction)
+    ): TextPatternBasedBuilder.Rule<Match, TextPatternMatchResult.Single> {
+        return TextPatternBasedBuilder.Rule(TextPattern.from(prefix, suffix)) { _, r -> Match(type) { applyAction(r.value) } }
     }
 
-    abstract val rules: List<Rule>
+    protected abstract val rules: List<TextPatternBasedBuilder.Rule<Match, out TextPatternMatchResult>>
 
-    private val constantRuleMap by lazy { rules.filterIsInstance<ConstantRule>().associateBy { it.constant } }
-    private val dynamicRules by lazy { rules.filterIsInstance<DynamicRule>() }
+    private val builder by lazy { TextPatternBasedBuilder<Match>(rules) }
+
+    final override fun getTextPatterns(): List<TextPattern<*>> {
+        return rules.map { it.pattern }
+    }
 
     final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        run {
-            val rule = constantRuleMap[expressionString]
-            if (rule == null) return@run
-            return CwtDataExpression.create(expressionString, isKey, rule.type).apply { rule.applyAction(this) }
-        }
-        run {
-            dynamicRules.forEach f@{ rule ->
-                val data = expressionString.removeSurroundingOrNull(rule.prefix, rule.suffix)
-                if (data == null) return@f
-                return CwtDataExpression.create(expressionString, isKey, rule.type).apply { rule.applyAction(this, data) }
-            }
-        }
-        return null
+        val match = builder.build(expressionString) ?: return null
+        return CwtDataExpression.create(expressionString, isKey, match.type).apply(match.applyAction)
     }
 }

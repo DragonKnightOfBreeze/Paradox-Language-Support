@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable

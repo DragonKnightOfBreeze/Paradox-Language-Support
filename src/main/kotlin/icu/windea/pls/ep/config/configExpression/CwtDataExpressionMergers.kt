@@ -11,17 +11,17 @@ class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
     }
 
     private fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        when {
-            e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant && e1.expressionString.equals(e2.expressionString, true) -> {
-                return e1.expressionString.lowercase()
-            }
-            e1.type == CwtDataTypes.Constant || e2.type == CwtDataTypes.Constant -> {
-                return null
-            }
-            else -> {
-                return mergeExpressionStringTo(e1, e2, configGroup) ?: mergeExpressionStringTo(e2, e1, configGroup)
+        if (e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant) {
+            return when {
+                e1.expressionString == e2.expressionString -> e1.expressionString
+                e1.expressionString.equals(e2.expressionString, true) -> e1.expressionString.lowercase()
+                else -> null
             }
         }
+        if (e1.type == CwtDataTypes.Constant || e2.type == CwtDataTypes.Constant) {
+            return null
+        }
+        return mergeExpressionStringTo(e1, e2, configGroup) ?: mergeExpressionStringTo(e2, e1, configGroup)
     }
 
     @Suppress("UNUSED_PARAMETER")

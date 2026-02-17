@@ -50,19 +50,19 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     private fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, configGroup: CwtConfigGroup): CwtMemberConfig<*>? {
         val element = parameterInfo.element ?: return null
         val parentElement = parameterInfo.parentElement ?: return null
-        when {
-            element is ParadoxConditionParameter -> {
-                return CwtValueConfig.createMock(configGroup, "scalar") // bool-like
+        return when (element) {
+            is ParadoxConditionParameter -> {
+                CwtValueConfig.createMock(configGroup, "scalar")
             }
-            element is ParadoxScriptParameter -> {
+            is ParadoxScriptParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
-                return CwtValueConfig.createMock(configGroup, "scalar")
+                CwtValueConfig.createMock(configGroup, "scalar")
             }
-            element is ParadoxScriptInlineMathParameter -> {
+            is ParadoxScriptInlineMathParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.createMock(configGroup, "float")
-                return CwtValueConfig.createMock(configGroup, "scalar")
+                CwtValueConfig.createMock(configGroup, "scalar")
             }
-            else -> return null
+            else -> null
         }
     }
 }

@@ -4,8 +4,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.text.TextPattern
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ep.config.configExpression.CwtRuleBasedDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
 /**
@@ -75,27 +75,28 @@ private class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver
     }
 
     private fun doResolve(expressionString: String): CwtTemplateExpression {
-        // 收集所有“具有前后缀”的动态规则，用于匹配拆分
-        val rules = CwtConfigExpressionService.allRules
+        // 收集所有“具有前后缀”的文本模式，用于匹配拆分
+        val patterns = CwtConfigExpressionService.getAllTextPatterns()
         val snippets = mutableListOf<CwtDataExpression>()
         var startIndex = 0
         while (true) {
-            // 在剩余字符串中，计算所有动态规则的最早出现位置，选择最靠左者
-            val tuple = rules.mapNotNull f@{ rule ->
-                if (rule !is CwtRuleBasedDataExpressionResolver.DynamicRule) return@f null
-                if (rule.prefix.isEmpty() || rule.suffix.isEmpty()) return@f null
-                val i1 = expressionString.indexOf(rule.prefix, startIndex).takeIf { it != -1 } ?: return@f null
-                val i2 = expressionString.indexOf(rule.suffix, i1 + rule.prefix.length).takeIf { it != -1 } ?: return@f null
-                tupleOf(rule, i1, i2)
-            }.minByOrNull { (_, i1, _) -> i1 }
+            // 在剩余字符串中，计算所有可拆分的文本模式的最早出现位置，选择最靠左者
+            val tuple = patterns.mapNotNull f@{ pattern ->
+                if (pattern !is TextPattern.Delimited) return@f null
+                val (prefix, suffix) = pattern
+                if (prefix.isEmpty() || suffix.isEmpty()) return@f null
+                val i1 = expressionString.indexOf(prefix, startIndex).takeIf { it != -1 } ?: return@f null
+                val i2 = expressionString.indexOf(suffix, i1 + prefix.length).takeIf { it != -1 } ?: return@f null
+                tupleOf(prefix, suffix, i1, i2)
+            }.minByOrNull { (_, _, i1, _) -> i1 }
             if (tuple != null) {
-                val (rule, i1, i2) = tuple
+                val (prefix, suffix, i1, i2) = tuple
                 // 先加入动态片段之前的常量片段
                 if (i1 > 0 && i1 != startIndex) {
                     addToSnippets(expressionString.substring(startIndex, i1), snippets, true)
                 }
                 // 再加入当前动态片段（包含前后缀）
-                val endIndex = i2 + rule.suffix.length
+                val endIndex = i2 + suffix.length
                 addToSnippets(expressionString.substring(i1, endIndex), snippets, false)
                 startIndex = endIndex
             }

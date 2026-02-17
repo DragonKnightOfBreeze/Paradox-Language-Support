@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
 import java.util.*
 import java.util.function.IntUnaryOperator
 

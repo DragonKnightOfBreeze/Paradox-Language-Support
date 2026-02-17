@@ -19,7 +19,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -270,7 +270,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
             val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
-            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
+            val key = typeConfig.filePathPatterns.joinToString(";")
             return ParadoxModificationTrackers.ScriptFile(key)
         }
     }

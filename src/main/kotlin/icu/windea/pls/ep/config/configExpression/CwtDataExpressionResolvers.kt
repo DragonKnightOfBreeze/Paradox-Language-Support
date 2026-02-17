@@ -12,11 +12,13 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.util.text.TextPatternBasedBuilder
+import icu.windea.pls.core.util.text.TextPatternMatchResult
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
-class CwtBaseDataExpressionResolver : CwtRuleBasedDataExpressionResolver() {
-    override val rules = listOf(
+class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
+    override val rules: List<TextPatternBasedBuilder.Rule<Match, out TextPatternMatchResult>> = listOf(
         rule(CwtDataTypes.Any, "\$any"),
 
         rule(CwtDataTypes.Bool, "bool"),
@@ -38,8 +40,8 @@ class CwtBaseDataExpressionResolver : CwtRuleBasedDataExpressionResolver() {
     )
 }
 
-class CwtCoreDataExpressionResolver : CwtRuleBasedDataExpressionResolver() {
-    override val rules: List<Rule> = listOf(
+class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
+    override val rules: List<TextPatternBasedBuilder.Rule<Match, out TextPatternMatchResult>> = listOf(
         rule(CwtDataTypes.PercentageField, "percentage_field"),
         rule(CwtDataTypes.DateField, "date_field"),
         rule(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() },

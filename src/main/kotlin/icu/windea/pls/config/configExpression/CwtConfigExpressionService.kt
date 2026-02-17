@@ -2,14 +2,21 @@ package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.util.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
-import icu.windea.pls.ep.config.configExpression.CwtRuleBasedDataExpressionResolver
 
 object CwtConfigExpressionService {
-    val allRules by lazy {
-        CwtDataExpressionResolver.EP_NAME.extensionList.filterIsInstance<CwtRuleBasedDataExpressionResolver>().flatMap { it.rules }
+    private val allTextPatternsCache by lazy {
+        CwtDataExpressionResolver.EP_NAME.extensionList.flatMap { it.getTextPatterns() }
+    }
+
+    /**
+     * @see CwtDataExpressionResolver.getTextPatterns
+     */
+    fun getAllTextPatterns(): List<TextPattern<*>> {
+        return allTextPatternsCache
     }
 
     /**
@@ -28,7 +35,6 @@ object CwtConfigExpressionService {
      */
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
         CwtDataExpressionResolver.EP_NAME.extensionList.forEach f@{ ep ->
-            if (ep !is CwtRuleBasedDataExpressionResolver) return@f
             val r = ep.resolve(expressionString, false)
             if (r != null) return r
         }
