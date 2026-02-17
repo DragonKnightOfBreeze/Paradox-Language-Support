@@ -16,8 +16,8 @@ class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
         with(initializer.definitionTypesModel) {
             with(supportScope) {
-                this += "scripted_effect"
                 this += "scripted_trigger"
+                this += "scripted_effect"
                 this += "game_rule"
             }
             with(indirectSupportScope) {
@@ -32,10 +32,14 @@ class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 this += "game_rule"
             }
             with(supportParameters) {
-                // this += "scripted_trigger" // 来自具体的规则（`alias[trigger:<scripted_trigger>] = ...`）
-                // this += "scripted_effect" // 来自具体的规则（`alias[effect:<scripted_effect>] = ...`）
+                this += "scripted_trigger" // 也来自具体的规则（`alias[trigger:<scripted_trigger>] = ...`）
+                this += "scripted_effect" // 也来自具体的规则（`alias[effect:<scripted_effect>] = ...`）
                 this += "script_value"
-                // this += "inline_script" // 内联脚本也支持参数（但它不是定义）
+                // this += "inline_script" // 也支持参数（但内联脚本不是定义）
+            }
+            with(supportScopeContextInference) {
+                this += "scripted_trigger"
+                this += "scripted_effect"
             }
         }
     }

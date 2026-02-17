@@ -19,6 +19,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
+import icu.windea.pls.config.configGroup.scriptValueModificationTracker
 import icu.windea.pls.config.select.*
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
@@ -37,6 +38,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.argumentNodes
 import icu.windea.pls.lang.resolve.complexExpression.nestedScriptValueExpression
@@ -54,6 +56,7 @@ import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -216,6 +219,11 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return result
     }
 
+    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
+        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        return configGroup.definitionParameterModificationTracker
+    }
+
     override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val definitionName = parameterElement.definitionName ?: return false
         val definitionTypes = parameterElement.definitionTypes ?: return false
@@ -236,11 +244,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val selector = selector(project, element).definition().contextSensitive()
         ParadoxDefinitionSearch.searchElement(definitionName, definitionType, selector).onlyMostRelevant(onlyMostRelevant).processAsync(processor)
         return true
-    }
-
-    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? {
-        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
-        return configGroup.definitionParameterModificationTracker
     }
 
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
@@ -280,9 +283,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 }
 
 /**
- * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
- * @see ParadoxScriptValueArgumentNode
- * @see icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
+ * @see ParadoxScriptValueExpression
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxDefinitionElement) = false
@@ -348,7 +349,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val scriptValueExpression = valueFieldExpression.nestedScriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
-        val definitionTypes = listOf("script_value")
+        val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
@@ -387,7 +388,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val scriptValueNode = scriptValueExpression.scriptValueNode
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
-        val definitionTypes = listOf("script_value")
+        val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
         val argumentNode = scriptValueExpression.nodes.find f@{
             if (it !is ParadoxScriptValueArgumentNode) return@f false
             if (it.rangeInExpression != rangeInElement) return@f false
@@ -404,6 +405,11 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
         return result
+    }
+
+    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
+        val configGroup = PlsFacade.getConfigGroup(parameterInfo.project, parameterInfo.gameType)
+        return configGroup.scriptValueModificationTracker
     }
 
     override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
@@ -554,6 +560,10 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return result
     }
 
+    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
+        return ParadoxModificationTrackers.InlineScripts
+    }
+
     override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val expression = parameterElement.inlineScriptExpression ?: return false
         if (expression.isParameterized()) return false // skip if context name is parameterized
@@ -568,10 +578,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = contextReferenceInfo.project
         ParadoxInlineScriptManager.processInlineScriptFile(expression, project, element, onlyMostRelevant, processor)
         return true
-    }
-
-    override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        return ParadoxModificationTrackers.InlineScripts
     }
 
     override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {

@@ -39,16 +39,13 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 仅推断 `this` 与 `root` 系统作用域。
  */
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
-    object Constants {
-        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
-    }
-
     object Keys : KeyRegistry() {
         val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type in Constants.DEFINITION_TYPES
+        val definitionTypes = definitionInfo.configGroup.definitionTypesModel.supportScopeContextInference
+        return definitionInfo.type in definitionTypes
     }
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
@@ -459,7 +456,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         val scriptTracker = ParadoxModificationTrackers.ScriptFile("events/**/*.txt")
         return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
-    
+
     private fun processQuery(
         thisOnActionName: String,
         searchScope: GlobalSearchScope,

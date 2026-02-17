@@ -183,14 +183,16 @@ interface CwtDirectivesModel {
 
 /** 用于获取符合特定条件的定义类型。 */
 interface CwtDefinitionTypesModel {
-    /** 必定支持作用域的定义类型。 */
+    /** 支持作用域的定义类型。 */
     val supportScope: Set<String>
-    /** 必定间接支持作用域的定义类型。 */
+    /** 间接支持作用域的定义类型。 */
     val indirectSupportScope: Set<String>
     /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
     val skipCheckSystemScope: Set<String>
     /** 支持参数的定义类型。 */
     val supportParameters: Set<String>
+    /** 支持作用域推断的定义类型。 */
+    val supportScopeContextInference: Set<String>
     /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
     val typeKeyPrefixAware: Set<String>
 }

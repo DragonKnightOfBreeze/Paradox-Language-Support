@@ -13,6 +13,7 @@ object ParadoxDefinitionTypes {
     const val job = "job"
     const val swappedJob = "swapped_job"
     const val resource = "resource"
+    const val scriptValue = "script_value"
     const val scriptedTrigger = "scripted_trigger"
     const val scriptedEffect = "scripted_effect"
 

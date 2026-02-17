@@ -183,5 +183,6 @@ class CwtDefinitionTypesModelBase : CwtDefinitionTypesModel {
     override val indirectSupportScope: FastSet<String> = FastSet()
     override val skipCheckSystemScope: FastSet<String> = FastSet()
     override val supportParameters: FastSet<String> = FastSet()
+    override val supportScopeContextInference: FastSet<String> = FastSet()
     override val typeKeyPrefixAware: FastSet<String> = FastSet()
 }

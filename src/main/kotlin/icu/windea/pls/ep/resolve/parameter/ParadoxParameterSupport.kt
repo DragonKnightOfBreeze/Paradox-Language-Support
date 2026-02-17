@@ -48,6 +48,8 @@ interface ParadoxParameterSupport {
 
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
 
+    fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
+
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
      *
@@ -61,8 +63,6 @@ interface ParadoxParameterSupport {
      * @return 此扩展点是否适用。
      */
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
-
-    fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
 
     /**
      * 构建参数的快速文档中的定义部分。
