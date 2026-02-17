@@ -22,16 +22,16 @@ object CwtConfigExpressionService {
     }
 
     /**
-     * @see CwtDataExpressionResolver.resolve
+     * @see CwtDataExpressionResolver.resolveTemplate
      */
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
         CwtDataExpressionResolver.EP_NAME.extensionList.forEach { ep ->
-            val r = ep.resolve(expressionString, false)
+            val r = ep.resolveTemplate(expressionString)
             if (r != null) return r
         }
         return null
     }
-    
+
     /**
      * @see CwtDataExpressionResolver.processTextPatterns
      */

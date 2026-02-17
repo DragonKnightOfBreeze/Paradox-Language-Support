@@ -152,12 +152,20 @@ class CwtConstantDataExpressionResolver : CwtDataExpressionResolver {
         if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
     }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null
+    }
 }
 
 class CwtTemplateDataExpressionResolver : CwtDataExpressionResolver {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression).apply { value = expressionString }
+    }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null
     }
 }
 
@@ -175,6 +183,10 @@ class CwtAntDataExpressionResolver : CwtDataExpressionResolver {
             val v = expressionString.removePrefixOrNull(prefixIgnoreCase) ?: return@run
             return CwtDataExpression.create(expressionString, isKey, dataType).apply { value = v.orNull() }.apply { ignoreCase = true }
         }
+        return null
+    }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null
     }
 }
@@ -195,6 +207,10 @@ class CwtRegexDataExpressionResolver : CwtDataExpressionResolver {
         }
         return null
     }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
+        return null
+    }
 }
 
 class CwtSuffixAwareDataExpressionResolver : CwtDataExpressionResolver {
@@ -203,10 +219,6 @@ class CwtSuffixAwareDataExpressionResolver : CwtDataExpressionResolver {
         if (separatorIndex == -1) return null
         val text = expressionString.substring(0, separatorIndex)
         val suffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
-        return doResolve(expressionString, text, suffixes, isKey)
-    }
-
-    private fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
         run {
             val t = text.removeSurroundingOrNull("<", ">") ?: return@run
             if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition).apply { value = t.orNull() }
@@ -222,6 +234,10 @@ class CwtSuffixAwareDataExpressionResolver : CwtDataExpressionResolver {
             if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareSyncedLocalisation).apply { this.suffixes = suffixes }
         }
+        return null
+    }
+
+    override fun resolveTemplate(expressionString: String): CwtDataExpression? {
         return null
     }
 }
