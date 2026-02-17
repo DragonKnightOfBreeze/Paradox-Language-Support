@@ -251,7 +251,7 @@ object ParadoxTypeManager {
      * - 对应的预定义的动态值规则
      */
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
-        // 注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明
+        // 注意这里的 element 是解析引用后得到的 PSI 元素，因此无法定位到定义成员对应的规则声明
         when {
             element is ParadoxScriptProperty -> {
                 val definitionInfo = element.definitionInfo
@@ -259,7 +259,7 @@ object ParadoxTypeManager {
                     if (definitionInfo.types.size == 1) {
                         return definitionInfo.typeConfig.pointer.element.to.singletonListOrEmpty()
                     } else {
-                        // 这里的element可能是null，以防万一，处理是null的情况
+                        // 这里的 element 可能是 null，以防万一，需要处理是 null 的情况
                         return buildList {
                             definitionInfo.typeConfig.pointer.element?.let { add(it) }
                             definitionInfo.subtypeConfigs.forEach { subtypeConfig ->

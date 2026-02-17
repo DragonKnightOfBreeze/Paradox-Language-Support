@@ -19,7 +19,7 @@ import java.util.concurrent.Callable
  */
 class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        // 得到解析后的PSI元素
+        // 得到解析后的 PSI 元素
         val sourceElement = queryParameters.element
         if (sourceElement !is PsiFile) return true
         val fileInfo = sourceElement.fileInfo ?: return true

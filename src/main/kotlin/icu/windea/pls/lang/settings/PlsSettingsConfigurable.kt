@@ -281,21 +281,21 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::commentsByDefault)
                         .enabledIf(cb.selected)
                 }
-                // parameterConditionBlocks & parameterConditionBlocksByDefault
+                // parameterConditions & parameterConditionsByDefault
                 row {
-                    checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
-                        .bindSelected(foldingSettings::parameterConditionBlocks)
+                    checkBox(PlsBundle.message("settings.folding.parameterConditions"))
+                        .bindSelected(foldingSettings::parameterConditions)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(foldingSettings::parameterConditionBlocksByDefault)
+                        .bindSelected(foldingSettings::parameterConditionsByDefault)
                 }
-                // inlineMathBlocks & inlineMathBlocksByDefault
+                // inlineMaths & inlineMathsByDefault
                 row {
-                    checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
-                        .bindSelected(foldingSettings::inlineMathBlocks)
+                    checkBox(PlsBundle.message("settings.folding.inlineMaths"))
+                        .bindSelected(foldingSettings::inlineMaths)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(foldingSettings::inlineMathBlocksByDefault)
+                        .bindSelected(foldingSettings::inlineMathsByDefault)
                 }
                 // localisationTexts & localisationTextsByDefault
                 row {

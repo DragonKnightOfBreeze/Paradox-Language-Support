@@ -149,10 +149,10 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      *
      * @property comments 是否允许折叠多行注释。
      * @property commentsByDefault 是否默认折叠多行注释。
-     * @property parameterConditionBlocks 是否允许折叠参数条件表达式块。
-     * @property parameterConditionBlocksByDefault 是否默认折叠参数条件表达式块。
-     * @property inlineMathBlocks 是否允许折叠内联数学表达式块。
-     * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。
+     * @property parameterConditions 是否允许折叠参数条件表达式块。
+     * @property parameterConditionsByDefault 是否默认折叠参数条件表达式块。
+     * @property inlineMaths 是否允许折叠内联数学表达式块。
+     * @property inlineMathsByDefault 是否默认折叠内联数学表达式块。
      * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
      * @property localisationParametersFullyByDefault 是否默认折叠本地化参数。完全折叠。
      * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。
@@ -172,10 +172,10 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     class FoldingState : BaseState() {
         var comments by property(false)
         var commentsByDefault by property(false)
-        var parameterConditionBlocks by property(true)
-        var parameterConditionBlocksByDefault by property(false)
-        var inlineMathBlocks by property(true)
-        var inlineMathBlocksByDefault by property(true)
+        var parameterConditions by property(true)
+        var parameterConditionsByDefault by property(false)
+        var inlineMaths by property(true)
+        var inlineMathsByDefault by property(true)
         var localisationTexts by property(false)
         var localisationTextsByDefault by property(false)
         var localisationParametersFully by property(false)
