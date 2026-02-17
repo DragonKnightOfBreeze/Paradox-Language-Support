@@ -49,3 +49,15 @@ globs:
 - `封装变量` 应翻译为 `scripted variable`，反之亦然。它们可被视为常量，在脚本文件中通过 `@var = 1` 的格式声明。
 - `作用域` 应翻译为 `scope`，反之亦然。它们是模组编程中的“主语”。
 - `触发器` `效果` `修正` 应分别翻译为 `trigger` `effect` `modifier`，反之亦然。它们是模组编程中的常见“谓语”。
+
+关于各种语言的语法，可参考：
+- `docs/zh/ref-syntax.md`
+- `src/test/testData/cwt/syntax/code_style_settings.test.cwt`
+- `src/test/testData/script/syntax/code_style_settings.test.txt`
+- `src/test/testData/localisation/syntax/code_style_settings.test.yml`
+
+关于规则系统以及规则和规则表达式的格式，可参考：
+- `docs/zh/config.md`
+- `docs/zh/ref-config-format.md`
+- `cwt/cwtools-stellaris-config/config`
+- `src/test/testData/fable`

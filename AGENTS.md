@@ -24,10 +24,10 @@ In addition to language features, PLS also includes:
 
 - `src/main/kotlin` / `src/main/java` / `src/main/resources`: plugin source
 - `src/main/resources/META-INF/plugin.xml`: plugin entry; most registrations are split into `META-INF/pls-*.xml`
-- `cwt/`: CWT config repositories (core + per-game downstream repos)
-- `docs/`: user-facing documentation (zh/en)
-- `documents/notes/`: maintainer notes (coding conventions, domain model notes)
 - `src/test/...`: tests and test data
+- `cwt/`: CWT config repositories (core + per-game downstream repos)
+- `docs/`: reference documentation (including language syntax guidance and config format guidance)
+- `documents/notes/`: maintainer notes
 
 ## Setup and build commands (Windows)
 
@@ -162,8 +162,6 @@ Example (run only AI tests when you have local credentials configured):
 
 ## Coding conventions
 
-This section summarizes `documents/notes/笔记：代码规范.md`.
-
 ### Naming
 
 For EP implementation classes, prefer:
@@ -186,7 +184,7 @@ Avoid non-word abbreviations. For example, prefer `context` over `ctx`.
 ### Imports
 
 - Prefer explicit imports; allow star imports mainly for DSL-style packages.
-- Star import threshold: **50**.
+- Star import threshold: 50.
 - Star-import is acceptable for known DSL packages, such as:
   - `com.intellij.ui.dsl.*`
   - `icu.windea.pls.config.select.*`
@@ -202,12 +200,14 @@ Avoid non-word abbreviations. For example, prefer `context` over `ctx`.
 
 ### Indexing
 
-- File-level analysis data (language area, file path): use `FileBasedIndex`.
-- PSI-structure data not depending on dynamic config (scripted variables, localisation): use `StubIndex`.
-- Data depending on resolved references or config data: consider `FileBasedIndex`.
-- If you need simulated PSI or member-rule-dependent data: prefer `ParadoxMergedIndex` to reduce repeated parsing.
+- File-level analysis data (e.g., locale, file path): use `FileBasedIndex`.
+- PSI-structure data not depending on dynamic config (e.g., scripted variables, localisations): use `StubIndex`.
+- Data depending on resolved references or config data (see `CwtConfigGroupDataHolder`): consider `FileBasedIndex`.
+- Data from mocked PSI (`MockPsiElement`) or depending on member config (see `CwtMemberConfig`): prefer `ParadoxMergedIndex` for better performance.
 
-### Code organization (packages)
+### Code organization
+
+Package organization:
 
 - `icu.windea.pls.core`: stdlib/platform/third-party extensions + shared utilities
 - `icu.windea.pls.config`: config/config group/config expression models + services/resolvers/manipulators
@@ -220,35 +220,48 @@ Service vs manager vs util:
 - `manager`: higher-level, convenient domain methods; typically hosts caching
 - `util`: narrow-purpose helpers
 
-### Inspection message formatting
-
-When referring to identifiers (names, types, etc.) in English messages, prefer backticks (`` `id` ``) rather than single quotes, except in some “after a colon” contexts.
-
 ## Domain notes and terminology
 
-This section summarizes `documents/notes/笔记：领域相关.md`.
+### Translation terms
 
-### Recommended English terms (important for docs/messages)
+- CWT Config → CWT 规则 (avoid using "rule" if it specifically means CWT configs)
+- scope → 作用域
+- modifier → 修正
+- trigger → 触发器
+- effect → 效果
+- scripted variable → 封装变量
+- definition → 定义
+  - scripted trigger → 封装触发器
+  - scripted effect → 封装效果
+  - script value → 脚本值
+  - define → 定值
+  - game rule → 游戏规则
+  - on action → 动作触发
+  - event → 事件
+  - event namespace → 事件命名空间
+  - sprite -> 精灵
+- localisation → 本地化
+- directive → 指令
+  - inline script → 内联脚本
+  - definition injection → 定义注入
 
-- “规则 / CWT 规则” → **config / CWT config** (avoid “rule” if it specifically means CWT configs)
-- “封装变量” → **scripted variable**
-- “作用域” → **scope**
-- “触发器 / 效果 / 修正” → **trigger / effect / modifier**
-- “本地化” → **localisation**
-- “指令” → **directive**
-  - “内联脚本” → **inline script**
-  - “定义注入” → **definition injection**
+### Language Guidance
 
-### Script PSI vs semantic concepts
+For detailed language syntax and recommended examples, see:
 
-PLS distinguishes syntax-level PSI elements (properties/values/blocks, inline math, parameters, parameter conditions) from semantic-level entities like:
+- `docs/en/ref-syntax.md`
+- `src/test/testData/cwt/syntax/code_style_settings.test.cwt`
+- `src/test/testData/script/syntax/code_style_settings.test.txt`
+- `src/test/testData/localisation/syntax/code_style_settings.test.yml`
 
-- `scriptedVariable`
-- `definition` (root key, type key, definition member)
-- `directive` (inline script usage, definition injection)
-- `complexExpression` (scope field expression, value field expression, etc.)
+### Config System Guidance
 
-When implementing new features, be explicit about which layer you are operating on.
+For the config system and format of configs and config expressions, see:
+
+- `docs/en/config.md`
+- `docs/en/ref-config-format.md`
+- `cwt/cwtools-stellaris-config/config` (the real-game config directory)
+- `src/test/testData/fable` (the easter-egg config directory)
 
 ## Agent instructions
 
@@ -272,9 +285,9 @@ When implementing new features, be explicit about which layer you are operating 
 
 ### Working style
 
-- If a task is large/complex and needs a detailed plan, consider writing it into `documents/ai-plans/`.
-- If the task is analysis/evaluation/exploration, consider writing a report into `documents/ai-reports/`.
-- If you notice existing conversation notes in opened files, you may use them to guide the work and suggest next steps, but do not execute unrelated tasks unless explicitly requested.
+- If a task is large/complex and needs a detailed plan, you can consider writing the plan document into `documents/ai-plans/`.
+- If the task is analysis/evaluation/exploration, you can consider writing the report document into `documents/ai-reports/`.
+- If you notice existing conversation notes in opened files, you may use them to guide the work and suggest next steps, but do not execute unrequested tasks.
 
 ### IntelliJ plugin specifics
 
@@ -310,7 +323,7 @@ When you need to **drive IDE actions** (not just code intelligence), prefer the 
 
 #### IDE Index MCP server (semantic code intelligence)
 
-When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep:
+When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available:
 
 - **Finding references**: use `ide_find_references`
 - **Go to definition**: use `ide_find_definition`
@@ -324,9 +337,3 @@ Notes:
 - Prefer IDE tools because they understand PSI/AST and indices, which is far more accurate than plain text search.
 - If the IDE is still indexing, check readiness first via `ide_index_status` (wait/retry when in dumb mode).
 - If multiple projects are open in one IDE window, always pass the `project_path` parameter to avoid ambiguity.
-
-#### Shell usage
-
-- Use the shell mainly for running Gradle tasks/tests.
-- Prefer the Gradle wrapper: use `./gradlew` for all Gradle tasks.
-- Prefer non-destructive commands and minimal output.
