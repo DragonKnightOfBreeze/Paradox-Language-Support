@@ -1,5 +1,7 @@
 package icu.windea.pls.ep.config.configExpression
 
+import com.intellij.util.Processor
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -8,106 +10,136 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.optimizedPath
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
-import icu.windea.pls.core.util.text.TextPatternBasedBuilder
-import icu.windea.pls.core.util.text.TextPatternMatchResult
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
+import icu.windea.pls.core.util.text.TextPattern
+import icu.windea.pls.core.util.text.TextPatternBasedBuilder
+import icu.windea.pls.core.util.text.TextPatternBasedProvider
+import icu.windea.pls.core.util.text.TextPatternMatchResult
+
+abstract class CwtTextPatternBasedDataExpressionResolver : CwtDataExpressionResolver {
+    protected data class Match(
+        val type: CwtDataType,
+        val action: CwtDataExpression.() -> Unit = {}
+    )
+
+    private val providers = mutableListOf<TextPatternBasedProvider<Match, out TextPatternMatchResult>>()
+    private val builder by lazy { TextPatternBasedBuilder<Match>(providers) }
+
+    protected fun fromLiteral(type: CwtDataType, value: String, action: CwtDataExpression.() -> Unit = {}) {
+        providers += TextPatternBasedProvider(TextPattern.from(value)) { _, _ -> Match(type, action) }
+    }
+
+    protected fun fromParameterized(type: CwtDataType, prefix: String, suffix: String, action: CwtDataExpression.(String) -> Unit = {}) {
+        providers += TextPatternBasedProvider(TextPattern.from(prefix, suffix)) { _, r -> Match(type) { action(r.value) } }
+    }
+
+    protected fun fromRanged(type: CwtDataType, prefix: String, action: CwtDataExpression.(String) -> Unit = {}) {
+        providers += TextPatternBasedProvider(TextPattern.withPrefix(prefix)) { _, r -> if (isRangeLike(r.value)) Match(type) { action(r.value) } else null }
+    }
+
+    private fun isRangeLike(v: String): Boolean {
+        return v.length >= 2 && v.first().let { c -> c == '[' || c == '(' } && v.last().let { c -> c == ']' || c == ')' }
+    }
+
+    final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+        val match = builder.build(expressionString) ?: return null
+        return CwtDataExpression.create(expressionString, isKey, match.type).apply(match.action)
+    }
+
+    override fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
+        return providers.process { provider -> consumer.process(provider.pattern) }
+    }
+}
 
 class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
-    override val rules: List<TextPatternBasedBuilder.Rule<Match, out TextPatternMatchResult>> = listOf(
-        rule(CwtDataTypes.Any, "\$any"),
+    init {
+        fromLiteral(CwtDataTypes.Any, "\$any")
 
-        rule(CwtDataTypes.Bool, "bool"),
+        fromLiteral(CwtDataTypes.Bool, "bool")
 
-        rule(CwtDataTypes.Int, "int"),
-        rule(CwtDataTypes.Int, "int[", "") { intRange = IntRangeInfo.from("[$it") },
-        rule(CwtDataTypes.Int, "int(", "") { intRange = IntRangeInfo.from("($it") },
+        fromLiteral(CwtDataTypes.Int, "int")
+        fromRanged(CwtDataTypes.Int, "int") { intRange = IntRangeInfo.from(it) }
 
-        rule(CwtDataTypes.Float, "float"),
-        rule(CwtDataTypes.Float, "float[", "") { floatRange = FloatRangeInfo.from("[$it") },
-        rule(CwtDataTypes.Float, "float(", "") { floatRange = FloatRangeInfo.from("($it") },
+        fromLiteral(CwtDataTypes.Float, "float")
+        fromRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
 
-        rule(CwtDataTypes.Scalar, "scalar"),
+        fromLiteral(CwtDataTypes.Scalar, "scalar")
 
-        rule(CwtDataTypes.ColorField, "colour_field"),
-        rule(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.ColorField, "color_field"),
-        rule(CwtDataTypes.ColorField, "color[", "]") { value = it.orNull() },
-    )
+        fromLiteral(CwtDataTypes.ColorField, "colour_field")
+        fromParameterized(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }
+        fromLiteral(CwtDataTypes.ColorField, "color_field")
+        fromParameterized(CwtDataTypes.ColorField, "color[", "]") { value = it.orNull() }
+    }
 }
 
 class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver() {
-    override val rules: List<TextPatternBasedBuilder.Rule<Match, out TextPatternMatchResult>> = listOf(
-        rule(CwtDataTypes.PercentageField, "percentage_field"),
-        rule(CwtDataTypes.DateField, "date_field"),
-        rule(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() },
+    init {
+        fromLiteral(CwtDataTypes.PercentageField, "percentage_field")
+        fromLiteral(CwtDataTypes.DateField, "date_field")
+        fromParameterized(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.Localisation, "localisation"),
-        rule(CwtDataTypes.SyncedLocalisation, "localisation_synced"),
-        rule(CwtDataTypes.InlineLocalisation, "localisation_inline"),
+        fromLiteral(CwtDataTypes.Localisation, "localisation")
+        fromLiteral(CwtDataTypes.SyncedLocalisation, "localisation_synced")
+        fromLiteral(CwtDataTypes.InlineLocalisation, "localisation_inline")
 
-        rule(CwtDataTypes.AbsoluteFilePath, "abs_filepath"),
-        rule(CwtDataTypes.FileName, "filename"),
-        rule(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.FilePath, "filepath"),
-        rule(CwtDataTypes.FilePath, "filepath[./]") { value = "./" }, // fixed (should keep `"./"`)
-        rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() },
-        rule(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() },
+        fromLiteral(CwtDataTypes.AbsoluteFilePath, "abs_filepath")
+        fromLiteral(CwtDataTypes.FileName, "filename")
+        fromParameterized(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() }
+        fromLiteral(CwtDataTypes.FilePath, "filepath")
+        fromLiteral(CwtDataTypes.FilePath, "filepath[./]") { value = "./" } // fixed (should keep `"./"`)
+        fromParameterized(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() }
+        fromParameterized(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() }
 
-        rule(CwtDataTypes.Modifier, "<modifier>"),
-        rule(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>"),
-        rule(CwtDataTypes.Definition, "<", ">") { value = it.orNull() },
+        fromLiteral(CwtDataTypes.Modifier, "<modifier>")
+        fromLiteral(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>")
+        fromParameterized(CwtDataTypes.Definition, "<", ">") { value = it.orNull() }
 
-        rule(CwtDataTypes.Value, "value[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.ValueSet, "value_set[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.orNull() },
+        fromParameterized(CwtDataTypes.Value, "value[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.ValueSet, "value_set[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.DynamicValue, "dynamic_value[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() },
+        fromParameterized(CwtDataTypes.EnumValue, "enum[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.ScopeField, "scope_field"),
-        rule(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } },
-        rule(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.orNull() },
+        fromLiteral(CwtDataTypes.ScopeField, "scope_field")
+        fromParameterized(CwtDataTypes.Scope, "scope[", "]") { value = it.orNull().takeIf { v -> v != "any" } }
+        fromParameterized(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.ValueField, "value_field"),
-        rule(CwtDataTypes.ValueField, "value_field[", "") { floatRange = FloatRangeInfo.from("[$it") },
-        rule(CwtDataTypes.ValueField, "value_field(", "") { floatRange = FloatRangeInfo.from("($it") },
-        rule(CwtDataTypes.IntValueField, "int_value_field"),
-        rule(CwtDataTypes.IntValueField, "int_value_field[", "") { intRange = IntRangeInfo.from("[$it") },
-        rule(CwtDataTypes.IntValueField, "int_value_field(", "") { intRange = IntRangeInfo.from("($it") },
+        fromLiteral(CwtDataTypes.ValueField, "value_field")
+        fromRanged(CwtDataTypes.ValueField, "value_field") { floatRange = FloatRangeInfo.from(it) }
+        fromLiteral(CwtDataTypes.IntValueField, "int_value_field")
+        fromRanged(CwtDataTypes.IntValueField, "int_value_field") { intRange = IntRangeInfo.from(it) }
 
-        rule(CwtDataTypes.VariableField, "variable_field"),
-        rule(CwtDataTypes.VariableField, "variable_field[", "") { floatRange = FloatRangeInfo.from("[$it") },
-        rule(CwtDataTypes.VariableField, "variable_field(", "") { floatRange = FloatRangeInfo.from("($it") },
-        rule(CwtDataTypes.VariableField, "variable_field32"),
-        rule(CwtDataTypes.VariableField, "variable_field32[", "") { floatRange = FloatRangeInfo.from("[$it") },
-        rule(CwtDataTypes.VariableField, "variable_field32(", "") { floatRange = FloatRangeInfo.from("($it") },
-        rule(CwtDataTypes.IntVariableField, "int_variable_field"),
-        rule(CwtDataTypes.IntVariableField, "int_variable_field[", "") { intRange = IntRangeInfo.from("[$it") },
-        rule(CwtDataTypes.IntVariableField, "int_variable_field(", "") { intRange = IntRangeInfo.from("($it") },
-        rule(CwtDataTypes.IntVariableField, "int_variable_field_32"),
-        rule(CwtDataTypes.IntVariableField, "int_variable_field_32[", "") { intRange = IntRangeInfo.from("[$it") },
-        rule(CwtDataTypes.IntVariableField, "int_variable_field_32(", "") { intRange = IntRangeInfo.from("($it") },
+        fromLiteral(CwtDataTypes.VariableField, "variable_field")
+        fromRanged(CwtDataTypes.VariableField, "variable_field") { floatRange = FloatRangeInfo.from(it) }
+        fromLiteral(CwtDataTypes.VariableField, "variable_field32")
+        fromRanged(CwtDataTypes.VariableField, "variable_field32") { floatRange = FloatRangeInfo.from(it) }
+        fromLiteral(CwtDataTypes.IntVariableField, "int_variable_field")
+        fromRanged(CwtDataTypes.IntVariableField, "int_variable_field") { intRange = IntRangeInfo.from(it) }
+        fromLiteral(CwtDataTypes.IntVariableField, "int_variable_field_32")
+        fromRanged(CwtDataTypes.IntVariableField, "int_variable_field_32") { intRange = IntRangeInfo.from(it) }
 
-        rule(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() },
-        rule(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() },
+        fromParameterized(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.Command, "\$command"),
-        rule(CwtDataTypes.DatabaseObject, "\$database_object"),
-        rule(CwtDataTypes.DefineReference, "\$define_reference"),
-        rule(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() },
+        fromLiteral(CwtDataTypes.Command, "\$command")
+        fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
+        fromLiteral(CwtDataTypes.DefineReference, "\$define_reference")
+        fromParameterized(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() }
 
-        rule(CwtDataTypes.Parameter, "\$parameter"),
-        rule(CwtDataTypes.ParameterValue, "\$parameter_value"),
-        rule(CwtDataTypes.LocalisationParameter, "\$localisation_parameter"),
+        fromLiteral(CwtDataTypes.Parameter, "\$parameter")
+        fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")
+        fromLiteral(CwtDataTypes.LocalisationParameter, "\$localisation_parameter")
 
-        rule(CwtDataTypes.ShaderEffect, "\$shader_effect"),
-    )
+        fromLiteral(CwtDataTypes.ShaderEffect, "\$shader_effect")
+    }
 }
 
 class CwtConstantDataExpressionResolver : CwtDataExpressionResolver {

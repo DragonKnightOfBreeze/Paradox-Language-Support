@@ -76,21 +76,24 @@ private class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver
 
     private fun doResolve(expressionString: String): CwtTemplateExpression {
         // 收集所有“具有前后缀”的文本模式，用于匹配拆分
-        val patterns = CwtConfigExpressionService.getAllTextPatterns()
         val snippets = mutableListOf<CwtDataExpression>()
         var startIndex = 0
         while (true) {
             // 在剩余字符串中，计算所有可拆分的文本模式的最早出现位置，选择最靠左者
-            val tuple = patterns.mapNotNull f@{ pattern ->
-                if (pattern !is TextPattern.Delimited) return@f null
-                val (prefix, suffix) = pattern
-                if (prefix.isEmpty() || suffix.isEmpty()) return@f null
-                val i1 = expressionString.indexOf(prefix, startIndex).takeIf { it != -1 } ?: return@f null
-                val i2 = expressionString.indexOf(suffix, i1 + prefix.length).takeIf { it != -1 } ?: return@f null
-                tupleOf(prefix, suffix, i1, i2)
-            }.minByOrNull { (_, _, i1, _) -> i1 }
+            val tuples = buildList {
+                CwtConfigExpressionService.processTextPatterns p@{ pattern ->
+                    if (pattern !is TextPattern.Parameterized) return@p true
+                    val (prefix, suffix) = pattern
+                    if (prefix.isEmpty() || suffix.isEmpty()) return@p true
+                    val i1 = expressionString.indexOf(prefix, startIndex).takeIf { it != -1 } ?: return@p true
+                    val i2 = expressionString.indexOf(suffix, i1 + prefix.length).takeIf { it != -1 } ?: return@p true
+                    this += tupleOf(prefix, suffix, i1, i2)
+                    true
+                }
+            }
+            val tuple = tuples.minByOrNull { (_, _, i1, _) -> i1 }
             if (tuple != null) {
-                val (prefix, suffix, i1, i2) = tuple
+                val (_, suffix, i1, i2) = tuple
                 // 先加入动态片段之前的常量片段
                 if (i1 > 0 && i1 != startIndex) {
                     addToSnippets(expressionString.substring(startIndex, i1), snippets, true)

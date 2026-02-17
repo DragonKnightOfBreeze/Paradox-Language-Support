@@ -1,29 +1,20 @@
 package icu.windea.pls.config.configExpression
 
+import com.intellij.util.Processor
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 
 object CwtConfigExpressionService {
-    private val allTextPatternsCache by lazy {
-        CwtDataExpressionResolver.EP_NAME.extensionList.flatMap { it.getTextPatterns() }
-    }
-
-    /**
-     * @see CwtDataExpressionResolver.getTextPatterns
-     */
-    fun getAllTextPatterns(): List<TextPattern<*>> {
-        return allTextPatternsCache
-    }
-
     /**
      * @see CwtDataExpressionResolver.resolve
      */
     fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        CwtDataExpressionResolver.EP_NAME.extensionList.forEach f@{ ep ->
+        CwtDataExpressionResolver.EP_NAME.extensionList.forEach { ep ->
             val r = ep.resolve(expressionString, isKey)
             if (r != null) return r
         }
@@ -34,11 +25,20 @@ object CwtConfigExpressionService {
      * @see CwtDataExpressionResolver.resolve
      */
     fun resolveTemplate(expressionString: String): CwtDataExpression? {
-        CwtDataExpressionResolver.EP_NAME.extensionList.forEach f@{ ep ->
+        CwtDataExpressionResolver.EP_NAME.extensionList.forEach { ep ->
             val r = ep.resolve(expressionString, false)
             if (r != null) return r
         }
         return null
+    }
+    
+    /**
+     * @see CwtDataExpressionResolver.processTextPatterns
+     */
+    fun processTextPatterns(consumer: Processor<TextPattern<*>>): Boolean {
+        return CwtDataExpressionResolver.EP_NAME.extensionList.process { ep ->
+            ep.processTextPatterns(consumer)
+        }
     }
 
     /**
@@ -46,7 +46,7 @@ object CwtConfigExpressionService {
      */
     fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
         if (configExpression1 == configExpression2) return configExpression1.expressionString
-        CwtDataExpressionMerger.EP_NAME.extensionList.forEach f@{ ep ->
+        CwtDataExpressionMerger.EP_NAME.extensionList.forEach { ep ->
             val r = ep.merge(configExpression1, configExpression2, configGroup)
             if (r != null) return r
         }
