@@ -79,7 +79,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionContextConfigs = parameterInfo.expressionContextConfigs
+        val expressionContextConfigs = ParadoxParameterManager.getExpressionContextConfigs(parameterInfo)
         if (expressionContextConfigs.isEmpty()) return null
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         if (contextConfigs.isNullOrEmpty()) return null
@@ -136,7 +136,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     }
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionConfigs = parameterInfo.expressionConfigs
+        val expressionConfigs = ParadoxParameterManager.getExpressionConfigs(parameterInfo)
         if (expressionConfigs.isEmpty()) return null
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return null

@@ -20,12 +20,14 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
@@ -47,6 +49,7 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -66,6 +69,10 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 import java.util.*
 
 object ParadoxParameterManager {
@@ -228,14 +235,45 @@ object ParadoxParameterManager {
         return false
     }
 
-    private fun isOptionalFromConditionExpressions(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
+    fun isOptionalFromConditionExpressions(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
         val conditionExpressions = parameterInfo.conditionExpressions
         if (conditionExpressions.isNullOrEmpty()) return false
         return !conditionExpressions.all { it.matches(argumentNames) }
     }
 
-    private fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
-        return parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+    fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
+        val expressionConfigs = getExpressionConfigs(parameterInfo)
+        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+    }
+
+    /**
+     * 基于指定的参数信息，得到对应的脚本表达式所对应的上下文规则列表。此参数需要整个作为一个脚本表达式。
+     */
+    fun getExpressionContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
+        if (!expressionElement.value.isParameterized(full = true)) return emptyList()
+        val expressionContextConfigs = ParadoxConfigManager.getConfigContext(expressionElement)?.getConfigs()
+        return expressionContextConfigs.orEmpty()
+    }
+
+    /**
+     * 基于指定的参数信息，得到对应的脚本表达式所对应的规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     */
+    fun getExpressionConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
+        val expressionElement = parameterInfo.parentElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
+        return when {
+            expressionElement is ParadoxScriptPropertyKey -> {
+                val configs = ParadoxConfigManager.getConfigs(expressionElement)
+                configs.filterIsInstance<CwtPropertyConfig>()
+            }
+            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+                val configs = ParadoxConfigManager.getConfigs(expressionElement)
+                configs.filterIsInstance<CwtValueConfig>()
+            }
+            else -> {
+                emptyList()
+            }
+        }
     }
 
     fun getRequiredParameterNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, argumentNames: MutableSet<String>): MutableSet<String> {
