@@ -8,7 +8,6 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
@@ -146,17 +145,20 @@ object ParadoxInlineScriptService {
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(options).orNull()
-            if (fast && usageConfigs.isNotNullOrEmpty()) {
-                result.set(usageConfigs)
-                return@p false
-            }
             // merge
-            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
                 if (it) return@also
                 context.inlineScriptHasConflict = true
                 result.set(null)
             }
+            if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
+    }
+
+    private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
+        val v = result.get()
+        if (v.isNullOrEmpty()) return false
+        return true
     }
 }

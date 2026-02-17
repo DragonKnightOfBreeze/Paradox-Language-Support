@@ -287,11 +287,11 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      * @property injectionForParameterValue 是否在必要时对参数值进行自动语言注入（作为脚本片段）。
      * @property injectionForLocalisationText 是否在必要时对字符串字面量进行自动语言注入（作为本地化文本）。
      * @property configContextForParameters 是否推断参数的规则上下文。
-     * @property configContextForParametersFast 推断参数的规则上下文时，是否仅使用第一个有效的推断结果。
+     * @property configContextForParametersFast 推断参数的规则上下文时，是否直接使用第一个有效的推断结果。
      * @property configContextForParametersFromUsages 推断参数的规则上下文时，是否基于用法。
      * @property configContextForParametersFromConfig 推断参数的规则上下文时，是否基于扩展规则。
      * @property configContextForInlineScripts 是否推断内联脚本的规则上下文。
-     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否仅使用第一个有效的推断结果。
+     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否直接使用第一个有效的推断结果。
      * @property configContextForInlineScriptsFromUsages 推断参数的规则上下文时，是否基于用法。
      * @property configContextForInlineScriptsFromConfig 推断参数的规则上下文时，是否基于扩展规则。
      * @property scopeContext 是否推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。

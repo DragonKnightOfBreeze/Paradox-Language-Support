@@ -164,11 +164,9 @@ object ParadoxParameterService {
             ProgressManager.checkCanceled()
             val contextInfo = getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo, fast).orNull()
-            if (fast && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            // merge
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            if (fast && result.get().isNotNullOrEmpty()) false else r
         }
         return result.get().orEmpty()
     }
@@ -180,13 +178,17 @@ object ParadoxParameterService {
         parameterInfos.process p@{ parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            if (fast && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            // merge
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
+    }
+
+    private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
+        val v = result.get()
+        if (v.isNullOrEmpty()) return false
+        return true
     }
 
     fun getInferredType(contextConfigs: List<CwtMemberConfig<*>>): String? {
