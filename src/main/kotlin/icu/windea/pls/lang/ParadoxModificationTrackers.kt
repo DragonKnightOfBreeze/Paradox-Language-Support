@@ -1,8 +1,12 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.util.SimpleModificationTracker
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.util.FilePathBasedModificationTracker
 import icu.windea.pls.core.util.MergedModificationTracker
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -18,12 +22,8 @@ object ParadoxModificationTrackers {
 
     val ScriptFileMap = ConcurrentHashMap<String, FilePathBasedModificationTracker>()
 
-    fun ScriptFile(key: String): FilePathBasedModificationTracker {
-        return ScriptFileMap.getOrPut(key) { FilePathBasedModificationTracker(key) }
-    }
-
-    val ScriptedVariables = ScriptFile("common/scripted_variables/**/*.txt")
-    val InlineScripts = ScriptFile("common/inline_scripts/**/*.txt")
+    val ScriptedVariables = scriptFileFromPatterns("common/scripted_variables/**/*.txt")
+    val InlineScripts = scriptFileFromPatterns("common/inline_scripts/**/*.txt")
 
     val PreferredLocale = SimpleModificationTracker()
     val FilePath = SimpleModificationTracker()
@@ -40,4 +40,34 @@ object ParadoxModificationTrackers {
         InlineScriptConfigInference,
     )
     val Scope = DefinitionScopeContextInference
+
+    fun scriptFileFromPatterns(vararg patterns: String): FilePathBasedModificationTracker {
+        if (patterns.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        return scriptFileFrom(patterns.toSortedSet())
+    }
+
+    fun scriptFileFromDefinitionTypes(configGroup: CwtConfigGroup, vararg definitionTypes: String): FilePathBasedModificationTracker {
+        if (definitionTypes.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        val configs = definitionTypes.mapNotNull { configGroup.types[it] }
+        return scriptFileFromConfigs(configs)
+    }
+
+    fun scriptFileFromDefinitionTypes(configGroup: CwtConfigGroup, definitionTypes: Collection<String>): FilePathBasedModificationTracker {
+        if (definitionTypes.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        val configs = definitionTypes.mapNotNull { configGroup.types[it] }
+        return scriptFileFromConfigs(configs)
+    }
+
+    private fun scriptFileFrom(patterns: SortedSet<String>): FilePathBasedModificationTracker {
+        if (patterns.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        val key = patterns.joinToString(";")
+        return ScriptFileMap.getOrPut(key) { FilePathBasedModificationTracker(patterns) }
+    }
+
+    private fun scriptFileFromConfigs(configs: List<CwtTypeConfig>): FilePathBasedModificationTracker {
+        if (configs.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
+        if (patterns.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
+        return scriptFileFrom(patterns)
+    }
 }
