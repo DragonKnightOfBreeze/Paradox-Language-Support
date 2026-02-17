@@ -9,11 +9,11 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.configExpression.wildcard
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
@@ -166,7 +166,7 @@ object ParadoxParameterService {
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo, fast).orNull()
             // merge
             val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
-            if (fast && result.get().isNotNullOrEmpty()) false else r
+            if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
     }
@@ -187,7 +187,9 @@ object ParadoxParameterService {
 
     private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
         val v = result.get()
-        if (v.isNullOrEmpty()) return false
+        if (v.isNullOrEmpty()) return false // empty -> not available
+        val c = v.singleOrNull()?.configs?.singleOrNull()
+        if (c is CwtValueConfig && c.configExpression.wildcard) return false // wildcard (e.g., from condition parameter) -> not available
         return true
     }
 

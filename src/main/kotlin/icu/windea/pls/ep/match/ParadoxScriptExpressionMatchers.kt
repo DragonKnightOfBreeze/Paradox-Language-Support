@@ -338,7 +338,7 @@ class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Ant) return null
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase ?: false
+        val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesAntPattern(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }
@@ -350,7 +350,7 @@ class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Regex) return null
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase ?: false
+        val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesRegex(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }

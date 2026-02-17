@@ -158,7 +158,7 @@ object ParadoxInlineScriptService {
 
     private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
         val v = result.get()
-        if (v.isNullOrEmpty()) return false
+        if (v.isNullOrEmpty()) return false // empty -> not available
         return true
     }
 }

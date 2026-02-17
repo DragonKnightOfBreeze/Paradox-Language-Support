@@ -111,6 +111,12 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         run {
             val e = CwtDataExpression.resolve("scalar", false)
             assertEquals(CwtDataTypes.Scalar, e.type)
+            assertFalse(e.wildcard)
+        }
+        run {
+            val e = CwtDataExpression.resolve("wildcard_scalar", false)
+            assertEquals(CwtDataTypes.Scalar, e.type)
+            assertTrue(e.wildcard)
         }
 
         // color field variants
@@ -323,25 +329,25 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             val e = CwtDataExpression.resolve("ant:foo/*", false)
             assertEquals(CwtDataTypes.Ant, e.type)
             assertEquals("foo/*", e.value)
-            assertNull(e.ignoreCase)
+            assertFalse(e.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("ant.i:foo/*", false)
             assertEquals(CwtDataTypes.Ant, e.type)
             assertEquals("foo/*", e.value)
-            assertEquals(true, e.ignoreCase)
+            assertTrue(e.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("re:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
             assertEquals("foo.*bar", e.value)
-            assertNull(e.ignoreCase)
+            assertFalse(e.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("re.i:foo.*bar", false)
             assertEquals(CwtDataTypes.Regex, e.type)
             assertEquals("foo.*bar", e.value)
-            assertEquals(true, e.ignoreCase)
+            assertTrue(e.ignoreCase)
         }
     }
 

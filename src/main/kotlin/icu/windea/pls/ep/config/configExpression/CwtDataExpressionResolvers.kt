@@ -5,11 +5,11 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.configExpression.constrained
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
+import icu.windea.pls.config.configExpression.wildcard
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
@@ -71,7 +71,7 @@ class CwtBaseDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromRanged(CwtDataTypes.Float, "float") { floatRange = FloatRangeInfo.from(it) }
 
         fromLiteral(CwtDataTypes.Scalar, "scalar")
-        fromLiteral(CwtDataTypes.Scalar, "constrained_scalar") { constrained = true }
+        fromLiteral(CwtDataTypes.Scalar, "wildcard_scalar") { wildcard = true }
 
         fromLiteral(CwtDataTypes.ColorField, "colour_field")
         fromParameterized(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() }

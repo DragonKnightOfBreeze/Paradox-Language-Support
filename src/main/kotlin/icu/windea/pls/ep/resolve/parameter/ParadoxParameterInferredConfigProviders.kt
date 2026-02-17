@@ -52,15 +52,15 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val parentElement = parameterInfo.parentElement ?: return null
         return when (element) {
             is ParadoxConditionParameter -> {
-                CwtValueConfig.createMock(configGroup, "scalar")
+                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
             }
             is ParadoxScriptParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
-                CwtValueConfig.createMock(configGroup, "scalar")
+                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
             }
             is ParadoxScriptInlineMathParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.createMock(configGroup, "float")
-                CwtValueConfig.createMock(configGroup, "scalar")
+                CwtValueConfig.createMock(configGroup, "wildcard_scalar")
             }
             else -> null
         }
