@@ -18,7 +18,19 @@ import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
-class QuoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+sealed class QuoteAwareIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+    protected fun canQuote(element: ParadoxScriptExpressionElement): Boolean {
+        val text = element.text
+        return !text.isQuoted()
+    }
+
+    protected fun canUnquote(element: ParadoxScriptExpressionElement): Boolean {
+        val text = element.text
+        return text.isQuoted() && !text.containsBlank()
+    }
+}
+
+class QuoteIdentifierIntention : QuoteAwareIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
@@ -37,14 +49,9 @@ class QuoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpressi
             else -> false
         }
     }
-
-    private fun canQuote(element: ParadoxScriptExpressionElement): Boolean {
-        val text = element.text
-        return !text.isQuoted()
-    }
 }
 
-class UnquoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+class UnquoteIdentifierIntention : QuoteAwareIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
     // NOTE 1.3.0+ 目前无法适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""` 中的 `\"v\"` ）
@@ -59,10 +66,5 @@ class UnquoteIdentifierIntention : PsiUpdateModCommandAction<ParadoxScriptExpres
             is ParadoxScriptString -> canUnquote(element)
             else -> false
         }
-    }
-
-    fun canUnquote(element: ParadoxScriptExpressionElement): Boolean {
-        val text = element.text
-        return text.isQuoted() && !text.containsBlank()
     }
 }

@@ -14,6 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * 求职内联数学表达式。
+ */
 class EvaluateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlineMath>(ParadoxScriptInlineMath::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.evaluateInlineMath")
 

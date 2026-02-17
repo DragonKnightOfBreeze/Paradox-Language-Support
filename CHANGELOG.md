@@ -11,6 +11,7 @@
 - [x] 优化：补充更多缺失的 AtomaticRenamer（关联重命名） / OP: Add more missing `AutomaticRenamer` (association-rename)
 - [x] 优化：为定义注入检测子类型 #274 / OP: Detect subtypes for definition injection #274
 - [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations #273
+- [ ] 新功能：新增 `PutMembersOnOneLineIntention` 和 `PutMembersOnSeparateLinesIntention` / NEW: add `PutMembersOnOneLineIntention` and `PutMembersOnSeparateLinesIntention`
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 

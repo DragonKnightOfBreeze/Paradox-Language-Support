@@ -21,7 +21,19 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
-class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+sealed class QuoteAwareIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+    protected fun canQuote(element: CwtExpressionElement): Boolean {
+        val text = element.text
+        return !text.isQuoted()
+    }
+
+    protected fun canUnquote(element: CwtExpressionElement): Boolean {
+        val text = element.text
+        return text.isQuoted() && !text.containsBlank()
+    }
+}
+
+class QuoteIdentifierIntention : QuoteAwareIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
@@ -39,14 +51,9 @@ class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>
             else -> false
         }
     }
-
-    private fun canQuote(element: CwtExpressionElement): Boolean {
-        val text = element.text
-        return !text.isQuoted()
-    }
 }
 
-class UnquoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+class UnquoteIdentifierIntention : QuoteAwareIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
@@ -60,10 +67,5 @@ class UnquoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElemen
             is CwtString -> canUnquote(element)
             else -> false
         }
-    }
-
-    private fun canUnquote(element: CwtExpressionElement): Boolean {
-        val text = element.text
-        return text.isQuoted() && !text.containsBlank()
     }
 }

@@ -81,6 +81,16 @@
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToBlockFormatIntention</className>
     </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnOneLineIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
+    </intentionAction>
     <!--endregion-->
 
     <!--region Paradox localisation-->

@@ -19,6 +19,16 @@ private val blockFormatRegex = "\\[\\[(\\w+)]\\s*\\1\\s*=\\s*\\$\\1\\$\\s*]".toR
 private val propertyTemplate = { p: String -> "$p = $$p|no$" }
 private val blockTemplate = { p: String -> "[[$p] $p = $$p$ ]" }
 
+/**
+ * 将条件片段转换为属性格式。
+ *
+ * ```paradox_script
+ * # before
+ * [[PARAM] PARAM = $PARAM$ ]
+ * # after
+ * PARAM = $PARAM|no$
+ * ```
+ */
 class ConditionalSnippetToPropertyFormatIntention : PsiUpdateModCommandAction<ParadoxScriptParameterCondition>(ParadoxScriptParameterCondition::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
 
@@ -40,6 +50,16 @@ class ConditionalSnippetToPropertyFormatIntention : PsiUpdateModCommandAction<Pa
     }
 }
 
+/**
+ * 将条件片段转为块格式。
+ *
+ * ```paradox_script
+ * # before
+ * PARAM = $PARAM|no$
+ * # after
+ * [[PARAM] PARAM = $PARAM$ ]
+ * ```
+ */
 class ConditionalSnippetToBlockFormatIntention : PsiUpdateModCommandAction<ParadoxScriptProperty>(ParadoxScriptProperty::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
 
