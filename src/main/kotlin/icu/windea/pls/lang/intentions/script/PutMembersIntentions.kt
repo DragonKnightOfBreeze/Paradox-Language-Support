@@ -2,15 +2,22 @@
 
 package icu.windea.pls.lang.intentions.script
 
+import com.intellij.application.options.CodeStyle
 import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
+import com.intellij.util.DocumentUtil
+import com.intellij.util.text.CharArrayUtil
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -27,6 +34,15 @@ private fun checkElementAvailable(element: ParadoxScriptBlock): Boolean {
         }
     }
     return flag
+}
+
+private fun hasLineBreakBetweenMembers(element: ParadoxScriptBlock): Boolean {
+    val leftBrace = element.firstChild?.takeIf { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return false
+    val rightBrace = element.lastChild?.takeIf { it.elementType == ParadoxScriptElementTypes.RIGHT_BRACE } ?: return false
+    for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
+        if (e is PsiWhiteSpace && e.textContains('\n')) return true
+    }
+    return false
 }
 
 /**
@@ -46,11 +62,30 @@ class PutMembersOnOneLineIntention : PsiUpdateModCommandAction<ParadoxScriptBloc
     override fun getFamilyName() = PlsBundle.message("intention.putMembersOnOneLine")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptBlock, updater: ModPsiUpdater) {
-        TODO()
+        if (!checkElementAvailable(element)) return
+
+        val membersText = element.members
+            .asSequence()
+            .map { it.text.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(" ")
+        if (membersText.isEmpty()) return
+
+        val file = element.containingFile
+        val spaceWithinBraces = PlsCodeStyleUtil.isSpaceWithinBraces(file)
+        val newText = buildString {
+            append("{")
+            if (spaceWithinBraces) append(" ")
+            append(membersText)
+            if (spaceWithinBraces) append(" ")
+            append("}")
+        }
+        val newElement = ParadoxScriptElementFactory.createBlock(context.project, newText)
+        element.replace(newElement)
     }
 
     override fun isElementApplicable(element: ParadoxScriptBlock, context: ActionContext): Boolean {
-        return checkElementAvailable(element)
+        return checkElementAvailable(element) && hasLineBreakBetweenMembers(element)
     }
 }
 
@@ -71,10 +106,45 @@ class PutMembersOnSeparateLinesIntention : PsiUpdateModCommandAction<ParadoxScri
     override fun getFamilyName() = PlsBundle.message("intention.putMembersOnSeparateLines")
 
     override fun invoke(context: ActionContext, element: ParadoxScriptBlock, updater: ModPsiUpdater) {
-        TODO()
+        if (!checkElementAvailable(element)) return
+
+        val file = element.containingFile
+        val settings = CodeStyle.getSettings(file)
+        val indentOptions = settings.getIndentOptions(ParadoxScriptFileType)
+        val indentUnit = when {
+            indentOptions.USE_TAB_CHARACTER -> "\t"
+            else -> " ".repeat(indentOptions.INDENT_SIZE.coerceAtLeast(1))
+        }
+        val baseIndent = run {
+            val document = PsiDocumentManager.getInstance(context.project).getDocument(file) ?: return@run ""
+            val offset = element.textOffset
+            val lineStartOffset = DocumentUtil.getLineStartOffset(offset, document)
+            val chars = document.immutableCharSequence
+            val firstNonWsLineOffset = CharArrayUtil.shiftForward(chars, lineStartOffset, " \t")
+            chars.subSequence(lineStartOffset, firstNonWsLineOffset).toString()
+        }
+        val innerIndent = baseIndent + indentUnit
+
+        val membersText = element.members
+            .asSequence()
+            .map { it.text.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString("\n") { innerIndent + it }
+        if (membersText.isEmpty()) return
+
+        val newText = buildString {
+            append("{")
+            append("\n")
+            append(membersText)
+            append("\n")
+            append(baseIndent)
+            append("}")
+        }
+        val newElement = ParadoxScriptElementFactory.createBlock(context.project, newText)
+        element.replace(newElement)
     }
 
     override fun isElementApplicable(element: ParadoxScriptBlock, context: ActionContext): Boolean {
-        return checkElementAvailable(element)
+        return checkElementAvailable(element) && !hasLineBreakBetweenMembers(element)
     }
 }
