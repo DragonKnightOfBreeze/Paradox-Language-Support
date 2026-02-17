@@ -303,7 +303,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var injectionForParameterValue by property(true)
         var injectionForLocalisationText by property(true)
         var configContextForParameters by property(true)
-        var configContextForParametersFast by property(true)
+        var configContextForParametersFast by property(false)
         var configContextForParametersFromUsages by property(true)
         var configContextForParametersFromConfig by property(true)
         var configContextForInlineScripts by property(true)
