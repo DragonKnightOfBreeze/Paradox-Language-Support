@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.intentions.script
+package icu.windea.pls.lang.intentions.cwt
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class PutMembersIntentionsTest: BasePlatformTestCase() {
+class PutMembersIntentionsTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -26,33 +26,33 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     fun testPutMembersOnOneLine_basic() {
         val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
-            "put_members_on_one_line_basic.test.txt",
+            "put_members_on_one_line_basic.test.cwt",
             """
-            k = {
-                <caret>a
-                b = c
+            {
+                <caret>a = 1
+                b
             }
             """.trimIndent()
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
-        myFixture.checkResult("k = { a b = c }")
+        myFixture.checkResult("{ a = 1 b }")
     }
 
     @Test
     fun testPutMembersOnSeparateLines_basic() {
         val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
-            "put_members_on_separate_lines_basic.test.txt",
-            "k = { <caret>a b = c }"
+            "put_members_on_separate_lines_basic.test.cwt",
+            "{ <caret>a = 1 b }"
         )
         val intention = myFixture.findSingleIntention(intentionName)
         myFixture.launchAction(intention)
         myFixture.checkResult(
             """
-            k = {
-                a
-                b = c
+            {
+                a = 1
+                b
             }
             """.trimIndent()
         )
@@ -62,8 +62,8 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     fun testPutMembersOnOneLine_notAvailableWhenAlreadyOneLine() {
         val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
-            "put_members_on_one_line_not_available.test.txt",
-            "k = { <caret>a b = c }"
+            "put_members_on_one_line_not_available.test.cwt",
+            "{ <caret>a = 1 b }"
         )
         val available = myFixture.availableIntentions
         assertFalse(available.any { it.text == intentionName })
@@ -73,11 +73,11 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     fun testPutMembersOnSeparateLines_notAvailableWhenAlreadySeparateLines() {
         val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
-            "put_members_on_separate_lines_not_available.test.txt",
+            "put_members_on_separate_lines_not_available.test.cwt",
             """
-            k = {
-                <caret>a
-                b = c
+            {
+                <caret>a = 1
+                b
             }
             """.trimIndent()
         )
@@ -90,7 +90,7 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
         val oneLineName = PlsBundle.message("intention.putMembersOnOneLine")
         val separateLinesName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
-            "put_members_not_available_comment.test.txt",
+            "put_members_not_available_comment.test.cwt",
             """
             k = {
                 <caret>a
@@ -105,10 +105,29 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
     }
 
     @Test
+    fun testNotAvailableWhenOptionCommentExists() {
+        val oneLineName = PlsBundle.message("intention.putMembersOnOneLine")
+        val separateLinesName = PlsBundle.message("intention.putMembersOnSeparateLines")
+        myFixture.configureByText(
+            "put_members_not_available_option_comment.test.cwt",
+            """
+            {
+                <caret>a = 1
+                ## option = value
+                b
+            }
+            """.trimIndent()
+        )
+        val available = myFixture.availableIntentions
+        assertTrue(available.none { it.text == oneLineName })
+        assertTrue(available.none { it.text == separateLinesName })
+    }
+
+    @Test
     fun testSingleMemberConversions() {
         val oneLineName = PlsBundle.message("intention.putMembersOnOneLine")
         myFixture.configureByText(
-            "put_members_single_member_to_one_line.test.txt",
+            "put_members_single_member_to_one_line.test.cwt",
             """
             k = {
                 <caret>a
@@ -121,7 +140,7 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
 
         val separateLinesName = PlsBundle.message("intention.putMembersOnSeparateLines")
         myFixture.configureByText(
-            "put_members_single_member_to_separate_lines.test.txt",
+            "put_members_single_member_to_separate_lines.test.cwt",
             "k = { <caret>a }"
         )
         val toSeparateLines = myFixture.findSingleIntention(separateLinesName)

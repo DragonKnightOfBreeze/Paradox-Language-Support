@@ -7,6 +7,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
+import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
@@ -19,6 +20,10 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 sealed class QuoteAwareIntentionBase : PsiUpdateModCommandAction<ParadoxScriptExpressionElement>(ParadoxScriptExpressionElement::class.java), DumbAware {
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is ParadoxScriptExpressionElement
+    }
+
     protected fun canQuote(element: ParadoxScriptExpressionElement): Boolean {
         val text = element.text
         return !text.isQuoted()

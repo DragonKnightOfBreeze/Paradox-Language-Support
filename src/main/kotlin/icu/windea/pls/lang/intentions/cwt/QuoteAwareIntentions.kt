@@ -7,6 +7,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.ElementManipulators
+import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isQuoted
@@ -22,6 +23,10 @@ import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 
 sealed class QuoteAwareIntentionBase : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is CwtExpressionElement
+    }
+
     protected fun canQuote(element: CwtExpressionElement): Boolean {
         val text = element.text
         return !text.isQuoted()

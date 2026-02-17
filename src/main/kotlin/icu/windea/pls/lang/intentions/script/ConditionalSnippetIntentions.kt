@@ -6,6 +6,7 @@ import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findChild
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -25,6 +26,7 @@ private val blockTemplate = { p: String -> "[[$p] $p = $$p$ ]" }
  * ```paradox_script
  * # before
  * [[PARAM] PARAM = $PARAM$ ]
+ *
  * # after
  * PARAM = $PARAM|no$
  * ```
@@ -48,6 +50,10 @@ class ConditionalSnippetToPropertyFormatIntention : PsiUpdateModCommandAction<Pa
         val text = element.text
         return blockFormatRegex.matches(text)
     }
+
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is ParadoxScriptParameterCondition
+    }
 }
 
 /**
@@ -56,6 +62,7 @@ class ConditionalSnippetToPropertyFormatIntention : PsiUpdateModCommandAction<Pa
  * ```paradox_script
  * # before
  * PARAM = $PARAM|no$
+ *
  * # after
  * [[PARAM] PARAM = $PARAM$ ]
  * ```
@@ -78,5 +85,9 @@ class ConditionalSnippetToBlockFormatIntention : PsiUpdateModCommandAction<Parad
     override fun isElementApplicable(element: ParadoxScriptProperty, context: ActionContext): Boolean {
         val text = element.text
         return propertyFormatRegex.matches(text)
+    }
+
+    override fun stopSearchAt(element: PsiElement, context: ActionContext): Boolean {
+        return element is ParadoxScriptProperty
     }
 }
