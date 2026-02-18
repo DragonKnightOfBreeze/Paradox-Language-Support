@@ -11,9 +11,13 @@ class ParadoxLocalisationUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxLocalisationPropertyRemover(),
         ParadoxLocalisationIconRemover(),
         ParadoxLocalisationCommandRemover(),
+        ParadoxLocalisationConceptCommandRemover(),
         ParadoxLocalisationParameterRemover(),
         ParadoxLocalisationColorfulTextRemover(),
+        ParadoxLocalisationTextIconRemover(),
+        ParadoxLocalisationTextFormatRemover(),
         ParadoxLocalisationColorfulTextUnwrapper(),
+        ParadoxLocalisationTextFormatUnwrapper(),
     )
 
     override fun createUnwrappers(): Array<out Unwrapper> {

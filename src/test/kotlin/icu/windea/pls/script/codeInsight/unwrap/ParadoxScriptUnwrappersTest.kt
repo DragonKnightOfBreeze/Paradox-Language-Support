@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.lang.util.builders.ParadoxScriptTextBuilder.parameter as p
 
 /**
  * Paradox Script Unwrappers 测试。
@@ -208,10 +209,21 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
 
     @Test
     fun testInlineParameterConditionRemover() {
-        val before = "key = a<caret>[[b]c]d"
-        val after = "key = ad"
-        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
-        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
+        val before = "key = prefix_<caret>[[A]a]_suffix"
+        val after = "key = prefix__suffix"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option3 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1, option2, option3)
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testInlineParameterConditionRemover_forNested() {
+        val before = "key = prefix_<caret>[[A]a[[B]b]]_suffix"
+        val after = "key = prefix__suffix"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
         val option3 = PlsBundle.message("script.remove.property", "key")
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after)
@@ -396,15 +408,40 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
 
     // endregion
 
-    // TODO 2.1.3 存在问题，与预期不符，待修复
-    // @Test
-    // fun testInlineParameterConditionUnwrapper() {
-    //     val before = "key = a<caret>[[b]c]d"
-    //     val after = "key = acd"
-    //     val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
-    //     val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
-    //     val option3 = PlsBundle.message("script.remove.property", "key")
-    //     assertOptions(before, option1, option2, option3)
-    //     assertUnwrapped(before, after, 1)
-    // }
+    //region ParadoxScriptInlineParameterConditionUnwrapper
+
+    @Test
+    fun testInlineParameterConditionUnwrapper() {
+        val before = "key = prefix_<caret>[[A]a]_suffix"
+        val after = "key = prefix_a_suffix"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option3 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1, option2, option3)
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testInlineParameterConditionUnwrapper_forNested() {
+        val before = "key = prefix_<caret>[[A]a[[B]b]]_suffix"
+        val after = "key = prefix_a[[B]b]_suffix"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option3 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1, option2, option3)
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testInlineParameterConditionUnwrapper_forNested_withParameter() {
+        val before = "key = prefix_<caret>[[A]a[[B]b]${p("P")}]_suffix"
+        val after = "key = prefix_a[[B]b]${p("P")}_suffix"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("A"))
+        val option3 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1, option2, option3)
+        assertUnwrapped(before, after, 1)
+    }
+
+    //endregion
 }

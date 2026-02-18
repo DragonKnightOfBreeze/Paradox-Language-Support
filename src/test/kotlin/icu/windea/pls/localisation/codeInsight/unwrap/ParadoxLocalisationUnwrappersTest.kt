@@ -18,9 +18,13 @@ import icu.windea.pls.lang.util.builders.ParadoxLocalisationTextBuilder.paramete
  * @see ParadoxLocalisationPropertyRemover
  * @see ParadoxLocalisationIconRemover
  * @see ParadoxLocalisationCommandRemover
+ * @see ParadoxLocalisationConceptCommandRemover
  * @see ParadoxLocalisationParameterRemover
  * @see ParadoxLocalisationColorfulTextRemover
+ * @see ParadoxLocalisationTextIconRemover
+ * @see ParadoxLocalisationTextFormatRemover
  * @see ParadoxLocalisationColorfulTextUnwrapper
+ * @see ParadoxLocalisationTextFormatUnwrapper
  */
 @RunWith(JUnit4::class)
 class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
@@ -180,6 +184,49 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
 
     // endregion
 
+    // region ParadoxLocalisationConceptCommandRemover
+
+    @Test
+    fun testConceptCommandRemover() {
+        val before = """
+            l_english:
+             text_key:0 "Concept: <caret>['concept'] text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Concept:  text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testConceptCommandRemover_withText() {
+        val before = """
+            l_english:
+             text_key:0 "Concept: <caret>['pop_growth', §G+10%§!] text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Concept:  text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testConceptCommandRemover_withColon() {
+        val before = """
+            l_english:
+             text_key:0 "Concept: <caret>['civic:some_civic'] text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Concept:  text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
     // region ParadoxLocalisationParameterRemover
 
     @Test
@@ -230,6 +277,66 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
         val after = """
             l_english:
              text_key:0 "Params:  ${p("KEY2")} text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTextIconRemover
+
+    @Test
+    fun testTextIconRemover() {
+        val before = """
+            l_english:
+             text_key:0 "Text icon: <caret>@icon! text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Text icon:  text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testTextIconRemover_multiple() {
+        val before = """
+            l_english:
+             text_key:0 "Icons: <caret>@icon1! @icon2! text"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Icons:  @icon2! text"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTextFormatRemover
+
+    @Test
+    fun testTextFormatRemover() {
+        val before = """
+            l_english:
+             text_key:0 "Format: <caret>#v formatted text#! more"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Format:  more"
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testTextFormatRemover_multiple() {
+        val before = """
+            l_english:
+             text_key:0 "Formats: <caret>#bold bold text#! #italic italic#! more"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Formats:  #italic italic#! more"
             """.trimIndent()
         assertUnwrapped(before, after)
     }
@@ -305,6 +412,51 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
         val after = """
             l_english:
              text_key:0 "Text:  more"
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
+
+    // region ParadoxLocalisationTextFormatUnwrapper
+
+    @Test
+    fun testTextFormatUnwrapper() {
+        val before = """
+            l_english:
+             text_key:0 "Format: <caret>#v formatted text#! more"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Format: formatted text more"
+            """.trimIndent()
+        // 选择第二个选项（TextFormatUnwrapper）
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testTextFormatUnwrapper_nested() {
+        val before = """
+            l_english:
+             text_key:0 "Outer <caret>#bold Outer #italic Inner#! text#! end"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Outer Outer #italic Inner#! text end"
+            """.trimIndent()
+        // 选择第二个选项（TextFormatUnwrapper）
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testTextFormatUnwrapper_emptyContent() {
+        val before = """
+            l_english:
+             text_key:0 "Format: <caret>#v#! more"
+            """.trimIndent()
+        val after = """
+            l_english:
+             text_key:0 "Format:  more"
             """.trimIndent()
         assertUnwrapped(before, after, 1)
     }
