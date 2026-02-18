@@ -29,7 +29,7 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
 
     @Test
     fun getAttachedComments() {
-        myFixture.configureByFile("script/attached_comments.test.txt")
+        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 
@@ -51,7 +51,7 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
 
     @Test
     fun getAttachingElement() {
-        myFixture.configureByFile("script/attached_comments.test.txt")
+        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 

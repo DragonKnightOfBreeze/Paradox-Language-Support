@@ -250,9 +250,9 @@ Service vs manager vs util:
 For detailed language syntax and recommended examples, see:
 
 - `docs/en/ref-syntax.md`
-- `src/test/testData/cwt/syntax/code_style_settings.test.cwt`
-- `src/test/testData/script/syntax/code_style_settings.test.txt`
-- `src/test/testData/localisation/syntax/code_style_settings.test.yml`
+- `src/test/testData/cwt/example.test.cwt`
+- `src/test/testData/script/example.test.txt`
+- `src/test/testData/localisation/example.test.yml`
 
 ### Config System Guidance
 

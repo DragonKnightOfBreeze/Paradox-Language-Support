@@ -52,9 +52,9 @@ globs:
 
 关于各种语言的语法，可参考：
 - `docs/zh/ref-syntax.md`
-- `src/test/testData/cwt/syntax/code_style_settings.test.cwt`
-- `src/test/testData/script/syntax/code_style_settings.test.txt`
-- `src/test/testData/localisation/syntax/code_style_settings.test.yml`
+- `src/test/testData/cwt/example.test.cwt`
+- `src/test/testData/script/example.test.txt`
+- `src/test/testData/localisation/example.test.yml`
 
 关于规则系统以及规则和规则表达式的格式，可参考：
 - `docs/zh/config.md`
