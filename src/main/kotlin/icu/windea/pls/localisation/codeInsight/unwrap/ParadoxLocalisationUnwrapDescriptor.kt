@@ -11,7 +11,7 @@ class ParadoxLocalisationUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxLocalisationPropertyRemover(),
         ParadoxLocalisationIconRemover(),
         ParadoxLocalisationCommandRemover(),
-        ParadoxLocalisationReferenceRemover(),
+        ParadoxLocalisationParameterRemover(),
         ParadoxLocalisationColorfulTextRemover(),
         ParadoxLocalisationColorfulTextUnwrapper(),
     )

@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 
-class ParadoxLocalisationReferenceRemover : ParadoxLocalisationUnwrapper() {
+class ParadoxLocalisationParameterRemover : ParadoxLocalisationUnwrapper() {
     override fun getDescription(e: PsiElement): String {
         val name = if (e is ParadoxLocalisationParameter) e.name else ""
         return PlsBundle.message("localisation.remove.reference", name)

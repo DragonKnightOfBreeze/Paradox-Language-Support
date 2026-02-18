@@ -22,6 +22,8 @@ class CwtUnwrappersTest : UnwrapTestCase() {
 
     override fun createCode(code: String) = code
 
+    // region CwtPropertyRemover
+
     @Test
     fun testPropertyRemover() {
         val before = """
@@ -49,6 +51,24 @@ class CwtUnwrappersTest : UnwrapTestCase() {
             """.trimIndent()
         assertUnwrapped(before, after)
     }
+
+    @Test
+    fun testPropertyRemover_withComment() {
+        val before = """
+            # comment
+            <caret>foo = bar
+            baz = qux
+            """.trimIndent()
+        val after = """
+            # comment
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region CwtValueRemover
 
     @Test
     fun testValueRemover() {
@@ -80,8 +100,27 @@ class CwtUnwrappersTest : UnwrapTestCase() {
             key = <caret>value
             baz = qux
             """.trimIndent()
-        assertOptions(before, PlsBundle.message("cwt.remove.property", "key"))
+        val option1 = PlsBundle.message("cwt.remove.property", "key")
+        assertOptions(before, option1)
     }
+
+    @Test
+    fun testValueRemover_multipleValues() {
+        val before = """
+            <caret>value1
+            value2
+            baz = qux
+            """.trimIndent()
+        val after = """
+            value2
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region CwtPropertyUnwrapper
 
     @Test
     fun testPropertyUnwrapper() {
@@ -95,7 +134,9 @@ class CwtUnwrappersTest : UnwrapTestCase() {
             bar = baz
             qux = quux
             """.trimIndent()
-        assertOptions(before, PlsBundle.message("cwt.remove.property", "foo"), PlsBundle.message("cwt.unwrap.property", "foo"))
+        val option1 = PlsBundle.message("cwt.remove.property", "foo")
+        val option2 = PlsBundle.message("cwt.unwrap.property", "foo")
+        assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
 
@@ -117,6 +158,43 @@ class CwtUnwrappersTest : UnwrapTestCase() {
     }
 
     @Test
+    fun testPropertyUnwrapper_emptyBlock() {
+        val before = """
+            <caret>foo = {
+            }
+            bar = baz
+            """.trimIndent()
+        val after = """
+            bar = baz
+            """.trimIndent()
+        val option1 = PlsBundle.message("cwt.remove.property", "foo")
+        val option2 = PlsBundle.message("cwt.unwrap.property", "foo")
+        assertOptions(before, option1, option2)
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testPropertyUnwrapper_mixedContent() {
+        val before = """
+            <caret>foo = {
+                # comment
+                bar = baz
+                value
+            }
+            """.trimIndent()
+        val after = """
+            # comment
+            bar = baz
+            value
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
+
+    // region CwtBlockUnwrapper
+
+    @Test
     fun testBlockUnwrapper() {
         val before = """
             <caret>{
@@ -126,7 +204,26 @@ class CwtUnwrappersTest : UnwrapTestCase() {
         val after = """
             bar = baz
             """.trimIndent()
-        assertOptions(before, PlsBundle.message("cwt.remove.block"), PlsBundle.message("cwt.unwrap.block"))
+        val option1 = PlsBundle.message("cwt.remove.block")
+        val option2 = PlsBundle.message("cwt.unwrap.block")
+        assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
+
+    @Test
+    fun testBlockUnwrapper_withComment() {
+        val before = """
+            <caret>{
+                # comment
+                bar = baz
+            }
+            """.trimIndent()
+        val after = """
+            # comment
+            bar = baz
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
 }

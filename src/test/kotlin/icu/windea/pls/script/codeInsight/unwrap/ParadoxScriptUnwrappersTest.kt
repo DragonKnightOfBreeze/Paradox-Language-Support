@@ -38,6 +38,8 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region ParadoxScriptScriptedVariableRemover
+
     @Test
     fun testScriptedVariableRemover() {
         val before = """
@@ -49,6 +51,26 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
             """.trimIndent()
         assertUnwrapped(before, after)
     }
+
+    @Test
+    fun testScriptedVariableRemover_nested() {
+        val before = """
+            root = {
+                <caret>@foo = 1
+                bar = baz
+            }
+            """.trimIndent()
+        val after = """
+            root = {
+                bar = baz
+            }
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxScriptPropertyRemover
 
     @Test
     fun testPropertyRemover() {
@@ -77,6 +99,24 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
             """.trimIndent()
         assertUnwrapped(before, after)
     }
+
+    @Test
+    fun testPropertyRemover_withComment() {
+        val before = """
+            # comment
+            <caret>foo = bar
+            baz = qux
+            """.trimIndent()
+        val after = """
+            # comment
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxScriptValueRemover
 
     @Test
     fun testValueRemover() {
@@ -108,8 +148,27 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
             key = <caret>value
             baz = qux
             """.trimIndent()
-        assertOptions(before, PlsBundle.message("script.remove.property", "key"))
+        val option1 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1)
     }
+
+    @Test
+    fun testValueRemover_multipleValues() {
+        val before = """
+            <caret>value1
+            value2
+            baz = qux
+            """.trimIndent()
+        val after = """
+            value2
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxScriptParameterConditionRemover
 
     @Test
     fun testParameterConditionRemover() {
@@ -126,6 +185,28 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
     }
 
     @Test
+    fun testParameterConditionRemover_nested() {
+        val before = """
+            root = {
+                <caret>[[P]
+                    foo = bar
+                ]
+                baz = qux
+            }
+            """.trimIndent()
+        val after = """
+            root = {
+                baz = qux
+            }
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    // endregion
+
+    // region ParadoxScriptInlineParameterConditionRemover
+
+    @Test
     fun testInlineParameterConditionRemover() {
         val before = "key = a<caret>[[b]c]d"
         val after = "key = ad"
@@ -135,6 +216,10 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
         assertOptions(before, option1, option2, option3)
         assertUnwrapped(before, after)
     }
+
+    // endregion
+
+    // region ParadoxScriptPropertyUnwrapper
 
     @Test
     fun testPropertyUnwrapper() {
@@ -172,6 +257,42 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
     }
 
     @Test
+    fun testPropertyUnwrapper_emptyBlock() {
+        val before = """
+            <caret>foo = {
+            }
+            bar = baz
+            """.trimIndent()
+        val after = """
+            bar = baz
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testPropertyUnwrapper_mixedContent() {
+        val before = """
+            <caret>foo = {
+                # comment
+                @var = 1
+                bar = baz
+                value
+            }
+            """.trimIndent()
+        val after = """
+            # comment
+            @var = 1
+            bar = baz
+            value
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
+
+    // region ParadoxScriptBlockUnwrapper
+
+    @Test
     fun testBlockUnwrapper() {
         val before = """
             <caret>{
@@ -186,6 +307,25 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
         assertOptions(before, option1, option2)
         assertUnwrapped(before, after, 1)
     }
+
+    @Test
+    fun testBlockUnwrapper_withComment() {
+        val before = """
+            <caret>{
+                # comment
+                bar = baz
+            }
+            """.trimIndent()
+        val after = """
+            # comment
+            bar = baz
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
+
+    // region ParadoxScriptParameterConditionUnwrapper
 
     @Test
     fun testParameterConditionUnwrapper() {
@@ -223,6 +363,38 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
             """.trimIndent()
         assertUnwrapped(before, after, 1)
     }
+
+    @Test
+    fun testParameterConditionUnwrapper_mixedContent() {
+        val before = """
+            <caret>[[P]
+                # comment
+                foo = bar
+                value
+            ]
+            """.trimIndent()
+        val after = """
+            # comment
+            foo = bar
+            value
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    @Test
+    fun testParameterConditionUnwrapper_emptyBlock() {
+        val before = """
+            <caret>[[P]
+            ]
+            foo = bar
+            """.trimIndent()
+        val after = """
+            foo = bar
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
+    }
+
+    // endregion
 
     // TODO 2.1.3 存在问题，与预期不符，待修复
     // @Test
