@@ -15,6 +15,7 @@
 - [x] 优化：为定义注入检测子类型 #274 / OP: Detect subtypes for definition injection #274
 - [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations #273
 - [x] 新功能：新增 `PutMembersOnOneLineIntention` 和 `PutMembersOnSeparateLinesIntention` / NEW: add `PutMembersOnOneLineIntention` and `PutMembersOnSeparateLinesIntention`
+- [x] 新功能：新增 `ReplaceInlineMathWithEvaluatedValueIntention` / NEW: add `ReplaceInlineMathWithEvaluatedValueIntention`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.2
