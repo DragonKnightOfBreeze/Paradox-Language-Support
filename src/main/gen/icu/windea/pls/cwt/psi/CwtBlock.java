@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
+public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement, CwtBoundMemberContainer {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();

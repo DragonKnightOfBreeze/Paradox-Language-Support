@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement {
+public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement, ParadoxScriptBoundMemberContainer {
 
   @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();
