@@ -172,7 +172,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[
     getIcon getValue getReference getReferences
-    getMembersRoot getMembers getComponents
+    getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {
@@ -241,7 +241,7 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   ]
   methods=[
     getIcon getConditionExpression getPresentationText
-    getMembersRoot getMembers getComponents
+    getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
 private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET {

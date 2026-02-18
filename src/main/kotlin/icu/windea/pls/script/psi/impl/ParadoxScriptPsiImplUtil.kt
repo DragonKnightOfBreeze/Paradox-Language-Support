@@ -337,6 +337,16 @@ object ParadoxScriptPsiImplUtil {
         return getMembersRoot(element).findChildren<_>()
     }
 
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptBlock): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == LEFT_BRACE }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
     // endregion
 
     // region ParadoxScriptValue
@@ -405,6 +415,17 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getMembers(element: ParadoxScriptParameterCondition): List<ParadoxScriptMember> {
         return getMembersRoot(element).findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getLeftBound(element: ParadoxScriptParameterCondition): PsiElement? {
+        // use simple implementation is enough here
+        return element.findChild<PsiElement> { it.elementType == NESTED_RIGHT_BRACKET }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: ParadoxScriptParameterCondition): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACKET }
     }
 
     // endregion

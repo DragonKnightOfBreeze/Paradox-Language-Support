@@ -41,6 +41,10 @@ public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement, Cw
 
   @NotNull List<@NotNull CwtMember> getMembers();
 
+  @Nullable PsiElement getLeftBound();
+
+  @Nullable PsiElement getRightBound();
+
   @NotNull List<@NotNull PsiElement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();

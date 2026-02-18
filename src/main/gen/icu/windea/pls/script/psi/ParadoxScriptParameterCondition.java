@@ -34,6 +34,10 @@ public interface ParadoxScriptParameterCondition extends ParadoxScriptBoundMembe
 
   @NotNull List<@NotNull ParadoxScriptMember> getMembers();
 
+  @Nullable PsiElement getLeftBound();
+
+  @Nullable PsiElement getRightBound();
+
   @NotNull List<@NotNull PsiElement> getComponents();
 
   @NotNull GlobalSearchScope getResolveScope();

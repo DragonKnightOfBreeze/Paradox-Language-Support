@@ -98,6 +98,16 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
+  public @Nullable PsiElement getLeftBound() {
+    return CwtPsiImplUtil.getLeftBound(this);
+  }
+
+  @Override
+  public @Nullable PsiElement getRightBound() {
+    return CwtPsiImplUtil.getRightBound(this);
+  }
+
+  @Override
   public @NotNull List<@NotNull PsiElement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
   }

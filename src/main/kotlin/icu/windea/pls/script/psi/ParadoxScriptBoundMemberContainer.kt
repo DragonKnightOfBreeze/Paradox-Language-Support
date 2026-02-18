@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiListLikeElement
 
 /**
@@ -9,4 +10,6 @@ import com.intellij.psi.PsiListLikeElement
 interface ParadoxScriptBoundMemberContainer : ParadoxScriptMemberContainer, PsiListLikeElement {
     override val membersRoot: ParadoxScriptBoundMemberContainer get() = this
     override val members: List<ParadoxScriptMember> get() = emptyList()
+    val leftBound: PsiElement? get() = null
+    val rightBound: PsiElement? get() = null
 }
