@@ -12,16 +12,13 @@ import icu.windea.pls.cwt.psi.CwtProperty
 
 class CwtPropertySurrounder : CwtSurrounder() {
     @Suppress("DialogTitleCapitalization")
-    override fun getTemplateDescription(): String {
-        return "key = { }"
-    }
+    override fun getTemplateDescription() = "key = {...}"
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
-        return true
+        return elements.isNotEmpty()
     }
 
-    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
-        if (elements.isEmpty()) return null
+    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {
         val firstElement = elements.first()
         val lastElement = elements.last()
         val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
