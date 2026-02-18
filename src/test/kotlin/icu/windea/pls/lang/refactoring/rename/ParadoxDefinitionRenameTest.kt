@@ -187,5 +187,5 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
         myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_definition.test.txt", true)
     }
 
-    // TODO 2.1.3 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正
+    // TODO 2.1.3+ 暂不验证以下类型的关联重命名：定义的相关图片、定义的生成的修正
 }

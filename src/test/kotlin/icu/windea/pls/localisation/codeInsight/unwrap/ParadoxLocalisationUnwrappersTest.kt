@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.lang.util.builders.ParadoxLocalisationTextBuilder.parameter as p
 
 /**
  * Paradox Localisation Unwrappers 测试。
@@ -35,158 +36,147 @@ class ParadoxLocalisationUnwrappersTest : UnwrapTestCase() {
 
     @Test
     fun testPropertyRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              <caret>text_key:0 "Value"
              another_key:0 "Another"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              another_key:0 "Another"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testIconRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Icon: <caret>£unity£ text"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Icon:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testIconRemover_withParameter() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Icon: <caret>£leader_skill|3£ text"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Icon:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testCommandRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Command: <caret>[Root.Owner.GetName] text"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Command:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testCommandRemover_scriptedLoc() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Command: <caret>[some_scripted_loc] text"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Command:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testReferenceRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
-             text_key:0 "Parameter: <caret>${'$'}KEY${'$'} text"
-            """.trimIndent(),
-            """
+             text_key:0 "Parameter: <caret>${p("KEY")} text"
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Parameter:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testReferenceRemover_withFormat() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
-             text_key:0 "Parameter: <caret>${'$'}KEY|Y${'$'} text"
-            """.trimIndent(),
-            """
+             text_key:0 "Parameter: <caret>${p("KEY", "Y")} text"
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Parameter:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testReferenceRemover_scriptedVariable() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
-             text_key:0 "Variable: <caret>${'$'}@var${'$'} text"
-            """.trimIndent(),
-            """
+             text_key:0 "Variable: <caret>$@var$ text"
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Variable:  text"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testColorfulTextRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Text: <caret>§RRed text§! more"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Text:  more"
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testColorfulTextUnwrapper() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Text: <caret>§RRed text§! more"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Text: Red text more"
-            """.trimIndent(),
-            1 // 选择第二个选项（ColorfulTextUnwrapper）
-        )
+            """.trimIndent()
+        // 选择第二个选项（ColorfulTextUnwrapper）
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testColorfulTextUnwrapper_nested() {
-        assertUnwrapped(
-            """
+        val before = """
             l_english:
              text_key:0 "Outer <caret>§ROuter §YInner§! text§! end"
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             l_english:
              text_key:0 "Outer Outer §YInner§! text end"
-            """.trimIndent(),
-            1 // 选择第二个选项（ColorfulTextUnwrapper）
-        )
+            """.trimIndent()
+        // 选择第二个选项（ColorfulTextUnwrapper）
+        assertUnwrapped(before, after, 1)
     }
 }

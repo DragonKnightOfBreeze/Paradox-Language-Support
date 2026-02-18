@@ -16,7 +16,7 @@ class CwtValueRemover : CwtUnwrapper() {
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return (e is CwtValue && e !is CwtBlock) && e.isBlockValue()
+        return e is CwtValue && e.isBlockValue()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

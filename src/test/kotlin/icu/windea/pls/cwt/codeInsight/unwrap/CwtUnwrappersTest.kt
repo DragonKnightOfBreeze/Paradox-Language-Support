@@ -25,15 +25,11 @@ class CwtUnwrappersTest : UnwrapTestCase() {
     @Test
     fun testPropertyRemover() {
         val before = """
-            root = {
-                <caret>foo = bar
-                baz = qux
-            }
+            <caret>foo = bar
+            baz = qux
             """.trimIndent()
         val after = """
-            root = {
-                baz = qux
-            }
+            baz = qux
             """.trimIndent()
         assertUnwrapped(before, after)
     }
@@ -41,18 +37,14 @@ class CwtUnwrappersTest : UnwrapTestCase() {
     @Test
     fun testPropertyRemover_nested() {
         val before = """
-            root = {
-                nested = {
-                    <caret>foo = bar
-                    baz = qux
-                }
+            nested = {
+                <caret>foo = bar
+                baz = qux
             }
             """.trimIndent()
         val after = """
-            root = {
-                nested = {
-                    baz = qux
-                }
+            nested = {
+                baz = qux
             }
             """.trimIndent()
         assertUnwrapped(before, after)
@@ -62,6 +54,18 @@ class CwtUnwrappersTest : UnwrapTestCase() {
     fun testValueRemover() {
         val before = """
             <caret>value
+            baz = qux
+            """.trimIndent()
+        val after = """
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testValueRemover_forBlock() {
+        val before = """
+            <caret>{ value }
             foo = bar
             """.trimIndent()
         val after = """
@@ -74,77 +78,53 @@ class CwtUnwrappersTest : UnwrapTestCase() {
     fun testValueRemover_forPropertyValue_notAllowed() {
         val before = """
             key = <caret>value
-            foo = bar
+            baz = qux
             """.trimIndent()
-        assertOptions(before, PlsBundle.message("cwt.unwrap.block"))
-    }
-
-    @Test
-    fun testValueRemover_forBlock() {
-        val before = """
-            <caret>{ value }
-            foo = bar
-            """.trimIndent()
-        val after = """
-            foo = bar
-            """.trimIndent()
-        assertOptions(before, PlsBundle.message("cwt.remove.block"), PlsBundle.message("cwt.unwrap.block"))
-        assertUnwrapped(before, after, 1)
+        assertOptions(before, PlsBundle.message("cwt.remove.property", "key"))
     }
 
     @Test
     fun testPropertyUnwrapper() {
         val before = """
-            root = {
-                <caret>foo = {
-                    bar = baz
-                    qux = quux
-                }
-            }
-            """.trimIndent()
-        val after = """
-            root = {
+            <caret>foo = {
                 bar = baz
                 qux = quux
             }
             """.trimIndent()
-        assertUnwrapped(before, after)
+        val after = """
+            bar = baz
+            qux = quux
+            """.trimIndent()
+        assertOptions(before, PlsBundle.message("cwt.remove.property", "foo"), PlsBundle.message("cwt.unwrap.property", "foo"))
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testPropertyUnwrapper_nested() {
         val before = """
-            root = {
-                outer = {
-                    <caret>inner = {
-                        foo = bar
-                    }
-                }
-            }
-            """.trimIndent()
-        val after = """
-            root = {
-                outer = {
+            outer = {
+                <caret>inner = {
                     foo = bar
                 }
             }
             """.trimIndent()
-        assertUnwrapped(before, after)
+        val after = """
+            outer = {
+                foo = bar
+            }
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testBlockUnwrapper() {
         val before = """
-            root = {
-                foo = <caret>{
-                    bar = baz
-                }
+            <caret>{
+                bar = baz
             }
             """.trimIndent()
         val after = """
-            root = {
-                bar = baz
-            }
+            bar = baz
             """.trimIndent()
         assertOptions(before, PlsBundle.message("cwt.remove.block"), PlsBundle.message("cwt.unwrap.block"))
         assertUnwrapped(before, after, 1)

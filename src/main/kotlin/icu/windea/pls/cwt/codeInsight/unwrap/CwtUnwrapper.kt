@@ -37,7 +37,9 @@ abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
         }
 
         private fun isElementToExtract(element: PsiElement): Boolean {
-            return element is PsiComment || element is CwtProperty || element is CwtValue
+            return element is PsiComment
+                || element is CwtProperty
+                || element is CwtValue
         }
     }
 }

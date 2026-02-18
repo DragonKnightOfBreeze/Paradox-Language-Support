@@ -40,7 +40,9 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
         }
 
         private fun isElementToExtract(element: PsiElement): Boolean {
-            return element is PsiComment || element is ParadoxScriptProperty || element is ParadoxScriptValue
+            return element is PsiComment
+                || element is ParadoxScriptProperty
+                || element is ParadoxScriptValue
                 || element is ParadoxScriptScriptedVariable
                 || element is ParadoxScriptParameterCondition
                 || element is ParadoxScriptInlineParameterCondition

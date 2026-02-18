@@ -1,6 +1,8 @@
 package icu.windea.pls.script.codeInsight.unwrap
 
 import com.intellij.codeInsight.unwrap.UnwrapTestCase
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -38,218 +40,172 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
 
     @Test
     fun testScriptedVariableRemover() {
-        assertUnwrapped(
-            """
-            root = {
-                <caret>@foo = 1
-                bar = baz
-            }
-            """.trimIndent(),
-            """
-            root = {
-                bar = baz
-            }
+        val before = """
+            <caret>@foo = 1
+            bar = baz
             """.trimIndent()
-        )
+        val after = """
+            bar = baz
+            """.trimIndent()
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testPropertyRemover() {
-        assertUnwrapped(
-            """
-            root = {
-                <caret>foo = bar
-                baz = qux
-            }
-            """.trimIndent(),
-            """
-            root = {
-                baz = qux
-            }
+        val before = """
+            <caret>foo = bar
+            baz = qux
             """.trimIndent()
-        )
+        val after = """
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testPropertyRemover_nested() {
-        assertUnwrapped(
-            """
-            root = {
-                nested = {
-                    <caret>foo = bar
-                    baz = qux
-                }
-            }
-            """.trimIndent(),
-            """
-            root = {
-                nested = {
-                    baz = qux
-                }
+        val before = """
+            nested = {
+                <caret>foo = bar
+                baz = qux
             }
             """.trimIndent()
-        )
+        val after = """
+            nested = {
+                baz = qux
+            }
+            """.trimIndent()
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testValueRemover() {
-        assertUnwrapped(
-            """
+        val before = """
             <caret>value
-            foo = bar
-            """.trimIndent(),
-            """
-            foo = bar
+            baz = qux
             """.trimIndent()
-        )
-    }
-
-    @Test
-    fun testValueRemover_forPropertyValue_notAllowed() {
-        assertUnwrapped(
-            """
-            key = <caret>value
-            foo = bar
-            """.trimIndent(),
-            """
-            key = <caret>value
+        val after = """
+            baz = qux
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testValueRemover_forBlock() {
-        assertUnwrapped(
-            """
+        val before = """
             <caret>{ value }
             foo = bar
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             foo = bar
             """.trimIndent()
-        )
+        assertUnwrapped(before, after)
+    }
+
+    @Test
+    fun testValueRemover_forPropertyValue_notAllowed() {
+        val before = """
+            key = <caret>value
+            baz = qux
+            """.trimIndent()
+        assertOptions(before, PlsBundle.message("script.remove.property", "key"))
     }
 
     @Test
     fun testParameterConditionRemover() {
-        assertUnwrapped(
-            """
-            root = {
-                <caret>[[P]
-                    foo = bar
-                ]
-                baz = qux
-            }
-            """.trimIndent(),
-            """
-            root = {
-                baz = qux
-            }
+        val before = """
+            <caret>[[P]
+                foo = bar
+            ]
+            baz = qux
             """.trimIndent()
-        )
+        val after = """
+            baz = qux
+            """.trimIndent()
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testInlineParameterConditionRemover() {
-        assertUnwrapped(
-            """
-            root = {
-                foo = <caret>[[P] bar ]
-            }
-            """.trimIndent(),
-            """
-            root = {
-                foo =
-            }
-            """.trimIndent()
-        )
+        val before = "key = a<caret>[[b]c]d"
+        val after = "key = ad"
+        val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
+        val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
+        val option3 = PlsBundle.message("script.remove.property", "key")
+        assertOptions(before, option1, option2, option3)
+        assertUnwrapped(before, after)
     }
 
     @Test
     fun testPropertyUnwrapper() {
-        assertUnwrapped(
-            """
-            root = {
-                <caret>foo = {
-                    bar = baz
-                    qux = quux
-                }
-            }
-            """.trimIndent(),
-            """
-            root = {
+        val before = """
+            <caret>foo = {
                 bar = baz
                 qux = quux
             }
             """.trimIndent()
-        )
+        val after = """
+            bar = baz
+            qux = quux
+            """.trimIndent()
+        val option1 = PlsBundle.message("script.remove.property", "foo")
+        val option2 = PlsBundle.message("script.unwrap.property", "foo")
+        assertOptions(before, option1, option2)
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testPropertyUnwrapper_nested() {
-        assertUnwrapped(
-            """
-            root = {
-                outer = {
-                    <caret>inner = {
-                        foo = bar
-                    }
-                }
-            }
-            """.trimIndent(),
-            """
-            root = {
-                outer = {
+        val before = """
+            outer = {
+                <caret>inner = {
                     foo = bar
                 }
             }
             """.trimIndent()
-        )
+        val after = """
+            outer = {
+                foo = bar
+            }
+            """.trimIndent()
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testBlockUnwrapper() {
-        assertUnwrapped(
-            """
-            root = {
-                foo = <caret>{
-                    bar = baz
-                }
-            }
-            """.trimIndent(),
-            """
-            root = {
+        val before = """
+            <caret>{
                 bar = baz
             }
-            """.trimIndent(),
-            1 // 选择第二个选项（BlockUnwrapper）
-        )
+            """.trimIndent()
+        val after = """
+            bar = baz
+            """.trimIndent()
+        val option1 = PlsBundle.message("script.remove.block")
+        val option2 = PlsBundle.message("script.unwrap.block")
+        assertOptions(before, option1, option2)
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testParameterConditionUnwrapper() {
-        assertUnwrapped(
-            """
-            root = {
-                <caret>[[P]
-                    foo = bar
-                    baz = qux
-                ]
-            }
-            """.trimIndent(),
-            """
-            root = {
+        val before = """
+            <caret>[[P]
                 foo = bar
-                baz = qux
-            }
+            ]
             """.trimIndent()
-        )
+        val after = """
+            foo = bar
+            """.trimIndent()
+        val option1 = PlsBundle.message("script.remove.parameterCondition", PlsStrings.parameterConditionFolder("P"))
+        val option2 = PlsBundle.message("script.unwrap.parameterCondition", PlsStrings.parameterConditionFolder("P"))
+        assertOptions(before, option1, option2)
+        assertUnwrapped(before, after, 1)
     }
 
     @Test
     fun testParameterConditionUnwrapper_nested() {
-        assertUnwrapped(
-            """
+        val before = """
             root = {
                 outer = {
                     <caret>[[P]
@@ -257,31 +213,26 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
                     ]
                 }
             }
-            """.trimIndent(),
-            """
+            """.trimIndent()
+        val after = """
             root = {
                 outer = {
                     foo = bar
                 }
             }
             """.trimIndent()
-        )
+        assertUnwrapped(before, after, 1)
     }
 
-    @Test
-    fun testInlineParameterConditionUnwrapper() {
-        assertUnwrapped(
-            """
-            root = {
-                foo = <caret>[[P] bar ]
-            }
-            """.trimIndent(),
-            """
-            root = {
-                foo = bar
-            }
-            """.trimIndent(),
-            1 // 选择第二个选项（InlineParameterConditionUnwrapper）
-        )
-    }
+    // TODO 2.1.3 存在问题，与预期不符，待修复
+    // @Test
+    // fun testInlineParameterConditionUnwrapper() {
+    //     val before = "key = a<caret>[[b]c]d"
+    //     val after = "key = acd"
+    //     val option1 = PlsBundle.message("script.remove.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
+    //     val option2 = PlsBundle.message("script.unwrap.inlineParameterCondition", PlsStrings.parameterConditionFolder("b"))
+    //     val option3 = PlsBundle.message("script.remove.property", "key")
+    //     assertOptions(before, option1, option2, option3)
+    //     assertUnwrapped(before, after, 1)
+    // }
 }

@@ -6,3 +6,4 @@ object ParadoxScriptTextBuilder {
     fun parameter(name: String, defaultValue: String) = "$${name}|${defaultValue}$"
     fun parameterCondition(expression: String, block: String) = "[[${expression}] ${block} ]"
 }
+
