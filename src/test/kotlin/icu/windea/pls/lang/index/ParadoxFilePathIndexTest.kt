@@ -34,9 +34,9 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testFilePathIndex_Basic() {
-        val relPath = "common/code_style_settings.test.txt"
+        val relPath = "common/example.test.txt"
         markFileInfo(gameType, relPath)
-        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
+        myFixture.configureByFile("script/syntax/example.test.txt")
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)

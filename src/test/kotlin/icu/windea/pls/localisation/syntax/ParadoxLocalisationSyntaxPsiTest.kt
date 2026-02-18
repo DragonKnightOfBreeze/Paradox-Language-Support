@@ -20,7 +20,7 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun setup() = markIntegrationTest()
 
     @Test
-    fun code_style_settings() = doTest(true)
+    fun example() = doTest(true)
 
     @Test
     fun advanced_combined() = doTest(true)
@@ -50,7 +50,6 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun value_trailing_comment() = doTest(true)
     @Test
     fun value_multi_quotes_trailing_comment() = doTest(true)
-
     @Test
     fun multiple_headers() = doTest(true)
     @Test

@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("/testData")
-class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
+class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
@@ -20,7 +20,7 @@ class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt",
     fun setup() = markIntegrationTest()
 
     @Test
-    fun code_style_settings() = doTest(true)
+    fun example() = doTest(true)
 
     @Test
     fun advanced_nested() = doTest(true)
@@ -38,13 +38,15 @@ class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt",
     fun error_missing_property_value() = doTest(true)
     @Test
     fun error_unclosed_brace() = doTest(true)
+    @Test
+    fun parameter_conditions() = doTest(true)
+    @Test
+    fun inline_parameter_conditions() = doTest(true)
 
     @Test
     fun property_separators() = doTest(true)
     @Test
     fun inline_math_mismatch() = doTest(true)
-    @Test
-    fun parameter_condition_nested() = doTest(true)
     @Test
     fun unterminated_quoted_string_value() = doTest(true)
 }

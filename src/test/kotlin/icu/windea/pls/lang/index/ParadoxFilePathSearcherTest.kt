@@ -40,9 +40,9 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
 
     @Test
     fun testFilePathSearcher_ExactPath() {
-        val relPath = "common/code_style_settings.test.txt"
+        val relPath = "common/example.test.txt"
         markFileInfo(gameType, relPath)
-        myFixture.configureByFile("script/syntax/code_style_settings.test.txt")
+        myFixture.configureByFile("script/syntax/example.test.txt")
 
         val project = project
         val selector = selector(project, myFixture.file).file()

@@ -20,7 +20,7 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     fun setup() = markIntegrationTest()
 
     @Test
-    fun code_style_settings() = doTest(true)
+    fun example() = doTest(true)
 
     @Test
     fun advanced_quoted() = doTest(true)

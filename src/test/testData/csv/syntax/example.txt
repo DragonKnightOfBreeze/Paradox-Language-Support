@@ -1,4 +1,4 @@
-ParadoxCsvFile: code_style_settings.test.csv(0,62)
+ParadoxCsvFile: example.test.csv(0,62)
   PsiComment(COMMENT)('# Line comment')(0,14)
   PsiWhiteSpace('\n')(14,15)
   ParadoxCsvHeader(15,37)
