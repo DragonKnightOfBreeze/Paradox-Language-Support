@@ -8,12 +8,15 @@ import icu.windea.pls.script.psi.isBlockMember
 
 class ParadoxScriptValueRemover : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if (e is ParadoxScriptValue) e.name else ""
-        return PlsBundle.message("script.remove.value", name)
+        return when (e) {
+            is ParadoxScriptBlock -> PlsBundle.message("script.remove.block")
+            is ParadoxScriptValue -> PlsBundle.message("script.remove.value", e.name)
+            else -> throw IllegalStateException()
+        }
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
-        return (e is ParadoxScriptValue && e !is ParadoxScriptBlock) && e.isBlockMember()
+        return e is ParadoxScriptValue && e.isBlockMember()
     }
 
     override fun doUnwrap(element: PsiElement, context: Context) {

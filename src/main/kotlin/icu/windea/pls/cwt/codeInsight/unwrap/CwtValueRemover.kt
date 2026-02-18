@@ -8,8 +8,11 @@ import icu.windea.pls.cwt.psi.isBlockValue
 
 class CwtValueRemover : CwtUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if (e is CwtValue) e.name else ""
-        return PlsBundle.message("cwt.remove.value", name)
+        return when (e) {
+            is CwtBlock -> PlsBundle.message("cwt.remove.block")
+            is CwtValue -> PlsBundle.message("cwt.remove.value", e.name)
+            else -> throw IllegalStateException()
+        }
     }
 
     override fun isApplicableTo(e: PsiElement): Boolean {
