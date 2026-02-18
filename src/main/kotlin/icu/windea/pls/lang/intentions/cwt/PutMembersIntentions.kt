@@ -7,9 +7,9 @@ import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.util.DocumentUtil
 import com.intellij.util.text.CharArrayUtil
@@ -18,7 +18,6 @@ import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.cwt.psi.CwtElementFactory
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 
@@ -27,28 +26,28 @@ sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberC
         return element.members.asSequence().map { it.text.trim() }.filter { it.isNotEmpty() }
     }
 
-    protected fun checkElementAvailable(element: CwtBoundMemberContainer): Boolean {
+    protected fun createBlockFromText(project: Project, text: String): CwtBlock {
+        return CwtElementFactory.createBlock(project, text)
+    }
+
+    protected fun checkElementAvailable(element: CwtBoundMemberContainer, hasLineBreak: Boolean? = null): Boolean {
         // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
-        val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
-        val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
+        val leftBound = element.leftBound ?: return false
+        val rightBound = element.rightBound ?: return false
         var flag = false
-        for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
+        var lineBreakFlag = false
+        for (e in leftBound.siblings(withSelf = false).takeWhile { it != rightBound }) {
             when (e) {
-                is PsiWhiteSpace -> continue
+                is PsiWhiteSpace -> {
+                    if (hasLineBreak != null && !lineBreakFlag) lineBreakFlag = e.textContains('\n')
+                    continue
+                }
                 is CwtMember -> flag = true
                 else -> return false
             }
         }
+        if (hasLineBreak != null && hasLineBreak != lineBreakFlag) return false
         return flag
-    }
-
-    protected fun hasLineBreakBetweenMembers(element: CwtBoundMemberContainer): Boolean {
-        val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
-        val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
-        for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
-            if (e is PsiWhiteSpace && e.textContains('\n')) return true
-        }
-        return false
     }
 }
 
@@ -84,12 +83,12 @@ class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
             if (spaceWithinBraces) append(" ")
             append("}")
         }
-        val newElement = CwtElementFactory.createBlock(context.project, newText)
+        val newElement = createBlockFromText(context.project, newText)
         element.replace(newElement)
     }
 
     override fun isElementApplicable(element: CwtBoundMemberContainer, context: ActionContext): Boolean {
-        return checkElementAvailable(element) && hasLineBreakBetweenMembers(element)
+        return checkElementAvailable(element, hasLineBreak = true)
     }
 }
 
@@ -140,11 +139,11 @@ class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
             append(baseIndent)
             append("}")
         }
-        val newElement = CwtElementFactory.createBlock(context.project, newText)
+        val newElement = createBlockFromText(context.project, newText)
         element.replace(newElement)
     }
 
     override fun isElementApplicable(element: CwtBoundMemberContainer, context: ActionContext): Boolean {
-        return checkElementAvailable(element) && !hasLineBreakBetweenMembers(element)
+        return checkElementAvailable(element, hasLineBreak = false)
     }
 }
