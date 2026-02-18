@@ -3,7 +3,8 @@ package icu.windea.pls.lang.intentions.cwt
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -21,20 +22,10 @@ class PutMembersIntentionsTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
-        ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
-        ParadoxAnalysisInjector.configureUseGameTypeInference(true)
-    }
+    fun setup() = markIntegrationTest()
 
     @After
-    fun clear() {
-        ParadoxAnalysisInjector.configureUseDefaultFileExtensions(false)
-        ParadoxAnalysisInjector.configureUseGameTypeInference(false)
-        ParadoxAnalysisInjector.clearMarkedRootInfo()
-        ParadoxAnalysisInjector.clearMarkedFileInfo()
-        ParadoxAnalysisInjector.clearMarkedRootDirectory()
-        ParadoxAnalysisInjector.clearMarkedConfigDirectory()
-    }
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun testPutMembersOnOneLine_basic() {
