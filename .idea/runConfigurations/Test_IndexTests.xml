@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;icu.windea.pls.lang.index.*&quot;" />
+          <option value="&quot;icu.windea.pls.lang.index.**&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

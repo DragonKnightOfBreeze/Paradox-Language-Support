@@ -3,24 +3,38 @@ package icu.windea.pls.lang.intentions.script
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.markIntegrationTest
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+/**
+ * @see PutMembersIntentionBase
+ * @see PutMembersOnOneLineIntention
+ * @see PutMembersOnSeparateLinesIntention
+ */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class PutMembersIntentionsTest: BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun setup() {
+        ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
+        ParadoxAnalysisInjector.configureUseGameTypeInference(true)
+    }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun clear() {
+        ParadoxAnalysisInjector.configureUseDefaultFileExtensions(false)
+        ParadoxAnalysisInjector.configureUseGameTypeInference(false)
+        ParadoxAnalysisInjector.clearMarkedRootInfo()
+        ParadoxAnalysisInjector.clearMarkedFileInfo()
+        ParadoxAnalysisInjector.clearMarkedRootDirectory()
+        ParadoxAnalysisInjector.clearMarkedConfigDirectory()
+    }
 
     @Test
     fun testPutMembersOnOneLine_basic() {
@@ -130,6 +144,104 @@ class PutMembersIntentionsTest: BasePlatformTestCase() {
             """
             k = {
                 a
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testPutMembersOnSeparateLines_nestedBlock() {
+        val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
+        myFixture.configureByText(
+            "put_members_on_separate_lines_nested_block.test.txt",
+            """
+            k = {
+                k = { <caret>v1 v2 }
+            }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            k = {
+                k = {
+                    v1
+                    v2
+                }
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testPutMembersOnOneLine_nestedBlock() {
+        val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
+        myFixture.configureByText(
+            "put_members_on_one_line_nested_block.test.txt",
+            """
+            k = {
+                # comment
+                k = {
+                    <caret>v1
+                    v2
+                }
+            }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            k = {
+                # comment
+                k = { v1 v2 }
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testPutMembersOnOneLine_parameterConditionBlock() {
+        val intentionName = PlsBundle.message("intention.putMembersOnOneLine")
+        myFixture.configureByText(
+            "put_members_on_one_line_parameter_condition_block.test.txt",
+            """
+            k = {
+                [[p]
+                    <caret>a
+                    b = c
+                ]
+            }
+            """.trimIndent()
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            k = {
+                [[p] a b = c ]
+            }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testPutMembersOnSeparateLines_parameterConditionBlock() {
+        val intentionName = PlsBundle.message("intention.putMembersOnSeparateLines")
+        myFixture.configureByText(
+            "put_members_on_separate_lines_parameter_condition_block.test.txt",
+            "k = { [[p] <caret>a b = c ] }"
+        )
+        val intention = myFixture.findSingleIntention(intentionName)
+        myFixture.launchAction(intention)
+        myFixture.checkResult(
+            """
+            k = {
+                [[p]
+                    a
+                    b = c
+                ]
             }
             """.trimIndent()
         )

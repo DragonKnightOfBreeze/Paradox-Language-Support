@@ -16,13 +16,18 @@ import com.intellij.util.text.CharArrayUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
 
-sealed class PutMembersIntentionBase: PsiUpdateModCommandAction<CwtBlock>(CwtBlock::class.java), DumbAware {
-    private fun checkElementAvailable(element: CwtBlock): Boolean {
+sealed class PutMembersIntentionBase : PsiUpdateModCommandAction<CwtBoundMemberContainer>(CwtBoundMemberContainer::class.java), DumbAware {
+    protected fun getMemberTextSequence(element: CwtBoundMemberContainer): Sequence<String> {
+        return element.members.asSequence().map { it.text.trim() }.filter { it.isNotEmpty() }
+    }
+
+    protected fun checkElementAvailable(element: CwtBoundMemberContainer): Boolean {
         // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
         val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
         val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
@@ -37,7 +42,7 @@ sealed class PutMembersIntentionBase: PsiUpdateModCommandAction<CwtBlock>(CwtBlo
         return flag
     }
 
-    private fun hasLineBreakBetweenMembers(element: CwtBlock): Boolean {
+    protected fun hasLineBreakBetweenMembers(element: CwtBoundMemberContainer): Boolean {
         val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
         val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
         for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
@@ -45,30 +50,6 @@ sealed class PutMembersIntentionBase: PsiUpdateModCommandAction<CwtBlock>(CwtBlo
         }
         return false
     }
-}
-
-private fun checkElementAvailable(element: CwtBlock): Boolean {
-    // 块中存在成员元素（包括仅存在一个的情况），且不存在空白以外的非成员元素（如注释）
-    val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
-    val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
-    var flag = false
-    for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
-        when (e) {
-            is PsiWhiteSpace -> continue
-            is CwtMember -> flag = true
-            else -> return false
-        }
-    }
-    return flag
-}
-
-private fun hasLineBreakBetweenMembers(element: CwtBlock): Boolean {
-    val leftBrace = element.firstChild?.takeIf { it.elementType == LEFT_BRACE } ?: return false
-    val rightBrace = element.lastChild?.takeIf { it.elementType == RIGHT_BRACE } ?: return false
-    for (e in leftBrace.siblings(withSelf = false).takeWhile { it != rightBrace }) {
-        if (e is PsiWhiteSpace && e.textContains('\n')) return true
-    }
-    return false
 }
 
 /**
@@ -85,17 +66,13 @@ private fun hasLineBreakBetweenMembers(element: CwtBlock): Boolean {
  * { V K = V }
  * ```
  */
-class PutMembersOnOneLineIntention : PsiUpdateModCommandAction<CwtBlock>(CwtBlock::class.java), DumbAware {
+class PutMembersOnOneLineIntention : PutMembersIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.putMembersOnOneLine")
 
-    override fun invoke(context: ActionContext, element: CwtBlock, updater: ModPsiUpdater) {
-        if (!checkElementAvailable(element)) return
+    override fun invoke(context: ActionContext, element: CwtBoundMemberContainer, updater: ModPsiUpdater) {
+        // if (!checkElementAvailable(element)) return
 
-        val membersText = element.members
-            .asSequence()
-            .map { it.text.trim() }
-            .filter { it.isNotEmpty() }
-            .joinToString(" ")
+        val membersText = getMemberTextSequence(element).joinToString(" ")
         if (membersText.isEmpty()) return
 
         val file = element.containingFile
@@ -111,7 +88,7 @@ class PutMembersOnOneLineIntention : PsiUpdateModCommandAction<CwtBlock>(CwtBloc
         element.replace(newElement)
     }
 
-    override fun isElementApplicable(element: CwtBlock, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: CwtBoundMemberContainer, context: ActionContext): Boolean {
         return checkElementAvailable(element) && hasLineBreakBetweenMembers(element)
     }
 }
@@ -129,11 +106,11 @@ class PutMembersOnOneLineIntention : PsiUpdateModCommandAction<CwtBlock>(CwtBloc
  * }
  * ```
  */
-class PutMembersOnSeparateLinesIntention : PsiUpdateModCommandAction<CwtBlock>(CwtBlock::class.java), DumbAware {
+class PutMembersOnSeparateLinesIntention : PutMembersIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.putMembersOnSeparateLines")
 
-    override fun invoke(context: ActionContext, element: CwtBlock, updater: ModPsiUpdater) {
-        if (!checkElementAvailable(element)) return
+    override fun invoke(context: ActionContext, element: CwtBoundMemberContainer, updater: ModPsiUpdater) {
+        // if (!checkElementAvailable(element)) return
 
         val file = element.containingFile
         val settings = CodeStyle.getSettings(file)
@@ -152,11 +129,7 @@ class PutMembersOnSeparateLinesIntention : PsiUpdateModCommandAction<CwtBlock>(C
         }
         val innerIndent = baseIndent + indentUnit
 
-        val membersText = element.members
-            .asSequence()
-            .map { it.text.trim() }
-            .filter { it.isNotEmpty() }
-            .joinToString("\n") { innerIndent + it }
+        val membersText = getMemberTextSequence(element).joinToString("\n") { innerIndent + it }
         if (membersText.isEmpty()) return
 
         val newText = buildString {
@@ -171,7 +144,7 @@ class PutMembersOnSeparateLinesIntention : PsiUpdateModCommandAction<CwtBlock>(C
         element.replace(newElement)
     }
 
-    override fun isElementApplicable(element: CwtBlock, context: ActionContext): Boolean {
+    override fun isElementApplicable(element: CwtBoundMemberContainer, context: ActionContext): Boolean {
         return checkElementAvailable(element) && !hasLineBreakBetweenMembers(element)
     }
 }
