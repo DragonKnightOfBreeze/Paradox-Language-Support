@@ -25,7 +25,7 @@ class ParadoxScriptParameterConditionSurrounder : ParadoxScriptSurrounder() {
         if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createParameterCondition(project, "PARAM", "\n${replacedText}\n")
+        var newElement = ParadoxScriptElementFactory.createParameterConditionFromText(project, "[[P]\n$replacedText\n]")
         newElement = firstElement.replace(newElement) as ParadoxScriptParameterCondition
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptParameterCondition
         return newElement.parameterConditionExpression!!.textRange

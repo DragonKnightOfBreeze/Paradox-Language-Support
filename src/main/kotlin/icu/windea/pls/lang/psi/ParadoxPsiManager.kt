@@ -223,7 +223,7 @@ object ParadoxPsiManager {
             is ParadoxScriptBlock -> {
                 val args = getArgumentTupleList(valueElement)
                 if (args.isNotEmpty()) {
-                    val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+                    val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
                     newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
@@ -234,7 +234,7 @@ object ParadoxPsiManager {
             newRef.block?.let { handleInlinedScriptedTrigger(it) }
             property.parent.addAfter(newRef, property)
         } else {
-            val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+            val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
             handleInlinedScriptedTrigger(newRef)
             val (start, end) = findMemberElementsToInline(newRef)
             if (start != null && end != null) {
@@ -268,13 +268,13 @@ object ParadoxPsiManager {
             is ParadoxScriptBlock -> {
                 val args = getArgumentTupleList(valueElement)
                 if (args.isNotEmpty()) {
-                    val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+                    val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
                     newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
             else -> return
         }
-        val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
+        val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
         handleInlinedScriptedEffect(newRef)
         val (start, end) = findMemberElementsToInline(newRef)
         if (start != null && end != null) {

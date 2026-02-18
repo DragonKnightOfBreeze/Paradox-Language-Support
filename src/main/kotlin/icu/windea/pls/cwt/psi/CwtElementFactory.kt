@@ -59,7 +59,7 @@ object CwtElementFactory {
     }
 
     @JvmStatic
-    fun createBlock(project: Project, text: String): CwtBlock {
+    fun createBlockFromText(project: Project, text: String): CwtBlock {
         return createValue(project, text)
             .castOrNull<CwtBlock>() ?: throw IncorrectOperationException()
     }
