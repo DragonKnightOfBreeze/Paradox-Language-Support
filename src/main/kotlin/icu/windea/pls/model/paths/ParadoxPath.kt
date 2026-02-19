@@ -1,6 +1,7 @@
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -117,7 +118,7 @@ private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
     override val path: String = input.path.internPath()
-    override val subPaths: List<String> = input.subPaths.map { it.internPath() }.optimized()
+    override val subPaths: List<String> = input.subPaths.mapFast { it.internPath() }.optimized()
     override val parent: String = if (input.length == 1) "" else input.parent.internPath()
 }
 

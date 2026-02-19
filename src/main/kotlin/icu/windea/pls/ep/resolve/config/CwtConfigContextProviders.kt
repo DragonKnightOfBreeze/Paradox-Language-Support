@@ -14,7 +14,7 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.orDefault
+import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
@@ -91,7 +91,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val declarationKey = declarationConfigCacheKey.replace("$gameTypeId#", "")
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.orDefault().toHashString()}"
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
         return "d@$gameTypeId#$declarationKey#$suffix"
     }
 
@@ -138,7 +138,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         val parameterElement = context.parameterElement ?: return null // null -> unexpected
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.orDefault().toHashString()}"
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
         return "pv@$gameTypeId#${parameterElement.contextKey}#${parameterElement.name}#$suffix"
     }
 
@@ -188,7 +188,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val gameTypeId = context.gameType.id
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.orDefault().toHashString()}"
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
         return "isu@$gameTypeId#$suffix"
     }
 
@@ -230,7 +230,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.orDefault().toHashString()}"
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
         return "is@$gameTypeId#$inlineScriptExpression#$suffix"
     }
 
@@ -289,7 +289,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val targetKey = definitionInjectionInfo.type + "@" + definitionInjectionInfo.target
         val memberPath = context.memberPath ?: return null // null -> unexpected
         val memberRole = context.memberRole
-        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.orDefault().toHashString()}"
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
         return "di@$gameTypeId#$targetKey#$suffix"
     }
 

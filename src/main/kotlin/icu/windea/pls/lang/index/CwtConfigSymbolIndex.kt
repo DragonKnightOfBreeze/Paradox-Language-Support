@@ -16,6 +16,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
@@ -45,10 +46,8 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is CwtStringExpressionElement) {
-                    visitStringExpressionElement(element)
-                    return
-                }
+                if (element is CwtStringExpressionElement) visitStringExpressionElement(element)
+                if (!CwtPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 

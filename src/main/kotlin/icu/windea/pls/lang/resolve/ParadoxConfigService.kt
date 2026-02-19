@@ -53,7 +53,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.lang.match.orDefault
+import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.selectGameType
@@ -168,7 +168,7 @@ object ParadoxConfigService {
         val cacheKey = provider.getCacheKey(context, options) ?: return emptyList()
         if (context.dynamic) {
             // NOTE 2.1.1 prefix in-config-context cache if marked as dynamic
-            val dynamicCacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
+            val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
             context.dynamicCache[dynamicCacheKey]?.let { return it }
         }
         val rootFile = selectRootFile(context.element) ?: return emptyList()
@@ -195,7 +195,7 @@ object ParadoxConfigService {
         } ?: return emptyList() // unexpected recursion, return empty list
         if (context.dynamic) {
             // NOTE 2.1.1 store dynamic result into in-config-context cache
-            val dynamicCacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
+            val dynamicCacheKey = options.toHashString(forMatched = false).optimized() // optimized to optimize memory
             context.dynamicCache[dynamicCacheKey] = cached
         }
         return cached

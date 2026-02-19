@@ -222,8 +222,7 @@ object ParadoxConfigMatchService {
         // 根据 config 对 property 进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
-        val finalOptions = options.orDefault().copy(skipIndex = true, skipScope = true)
-        return matchesDefinitionForSubtype(element, elementConfig, finalOptions)
+        return matchesDefinitionForSubtype(element, elementConfig, options.normalized())
     }
 
     fun matchesSubtypeFast(subtypeConfig: CwtSubtypeConfig, subtypeConfigs: List<CwtSubtypeConfig>, typeKey: String): Boolean? {

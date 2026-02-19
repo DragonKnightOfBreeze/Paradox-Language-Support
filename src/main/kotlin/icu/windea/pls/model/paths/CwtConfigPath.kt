@@ -1,6 +1,7 @@
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
@@ -101,7 +102,7 @@ private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPath
 
 private class NormalizedCwtConfigPath(input: CwtConfigPath) : CwtConfigPathBase() {
     override val path: String = input.path.internPath()
-    override val subPaths: List<String> = input.subPaths.map { it.internPath() }.optimized()
+    override val subPaths: List<String> = input.subPaths.mapFast { it.internPath() }.optimized()
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

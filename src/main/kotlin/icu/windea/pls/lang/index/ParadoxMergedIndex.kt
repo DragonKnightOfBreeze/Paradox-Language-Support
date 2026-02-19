@@ -19,7 +19,9 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -100,7 +102,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     run {
                         if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
-                        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions.DUMB)
+                        val options = ParadoxMatchOptions.DUMB
+                        val configs = ParadoxConfigManager.getConfigs(element, options)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEach { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
@@ -111,13 +114,15 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             override fun elementFinished(element: PsiElement) {
-                if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
-                    element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
-                    definitionInfoStack.removeLastOrNull()
+                if(element is ParadoxDefinitionElement) {
+                    if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
+                        element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
+                        definitionInfoStack.removeLastOrNull()
+                        cleanUpDumbDefinitionCache(element)
+                    }
                 }
                 if (element is ParadoxScriptStringExpressionElement) {
-                    // clean up expression references cache
-                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                    cleanUpDumbExpressionReferencesCache(element)
                 }
             }
         })
@@ -138,11 +143,21 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
             override fun elementFinished(element: PsiElement?) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    // clean up expression references cache
-                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                    cleanUpDumbExpressionReferencesCache(element)
                 }
             }
         })
+    }
+
+    private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {
+        // clean up dumb definition caches (subtypeConfigs & declaration)
+        element.putUserData(ParadoxDefinitionManager.Keys.cachedSubtypeConfigsDumb, null)
+        element.putUserData(ParadoxDefinitionManager.Keys.cachedDeclarationDumb, null)
+    }
+
+    private fun cleanUpDumbExpressionReferencesCache(element: ParadoxExpressionElement) {
+        // clean up dumb expression references caches
+        element.putUserData(ParadoxExpressionManager.Keys.cachedExpressionReferencesDumb, null)
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {

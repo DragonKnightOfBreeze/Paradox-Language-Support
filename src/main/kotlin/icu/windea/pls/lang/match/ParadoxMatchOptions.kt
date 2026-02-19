@@ -18,26 +18,31 @@ data class ParadoxMatchOptions(
     val skipIndex: Boolean = false,
     val skipScope: Boolean = false,
 ) {
-    /**
-     * 转化为用于构建缓存键的哈希字符串。
-     *
-     * @param forMatched 用于提高缓存命中率。
-     */
-    fun toHashString(forMatched: Boolean = false): String {
-        var mask: Byte = 0
-        if (fallback && forMatched) mask = mask or 1
-        if (acceptDefinition && forMatched) mask = mask or 2
-        if (relax) mask = mask or 4
-        if (skipIndex) mask = mask or 8
-        if (skipScope) mask = mask or 16
-        return mask.toString()
-    }
-
     companion object {
         val DEFAULT = ParadoxMatchOptions()
         val DUMB = ParadoxMatchOptions(skipIndex = true, skipScope = true)
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxMatchOptions?.orDefault() = this ?: ParadoxMatchOptions.DEFAULT
+/**
+ * 规范化输入的匹配选项。
+ */
+fun ParadoxMatchOptions?.normalized(): ParadoxMatchOptions {
+    return this ?: ParadoxMatchOptions.DEFAULT
+}
+
+/**
+ * 转化为用于构建缓存键的哈希字符串。
+ *
+ * @param forMatched 是否用于获取匹配的规则。用于提高缓存命中率。
+ */
+fun ParadoxMatchOptions?.toHashString(forMatched: Boolean = true): String {
+    val options = this ?: ParadoxMatchOptions.DEFAULT
+    var mask: Byte = 0
+    if (options.fallback && forMatched) mask = mask or 1
+    if (options.acceptDefinition && forMatched) mask = mask or 2
+    if (options.relax) mask = mask or 4
+    if (options.skipIndex) mask = mask or 8
+    if (options.skipScope) mask = mask or 16
+    return mask.toString()
+}

@@ -49,8 +49,6 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -62,7 +60,6 @@ import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -411,11 +408,6 @@ object ParadoxExpressionManager {
         return arrayOf(reference)
     }
 
-    fun cleanUpExpressionReferencesCache(element: ParadoxExpressionElement) {
-        val cacheKey = getExpressionReferencesCacheKey()
-        element.putUserData(cacheKey, null)
-    }
-
     // endregion
 
     // region Resolve Methods
@@ -541,22 +533,6 @@ object ParadoxExpressionManager {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.resolveElementWithConfig() ?: return null
         return resolved
-    }
-
-    // endregion
-
-    // region Misc Methods
-
-    fun getMatchedAliasKey(element: PsiElement, configGroup: CwtConfigGroup, aliasName: String, key: String, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { key ->
-            val configExpression = CwtDataExpression.resolve(key, true)
-            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
-            ParadoxMatchService.matchScriptExpression(context).get(options)
-        }
     }
 
     // endregion

@@ -23,7 +23,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.orDefault
+import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -58,7 +58,7 @@ object ParadoxConfigManager {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         ProgressManager.checkCanceled()
         val cache = getConfigsCacheFromCache(memberElement)
-        val cacheKey = options.orDefault().toHashString(forMatched = true).optimized() // optimized to optimize memory
+        val cacheKey = options.toHashString().optimized() // optimized to optimize memory
         return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
     }
 
