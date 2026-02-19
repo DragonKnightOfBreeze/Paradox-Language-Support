@@ -11,7 +11,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeId
 
 /**
  * 修正分类规则。
@@ -68,10 +68,10 @@ private class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.
         // may be empty here (e.g., "AI Economy")
         val supportedScopes = propElements.find { it.key == "supported_scopes" }?.let { prop ->
             buildSet {
-                prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+                prop.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
+                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
             }
-        }?.optimized() ?: ParadoxScopeManager.anyScopeIdSet
+        }?.optimized() ?: ParadoxScopeId.anyScopeIdSet
         logger.debug { "Resolved modifier category config (name: $name).".withLocationPrefix(config) }
         return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
     }

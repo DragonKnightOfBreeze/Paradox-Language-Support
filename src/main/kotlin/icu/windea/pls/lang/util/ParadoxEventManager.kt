@@ -36,6 +36,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
@@ -147,12 +148,12 @@ object ParadoxEventManager {
     }
 
     fun getScope(element: ParadoxDefinitionElement): String {
-        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeManager.anyScopeId
+        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeId.anyScopeId
     }
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeManager.anyScopeId
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeId.anyScopeId
         }
     }
 

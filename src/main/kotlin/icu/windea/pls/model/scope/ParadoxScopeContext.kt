@@ -17,6 +17,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * 保存了 **系统作用域** 到 **作用域** 信息的映射。
  * 以便进行取值、回溯、入栈、替换等操作。
  *
+ * 注意：求值得到的作用域上下文，一般是指切换后的上下文。即，进入脚本成员的子块后，或者进入链接节点后得到的上下文。
+ *
  * @property scope 当前作用域（即 `this`）。
  * @property root 根作用域（即 `root`）。
  * @property from 来源作用域（即 `from`）。等同于调用者事件的根作用域，或者由游戏预定义（硬编码）。
@@ -55,8 +57,8 @@ sealed interface ParadoxScopeContext : UserDataHolder {
         return ParadoxScopeContextResolver.resolveNext(this, pushScope, isFrom)
     }
 
-    fun resolveNext(scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
-        return ParadoxScopeContextResolver.resolveNext(this, scopeContext, isFrom)
+    fun resolveNext(next: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
+        return ParadoxScopeContextResolver.resolveNext(this, next, isFrom)
     }
 
     fun resolveNext(links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
@@ -116,6 +118,16 @@ sealed interface ParadoxScopeContext : UserDataHolder {
     object Keys : KeyRegistry()
 
     companion object {
+        @JvmStatic
+        fun getAny(): ParadoxScopeContext {
+            return ParadoxScopeContextResolver.getAny()
+        }
+
+        @JvmStatic
+        fun getUnknown(input: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
+            return ParadoxScopeContextResolver.getUnknown(input, isFrom)
+        }
+
         @JvmStatic
         fun get(thisScope: String): ParadoxScopeContext {
             return ParadoxScopeContextResolver.get(thisScope)

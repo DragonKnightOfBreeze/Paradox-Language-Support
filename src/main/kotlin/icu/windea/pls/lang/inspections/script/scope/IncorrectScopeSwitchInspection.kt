@@ -20,6 +20,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import javax.swing.JComponent
 
@@ -58,7 +59,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                 // skip if root parent scope context is not from event, scripted_trigger or scripted_effect
                 is ParadoxSystemScopeNode -> {
                     if (!checkForSystemScopes) continue
-                    if (scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
+                    if (scopeContext.scope.id == ParadoxScopeId.unknownScopeId) {
                         val definitionType = definitionType ?: continue
                         if (definitionType in config.configGroup.definitionTypesModel.skipCheckSystemScope) continue
                         val description = PlsBundle.message("inspection.script.incorrectScopeSwitch.desc.3", node.text)

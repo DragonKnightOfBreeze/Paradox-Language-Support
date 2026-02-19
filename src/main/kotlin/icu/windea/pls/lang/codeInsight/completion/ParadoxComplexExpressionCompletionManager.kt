@@ -67,6 +67,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexExpressionCompletionManager {
@@ -90,7 +91,7 @@ object ParadoxComplexExpressionCompletionManager {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val expression = markIncomplete { ParadoxTemplateExpression.resolve(keyword, textRange, configGroup, finalConfig) } ?: return
 
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.scopeContext = null // skip check scope context here
         context.isKey = null
@@ -151,7 +152,7 @@ object ParadoxComplexExpressionCompletionManager {
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
         val expression = markIncomplete { ParadoxDynamicValueExpression.resolve(keyword, textRange, configGroup, finalConfigs) } ?: return
 
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.config = expression.configs.first()
         context.configs = expression.configs
@@ -204,7 +205,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxScopeFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -247,7 +248,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxScriptValueExpression.resolve(keyword, textRange, configGroup, config) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.scopeContext = null // skip check scope context here
         context.isKey = null
@@ -314,7 +315,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxValueFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -365,7 +366,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxVariableFieldExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -416,7 +417,7 @@ object ParadoxComplexExpressionCompletionManager {
         val expression = markIncomplete { ParadoxCommandExpression.resolve(keyword, textRange, configGroup) } ?: return
 
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val isKey = context.isKey
         context.isKey = null
         var scopeContextInExpression = scopeContext
@@ -686,7 +687,7 @@ object ParadoxComplexExpressionCompletionManager {
         val keywordOffset = context.keywordOffset
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val scopeLinkNode = node.castOrNull<ParadoxDynamicScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
         val valueNode = scopeLinkNode?.valueNode
@@ -803,7 +804,7 @@ object ParadoxComplexExpressionCompletionManager {
         val keywordOffset = context.keywordOffset
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
         val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
         val valueNode = scopeLinkNode?.valueNode

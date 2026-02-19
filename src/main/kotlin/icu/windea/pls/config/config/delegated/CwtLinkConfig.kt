@@ -20,7 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeId
 
 
 /**
@@ -154,15 +154,15 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
         val inputScopes = buildSet {
             // both input_scopes and input_scope are supported
             propGroup.getAll("input_scopes").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+                p.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
             }
             propGroup.getAll("input_scope").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+                p.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
             }
-        }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
-        val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
+        }.optimized().orNull() ?: ParadoxScopeId.anyScopeIdSet
+        val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeId.getId(v) }
         val forDefinitionType = propGroup.getOne("for_definition_type")?.stringValue
 
         // when from data or from argument, data sources must not be empty

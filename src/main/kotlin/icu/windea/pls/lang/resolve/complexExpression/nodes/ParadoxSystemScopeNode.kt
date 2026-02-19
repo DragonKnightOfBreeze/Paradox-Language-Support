@@ -20,8 +20,8 @@ class ParadoxSystemScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val config: CwtSystemScopeConfig
-) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxIdentifierNode {
+    override val config: CwtSystemScopeConfig
+) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxSystemScopeAwareLinkNode, ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.to.singletonSet()
     }

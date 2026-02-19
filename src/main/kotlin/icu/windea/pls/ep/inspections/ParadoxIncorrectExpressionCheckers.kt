@@ -34,6 +34,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -101,7 +102,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
+        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression
@@ -121,7 +122,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
+        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression

@@ -13,7 +13,7 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
-import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeId
 
 /**
  * 本地化提升规则。
@@ -79,8 +79,8 @@ private class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromot
     private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
         val name = config.key
         val supportedScopes = buildSet {
-            config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            config.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
+            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }
         }.optimized()
         logger.debug { "Resolved localisation promotion config (name: $name).".withLocationPrefix(config) }
         return CwtLocalisationPromotionConfigImpl(config, name, supportedScopes)

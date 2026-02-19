@@ -4,6 +4,15 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 
 object ParadoxScopeContextResolver {
+    fun getAny(): ParadoxScopeContext {
+        return get(ParadoxScopeId.anyScopeId, ParadoxScopeId.anyScopeId)
+    }
+
+    fun getUnknown(input: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
+        if (input == null) return get(ParadoxScopeId.unknownScopeId)
+        return resolveNext(input, ParadoxScopeId.unknownScopeId, isFrom)
+    }
+
     fun get(thisScope: String): ParadoxScopeContext {
         return ParadoxScopeContext.Simple(ParadoxScope.get(thisScope))
     }
@@ -35,31 +44,31 @@ object ParadoxScopeContextResolver {
         return ParadoxScopeContext.Default(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
     }
 
-    fun resolveNext(current: ParadoxScopeContext, pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
-        if (pushScope == null) return current // transfer current scope context
+    fun resolveNext(input: ParadoxScopeContext, pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
+        if (pushScope == null) return input // transfer current scope context
         val scope = ParadoxScope.get(pushScope)
-        val root = if (isFrom) null else current.root
-        val from = if (isFrom) null else current.from
-        val fromFrom = if (isFrom) null else current.fromFrom
-        val fromFromFrom = if (isFrom) null else current.fromFromFrom
-        val fromFromFromFrom = if (isFrom) null else current.fromFromFromFrom
-        val prevStack = current.prevStack.toMutableList().also { it.add(0, current) }
+        val root = if (isFrom) null else input.root
+        val from = if (isFrom) null else input.from
+        val fromFrom = if (isFrom) null else input.fromFrom
+        val fromFromFrom = if (isFrom) null else input.fromFromFrom
+        val fromFromFromFrom = if (isFrom) null else input.fromFromFromFrom
+        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
         return ParadoxScopeContext.Default(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
     }
 
-    fun resolveNext(current: ParadoxScopeContext, scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
-        val scope = scopeContext.scope
-        val root = current.root
-        val from = if (isFrom) scopeContext.from else scopeContext.from ?: current.from
-        val fromFrom = if (isFrom) scopeContext.fromFrom else scopeContext.fromFrom ?: current.fromFrom
-        val fromFromFrom = if (isFrom) scopeContext.fromFromFrom else scopeContext.fromFromFrom ?: current.fromFromFrom
-        val fromFromFromFrom = if (isFrom) scopeContext.fromFromFromFrom else scopeContext.fromFromFromFrom ?: current.fromFromFromFrom
-        val prevStack = current.prevStack.toMutableList().also { it.add(0, current) }
+    fun resolveNext(input: ParadoxScopeContext, next: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
+        val scope = next.scope
+        val root = input.root
+        val from = if (isFrom) next.from else next.from ?: input.from
+        val fromFrom = if (isFrom) next.fromFrom else next.fromFrom ?: input.fromFrom
+        val fromFromFrom = if (isFrom) next.fromFromFrom else next.fromFromFrom ?: input.fromFromFrom
+        val fromFromFromFrom = if (isFrom) next.fromFromFromFrom else next.fromFromFromFrom ?: input.fromFromFromFrom
+        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
         return ParadoxScopeContext.Default(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
     }
 
-    fun resolveNext(current: ParadoxScopeContext, links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
-        val prevStack = current.prevStack.toMutableList().also { it.add(0, current) }
+    fun resolveNext(input: ParadoxScopeContext, links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
+        val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
         return ParadoxScopeContext.Linked(links, prevStack)
     }
 }

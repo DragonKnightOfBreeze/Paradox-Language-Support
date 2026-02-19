@@ -17,12 +17,12 @@ import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsUrlService
-import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.toScopeMap
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
@@ -131,7 +131,7 @@ fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): Docume
 
 fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
     when {
-        isUnsureScopeId(scopeId) -> append(scopeId)
+        ParadoxScopeId.isUnsure(scopeId) -> append(scopeId)
         else -> {
             val category = ReferenceLinkType.CwtConfig.Categories.scopes
             val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
@@ -149,7 +149,7 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
         val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
         appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
-        if (isUnsureScopeId(scope.id)) {
+        if (ParadoxScopeId.isUnsure(scope.id)) {
             append(scope)
         } else {
             val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)

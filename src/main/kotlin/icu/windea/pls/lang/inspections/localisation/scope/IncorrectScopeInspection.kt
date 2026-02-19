@@ -18,6 +18,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.isCommandExpression
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 class IncorrectScopeInspection : ScopeInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -38,7 +39,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
     }
 
     private fun checkExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression, configGroup: CwtConfigGroup) {
-        var inputScopeContext = ParadoxScopeManager.getAnyScopeContext()
+        var inputScopeContext = ParadoxScopeContext.getAny()
         when (complexExpression) {
             is ParadoxCommandExpression -> {
                 for (node in complexExpression.nodes) {
@@ -48,7 +49,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                             inputScopeContext = outputScopeContext
                         }
                         is ParadoxCommandFieldNode -> {
-                            val supportedScopes = ParadoxScopeManager.getSupportedScopesOfNode(element, node, inputScopeContext)
+                            val supportedScopes = ParadoxScopeManager.getSupportedScopes(element, node, inputScopeContext)
                             val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
                             val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
                             inputScopeContext = outputScopeContext
