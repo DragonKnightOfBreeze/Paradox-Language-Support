@@ -3,7 +3,6 @@
 ## Unreleased
 
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
-- [ ] 性能分析与优化
 
 ## 2.1.3-dev
 
@@ -17,6 +16,7 @@
 - [x] 新功能：新增 `PutMembersOnOneLineIntention` 和 `PutMembersOnSeparateLinesIntention` / NEW: add `PutMembersOnOneLineIntention` and `PutMembersOnSeparateLinesIntention`
 - [x] 新功能：新增 `ReplaceInlineMathWithEvaluatedValueIntention` / NEW: add `ReplaceInlineMathWithEvaluatedValueIntention`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
+- [x] 性能分析与优化 / Performance analysis and optimization
 
 ## 2.1.2
 
