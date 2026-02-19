@@ -32,8 +32,8 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.manipulators.ParadoxScopeManipulator
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**

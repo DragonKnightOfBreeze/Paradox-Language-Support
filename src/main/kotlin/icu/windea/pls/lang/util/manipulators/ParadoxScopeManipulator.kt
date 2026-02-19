@@ -2,8 +2,8 @@ package icu.windea.pls.lang.util.manipulators
 
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.model.scope.ParadoxScope
-import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.toScopeIdMap
 
 object ParadoxScopeManipulator {

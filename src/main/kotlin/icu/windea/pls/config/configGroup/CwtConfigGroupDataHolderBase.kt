@@ -45,8 +45,12 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
+/**
+ * @see InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase
+ */
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
     object Keys : KeyRegistry() {
         val schemas by registerKey<FastList<CwtSchemaConfig>, CwtConfigGroupDataHolder>(this) { FastList() }
@@ -100,8 +104,6 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     }
 
     // region Accessors
-
-    // see: icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase
 
     final override val schemas by Keys.schemas
     final override val foldingSettings by Keys.foldingSettings

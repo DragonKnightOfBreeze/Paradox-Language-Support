@@ -17,8 +17,8 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
