@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.gameRuleConfig
@@ -24,16 +25,16 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
         val gameTypeId = context.configGroup.gameType.id
-        val definitionSubtypes = context.definitionSubtypes
-        val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
-        val subtypes = definitionSubtypes?.filter { it in subtypesToDistinct }.orEmpty()
-        val typeString = buildString {
-            append(context.definitionType)
-            for (subtype in subtypes) {
-                append('.').append(subtype)
+        val typeString = context.definitionType
+        val subtypesString = context.definitionSubtypes?.orNull()?.let { subtypes ->
+            val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
+            buildString {
+                for (subtype in subtypes) {
+                    if (subtype in subtypesToDistinct) append(".").append(subtype)
+                }
             }
-        }
-        return "b@$gameTypeId#$typeString"
+        }.orEmpty()
+        return "b@$gameTypeId#$typeString$subtypesString"
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {

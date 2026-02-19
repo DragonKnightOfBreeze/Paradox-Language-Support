@@ -10,7 +10,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -36,6 +35,7 @@ import icu.windea.pls.core.processChild
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -83,7 +83,7 @@ object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
-        val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedExpressionReferencesDumb by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
     }
 
     // region Common Methods
@@ -366,10 +366,9 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun getExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
+    private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
-        return key
+        return if (processMergedIndex) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
     }
 
     private fun doGetExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
