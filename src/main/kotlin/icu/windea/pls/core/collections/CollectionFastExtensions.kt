@@ -84,3 +84,11 @@ inline fun <T> List<T?>.filterNotNullFast(): List<T> {
 //     forEachFast { e -> if (e is R) destination.add(e) }
 //     return destination
 // }
+
+/** @see kotlin.collections.find */
+@Fast
+inline fun <T> List<T>.findFast(predicate: (T) -> Boolean): T? {
+    if (isEmpty()) return null
+    forEachFast { e -> if (predicate(e)) return e }
+    return null
+}

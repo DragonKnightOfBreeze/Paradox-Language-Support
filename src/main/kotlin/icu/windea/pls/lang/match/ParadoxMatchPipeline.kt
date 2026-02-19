@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
-import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
@@ -52,20 +52,27 @@ object ParadoxMatchPipeline {
         addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
         addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
 
-        candidates.filterTo(matched) p@{
-            if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@p false // 已经匹配过
-            if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@p false // 已经匹配过
-            if (it.result is ParadoxMatchResult.LazySimpleMatch) return@p true // 直接认为是匹配的
-            if (it.result is ParadoxMatchResult.PartialMatch) return@p false // 之后再匹配
-            if (it.result is ParadoxMatchResult.FallbackMatch) return@p false // 之后再匹配
-            it.result.get(options)
+        candidates.forEachFast f@{
+            if (it.result is ParadoxMatchResult.LazySimpleMatch) return@f run { matched += it } // 直接认为是匹配的
+            if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@f  // 已经匹配过
+            if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@f  // 已经匹配过
+            if (it.result is ParadoxMatchResult.PartialMatch) return@f  // 之后再匹配
+            if (it.result is ParadoxMatchResult.FallbackMatch) return@f  // 之后再匹配
+            if (!it.result.get(options)) return@f
+            matched += it
         }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
-        candidates.filterTo(matched) { it.result is ParadoxMatchResult.PartialMatch }
+        candidates.forEachFast f@{
+            if (it.result !is ParadoxMatchResult.PartialMatch) return@f
+            matched += it
+        }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
-        candidates.filterTo(matched) { it.result is ParadoxMatchResult.FallbackMatch }
+        candidates.forEachFast f@{
+            if (it.result !is ParadoxMatchResult.FallbackMatch) return@f
+            matched += it
+        }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
         return emptyList()
@@ -83,7 +90,10 @@ object ParadoxMatchPipeline {
             matched += lazyMatched.first()
         } else if (lazyMatchedSize > 1) {
             val oldMatchedSize = matched.size
-            lazyMatched.filterTo(matched) { it.result.get(options) }
+            lazyMatched.forEachFast f@{
+                if (!it.result.get(options)) return@f
+                matched += it
+            }
             if (oldMatchedSize == matched.size) matched += lazyMatched.first()
         }
     }
@@ -112,7 +122,7 @@ object ParadoxMatchPipeline {
         }
 
         // NOTE 2.1.2 如果是动态的优化器，需要把正在解析的规则上下文标记为动态的
-        if (dynamic) ParadoxConfigService.getResolvingConfigContext()?.dynamic = true
+        if (dynamic) PlsStates.resolvingConfigContextStack.get()?.peekLast()?.dynamic = true
 
         return result
     }

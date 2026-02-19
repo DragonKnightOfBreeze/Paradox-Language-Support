@@ -21,7 +21,7 @@ import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
  */
 @WithGameTypeEP
 interface CwtDeclarationConfigContextProvider {
-    fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
+    fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext?
 
     fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String
 

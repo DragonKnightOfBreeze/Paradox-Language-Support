@@ -7,7 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -38,8 +40,9 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 定义注入的索引。
+ * 定义注入信息的索引。
  */
+@Optimized
 class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionInjectionIndexInfo>, ParadoxDefinitionInjectionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionInjectionIndexInfo>({ it.type }, { it.mode })
 
@@ -147,7 +150,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
-        value.forEach { info ->
+        value.forEachFast { info ->
             storage.writeOrWriteFrom(info, previousInfo, { it.mode }, { storage.writeUTFFast(it) })
             storage.writeUTFFast(info.target)
             storage.writeOrWriteFrom(info, previousInfo, { it.type }, { storage.writeUTFFast(it) })

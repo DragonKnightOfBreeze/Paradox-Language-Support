@@ -7,7 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
@@ -43,6 +45,10 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import java.io.DataInput
 import java.io.DataOutput
 
+/**
+ * 定义信息的索引。
+ */
+@Optimized
 class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionIndexInfo>({ it.type }, { it.name })
     private val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
@@ -184,7 +190,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
-        value.forEach { info ->
+        value.forEachFast { info ->
             storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)

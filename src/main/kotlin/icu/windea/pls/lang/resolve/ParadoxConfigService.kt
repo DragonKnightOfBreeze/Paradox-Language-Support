@@ -47,6 +47,7 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
@@ -91,8 +92,6 @@ object ParadoxConfigService {
                 .withDependencyItems(ModificationTracker.NEVER_CHANGED)
         }
     }
-
-    private val resolvingConfigContexts = ThreadLocal.withInitial { ArrayDeque<CwtConfigContext>() }
 
     /**
      * @see CwtOverriddenConfigProvider.getOverriddenConfigs
@@ -142,7 +141,7 @@ object ParadoxConfigService {
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            val r = ep.getContext(element, file, memberPathFromFile, memberRole, configGroup)?.also { it.provider = ep }
+            val r = ep.getContext(element, file, configGroup, memberPathFromFile, memberRole)?.also { it.provider = ep }
             if (r != null) return r
         }
         return null
@@ -152,12 +151,12 @@ object ParadoxConfigService {
      * @see CwtDeclarationConfigContextProvider.getContext
      */
     @Optimized
-    fun getDeclarationConfigContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+    fun getDeclarationConfigContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         val gameType = configGroup.gameType
         val eps = CwtDeclarationConfigContextProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
-            val r = ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
+            val r = ep.getContext(element, configGroup, definitionName, definitionType, definitionSubtypes)?.also { it.provider = ep }
             if (r != null) return r
         }
         return null
@@ -175,8 +174,8 @@ object ParadoxConfigService {
         val cache = context.configGroup.configsCache.value.get(rootFile)
         val cached = withRecursionGuard {
             withRecursionCheck(cacheKey) {
-                val resolving = resolvingConfigContexts.get()
-                resolving.addLast(context)
+                val resolvingStack = PlsStates.resolvingConfigContextStack.get()
+                resolvingStack.addLast(context)
                 try {
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
                     cache.asMap().getOrPut(cacheKey) {
@@ -184,12 +183,12 @@ object ParadoxConfigService {
                         result?.optimized().orEmpty()
                     }
                 } finally {
-                    resolving.pollLast()
+                    resolvingStack.pollLast()
                     if (context.dynamic) {
                         // invalidate in-config-group cache if result context configs are dynamic (e.g., based on script context)
                         cache.invalidate(cacheKey)
                     }
-                    if (resolving.isEmpty()) resolvingConfigContexts.remove()
+                    if (resolvingStack.isEmpty()) PlsStates.resolvingConfigContextStack.remove()
                 }
             }
         } ?: return emptyList() // unexpected recursion, return empty list
@@ -210,10 +209,6 @@ object ParadoxConfigService {
             result.apply { declarationConfigCacheKey = cacheKey }
         }
         return cached
-    }
-
-    fun getResolvingConfigContext(): CwtConfigContext? {
-        return resolvingConfigContexts.get()?.peekLast()
     }
 
     @Optimized

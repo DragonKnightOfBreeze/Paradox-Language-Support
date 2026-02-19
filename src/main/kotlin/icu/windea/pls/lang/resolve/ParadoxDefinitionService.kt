@@ -165,13 +165,13 @@ object ParadoxDefinitionService {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypeConfigs = ParadoxDefinitionManager.getSubtypeConfigs(definitionInfo, options)
         val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, name, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, name, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
     fun resolveDeclaration(element: PsiElement, type: String, subtypes: List<String>? = null, configGroup: CwtConfigGroup): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, null, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

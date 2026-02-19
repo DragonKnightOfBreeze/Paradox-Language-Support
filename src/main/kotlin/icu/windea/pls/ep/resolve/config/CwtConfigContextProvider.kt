@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMember, file: PsiFile, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole, configGroup: CwtConfigGroup): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions? = null): String?
 

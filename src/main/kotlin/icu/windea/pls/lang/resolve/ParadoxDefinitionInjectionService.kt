@@ -94,7 +94,7 @@ object ParadoxDefinitionInjectionService {
         val declarationConfig = definitionInjectionInfo.declarationConfig ?: return null
         val subtypeConfigs = ParadoxDefinitionInjectionManager.getSubtypeConfigs(definitionInjectionInfo, options)
         val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, name, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, name, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

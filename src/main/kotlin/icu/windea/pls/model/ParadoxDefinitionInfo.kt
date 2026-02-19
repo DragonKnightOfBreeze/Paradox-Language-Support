@@ -36,7 +36,7 @@ data class ParadoxDefinitionInfo(
     val rootKeys: List<String>,
     val typeConfig: CwtTypeConfig,
 ) : UserDataHolderBase() {
-    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
+    val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
 
     @Volatile var element: ParadoxDefinitionElement? = null
 

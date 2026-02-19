@@ -7,7 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -38,6 +40,7 @@ import java.io.DataOutput
 /**
  * 复杂枚举值的索引。使用枚举名作为索引键。
  */
+@Optimized
 class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxComplexEnumValueIndexInfo>, ParadoxComplexEnumValueIndexInfo>() {
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
 
@@ -133,7 +136,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
-        value.forEach { info ->
+        value.forEachFast { info ->
             storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
             storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
             storage.writeIntFast(info.definitionElementOffset)
