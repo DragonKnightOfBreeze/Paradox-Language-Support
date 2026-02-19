@@ -4,7 +4,7 @@
 
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
 
-## 2.1.3-dev
+## 2.1.3
 
 - [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the correction was not excluded when parsing generated corrections
 - [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified #272
