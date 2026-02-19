@@ -118,18 +118,18 @@ object CwtDataTypes {
         .withPriority(10.0)
         .build()
 
-    // e.g., Root.GetName
+    // e.g., `Root.GetName`
     /** @since 2.1.1 */
     val Command = CwtDataType.builder("Command").reference()
         .withPriority(45.0)
         .build()
-    // e.g., civic:xxx:xxx
+    // e.g., `civic:x:y`
     /** @since 1.3.9 */
     // @WithGameType(ParadoxGameType.Stellaris) // not limited yet
     val DatabaseObject = CwtDataType.builder("DatabaseObject").reference()
         .withPriority(60.0)
         .build()
-    // e.g., define:NPortrait|GRACEFUL_AGING_START
+    // e.g., `define:NPortrait|GRACEFUL_AGING_START`
     /** @since 1.3.25 */
     // @WithGameType(ParadoxGameType.Vic3) // not limited yet
     val DefineReference = CwtDataType.builder("DefineReference").reference()
@@ -144,7 +144,7 @@ object CwtDataTypes {
     val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/)
         .withPriority(85.0)
         .build()
-    // {technology}@{level}
+    // e.g., `some_repeatable_tech@1`
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference()
         .withPriority(69.0) // lower than Definition
@@ -155,17 +155,18 @@ object CwtDataTypes {
     val Constant = CwtDataType.builder("Constant").patternAware()
         .withPriority(100.0) // highest
         .build()
-    // e.g., a_<b>_enum[c]_value[d]
+    // e.g., `a_<b>_enum[c]_value[d]`
     val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware()
         .withPriority(65.0)
         .build()
-
-    // e.g., /foo/bar?/*
+    // e.g., `/foo/bar?/*`
     /** @since 1.3.6 */
-    val Ant = CwtDataType.builder("Ant").patternAware().build()
-    // e.g., foo.*bar
+    val Ant = CwtDataType.builder("Ant").patternAware()
+        .build()
+    // e.g., `foo.*bar`
     /** @since 1.3.6 */
-    val Regex = CwtDataType.builder("Regex").patternAware().build()
+    val Regex = CwtDataType.builder("Regex").patternAware()
+        .build()
 
     // Suffix Aware Data Types
 

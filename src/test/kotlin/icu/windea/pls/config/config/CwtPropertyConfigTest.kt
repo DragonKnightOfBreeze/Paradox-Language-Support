@@ -214,8 +214,6 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         }
     }
 
-    // endregion
-
     @Test
     fun testResolver_delegatedWith_nonBlock_expressions_and_parent() {
         val (file, group) = prepare().let { it.first to it.second }
@@ -228,4 +226,6 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         assertTrue(d.keyExpression.isKey)
         assertFalse(d.valueExpression.isKey)
     }
+
+    // endregion
 }
