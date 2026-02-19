@@ -281,21 +281,21 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::commentsByDefault)
                         .enabledIf(cb.selected)
                 }
-                // parameterConditionBlocks & parameterConditionBlocksByDefault
+                // parameterConditions & parameterConditionsByDefault
                 row {
-                    checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
-                        .bindSelected(foldingSettings::parameterConditionBlocks)
+                    checkBox(PlsBundle.message("settings.folding.parameterConditions"))
+                        .bindSelected(foldingSettings::parameterConditions)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(foldingSettings::parameterConditionBlocksByDefault)
+                        .bindSelected(foldingSettings::parameterConditionsByDefault)
                 }
-                // inlineMathBlocks & inlineMathBlocksByDefault
+                // inlineMaths & inlineMathsByDefault
                 row {
-                    checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
-                        .bindSelected(foldingSettings::inlineMathBlocks)
+                    checkBox(PlsBundle.message("settings.folding.inlineMaths"))
+                        .bindSelected(foldingSettings::inlineMaths)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(foldingSettings::inlineMathBlocksByDefault)
+                        .bindSelected(foldingSettings::inlineMathsByDefault)
                 }
                 // localisationTexts & localisationTextsByDefault
                 row {
@@ -568,7 +568,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .onApply { PlsSettingsManager.refreshForOpenedFiles(callbackLock) }
                     contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
                 }
-                // configContextForParameters & configContextForParametersFast
+                // configContextForParameters
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
@@ -577,13 +577,28 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .applyToComponent { cb = this }
                     contextHelp(PlsBundle.message("settings.inference.configContextForParameters.tip"))
 
-                    checkBox(PlsBundle.message("settings.inference.configContextFast"))
+                    // configContextForParametersFast
+                    checkBox(PlsBundle.message("settings.inference.fast"))
                         .bindSelected(inferenceSettings::configContextForParametersFast)
                         .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
                         .enabledIf(cb.selected)
-                    contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
+                    contextHelp(PlsBundle.message("settings.inference.fast.tip"))
+
+                    // configContextForParametersFromUsages
+                    checkBox(PlsBundle.message("settings.inference.fromUsages"))
+                        .bindSelected(inferenceSettings::configContextForParametersFromUsages)
+                        .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                        .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.fromUsages.tip"))
+
+                    // configContextForParametersFromConfig
+                    checkBox(PlsBundle.message("settings.inference.fromConfig"))
+                        .bindSelected(inferenceSettings::configContextForParametersFromConfig)
+                        .onApply { PlsSettingsManager.refreshForParameterInference(callbackLock) }
+                        .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.fromConfig.tip"))
                 }
-                // configContextForInlineScripts & configContextForInlineScriptsFast
+                // configContextForInlineScripts
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
@@ -592,11 +607,26 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .applyToComponent { cb = this }
                     contextHelp(PlsBundle.message("settings.inference.configContextForInlineScripts.tip"))
 
-                    checkBox(PlsBundle.message("settings.inference.configContextFast"))
+                    // configContextForInlineScriptsFast
+                    checkBox(PlsBundle.message("settings.inference.fast"))
                         .bindSelected(inferenceSettings::configContextForInlineScriptsFast)
                         .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
                         .enabledIf(cb.selected)
-                    contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
+                    contextHelp(PlsBundle.message("settings.inference.fast.tip"))
+
+                    // configContextForInlineScriptsFromUsages
+                    checkBox(PlsBundle.message("settings.inference.fromUsages"))
+                        .bindSelected(inferenceSettings::configContextForInlineScriptsFromUsages)
+                        .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                        .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.fromUsages.tip"))
+
+                    // configContextForInlineScriptsFromConfig
+                    checkBox(PlsBundle.message("settings.inference.fromConfig"))
+                        .bindSelected(inferenceSettings::configContextForInlineScriptsFromConfig)
+                        .onApply { PlsSettingsManager.refreshForInlineScriptInference(callbackLock) }
+                        .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.fromConfig.tip"))
                 }
                 // scopeContext
                 row {

@@ -61,7 +61,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
 
         val resultToUse = result.withPrefixMatcher(keyword)
         if (mayBeKey) {
-            // 向上得到block或者file
+            // 向上得到 block 或者 file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
@@ -69,7 +69,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
             }
         }
         if (mayBeValue) {
-            // 向上得到block或者file
+            // 向上得到 block 或者 file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {

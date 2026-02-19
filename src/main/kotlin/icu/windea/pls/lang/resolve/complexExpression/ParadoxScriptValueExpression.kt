@@ -3,10 +3,15 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScriptValueExpressionResolverImpl
+import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * 脚本值表达式。
@@ -43,12 +48,88 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNod
 interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
-    val scriptValueNode: ParadoxScriptValueNode
-    val argumentNodes: List<Pair<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
-
     interface Resolver {
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression?
     }
 
     companion object : Resolver by ParadoxScriptValueExpressionResolverImpl()
 }
+
+// region Implementations
+
+private class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpression.Resolver {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        if (!incomplete && text.isEmpty()) return null
+
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+
+        val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
+        val expression = ParadoxScriptValueExpressionImpl(text, range, configGroup, config, nodes)
+
+        val offset = range.startOffset
+        var n = 0
+        var valueNode: ParadoxScriptValueNode? = null
+        var argumentNode: ParadoxScriptValueArgumentNode? = null
+        var index: Int
+        var tokenIndex = -1
+        var startIndex = 0
+        val textLength = text.length
+        while (tokenIndex < textLength) {
+            index = tokenIndex + 1
+            tokenIndex = text.indexOf('|', index)
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
+            val pipeNode = if (tokenIndex != -1) {
+                val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
+                ParadoxMarkerNode("|", pipeRange, configGroup)
+            } else {
+                null
+            }
+            if (tokenIndex == -1) {
+                tokenIndex = textLength
+            }
+            if (!incomplete && index == tokenIndex && tokenIndex == textLength) break
+            // resolve node
+            val nodeText = text.substring(startIndex, tokenIndex)
+            val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
+            startIndex = tokenIndex + 1
+            val node = when {
+                n == 0 -> {
+                    ParadoxScriptValueNode.resolve(nodeText, nodeRange, configGroup, config)
+                        .also { valueNode = it }
+                }
+                n % 2 == 1 -> {
+                    ParadoxScriptValueArgumentNode.resolve(nodeText, nodeRange, configGroup, valueNode)
+                        .also { argumentNode = it }
+                }
+                n % 2 == 0 -> {
+                    ParadoxScriptValueArgumentValueNode.resolve(nodeText, nodeRange, configGroup, valueNode, argumentNode)
+                }
+                else -> throw InternalError()
+            }
+            nodes += node
+            if (pipeNode != null) nodes += pipeNode
+            n++
+        }
+        if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
+        return expression
+    }
+}
+
+private class ParadoxScriptValueExpressionImpl(
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
+    override val config: CwtConfig<*>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
+) : ParadoxComplexExpressionBase(), ParadoxScriptValueExpression {
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+
+    override fun equals(other: Any?) = this === other || other is ParadoxScriptValueExpression && text == other.text
+    override fun hashCode() = text.hashCode()
+    override fun toString() = text
+}
+
+// endregion

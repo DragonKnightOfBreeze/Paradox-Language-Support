@@ -116,7 +116,6 @@
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionMerger"/>
 
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterIndexInfoSupport"/>

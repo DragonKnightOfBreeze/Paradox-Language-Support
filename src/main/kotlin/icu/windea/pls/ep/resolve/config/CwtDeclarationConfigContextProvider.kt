@@ -6,14 +6,17 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.annotations.WithGameTypeEP
+import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 
 /**
  * 提供声明规则的上下文。
  *
- * 通过声明规则的上下文（[CwtDeclarationConfigContext]）可以得到最终使用的用于验证定义声明的规则。
+ * 说明：
+ * - 通过 [CwtDeclarationConfigContext] 可以得到声明规则对应的处理后的顶级成员规则。
+ * - 最终得到的顶级成员规则可以直接用于确定定义声明的结构，另外也会作为定义的顶级上下文规则。
  *
- * @see CwtDeclarationConfig
+ * @see CwtConfigContext
  * @see CwtDeclarationConfigContext
  */
 @WithGameTypeEP

@@ -61,9 +61,9 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
                 // 2.1.0 兼容定义注入
                 val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return@run
                 val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return@run
-                val name = definitionInjectionInfo.expression
+                val expression = definitionInjectionInfo.expression
                 val containerPointer = definitionInjection.createPointer<PsiElement>(file)
-                add(SuppressForDefinitionInjectionFix(toolId, name, containerPointer))
+                add(SuppressForDefinitionInjectionFix(toolId, expression, containerPointer))
             }
             add(SuppressForExpressionFix(toolId))
         }.toTypedArray()

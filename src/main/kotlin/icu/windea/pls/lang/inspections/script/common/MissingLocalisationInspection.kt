@@ -24,10 +24,11 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 import javax.swing.JComponent
 
 /**
@@ -69,9 +70,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是符合条件的脚本文件
-        val injectable = !ignoredInInjectedFiles
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -83,12 +83,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
-                    is ParadoxScriptDefinitionElement -> visitDefinitionElement(element)
+                    is ParadoxDefinitionElement -> visitDefinitionElement(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
 
-            private fun visitDefinitionElement(element: ParadoxScriptDefinitionElement) {
+            private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
                 ProgressManager.checkCanceled()
                 val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
@@ -97,6 +97,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
                 val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales, forReference = false, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(holder, element, context)

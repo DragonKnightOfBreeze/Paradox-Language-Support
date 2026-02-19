@@ -13,11 +13,11 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
-    override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.textColor) return null
         val info = ParadoxTextColorManager.getInfo(element) ?: return null
         val quickDoc = info.textWithColor
@@ -41,7 +41,7 @@ class ParadoxExtendedScriptedVariableQuickDocTextProvider : ParadoxQuickDocTextP
 class ParadoxExtendedDefinitionQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
@@ -54,7 +54,7 @@ class ParadoxExtendedDefinitionQuickDocTextProvider : ParadoxQuickDocTextProvide
 class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.gameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
@@ -67,7 +67,7 @@ class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderB
 class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    override fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup

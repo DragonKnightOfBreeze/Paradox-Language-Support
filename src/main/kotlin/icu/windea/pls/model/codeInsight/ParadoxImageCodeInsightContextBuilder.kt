@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -37,7 +37,7 @@ object ParadoxImageCodeInsightContextBuilder {
         file.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
-                    is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
+                    is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
@@ -48,7 +48,7 @@ object ParadoxImageCodeInsightContextBuilder {
     }
 
     fun fromDefinition(
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         fromInspection: Boolean = false,
     ): ParadoxImageCodeInsightContext? {
         val inspection = if (fromInspection) getMissingImageInspection(definition) else null

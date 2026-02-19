@@ -28,8 +28,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 在封装变量声明/定义声明级别进行此项检查
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是符合条件的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -40,7 +40,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 if (name.isNullOrEmpty()) return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.isRecursiveScriptedVariable(element, recursions)
+                ParadoxRecursionManager.checkScriptedVariable(element, recursions)
                 if (recursions.isEmpty()) return
                 val description = PlsBundle.message("inspection.script.unsupportedRecursion.desc.1")
                 val location = element.scriptedVariableName
@@ -55,7 +55,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
+                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
                 if (recursions.isEmpty()) return
                 val description = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2")

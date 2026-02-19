@@ -1,5 +1,8 @@
 package icu.windea.pls.model
 
+/**
+ * 模组的来源。
+ */
 enum class ParadoxModSource(val id: String) {
     Local("local"),
     Steam("steam"),
@@ -7,12 +10,4 @@ enum class ParadoxModSource(val id: String) {
     ;
 
     override fun toString(): String = id
-
-    companion object {
-        @JvmStatic
-        private val map = entries.associateBy { it.id }
-
-        @JvmStatic
-        fun get(id: String): ParadoxModSource? = map[id]
-    }
 }

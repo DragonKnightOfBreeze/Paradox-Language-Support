@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.Ref
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -16,38 +16,29 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
-import icu.windea.pls.core.mergeValue
-import icu.windea.pls.core.processChild
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.util.withOperator
-import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -58,27 +49,30 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.match.matchesByPattern
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
+import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 import java.util.*
 
 object ParadoxParameterManager {
@@ -95,15 +89,14 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 得到[element]的文本，然后使用指定的一组[args]替换其中的占位符。
+     * 得到 [element] 的文本，然后使用指定的一组 [args] 替换其中的占位符。
      *
-     * 如果[direct]为true，则直接将占位符`$P$`替换成传入参数`P`的值。此时：
-     *
+     * 如果 [direct] 为 `true`，则直接将占位符 `$P$` 替换成传入参数 `P` 的值。此时：
      * - 值可以是多行字符串。
      * - 如果值是用双引号括起，替换时会被忽略。
      * - 允许重复的传入参数，按顺序进行替换。
      *
-     * @param element 用于得到原始文本的PSI。
+     * @param element 用于得到原始文本的 PSI。
      * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
      */
     fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {
@@ -167,39 +160,29 @@ object ParadoxParameterManager {
      *
      * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
-    fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = doGetContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
     }
 
-    private fun doGetContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
+    private fun doGetContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
         val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
-        val fileConditionStack = ArrayDeque<ReversibleValue<String>>()
+        val fileConditionExpressions = ArrayDeque<ParadoxParameterConditionExpression>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptParameterConditionExpression) return visitParadoxConditionExpression(element)
+                if (element is ParadoxScriptParameterConditionExpression) return visitParameterConditionExpression(element)
                 if (element is ParadoxConditionParameter) return visitConditionParameter(element)
                 if (element is ParadoxParameter) return visitParameter(element)
                 super.visitElement(element)
             }
 
-            private fun visitParadoxConditionExpression(element: ParadoxScriptParameterConditionExpression) {
-                var operator = true
-                var value = ""
-                element.processChild p@{
-                    val elementType = it.elementType
-                    when (elementType) {
-                        ParadoxScriptElementTypes.NOT_SIGN -> operator = false
-                        ParadoxScriptElementTypes.PARAMETER_CONDITION_PARAMETER -> value = it.text
-                    }
-                    true
-                }
+            private fun visitParameterConditionExpression(element: ParadoxScriptParameterConditionExpression) {
                 // value may be empty (invalid condition expression)
-                fileConditionStack.addLast(ReversibleValue(operator, value))
+                fileConditionExpressions.addLast(ParadoxParameterConditionExpression.resolve(element.text))
                 super.visitElement(element)
             }
 
@@ -213,15 +196,15 @@ object ParadoxParameterManager {
             private fun visitParameter(element: ParadoxParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = ArrayDeque(fileConditionStack) // not null
-                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
+                val conditionalExpressions = ArrayDeque(fileConditionExpressions) // not null
+                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalExpressions)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 // 不需要继续向下遍历
             }
 
             override fun elementFinished(element: PsiElement?) {
                 if (element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
-                    fileConditionStack.removeLast()
+                    fileConditionExpressions.removeLast()
                 }
             }
         })
@@ -234,21 +217,93 @@ object ParadoxParameterManager {
     fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return true
-        return parameterInfos.all f@{ parameterInfo ->
-            // 如果带有默认值，则为可选
-            if (parameterInfo.defaultValue != null) return@f true
-            // 如果是条件参数，则为可选
-            if (parameterInfo.conditionStack == null) return@f true
-            // 如果基于条件表达式上下文是可选的，则为可选
-            if (parameterInfo.conditionStack.isNotEmpty() && parameterInfo.conditionStack
-                    .all { it.withOperator { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }
-            ) return@f true
-            // 如果作为传入参数的值，则认为是可选的
-            if (parameterInfo.expressionConfigs
-                    .any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
-            ) return@f true
+        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
+    }
+
+    /**
+     * 基于指定的参数信息以及输入的一组参数，判断此参数是否是可选的。
+     */
+    fun isOptional(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>? = null): Boolean {
+        // 如果带有默认值，则为可选
+        if (parameterInfo.defaultValue != null) return true
+        // 如果是条件参数，则为可选
+        if (parameterInfo.conditionExpressions == null) return true
+        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
+        if (isOptionalFromConditionExpressions(parameterInfo, argumentNames)) return true
+        // 如果作为传入参数的值，则认为是可选的
+        if (isPassingParameterValue(parameterInfo)) return true
+        return false
+    }
+
+    fun isOptionalFromConditionExpressions(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
+        val conditionExpressions = parameterInfo.conditionExpressions
+        if (conditionExpressions.isNullOrEmpty()) return false
+        return !conditionExpressions.all { it.matches(argumentNames) }
+    }
+
+    fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
+        val expressionConfigs = getExpressionConfigs(parameterInfo)
+        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+    }
+
+    /**
+     * 基于指定的参数信息，得到对应的脚本表达式所对应的上下文规则列表。此参数需要整个作为一个脚本表达式。
+     */
+    fun getExpressionContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
+        if (!expressionElement.value.isParameterized(full = true)) return emptyList()
+        val expressionContextConfigs = ParadoxConfigManager.getConfigContext(expressionElement)?.getConfigs()
+        return expressionContextConfigs.orEmpty()
+    }
+
+    /**
+     * 基于指定的参数信息，得到对应的脚本表达式所对应的规则列表。此参数可能整个作为一个脚本表达式，或者被一个脚本表达式所包含。
+     */
+    fun getExpressionConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>> {
+        val expressionElement = parameterInfo.parentElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return emptyList()
+        return when {
+            expressionElement is ParadoxScriptPropertyKey -> {
+                val configs = ParadoxConfigManager.getConfigs(expressionElement)
+                configs.filterIsInstance<CwtPropertyConfig>()
+            }
+            expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
+                val configs = ParadoxConfigManager.getConfigs(expressionElement)
+                configs.filterIsInstance<CwtValueConfig>()
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
+    fun getRequiredParameterNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, argumentNames: MutableSet<String>): MutableSet<String> {
+        val result = mutableSetOf<String>()
+        ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
+            ProgressManager.checkCanceled()
+            val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
+            if (parameterContextInfo.parameters.isEmpty()) return@p true
+            for (parameterName in parameterContextInfo.parameters.keys) {
+                if (result.contains(parameterName)) continue
+                if (!isOptional(parameterContextInfo, parameterName, argumentNames)) result.add(parameterName)
+            }
             false
         }
+        return result
+    }
+
+    fun getPresentArgumentNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo): MutableSet<String> {
+        val result = mutableSetOf<String>()
+        for (argument in contextReferenceInfo.arguments) {
+            if (!isPresent(element, argument, contextReferenceInfo.project)) continue
+            result.add(argument.argumentName)
+        }
+        return result
+    }
+
+    fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument, project: Project): Boolean {
+        val argumentValue = argumentInfo.argumentValue ?: return true
+        val resolved = ParadoxExpressionManager.resolve(argumentValue, element, project)
+        return resolved != "no"
     }
 
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -286,7 +341,10 @@ object ParadoxParameterManager {
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
-        val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
+        val argumentNames = mutableSetOf<String>()
+        for (argument in contextReferenceInfo.arguments) {
+            argumentNames.add(argument.argumentName)
+        }
         // 整合查找到的所有参数上下文
         ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
@@ -346,91 +404,57 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 尝试推断得到参数的类型（仅用于显示）。
+     * 尝试推断得到参数的上下文规则。基于用法和扩展规则。
+     */
+    fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForParameters) return emptyList()
+        val fast = inferenceSettings.configContextForParametersFast
+
+        if (inferenceSettings.configContextForParametersFromConfig) {
+            val fromConfig = ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
+            if (fromConfig.isNotEmpty()) return fromConfig
+        }
+
+        if (inferenceSettings.configContextForParametersFromUsages) {
+            val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
+            val fromUsages = parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
+                ProgressManager.checkCanceled()
+                ParadoxParameterService.getInferredContextConfigsFromUsages(parameterElement, fast)
+            }
+            if (fromUsages.isNotEmpty()) return fromUsages
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * 尝试推断得到参数的上下文规则。基于扩展规则。
+     */
+    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val inferenceSettings = PlsSettings.getInstance().state.inference
+        if (!inferenceSettings.configContextForParameters) return emptyList()
+        val fast = inferenceSettings.configContextForParametersFast
+
+        return ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
+    }
+
+    /**
+     * 尝试推断得到参数的类型。仅用于显示。
      */
     fun getInferredType(parameterElement: ParadoxParameterElement): String? {
         val contextConfigs = getInferredContextConfigs(parameterElement)
-        if (contextConfigs.isEmpty()) return null
-        val configs = contextConfigs.singleOrNull()?.configs
-        if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.valueType == CwtType.Block }) return PlsBundle.message("complex")
-        return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
+        return ParadoxParameterService.getInferredType(contextConfigs)
     }
 
     /**
-     * 尝试推断得到参数对应的上下文规则。
+     * 尝试推断得到带参数的键对应的匹配的规则。
      */
-    fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
-        if (fromConfig.isNotEmpty()) return fromConfig
-
-        if (!PlsSettings.getInstance().state.inference.configContextForParameters) return emptyList()
-        val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
-            ProgressManager.checkCanceled()
-            withRecursionGuard {
-                withRecursionCheck(parameterElement) {
-                    doGetInferredContextConfigsFromUsages(parameterElement)
-                }
-            } ?: emptyList()
-        }
-    }
-
-    /**
-     * 尝试（从扩展的规则）推断得到参数对应的上下文规则。
-     */
-    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        return doGetInferredContextConfigsFromConfig(parameterElement)
-    }
-
-    private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
-        val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
-        return config.getContextConfigs(parameterElement)
-    }
-
-    private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        ParadoxParameterService.processContext(parameterElement, true) p@{ context ->
-            ProgressManager.checkCanceled()
-            val contextInfo = ParadoxParameterService.getContextInfo(context) ?: return@p true
-            val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo).orNull()
-            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
-        }
-        return result.get().orEmpty()
-    }
-
-    private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
-        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
-        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
-        if (parameterInfos.isNullOrEmpty()) return emptyList()
-        val result = Ref.create<List<CwtMemberConfig<*>>>()
-        parameterInfos.process p@{ parameterInfo ->
-            ProgressManager.checkCanceled()
-            val contextConfigs = ParadoxParameterService.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
-            if (fastInference && contextConfigs.isNotNullOrEmpty()) {
-                result.set(contextConfigs)
-                return@p false
-            }
-            result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
-        }
-        return result.get().orEmpty()
-    }
-
     fun getParameterizedKeyConfigs(element: ParadoxScriptProperty): List<CwtValueConfig> {
         val propertyKey = element.propertyKey
         val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
-        val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
-        if (configs.isNullOrEmpty()) return emptyList()
-        return configs.cast()
+        return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
     }
 }

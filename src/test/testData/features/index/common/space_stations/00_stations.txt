@@ -1,0 +1,11 @@
+stations = {
+    orbital_hub = {
+        capacity = 100
+        modules = 6
+    }
+
+    defense_platform = {
+        capacity = 50
+        modules = 2
+    }
+}

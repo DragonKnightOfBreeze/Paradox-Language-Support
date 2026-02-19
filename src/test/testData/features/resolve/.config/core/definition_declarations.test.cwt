@@ -1,0 +1,46 @@
+mech = {
+    armor = int
+    speed = int
+    subtype[heavy] = {
+        ## cardinality = 0..1
+        shield = int
+        ## cardinality = 0..1
+        weight_class = scalar
+    }
+    subtype[stealth] = {
+        ## cardinality = 0..1
+        cloaking = bool
+    }
+}
+
+weapon = {
+    damage = int
+    range = int
+    subtype[energy] = {
+        ## cardinality = 0..1
+        damage_type = scalar
+        ## cardinality = 0..1
+        energy_cost = int
+    }
+    subtype[kinetic] = {
+        ## cardinality = 0..1
+        damage_type = scalar
+        ## cardinality = 0..1
+        ammo = int
+    }
+}
+
+pilot = {
+    callsign = scalar
+    rank = scalar
+}
+
+space_station = {
+    crew = int
+    docking_bays = int
+}
+
+signal = {
+    frequency = float
+    priority = scalar
+}

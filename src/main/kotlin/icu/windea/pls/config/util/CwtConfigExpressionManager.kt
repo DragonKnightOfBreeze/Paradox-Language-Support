@@ -60,6 +60,10 @@ object CwtConfigExpressionManager {
     }
 
     fun toMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean = false): Tuple2<Regex, MatchResult>? {
+        return doToMatchedRegex(templateExpression, text, incomplete)
+    }
+
+    private fun doToMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean): Pair<Regex, MatchResult>? {
         val regex = toRegex(templateExpression)
         val matchResult = regex.matchEntire(text)
         if (matchResult != null) return regex to matchResult
@@ -75,11 +79,10 @@ object CwtConfigExpressionManager {
         return null
     }
 
-    private fun StringBuilder.appendRegexSnippet(expression: CwtDataExpression) {
-        if (expression.type == CwtDataTypes.Constant) {
-            append("\\Q").append(expression.expressionString).append("\\E")
-        } else {
-            append("(.*?)")
+    private fun StringBuilder.appendRegexSnippet(snippetExpression: CwtDataExpression) {
+        when (snippetExpression.type) {
+            CwtDataTypes.Constant -> append("\\Q").append(snippetExpression.expressionString).append("\\E")
+            else -> append("(.*?)")
         }
     }
 }

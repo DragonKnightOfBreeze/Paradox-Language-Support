@@ -13,8 +13,8 @@ import kotlin.io.path.writeText
 
 class PlsSettingsMigrator : AppLifecycleListener {
     private val logger = thisLogger()
-    private val migrationPropertyName = "pls.migration"
-    private val migrationVersion = 1
+    private val migrationPropertyName = "pls.settings.migration"
+    private val migrationVersion = 2
 
     private val componentNameMap = mapOf(
         "ParadoxSettings" to "PlsSettings",
@@ -23,7 +23,12 @@ class PlsSettingsMigrator : AppLifecycleListener {
     private val optionNameMap = mapOf(
         "comment" to "comments",
         "commentByDefault" to "commentsByDefault",
+        "parameterConditionBlocks" to "parameterConditions",
+        "parameterConditionBlocksByDefault" to "parameterConditionsByDefault",
+        "inlineMathBlocks" to "inlineMaths",
+        "inlineMathBlocksByDefault" to "inlineMathsByDefault",
     )
+
     private val replacementMap = buildMap {
         for (entry in componentNameMap) {
             put("<component name=\"${entry.key}\"", "<component name=\"${entry.value}\"")
@@ -51,10 +56,10 @@ class PlsSettingsMigrator : AppLifecycleListener {
             val newText = replacementMap.entries.fold(text) { t, r -> t.replace(r.key, r.value) }
             if (newText == text) return
             settingsFile.writeText(newText)
-            logger.info("Migration for '$settingsFileName' finished.")
+            logger.info("Migration for '$settingsFileName' finished. (migration version: $v)")
         } catch (e: Exception) {
             if (e is ProcessCanceledException) return
-            logger.info("Migration for '$settingsFileName' failed. Skip.")
+            logger.info("Migration for '$settingsFileName' failed. Skip. (migration version: $v)")
         } finally {
             PropertiesComponent.getInstance().setValue(migrationPropertyName, v, 0)
         }

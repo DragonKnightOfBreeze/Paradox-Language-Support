@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -41,7 +41,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
         val descriptors = mutableMapOf<String, ParadoxCallHierarchyNodeDescriptor>()
         when {
-            element is ParadoxScriptDefinitionElement -> {
+            element is ParadoxDefinitionElement -> {
                 searchElement(element, descriptor, descriptors)
             }
             element is ParadoxLocalisationProperty -> {
@@ -133,7 +133,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                     descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                 }
             }
-            is ParadoxScriptDefinitionElement -> {
+            is ParadoxDefinitionElement -> {
                 if (!settings.showDefinitionsInCallHierarchy) return // 不显示
                 val definitionInfo = resolved.definitionInfo ?: return
                 if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return // 不显示

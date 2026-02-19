@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -46,7 +46,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 file.accept(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         when (element) {
-                            is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
+                            is ParadoxDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                             is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
                         if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
@@ -77,7 +77,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     }
 
     fun fromDefinition(
-        element: ParadoxScriptDefinitionElement,
+        element: ParadoxDefinitionElement,
         locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {

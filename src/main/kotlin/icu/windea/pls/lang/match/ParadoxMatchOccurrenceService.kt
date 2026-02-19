@@ -7,14 +7,14 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.isProperty
 import icu.windea.pls.config.isValue
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -26,15 +26,15 @@ object ParadoxMatchOccurrenceService {
         val cardinalityMinDefine = config.optionData.cardinalityMinDefine
         val cardinalityMaxDefine = config.optionData.cardinalityMaxDefine
         val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin, cardinality.relaxMax)
-        config.run {
+        run {
             if (cardinalityMinDefine == null) return@run
-            val defineValue = ParadoxDefineManager.getDefineValue(cardinalityMinDefine, contextElement, project)?.castOrNull<Int>() ?: return@run
+            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMinDefine, contextElement, project)?.intValue() ?: return@run
             occurrence.min = defineValue
             occurrence.minDefine = cardinalityMinDefine
         }
-        config.run {
+        run {
             if (cardinalityMaxDefine == null) return@run
-            val defineValue = ParadoxDefineManager.getDefineValue(cardinalityMaxDefine, contextElement, project)?.castOrNull<Int>() ?: return@run
+            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMaxDefine, contextElement, project)?.intValue() ?: return@run
             occurrence.max = defineValue
             occurrence.maxDefine = cardinalityMaxDefine
         }
@@ -57,7 +57,7 @@ object ParadoxMatchOccurrenceService {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val blockElement = when (element) {
-            is ParadoxScriptDefinitionElement -> element.block
+            is ParadoxDefinitionElement -> element.block
             is ParadoxScriptBlockElement -> element
             else -> null
         }
@@ -84,7 +84,9 @@ object ParadoxMatchOccurrenceService {
             val matched = childConfigs.find { childConfig ->
                 if (childConfig.isProperty() && data !is ParadoxScriptProperty) return@find false
                 if (childConfig.isValue() && data !is ParadoxScriptValue) return@find false
-                ParadoxMatchService.matchScriptExpression(data, expression, childConfig.configExpression, childConfig, configGroup).get()
+                val configExpression = childConfig.configExpression
+                val context = ParadoxScriptExpressionMatchContext(data, expression, configExpression, childConfig, configGroup)
+                ParadoxMatchService.matchScriptExpression(context).get()
             }
             if (matched == null) return@f
             val occurrence = occurrences[matched.configExpression]

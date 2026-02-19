@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -34,7 +34,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                 val config = configs.firstOrNull() ?: return
                 if (!ParadoxScopeManager.isScopeContextSupported(element)) return
                 val parentMember = ParadoxScopeManager.findParentMember(element, withSelf = false) ?: return
-                val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(parentMember) ?: return
+                val parentScopeContext = ParadoxScopeManager.getScopeContext(parentMember) ?: return
                 val supportedScopes = getSupportedScopes(element, config) ?: return
                 val configGroup = config.configGroup
                 if (!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {
@@ -77,7 +77,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                     val expressionElement = getExpressionElement(element) ?: return null
                     ProgressManager.checkCanceled()
                     val resolved = expressionElement.reference?.resolve()
-                    if (resolved !is ParadoxScriptDefinitionElement) return null
+                    if (resolved !is ParadoxDefinitionElement) return null
                     val definitionInfo = resolved.definitionInfo ?: return null
                     val supportedScopes = ParadoxScopeService.getSupportedScopes(resolved, definitionInfo)
                     return supportedScopes

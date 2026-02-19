@@ -47,10 +47,10 @@ object PlsMarkdownManager {
     }
 
     fun getPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
-        return doGetPathInjectionInfoFromCache(element)
+        return getPathInjectionInfoFromCache(element)
     }
 
-    private fun doGetPathInjectionInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
+    private fun getPathInjectionInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPathInjectionInfo) {
             val value = doGetPathInjectionInfo(element)
             value.withDependencyItems(element)

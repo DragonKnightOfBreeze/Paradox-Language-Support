@@ -10,6 +10,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
+import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
+import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -23,17 +25,18 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 规则上下文。
  *
- * 用于后续获取对应的上下文规则（即所有可能的规则）以及匹配的规则，从而提供各种高级语言功能。例如代码高亮、引用解析、代码补全。
+ * 用于后续获取对应的上下文规则以及匹配的规则，从而提供各种高级语言功能。
  *
- * 规则上下文不一定存在对应的上下文规则。
- * 如果一个规则上下文开始存在对应的上下文规则，并且需要在子上下文中展开，则视作根上下文。
+ * 备注：
+ * - 规则上下文不一定存在对应的上下文规则。
+ * - 如果一个规则上下文开始存在对应的上下文规则，并且需要在子上下文中展开，则视作根上下文。
  *
  * @param memberPathFromFile 相对于所在文件的成员路径。
  * @param memberPath 相对于根上下文的成员路径。
  *
  * @see CwtConfigContextProvider
  */
-class CwtConfigContext(
+data class CwtConfigContext(
     val element: ParadoxScriptMember, // use element directly here
     val memberPathFromFile: ParadoxMemberPath?,
     val memberPath: ParadoxMemberPath?,
@@ -45,14 +48,17 @@ class CwtConfigContext(
 
     lateinit var provider: CwtConfigContextProvider
 
+    /** 得到对应的上下文规则（进行代码补全时可用的所有规则）。 */
     fun getConfigs(options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         return ParadoxConfigService.getConfigsForConfigContext(this, options)
     }
 
+    /** 是否跳过代码检查 [MissingExpressionInspection] */
     fun skipMissingExpressionCheck(): Boolean {
         return provider.skipMissingExpressionCheck(this)
     }
 
+    /** 是否跳过代码检查 [TooManyExpressionInspection] */
     fun skipTooManyExpressionCheck(): Boolean {
         return provider.skipTooManyExpressionCheck(this)
     }

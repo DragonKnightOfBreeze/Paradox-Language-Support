@@ -4,24 +4,24 @@ import icu.windea.pls.lang.PlsStates
 
 object ParadoxMatchOptionsUtil {
     fun fallback(options: ParadoxMatchOptions? = null): Boolean {
-        return options.orDefault().fallback
+        return options.normalized().fallback
     }
 
     fun acceptDefinition(options: ParadoxMatchOptions? = null): Boolean {
-        return options.orDefault().acceptDefinition
+        return options.normalized().acceptDefinition
     }
 
     fun relax(options: ParadoxMatchOptions? = null): Boolean {
-        return options.orDefault().relax
+        return options.normalized().relax
     }
 
     fun skipIndex(options: ParadoxMatchOptions? = null): Boolean {
         if (PlsStates.processMergedIndex.get() == true) return true
-        return options.orDefault().skipIndex
+        return options.normalized().skipIndex
     }
 
     fun skipScope(options: ParadoxMatchOptions? = null): Boolean {
         if (PlsStates.processMergedIndex.get() == true) return true
-        return options.orDefault().skipScope
+        return options.normalized().skipScope
     }
 }

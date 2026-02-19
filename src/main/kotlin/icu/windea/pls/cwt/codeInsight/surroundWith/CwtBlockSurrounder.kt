@@ -12,16 +12,13 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementFactory
 
 class CwtBlockSurrounder : Surrounder {
-    override fun getTemplateDescription(): String {
-        return "{ }"
-    }
+    override fun getTemplateDescription() = "{...}"
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
-        return true
+        return elements.isNotEmpty()
     }
 
-    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
-        if (elements.isEmpty()) return null
+    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {
         val firstElement = elements.first()
         val lastElement = elements.last()
         val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
@@ -29,11 +26,9 @@ class CwtBlockSurrounder : Surrounder {
         if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = CwtElementFactory.createBlock(project, "{\n${replacedText}\n}")
+        var newElement = CwtElementFactory.createBlockFromText(project, "{\n${replacedText}\n}")
         newElement = firstElement.replace(newElement) as CwtBlock
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as CwtBlock
-        val endOffset = newElement.endOffset
-        return TextRange.create(endOffset, endOffset)
+        return TextRange.from(newElement.endOffset, 0)
     }
 }
-

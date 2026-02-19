@@ -21,7 +21,6 @@ import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.takeWithOperator
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
 import kotlinx.coroutines.currentCoroutineContext

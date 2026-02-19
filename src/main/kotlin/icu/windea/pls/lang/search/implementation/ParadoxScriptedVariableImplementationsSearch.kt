@@ -18,7 +18,7 @@ import java.util.concurrent.Callable
  */
 class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        // 得到解析后的PSI元素
+        // 得到解析后的 PSI 元素
         val sourceElement = queryParameters.element
         if (sourceElement !is ParadoxScriptScriptedVariable) return true
         val name = runReadAction { sourceElement.name }

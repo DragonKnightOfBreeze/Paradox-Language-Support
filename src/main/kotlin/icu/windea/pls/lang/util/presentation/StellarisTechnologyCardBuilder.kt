@@ -4,18 +4,18 @@ import com.intellij.ui.Gray
 import icu.windea.pls.core.resize
 import icu.windea.pls.core.toImage
 import icu.windea.pls.core.toLabel
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.withLocation
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
@@ -27,7 +27,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 class StellarisTechnologyCardBuilder(
-    private val element: ParadoxScriptDefinitionElement
+    private val element: ParadoxDefinitionElement
 ) {
     @Suppress("UseJBColor")
     object Constants {
@@ -108,7 +108,8 @@ class StellarisTechnologyCardBuilder(
     }
 
     private fun getUnknownIcon(): Icon? {
-        val sprite = ParadoxDefinitionSearch.search("GFX_technology_unknown", ParadoxDefinitionTypes.sprite, selector()).find() ?: return null
+        val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+        val sprite = ParadoxDefinitionSearch.searchProperty("GFX_technology_unknown", ParadoxDefinitionTypes.sprite, selector).find() ?: return null
         return ParadoxPresentationUtil.getIcon(sprite)
     }
 
@@ -121,31 +122,31 @@ class StellarisTechnologyCardBuilder(
             types.contains("rare") -> "GFX_tech_entry_rare_bg"
             else -> "GFX_tech_entry_${area}_bg"
         }
-        val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector()).find() ?: return null
+        val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+        val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
         return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun getBottomLineIcon(): Icon? {
         val area = definitionData.area ?: return null
         val spriteName = "GFX_bottom_line_${area}"
-        val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector()).find() ?: return null
+        val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+        val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
         return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun getCategoryIcon(): Icon? {
         val category = definitionData.category?.firstOrNull() ?: return null
-        val categoryDef = ParadoxDefinitionSearch.search(category, ParadoxDefinitionTypes.technologyCategory, selector()).find() ?: return null
+        val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+        val categoryDef = ParadoxDefinitionSearch.searchProperty(category, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return null
         return ParadoxPresentationUtil.getIcon(categoryDef)
     }
 
     @Suppress("unused")
     private fun getGatewayIcon(): Icon? {
         val spriteName = "GFX_tech_gateway"
-        val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector()).find() ?: return null
+        val selector = selector(definitionInfo.project, element).definition().contextSensitive()
+        val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find() ?: return null
         return ParadoxPresentationUtil.getIcon(sprite)
-    }
-
-    private fun selector(): ParadoxSearchSelector<ParadoxScriptDefinitionElement> {
-        return icu.windea.pls.lang.search.selector.selector(definitionInfo.project, element).definition().contextSensitive()
     }
 }

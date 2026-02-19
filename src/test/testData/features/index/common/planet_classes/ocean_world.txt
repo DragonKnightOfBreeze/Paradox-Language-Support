@@ -1,0 +1,2 @@
+climate = temperate
+habitability = 0.8

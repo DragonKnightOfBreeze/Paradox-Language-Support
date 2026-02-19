@@ -23,26 +23,24 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-
         // 尽管新增了内联脚本传参的索引（ParadoxInlineScriptArgumentIndex），这里仍然统一通过合并索引（ParadoxMergedIndex）进行查询
         // 因为这里需要查询所有上下文的所有访问级别（读/写）的参数
 
-        val gameType = queryParameters.selector.gameType
         val indexInfoType = ParadoxIndexInfoType.Parameter
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
-            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) { file, infos ->
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }
 
     private fun processInfo(
         queryParameters: ParadoxParameterSearch.SearchParameters,
-        info: ParadoxParameterIndexInfo,
         file: VirtualFile,
+        info: ParadoxParameterIndexInfo,
         consumer: Processor<in ParadoxParameterIndexInfo>
     ): Boolean {
         if (queryParameters.contextKey != info.contextKey) return true
         if (queryParameters.name != null && queryParameters.name != info.name) return true
-        info.virtualFile = file
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
     }
 }

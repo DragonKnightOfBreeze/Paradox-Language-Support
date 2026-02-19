@@ -1,12 +1,6 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.loadText
-
 object PlsStrings {
-    const val anonymous = "(anonymous)"
-    const val unknown = "(unknown)"
-    const val unresolved = "(unresolved)"
-
     const val typePrefix = "(type)"
     const val subtypePrefix = "(subtype)"
     const val rowPrefix = "(row)"
@@ -70,16 +64,4 @@ object PlsStrings {
     const val conceptCommandWithTextFolder = "['...', ...]"
 
     const val suppressInspectionsTagName = "noinspection"
-
-    val cwtColorSettingsSample by lazy { loadText("/samples/Cwt.colorSettings.txt") }
-    val cwtCodeStyleSettingsSample by lazy { loadText("/samples/Cwt.codeStyleSettings.txt") }
-
-    val paradoxLocalisationColorSettingsSample by lazy { loadText("/samples/ParadoxLocalisation.colorSettings.txt") }
-    val paradoxLocalisationCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxLocalisation.codeStyleSettings.txt") }
-
-    val paradoxScriptColorSettingsSample by lazy { loadText("/samples/ParadoxScript.colorSettings.txt") }
-    val paradoxScriptCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxScript.codeStyleSettings.txt") }
-
-    val paradoxCsvColorSettingsSample by lazy { loadText("/samples/ParadoxCsv.colorSettings.txt") }
-    val paradoxCsvCodeStyleSettingsSample by lazy { loadText("/samples/ParadoxCsv.codeStyleSettings.txt") }
 }

@@ -7,7 +7,7 @@ import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.constants.PlsPreviewTexts
 
 class ParadoxCsvColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -40,5 +40,5 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = PlsBundle.message("language.name.csv")
 
-    override fun getDemoText() = PlsStrings.paradoxCsvColorSettingsSample
+    override fun getDemoText() = PlsPreviewTexts.csvColorSettings
 }

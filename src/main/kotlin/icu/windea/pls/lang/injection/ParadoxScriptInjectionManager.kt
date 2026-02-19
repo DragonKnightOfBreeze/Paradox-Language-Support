@@ -20,6 +20,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
@@ -29,7 +30,6 @@ import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxSeparatorType
-import icu.windea.pls.model.constants.PlsPatterns
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo
 import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -60,7 +60,7 @@ object ParadoxScriptInjectionManager {
         if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
-        if (!PlsPatterns.argumentName.matches(argumentName)) return  // 参数名必须合法
+        if (!PlsNameValidators.checkParameterName(argumentName)) return  // 参数名必须合法
         val argumentValue = host.text.orNull() ?: return  // 参数参数值为空的情况
         if (shouldApplyParameterValueInjection(argumentValue)) return
 
@@ -100,7 +100,7 @@ object ParadoxScriptInjectionManager {
         if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
-        if (!PlsPatterns.parameterName.matches(parameterName)) return  // 参数名必须合法
+        if (!PlsNameValidators.checkParameterName(parameterName)) return  // 参数名必须合法
         val defaultValue = host.defaultValue?.orNull() ?: return  // 排除默认值不存在或为空的情况
         if (!shouldApplyParameterValueInjection(defaultValue)) return
 

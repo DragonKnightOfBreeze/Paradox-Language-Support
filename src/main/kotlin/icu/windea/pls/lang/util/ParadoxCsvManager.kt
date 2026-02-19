@@ -20,7 +20,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchService
 
 object ParadoxCsvManager {
@@ -35,30 +37,32 @@ object ParadoxCsvManager {
     }
 
     fun getRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
-        return doGetRowConfigFromCache(file)
+        return getRowConfigFromCache(file)
     }
 
     fun getRowConfig(element: ParadoxCsvRowElement): CwtRowConfig? {
         val file = element.containingFile
         if (file !is ParadoxCsvFile) return null
-        return doGetRowConfigFromCache(file)
+        return getRowConfigFromCache(file)
     }
 
-    private fun doGetRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
+    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
+        // when the file content changes, the cache here does not need to be refreshed
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
-            val value = doGetRowConfig(file)
-            val tracker = ComputedModificationTracker { file.fileInfo } // 文件内容发生变化时，这里的缓存并不需要刷新
+            val value = resolveRowConfig(file)
+            val tracker = ComputedModificationTracker { file.fileInfo }
             value.withDependencyItems(tracker)
         }
     }
 
-    private fun doGetRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
+    private fun resolveRowConfig(file: ParadoxCsvFile): CwtRowConfig? {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(configGroup, path)
+        val matchContext = CwtRowConfigMatchContext(configGroup, path)
+        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(matchContext)
         return rowConfig
     }
 
@@ -82,7 +86,9 @@ object ParadoxCsvManager {
             return column.value == columnConfig.key
         }
         val configExpression = columnConfig.valueConfig?.configExpression ?: return false
-        return ParadoxMatchService.matchCsvExpression(column, column.text, configExpression, columnConfig.configGroup).get()
+        val configGroup = columnConfig.configGroup
+        val context = ParadoxCsvExpressionMatchContext(column, column.text, configExpression, configGroup)
+        return ParadoxMatchService.matchCsvExpression(context).get()
     }
 
     fun computeHeaderColumnSize(element: ParadoxCsvHeader): Int {

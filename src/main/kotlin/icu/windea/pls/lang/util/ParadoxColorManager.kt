@@ -124,13 +124,13 @@ object ParadoxColorManager {
     }
 
     /**
-     * 得到当前PSI元素[element]对应的颜色类型。
+     * 得到当前 [element] 对应的颜色类型。
      *
-     * 从匹配的规则的`color_type`选项的值获取。
-     *
-     * 可选值：`hex` `rgb` `hsv` `hsv360`。
-     * 其中`hex`仅适用于[element]是[ParadoxScriptString]的场合，
-     * 其他可选值适用于[element]是[ParadoxScriptBlock]或[ParadoxScriptColor]的场合。
+     * 说明：
+     * - 从匹配的规则的 `color_type` 选项的值获取。
+     * - 可选值：`hex` `rgb` `hsv` `hsv360`。
+     * - `hex` 仅适用于 [element] 是 [ParadoxScriptString] 的场合。
+     * - 其他可选值适用于 [element] 是 [ParadoxScriptBlock] 或 [ParadoxScriptColor] 的场合。
      */
     fun getColorType(element: PsiElement): String? {
         val configToGetOption = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true)).firstOrNull()

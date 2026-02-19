@@ -5,13 +5,13 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
     // visitBlockElement(o);
+    // visitBoundMemberContainer(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
@@ -97,8 +97,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitParameterCondition(@NotNull ParadoxScriptParameterCondition o) {
-    visitMemberContainer(o);
-    // visitPsiListLikeElement(o);
+    visitBoundMemberContainer(o);
   }
 
   public void visitParameterConditionExpression(@NotNull ParadoxScriptParameterConditionExpression o) {
@@ -113,7 +112,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitNamedElement(o);
     // visitMemberContainer(o);
     // visitMember(o);
-    // visitDefinitionElement(o);
+    // visitParadoxDefinitionElement(o);
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
@@ -124,6 +123,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
     visitBlockElement(o);
+    // visitMemberContainer(o);
   }
 
   public void visitScriptedVariable(@NotNull ParadoxScriptScriptedVariable o) {
@@ -173,11 +173,11 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
+  public void visitBoundMemberContainer(@NotNull ParadoxScriptBoundMemberContainer o) {
     visitPsiElement(o);
   }
 
-  public void visitMemberContainer(@NotNull ParadoxScriptMemberContainer o) {
+  public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
     visitPsiElement(o);
   }
 

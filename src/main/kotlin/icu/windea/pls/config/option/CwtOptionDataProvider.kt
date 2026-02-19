@@ -15,11 +15,11 @@ import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeId
 
 object CwtOptionDataProvider {
     // NOTE 2.1.1. 目前不作为 EP
@@ -188,7 +188,7 @@ object CwtOptionDataProvider {
             if (optionConfig !is CwtOptionConfig) return@f
             val k = optionConfig.key
             val o = optionConfig.separatorType == CwtSeparatorType.EQUAL
-            val v = ReversibleValue(o, optionConfig.value)
+            val v = ReversibleValue(optionConfig.value, o)
             r[k] = v
         }
         return r.optimized()
@@ -202,19 +202,19 @@ object CwtOptionDataProvider {
             if (optionConfig !is CwtOptionConfig) return@f
             // ignore case for both system scopes and scopes (to lowercase)
             val k = optionConfig.key.lowercase()
-            val v = optionConfig.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
+            val v = optionConfig.getOptionValue()?.let { ParadoxScopeId.getId(it) } ?: return@f
             r[k] = v
         }
         return r.optimized()
     }
 
     private fun resolvePushScope(config: CwtOptionConfig): String? {
-        return config.getOptionValue()?.let { ParadoxScopeManager.getScopeId(it) }
+        return config.getOptionValue()?.let { ParadoxScopeId.getId(it) }
     }
 
     private fun resolveSupportedScopes(config: CwtOptionConfig): Set<String>? {
         val values = config.getOptionValueOrValues()?.orNull() ?: return null
-        val r = values.mapTo(FastSet()) { ParadoxScopeManager.getScopeId(it) }
+        val r = values.mapTo(FastSet()) { ParadoxScopeId.getId(it) }
         return r.optimized()
     }
 
@@ -222,7 +222,7 @@ object CwtOptionDataProvider {
         val values = config.getOptionValueOrValues() ?: return null
         val operator = config.separatorType == CwtSeparatorType.EQUAL
         val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
-        val r = ReversibleValue(operator, set.optimized())
+        val r = ReversibleValue(set.optimized(), operator)
         return r
     }
 }

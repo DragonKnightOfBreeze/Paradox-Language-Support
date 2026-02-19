@@ -4,7 +4,7 @@ import com.intellij.codeInsight.unwrap.AbstractUnwrapper
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.siblings
+import icu.windea.pls.core.children
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 
@@ -19,25 +19,25 @@ abstract class CwtUnwrapper : AbstractUnwrapper<CwtUnwrapper.Context>("") {
         }
 
         fun extract(element: PsiElement, containerElement: PsiElement) {
-            var first = containerElement.firstChild.siblings(forward = true).find { isElementToExtract(it) }
-            val last = containerElement.lastChild.siblings(forward = false).find { isElementToExtract(it) }
-            if (first == null || last == null) return
+            val first = containerElement.children(forward = true).find { isElementToExtract(element, it) } ?: return
+            val last = containerElement.children(forward = false).find { isElementToExtract(element, it) } ?: return
             var toExtract = first
             if (isEffective) {
                 toExtract = addRangeBefore(first, last, element.parent, element)
             }
-
+            var current: PsiElement? = first
             do {
-                if (toExtract != null) {
-                    addElementToExtract(toExtract)
-                    toExtract = toExtract.nextSibling
-                }
-                first = first?.nextSibling
-            } while (first != null && first.prevSibling !== last)
+                addElementToExtract(toExtract)
+                toExtract = toExtract.nextSibling
+                current = current?.nextSibling
+            } while (current != null && current.prevSibling !== last)
         }
 
-        private fun isElementToExtract(element: PsiElement): Boolean {
-            return element is PsiComment || element is CwtProperty || element is CwtValue
+        @Suppress("unused")
+        private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
+            return child is PsiComment
+                || child is CwtProperty
+                || child is CwtValue
         }
     }
 }

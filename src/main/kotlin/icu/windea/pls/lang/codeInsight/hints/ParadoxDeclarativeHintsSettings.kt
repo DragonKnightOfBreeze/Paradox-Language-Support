@@ -32,6 +32,12 @@ class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<Par
     var truncateSubtypesForCsvDefinitionReference: Boolean
         get() = state.truncateSubtypesForCsvDefinitionReference
         set(value) = run { updateState { it.copy(truncateSubtypesForCsvDefinitionReference = value) } }
+    var showSubtypesForDefinitionInjection: Boolean
+        get() = state.showSubtypesForDefinitionInjection
+        set(value) = run { updateState { it.copy(showSubtypesForDefinitionInjection = value) } }
+    var truncateSubtypesForDefinitionInjection: Boolean
+        get() = state.truncateSubtypesForDefinitionInjection
+        set(value) = run { updateState { it.copy(truncateSubtypesForDefinitionInjection = value) } }
 
     data class State(
         @JvmField val showNameForDefinition: Boolean = true,
@@ -41,6 +47,8 @@ class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<Par
         @JvmField val truncateSubtypesForDefinitionReference: Boolean = false,
         @JvmField val showSubtypesForCsvDefinitionReference: Boolean = true,
         @JvmField val truncateSubtypesForCsvDefinitionReference: Boolean = false,
+        @JvmField val showSubtypesForDefinitionInjection: Boolean = true,
+        @JvmField val truncateSubtypesForDefinitionInjection: Boolean = false,
     )
 
     companion object {

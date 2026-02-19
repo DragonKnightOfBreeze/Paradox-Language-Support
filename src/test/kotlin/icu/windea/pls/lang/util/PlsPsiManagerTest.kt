@@ -7,7 +7,11 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -17,9 +21,15 @@ import org.junit.runners.JUnit4
 class PlsPsiManagerTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Before
+    fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
+
     @Test
     fun getAttachedComments() {
-        myFixture.configureByFile("script/attached_comments.test.txt")
+        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 
@@ -41,7 +51,7 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
 
     @Test
     fun getAttachingElement() {
-        myFixture.configureByFile("script/attached_comments.test.txt")
+        myFixture.configureByFile("script/stubs/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 

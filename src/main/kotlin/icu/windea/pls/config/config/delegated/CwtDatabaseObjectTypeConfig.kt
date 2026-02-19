@@ -1,10 +1,16 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl
+import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 
@@ -58,3 +64,52 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
 
     companion object : Resolver by CwtDatabaseObjectTypeConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver, CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    override fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? = doResolve(config)
+
+    private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
+        val name = config.key
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid database object type config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
+        }
+        val propGroup = propElements.groupBy { it.key }
+        val type = propGroup.getOne("type")?.stringValue
+        val swapType = propGroup.getOne("swap_type")?.stringValue
+        val localisation = propGroup.getOne("localisation")?.stringValue
+        if (type == null && localisation == null) {
+            logger.warn("Skipped invalid database object type config (name: $name): Missing type or localisation property.".withLocationPrefix(config))
+            return null
+        }
+        logger.debug { "Resolved database object type config (name: $name).".withLocationPrefix(config) }
+        return CwtDatabaseObjectTypeConfigImpl(config, name, type, swapType, localisation)
+    }
+}
+
+private class CwtDatabaseObjectTypeConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+    override val type: String?,
+    override val swapType: String?,
+    override val localisation: String?
+) : UserDataHolderBase(), CwtDatabaseObjectTypeConfig {
+    override fun getConfigForType(isBase: Boolean): CwtValueConfig? {
+        val expressionString = when {
+            localisation != null -> "localisation"
+            isBase -> type?.let { "<$it>" }
+            else -> swapType?.let { "<$it>" }
+        }
+        if (expressionString == null) return null
+        return CwtValueConfig.createMock(configGroup, expressionString)
+    }
+
+    override fun toString() = "CwtDatabaseObjectTypeConfigImpl(name='$name')"
+}
+
+// endregion

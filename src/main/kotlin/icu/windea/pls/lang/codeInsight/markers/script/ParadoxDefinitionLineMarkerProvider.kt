@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -10,14 +11,15 @@ import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFac
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -36,13 +38,18 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
+
+        // 忽略内联或注入的定义
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.Definition
         val prefix = PlsStrings.definitionPrefix
-        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typesText}"
+        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typeText}"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()
-            val targets0 = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
+            val targets0 = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
             targets0.optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

@@ -66,8 +66,10 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
-        val newElement = ParadoxLocalisationElementFactory.createLocale(element.project, name)
-        return element.replace(newElement).cast()
+        val idElement = element.idElement
+        val newIdElement = ParadoxLocalisationElementFactory.createLocale(element.project, name).idElement
+        idElement.replace(newIdElement)
+        return element
     }
 
     // endregion
@@ -88,8 +90,9 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationProperty, name: String): ParadoxLocalisationProperty {
         val nameElement = element.propertyKey
-        val newNameElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name).idElement
-        nameElement.replace(newNameElement)
+        val idElement = nameElement.idElement
+        val newIdElement = ParadoxLocalisationElementFactory.createPropertyKey(element.project, name).idElement
+        idElement.replace(newIdElement)
         return element
     }
 
@@ -137,7 +140,7 @@ object ParadoxLocalisationPsiImplUtil {
         // name & type & gameType
         if (another !is ParadoxLocalisationProperty) return false
         if (element.name.let { it.isEmpty() || it != another.name }) return false
-        if(element.type.let { it == null || it != another.type }) return false
+        if (element.type.let { it == null || it != another.type }) return false
         if (selectGameType(element) != selectGameType(another)) return false
         return true
     }
@@ -199,7 +202,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -227,7 +230,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationParameter, name: String): ParadoxLocalisationParameter {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createParameter(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createParameter(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -265,7 +268,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -352,7 +355,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -391,7 +394,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationConceptCommand, name: String): ParadoxLocalisationConceptCommand {
         val idElement = element.conceptName?.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -453,7 +456,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationTextFormat, name: String): ParadoxLocalisationTextFormat {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }
@@ -483,7 +486,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationTextIcon, name: String): ParadoxLocalisationTextIcon {
         val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IncorrectOperationException()
         idElement.replace(newIdElement)
         return element
     }

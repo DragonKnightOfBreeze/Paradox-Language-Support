@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.complexExpression
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -15,6 +16,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 /**
  * 不正确的复杂表达式的代码检查的基类。
@@ -23,8 +25,8 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是符合条件的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -35,6 +37,8 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
                 val complexExpression = resolveComplexExpression(element, configGroup) ?: return
                 val errors = complexExpression.getAllErrors(element)
                 if (errors.isEmpty()) return

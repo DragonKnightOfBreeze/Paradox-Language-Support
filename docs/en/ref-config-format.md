@@ -897,12 +897,12 @@ definitions = {
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
 
-- **Purpose**: provide docs/hints for game rules (definitions of type `game_rule`) and optionally override declaration configs.
+- **Purpose**: provide docs/hints for game rules (aka definitions of type `game_rule`), and optionally override declaration configs.
 - **Path location**: `game_rules/{name}`.
 - **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
 
 - **Fields and semantics**:
-  - `name`: game rule name or its matching pattern.
+  - `name`: name or its matching pattern.
   - `hint: string?`: optional hint text (for quick docs/inlay hints).
   - `configForDeclaration: CwtPropertyConfig?`: if the current item is a property node, its value/children will be used as an "override declaration" at the use site; if the value is `single_alias_right[...]`, it will be inlined first.
 
@@ -947,12 +947,12 @@ game_rules = {
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
 
-- **Purpose**: provide docs/hints for specific `on_action` definitions and specify `event_type` to influence event-related references in the declaration context.
+- **Purpose**: provide docs/hints for on actions (aka definitions of type `on_action`), and specify `event_type` to influence event-related references in the declaration context.
 - **Path location**: `on_actions/{name}`.
 - **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
 
 - **Fields and semantics**:
-  - `name`: on_action name or its matching pattern.
+  - `name`: name or its matching pattern.
   - `event_type: string` (required): event type. Used to substitute event-related data expressions (e.g., `<event>`) in the declaration context with the expression for that event type.
   - `hint: string?`: optional hint text (for quick docs/inlay hints).
 

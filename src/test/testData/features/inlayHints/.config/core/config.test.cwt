@@ -1,0 +1,87 @@
+types = {
+    type[character] = {
+        path = "game/common/characters"
+        path_extension = .txt
+        localisation = {
+            ## primary
+            name = name
+            title = title
+        }
+    }
+    type[species] = {
+        path = "game/common/species"
+        path_extension = .txt
+        localisation = {
+            ## primary
+            name = name
+        }
+    }
+    type[chapter] = {
+        path = "game/common/chapters"
+        path_extension = .txt
+        localisation = {
+            ## primary
+            name = name
+        }
+    }
+}
+
+character = {
+    name = localisation
+    title = localisation
+    gender = enum[gender]
+    species = <species>
+    ## cardinality = 0..1
+    tags = {
+        ## cardinality = 0..inf
+        enum[character_tag]
+    }
+    ## cardinality = 0..1
+    ## replace_scopes = { this = character root = character from = character fromfrom = scene }
+    on_awakened = single_alias_right[effect_clause]
+    ## cardinality = 0..1
+    ## replace_scopes = { this = character root = character from = character fromfrom = scene }
+    on_abandoned = single_alias_right[effect_clause]
+}
+species = {
+    name = localisation
+}
+chapter = {
+    name = localisation
+}
+
+rows = {
+    row[chapter_page] = {
+        path = "game/common/chapters"
+        path_extension = .csv
+        columns = {
+            name = <chapter>
+            page = int
+            category = enum[chapter_category]
+        }
+        end_column = end
+    }
+}
+
+enums = {
+    enum[gender] = {
+        male
+        female
+    }
+    complex_enum[character_tag] = {
+        path = "game/common/characters/tags"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+    complex_enum[chapter_category] = {
+        path = "game/common/chapters/categories"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+}

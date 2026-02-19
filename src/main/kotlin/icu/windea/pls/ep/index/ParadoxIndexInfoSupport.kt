@@ -3,6 +3,7 @@ package icu.windea.pls.ep.index
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -16,11 +17,13 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
 
     val type: Class<T>
 
-    fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun indexLocalisationExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {}
+
+    fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun compressData(value: List<T>): List<T> = value
 
@@ -29,8 +32,7 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 
     fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val list = fileData.getOrPut(id.toString()) { mutableListOf() } as MutableList
-        list.add(info)
+        fileData.getOrPut(id.toString()) { mutableListOf() }.asMutable() += info
     }
 
     companion object INSTANCE {

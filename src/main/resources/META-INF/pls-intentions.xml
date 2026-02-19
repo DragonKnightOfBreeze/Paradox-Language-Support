@@ -13,6 +13,18 @@
       <className>icu.windea.pls.lang.intentions.cwt.UnquoteIdentifierIntention</className>
       <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
+    <intentionAction>
+      <language>CWT</language>
+      <categoryKey>intention.cwt.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.cwt.PutMembersOnOneLineIntention</className>
+      <descriptionDirectoryName>CwtPutMembersOnOneLineIntention</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <language>CWT</language>
+      <categoryKey>intention.cwt.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.cwt.PutMembersOnSeparateLinesIntention</className>
+      <descriptionDirectoryName>CwtPutMembersOnSeparateLinesIntention</descriptionDirectoryName>
+    </intentionAction>
     <!--endregion-->
 
     <!--region Paradox script-->
@@ -69,6 +81,11 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ReplaceInlineMathWithEvaluatedValueIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.CopyLocalisationTextAsHtmlIntention</className>
     </intentionAction>
     <intentionAction>
@@ -80,6 +97,16 @@
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.ConditionalSnippetToBlockFormatIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnOneLineIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
     </intentionAction>
     <!--endregion-->
 

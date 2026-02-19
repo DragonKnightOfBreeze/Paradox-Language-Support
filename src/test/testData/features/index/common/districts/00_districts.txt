@@ -1,0 +1,14 @@
+d_city = {
+    build_time = 480
+    max_per_planet = 15
+}
+
+d_mining = {
+    build_time = 360
+    max_per_planet = 20
+}
+
+d_generator = {
+    build_time = 360
+    max_per_planet = 20
+}

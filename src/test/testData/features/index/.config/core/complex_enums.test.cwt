@@ -1,0 +1,301 @@
+enums = {
+    complex_enum[spell_school] = {
+        path = "common/spell_schools"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+    complex_enum[tome_tag] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            scalar = {
+                tags = {
+                    enum_name
+                }
+            }
+        }
+    }
+
+    ## case_insensitive
+    complex_enum[whispered_word] = {
+        path = "common/whispered_words"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+
+    ## per_definition
+    complex_enum[ritual_phrase] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            scalar = {
+                keyword = enum_name
+            }
+        }
+    }
+
+    complex_enum[list_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = no
+        name = {
+            list_holder = {
+                enum_name
+            }
+        }
+    }
+
+    complex_enum[key_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = no
+        name = {
+            enum_name = key_enum_value
+        }
+    }
+
+    complex_enum[deep_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            outer_block = {
+                inner_block = {
+                    filter = ok
+                    enum_name
+                }
+            }
+        }
+    }
+
+    complex_enum[prop_value_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            outer_holder = {
+                entry = {
+                    id = enum_name
+                }
+            }
+        }
+    }
+
+    complex_enum[sibling_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            group = {
+                kind = arcane
+                level = 2
+                enum_name
+            }
+        }
+    }
+
+    complex_enum[key_block_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            holder = {
+                enum_name = {
+                    tag = ok
+                }
+            }
+        }
+    }
+
+    complex_enum[mix_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            mix_root = {
+                enum_name = {
+                    tag = ok
+                }
+                label = enum_name
+                enum_name
+            }
+        }
+    }
+
+    complex_enum[type_combo_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            type_holder = {
+                tag = ok
+                count = int
+                ratio = float
+                enabled = bool
+                mode = scalar
+                enum_name
+            }
+        }
+    }
+
+    complex_enum[multi_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            multi_root = {
+                enum_name
+                enum_name
+            }
+        }
+    }
+
+    complex_enum[value_mix_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            value_mix_root = {
+                id = enum_name
+                count = int
+                ratio = float
+                enabled = bool
+            }
+        }
+    }
+
+    ## case_insensitive
+    complex_enum[case_insensitive_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            ci_root = {
+                token = {
+                    enum_name
+                }
+            }
+        }
+    }
+
+    complex_enum[multi_level_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            outer_level = {
+                enum_name
+                inner_level = {
+                    enum_name
+                }
+            }
+        }
+    }
+
+    complex_enum[cross_level_mix_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            cross_root = {
+                enum_name
+                inner = {
+                    code = enum_name
+                    flag = yes
+                }
+            }
+        }
+    }
+
+    ## case_insensitive
+    complex_enum[case_insensitive_multi_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            ci_multi_root = {
+                tag = ok
+                count = int
+                enum_name
+                inner = {
+                    enum_name
+                }
+            }
+        }
+    }
+
+    complex_enum[multi_level_multi_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            level_a = {
+                enum_name
+                level_b = {
+                    enum_name
+                    level_c = {
+                        enum_name
+                    }
+                }
+            }
+        }
+    }
+
+    complex_enum[cross_pvb_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            pvb_root = {
+                mode = fast
+                enum_name = {
+                    flag = yes
+                    label = enum_name
+                }
+                enum_name
+            }
+        }
+    }
+
+    ## case_insensitive
+    complex_enum[case_insensitive_deep_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            ci_deep_root = {
+                outer = {
+                    enum_name
+                    middle = {
+                        enum_name
+                        inner = {
+                            enum_name
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    complex_enum[repeat_typed_enum] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            repeat_root = {
+                count = int
+                enum_name
+                ratio = float
+                enum_name
+            }
+        }
+    }
+}

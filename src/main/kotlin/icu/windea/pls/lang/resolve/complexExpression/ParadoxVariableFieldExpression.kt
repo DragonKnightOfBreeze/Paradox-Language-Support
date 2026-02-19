@@ -3,13 +3,21 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxVariableFieldExpressionResolverImpl
+import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.ParadoxType
 
 /**
  * 变量字段表达式。
@@ -48,8 +56,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * ```
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-    val scopeNodes: List<ParadoxScopeLinkNode>
-    val variableNode: ParadoxDataSourceNode
 
     interface Resolver {
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression?
@@ -57,3 +63,86 @@ interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLink
 
     companion object : Resolver by ParadoxVariableFieldExpressionResolverImpl()
 }
+
+// region Implementations
+
+private class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldExpression.Resolver {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        if (!incomplete && text.isEmpty()) return null
+
+        // skip if text is a number
+        if (isNumber(text)) return null
+
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+
+        // skip if text is a parameter with unary operator prefix
+        if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(text, parameterRanges)) return null
+
+        val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
+        val expression = ParadoxVariableFieldExpressionImpl(text, range, configGroup, nodes)
+
+        val offset = range.startOffset
+        var startIndex = 0
+        var i = 0
+        var depthParen = 0
+        val barrierCheckIndex = text.lastIndexOf("value:").let { if (it == -1) 0 else it }
+        var barrier = false // '@' 或 '|' 作为屏障：之后不再按 '.' 切分
+        val textLength = text.length
+        while (i < textLength) {
+            val ch = text[i]
+            val inParam = parameterRanges.any { i in it }
+            if (!inParam) {
+                when (ch) {
+                    '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
+                    ')' -> if (depthParen > 0) depthParen--
+                    '@', '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
+                    '.' -> if (depthParen == 0 && !barrier) {
+                        // 中间段：按作用域链接解析
+                        val nodeText = text.substring(startIndex, i)
+                        val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
+                        val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                        if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                        nodes += node
+                        val dotRange = TextRange.create(i + offset, i + 1 + offset)
+                        nodes += ParadoxOperatorNode(".", dotRange, configGroup)
+                        startIndex = i + 1
+                    }
+                }
+            }
+            i++
+        }
+        // 最后一段：变量数据源
+        run {
+            val end = textLength
+            val nodeText = text.substring(startIndex, end)
+            val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
+            val node = ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksModel.variable)
+            // if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+            nodes += node
+        }
+        if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
+        return expression
+    }
+
+    private fun isNumber(text: String): Boolean {
+        return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+    }
+}
+
+private class ParadoxVariableFieldExpressionImpl(
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
+) : ParadoxComplexExpressionBase(), ParadoxVariableFieldExpression {
+    override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
+
+    override fun equals(other: Any?) = this === other || other is ParadoxVariableFieldExpression && text == other.text
+    override fun hashCode() = text.hashCode()
+    override fun toString() = text
+}
+
+// endregion

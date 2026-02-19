@@ -23,7 +23,6 @@ import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.executeWriteCommand
-import icu.windea.pls.core.ifNotEmpty
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.lang.codeStyle.PlsCodeStyleUtil
@@ -215,7 +214,8 @@ object ParadoxClauseTemplateCompletionManager {
                 val descriptor = descriptors[i]
                 if (descriptor.editInTemplate) {
                     if (e is ParadoxScriptProperty && descriptor is PropertyDescriptor) {
-                        val expression = TextExpression(descriptor.value.ifNotEmpty { it.quoteIfNecessary() })
+                        val string = if (descriptor.value.isNotEmpty()) descriptor.value.quoteIfNecessary() else ""
+                        val expression = TextExpression(string)
                         templateBuilder.replaceElement(e.propertyValue!!, "${descriptor.name}_$i", expression, true)
                     }
                 }

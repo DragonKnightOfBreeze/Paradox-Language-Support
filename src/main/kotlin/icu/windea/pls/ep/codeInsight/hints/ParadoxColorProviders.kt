@@ -120,7 +120,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
 
     override fun getColor(element: PsiElement): Color? {
         if (element !is ParadoxScriptBlock) return null
-        return runCatchingCancelable { doGetColorFromCache(element) }.getOrNull()
+        return runCatchingCancelable { getColorFromCache(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -129,7 +129,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         return true
     }
 
-    private fun doGetColorFromCache(element: ParadoxScriptBlock): Color? {
+    private fun getColorFromCache(element: ParadoxScriptBlock): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
             val value = doGetColor(element)
             value.withDependencyItems(element)
@@ -204,7 +204,7 @@ class ParadoxScriptColorColorProvider : ParadoxColorProvider {
 
     override fun getColor(element: PsiElement): Color? {
         if (element !is ParadoxScriptColor) return null
-        return runCatchingCancelable { doGetColorFromCache(element) }.getOrNull()
+        return runCatchingCancelable { getColorFromCache(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
@@ -214,7 +214,7 @@ class ParadoxScriptColorColorProvider : ParadoxColorProvider {
     }
 
 
-    private fun doGetColorFromCache(element: ParadoxScriptColor): Color? {
+    private fun getColorFromCache(element: ParadoxScriptColor): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
             val value = doGetColor(element)
             value.withDependencyItems(element)

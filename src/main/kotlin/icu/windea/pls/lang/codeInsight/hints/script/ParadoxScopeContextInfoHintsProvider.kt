@@ -21,6 +21,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
@@ -58,7 +59,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
         val project = file.project
 
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element) ?: return
+        val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
 
         if (context.settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
 
@@ -71,7 +72,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
                 text(systemScope.optimized(), configGroup.systemScopes[systemScope]?.pointer)
                 text(" = ")
                 when {
-                    ParadoxScopeManager.isUnsureScopeId(scope.id) -> text(scope.id)
+                    ParadoxScopeId.isUnsure(scope.id) -> text(scope.id)
                     else -> text(scope.id, configGroup.scopeAliasMap[scope.id]?.pointer)
                 }
             }

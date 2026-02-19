@@ -3,25 +3,18 @@ package icu.windea.pls.lang
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPaths
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -59,7 +52,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         // 这些操作仅需执行一次（应用范围）
         mutex.withDoubleLock(runOncePerApplication) {
             // 在打开项目后，刷新内置规则目录，从而确保能读取到最新的内置规则文件
-            refreshBuiltInConfigRootDirectoriesAsync(project)
+            refreshBuiltInConfigFiles(project)
         }
 
         // 在打开项目后，异步地预加载规则数据
@@ -71,22 +64,10 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         PlsPathService.getInstance().initAsync()
     }
 
-    @Suppress("ObsoleteDispatchersEdt")
-    private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
+    private suspend fun refreshBuiltInConfigFiles(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则目录
         if (!PlsFacade.Capacities.refreshBuiltIn()) return // 必须显式启用
-
-        val files = CwtConfigManager.getBuiltInConfigRootDirectories(project)
-        if (files.isEmpty()) return
-
-        // 必须先切换到 EDT
-        withContext(Dispatchers.EDT) {
-            // 显示可以取消的模态进度条
-            val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
-            runWithModalProgressBlocking(project, title) {
-                files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
-            }
-        }
+        CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles(project)
     }
 
     private fun initDefaultConfigGroupsAsync() {

@@ -1,11 +1,17 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 /**
  * 类型图片规则。
@@ -50,3 +56,54 @@ interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
 
     companion object : Resolver by CwtTypeImagesConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverScope {
+    // no logger here (unnecessary)
+
+    override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)
+
+    private fun doResolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
+        val locationConfigs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()
+        val props1 = config.properties ?: return null
+        for (prop1 in props1) {
+            val subtypeName = prop1.key.removeSurroundingOrNull("subtype[", "]")?.optimized()
+            if (subtypeName != null) {
+                val props2 = prop1.properties ?: continue
+                for (prop2 in props2) {
+                    val locationConfig = CwtLocationConfig.resolve(prop2) ?: continue
+                    locationConfigs.add(subtypeName to locationConfig)
+                }
+            } else {
+                val locationConfig = CwtLocationConfig.resolve(prop1) ?: continue
+                locationConfigs.add(null to locationConfig)
+            }
+        }
+        return CwtTypeImagesConfigImpl(config, locationConfigs.optimized())
+    }
+}
+
+private class CwtTypeImagesConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val locationConfigs: List<Pair<String?, CwtLocationConfig>>
+) : UserDataHolderBase(), CwtTypeImagesConfig {
+    private val configsCache = CacheBuilder().build<String, List<CwtLocationConfig>>().cancelable()
+
+    override fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
+        val cacheKey = subtypes.joinToString(",")
+        return configsCache.get(cacheKey) {
+            val result = mutableListOf<CwtLocationConfig>()
+            for ((subtypeExpression, locationConfig) in locationConfigs) {
+                if (subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                    result.add(locationConfig)
+                }
+            }
+            result
+        }
+    }
+
+    override fun toString() = "CwtTypeImagesConfigImpl(locationConfigs=$locationConfigs)"
+}
+
+// endregion

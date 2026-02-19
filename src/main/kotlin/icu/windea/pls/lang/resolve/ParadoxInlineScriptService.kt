@@ -2,14 +2,28 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
+import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.processAsync
+import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -20,11 +34,12 @@ import icu.windea.pls.script.psi.stringValue
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
+@Suppress("unused")
 object ParadoxInlineScriptService {
     @OptIn(ExperimentalContracts::class)
-    private fun canBeExpressionElement(v1: PsiElement): Boolean {
-        contract { returns(true) implies (v1 is ParadoxScriptValue) }
-        return v1 is ParadoxScriptString || v1 is ParadoxScriptScriptedVariableReference
+    private fun canBeExpressionElement(element: PsiElement): Boolean {
+        contract { returns(true) implies (element is ParadoxScriptValue) }
+        return element is ParadoxScriptString || element is ParadoxScriptScriptedVariableReference
     }
 
     /**
@@ -90,10 +105,60 @@ object ParadoxInlineScriptService {
      *
      * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
      */
-    @Suppress("unused")
     fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
         // hardcoded
         val v = usageElement.block ?: return emptyMap()
         return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
+    }
+
+    fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {
+        return doGetInferredContextConfigsFromConfig(expression, contextElement, context, options, fast)
+    }
+
+    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?, fast: Boolean): List<CwtMemberConfig<*>> {
+        val configGroup = context.configGroup
+        val config = configGroup.extendedInlineScripts.findByPattern(expression, contextElement, configGroup, options)
+        if (config == null) return emptyList()
+        return config.getContextConfigs()
+    }
+
+    fun getInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {
+        return withRecursionGuard {
+            withRecursionCheck(expression) {
+                context.inlineScriptHasConflict = false
+                context.inlineScriptHasRecursion = false
+                doGetInferredContextConfigsFromUsages(expression, contextElement, context, options, fast)
+            }
+        } ?: run {
+            context.inlineScriptHasRecursion = true
+            emptyList()
+        }
+    }
+
+    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions?, fast: Boolean): List<CwtMemberConfig<*>> {
+        // infer & merge
+        val result = Ref.create<List<CwtMemberConfig<*>>>()
+        val project = context.configGroup.project
+        val selector = selector(project, contextElement).inlineScriptUsage()
+        ParadoxInlineScriptUsageSearch.search(expression, selector).processAsync p@{ p ->
+            if (!ParadoxInlineScriptManager.isMatched(p.name)) return@p true // 再次确认
+            val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
+            val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
+            val usageConfigs = usageConfigContext.getConfigs(options).orNull()
+            // merge
+            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+                if (it) return@also
+                context.inlineScriptHasConflict = true
+                result.set(null)
+            }
+            if (fast && isFastAvailable(result)) false else r
+        }
+        return result.get().orEmpty()
+    }
+
+    private fun isFastAvailable(result: Ref<List<CwtMemberConfig<*>>>): Boolean {
+        val v = result.get()
+        if (v.isNullOrEmpty()) return false // empty -> not available
+        return true
     }
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.parentOfType
@@ -32,6 +33,7 @@ object ParadoxMemberService {
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
      */
     fun getPath(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): ParadoxMemberPath? {
+        if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
         val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
         var current = element
@@ -80,6 +82,7 @@ object ParadoxMemberService {
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组顶级键。相对于所在文件，顺序从前往后。
      */
     fun getRootKeys(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): List<String>? {
+        if(element is PsiFileSystemItem) return emptyList()
         val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return emptyList()
         var current = element.parent ?: return emptyList()
@@ -145,6 +148,7 @@ object ParadoxMemberService {
      * 找到之前紧邻的一组连续的字符串节点（忽略空白和注释），将它们转化为字符串列表（基于值）。
      */
     fun getKeyPrefixes(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): List<String>? {
+        if(element is PsiFileSystemItem) return emptyList()
         val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return emptyList()
         val siblings = element.siblings(forward = false, withSelf = false)

@@ -17,32 +17,33 @@ import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import kotlin.experimental.or
 
 /**
  * 定义的用法的查询。
  *
- * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字被称为定义的类型键（typeKey），它不一定是定义的名字（definitionName）。
- * 因此，这里需要特殊处理。
+ * 定义对应的 PSI 元素（[ParadoxDefinitionElement]） 的名字不一定是定义的名字（[ParadoxDefinitionInfo.name]）。
+ * 也可能只是属性定义的类型键（[ParadoxDefinitionInfo.typeKey]），或者注入定义的表达式（[ParadoxDefinitionInjectionInfo.expression]）。
+ * 因此这里需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         // TODO SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持
 
         val target = queryParameters.elementToSearch
-        if (target !is ParadoxScriptDefinitionElement) return
+        if (target !is ParadoxDefinitionElement) return
 
-        val definitionInfo = target.definitionInfo
-        if (definitionInfo == null) return
-        if (definitionInfo.name.isEmpty()) return // ignore anonymous definitions
+        val definitionInfo = target.definitionInfo ?: return
+        if (definitionInfo.name.isEmpty()) return // skip anonymous definitions
         val words = getWords(target, definitionInfo)
-        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.filter { it.ignoreCase }.any { it.test(definitionInfo.type) }
+        val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(definitionInfo.type) }
 
-        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)
@@ -52,7 +53,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         }
     }
 
-    private fun getWords(target: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
+    private fun getWords(target: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val words = mutableSetOf<String>()
         words.add(definitionInfo.name)
 

@@ -7,7 +7,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.presentation.StellarisTechnologyCardBuilder
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.swing.JComponent
 
 /**
@@ -15,7 +15,7 @@ import javax.swing.JComponent
  */
 @WithGameType(ParadoxGameType.Stellaris)
 @WithDefinitionType(ParadoxDefinitionTypes.technology)
-class StellarisTechnologyCardPresentation(element: ParadoxScriptDefinitionElement) : ParadoxDefinitionPresentationBase(element) {
+class StellarisTechnologyCardPresentation(element: ParadoxDefinitionElement) : ParadoxDefinitionPresentationBase(element) {
     override fun createComponent(): JComponent? {
         return runCatchingCancelable { doCreateComponent() }.onFailure { thisLogger().warn(it) }.getOrNull()
     }

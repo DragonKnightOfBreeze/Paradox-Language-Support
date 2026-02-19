@@ -43,7 +43,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
 
     override val type = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.find { matchesConfig(it) }
@@ -70,7 +70,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
     override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
-        storage.writeIntFast(info.elementOffset)
+        storage.writeIntFast(info.definitionElementOffset)
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType): ParadoxInferredScopeContextAwareDefinitionIndexInfo {
@@ -88,7 +88,7 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
 
     override val type = ParadoxEventInOnActionIndexInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return
 
         val expression = element.value
@@ -136,7 +136,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
 
     override val type = ParadoxEventInEventIndexInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
@@ -173,6 +173,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         if (scopesConfig == null) return -1
         val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
+        if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
     }
 
@@ -203,7 +204,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
 
     override val type = ParadoxOnActionInEventIndexInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
@@ -240,6 +241,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         if (scopesConfig == null) return -1
         val scopesElement = selectScope { element.parentOfKey(fromBlock = true)?.properties()?.ofKey("scopes")?.one() }
         if (scopesElement == null) return -1
+        if (scopesElement.block == null) return -1 // extra check
         return scopesElement.startOffset
     }
 

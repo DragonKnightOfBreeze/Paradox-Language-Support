@@ -1,0 +1,2 @@
+# This file intentionally contains only comments.
+# No definitions should be indexed from this file.

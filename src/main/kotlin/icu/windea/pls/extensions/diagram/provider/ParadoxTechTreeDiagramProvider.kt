@@ -19,13 +19,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
@@ -39,7 +38,7 @@ import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.util.concurrent.ConcurrentHashMap
@@ -193,8 +192,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         private val definitionType = ParadoxDefinitionTypes.technology
-        private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-        private val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+        private val nodeMap = mutableMapOf<ParadoxDefinitionElement, Node>()
+        private val techMap = mutableMapOf<String, ParadoxDefinitionElement>()
 
         override fun updateDataModel() {
             // 群星原版科技有400+
@@ -248,14 +247,14 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             }
         }
 
-        private fun searchTechnologies(): List<ParadoxScriptDefinitionElement> {
+        private fun searchTechnologies(): List<ParadoxDefinitionElement> {
             ProgressManager.checkCanceled()
             val definitions = getDefinitions(definitionType)
             val settings = provider.getDiagramSettings(project)?.state
             return definitions.filter { settings == null || showNode(it, settings) }
         }
 
-        private fun createNode(technology: ParadoxScriptDefinitionElement) {
+        private fun createNode(technology: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             val node = Node(technology, provider)
             val data = technology.getDefinitionData<StellarisTechnologyData>()
@@ -266,7 +265,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             nodes.add(node)
         }
 
-        private fun createEdges(technology: ParadoxScriptDefinitionElement) {
+        private fun createEdges(technology: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             val data = technology.getDefinitionData<StellarisTechnologyData>() ?: return
             // 循环科技 ..> 循环科技
@@ -288,10 +287,10 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             }
         }
 
-        private fun preloadLocalisations(technology: ParadoxScriptDefinitionElement) {
+        private fun preloadLocalisations(technology: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             run {
-                val result = technology.definitionInfo?.typesText
+                val result = technology.definitionInfo?.typeText
                 technology.putUserData(Keys.typeText, result)
             }
             run {
@@ -302,9 +301,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
-            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
-            return ParadoxModificationTrackers.ScriptFile(key)
+            return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }
 }

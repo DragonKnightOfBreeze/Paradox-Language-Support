@@ -14,7 +14,7 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithDefinitionType
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 支持符合以下条件的定义的数据：
@@ -27,21 +27,22 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         createKey("cached.paradox.definition.presentation:$shortKey")
     }
 
-    override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxScriptDefinitionElement, type: Class<T>): Boolean {
+    override fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
+        if (relax) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
         if (!PlsAnnotationManager.check(type, definitionInfo)) return false
         return true
     }
 
-    override fun <T : ParadoxDefinitionPresentation> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
-        return doGetPresentationFromCache(element, type)
+    override fun <T : ParadoxDefinitionPresentation> get(element: ParadoxDefinitionElement, type: Class<T>): T? {
+        return getFromCache(element, type)
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentationFromCache(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
-        val key = doGetPresentationKey(type)
+    private fun <T : ParadoxDefinitionPresentation> getFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
+        val key = getKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
-            val value = doGetPresentation(element, type)
+            val value = getPresentation(element, type)
             val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptFile, LocalisationFile)
             }
@@ -49,13 +50,13 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         }
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentationKey(type: Class<T>): Key<CachedValue<T>> {
+    private fun <T : ParadoxDefinitionPresentation> getKey(type: Class<T>): Key<CachedValue<T>> {
         return keyCache.get(type).cast()
     }
 
-    private fun <T : ParadoxDefinitionPresentation> doGetPresentation(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    private fun <T : ParadoxDefinitionPresentation> getPresentation(element: ParadoxDefinitionElement, type: Class<T>): T? {
         try {
-            val presentation = type.getConstructor(ParadoxScriptDefinitionElement::class.java).newInstance(element)
+            val presentation = type.getConstructor(ParadoxDefinitionElement::class.java).newInstance(element)
             return presentation
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e

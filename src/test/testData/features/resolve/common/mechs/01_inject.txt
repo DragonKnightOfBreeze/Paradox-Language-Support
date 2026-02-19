@@ -1,0 +1,16 @@
+INJECT:titan_mk3 = {
+    shield = 200
+}
+
+REPLACE:phantom = {
+    cloaking = yes
+    armor = 150
+    speed = 9
+}
+
+# REPLACE_OR_CREATE 模式：使用自身声明检测子类型
+# 这个定义注入声明了 shield 字段，所以应该匹配 heavy 子类型
+REPLACE_OR_CREATE:new_mech = {
+    shield = 500
+    armor = 300
+}

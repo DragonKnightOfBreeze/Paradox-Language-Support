@@ -12,53 +12,37 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
-import com.intellij.util.indexing.ID
+import com.intellij.util.indexing.FileBasedIndexExtension.*
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
 object PlsIndexService {
     // region FileBasedIndex Methods
 
-     fun <K, V> processFiles(
-        indexId: ID<K, V>,
-        keys: Collection<K>,
-        project: Project,
-        scope: GlobalSearchScope,
-        processor: Processor<in VirtualFile>,
-    ): Boolean {
-        if (SearchScope.isEmptyScope(scope)) return true
-        if (DumbService.isDumb(project)) return true
-        ProgressManager.checkCanceled()
-
-        val finalKeys = getKeysOrAllKeys(indexId, keys, scope)
-        return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, finalKeys, scope, null, null, processor)
-    }
-
-    fun <T> processAllFileData(
-        indexType: Class<out IndexInfoAwareFileBasedIndex<T>>,
+    fun <INDEX : IndexInfoAwareFileBasedIndex<V, T>, V, T : IndexInfo> processAllFileData(
+        indexType: Class<out INDEX>,
         keys: Collection<String>,
         project: Project,
         scope: GlobalSearchScope,
         gameType: ParadoxGameType?,
-        processor: (file: VirtualFile, fileData: Map<String, T>) -> Boolean
+        processor: (file: VirtualFile, fileData: Map<String, V>) -> Boolean
     ): Boolean {
         if (SearchScope.isEmptyScope(scope)) return true
         if (DumbService.isDumb(project)) return true
         ProgressManager.checkCanceled()
 
-        val index = findFileBasedIndex(indexType)
+        if (keys.isEmpty()) return true
+        val index = EXTENSION_POINT_NAME.findExtensionOrFail(indexType)
         val indexId = index.name
-        return processFilesWithKeys(indexId, keys, scope) p@{ file ->
+        return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxAnalysisManager.getFileInfo(file) // ensure file info is resolved here
-            if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
-
+            if (!index.checkFile(file, project, gameType)) return@p true
             val fileData = index.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             processor(file, fileData)
@@ -76,11 +60,11 @@ object PlsIndexService {
         if (DumbService.isDumb(project)) return true
         ProgressManager.checkCanceled()
 
-        val index = findFileBasedIndex(ParadoxMergedIndex::class.java)
+        val index = EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxMergedIndex::class.java)
         val indexId = index.name
         val key = indexInfoType.id.toString()
         val keys = setOf(key)
-        return processFilesWithKeys(indexId, keys, scope) p@{ file ->
+        return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxAnalysisManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
@@ -89,22 +73,6 @@ object PlsIndexService {
             if (infos.isNullOrEmpty()) return@p true
             processor(file, infos)
         }
-    }
-
-     fun <K, V> processFilesWithKeys(
-        indexId: ID<K, V>,
-        keys: Collection<K>,
-        scope: GlobalSearchScope,
-        processor: Processor<in VirtualFile>,
-    ): Boolean {
-        val finalKeys = getKeysOrAllKeys(indexId, keys, scope)
-        return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, finalKeys, scope, null, null, processor)
-    }
-
-    private fun <K, V> getKeysOrAllKeys(indexId: ID<K, V>, keys: Collection<K>, scope: GlobalSearchScope): Collection<K> {
-        if (keys.isNotEmpty()) return keys
-        val project = scope.project ?: return emptySet()
-        return FileBasedIndex.getInstance().getAllKeys(indexId, project)
     }
 
     // endregion

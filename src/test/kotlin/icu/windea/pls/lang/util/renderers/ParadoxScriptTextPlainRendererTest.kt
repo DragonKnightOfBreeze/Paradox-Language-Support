@@ -3,11 +3,11 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
-import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -20,18 +20,20 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
-    override fun getTestDataPath() = "src/test/testData"
-
+    private val gameType = ParadoxGameType.Stellaris
     private val counter = AtomicInteger()
-    private val gameType = ParadoxGameType.Vic3
-    private val unresolved = PlsStrings.unresolved
+    private val unresolved = FallbackStrings.unresolved
     private val blockFolder = PlsStrings.blockFolder
+
+    override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun setup() {
         markIntegrationTest()
-        initConfigGroups(project, gameType)
     }
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun conditional_inBlock_fullExample_fromRendererTest() {
@@ -64,9 +66,6 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
             multiline = false
         }
     }
-
-    @After
-    fun clear() = clearIntegrationTest()
 
     @Test
     fun emptyFile() {

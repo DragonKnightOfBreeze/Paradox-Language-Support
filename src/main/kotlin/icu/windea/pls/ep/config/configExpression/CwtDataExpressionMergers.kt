@@ -11,8 +11,12 @@ class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
     }
 
     private fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        if (e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant && e1.expressionString.equals(e2.expressionString, true)) {
-            return e1.expressionString.lowercase()
+        if (e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant) {
+            return when {
+                e1.expressionString == e2.expressionString -> e1.expressionString
+                e1.expressionString.equals(e2.expressionString, true) -> e1.expressionString.lowercase()
+                else -> null
+            }
         }
         if (e1.type == CwtDataTypes.Constant || e2.type == CwtDataTypes.Constant) {
             return null
@@ -22,51 +26,41 @@ class CwtBaseDataExpressionMerger : CwtDataExpressionMerger {
 
     @Suppress("UNUSED_PARAMETER")
     private fun mergeExpressionStringTo(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        when {
-            e1.type == CwtDataTypes.Any -> {
+        when (e1.type) {
+            CwtDataTypes.Any -> {
                 return e2.expressionString
             }
-            e1.type == CwtDataTypes.Scalar -> when {
+            CwtDataTypes.Scalar -> when {
                 e2.type == CwtDataTypes.Block -> return null
                 e2.type == CwtDataTypes.ColorField -> return null
                 else -> return e2.expressionString
             }
-            e1.type == CwtDataTypes.Int -> when {
+            CwtDataTypes.Int -> when {
                 e2.type == CwtDataTypes.Float -> return "int"
                 e2.type == CwtDataTypes.ValueField || e2.type == CwtDataTypes.VariableField -> return "int"
                 e2.type == CwtDataTypes.IntValueField || e2.type == CwtDataTypes.IntVariableField -> return "int"
             }
-            e1.type == CwtDataTypes.Float -> when {
+            CwtDataTypes.Float -> when {
                 e2.type == CwtDataTypes.ValueField || e2.type == CwtDataTypes.VariableField -> return "float"
             }
-            e1.type in CwtDataTypeSets.ScopeField -> when {
+            in CwtDataTypeSets.ScopeField -> when {
                 e2.type == CwtDataTypes.ScopeField -> return e1.expressionString
                 e2.type == CwtDataTypes.Scope && e2.value == null -> return e1.expressionString
             }
-            e1.type in CwtDataTypeSets.DynamicValue -> when {
+            in CwtDataTypeSets.DynamicValue -> when {
                 e2.type in CwtDataTypeSets.DynamicValue -> return if (e1.value != null && e1.value == e2.value) "dynamic_value[${e1.value}]" else null
                 e2.type in CwtDataTypeSets.ValueField -> return if (e1.value != null) "dynamic_value[${e1.value}]" else null
                 e2.type in CwtDataTypeSets.VariableField -> return if (e1.value == "variable") "dynamic_value[${e1.value}]" else null
             }
-            e1.type == CwtDataTypes.VariableField -> when {
+            CwtDataTypes.VariableField -> when {
                 e2.type in CwtDataTypeSets.ValueField -> return "variable_field"
             }
-            e1.type == CwtDataTypes.IntVariableField -> when {
+            CwtDataTypes.IntVariableField -> when {
                 e2.type in CwtDataTypeSets.ValueField -> return "int_variable_field"
             }
-            e1.type == CwtDataTypes.IntValueField -> when {
+            CwtDataTypes.IntValueField -> when {
                 e2.type == CwtDataTypes.ValueField -> return "int_value_field"
             }
-            // #95 目前并不需要这段逻辑，因为此时规则已被内联
-            // e1.type in CwtDataTypeSets.AliasNameLike -> {
-            //    val aliasName = e1.value ?: return null
-            //    val aliasConfigs = configGroup.aliasGroups[aliasName].orNull() ?: return null
-            //    aliasConfigs.keys.forEach { aliasSubName ->
-            //        val e = CwtDataExpression.resolve(aliasSubName, true)
-            //        val r = merge(e, e2,configGroup)
-            //        if(r != null) return null
-            //    }
-            // }
         }
         return null
     }

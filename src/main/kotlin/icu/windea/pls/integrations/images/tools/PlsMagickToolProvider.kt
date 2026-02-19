@@ -6,9 +6,7 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
-import icu.windea.pls.core.util.OS
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.annotations.WithOS
 import icu.windea.pls.model.constants.PlsPaths
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -19,7 +17,6 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Image Magick](https://www.imagemagick.org)
  */
-@WithOS(OS.Windows, OS.Linux)
 class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
         return PlsIntegrationsSettings.getInstance().state.image.enableMagick

@@ -34,8 +34,8 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
                 if (definitionInjectionInfo.typeConfig == null) return // considered "unsupported"
                 val target = definitionInjectionInfo.target
                 val type = definitionInjectionInfo.type
-                val relax = ParadoxDefinitionInjectionManager.isRelaxMode(definitionInjectionInfo)
-                val targetExist = ParadoxDefinitionInjectionManager.isTargetExist(definitionInjectionInfo, holder.file)
+                val relax = definitionInjectionInfo.isRelaxMode()
+                val targetExist = definitionInjectionInfo.isTargetExist(holder.file)
                 if (!targetExist) {
                     if (relax) {
                         if (checkForRelaxModes) {

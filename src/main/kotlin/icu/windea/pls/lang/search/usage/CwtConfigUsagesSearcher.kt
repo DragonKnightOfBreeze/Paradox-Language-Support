@@ -32,7 +32,7 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         val extraWords = getExtraWords(target)
         if (extraWords.isEmpty()) return
 
-        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用 target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE
         for (extraWord in extraWords) {

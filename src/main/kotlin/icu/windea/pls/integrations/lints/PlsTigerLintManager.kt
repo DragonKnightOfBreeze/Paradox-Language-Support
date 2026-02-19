@@ -62,10 +62,10 @@ object PlsTigerLintManager {
         // Tiger 执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
 
         if (!isEnabled()) return null
-        return doGetTigerLintResultForFileFromCache(file)
+        return getTigerLintResultForFileFromCache(file)
     }
 
-    private fun doGetTigerLintResultForFileFromCache(file: PsiFile): PlsTigerLintResult? {
+    private fun getTigerLintResultForFileFromCache(file: PsiFile): PlsTigerLintResult? {
         // 当当前文件发生变化时，或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(file) ?: return null
@@ -83,7 +83,7 @@ object PlsTigerLintManager {
         val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
         val lock = getTigerLintResultLock(rootDirectory)
         val allResult = synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
-            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
+            getTigerLintResultForRootDirectoryFromCache(rootDirectory)
         } ?: return null
         val result = allResult.fromPath(fileInfo.path.path)
         return result
@@ -94,11 +94,11 @@ object PlsTigerLintManager {
         if (!isEnabled()) return null
         val lock = getTigerLintResultLock(rootDirectory)
         return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
-            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
+            getTigerLintResultForRootDirectoryFromCache(rootDirectory)
         }
     }
 
-    private fun doGetTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): PlsTigerLintResult? {
+    private fun getTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): PlsTigerLintResult? {
         // 当当前文件（即根目录）发生变化时，或者任意脚本或本地化文件发生变化时（这个条件已经足够），或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(rootDirectory) ?: return null

@@ -30,7 +30,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class CwtConfigLinkProvider : ReferenceLinkProvider {
@@ -204,7 +204,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
         val project = contextElement.project
         val selector = selector(project, contextElement).definition().contextSensitive()
             .withGameType(gameType)
-        return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
+        return ParadoxDefinitionSearch.searchElement(name, typeExpression, selector).find()
     }
 
     override fun getUnresolvedMessage(link: String): String {
@@ -212,9 +212,9 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
-        if (element !is ParadoxScriptDefinitionElement) return null
+        if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
-        if (definitionInfo.name.isEmpty()) return null // ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return null // skip anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")

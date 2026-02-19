@@ -7,10 +7,10 @@ import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object PlsInspectionService {
-    fun getSuppressedToolIds(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
+    fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         val gameType = definitionInfo.gameType
         val result = mutableSetOf<String>()
         ParadoxDefinitionInspectionSuppressionProvider.EP_NAME.extensionList.forEach { ep ->

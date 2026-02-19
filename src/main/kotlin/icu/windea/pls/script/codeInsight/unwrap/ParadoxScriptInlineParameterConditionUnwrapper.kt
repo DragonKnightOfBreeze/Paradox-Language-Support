@@ -2,8 +2,8 @@ package icu.windea.pls.script.codeInsight.unwrap
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.util.or
-import icu.windea.pls.core.util.unresolved
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 
 class ParadoxScriptInlineParameterConditionUnwrapper : ParadoxScriptUnwrapper() {

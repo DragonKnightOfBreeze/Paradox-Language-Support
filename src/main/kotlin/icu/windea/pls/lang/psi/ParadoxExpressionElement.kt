@@ -6,6 +6,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
+ * 作为表达式的 PSI 元素。
+ *
  * @see ParadoxScriptExpressionElement
  * @see ParadoxLocalisationExpressionElement
  * @see ParadoxCsvExpressionElement

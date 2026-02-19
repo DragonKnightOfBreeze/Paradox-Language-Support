@@ -22,22 +22,62 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
     fun setup() {
         markIntegrationTest()
         // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
-        initConfigGroups(project, ParadoxGameType.Stellaris)
+        initConfigGroups(project, gameType)
     }
 
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Exact Path
+
+    @Test
+    fun testFilePathSearcher_ExactPath() {
+        val relPath = "common/example.test.txt"
+        markFileInfo(gameType, relPath)
+        myFixture.configureByFile("script/syntax/example.test.txt")
+
+        val project = project
+        val selector = selector(project, myFixture.file).file()
+        val results = mutableListOf<String>()
+        ParadoxFilePathSearch.search(relPath, selector = selector).process { vf ->
+            results += vf.path
+            true
+        }
+        Assert.assertEquals(1, results.size)
+    }
+
+    @Test
+    fun testFilePathSearcher_NotFound_ReturnsEmpty() {
+        val relPath = "localisation/ui/ui_l_english.test.yml"
+        markFileInfo(gameType, relPath)
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+
+        val project = project
+        val selector = selector(project, myFixture.file).file()
+        val results = mutableListOf<String>()
+        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).process { vf ->
+            results += vf.path
+            true
+        }
+        Assert.assertTrue(results.isEmpty())
+    }
+
+    // endregion
+
+    // region Ignore Locale
+
     @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
@@ -61,11 +101,11 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_BothLocales_ReturnsBoth() {
         // Arrange: english and chinese files both exist
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         // configure chinese file as well and inject file info
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_simp_chinese.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_simp_chinese.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
 
         val project = project
@@ -83,4 +123,6 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         Assert.assertTrue(names.contains("ui_l_english.test.yml"))
         Assert.assertTrue(names.contains("ui_l_simp_chinese.test.yml"))
     }
+
+    // endregion
 }

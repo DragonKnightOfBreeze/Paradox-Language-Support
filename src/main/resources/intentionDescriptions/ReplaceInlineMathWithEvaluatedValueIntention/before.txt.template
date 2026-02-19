@@ -1,0 +1,2 @@
+key = <spot>@[ 1 + 1 ]</spot>
+key = <spot>@[ 1 + $NUM|1$ ]</spot>

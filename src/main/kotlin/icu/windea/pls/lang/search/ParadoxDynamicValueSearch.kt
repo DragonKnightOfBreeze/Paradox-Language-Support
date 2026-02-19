@@ -35,7 +35,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
             name: String?,
             dynamicValueType: String,
             selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
-        ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, setOf(dynamicValueType), selector))
         }
 
@@ -47,7 +47,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
             name: String?,
             dynamicValueTypes: Set<String>,
             selector: ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>
-        ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxDynamicValueIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, dynamicValueTypes, selector))
         }
     }

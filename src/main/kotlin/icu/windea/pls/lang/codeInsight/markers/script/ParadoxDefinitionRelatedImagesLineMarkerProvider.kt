@@ -34,7 +34,9 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         val definitionInfo = element.definitionInfo ?: return
         val imageInfos = definitionInfo.images
         if (imageInfos.isEmpty()) return
+
         // 显示在提示中 & 可导航：定义名或文件路径，不包括没有对应的图片的项，按解析顺序排序
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.RelatedImages
         val prefix = PlsStrings.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()

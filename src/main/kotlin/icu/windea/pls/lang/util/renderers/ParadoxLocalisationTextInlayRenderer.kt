@@ -13,7 +13,8 @@ import icu.windea.pls.core.letIf
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
@@ -39,8 +40,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicInteger
@@ -139,9 +139,9 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     context(context: Context)
-    override fun renderString(element: ParadoxLocalisationText) {
+    override fun renderText(element: ParadoxLocalisationText) {
         if (context.truncated) return
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, EscapeType.Inlay)
+        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Inlay)
         context.builder.add(context.factory.truncatedSmallText(text))
         updateTruncationState()
     }
@@ -181,7 +181,7 @@ class ParadoxLocalisationTextInlayRenderer(
             // 封装变量
             run {
                 if (resolved !is ParadoxScriptScriptedVariable) return@run
-                val v = resolved.value ?: PlsStrings.unresolved
+                val v = resolved.value ?: FallbackStrings.unresolved
                 context.builder.add(context.factory.smallText(v))
                 updateTruncationState()
                 return@action
@@ -215,7 +215,7 @@ class ParadoxLocalisationTextInlayRenderer(
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
                 resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }

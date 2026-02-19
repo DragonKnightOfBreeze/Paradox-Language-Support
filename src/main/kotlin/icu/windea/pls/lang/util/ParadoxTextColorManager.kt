@@ -19,6 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -26,7 +27,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
 import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxTextColorManager {
@@ -63,8 +65,8 @@ object ParadoxTextColorManager {
     }
 
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
-        if (element is ParadoxScriptDefinitionElement) {
-            val info = doGetInfoFromCache(element)
+        if (element is ParadoxDefinitionElement) {
+            val info = getInfoFromCache(element)
             if (info != null) return info
         }
 
@@ -75,12 +77,13 @@ object ParadoxTextColorManager {
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.textColor, selector).find()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
+        val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
-        return doGetInfoFromCache(definition)
+        return getInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun getInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
@@ -88,7 +91,7 @@ object ParadoxTextColorManager {
         }
     }
 
-    private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+    private fun doGetInfo(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         // 要求输入的名字必须是单个字母或数字
         val name = definition.name
@@ -102,9 +105,10 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.textColor, selector).findAll()
+            .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
+        val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name
+        return definitions.mapNotNull { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }
 
     fun isId(c: Char): Boolean {

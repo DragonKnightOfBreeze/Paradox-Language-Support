@@ -24,23 +24,30 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val gameType = queryParameters.selector.gameType
-
         val indexInfoType = ParadoxIndexInfoType.DynamicValue
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
-            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) { file, infos ->
+            infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }
 
     private fun processInfo(
         queryParameters: ParadoxDynamicValueSearch.SearchParameters,
-        info: ParadoxDynamicValueIndexInfo,
         file: VirtualFile,
+        info: ParadoxDynamicValueIndexInfo,
         consumer: Processor<in ParadoxDynamicValueIndexInfo>
     ): Boolean {
-        if (info.dynamicValueType !in queryParameters.dynamicValueTypes) return true
-        if (queryParameters.name != null && queryParameters.name != info.name) return true
-        info.virtualFile = file
+        if (!matchesType(queryParameters, info)) return true
+        if (!matchesName(queryParameters, info)) return true
+        info.bind(file, queryParameters.project)
         return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: ParadoxDynamicValueSearch.SearchParameters, info: ParadoxDynamicValueIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name == info.name
+    }
+
+    private fun matchesType(queryParameters: ParadoxDynamicValueSearch.SearchParameters, info: ParadoxDynamicValueIndexInfo): Boolean {
+        return queryParameters.dynamicValueTypes.contains(info.dynamicValueType)
     }
 }

@@ -11,16 +11,13 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 class ParadoxScriptParameterConditionSurrounder : ParadoxScriptSurrounder() {
-    override fun getTemplateDescription(): String {
-        return "[[PARAM] ]"
-    }
+    override fun getTemplateDescription() = "[[PARAM]...]"
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
-        return true
+        return elements.isNotEmpty()
     }
 
-    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
-        if (elements.isEmpty()) return null
+    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange {
         val firstElement = elements.first()
         val lastElement = elements.last()
         val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
@@ -28,7 +25,7 @@ class ParadoxScriptParameterConditionSurrounder : ParadoxScriptSurrounder() {
         if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
-        var newElement = ParadoxScriptElementFactory.createParameterCondition(project, "PARAM", "\n${replacedText}\n")
+        var newElement = ParadoxScriptElementFactory.createParameterConditionFromText(project, "[[P]\n$replacedText\n]")
         newElement = firstElement.replace(newElement) as ParadoxScriptParameterCondition
         newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptParameterCondition
         return newElement.parameterConditionExpression!!.textRange

@@ -33,7 +33,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
@@ -41,7 +41,7 @@ import icu.windea.pls.script.psi.stringValue
 object ParadoxConfigExpressionService {
     fun resolve(
         locationExpression: CwtLocalisationLocationExpression,
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit = {}
     ): CwtLocalisationLocationResolveResult? {
@@ -80,7 +80,7 @@ object ParadoxConfigExpressionService {
 
     private fun createLocalisationResolveResult(
         name: String,
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         project: Project,
         selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit
@@ -108,7 +108,7 @@ object ParadoxConfigExpressionService {
 
     fun resolve(
         locationExpression: CwtImageLocationExpression,
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: ImageFrameInfo? = null,
         toFile: Boolean = false
@@ -130,7 +130,7 @@ object ParadoxConfigExpressionService {
                 if (spriteName.isNullOrEmpty()) return null
                 if (toFile) {
                     val definitionSelector = selector(project, definition).definition().contextSensitive()
-                    val resolved = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
+                    val resolved = ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, definitionSelector).find()
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
@@ -173,7 +173,7 @@ object ParadoxConfigExpressionService {
                 return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
             }
             // 由name解析为定义（如果不是sprite，就继续向下解析）
-            resolved is ParadoxScriptDefinitionElement -> {
+            resolved is ParadoxDefinitionElement -> {
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 if (!toFile && resolvedDefinitionInfo.type == ParadoxDefinitionTypes.sprite) {
@@ -199,22 +199,22 @@ object ParadoxConfigExpressionService {
     private fun createImageResolveResult(
         spriteName: String,
         frameInfo: ImageFrameInfo?,
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         project: Project
     ): CwtImageLocationResolveResult {
         return CwtImageLocationResolveResult(spriteName, frameInfo, null, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
+            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
             val selector = selector(project, definition).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
+            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
         })
     }
 
     private fun createImageResolveResultByFilePath(
         filePath: String,
         frameInfo: ImageFrameInfo?,
-        definition: ParadoxScriptDefinitionElement,
+        definition: ParadoxDefinitionElement,
         project: Project
     ): CwtImageLocationResolveResult {
         return CwtImageLocationResolveResult(filePath, frameInfo, null, {
@@ -230,13 +230,13 @@ object ParadoxConfigExpressionService {
         return CwtImageLocationResolveResult("", null, message)
     }
 
-    private fun findValueElementByPath(definition: ParadoxScriptDefinitionElement, path: String): ParadoxScriptValue? {
+    private fun findValueElementByPath(definition: ParadoxDefinitionElement, path: String): ParadoxScriptValue? {
         if (path.isEmpty()) return null
         val properties = selectScope { definition.ofPath(path, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue }
     }
 
-    private fun findValueByPaths(definition: ParadoxScriptDefinitionElement, paths: Set<String>?): String? {
+    private fun findValueByPaths(definition: ParadoxDefinitionElement, paths: Set<String>?): String? {
         if (paths.isNullOrEmpty()) return null
         val properties = selectScope { definition.ofPaths(paths, conditional = true, inline = true).asProperty() }
         return properties.firstNotNullOfOrNull { it.propertyValue?.stringValue() }

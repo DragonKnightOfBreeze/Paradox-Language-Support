@@ -1,14 +1,20 @@
 package icu.windea.pls.model.index
 
-import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
+/**
+ * @see icu.windea.pls.lang.index.ParadoxMergedIndex
+ * @see icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport
+ */
 data class ParadoxInferredScopeContextAwareDefinitionIndexInfo(
     val definitionName: String,
     val typeExpression: String,
-    val elementOffset: Int,
+    val definitionElementOffset: Int,
     override val gameType: ParadoxGameType,
-) : ParadoxIndexInfo {
-    @Volatile
-    override var virtualFile: VirtualFile? = null
+) : ParadoxIndexInfo() {
+    val definitionElement: ParadoxScriptProperty?
+        get() = file?.let { file -> ParadoxPsiFileManager.findPropertyFromStartOffset(file, definitionElementOffset) }
+            // ?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
 }

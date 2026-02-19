@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.swing.Icon
 
 interface ParadoxDefinitionHierarchyActions {
@@ -22,7 +22,7 @@ interface ParadoxDefinitionHierarchyActions {
             super.update(event)
             val hierarchyBrowser = getHierarchyBrowser(event.dataContext)
             val definitionInfo = hierarchyBrowser?.castOrNull<ParadoxDefinitionHierarchyBrowser>()
-                ?.element?.castOrNull<ParadoxScriptDefinitionElement>()
+                ?.element?.castOrNull<ParadoxDefinitionElement>()
                 ?.definitionInfo
             val visible = definitionInfo != null && type.predicate(definitionInfo)
             event.presentation.isVisible = visible

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.localisation
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -36,6 +37,8 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
         if (name == null) return
         val type = element.type
         if (type == null) return
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.Localisation
         val tooltip = "($type) <b>$name</b>"
         val targets by lazy {

@@ -1,0 +1,4 @@
+root = {
+    <selection># comment
+    foo = bar</selection>
+}

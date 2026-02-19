@@ -28,6 +28,7 @@ root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
   ]
   methods=[getValue getMembersRoot getMembers getComponents]
 }
@@ -71,7 +72,7 @@ property ::= property_key property_separator property_value {
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "icu.windea.pls.script.psi.ParadoxScriptMember"
-    "icu.windea.pls.script.psi.ParadoxScriptDefinitionElement"
+    "icu.windea.pls.script.psi.ParadoxDefinitionElement"
   ]
   methods=[
     property_key="property_key" property_value="value"
@@ -167,10 +168,11 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
     getIcon getValue getReference getReferences
-    getMembersRoot getMembers getComponents
+    getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {
@@ -235,12 +237,11 @@ parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_conditio
   pin=1
   recoverWhile="#auto" // continue parsing
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
-    "com.intellij.psi.PsiListLikeElement"
+    "icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer"
   ]
   methods=[
     getIcon getConditionExpression getPresentationText
-    getMembersRoot getMembers getComponents
+    getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
 private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET {

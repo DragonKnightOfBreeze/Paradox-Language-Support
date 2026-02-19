@@ -32,8 +32,8 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.definitionInfo
@@ -47,7 +47,7 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
 import javax.swing.Icon
 
@@ -71,13 +71,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         return file
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
+    private fun findElement(file: PsiFile, offset: Int): ParadoxDefinitionElement? {
         return ParadoxPsiFileManager.findDefinition(file, offset)
     }
 
-    private fun findElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {
+    private fun findElement(e: AnActionEvent): ParadoxDefinitionElement? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
-        if (element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
+        if (element is ParadoxDefinitionElement && element.definitionInfo != null) return element
         return null
     }
 
@@ -120,12 +120,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val file = psiFile.virtualFile
         val project = psiFile.project
         val definitionInfo = definition.definitionInfo ?: return null
-        val definitions = mutableListOf<ParadoxScriptDefinitionElement>()
+        val definitions = mutableListOf<ParadoxDefinitionElement>()
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
                 val selector = selector(project, file).definition()
                 // pass main type only
-                val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
+                val result = ParadoxDefinitionSearch.searchElement(definitionInfo.name, definitionInfo.type, selector).findAll()
                 definitions.addAll(result)
             }
         }
@@ -188,13 +188,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         return MyDiffRequestChain(producers, defaultIndex)
     }
 
-    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
+    private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxDefinitionElement): DocumentContent {
         return createTempContent(contentFactory, project, documentContent, definition)
             ?: createFragment(contentFactory, project, documentContent, definition)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
+    private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxDefinitionElement): DocumentContent? {
         // 创建临时文件
         val file = documentContent.highlightFile ?: return null
         val fileInfo = file.fileInfo ?: return null
@@ -208,11 +208,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
     }
 
-    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
+    private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxDefinitionElement): DocumentContent {
         return contentFactory.createFragment(project, documentContent, definition.textRange)
     }
 
-    private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
+    private fun getWindowsTitle(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
@@ -225,7 +225,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         return PlsBundle.message("diff.compare.definitions.dialog.title", name, type, path, qualifiedName)
     }
 
-    private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
+    private fun getContentTitle(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo

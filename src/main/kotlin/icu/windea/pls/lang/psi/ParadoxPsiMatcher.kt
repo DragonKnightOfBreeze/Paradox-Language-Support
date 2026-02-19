@@ -18,7 +18,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -50,9 +50,9 @@ object ParadoxPsiMatcher {
     @OptIn(ExperimentalContracts::class)
     fun isDefinition(element: PsiElement?): Boolean {
         contract {
-            returns(true) implies (element is ParadoxScriptDefinitionElement)
+            returns(true) implies (element is ParadoxDefinitionElement)
         }
-        return element is ParadoxScriptDefinitionElement && element.definitionInfo != null // 定义名可以为空（即匿名）
+        return element is ParadoxDefinitionElement && element.definitionInfo != null // 定义名可以为空（即匿名）
     }
 
     /**
@@ -153,6 +153,7 @@ object ParadoxPsiMatcher {
         if (element !is ParadoxScriptProperty) return false
         if (gameType == null) return false
         if (!ParadoxInlineScriptManager.isMatched(element.name, gameType)) return false
+        if (!ParadoxInlineScriptManager.isAvailable(element)) return false
         return true
     }
 

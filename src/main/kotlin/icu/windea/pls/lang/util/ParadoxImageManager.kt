@@ -15,11 +15,11 @@ import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.images.dds.DdsFileType
@@ -34,7 +34,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPaths
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -71,7 +71,7 @@ object ParadoxImageManager {
      * @param definition 输入的定义。
      * @param frameInfo 输入的帧数信息，用于切分图片，一般来自特定类型的定义的特定属性的值（例如`sprite`的`noOfFrames`）。
      */
-    fun resolveUrlByDefinition(definition: ParadoxScriptDefinitionElement, frameInfo: ImageFrameInfo? = null): String? {
+    fun resolveUrlByDefinition(definition: ParadoxDefinitionElement, frameInfo: ImageFrameInfo? = null): String? {
         val definitionInfo = definition.definitionInfo ?: return null
         val newFrameInfo = when {
             frameInfo == null -> null
@@ -126,7 +126,7 @@ object ParadoxImageManager {
         }
     }
 
-    private fun doResolveUrlByDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
+    private fun doResolveUrlByDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
         // 兼容 `definition` 不是 `sprite` 的情况
         val resolved = runReadActionSmartly {
             definitionInfo.primaryImages.firstNotNullOfOrNull {

@@ -1,6 +1,7 @@
 package icu.windea.pls.model.scope
 
 import com.intellij.openapi.util.UserDataHolder
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -15,6 +16,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * **作用域上下文（scope context）** 是模组编程中 **谓语**（如触发器、效果、修正等）的结构中，某处的当前状态，
  * 保存了 **系统作用域** 到 **作用域** 信息的映射。
  * 以便进行取值、回溯、入栈、替换等操作。
+ *
+ * 注意：求值得到的作用域上下文，一般是指切换后的上下文。即，进入脚本成员的子块后，或者进入链接节点后的上下文。
  *
  * @property scope 当前作用域（即 `this`）。
  * @property root 根作用域（即 `root`）。
@@ -33,7 +36,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * @see CwtScopeGroupConfig
  * @see CwtSystemScopeConfig
  */
-interface ParadoxScopeContext : UserDataHolder {
+sealed interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
     val root: ParadoxScopeContext?
     val from: ParadoxScopeContext?
@@ -54,15 +57,77 @@ interface ParadoxScopeContext : UserDataHolder {
         return ParadoxScopeContextResolver.resolveNext(this, pushScope, isFrom)
     }
 
-    fun resolveNext(scopeContext: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
-        return ParadoxScopeContextResolver.resolveNext(this, scopeContext, isFrom)
+    fun resolveNext(next: ParadoxScopeContext, isFrom: Boolean = false): ParadoxScopeContext {
+        return ParadoxScopeContextResolver.resolveNext(this, next, isFrom)
     }
 
     fun resolveNext(links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
         return ParadoxScopeContextResolver.resolveNext(this, links)
     }
 
+    class Simple(
+        override val scope: ParadoxScope
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        override val root: ParadoxScopeContext? get() = null
+        override val from: ParadoxScopeContext? get() = null
+        override val fromFrom: ParadoxScopeContext? get() = null
+        override val fromFromFrom: ParadoxScopeContext? get() = null
+        override val fromFromFromFrom: ParadoxScopeContext? get() = null
+        override val prevStack: List<ParadoxScopeContext> get() = emptyList()
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
+
+        override fun toString(): String {
+            return "SimpleParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    class Default(
+        override val scope: ParadoxScope,
+        override val root: ParadoxScopeContext? = null,
+        override val from: ParadoxScopeContext? = null,
+        override val fromFrom: ParadoxScopeContext? = null,
+        override val fromFromFrom: ParadoxScopeContext? = null,
+        override val fromFromFromFrom: ParadoxScopeContext? = null,
+        override val prevStack: List<ParadoxScopeContext> = emptyList()
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>> get() = emptyList()
+
+        override fun toString(): String {
+            return "DefaultParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    class Linked(
+        override val links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>,
+        override val prevStack: List<ParadoxScopeContext> = emptyList()
+    ) : UserDataHolderBase(), ParadoxScopeContext {
+        private val last = links.lastOrNull()?.second ?: throw IllegalArgumentException()
+
+        override val scope: ParadoxScope get() = last.scope
+        override val root: ParadoxScopeContext? get() = last.root
+        override val from: ParadoxScopeContext? get() = last.from
+        override val fromFrom: ParadoxScopeContext? get() = last.fromFrom
+        override val fromFromFrom: ParadoxScopeContext? get() = last.fromFromFrom
+        override val fromFromFromFrom: ParadoxScopeContext? get() = last.fromFromFromFrom
+
+        override fun toString(): String {
+            return "LinkedParadoxScopeContext: " + toScopeIdMap().toString()
+        }
+    }
+
+    object Keys : KeyRegistry()
+
     companion object {
+        @JvmStatic
+        fun getAny(): ParadoxScopeContext {
+            return ParadoxScopeContextResolver.getAny()
+        }
+
+        @JvmStatic
+        fun getUnknown(input: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
+            return ParadoxScopeContextResolver.getUnknown(input, isFrom)
+        }
+
         @JvmStatic
         fun get(thisScope: String): ParadoxScopeContext {
             return ParadoxScopeContextResolver.get(thisScope)
@@ -78,7 +143,5 @@ interface ParadoxScopeContext : UserDataHolder {
             return ParadoxScopeContextResolver.get(map)
         }
     }
-
-    object Keys : KeyRegistry()
 }
 

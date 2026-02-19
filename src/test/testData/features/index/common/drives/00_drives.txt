@@ -1,0 +1,14 @@
+warp_drive = {
+    speed = 10
+    fuel = 50
+}
+
+hyperdrive = {
+    speed = 20
+    fuel = 80
+}
+
+ion_thruster = {
+    speed = 5
+    fuel = 20
+}

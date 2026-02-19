@@ -1,0 +1,13 @@
+# complex defines file for Stellaris
+NGameplay = {
+    MARINE = 1
+    FLEET_POWER = 2
+}
+
+NEconomy = {
+    ENERGY = 10
+    MINERALS = 20
+    MARINE = 100
+}
+
+NOT_A_DEFINE = 0

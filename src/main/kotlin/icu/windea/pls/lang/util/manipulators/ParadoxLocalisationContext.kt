@@ -46,11 +46,11 @@ data class ParadoxLocalisationContext(
             var r = false
             pv.acceptChildren(object : PsiRecursiveElementVisitor() {
                 override fun visitElement(element: PsiElement) {
-                    if (element is ParadoxLocalisationText) return visitString(element)
+                    if (element is ParadoxLocalisationText) return visitText(element)
                     super.visitElement(element)
                 }
 
-                private fun visitString(element: ParadoxLocalisationText) {
+                private fun visitText(element: ParadoxLocalisationText) {
                     val s = element.text
                     if (checkString(s)) {
                         r = true

@@ -1,0 +1,14 @@
+explorer = {
+    hull = 100
+    speed = 8
+}
+
+battlecruiser = {
+    hull = 500
+    speed = 4
+}
+
+interceptor = {
+    hull = 50
+    speed = 12
+}

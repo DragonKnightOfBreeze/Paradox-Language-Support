@@ -3,10 +3,10 @@ package icu.windea.pls.ep.inspections
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
-    override fun getSuppressedToolIds(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
+    override fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 禁用继承自其他事件的事件的某些检查
         if (definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
             return setOf("ParadoxScriptMissingExpression", "ParadoxScriptMissingLocalisation", "ParadoxScriptMissingImage")
@@ -17,7 +17,7 @@ class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInsp
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
-    override fun getSuppressedToolIds(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
+    override fun getSuppressedToolIds(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 传统的采纳和完成不需要有对应的图片
         if ((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
             return setOf("ParadoxScriptMissingImage")

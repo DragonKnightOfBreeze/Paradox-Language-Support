@@ -13,10 +13,10 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
     class SearchParameters(
         val name: String?,
         val types: Collection<String>,
-        val gameType: ParadoxGameType?,
-        val project: Project,
-        val scope: GlobalSearchScope
-    )
+        override val gameType: ParadoxGameType?,
+        override val project: Project,
+        override val scope: GlobalSearchScope
+    ) : CwtConfigSearchParameters
 
     companion object {
         @JvmField

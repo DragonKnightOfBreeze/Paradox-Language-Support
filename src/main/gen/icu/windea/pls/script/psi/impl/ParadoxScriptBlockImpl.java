@@ -88,6 +88,16 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
+  public @Nullable PsiElement getLeftBound() {
+    return ParadoxScriptPsiImplUtil.getLeftBound(this);
+  }
+
+  @Override
+  public @Nullable PsiElement getRightBound() {
+    return ParadoxScriptPsiImplUtil.getRightBound(this);
+  }
+
+  @Override
   public @NotNull List<@NotNull PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }

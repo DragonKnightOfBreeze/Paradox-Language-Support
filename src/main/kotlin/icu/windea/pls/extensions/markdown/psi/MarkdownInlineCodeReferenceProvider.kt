@@ -8,10 +8,11 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.asSymbol
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.util.set
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSet
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.PlsMarkdownManager
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
+import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -19,7 +20,6 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.constants.PlsPatterns
 
 /**
  * 用于在 Markdown 文件中，尝试将内联代码解析为匹配的目标引用（定义、本地化等）。
@@ -65,23 +65,23 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
 
             when {
                 prefix == "@" -> {
-                    if (!PlsPatterns.scriptedVariableName.matches(name)) return emptySet()
+                    if (!PlsNameValidators.checkScriptedVariableName(name)) return emptySet()
                     val selector = selector(element.project, element).scriptedVariable().contextSensitive()
                     val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
-                    return result.asSymbol().singleton.set()
+                    return result.asSymbol().to.singletonSet()
                 }
                 prefix.isEmpty() -> {
                     run {
                         val selector = selector(element.project, element).definition().contextSensitive()
-                        val result = ParadoxDefinitionSearch.search(name, null, selector).find() ?: return@run
-                        return result.asSymbol().singleton.set()
+                        val result = ParadoxDefinitionSearch.searchElement(name, null, selector).find() ?: return@run
+                        return result.asSymbol().to.singletonSet()
                     }
                     run {
-                        if (!PlsPatterns.localisationName.matches(name)) return@run
+                        if (!PlsNameValidators.checkLocalisationName(name)) return@run
                         val selector = selector(element.project, element).localisation().contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run
-                        return result.asSymbol().singleton.set()
+                        return result.asSymbol().to.singletonSet()
                     }
                     return emptySet()
                 }

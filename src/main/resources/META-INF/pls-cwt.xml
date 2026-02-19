@@ -10,7 +10,7 @@
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
-    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBasicAnnotator"/>
+    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBaseAnnotator"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
@@ -25,8 +25,7 @@
     <liveTemplateContext contextId="CWT_MEMBERS" baseContextId="CWT"
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Members"/>
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
-    <codeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
-    <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.formatter.CwtCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.navigation.CwtBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>

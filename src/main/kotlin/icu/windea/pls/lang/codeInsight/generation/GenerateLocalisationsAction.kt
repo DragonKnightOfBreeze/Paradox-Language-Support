@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -58,7 +58,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
                 }
                 if (contextElement == null) return null
                 val context = when {
-                    contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(contextElement, locales)
+                    contextElement is ParadoxDefinitionElement -> ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(contextElement, locales)
                     contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContextBuilder.fromExpression(contextElement, locales)
                     else -> null
                 }

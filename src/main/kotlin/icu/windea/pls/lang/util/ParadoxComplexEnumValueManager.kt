@@ -1,82 +1,45 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.psi.select.*
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.resolve.ParadoxComplexEnumValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
+@Suppress("unused")
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
-        val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueIndexInfo>>(Keys)
+        val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo>>(Keys)
     }
 
-    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
-        return doGetInfoFromCache(element)
-    }
-
-    private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
-        // invalidated on file modification
+    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
-            val file = element.containingFile
-            val value = doGetInfo(element, file)
-            value.withDependencyItems(file)
+            ProgressManager.checkCanceled()
+            runReadActionSmartly {
+                val file = element.containingFile
+                val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
+                val dependencies = ParadoxComplexEnumValueService.getDependencies(element, file)
+                value.withDependencyItems(dependencies)
+            }
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueIndexInfo? {
-        val value = element.value
-        if (value.isParameterized()) return null // 排除可能带参数的情况
-        val project = file.project
-        val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType
-        if (ParadoxInlineScriptManager.isMatched(value, gameType)) return null // 排除是内联脚本用法的情况
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val complexEnumConfig = ParadoxConfigMatchService.getMatchedComplexEnumConfig(element, configGroup, path)
-        if (complexEnumConfig == null) return null
-        val name = getName(value) ?: return null
-        val enumName = complexEnumConfig.name
-        val readWriteAccess = Access.Write // write (declaration)
-        val definitionElementOffset = when {
-            // TODO 2.1.0+ 考虑兼容定义注入
-            complexEnumConfig.perDefinition -> selectScope { element.parentDefinition() }?.startOffset ?: -1
-            else -> -1
-        }
-        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)
+    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): ParadoxLocalisationProperty? {
+        return ParadoxComplexEnumValueService.resolveNameLocalisation(name, contextElement, locale)
     }
 
-    fun getName(expression: String): String? {
-        return expression.orNull()
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): Set<ParadoxLocalisationProperty> {
+        return ParadoxComplexEnumValueService.resolveNameLocalisations(name, contextElement, locale)
     }
-
-    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
-        return ParadoxLocalisationSearch.searchNormal(name, selector).find()
-    }
-
-    // fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): Set<ParadoxLocalisationProperty> {
-    //     val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
-    //     return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
-    // }
 }

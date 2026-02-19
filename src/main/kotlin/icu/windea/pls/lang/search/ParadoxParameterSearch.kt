@@ -35,7 +35,7 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo,
             name: String?,
             contextKey: String,
             selector: ParadoxSearchSelector<ParadoxParameterIndexInfo>
-        ): ParadoxQuery<ParadoxParameterIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxParameterIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, contextKey, selector))
         }
     }

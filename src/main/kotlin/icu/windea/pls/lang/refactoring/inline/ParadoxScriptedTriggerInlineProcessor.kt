@@ -20,9 +20,9 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -78,10 +78,10 @@ class ParadoxScriptedTriggerInlineProcessor(
 
     override fun getElementsToWrite(descriptor: UsageViewDescriptor): Collection<PsiElement> {
         return if (inlineThisOnly) {
-            reference?.element.singleton.listOrEmpty()
+            reference?.element.to.singletonListOrEmpty()
         } else {
             if (!element.isWritable) return emptyList()
-            if (reference == null) element.singleton.list() else listOf(reference.element, element)
+            if (reference == null) element.to.singletonList() else listOf(reference.element, element)
         }
     }
 

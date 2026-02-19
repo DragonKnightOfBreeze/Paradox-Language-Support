@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 
 /**
  * 本地化的查询器。
@@ -32,7 +32,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
 
         val name = queryParameters.name
         val type = queryParameters.type
-        val constraint = queryParameters.selector.getConstraint()
+        val constraint = queryParameters.selector.getConstraint() as? ParadoxLocalisationIndexConstraint
         processQueryForLocalisations(name, type, project, scope, constraint) { element -> consumer.process(element) }
     }
 
@@ -41,7 +41,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         type: ParadoxLocalisationType,
         project: Project,
         scope: GlobalSearchScope,
-        constraint: ParadoxIndexConstraint<ParadoxLocalisationProperty>?,
+        constraint: ParadoxLocalisationIndexConstraint?,
         processor: Processor<ParadoxLocalisationProperty>
     ): Boolean {
         val indexKey = constraint?.indexKey ?: when (type) {

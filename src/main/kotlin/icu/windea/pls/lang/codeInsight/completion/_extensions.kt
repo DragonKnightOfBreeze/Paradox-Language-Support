@@ -21,14 +21,12 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -88,12 +86,12 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
 fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
-        localizedNames = ParadoxScriptedVariableManager.getLocalizedName(element).singleton.setOrEmpty()
+        localizedNames = ParadoxScriptedVariableManager.getLocalizedNames(element)
     }
     return this
 }
 
-fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxScriptDefinitionElement): LookupElementBuilder {
+fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxDefinitionElement): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)

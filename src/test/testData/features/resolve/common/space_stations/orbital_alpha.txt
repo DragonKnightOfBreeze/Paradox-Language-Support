@@ -1,0 +1,2 @@
+crew = 120
+docking_bays = 4

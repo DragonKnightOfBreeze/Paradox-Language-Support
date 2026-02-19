@@ -150,3 +150,4 @@ object PlsPsiManager {
         return attachedComments.dropWhile { !predicate(it) }.takeWhile(predicate).toList().reversed()
     }
 }
+

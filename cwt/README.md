@@ -11,18 +11,15 @@
 - CWT EU4 Config
   - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-eu4-config>
   - Vanilla: <https://github.com/cwtools/cwtools-eu4-config>
-- CWT EU4 Config
+- CWT EU5 Config
   - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-eu5-config>
   - Vanilla: <https://github.com/kaiser-chris/cwtools-eu5-config>
-- CWT EU4 Config
-  - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-eu4-config>
-  - Vanilla: <https://github.com/cwtools/cwtools-eu4-config>
 - CWT HOI4 Config
   - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config>
   - Vanilla: <https://github.com/cwtools/cwtools-hoi4-config>
 - CWT IR Config
-- Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-ir-config>
-- Vanilla: <https://github.com/cwtools/cwtools-ir-config>
+  - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-ir-config>
+  - Vanilla: <https://github.com/cwtools/cwtools-ir-config>
 - CWT Stellaris Config
   - Built-in: <https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config>
   - Vanilla: <https://github.com/cwtools/cwtools-stellaris-config>

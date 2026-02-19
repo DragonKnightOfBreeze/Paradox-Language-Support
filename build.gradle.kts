@@ -10,7 +10,7 @@ plugins {
     id("org.jetbrains.grammarkit") version "2023.3.0.1"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
-    // 用于在缺失本地仓库时按需下载 CWT 规则 zip（HTTPS），以兼容 CI 环境
+    // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
     id("de.undercouch.download") version "5.6.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
@@ -27,7 +27,7 @@ repositories {
     }
 }
 
-// Lite 版本 - 不包含可选的依赖包 & zip 和 plugin.xml 中的版本号加上 `-lite` 后缀
+// Lite build: excludes optional dependency JARs; also appends the `-lite` suffix to versions in the ZIP and plugin.xml
 val lite = properties("pls.is.lite").getOrElse("false").toBoolean()
 val includeSqlite = properties("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
 
@@ -45,7 +45,7 @@ dependencies {
         bundledPlugins("org.intellij.plugins.markdown")
         bundledPlugins("com.intellij.diagram")
 
-        // 用作参考
+        // For reference only
         bundledPlugins("com.intellij.java")
         bundledPlugins("org.jetbrains.kotlin")
         // bundledPlugins("JavaScript")
@@ -53,6 +53,10 @@ dependencies {
 
         // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.8.0")
+
+        // plugin("Docker:253.29346.125")
+        // bundledPlugins("com.intellij.microservices.jvm")
+        // plugin("intellij.ktor:253.28294.251")
     }
 
     // kotlin test junit - https://kotlinlang.org
@@ -75,7 +79,7 @@ dependencies {
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
 
-    // AI 集成
+    // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
     implementation("dev.langchain4j:langchain4j:1.10.0") {
@@ -99,7 +103,7 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    // 持久化
+    // Persistence
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
     runtimeOnly("org.xerial:sqlite-jdbc:3.51.1.0")
@@ -116,7 +120,7 @@ dependencies {
     compileOnly("org.slf4j:slf4j-api:2.0.17")
     compileOnly("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations
 
-    // 目前仅用作参考
+    // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.18.3")
@@ -237,8 +241,8 @@ val excludesInZip = buildList {
     }
 }
 
-// ========== CWT 规则来源配置（本地优先，缺失即下载）==========
-// 下载来源行为的可配置参数（通过 -P 覆盖）
+// ========== CWT config source setup (prefer local, download if missing) ==========
+// Configurable parameters for download behavior (override via -P)
 val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
 val cwtAcceptAnyCertificate = providers.gradleProperty("pls.cwt.acceptAnyCertificate").orElse("false")
 
@@ -253,7 +257,7 @@ data class CwtRepository(
 }
 
 val cwtRepositories = listOf(
-    CwtRepository("core", "core", downloadable = false), // core 在当前仓库内，无需下载
+    CwtRepository("core", "core", downloadable = false), // core is in this repository; no download needed
     CwtRepository("cwtools-ck2-config", "ck2"),
     CwtRepository("cwtools-ck3-config", "ck3"),
     CwtRepository("cwtools-eu4-config", "eu4"),
@@ -265,12 +269,12 @@ val cwtRepositories = listOf(
     CwtRepository("cwtools-vic3-config", "vic3"),
 )
 
-// 生成产物目录（用于存放解压后的规则），本地缺失时作为备用来源
+// Generated output directory (stores unzipped configs); used as a fallback when local configs are missing
 val generatedCwtDir = layout.buildDirectory.dir("generated/cwt")
-// 准备任务：收拢后续下载与解压依赖，便于 jar 统一依赖
+// Preparation task: collects downstream download/unzip dependencies so the JAR task can depend on a single task
 val prepareCwtConfigs = tasks.register("prepareCwtConfigs")
 
-// 为每个可下载的仓库注册下载与解压任务（本地存在时跳过）
+// Register download/unzip tasks for each downloadable repository (skip if a local copy exists)
 cwtRepositories.filter { it.downloadable }.forEach { r ->
     val localDir = layout.projectDirectory.dir("cwt/${r.repoDir}")
     val zipUrl = providers.provider { r.zipUrl }
@@ -278,15 +282,15 @@ cwtRepositories.filter { it.downloadable }.forEach { r ->
     val unzipDir = generatedCwtDir.map { it.dir(r.repoDir) }
 
     val download = tasks.register("downloadCwtConfig_${r.gameTypeId}", de.undercouch.gradle.tasks.download.Download::class) {
-        // 仅当本地不存在对应仓库时才尝试下载，减少 CI 与本地不必要的网络开销
+        // Only download when the local repository is missing to reduce unnecessary network traffic in CI and locally
         src(zipUrl)
         dest(zipFile)
         overwrite(false)
-        if (cwtAcceptAnyCertificate.get().toBoolean()) acceptAnyCertificate(true) // 如遇 SSL 握手失败，可通过 -Ppls.cwt.acceptAnyCertificate=true 临时绕过
+        if (cwtAcceptAnyCertificate.get().toBoolean()) acceptAnyCertificate(true) // If SSL handshake fails, temporarily bypass via -Ppls.cwt.acceptAnyCertificate=true
         onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() && !zipFile.get().asFile.exists() }
     }
     val unzip = tasks.register<Copy>("unzipCwtConfig_${r.gameTypeId}") {
-        // 解压下载的 zip 到构建生成目录，作为本地缺失时的备用规则来源
+        // Unzip the downloaded ZIP into the generated build directory as a fallback config source
         dependsOn(download)
         onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() }
         from({ zipTree(zipFile) })
@@ -300,29 +304,29 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
     jar {
-        // 统一依赖规则准备任务：确保在打包前完成本地检查与必要的下载/解压
+        // Depend on the config preparation task: ensure local checks and any required download/unzip complete before packaging
         dependsOn(prepareCwtConfigs)
-        // 添加项目文档和许可证
-        from("README.md", "README_en.md", "LICENSE")
-        // 排除特定文件
+        // Include project docs and license
+        from("README_zh.md", "README.md", "LICENSE")
+        // Exclude specific files
         excludesInJar.forEach { exclude(it) }
 
-        // 添加规则文件（本地优先，缺失则使用解压后的备用来源）
+        // Include config files (prefer local; otherwise use the unzipped fallback source)
         cwtRepositories.forEach { r ->
             val gameTypeId = r.gameTypeId
             into("config/$gameTypeId") {
-                // 根据是否存在本地目录选择有效来源，避免在 CI 上缺失规则
+                // Choose an effective source based on whether the local directory exists, to avoid missing configs in CI
                 val effectiveSource = providers.provider {
                     val local = file("cwt/${r.repoDir}")
                     if (local.exists()) local else generatedCwtDir.get().dir(r.repoDir).asFile
                 }
                 from(effectiveSource) {
                     includeEmptyDirs = false
-                    // 仅包含需要的文件（不包括规则目录中的 script-docs 子目录中的日志文件）
+                    // Include only required files (exclude log files under the script-docs subdirectory)
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
-                    // 规范路径：
-                    // - 打平规则目录中的 {repoDir}-{branch} 子目录中的文件
-                    // - 打平规则目录中的 config 子目录中的文件
+                    // Normalize paths:
+                    // - Flatten files under the {repoDir}-{branch} directory
+                    // - Flatten files under the config directory
                     eachFile {
                         path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/")
                         path = path.replace("/$gameTypeId/config/", "/$gameTypeId/")
@@ -330,15 +334,15 @@ tasks {
                 }
             }
         }
-        // 添加相关的文档和许可证
+        // Include related docs and license
         into("config") {
-            from("cwt/README.md", "cwt/LICENSE")
+            from("cwt/README_zh.md", "cwt/LICENSE")
         }
     }
     instrumentedJar {
-        // 统一依赖规则准备任务，确保与 jar 的资源一致（覆盖运行/调试场景）
+        // Depend on the config preparation task to keep resources in sync with the regular JAR (covers run/debug scenarios)
         dependsOn(prepareCwtConfigs)
-        // 排除特定文件
+        // Exclude specific files
         excludesInJar.forEach { exclude(it) }
     }
     patchPluginXml {
@@ -346,36 +350,38 @@ tasks {
     }
     buildPlugin {
         if (lite) archiveVersion = properties("pluginVersion").get() + "-lite"
-        // 排除特定文件
+        // Exclude specific files
         excludesInZip.forEach { exclude(it) }
-        // 重命名插件包
+        // Rename the plugin archive
         archiveBaseName = properties("pluginPackageName")
     }
     runIde {
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
-        systemProperty("idea.log.debug.categories", "icu.windea.pls")
-        systemProperty("pls.is.debug", "true")
+        // systemProperty("idea.log.debug.categories", "icu.windea.pls")
+        // systemProperty("pls.is.debug", "true")
+        // systemProperty("pls.refresh.builtIn", "true")
+        jvmArgs("-Xmx4096m")
     }
     withType<Test> {
         useJUnit()
         systemProperty("ide.slow.operations.assertion", "false")
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
         systemProperty("pls.is.debug", "true")
-        // 转发所有以 pls.test. 开头的命令行 -D 属性
+        // Forward all command-line -D properties that start with "pls.test."
         System.getProperties().stringPropertyNames()
             .filter { it.startsWith("pls.test.") }
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
     }
 
     withType<AbstractArchiveTask> {
-        // 保证读取到最新的内置规则文件
-        // 让 entry 时间戳与写入时间一致（不再被规范化为常量）
+        // Ensure the latest built-in config files are read
+        // Keep archive entry timestamps consistent with file write times (not normalized to a constant)
         // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
         isPreserveFileTimestamps = true
     }
 
-    // 让它正常工作有点太麻烦了
+    // Making this work properly is a bit too much hassle
     // val testTaskProvider = named<Test>("test")
     // register<Test>("aiTest") {
     //     group = "verification"

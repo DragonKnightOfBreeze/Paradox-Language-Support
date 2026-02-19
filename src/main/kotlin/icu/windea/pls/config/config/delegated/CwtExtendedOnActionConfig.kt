@@ -1,15 +1,20 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * on action 的扩展规则。
+ * 动作触发（on action）的扩展规则。
  *
- * 用于为对应的 on action 提供额外的提示信息（如文档注释、内嵌提示），以及指定事件类型。
+ * 用于为对应的动作触发（on action）提供额外的提示信息（如文档注释、内嵌提示），以及指定事件类型。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
@@ -50,3 +55,34 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberCon
 
     companion object : Resolver by CwtExtendedOnActionConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtExtendedOnActionConfigResolverImpl : CwtExtendedOnActionConfig.Resolver, CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? = doResolve(config)
+
+    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
+        val name = if (config is CwtPropertyConfig) config.key else config.value
+        val eventType = config.optionData.eventType
+        if (eventType == null) {
+            logger.warn("Skipped invalid extended on action config (name: $name): Missing event_type option.".withLocationPrefix(config))
+            return null
+        }
+        val hint = config.optionData.hint
+        logger.debug { "Resolved extended on action config (name: $name, event type: $eventType).".withLocationPrefix(config) }
+        return CwtExtendedOnActionConfigImpl(config, name, eventType, hint)
+    }
+}
+
+private class CwtExtendedOnActionConfigImpl(
+    override val config: CwtMemberConfig<*>,
+    override val name: String,
+    override val eventType: String,
+    override val hint: String?
+) : UserDataHolderBase(), CwtExtendedOnActionConfig {
+    override fun toString() = "CwtExtendedOnActionConfigImpl(name='$name', eventType='$eventType')"
+}
+
+// endregion

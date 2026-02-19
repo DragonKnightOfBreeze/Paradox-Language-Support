@@ -1,0 +1,14 @@
+fleet_assault = {
+    size = 30
+    formation = aggressive
+}
+
+fleet_patrol = {
+    size = 10
+    formation = defensive
+}
+
+solo_corvette = {
+    size = 1
+    formation = none
+}

@@ -6,9 +6,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -159,7 +159,7 @@ object ParadoxTypeManager {
         val property = element.parentProperty ?: return null
 
         val definitionInfo = property.definitionInfo
-        if (definitionInfo != null) return definitionInfo.typesText
+        if (definitionInfo != null) return definitionInfo.typeText
 
         // #252 兼容定义注入
         val definitionInjectionInfo = property.definitionInjectionInfo
@@ -224,7 +224,7 @@ object ParadoxTypeManager {
         }
         if (memberElement == null) return null
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return null
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: return null
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: return null
         return scopeContext
     }
 
@@ -251,15 +251,15 @@ object ParadoxTypeManager {
      * - 对应的预定义的动态值规则
      */
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
-        // 注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明
+        // 注意这里的 element 是解析引用后得到的 PSI 元素，因此无法定位到定义成员对应的规则声明
         when {
             element is ParadoxScriptProperty -> {
                 val definitionInfo = element.definitionInfo
                 if (definitionInfo != null) {
                     if (definitionInfo.types.size == 1) {
-                        return definitionInfo.typeConfig.pointer.element.singleton.listOrEmpty()
+                        return definitionInfo.typeConfig.pointer.element.to.singletonListOrEmpty()
                     } else {
-                        // 这里的element可能是null，以防万一，处理是null的情况
+                        // 这里的 element 可能是 null，以防万一，需要处理是 null 的情况
                         return buildList {
                             definitionInfo.typeConfig.pointer.element?.let { add(it) }
                             definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
@@ -285,7 +285,7 @@ object ParadoxTypeManager {
                         val enumName = complexEnumValueInfo.enumName
                         val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
                         val resolved = config.pointer.element ?: return emptyList()
-                        return resolved.singleton.list()
+                        return resolved.to.singletonList()
                     }
                 }
             }

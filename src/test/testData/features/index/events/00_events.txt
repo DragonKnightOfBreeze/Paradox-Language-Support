@@ -1,0 +1,35 @@
+event_namespace = test
+
+# 基础事件 - 有 triggered 子类型
+country_event = {
+    id = test.parent_event
+    is_triggered_only = yes
+
+    title = "Parent Event"
+    desc = "This is the parent event"
+}
+
+# 继承事件 - 应从父事件继承 triggered 子类型
+country_event = {
+    id = test.child_event
+    base = test.parent_event
+
+    title = "Child Event"
+    desc = "This is the child event"
+}
+
+# 另一个基础事件 - 没有 triggered 子类型
+planet_event = {
+    id = test.simple_event
+
+    title = "Simple Event"
+    desc = "This is a simple event"
+}
+
+# 继承简单事件 - 不应有 triggered 子类型
+planet_event = {
+    id = test.child_simple_event
+    base = test.simple_event
+
+    title = "Child Simple Event"
+}

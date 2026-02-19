@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -38,14 +39,15 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.DefinitionInjections
         val prefix = PlsStrings.definitionInjectionPrefix
-        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
+        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.typeText}"
         val targets by lazy {
-            val targetKey = info.type + "@" + info.target
             val project = element.project
             val selector = selector(project, element).definitionInjection().contextSensitive()
-            val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+            val targets0 = ParadoxDefinitionInjectionSearch.searchElement(null, info.target, info.type, selector).findAll()
             targets0.optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

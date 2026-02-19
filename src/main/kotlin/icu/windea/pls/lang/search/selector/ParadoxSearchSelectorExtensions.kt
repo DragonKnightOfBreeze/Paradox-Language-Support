@@ -8,16 +8,17 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 fun <S : ParadoxSearchSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
@@ -60,55 +61,47 @@ fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: Ps
     return filterBy { element == null || !element.isSamePosition(it) }
 }
 
-@JvmName("distinctByName_scriptedVariable")
+@JvmName("distinctByScriptedVariableName")
 fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
-@JvmName("distinctByName_definition")
-fun <S : ParadoxSearchSelector<ParadoxScriptDefinitionElement>> S.distinctByName(): S {
-    return distinctBy { ParadoxDefinitionManager.getName(it) }
+@JvmName("distinctByDefineExpression")
+fun <S : ParadoxSearchSelector<ParadoxScriptProperty>> S.distinctByDefineExpression(): S {
+    return distinctBy { ParadoxDefineManager.getExpression(it) }
 }
 
-@JvmName("distinctByName_localisation")
+@Suppress("unused")
+@JvmName("distinctByLocalisationName")
 fun <S : ParadoxSearchSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
-@JvmName("distinctByName_complexEnumValue")
-fun <S : ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } } // # 261
+@JvmName("distinctByIndexInfoName")
+fun <S : ParadoxSearchSelector<T>, T : ParadoxIndexInfo> S.distinctByName(): S {
+    return distinctBy {
+        when (it) {
+            is ParadoxDefinitionIndexInfo -> it.name
+            is ParadoxComplexEnumValueIndexInfo -> it.name.letIf(it.caseInsensitive) { n -> n.lowercase() } // #261
+            is ParadoxDynamicValueIndexInfo -> it.name
+            is ParadoxParameterIndexInfo -> it.name
+            is ParadoxLocalisationParameterIndexInfo -> it.name
+            else -> null
+        }
+    }
 }
 
-@JvmName("distinctByName_dynamicValue")
-fun <S : ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_parameter")
-fun <S : ParadoxSearchSelector<ParadoxParameterIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
-@JvmName("distinctByName_localisationParameter")
-fun <S : ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>> S.distinctByName(): S {
-    return distinctBy { it.name }
-}
-
+@JvmName("distinctByFilePath")
 fun <S : ParadoxSearchSelector<VirtualFile>> S.distinctByFilePath(): S {
     return distinctBy { it.fileInfo?.path }
 }
 
-fun <S : ParadoxSearchSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(): S {
-    return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
-}
-
-fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
+fun <S : ParadoxSearchSelector<T>, T> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
     if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
     return this
 }
 
-fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIndexConstraint<T>? {
+fun <S : ParadoxSearchSelector<T>, T> S.getConstraint(): ParadoxIndexConstraint<T>? {
     return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
 }
 

@@ -45,10 +45,10 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         ProgressManager.checkCanceled()
         val indexId = PlsIndexKeys.FilePath
         FileBasedIndex.getInstance().processAllKeys(indexId, p@{ key ->
-            FileBasedIndex.getInstance().processValues(indexId, key, null, pp@{ _, info ->
-                if (info.gameType != gameType) return@pp true
-                if (!info.included) return@pp true
-                val p = info.directory.removePrefixOrNull(pathPrefix)
+            FileBasedIndex.getInstance().processValues(indexId, key, null, pp@{ _, data ->
+                if (data.gameType != gameType) return@pp true
+                if (!data.included) return@pp true
+                val p = data.directory.removePrefixOrNull(pathPrefix)
                 if (p.isNotNullOrEmpty()) result.add(p)
                 true
             }, scope)

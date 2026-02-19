@@ -21,7 +21,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import java.awt.Color
@@ -30,28 +30,28 @@ import javax.swing.Icon
 import javax.swing.JLabel
 
 object ParadoxPresentationUtil {
-    fun getNameLocalisation(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getNameLocalisation(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
-    fun getNameLocalisationKey(definition: ParadoxScriptDefinitionElement): String? {
+    fun getNameLocalisationKey(definition: ParadoxDefinitionElement): String? {
         return ParadoxDefinitionManager.getPrimaryLocalisationKey(definition)
     }
 
-    fun getNameText(definition: ParadoxScriptDefinitionElement): String? {
+    fun getNameText(definition: ParadoxDefinitionElement): String? {
         val localizedName = getNameLocalisation(definition)
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
         return null
     }
 
-    fun getNameTextOrKey(definition: ParadoxScriptDefinitionElement): String? {
+    fun getNameTextOrKey(definition: ParadoxDefinitionElement): String? {
         val localizedName = getNameLocalisation(definition)
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
         val localizedNameKey = getNameLocalisationKey(definition)
         return localizedNameKey
     }
 
-    fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
+    fun getProperties(definition: ParadoxDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
         val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
         definition.block?.properties(conditional = true, inline = true)?.forEach {
             if (it.name.lowercase() in keys) properties.add(it)
@@ -110,7 +110,7 @@ object ParadoxPresentationUtil {
         return iconUrl.toFileUrl().toIconOrNull()
     }
 
-    fun getIcon(definition: ParadoxScriptDefinitionElement): Icon? {
+    fun getIcon(definition: ParadoxDefinitionElement): Icon? {
         val ddsFile = ParadoxDefinitionManager.getPrimaryImage(definition) ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
@@ -118,7 +118,7 @@ object ParadoxPresentationUtil {
         return iconUrl.toFileUrl().toIconOrNull()
     }
 
-    fun getIcon(definition: ParadoxScriptDefinitionElement, ddsFile: PsiFile): Icon? {
+    fun getIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
         val frameInfo = definition.getUserData(ParadoxDefinitionManager.Keys.imageFrameInfo)
         val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project, frameInfo) ?: return null

@@ -8,7 +8,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface CwtRootBlock extends CwtBlockElement {
+public interface CwtRootBlock extends CwtBlockElement, CwtMemberContainer {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();

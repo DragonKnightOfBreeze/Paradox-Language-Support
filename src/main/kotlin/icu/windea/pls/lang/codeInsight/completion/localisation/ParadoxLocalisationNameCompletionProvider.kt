@@ -12,7 +12,7 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.notSamePosition
+import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
@@ -42,11 +42,10 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         result.restartCompletionOnAnyPrefixChange()
 
         // 提示 `localisation` 或者 `synced_localisation`
-        // 排除正在输入的那一个
         val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            .notSamePosition(element)
+            .filterBy { it.name != element.name } // 排除与正在输入的同名的
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name

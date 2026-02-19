@@ -1,0 +1,4 @@
+root = {
+    <selection>foo = bar
+    baz = qux</selection>
+}

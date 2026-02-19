@@ -9,8 +9,8 @@ import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -35,7 +35,7 @@ interface ParadoxScriptExpressionSupport {
     }
 
     fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config, isKey, false).singleton.setOrEmpty()
+        return resolve(element, rangeInElement, expressionText, config, isKey, false).to.singletonSetOrEmpty()
     }
 
     fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {

@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * @property name 封装变量的名字。
  */
 @Suppress("UnstableApiUsage")
-interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedVariable> {
+sealed interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedVariable> {
     val name: String
 
     private sealed class Base(

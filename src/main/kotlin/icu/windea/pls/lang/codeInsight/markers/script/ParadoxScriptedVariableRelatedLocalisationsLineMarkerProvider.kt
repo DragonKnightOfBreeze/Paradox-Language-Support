@@ -33,17 +33,16 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
         val name = element.name?.orNull() ?: return
-        // 查找同名本地化（优先首选语言）
+        // 目标：同名本地化
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
         val targets0 = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale)
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()
-        // 提示文本：relatedLocalisation: <key>
-        val prefix = PlsStrings.relatedLocalisationPrefix
-        val tooltip = "$prefix $name"
-        // 目标：单个本地化属性
+
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.RelatedLocalisations
+        val prefix = PlsStrings.relatedLocalisationPrefix
+        val tooltip = "$prefix $name"
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title"))

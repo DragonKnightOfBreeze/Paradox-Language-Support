@@ -14,7 +14,6 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.core.processChild
 import icu.windea.pls.script.ParadoxScriptLanguage
-import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptBlock(

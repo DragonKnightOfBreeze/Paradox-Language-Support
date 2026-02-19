@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.lang.settings.PlsInternalSettings
 
 // org.intellij.images.fileTypes.ImageDocumentationProvider

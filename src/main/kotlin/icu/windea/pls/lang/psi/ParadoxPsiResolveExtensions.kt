@@ -79,9 +79,8 @@ fun ParadoxScriptExpressionElement.booleanValue(strict: Boolean = false, valid: 
     if (strict && resolved !is ParadoxScriptBoolean) return null
     val r = when (resolved) {
         is ParadoxScriptBoolean -> resolved.booleanValue
-        else -> null
+        else -> true
     }
-    if (r == null) return null
     if (valid && !isValidExpression()) return null
     return r
 }

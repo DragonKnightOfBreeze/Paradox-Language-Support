@@ -5,17 +5,16 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
-import icu.windea.pls.core.util.unresolved
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
+import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -112,7 +111,7 @@ object ParadoxScriptNavigationManager {
         return when (element) {
             is ParadoxScriptFile -> {
                 run {
-                    // 定义的类型信息和本地化后的名字
+                    // 定义的类型信息和显示名称
                     if (element.name.endsWith(".mod", true)) return@run // 排除模组描述符文件
                     val definitionInfo = element.definitionInfo ?: return@run
                     return getDefinitionLocationString(element, definitionInfo)
@@ -126,7 +125,7 @@ object ParadoxScriptNavigationManager {
                     return ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {
-                    // 定义的类型信息和本地化后的名字
+                    // 定义的类型信息和显示名称
                     val definitionInfo = element.definitionInfo ?: return@run
                     return getDefinitionLocationString(element, definitionInfo)
                 }
@@ -140,14 +139,11 @@ object ParadoxScriptNavigationManager {
         }
     }
 
-    private fun getDefinitionLocationString(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
+    private fun getDefinitionLocationString(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
         return buildString {
-            append(": ").append(definitionInfo.typesText)
-            val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(element)
-            if (localisation != null) {
-                val localizedName = ParadoxLocalisationTextPlainRenderer().render(localisation)
-                append(" ").append(localizedName)
-            }
+            append(": ").append(definitionInfo.typeText)
+            val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
+            if (localizedName != null) append(" ").append(localizedName)
         }.optimized() // optimized to optimize memory
     }
 
