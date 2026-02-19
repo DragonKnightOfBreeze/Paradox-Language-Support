@@ -3,85 +3,35 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
-import icu.windea.pls.config.CwtDataTypeSets
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.isProperty
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toCapitalizedWords
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.match.matchesByPattern
+import icu.windea.pls.lang.match.ParadoxScopeMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkPrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.isExact
-import icu.windea.pls.model.scope.overriddenProvider
-import icu.windea.pls.model.scope.promotions
-import icu.windea.pls.model.scope.toScopeIdMap
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
-/**
- * 用于处理作用域。
- */
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
     object Keys : KeyRegistry() {
@@ -90,515 +40,84 @@ object ParadoxScopeManager {
 
     const val maxScopeLinkSize = 5
 
-    const val unknownScopeId = "?"
-    const val anyScopeId = "any"
-    const val allScopeId = "all"
-
-    val anyScopeIdSet = setOf(anyScopeId)
-
-    /**
-     * 得到作用域的ID（全小写+下划线）。
-     */
-    fun getScopeId(scope: String): String {
-        val scopeId = scope.lowercase().replace(' ', '_').optimized() // optimized to optimize memory
-        // "all" scope are always resolved as "any" scope
-        if (scopeId == allScopeId) return anyScopeId
-        return scopeId
-    }
-
-    /**
-     * 得到作用域的名字。
-     */
-    fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
-        // handle "any" and "all" scope
-        if (scope.equals(anyScopeId, true)) return "Any"
-        if (scope.equals(allScopeId, true)) return "All"
-        // a scope may not have aliases, or not defined in scopes.cwt
-        return configGroup.scopes[scope]?.name
-            ?: configGroup.scopeAliasMap[scope]?.name
-            ?: scope.toCapitalizedWords().optimized() // optimized to optimize memory
-    }
-
-    fun isUnsureScopeId(scopeId: String): Boolean {
-        return scopeId == unknownScopeId || scopeId == anyScopeId || scopeId == allScopeId
-    }
-
-    fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
-        val thisScope = scopeContext?.scope?.id
-        if (thisScope == null) return true
-        if (scopeToMatch == anyScopeId) return true
-        if (thisScope == anyScopeId) return true
-        if (thisScope == unknownScopeId) return true
-        if (thisScope == scopeToMatch) return true
-        val scopeConfig = configGroup.scopeAliasMap[thisScope]
-        if (scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
-
-        val promotions = scopeContext.promotions
-        for (promotion in promotions) {
-            if (promotion == scopeToMatch) return true
-            val promotionConfig = configGroup.scopeAliasMap[promotion]
-            if (promotionConfig != null && promotionConfig.aliases.any { it == scopeToMatch }) return true
-        }
-
-        return false
-    }
-
-    fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
-        val thisScope = scopeContext?.scope?.id
-        if (thisScope == null) return true
-        if (scopesToMatch.isNullOrEmpty() || scopesToMatch == anyScopeIdSet) return true
-        if (thisScope == anyScopeId) return true
-        if (thisScope == unknownScopeId) return true
-        if (thisScope in scopesToMatch) return true
-        val scopeConfig = configGroup.scopeAliasMap[thisScope]
-        if (scopeConfig != null) return scopeConfig.aliases.any { it in scopesToMatch }
-
-        val promotions = scopeContext.promotions
-        for (promotion in promotions) {
-            if (promotion in scopesToMatch) return true
-            val promotionConfig = configGroup.scopeAliasMap[promotion]
-            if (promotionConfig != null && promotionConfig.aliases.any { it in scopesToMatch }) return true
-        }
-
-        return false
-    }
-
-    fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
-        val thisScope = scopeContext?.scope?.id
-        if (thisScope == null) return true
-        if (thisScope == anyScopeId) return true
-        if (thisScope == unknownScopeId) return true
-        val scopeGroupConfig = configGroup.scopeGroups[scopeGroupToMatch] ?: return false
-        for (scopeToMatch in scopeGroupConfig.values) {
-            if (thisScope == scopeToMatch) return true
-            val scopeConfig = configGroup.scopeAliasMap[thisScope]
-            if (scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
-        }
-        return false // cwt config error
-    }
-
     fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMember? {
         return element.parents(withSelf)
-            .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
+            .find { it is ParadoxDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
             .castOrNull<ParadoxScriptMember>()
     }
 
-    /**
-     * @param indirect 是否包括间接支持作用域上下文的情况。（如事件）
-     */
-    fun isScopeContextSupported(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
-        // some definitions, such as on_action, also support scope context on definition level
-        if (element is ParadoxScriptDefinitionElement) {
-            val definitionInfo = element.definitionInfo
-            if (definitionInfo != null) {
-                val configGroup = definitionInfo.configGroup
-                val definitionType = definitionInfo.type
-                if (definitionType in configGroup.definitionTypesModel.supportScope) return true
-                if (indirect && definitionType in configGroup.definitionTypesModel.indirectSupportScope) return true
-            }
-        }
-
-        // child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
-        // or root config in config tree is "alias[X:xxx] = ..." and "alias[X:scope_field]" is valid
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
-        configs.forEach { config ->
-            val configGroup = config.configGroup
-            if (config.configExpression.type == CwtDataTypes.AliasKeysField) return true
-            if (isScopeContextSupportedAsRoot(config, configGroup)) return true
-            if (isScopeContextSupportedAsChild(config, configGroup)) return true
-        }
-
-        // if there is an overridden scope context, so do supported
-        val scopeContext = getSwitchedScopeContext(element)
-        if (scopeContext?.overriddenProvider != null) return true
-
-        return false
+    fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
+        return ParadoxScopeMatchService.matchesScope(scopeContext, scopeToMatch, configGroup)
     }
 
-    private fun isScopeContextSupportedAsRoot(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup): Boolean {
-        val properties = config.properties ?: return false
-        return properties.any {
-            val aliasName = when {
-                it.keyExpression.type == CwtDataTypes.AliasName -> it.keyExpression.value
-                else -> null
-            }
-            aliasName != null && aliasName in configGroup.aliasNamesSupportScope
-        }
+    fun matchesScope(scopeContext: ParadoxScopeContext?, scopesToMatch: Set<String>?, configGroup: CwtConfigGroup): Boolean {
+        return ParadoxScopeMatchService.matchesScope(scopeContext, scopesToMatch, configGroup)
     }
 
-    private fun isScopeContextSupportedAsChild(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup): Boolean {
-        var currentConfig = config
-        while (true) {
-            if (currentConfig is CwtPropertyConfig) {
-                val aliasConfig = currentConfig.aliasConfig
-                if (aliasConfig != null) {
-                    val aliasName = aliasConfig.name
-                    if (aliasName in configGroup.aliasNamesSupportScope) return true
-                }
-            } else if (currentConfig is CwtValueConfig) {
-                currentConfig = currentConfig.propertyConfig ?: currentConfig
-            }
-            currentConfig = currentConfig.parentConfig ?: break
-        }
-        return false
+    fun matchesScopeGroup(scopeContext: ParadoxScopeContext?, scopeGroupToMatch: String, configGroup: CwtConfigGroup): Boolean {
+        return ParadoxScopeMatchService.matchesScopeGroup(scopeContext, scopeGroupToMatch, configGroup)
     }
 
     fun isScopeContextChanged(element: ParadoxScriptMember, scopeContext: ParadoxScopeContext): Boolean {
         // does not have scope context -> changed always
         val parentMember = findParentMember(element, withSelf = false)
         if (parentMember == null) return true
-        val parentScopeContext = getSwitchedScopeContext(parentMember)
+        val parentScopeContext = getScopeContext(parentMember)
         if (parentScopeContext == null) return true
         if (parentScopeContext != scopeContext) return true
         if (!isScopeContextSupported(parentMember)) return true
         return false
     }
 
-    fun getSwitchedScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
-        return doGetSwitchedScopeContextFromCache(element)
+    /**
+     * @param indirect 是否包括间接支持作用域上下文的情况（如事件）。
+     */
+    fun isScopeContextSupported(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
+        return ParadoxScopeService.isScopeContextSupportedForMember(element, indirect)
     }
 
-    private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
+    fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
+        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
-            val value = doGetSwitchedScopeContextOfDefinition(element)
-                ?: doGetSwitchedScopeContextOfDefinitionMember(element)
-            value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.Scope)
+            runReadActionSmartly {
+                val value = ParadoxScopeService.evaluateScopeContextForMember(element)
+                value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.Scope)
+            }
         }
     }
 
-    private fun doGetSwitchedScopeContextOfDefinition(element: ParadoxScriptMember): ParadoxScopeContext? {
-        // should be a definition
-        val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
-        if (definitionInfo != null) {
-            element as ParadoxScriptDefinitionElement
-
-            // 使用提供的作用域上下文
-            val scopeContext = ParadoxScopeService.getScopeContext(element, definitionInfo)
-            if (scopeContext != null && scopeContext.isExact) return scopeContext
-
-            // 除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
-            val inferredScopeContext = ParadoxScopeService.getInferredScopeContext(element, definitionInfo)
-            if (inferredScopeContext != null) return mergeScopeContext(scopeContext, inferredScopeContext) ?: getAnyScopeContext()
-
-            return scopeContext ?: getAnyScopeContext()
-        }
-        return null
-    }
-
-    private fun doGetSwitchedScopeContextOfDefinitionMember(element: ParadoxScriptMember): ParadoxScopeContext? {
-        // element could be a definition member only if after inlined
-
-        val parentMember = findParentMember(element, withSelf = false)
-        val parentScopeContext = if (parentMember != null) getSwitchedScopeContext(parentMember) else null
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
-        val config = configs.firstOrNull() ?: return null
-
-        val overriddenScopeContext = ParadoxScopeService.getOverriddenScopeContext(element, config, parentScopeContext)
-        if (overriddenScopeContext != null) return overriddenScopeContext
-
-        if (config.isProperty() && config.configExpression.type == CwtDataTypes.ScopeField) {
-            if (parentScopeContext == null) return null
-            val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
-            val expressionString = expressionElement.value
-            val configGroup = config.configGroup
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-            val result = getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
-            return result
-        } else {
-            // 优先基于内联前的规则，如果没有，再基于内联后的规则
-            val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
-            val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
-            val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) } ?: parentScopeContext ?: return null
-            val result = scopeContext.resolveNext(pushScope)
-            return result
+    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+        // from cache
+        return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
+            ProgressManager.checkCanceled()
+            runReadActionSmartly {
+                val value = ParadoxScopeService.evaluateScopeContextForDynamicValue(element)
+                value.withDependencyItems(element)
+            }
         }
     }
 
-    fun getSwitchedScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         // only receive push scope (this scope), ignore others (like root scope, etc.)
-        val scopeContext = doGetSwitchedScopeContextFromCache(element)
+        val scopeContext = getScopeContext(element)
         return inputScopeContext.resolveNext(scopeContext.scope.id)
     }
 
-    private fun doGetSwitchedScopeContextFromCache(element: ParadoxDynamicValueElement): ParadoxScopeContext {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
-            ProgressManager.checkCanceled()
-            val value = doGetSwitchedScopeContext(element)
-            CachedValueProvider.Result(value, element)
-        }
+    fun getScopeContext(element: PsiElement, expression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
+        val memberElement = findParentMember(element, withSelf = true) ?: return null
+        return ParadoxScopeService.evaluateScopeContextForExpression(memberElement, expression, configExpression)
     }
 
-    private fun doGetSwitchedScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
-        // 使用提供的作用域上下文
-        val scopeContext = ParadoxScopeService.getScopeContext(element)
-        if (scopeContext != null && scopeContext.isExact) return scopeContext
-
-        // 除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
-        val inferredScopeContext = ParadoxScopeService.getInferredScopeContext(element)
-        if (inferredScopeContext != null) return mergeScopeContext(scopeContext, inferredScopeContext) ?: getAnyScopeContext()
-
-        return scopeContext ?: getAnyScopeContext()
+    fun getScopeContext(element: ParadoxExpressionElement, expression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        return ParadoxScopeService.evaluateScopeContextForExpression(element, expression, inputScopeContext)
     }
 
-    fun getSwitchedScopeContext(element: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
-        val memberElement = findParentMember(element, withSelf = true)
-        val parentMemberElement = findParentMember(element, withSelf = false)
-        val parentScopeContext = when {
-            parentMemberElement != null -> getSwitchedScopeContext(parentMemberElement) ?: getAnyScopeContext()
-            else -> getAnyScopeContext()
-        }
-        val expressionElement = when {
-            memberElement is ParadoxScriptProperty -> if (configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
-            memberElement is ParadoxScriptValue -> memberElement
-            else -> return null
-        } ?: return null
-        return getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
+    fun getScopeContext(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+        return ParadoxScopeService.evaluateScopeContextForNode(element, node, inputScopeContext)
     }
 
-    fun getSwitchedScopeContext(element: ParadoxExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        val scopeNodes = scopeFieldExpression.scopeNodes
-        if (scopeNodes.isEmpty()) return inputScopeContext // unexpected -> unchanged
-        var result = inputScopeContext
-        val links = mutableListOf<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>()
-        for (scopeNode in scopeNodes) {
-            result = getSwitchedScopeContextOfNode(element, scopeNode, result)
-            links.add(scopeNode to result)
-            if (scopeNode is ParadoxErrorScopeLinkNode) break
-        }
-        return inputScopeContext.resolveNext(links)
-    }
-
-    fun getSwitchedScopeContextOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        when (node) {
-            is ParadoxScopeLinkNode -> {
-                when (node) {
-                    // parameterized -> any (or inferred from extended configs)
-                    is ParadoxParameterizedScopeLinkNode -> {
-                        return getSwitchedScopeContextOfParameterizedScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // system -> context sensitive
-                    is ParadoxSystemScopeNode -> {
-                        return getSwitchedScopeContextOfSystemScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // predefined -> static
-                    is ParadoxScopeNode -> {
-                        return getScopeContextOfScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // dynamic -> any (or inferred from extended configs)
-                    is ParadoxDynamicScopeLinkNode -> {
-                        return getScopeContextOfDynamicScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // error -> unknown
-                    is ParadoxErrorScopeLinkNode -> {
-                        return getUnknownScopeContext(inputScopeContext)
-                    }
-                }
-            }
-            is ParadoxScopeLinkPrefixNode -> {
-                return getSwitchedScopeContextOfLinkPrefixNode(element, node, inputScopeContext)
-            }
-            is ParadoxCommandScopeLinkNode -> {
-                when (node) {
-                    // parameterized -> any (or inferred from extended configs)
-                    is ParadoxParameterizedCommandScopeLinkNode -> {
-                        return getSwitchedScopeContextOfParameterizedScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // system -> context sensitive
-                    is ParadoxSystemCommandScopeNode -> {
-                        return getSwitchedScopeContextOfSystemScopeLinkNode(element, node, inputScopeContext)
-                    }
-                    // predefined -> static (with promotions)
-                    is ParadoxCommandScopeNode -> {
-                        val linkConfig = node.config
-                        val promotions = linkConfig.configGroup.localisationPromotions[linkConfig.name]?.supportedScopes
-                        val next = inputScopeContext.resolveNext(linkConfig.outputScope)
-                        if (promotions.isNotNullOrEmpty()) next.promotions = promotions
-                        return next
-                    }
-                    // dynamic -> any (or inferred from extended configs)
-                    is ParadoxDynamicCommandScopeLinkNode -> {
-                        return inputScopeContext.resolveNext(getAnyScopeContext())
-                    }
-                    // error -> unknown
-                    is ParadoxErrorCommandScopeLinkNode -> {
-                        return getUnknownScopeContext(inputScopeContext)
-                    }
-                }
-            }
-            is ParadoxCommandFieldNode -> return inputScopeContext
-            else -> return getUnknownScopeContext(inputScopeContext)
-        }
-    }
-
-    private fun getSwitchedScopeContextOfParameterizedScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        if (node !is ParadoxParameterizedNode) return getUnknownScopeContext(inputScopeContext)
-        run r1@{
-            // only support full parameterized node
-            if (!node.text.isParameterized(full = true)) return@r1
-
-            val offset = node.rangeInExpression.startOffset
-            val parameter = element.findElementAt(offset)?.parentOfType<ParadoxParameter>() ?: return@r1
-            if (parameter.text != node.text) return@r1
-            val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1
-            val configGroup = node.configGroup
-            val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-            val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
-            val containerConfig = config.getContainerConfig(parameterElement)
-
-            // ex_param = scope[country]
-            // result: country (don't validate & inline allowed)
-            run r2@{
-                val inferredScope = containerConfig.castOrNull<CwtPropertyConfig>()?.valueExpression
-                    ?.takeIf { it.type == CwtDataTypes.Scope }
-                    ?.value?.orNull() ?: return@r2
-                return inputScopeContext.resolveNext(inferredScope)
-            }
-
-            // ## push_scope = country
-            // ex_param = ...
-            // result: country (don't validate & inline allowed)
-            run r2@{
-                val inferredScopeContext = getScopeContextFromConfigOptions(containerConfig, inputScopeContext) ?: return@r2
-                return inferredScopeContext
-            }
-        }
-        return inputScopeContext.resolveNext(getAnyScopeContext())
-    }
-
-    private fun getSwitchedScopeContextOfSystemScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        val systemScopeConfig = when {
-            node is ParadoxSystemScopeNode -> node.config
-            node is ParadoxSystemCommandScopeNode -> node.config
-            else -> return getUnknownScopeContext(inputScopeContext)
-        }
-        val id = systemScopeConfig.id
-        val baseId = systemScopeConfig.baseId
-        val isFrom = baseId == "From"
-        val systemScopeContext = when {
-            id == "This" -> inputScopeContext
-            id == "Root" -> inputScopeContext.root
-            id == "Prev" -> inputScopeContext.prev
-            id == "PrevPrev" -> inputScopeContext.prevPrev
-            id == "PrevPrevPrev" -> inputScopeContext.prevPrevPrev
-            id == "PrevPrevPrevPrev" -> inputScopeContext.prevPrevPrevPrev
-            id == "From" -> inputScopeContext.from
-            id == "FromFrom" -> inputScopeContext.fromFrom
-            id == "FromFromFrom" -> inputScopeContext.fromFromFrom
-            id == "FromFromFromFrom" -> inputScopeContext.fromFromFromFrom
-            else -> null
-        } ?: return getUnknownScopeContext(inputScopeContext, isFrom)
-        return inputScopeContext.resolveNext(systemScopeContext, isFrom)
-    }
-
-    private fun getSwitchedScopeContextOfLinkPrefixNode(element: ParadoxExpressionElement, node: ParadoxLinkPrefixNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        val linkConfig = node.linkConfigs.firstOrNull() ?: return getUnknownScopeContext(inputScopeContext)
-        return inputScopeContext.resolveNext(linkConfig.outputScope)
-    }
-
-    private fun getScopeContextOfScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        val outputScope = node.config.outputScope
-        return inputScopeContext.resolveNext(outputScope)
-    }
-
-    private fun getScopeContextOfDynamicScopeLinkNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
-        val linkConfig = node.linkConfigs.firstOrNull() ?: return getUnknownScopeContext(inputScopeContext)
-        if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
-
-        // output_scope = null -> transfer scope based on data source
-        val dataType = linkConfig.configExpression?.type
-        if (dataType == null) return inputScopeContext
-        when {
-            // hidden:event_target:xxx = {...}
-            dataType in CwtDataTypeSets.ScopeField -> {
-                val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
-                    ?: return getUnknownScopeContext(inputScopeContext)
-                return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext)
-            }
-            // event_target:xxx = {...}
-            dataType in CwtDataTypeSets.DynamicValue -> {
-                val dynamicValueExpression = node.valueNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
-                    ?: return getUnknownScopeContext(inputScopeContext)
-                val configGroup = dynamicValueExpression.configGroup
-                val dynamicValueNode = dynamicValueExpression.dynamicValueNode
-                val name = dynamicValueNode.text
-                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
-                val expressionElement = when {
-                    element is ParadoxScriptProperty -> element.propertyKey
-                    else -> element.castOrNull<ParadoxScriptStringExpressionElement>()
-                }
-                if (expressionElement == null) return getAnyScopeContext()
-                val dynamicValueElement = ParadoxDynamicValueManager.resolveDynamicValue(expressionElement, name, configExpressions, configGroup)
-                if (dynamicValueElement == null) return getAnyScopeContext()
-                return getSwitchedScopeContext(dynamicValueElement, inputScopeContext)
-            }
-            // unexpected, or other specific situations
-            else -> {
-                return inputScopeContext
-            }
-        }
-    }
-
-    fun getSupportedScopes(categoryConfigMap: Map<String, CwtModifierCategoryConfig>): Set<String> {
-        val categoryConfigs = categoryConfigMap.values
-        return when {
-            categoryConfigs.isEmpty() -> anyScopeIdSet
-            categoryConfigs.any { it.supportedScopes == anyScopeIdSet } -> anyScopeIdSet
-            else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
-        }
-    }
-
-    fun getSupportedScopesOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
-        when (node) {
-            is ParadoxCommandScopeLinkNode -> {
-                when (node) {
-                    // system -> any
-                    is ParadoxSystemCommandScopeNode -> {
-                        return anyScopeIdSet
-                    }
-                    // predefined -> static
-                    is ParadoxCommandScopeNode -> {
-                        return node.config.inputScopes
-                    }
-                    // parameterized -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxParameterizedCommandScopeLinkNode -> {
-                        return anyScopeIdSet
-                    }
-                    // dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxDynamicCommandScopeLinkNode -> {
-                        return anyScopeIdSet
-                    }
-                    // error -> any
-                    is ParadoxErrorCommandScopeLinkNode -> {
-                        return anyScopeIdSet
-                    }
-                }
-            }
-            is ParadoxCommandFieldNode -> {
-                when (node) {
-                    // dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxParameterizedCommandFieldNode -> {
-                        return anyScopeIdSet
-                    }
-                    // predefined -> static
-                    is ParadoxPredefinedCommandFieldNode -> {
-                        return node.config.supportedScopes
-                    }
-                    // dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxDynamicCommandFieldNode -> {
-                        return anyScopeIdSet
-                    }
-                    // error -> any
-                    is ParadoxErrorCommandFieldNode -> {
-                        return anyScopeIdSet
-                    }
-                }
-            }
-            else -> return null
-        }
-    }
-
-    fun getScopeContextFromConfigOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
+    fun getScopeContext(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         // 优先基于内联前的规则，如果没有，再基于内联后的规则
         val replaceScopes = config.optionData.replaceScopes ?: config.resolvedOrNull()?.optionData?.replaceScopes
         val pushScope = config.optionData.pushScope ?: config.resolved().optionData.pushScope
@@ -610,62 +129,16 @@ object ParadoxScopeManager {
         return null
     }
 
-    fun getAnyScopeContext(): ParadoxScopeContext {
-        return ParadoxScopeContext.get(anyScopeId, anyScopeId)
-    }
-
-    fun getUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
-        if (inputScopeContext == null) return ParadoxScopeContext.get(unknownScopeId)
-        return inputScopeContext.resolveNext(unknownScopeId, isFrom)
-    }
-
-    fun mergeScopeId(scopeId: String?, otherScopeId: String?): String? {
-        if (scopeId == otherScopeId) return scopeId
-        if (scopeId == anyScopeId || otherScopeId == anyScopeId) return anyScopeId
-        if (scopeId == unknownScopeId || otherScopeId == unknownScopeId) return unknownScopeId
-        if (scopeId == null) return otherScopeId
-        if (otherScopeId == null) return scopeId
-        return null
-    }
-
-    fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
-        if (scope == otherScope) return scope ?: ParadoxScope.Unknown
-        if (scope == ParadoxScope.Any || otherScope == ParadoxScope.Any) return ParadoxScope.Any
-        if (scope == ParadoxScope.Unknown || otherScope == ParadoxScope.Unknown) return ParadoxScope.Unknown
-        if (scope == null) return otherScope
-        if (otherScope == null) return scope
-        return null
-    }
-
-    fun mergeScopeContext(scopeContext: ParadoxScopeContext?, otherScopeContext: ParadoxScopeContext?, orUnknown: Boolean = false): ParadoxScopeContext? {
-        val m1 = scopeContext?.toScopeIdMap(showPrev = false).orEmpty()
-        val m2 = otherScopeContext?.toScopeIdMap(showPrev = false).orEmpty()
-        val merged = mergeScopeContextMap(m1, m2, orUnknown) ?: return null
-        return ParadoxScopeContext.get(merged)
-    }
-
-    fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, orUnknown: Boolean = false): Map<String, String>? {
-        val result = mutableMapOf<String, String>()
-        mergeScopeId(map["this"], otherMap["this"])?.let { result["this"] = it }
-        mergeScopeId(map["root"], otherMap["root"])?.let { result["root"] = it }
-        mergeScopeId(map["prev"], otherMap["prev"])?.let { result["prev"] = it }
-        mergeScopeId(map["prevprev"], otherMap["prevprev"])?.let { result["prevprev"] = it }
-        mergeScopeId(map["prevprevprev"], otherMap["prevprevprev"])?.let { result["prevprevprev"] = it }
-        mergeScopeId(map["prevprevprevprev"], otherMap["prevprevprevprev"])?.let { result["prevprevprevprev"] = it }
-        mergeScopeId(map["from"], otherMap["from"])?.let { result["from"] = it }
-        mergeScopeId(map["fromfrom"], otherMap["fromfrom"])?.let { result["fromfrom"] = it }
-        mergeScopeId(map["fromfromfrom"], otherMap["fromfromfrom"])?.let { result["fromfromfrom"] = it }
-        mergeScopeId(map["fromfromfromfrom"], otherMap["fromfromfromfrom"])?.let { result["fromfromfromfrom"] = it }
-        if (orUnknown) {
-            val thisScope = result["this"]
-            if (thisScope == null || thisScope == unknownScopeId) {
-                result["this"] = unknownScopeId
-            }
-            val rootScope = result["root"]
-            if (rootScope == null || rootScope == unknownScopeId) {
-                result["root"] = unknownScopeId
-            }
+    fun getSupportedScopes(modifierCategories: Map<String, CwtModifierCategoryConfig>): Set<String> {
+        val categoryConfigs = modifierCategories.values
+        return when {
+            categoryConfigs.isEmpty() -> ParadoxScopeId.anyScopeIdSet
+            categoryConfigs.any { it.supportedScopes == ParadoxScopeId.anyScopeIdSet } -> ParadoxScopeId.anyScopeIdSet
+            else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
         }
-        return result.orNull()
+    }
+
+    fun getSupportedScopes(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
+        return ParadoxScopeService.evaluateSupportedScopesForNode(element, node, inputScopeContext)
     }
 }

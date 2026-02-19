@@ -48,7 +48,7 @@ class ParadoxScriptedTriggerInlineActionHandler : InlineActionHandler() {
             return
         }
 
-        val isRecursive = ParadoxRecursionManager.isRecursiveDefinition(element) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
+        val isRecursive = ParadoxRecursionManager.checkDefinition(element) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
         if (isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedTrigger.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

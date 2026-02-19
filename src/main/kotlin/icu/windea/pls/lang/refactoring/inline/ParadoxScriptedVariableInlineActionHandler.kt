@@ -32,7 +32,7 @@ class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptScriptedVariable, reference: PsiReference?) {
-        val isRecursive = ParadoxRecursionManager.isRecursiveScriptedVariable(element)
+        val isRecursive = ParadoxRecursionManager.checkScriptedVariable(element)
         if (isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedVariable.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

@@ -2,16 +2,15 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.unquote
-import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher.*
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Bool -> matchBool(context)
             CwtDataTypes.Int -> matchInt(context)
@@ -21,13 +20,13 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    private fun matchBool(context: Context): ParadoxMatchResult {
+    private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
         val r = ParadoxTypeResolver.isBoolean(value)
         return ParadoxMatchResult.of(r)
     }
 
-    private fun matchInt(context: Context): ParadoxMatchResult {
+    private fun matchInt(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
         val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
@@ -35,7 +34,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchFloat(context: Context): ParadoxMatchResult {
+    private fun matchFloat(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
         val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
@@ -49,7 +48,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 }
 
 class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Definition -> matchDefinition(context)
             CwtDataTypes.EnumValue -> matchEnumValue(context)
@@ -57,7 +56,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         }
     }
 
-    private fun matchDefinition(context: Context): ParadoxMatchResult {
+    private fun matchDefinition(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         // can be an int or float here (e.g., for <technology_tier>)
         val value = context.expressionText.unquote()
         val valueType = ParadoxTypeResolver.resolve(value)
@@ -66,7 +65,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, value, context.configExpression)
     }
 
-    private fun matchEnumValue(context: Context): ParadoxMatchResult {
+    private fun matchEnumValue(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText.unquote()
         val enumName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch // null -> invalid config
         run {
@@ -78,8 +77,6 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         run {
             // match complex enums
             val complexEnumConfig = context.configGroup.complexEnums[enumName] ?: return@run
-            // complexEnumValue的值必须合法
-            if (ParadoxComplexEnumValueManager.getName(value) == null) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, value, enumName, complexEnumConfig)
         }
         return ParadoxMatchResult.NotMatch

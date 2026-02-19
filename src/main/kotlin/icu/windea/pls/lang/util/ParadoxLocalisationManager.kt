@@ -3,26 +3,17 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
+import icu.windea.pls.lang.resolve.ParadoxLocalisationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
@@ -31,70 +22,22 @@ object ParadoxLocalisationManager {
     }
 
     fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
-        return doGetLocalizedTextFromCache(element)
-    }
-
-    private fun doGetLocalizedTextFromCache(element: ParadoxLocalisationProperty): String? {
+        // from cache (invalidate on element modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedLocalizedName) {
             ProgressManager.checkCanceled()
-            val value = doGetLocalizedText(element)
-            value.withDependencyItems(element)
+            runReadActionSmartly {
+                val value = ParadoxLocalisationService.resolveLocalizedText(element)
+                value.withDependencyItems(element)
+            }
         }
-    }
-
-    private fun doGetLocalizedText(element: ParadoxLocalisationProperty): String? {
-        return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
     }
 
     fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
-        return doGetRelatedScriptedVariables(element) // 直接获取
+        return ParadoxLocalisationService.resolveRelatedScriptedVariables(element)
     }
 
-    private fun doGetRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
-        val name = element.name.orNull() ?: return emptyList()
-        val project = element.project
-        val gameType = selectGameType(element)
-        if (gameType == null) return emptyList()
-        val selector = selector(project, element).scriptedVariable().contextSensitive()
-        ProgressManager.checkCanceled()
-        // search for all scripted variable with same name
-        val result = ParadoxScriptedVariableSearch.search(name, null, selector).findAll().toList()
-        return result
-    }
-
-    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
-        return doGetRelatedDefinitions(element) // 直接获取
-    }
-
-    private fun doGetRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
-        val name = element.name.orNull() ?: return emptyList()
-        val project = element.project
-        val gameType = selectGameType(element) ?: return emptyList()
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val patterns = configGroup.relatedLocalisationPatterns
-        val namesToSearch = mutableSetOf<String>()
-        patterns.forEach { (prefix, suffix) ->
-            name.removeSurroundingOrNull(prefix, suffix)?.let { namesToSearch += it }
-        }
-        if (namesToSearch.isEmpty()) return emptyList()
-        val selector = selector(project, element).definition().contextSensitive()
-        val result = mutableListOf<ParadoxScriptDefinitionElement>()
-        namesToSearch.forEach f1@{ nameToSearch ->
-            ProgressManager.checkCanceled()
-            // op: only search definitions declared by a property, rather than by a file, to optimize performance
-            ParadoxDefinitionSearch.search(nameToSearch, null, selector, forFile = false).findAll().forEach f2@{ definition ->
-                ProgressManager.checkCanceled()
-                val definitionInfo = definition.definitionInfo ?: return@f2
-                val definitionName = definitionInfo.name.orNull() ?: return@f2
-                definitionInfo.localisations.forEach f3@{ l ->
-                    val resolved = CwtConfigExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
-                    if (resolved != name) return@f3
-                    result += definition
-                    return@f2
-                }
-            }
-        }
-        return result
+    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
+        return ParadoxLocalisationService.resolveRelatedDefinitions(element)
     }
 
     @Inferred

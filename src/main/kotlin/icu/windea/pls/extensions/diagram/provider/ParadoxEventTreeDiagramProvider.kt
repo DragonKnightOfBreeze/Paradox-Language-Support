@@ -19,13 +19,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
@@ -35,7 +34,7 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import javax.swing.Icon
@@ -171,8 +170,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         val definitionType = ParadoxDefinitionTypes.event
-        private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-        private val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+        private val nodeMap = mutableMapOf<ParadoxDefinitionElement, Node>()
+        private val eventMap = mutableMapOf<String, ParadoxDefinitionElement>()
 
         override fun updateDataModel() {
             // 群星原版事件有5000+
@@ -226,14 +225,14 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
-        private fun searchEvents(): List<ParadoxScriptDefinitionElement> {
+        private fun searchEvents(): List<ParadoxDefinitionElement> {
             ProgressManager.checkCanceled()
             val definitions = getDefinitions(definitionType)
             val settings = provider.getDiagramSettings(project)?.state
             return definitions.filter { settings == null || showNode(it, settings) }
         }
 
-        private fun createNode(event: ParadoxScriptDefinitionElement): Boolean {
+        private fun createNode(event: ParadoxDefinitionElement): Boolean {
             ProgressManager.checkCanceled()
             val node = Node(event, provider)
             nodeMap.put(event, node)
@@ -242,7 +241,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             return nodes.add(node)
         }
 
-        private fun createEdges(event: ParadoxScriptDefinitionElement) {
+        private fun createEdges(event: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             // 事件 --> 调用的事件
             val invocations = ParadoxEventManager.getInvocations(event)
@@ -255,10 +254,10 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
-        private fun preloadData(event: ParadoxScriptDefinitionElement) {
+        private fun preloadData(event: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
             run {
-                val result = event.definitionInfo?.typesText
+                val result = event.definitionInfo?.typeText
                 event.putUserData(Keys.typeText, result)
             }
             run {
@@ -269,9 +268,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
-            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
-            return ParadoxModificationTrackers.ScriptFile(key)
+            return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }
 }

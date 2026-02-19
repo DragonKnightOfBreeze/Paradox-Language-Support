@@ -19,7 +19,9 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -31,7 +33,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
@@ -46,7 +48,7 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  * @see ParadoxIndexInfoSupport
  */
-class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>() {
+class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>, ParadoxIndexInfo>() {
     override fun getName() = PlsIndexKeys.Merged
 
     override fun getVersion() = PlsIndexVersions.Merged
@@ -65,29 +67,29 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+            compressData(this)
+        }
     }
 
     private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsStates.processMergedIndex) {
             when (file) {
-                is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
-                is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
+                is ParadoxScriptFile -> buildDataForScriptFile(file, fileData)
+                is ParadoxLocalisationFile -> buildDataForLocalisationFile(file, fileData)
             }
         }
-        compressData(fileData)
     }
 
-    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                extensionList.forEach { ep ->
-                    ep.indexScriptElement(element, fileData)
-                }
+                extensionList.forEach { ep -> ep.buildData(element, fileData) }
 
-                if (element is ParadoxScriptDefinitionElement) {
+                if (element is ParadoxDefinitionElement) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
                         element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)
@@ -95,16 +97,16 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     }
                 }
 
-                run {
-                    if (definitionInfoStack.isEmpty()) return@run
-                    if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                    extensionList.forEach { ep -> ep.buildData(element, fileData) }
+                    run {
+                        if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
-                        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions.DUMB)
+                        val options = ParadoxMatchOptions.DUMB
+                        val configs = ParadoxConfigManager.getConfigs(element, options)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
-                        extensionList.forEach { ep ->
-                            ep.indexScriptExpression(element, configs, definitionInfo, fileData)
-                        }
+                        extensionList.forEach { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
                     }
                 }
 
@@ -112,38 +114,50 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
             }
 
             override fun elementFinished(element: PsiElement) {
-                if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
-                    element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
-                    definitionInfoStack.removeLastOrNull()
+                if(element is ParadoxDefinitionElement) {
+                    if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
+                        element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
+                        definitionInfoStack.removeLastOrNull()
+                        cleanUpDumbDefinitionCache(element)
+                    }
                 }
                 if (element is ParadoxScriptStringExpressionElement) {
-                    // clean up expression references cache
-                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                    cleanUpDumbExpressionReferencesCache(element)
                 }
             }
         })
     }
 
-    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    extensionList.forEach f@{ ep ->
-                        ep.indexLocalisationExpression(element, fileData)
-                    }
+                    extensionList.forEach { ep -> ep.buildData(element, fileData) }
+                    return
                 }
+
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
             override fun elementFinished(element: PsiElement?) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    // clean up expression references cache
-                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                    cleanUpDumbExpressionReferencesCache(element)
                 }
             }
         })
+    }
+
+    private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {
+        // clean up dumb definition caches (subtypeConfigs & declaration)
+        element.putUserData(ParadoxDefinitionManager.Keys.cachedSubtypeConfigsDumb, null)
+        element.putUserData(ParadoxDefinitionManager.Keys.cachedDeclarationDumb, null)
+    }
+
+    private fun cleanUpDumbExpressionReferencesCache(element: ParadoxExpressionElement) {
+        // clean up dumb expression references caches
+        element.putUserData(ParadoxExpressionManager.Keys.cachedExpressionReferencesDumb, null)
     }
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {

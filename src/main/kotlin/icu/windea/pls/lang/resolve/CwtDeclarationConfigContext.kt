@@ -16,11 +16,12 @@ import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 /**
  * 声明规则上下文。
  *
- * 用于后续获取处理后的声明规则，从而确定符合条件的定义声明的结构。
+ * 用于后续获取声明规则对应的处理后的顶级成员规则，确定定义声明的结构，从而提供各种高级语言功能。
  *
- * @see CwtDeclarationConfigContext
+ * @see CwtDeclarationConfigContextProvider
+ * @see CwtDeclarationConfig
  */
-class CwtDeclarationConfigContext(
+data class CwtDeclarationConfigContext(
     val definitionName: String?,
     val definitionType: String,
     val definitionSubtypes: List<String>?,
@@ -28,9 +29,7 @@ class CwtDeclarationConfigContext(
 ) : UserDataHolderBase() {
     lateinit var provider: CwtDeclarationConfigContextProvider
 
-    /**
-     * 得到按子类型列表合并后的声明规则。
-     */
+    /** 得到对应的处理后的声明规则。 */
     fun getConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         return ParadoxConfigService.getConfigForDeclarationConfigContext(this, declarationConfig)
     }
@@ -42,5 +41,3 @@ class CwtDeclarationConfigContext(
 
 var CwtDeclarationConfigContext.gameRuleConfig: CwtExtendedGameRuleConfig? by registerKey(CwtDeclarationConfigContext.Keys)
 var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by registerKey(CwtDeclarationConfigContext.Keys)
-
-

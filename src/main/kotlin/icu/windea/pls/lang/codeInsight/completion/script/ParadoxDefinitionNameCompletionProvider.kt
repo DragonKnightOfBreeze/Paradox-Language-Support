@@ -26,6 +26,7 @@ import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -34,13 +35,11 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.filterBy
-import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -89,18 +88,20 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, rootKeys, typeKeyPrefix)) continue
+                    val matchContext = CwtTypeConfigMatchContext(configGroup, path, null, rootKeys, typeKeyPrefix)
+                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(matchContext, typeConfig)) continue
                     val type = typeConfig.name
-                    val config = ParadoxDefinitionService.resolveDeclaration(element, configGroup, type)
+                    val config = ParadoxDefinitionService.resolveDeclaration(element, type, configGroup = configGroup)
 
                     context.config = config
                     context.isKey = true
                     context.expressionTailText = ""
-                    // 排除正在输入的那一个
+                    // 排除与正在输入的同名的定义
+                    // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .notSamePosition(element)
+                        .filterBy { it.name != element.name }
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
+                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 
@@ -119,13 +120,12 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = false
                     context.expressionTailText = ""
-                    // 这里需要基于rootKey过滤结果
-                    // 排除正在输入的那一个
+                    // 排除与正在输入的同名的定义
+                    // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
-                        .notSamePosition(definition)
+                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(null, type, selector, forFile = false).processAsync {
+                    ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
                     }
 

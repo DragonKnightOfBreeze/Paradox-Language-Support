@@ -37,7 +37,7 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupSource
+import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
@@ -85,13 +85,13 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         currentCoroutineContext.ensureActive()
         val allInternalFiles = mutableListOf<Tuple2<String, VirtualFile>>()
-        val allFiles = mutableListOf<Tuple3<String, VirtualFile, CwtConfigGroupSource>>()
+        val allFiles = mutableListOf<Tuple3<String, VirtualFile, CwtConfigGroupFileSource>>()
         readAction {
             fileProvidersAndRootDirectories.process { (fileProvider, rootDirectory) ->
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
-                        if (fileProvider.source != CwtConfigGroupSource.BuiltIn) return@p true // 不允许覆盖内部规则文件
+                        if (fileProvider.source != CwtConfigGroupFileSource.BuiltIn) return@p true // 不允许覆盖内部规则文件
                         allInternalFiles.add(tupleOf(filePath, file))
                     } else {
                         allFiles.add(tupleOf(filePath, file, fileProvider.source))
@@ -103,8 +103,8 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         val overrideBuiltIn = configGroup.gameType != ParadoxGameType.Core
             && PlsConfigSettings.getInstance().state.overrideBuiltIn
-            && allFiles.any { it.third == CwtConfigGroupSource.Remote }
-        if (overrideBuiltIn) allFiles.removeIf { it.third == CwtConfigGroupSource.BuiltIn }
+            && allFiles.any { it.third == CwtConfigGroupFileSource.Remote }
+        if (overrideBuiltIn) allFiles.removeIf { it.third == CwtConfigGroupFileSource.BuiltIn }
 
         currentCoroutineContext.ensureActive()
         val internalFileConfigs = mutableMapOf<String, CwtFileConfig>()

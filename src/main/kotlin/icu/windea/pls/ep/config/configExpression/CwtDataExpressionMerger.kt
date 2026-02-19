@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 /**
  * 用于合并数据表达式。
  *
- * 根据使用推断上下文规则时，可能需要合并规则、规则表达式以及数据表达式。
+ * 根据用法推断上下文规则时，可能需要合并规则、规则表达式以及数据表达式。
  */
 interface CwtDataExpressionMerger {
     /**

@@ -118,19 +118,23 @@ object ParadoxAnalysisInjector {
         dataService.markedFileInfo = null
     }
 
-    fun markRootDirectory(path: Path) {
+    fun markRootDirectory(relPath: String, path: Path) {
+        dataService.markedRootPath = relPath
         dataService.markedRootDirectory = path
     }
 
     fun clearMarkedRootDirectory() {
+        dataService.markedRootPath = null
         dataService.markedRootDirectory = null
     }
 
-    fun markConfigDirectory(path: Path) {
+    fun markConfigDirectory(relPath: String, path: Path) {
+        dataService.markedConfigPath = relPath
         dataService.markedConfigDirectory = path
     }
 
     fun clearMarkedConfigDirectory() {
+        dataService.markedConfigPath = null
         dataService.markedConfigDirectory = null
     }
 

@@ -34,10 +34,10 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonList
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
@@ -55,67 +55,73 @@ object CwtConfigManipulator {
 
     @Suppress("unused")
     @Optimized
-    fun getIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int = -1): String {
-        return doGetIdentifierKey(config, maxDepth)
+    fun getIdentifierKey(config: CwtMemberConfig<*>, delimiter: String, maxDepth: Int = -1): String {
+        return doGetIdentifierKey(config, delimiter, maxDepth, 0)
     }
 
     @Optimized
-    fun getIdentifierKey(configs: List<CwtMemberConfig<*>>, maxDepth: Int = -1): String {
-        return doGetIdentifierKey(configs, maxDepth)
+    fun getIdentifierKey(configs: List<CwtMemberConfig<*>>, delimiter: String, maxDepth: Int = -1): String {
+        return doGetIdentifierKey(configs, delimiter, maxDepth, 0)
     }
 
-    private fun doGetIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int, depth: Int = 0): String {
+    private fun doGetIdentifierKey(config: CwtMemberConfig<*>, delimiter: String, maxDepth: Int, depth: Int): String {
         if (maxDepth >= 0 && maxDepth < depth) return ""
         return buildString {
-            if (config is CwtPropertyConfig) append(config.key).append('=')
+            if (config is CwtPropertyConfig) {
+                append(config.key)
+                append(config.separatorType.text)
+            }
             val children = config.configs
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
-                else -> append('{').append(doGetIdentifierKey(children, maxDepth, depth + 1)).append('}')
+                else -> append('{').append(doGetIdentifierKey(children, delimiter, maxDepth, depth + 1)).append('}')
             }
         }
     }
 
-    private fun doGetIdentifierKey(configs: List<CwtMemberConfig<*>>, maxDepth: Int, depth: Int = 0): String {
+    private fun doGetIdentifierKey(configs: List<CwtMemberConfig<*>>, delimiter: String, maxDepth: Int, depth: Int): String {
         val size = configs.size
         return when (size) {
             0 -> ""
-            1 -> doGetIdentifierKey(configs.get(0), maxDepth, depth)
-            else -> configs.mapFast { doGetIdentifierKey(it, maxDepth, depth) }.sorted().joinToString("\u0000")
+            1 -> doGetIdentifierKey(configs.get(0), delimiter, maxDepth, depth)
+            else -> configs.mapFast { doGetIdentifierKey(it, delimiter, maxDepth, depth) }.sorted().joinToString(delimiter)
         }
     }
 
     @Suppress("unused")
     @Optimized
-    fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>): String {
-        return doGetIdentifierKey(optionConfig)
+    fun getIdentifierKey(optionConfig: CwtOptionMemberConfig<*>, delimiter: String): String {
+        return doGetIdentifierKey(optionConfig, delimiter)
     }
 
     @Suppress("unused")
     @Optimized
-    fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
-        return doGetIdentifierKey(optionConfigs)
+    fun getIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>, delimiter: String): String {
+        return doGetIdentifierKey(optionConfigs, delimiter)
     }
 
-    private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>): String {
+    private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>, delimiter: String): String {
         return buildString {
-            if (config is CwtOptionConfig) append(config.key).append('=')
+            if (config is CwtOptionConfig) {
+                append(config.key)
+                append(config.separatorType.text)
+            }
             val children = config.optionConfigs
             when {
                 children == null -> append(config.value)
                 children.isEmpty() -> append("{}")
-                else -> append('{').append(doGetIdentifierKey(children)).append('}')
+                else -> append('{').append(doGetIdentifierKey(children, delimiter)).append('}')
             }
         }
     }
 
-    private fun doGetIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>): String {
+    private fun doGetIdentifierKey(optionConfigs: List<CwtOptionMemberConfig<*>>, delimiter: String): String {
         val size = optionConfigs.size
         return when (size) {
             0 -> ""
-            1 -> doGetIdentifierKey(optionConfigs.get(0))
-            else -> optionConfigs.mapFast { doGetIdentifierKey(it) }.sorted().joinToString("\u0000")
+            1 -> doGetIdentifierKey(optionConfigs.get(0), delimiter)
+            else -> optionConfigs.mapFast { doGetIdentifierKey(it, delimiter) }.sorted().joinToString(delimiter)
         }
     }
 
@@ -441,10 +447,10 @@ object CwtConfigManipulator {
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }
                 val mergedConfig = mergeValueConfig(c1, c2)
-                if (mergedConfig != null) return mergedConfig.singleton.list()
+                if (mergedConfig != null) return mergedConfig.to.singletonList()
             } else if (c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
                 val same = getDistinctKey(c1) == getDistinctKey(c2)
-                if (same) return c1.singleton.list()
+                if (same) return c1.to.singletonList()
             } else {
                 return emptyList()
             }

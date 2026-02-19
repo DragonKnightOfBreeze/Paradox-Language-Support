@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxLocalisationType
  * @property localisationType 本地化的类型。
  */
 @Suppress("UnstableApiUsage")
-interface ParadoxLocalisationFileStub : PsiFileStub<ParadoxLocalisationFile>, ParadoxStub<ParadoxLocalisationFile> {
+sealed interface ParadoxLocalisationFileStub : PsiFileStub<ParadoxLocalisationFile>, ParadoxStub<ParadoxLocalisationFile> {
     val localisationType: ParadoxLocalisationType
 
     private class Impl(

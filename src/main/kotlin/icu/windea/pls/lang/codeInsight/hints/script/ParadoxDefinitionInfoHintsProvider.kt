@@ -10,6 +10,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
@@ -24,8 +25,14 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val definition = element.parent as? ParadoxScriptProperty ?: return
         val definitionInfo = definition.definitionInfo ?: return
 
+        // 忽略内联或注入的定义
+        if(definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
+
         // 忽略类似 `event_namespace` 这样的定义的值不是子句的定义
         if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return
+
+        val typeConfig = definitionInfo.typeConfig
+        val subtypeConfigs = definitionInfo.subtypeConfigs
 
         // 如果定义名等同于类型键，则省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
@@ -35,10 +42,8 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
             } else {
                 text(": ")
             }
-            val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)
             run {
-                val subtypeConfigs = definitionInfo.subtypeConfigs
                 if (subtypeConfigs.isEmpty()) return@run
                 if (!settings.showSubtypesForDefinition) return@run
                 if (!settings.truncateSubtypesForDefinition) {

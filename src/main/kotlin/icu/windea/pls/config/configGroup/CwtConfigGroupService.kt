@@ -3,11 +3,14 @@ package icu.windea.pls.config.configGroup
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.TaskCancellation
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgress
@@ -15,13 +18,16 @@ import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
@@ -30,6 +36,25 @@ import kotlinx.coroutines.launch
 @Service(Service.Level.APP, Service.Level.PROJECT)
 class CwtConfigGroupService(private val project: Project = getDefaultProject()) : Disposable {
     private var cache = createConfigGroups()
+
+    suspend fun refreshBuiltInConfigFiles(project: Project) {
+        val files = CwtConfigManager.getBuiltInConfigRootDirectories(project)
+        if (files.isEmpty()) return
+
+        if (PlsFacade.isUnitTestMode()) {
+            files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
+            return
+        }
+
+        // 必须先切换到 EDT
+        withContext(Dispatchers.EDT) {
+            // 显示可以取消的模态进度条
+            val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
+            runWithModalProgressBlocking(project, title) {
+                files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
+            }
+        }
+    }
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()

@@ -121,7 +121,7 @@ class ParadoxDistinctSelector<T, K>(
     }
 }
 
-class ParadoxWithConstraintSelector<T : PsiElement>(
+class ParadoxWithConstraintSelector<T>(
     val constraint: ParadoxIndexConstraint<T>
 ) : ParadoxSelector<T>
 

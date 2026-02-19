@@ -1,0 +1,6 @@
+root = {
+    key = {
+        foo = bar
+        baz = qux
+    }
+}

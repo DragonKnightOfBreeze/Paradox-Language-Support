@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.stubs.StubIndexExtension
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
@@ -64,10 +65,10 @@ inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
-// /** 查找注册的 StubIndex 扩展。 */
-// fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
-//     return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
-// }
+/** 查找注册的 StubIndex 扩展。 */
+fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
+    return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
+}
 
 /** 查找注册的 FileBasedIndex 扩展。 */
 fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {

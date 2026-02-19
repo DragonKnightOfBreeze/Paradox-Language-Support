@@ -59,12 +59,12 @@ object ParadoxMatchResultProvider {
         val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
         val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
 
-        private fun createKeyForCache(vararg dependencyItems: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
+        private fun createKeyForCache(vararg dependencies: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
                 createNestedCache<VirtualFile, _, _, _> {
                     CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
-                }.withDependencyItems(*dependencyItems)
+                }.withDependencyItems(*dependencies)
             }
         }
     }
@@ -218,14 +218,14 @@ object ParadoxMatchResultProvider {
             CwtDataTypes.Scope -> {
                 val expectedScope = configExpression.value ?: return ParadoxMatchResult.ExactMatch
                 ParadoxMatchResult.LazyScopeAwareMatch {
-                    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
+                    val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
                 }
             }
             CwtDataTypes.ScopeGroup -> {
                 val expectedScopeGroup = configExpression.value ?: return ParadoxMatchResult.ExactMatch
                 ParadoxMatchResult.LazyScopeAwareMatch {
-                    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
+                    val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
                 }
             }

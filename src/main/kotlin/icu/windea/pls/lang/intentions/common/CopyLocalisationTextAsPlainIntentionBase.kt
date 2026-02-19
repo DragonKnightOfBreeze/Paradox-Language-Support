@@ -11,7 +11,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextPlainRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 复制本地化文本到剪贴板。（复制的是处理后的纯文本）
+ * 复制本地化文本到剪贴板（复制的是处理后的纯文本）。
  */
 abstract class CopyLocalisationTextAsPlainIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationTextAsPlain")

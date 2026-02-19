@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
@@ -15,7 +15,7 @@ import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 object ParadoxModifierService {
     /**
@@ -76,7 +76,7 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition
      */
-    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
+    fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean {
         val gameType = definitionInfo.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f false

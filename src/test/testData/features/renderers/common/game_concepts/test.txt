@@ -1,0 +1,3 @@
+concept_foo = {
+    alias = { concept_bar }
+}

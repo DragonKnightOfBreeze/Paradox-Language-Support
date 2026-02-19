@@ -13,12 +13,12 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
@@ -82,16 +82,14 @@ class ParadoxDefineVariableNode(
         private fun doResolve(): PsiElement? {
             if (namespace == null) return null
             val selector = selector(project, element).define().contextSensitive()
-            val defineInfo = ParadoxDefineSearch.search(namespace, variableName, selector).find() ?: return null
-            val resolved = ParadoxDefineManager.getDefineElement(defineInfo, project)
+            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             if (namespace == null) return ResolveResult.EMPTY_ARRAY
             val selector = selector(project, element).define().contextSensitive()
-            val defineInfos = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
-            val resolved = ParadoxDefineManager.getDefineElements(defineInfos, project)
+            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
             return resolved.createResults()
         }
     }

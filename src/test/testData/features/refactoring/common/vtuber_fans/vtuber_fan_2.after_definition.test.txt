@@ -1,0 +1,8 @@
+neuro_fan_2 = {
+    idol = evil_neuro
+    idol = evil_neuro
+    nickname = neuro_sama
+    nickname = neuro_sama
+    power = @neuro_sama
+    power = @neuro_sama
+}

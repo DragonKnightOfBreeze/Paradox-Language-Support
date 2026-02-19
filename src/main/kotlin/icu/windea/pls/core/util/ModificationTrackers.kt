@@ -35,9 +35,10 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
 
 /**
  * 基于文件路径的修改追踪器。
- *
- * 仅保存以 `;` 分隔的路径模式集合 [patterns]，增量更新由外部负责调用 `incModificationCount()`。
  */
-class FilePathBasedModificationTracker(key: String) : SimpleModificationTracker() {
-    val patterns = key.split(';').toSet()
+class FilePathBasedModificationTracker(val patterns: Set<String>) : SimpleModificationTracker() {
+    companion object {
+        @JvmStatic
+        val NEVER_CHANGED = FilePathBasedModificationTracker(emptySet())
+    }
 }

@@ -23,9 +23,8 @@ import kotlinx.coroutines.launch
  * 用于处理本地化的一类意图。
  *
  * 光标处于以下位置时，此类意图可用：
- *
- * - 光标在语言环境PSI（[ParadoxLocalisationLocale]）中 - 此时处理此语言环境下的所有本地化
- * - 光标选择范围涉及到本地化属性PSI（[ParadoxLocalisationProperty]） - 此时处理涉及到的所有本地化
+ * - 光标在语言环境 PSI（[ParadoxLocalisationLocale]）中：此时处理此语言环境下的所有本地化。
+ * - 光标选择范围涉及到本地化属性 PSI（[ParadoxLocalisationProperty]）：此时处理涉及到的所有本地化。
  */
 abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     override fun getText() = familyName

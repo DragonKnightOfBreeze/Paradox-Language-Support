@@ -39,14 +39,14 @@ class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemL
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val definitionInfo = element.definitionInfo ?: return
         if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
-        // 显示在提示中 & 可导航
+
+        ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.RelatedDefinitionInjections
         val prefix = PlsStrings.definitionInjectionPrefix
         val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
-        val targetKey = definitionInfo.type + "@" + definitionInfo.name
         val project = element.project
         val selector = selector(project, element).definitionInjection().contextSensitive()
-        val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+        val targets0 = ParadoxDefinitionInjectionSearch.searchElement(null, definitionInfo.name, definitionInfo.type, selector).findAll()
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()
         ProgressManager.checkCanceled()

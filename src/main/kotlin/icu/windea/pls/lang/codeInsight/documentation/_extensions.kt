@@ -18,8 +18,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.TextWithIcon
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psiDocumentationTargets
@@ -73,7 +73,7 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets
 
-    return getDocumentationTarget(element, originalElement).singleton.listOrEmpty()
+    return getDocumentationTarget(element, originalElement).to.singletonListOrEmpty()
 }
 
 @Suppress("UNUSED_PARAMETER")

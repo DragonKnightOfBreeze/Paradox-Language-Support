@@ -3,6 +3,7 @@ package icu.windea.pls.lang.analysis
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -20,7 +21,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.LazyValue
+import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
@@ -305,6 +306,18 @@ object ParadoxAnalysisManager {
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()
         }
+    }
+
+    // endregion
+
+    // region Inference Methods
+
+    fun getInferredCurrentGameType(project: Project): ParadoxGameType? {
+        val fileEditorManager = FileEditorManager.getInstance(project)
+        fileEditorManager.selectedEditor?.let { selectGameType(it.file) }?.let { return it }
+        fileEditorManager.selectedEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
+        fileEditorManager.allEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
+        return null
     }
 
     // endregion

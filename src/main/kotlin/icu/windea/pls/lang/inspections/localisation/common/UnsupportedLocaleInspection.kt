@@ -17,8 +17,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
  */
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是符合条件的本地化文件
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

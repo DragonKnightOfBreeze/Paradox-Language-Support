@@ -3,7 +3,8 @@ package icu.windea.pls.config.config.internal
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl
+import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.config.util.CwtConfigResolverScope
 
 /**
  * 作为规则自身的模式（schema）的内部规则。不支持自定义。
@@ -28,3 +29,28 @@ data class CwtSchemaConfig(
 
     companion object : Resolver by CwtSchemaConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverScope {
+    // no logger here (unnecessary)
+
+    override fun resolveInFile(fileConfig: CwtFileConfig) {
+        val initializer = fileConfig.configGroup.initializer
+        val properties = mutableListOf<CwtPropertyConfig>()
+        val enums = mutableMapOf<String, CwtPropertyConfig>()
+        val constraints = mutableMapOf<String, CwtPropertyConfig>()
+        for (prop in fileConfig.properties) {
+            val keyExpression = CwtSchemaExpression.resolve(prop.key)
+            when (keyExpression) {
+                is CwtSchemaExpression.Enum -> enums[keyExpression.name] = prop
+                is CwtSchemaExpression.Constraint -> constraints[keyExpression.name] = prop
+                else -> properties += prop
+            }
+        }
+        val schemaConfig = CwtSchemaConfig(fileConfig, properties, enums, constraints)
+        initializer.schemas += schemaConfig
+    }
+}
+
+// endregion

@@ -1,0 +1,11 @@
+zephyrian = {
+    species_name = zephyr_folk
+    homeworld = zephyria
+    lifespan = 200
+}
+
+crystalborn = {
+    species_name = crystal_entity
+    homeworld = crystal_prime
+    lifespan = 800
+}

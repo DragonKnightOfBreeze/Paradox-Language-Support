@@ -8,7 +8,6 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -16,13 +15,12 @@ import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.Any -> ParadoxMatchResult.FallbackMatch
             CwtDataTypes.Bool -> matchBool(context)
@@ -35,12 +33,12 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    private fun matchBool(context: Context): ParadoxMatchResult {
+    private fun matchBool(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = context.expression.type.isBooleanType()
         return ParadoxMatchResult.of(r)
     }
 
-    private fun matchInt(context: Context): ParadoxMatchResult {
+    private fun matchInt(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1") -> ok according to vanilla game files
         val value = context.expression.value
         val r = context.expression.type.isIntType() || ParadoxTypeResolver.resolve(value).isIntType()
@@ -49,7 +47,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchFloat(context: Context): ParadoxMatchResult {
+    private fun matchFloat(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // quoted number (e.g., "1.0") -> ok according to vanilla game files
         val value = context.expression.value
         val r = context.expression.type.isFloatType() || ParadoxTypeResolver.resolve(value).isFloatType()
@@ -58,7 +56,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchScalar(context: Context): ParadoxMatchResult {
+    private fun matchScalar(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = when {
             context.expression.isKey == true -> true // key -> ok
             context.expression.type == ParadoxType.Parameter -> true // parameter -> ok
@@ -71,12 +69,12 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResult.ofFallback(r)
     }
 
-    private fun matchColorField(context: Context): ParadoxMatchResult {
+    private fun matchColorField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = context.expression.type.isColorType() && context.configExpression.value?.let { context.expression.value.startsWith(it) } != false
         return ParadoxMatchResult.of(r)
     }
 
-    private fun matchBlock(context: Context): ParadoxMatchResult {
+    private fun matchBlock(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (context.expression.isKey != false) return ParadoxMatchResult.NotMatch
         if (context.expression.type != ParadoxType.Block) return ParadoxMatchResult.NotMatch
         if (context.config !is CwtMemberConfig) return ParadoxMatchResult.NotMatch
@@ -85,7 +83,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         return when (context.dataType) {
             CwtDataTypes.PercentageField -> matchPercentageField(context)
             CwtDataTypes.DateField -> matchDataField(context)
@@ -118,20 +116,20 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         }
     }
 
-    private fun matchPercentageField(context: Context): ParadoxMatchResult {
+    private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         val r = ParadoxTypeResolver.isPercentageField(context.expression.value)
         return ParadoxMatchResult.of(r)
     }
 
-    private fun matchDataField(context: Context): ParadoxMatchResult {
+    private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.value
         val r = ParadoxTypeResolver.isDateField(context.expression.value, datePattern)
         return ParadoxMatchResult.of(r)
     }
 
-    private fun matchDefinition(context: Context): ParadoxMatchResult {
+    private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val expression = context.expression.value
         // can be an int or float here (e.g., for <technology_tier>)
         if (!context.expression.type.isStringType() && context.expression.type != ParadoxType.Int && context.expression.type != ParadoxType.Float) return ParadoxMatchResult.NotMatch
@@ -140,21 +138,21 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, expression, context.configExpression)
     }
 
-    private fun matchLocalisation(context: Context): ParadoxMatchResult {
+    private fun matchLocalisation(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
 
-    private fun matchSyncedLocalisation(context: Context): ParadoxMatchResult {
+    private fun matchSyncedLocalisation(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forSyncedLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
 
-    private fun matchInlineLocalisation(context: Context): ParadoxMatchResult {
+    private fun matchInlineLocalisation(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.quoted) return ParadoxMatchResult.FallbackMatch // "quoted_string" -> any string
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
@@ -162,18 +160,18 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forLocalisation(context.element, context.project, context.expression.value, context.configExpression)
     }
 
-    private fun matchAbsoluteFilePath(context: Context): ParadoxMatchResult {
+    private fun matchAbsoluteFilePath(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchPathReference(context: Context): ParadoxMatchResult {
+    private fun matchPathReference(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forPathReference(context.element, context.project, context.expression.value, context.configExpression)
     }
 
-    private fun matchEnumValue(context: Context): ParadoxMatchResult {
+    private fun matchEnumValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (context.expression.type.isBlockLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val name = context.expression.value
@@ -187,17 +185,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         // match complex enums
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
-            // complexEnumValue的值必须合法
-            if (ParadoxComplexEnumValueManager.getName(context.expression.value) == null) return ParadoxMatchResult.NotMatch
             return ParadoxMatchResultProvider.forComplexEnumValue(context.element, context.project, name, enumName, complexEnumConfig)
         }
         return ParadoxMatchResult.NotMatch
     }
 
-    private fun matchDynamicValue(context: Context): ParadoxMatchResult {
+    private fun matchDynamicValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (context.expression.type.isBlockLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        // dynamicValue的值必须合法
         val name = ParadoxDynamicValueManager.getName(context.expression.value) ?: return ParadoxMatchResult.NotMatch
         if (!name.isIdentifier(".")) return ParadoxMatchResult.NotMatch
         val dynamicValueType = context.configExpression.value
@@ -205,13 +200,13 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResult.FallbackMatch
     }
 
-    private fun matchScopeFieldExpression(context: Context): ParadoxMatchResult {
+    private fun matchScopeFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forScopeFieldExpression(context.configGroup, context.expression.value, context.configExpression, context.element)
     }
 
-    private fun matchValueFieldExpression(context: Context): ParadoxMatchResult {
+    private fun matchValueFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
         val value = context.expression.value
         val type = context.expression.type
@@ -225,7 +220,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forValueFieldExpression(context.configGroup, value)
     }
 
-    private fun matchVariableFieldExpression(context: Context): ParadoxMatchResult {
+    private fun matchVariableFieldExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
         val value = context.expression.value
         val type = context.expression.type
@@ -239,68 +234,70 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forVariableFieldExpression(context.configGroup, value)
     }
 
-    private fun matchModifier(context: Context): ParadoxMatchResult {
+    private fun matchModifier(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forModifier(context.element, context.configGroup, context.expression.value)
     }
 
-    private fun matchAliasName(context: Context): ParadoxMatchResult {
+    private fun matchAliasName(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-        val aliasName = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(context.element, context.configGroup, aliasName, context.expression.value, context.expression.quoted, context.options) ?: return ParadoxMatchResult.NotMatch
-        return ParadoxMatchService.matchScriptExpression(context.element, context.expression, CwtDataExpression.resolve(aliasSubName, true), null, context.configGroup, context.options)
+        val (element, expression, configExpression, _, configGroup, options) = context
+        val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
+        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
+        val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
+        return ParadoxMatchService.matchScriptExpression(nextContext)
     }
 
-    private fun matchParameter(context: Context): ParadoxMatchResult {
+    private fun matchParameter(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier()) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchParameterValue(context: Context): ParadoxMatchResult {
+    private fun matchParameterValue(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 匹配参数值（只要不是子句即可匹配）
         if (context.expression.type == ParadoxType.Block) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchLocalisationParameter(context: Context): ParadoxMatchResult {
+    private fun matchLocalisationParameter(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // 匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (!context.expression.value.isParameterAwareIdentifier(".-'")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResult.ExactMatch
     }
 
-    private fun matchDatabaseObjectExpression(context: Context): ParadoxMatchResult {
+    private fun matchDatabaseObjectExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forDatabaseObjectExpression(context.configGroup, context.expression.value)
     }
 
-    private fun matchDefineReferenceExpression(context: Context): ParadoxMatchResult {
+    private fun matchDefineReferenceExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResultProvider.forDefineReferenceExpression(context.configGroup, context.expression.value)
     }
 
-    private fun matchStellarisNameFormatExpression(context: Context): ParadoxMatchResult {
+    private fun matchStellarisNameFormatExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         if (context.config == null) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultProvider.forStellarisNameFormatExpression(context.configGroup, context.expression.value, context.config)
     }
 
-    private fun matchShaderEffect(context: Context): ParadoxMatchResult {
+    private fun matchShaderEffect(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         // TODO 1.2.2+ 暂时作为一般的字符串处理
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResult.FallbackMatch
     }
 
-    private fun matchTechnologyWithLevel(context: Context): ParadoxMatchResult {
+    private fun matchTechnologyWithLevel(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.ExactMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -309,7 +306,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Constant) return null
         val value = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
         if (!context.configExpression.isKey) {
@@ -324,9 +321,9 @@ class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun isPatternAware() = true
+    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.TemplateExpression) return null
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -336,31 +333,31 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun isPatternAware() = true
+    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Ant) return null
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase ?: false
+        val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesAntPattern(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }
 }
 
 class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun isPatternAware() = true
+    override fun isPatternAware(context: ParadoxScriptExpressionMatchContext) = true
 
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         if (context.dataType != CwtDataTypes.Regex) return null
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val ignoreCase = context.configExpression.ignoreCase ?: false
+        val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesRegex(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }
 }
 
 class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun match(context: Context): ParadoxMatchResult? {
+    override fun match(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult? {
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
         val config = context.config
         if (config !is CwtMemberConfig<*>) return null

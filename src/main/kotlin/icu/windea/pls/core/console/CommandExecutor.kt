@@ -1,7 +1,7 @@
 package icu.windea.pls.core.console
 
 import com.intellij.openapi.diagnostic.logger
-import icu.windea.pls.core.util.OS
+import com.intellij.util.system.OS
 import io.ktor.utils.io.charsets.Charset
 import java.io.File
 import java.io.IOException
@@ -52,7 +52,7 @@ class CommandExecutor(
         val processBuilder = ProcessBuilder(commands)
         val env = processBuilder.environment()
         env.putAll(environment)
-        if (OS.value != OS.Windows) {
+        if (OS.CURRENT != OS.Windows) {
             env.put("LANG", "en_US.UTF-8")
             env.put("LC_ALL", "en_US.UTF-8")
         }
@@ -78,12 +78,12 @@ class CommandExecutor(
     /** 根据 OS 与入参确定实际使用的命令类型。Windows 下仅允许 CMD/PowerShell。 */
     private fun getCommandTypeToUse(commandType: CommandType?): CommandType {
         if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
-            if (OS.value != OS.Windows) throw UnsupportedOperationException()
+            if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException()
         }
         if (commandType != null) return commandType
-        return when (OS.value) {
+        return when (OS.CURRENT) {
             OS.Windows -> CommandType.POWER_SHELL
-            OS.Linux -> CommandType.SHELL
+            else -> CommandType.SHELL
         }
     }
 

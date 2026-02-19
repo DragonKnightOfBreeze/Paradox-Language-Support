@@ -38,14 +38,16 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 提示concept的name或alias
-        val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
+        val conceptSelector = selector(project, file).definition().contextSensitive()
+            .distinctByName()
         val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
+        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
             val icon = PlsIcons.Nodes.LocalisationConcept
             run action@{
                 val key = concept.name
+                if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)
@@ -56,6 +58,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
             }
             concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
+                if (key.isEmpty()) return@action
                 if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)

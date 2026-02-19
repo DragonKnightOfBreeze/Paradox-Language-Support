@@ -35,7 +35,7 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
             name: String?,
             localisationName: String,
             selector: ParadoxSearchSelector<ParadoxLocalisationParameterIndexInfo>
-        ): ParadoxQuery<ParadoxLocalisationParameterIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxLocalisationParameterIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, localisationName, selector))
         }
     }

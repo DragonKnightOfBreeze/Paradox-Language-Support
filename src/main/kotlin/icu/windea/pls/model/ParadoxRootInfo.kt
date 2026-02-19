@@ -19,6 +19,7 @@ sealed interface ParadoxRootInfo {
 
     val mainEntries: Set<String> get() = emptySet()
     val extraEntries: Set<String> get() = emptySet()
+
     val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
     val steamId: String? get() = null
 
@@ -36,6 +37,7 @@ sealed interface ParadoxRootInfo {
             get() = gameType.entryInfo.gameMain
         override val extraEntries: Set<String>
             get() = gameType.entryInfo.gameExtra
+
         override val qualifiedName: String
             get() = buildString {
                 append(gameType.title)
@@ -45,6 +47,8 @@ sealed interface ParadoxRootInfo {
             }
         override val steamId: String
             get() = gameType.steamId
+
+        override fun toString() = qualifiedName
     }
 
     class Mod(override val metadata: ParadoxRootMetadata.Mod) : MetadataBased(metadata) {
@@ -59,6 +63,7 @@ sealed interface ParadoxRootInfo {
             get() = gameType.entryInfo.modMain
         override val extraEntries: Set<String>
             get() = gameType.entryInfo.modExtra
+
         override val qualifiedName: String
             get() = buildString {
                 append(gameType.title).append(" Mod: ")
@@ -69,10 +74,17 @@ sealed interface ParadoxRootInfo {
             }
         override val steamId: String?
             get() = if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
+
+        override fun toString() = qualifiedName
     }
 
     class Injected(
         override val gameType: ParadoxGameType,
         override val rootFile: VirtualFile? = null,
-    ) : ParadoxRootInfo
+    ) : ParadoxRootInfo {
+        override val qualifiedName: String
+            get() = PlsBundle.message("root.name.injected")
+
+        override fun toString() = qualifiedName
+    }
 }

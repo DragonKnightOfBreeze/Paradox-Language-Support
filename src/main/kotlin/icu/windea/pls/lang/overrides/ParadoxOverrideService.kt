@@ -116,7 +116,7 @@ object ParadoxOverrideService {
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val project = file.project
         val selector = selector(project, file).definition()
-        val results = ParadoxDefinitionSearch.search(name, type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
+        val results = ParadoxDefinitionSearch.searchElement(name, type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
     }

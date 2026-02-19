@@ -2,9 +2,9 @@ package icu.windea.pls.lang.codeStyle
 
 import com.intellij.application.options.CodeStyle
 import com.intellij.psi.PsiFile
-import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
+import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
+import icu.windea.pls.script.formatter.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 object PlsCodeStyleUtil {

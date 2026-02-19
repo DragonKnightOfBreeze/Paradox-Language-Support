@@ -4,14 +4,14 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupSource
+import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于获取规则分组中的文件。
  */
 interface CwtConfigGroupFileProvider {
-    val source: CwtConfigGroupSource
+    val source: CwtConfigGroupFileSource
 
     val isEnabled: Boolean
 

@@ -24,8 +24,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  */
 class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
     override fun matchBrace(file: PsiFile, offset: Int): Pair<TextRange, TextRange>? {
-        val matched = ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
-            || ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
+        val matched = ParadoxPsiFileMatcher.isScriptFile(file, injectable = true) || ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
         if (!matched) return null
         matchBraceInComplexExpression(offset, file)?.let { return it }
         return null

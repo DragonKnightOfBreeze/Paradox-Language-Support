@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.config.util.CwtConfigSymbolManager
+import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -15,6 +16,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
@@ -23,10 +25,8 @@ import java.io.DataOutput
 
 /**
  * 规则文件中的各种符号信息的索引。
- *
- * @see CwtConfigSymbolIndexInfo
  */
-class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
+class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>, CwtConfigSymbolIndexInfo>() {
     override fun getName() = PlsIndexKeys.ConfigSymbol
 
     override fun getVersion() = PlsIndexVersions.ConfigSymbol
@@ -38,16 +38,16 @@ class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIn
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<CwtConfigSymbolIndexInfo>> {
-        return buildMap { buildData(psiFile, this) }
+        return buildMap {
+            buildData(psiFile, this)
+        }
     }
 
     private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is CwtStringExpressionElement) {
-                    visitStringExpressionElement(element)
-                    return
-                }
+                if (element is CwtStringExpressionElement) visitStringExpressionElement(element)
+                if (!CwtPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -55,8 +55,7 @@ class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIn
                 val infos = CwtConfigSymbolManager.getInfos(element)
                 if (infos.isEmpty()) return
                 infos.forEach { info ->
-                    val list = fileData.getOrPut(info.type) { mutableListOf() } as MutableList
-                    list += info
+                    fileData.getOrPut(info.type) { mutableListOf() }.asMutable() += info
                 }
             }
         })

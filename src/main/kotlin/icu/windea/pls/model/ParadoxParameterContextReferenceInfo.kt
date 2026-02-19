@@ -10,7 +10,7 @@ import javax.swing.Icon
 /**
  * 参数上下文引用信息。
  *
- * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。
+ * @param contextNameRange 表示上下文名字的那段文本在整个文件中的文本范围。
  */
 @Suppress("unused")
 class ParadoxParameterContextReferenceInfo(
@@ -21,8 +21,8 @@ class ParadoxParameterContextReferenceInfo(
     private val contextNameElementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextNameRange: TextRange,
     val arguments: List<Argument>,
+    val project: Project,
     val gameType: ParadoxGameType,
-    val project: Project
 ) : UserDataHolderBase() {
     val element: PsiElement? get() = elementPointer.element
     val contextNameElement: PsiElement? get() = contextNameElementPointer.element
@@ -42,10 +42,11 @@ class ParadoxParameterContextReferenceInfo(
      */
     class Argument(
         val argumentName: String,
+        val argumentValue: String?,
         private val argumentNameElementPointer: SmartPsiElementPointer<out PsiElement>,
         val argumentNameRange: TextRange,
         private val argumentValueElementPointer: SmartPsiElementPointer<out PsiElement>?,
-        val argumentValueRange: TextRange?
+        val argumentValueRange: TextRange?,
     ) {
         val argumentNameElement: PsiElement? get() = argumentNameElementPointer.element
         val argumentValueElement: PsiElement? get() = argumentValueElementPointer?.element

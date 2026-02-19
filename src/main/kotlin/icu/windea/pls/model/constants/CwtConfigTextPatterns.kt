@@ -1,24 +1,24 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.util.TextPattern
+import icu.windea.pls.core.util.text.TextPattern
 
 @Suppress("unused")
 object CwtConfigTextPatterns {
-    val type = TextPattern("type[", "]")
-    val subtype = TextPattern("subtype[", "]")
-    val row = TextPattern("row[", "]")
-    val enum = TextPattern("enum[", "]")
-    val complexEnum = TextPattern("complex_enum[", "]")
-    val enumValue = TextPattern("enum_value[", "]")
-    val value = TextPattern("value[", "]")
-    val valueSet = TextPattern("value_set[", "]")
-    val dynamicValue = TextPattern("dynamic_value[", "]")
-    val singleAliasRight = TextPattern("single_alias_right[", "]")
-    val aliasName = TextPattern("alias_name[", "]")
-    val aliasMatchLeft = TextPattern("alias_match_left[", "]")
-    val aliasKeysField = TextPattern("alias_keys_field[", "]")
-    val singleAlias = TextPattern("single_alias[", "]")
-    val alias = TextPattern("alias[", "]", ":")
-    val directive = TextPattern("directive[", "]")
-    val definition = TextPattern("<", ">")
+    val type = TextPattern.from("type[", "]")
+    val subtype = TextPattern.from("subtype[", "]")
+    val row = TextPattern.from("row[", "]")
+    val enum = TextPattern.from("enum[", "]")
+    val complexEnum = TextPattern.from("complex_enum[", "]")
+    val enumValue = TextPattern.from("enum_value[", "]")
+    val value = TextPattern.from("value[", "]")
+    val valueSet = TextPattern.from("value_set[", "]")
+    val dynamicValue = TextPattern.from("dynamic_value[", "]")
+    val singleAliasRight = TextPattern.from("single_alias_right[", "]")
+    val aliasName = TextPattern.from("alias_name[", "]")
+    val aliasMatchLeft = TextPattern.from("alias_match_left[", "]")
+    val aliasKeysField = TextPattern.from("alias_keys_field[", "]")
+    val singleAlias = TextPattern.from("single_alias[", "]")
+    val alias = TextPattern.from("alias[", "]", ":")
+    val directive = TextPattern.from("directive[", "]")
+    val definition = TextPattern.from("<", ">")
 }

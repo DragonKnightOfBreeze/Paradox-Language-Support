@@ -1,0 +1,9 @@
+ace = {
+    callsign = "maverick"
+    rank = captain
+}
+
+rookie = {
+    callsign = "spark"
+    rank = ensign
+}

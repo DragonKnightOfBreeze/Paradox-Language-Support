@@ -40,7 +40,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             name: String?,
             type: ParadoxLocalisationType,
             selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
-        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
 
@@ -51,7 +51,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         fun searchNormal(
             name: String?,
             selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
-        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return search(name, ParadoxLocalisationType.Normal, selector)
         }
 
@@ -62,7 +62,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         fun searchSynced(
             name: String?,
             selector: ParadoxSearchSelector<ParadoxLocalisationProperty>
-        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxLocalisationProperty> {
             return search(name, ParadoxLocalisationType.Synced, selector)
         }
 

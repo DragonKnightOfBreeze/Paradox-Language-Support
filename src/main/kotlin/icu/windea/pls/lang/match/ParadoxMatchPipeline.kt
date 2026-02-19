@@ -102,7 +102,7 @@ object ParadoxMatchPipeline {
         var result = configs
         var dynamic = false
 
-        val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, options)
+        val context = ParadoxScriptExpressionMatchOptimizerContext(element, expression, configGroup, options)
         val optimizers = ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList
         optimizers.forEachFast f@{ optimizer ->
             val optimized = optimizer.optimize(result, context)

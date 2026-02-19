@@ -1,10 +1,10 @@
 package icu.windea.pls.config.settings
 
 import com.intellij.util.application
-import icu.windea.pls.config.util.CwtConfigRepositoryManager
-import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener
+import icu.windea.pls.config.util.CwtConfigRepositoryManager
+import icu.windea.pls.core.util.CallbackLock
 
 object PlsConfigSettingsManager {
     fun onConfigDirectoriesChanged(callbackLock: CallbackLock) {

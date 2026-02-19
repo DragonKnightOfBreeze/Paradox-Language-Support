@@ -4,26 +4,29 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 定义注入的查询。
  */
-class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefinitionInjectionSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitionInjectionIndexInfo, ParadoxDefinitionInjectionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property mode 注入模式。
-     * @property targetKey 目标键，包括目标定义的名字和类型信息（如 `type@name`）。
+     * @property target 目标定义的名字。
+     * @property type 目标定义的类型。
      * @property selector 查询选择器。
      */
     class SearchParameters(
         val mode: String?,
-        val targetKey: String?,
-        override val selector: ParadoxSearchSelector<ParadoxScriptProperty>,
-    ) : ParadoxSearchParameters<ParadoxScriptProperty>
+        val target: String?,
+        val type: String?,
+        override val selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
+    ) : ParadoxSearchParameters<ParadoxDefinitionInjectionIndexInfo>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, SearchParameters>>("icu.windea.pls.search.definitionInjectionSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionInjectionIndexInfo, SearchParameters>>("icu.windea.pls.search.definitionInjectionSearch")
         @JvmField
         val INSTANCE = ParadoxDefinitionInjectionSearch()
 
@@ -33,10 +36,24 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxScriptPro
         @JvmStatic
         fun search(
             mode: String?,
-            targetKey: String?,
-            selector: ParadoxSearchSelector<ParadoxScriptProperty>,
-        ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(mode, targetKey, selector))
+            target: String?,
+            type: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
+        ): ParadoxUnaryQuery<ParadoxDefinitionInjectionIndexInfo> {
+            return INSTANCE.createParadoxQuery(SearchParameters(mode, target, type, selector))
+        }
+
+        /**
+         * @see ParadoxDefinitionInjectionSearch.SearchParameters
+         */
+        @JvmStatic
+        fun searchElement(
+            mode: String?,
+            target: String?,
+            type: String?,
+            selector: ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>,
+        ): ParadoxQuery<ParadoxDefinitionInjectionIndexInfo, ParadoxScriptProperty> {
+            return INSTANCE.createParadoxQuery(SearchParameters(mode, target, type, selector)).withTransform { it.element }
         }
     }
 }

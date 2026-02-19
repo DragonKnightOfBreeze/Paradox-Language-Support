@@ -21,7 +21,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
@@ -43,9 +43,8 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                val targetKey = definitionInfo.type + "@" + definitionInfo.name
                 val selector = selector(project, definition).definitionInjection().contextSensitive()
-                val resolved = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+                val resolved = ParadoxDefinitionInjectionSearch.searchElement(null, definitionInfo.name, definitionInfo.type, selector).findAll()
                 targets.addAll(resolved)
             }
         }
@@ -61,13 +60,13 @@ class GotoRelatedDefinitionInjectionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
+        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.orNull() ?: return ""
         return PlsBundle.message("script.goto.relatedDefinitionInjections.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
+        val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return ""
         val definitionName = definitionInfo.name.orNull() ?: return ""
         return PlsBundle.message("script.goto.relatedDefinitionInjections.findUsagesTitle", definitionName.escapeXml())
     }

@@ -38,10 +38,11 @@ class ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider : ParadoxRel
         // 目标：相关封装变量（即同名的封装变量）
         val targets = ParadoxLocalisationManager.getRelatedScriptedVariables(element).optimized()
         if (targets.isEmpty()) return
+
         ProgressManager.checkCanceled()
+        val icon = PlsIcons.Gutter.RelatedScriptedVariables
         val prefix = PlsStrings.relatedScriptedVariablePrefix
         val tooltip = "$prefix @${name}"
-        val icon = PlsIcons.Gutter.RelatedScriptedVariables
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("localisation.gutterIcon.relatedScriptedVariables.title"))

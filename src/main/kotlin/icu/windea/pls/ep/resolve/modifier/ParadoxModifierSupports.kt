@@ -13,18 +13,18 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processAsync
-import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.WithGameType
@@ -38,10 +38,6 @@ import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNe
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
 import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
-import icu.windea.pls.lang.codeInsight.documentation.appendBr
-import icu.windea.pls.lang.codeInsight.documentation.appendIndent
-import icu.windea.pls.lang.codeInsight.documentation.appendPsiLink
-import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -54,6 +50,8 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.builders.appendPsiLink
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -61,7 +59,7 @@ import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // region Extensions
@@ -210,7 +208,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         // TODO 可以进一步缩小范围
-        return ParadoxModificationTrackers.ScriptFile("**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromPatterns("**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
@@ -312,7 +310,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return true
     }
 
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifiers = definitionInfo.modifiers
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
@@ -344,7 +342,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -361,7 +359,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = configGroup.gameType
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -385,7 +383,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         if (element !is ParadoxScriptStringExpressionElement) return
 
         val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
+        ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.economicCategory, selector).processAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
@@ -417,7 +415,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        return ParadoxModificationTrackers.ScriptFile("common/economic_categories/**/*.txt")
+        return ParadoxModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
@@ -433,8 +431,8 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = modifierElement.gameType
 
         // 加上名字
-        val name = modifierElement.name
-        append(PlsStrings.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
+        val name = modifierElement.name.orNull()
+        append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
         // 加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
@@ -455,13 +453,11 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return true
     }
 
-    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = selector(project, definition).definition().contextSensitive()
-        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector)
-            .find()
-            ?: return false
+        val economicCategory = ParadoxDefinitionSearch.searchProperty(definitionInfo.name, ParadoxDefinitionTypes.economicCategory, selector).find() ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         val gameType = definitionInfo.gameType
         for (modifierInfo in economicCategoryInfo.modifiers) {

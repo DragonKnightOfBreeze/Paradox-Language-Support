@@ -71,7 +71,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return null
         val definitionSelector = selector(project, element).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
+        val definition = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).find()
         return definition
     }
 
@@ -79,7 +79,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val definitionName = definitionNameGetter(name)
         if (definitionName.isNullOrEmpty()) return emptySet()
         val definitionSelector = selector(project, element).definition().contextSensitive()
-        val definitions = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).findAll()
+        val definitions = ParadoxDefinitionSearch.searchElement(definitionName, definitionType, definitionSelector).findAll()
         return definitions
     }
 
@@ -88,7 +88,7 @@ class ParadoxDefinitionBasedLocalisationIconSupport(
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processAsync p@{ definition ->
+        ParadoxDefinitionSearch.searchElement(null, definitionType, definitionSelector).processAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = nameGetter(definitionInfo.name)
@@ -128,7 +128,8 @@ class ParadoxImageFileBasedLocalisationIconSupport(
         val tailText = " from image file"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
-        val fileSelector = selector(project, originalFile).file().contextSensitive().distinctByFilePath()
+        val fileSelector = selector(project, originalFile).file().contextSensitive()
+            .distinctByFilePath()
         ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension

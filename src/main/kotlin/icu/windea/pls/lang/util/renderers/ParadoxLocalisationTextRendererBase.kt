@@ -67,7 +67,7 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
     context(context: C)
     protected open fun renderRichText(element: ParadoxLocalisationRichText) {
         when (element) {
-            is ParadoxLocalisationText -> renderString(element)
+            is ParadoxLocalisationText -> renderText(element)
             is ParadoxLocalisationColorfulText -> renderColorfulText(element)
             is ParadoxLocalisationParameter -> renderParameter(element)
             is ParadoxLocalisationIcon -> renderIcon(element)
@@ -80,7 +80,7 @@ abstract class ParadoxLocalisationTextRendererBase<C, R> : ParadoxLocalisationTe
     }
 
     context(context: C)
-    protected abstract fun renderString(element: ParadoxLocalisationText)
+    protected abstract fun renderText(element: ParadoxLocalisationText)
 
     context(context: C)
     protected abstract fun renderColorfulText(element: ParadoxLocalisationColorfulText)

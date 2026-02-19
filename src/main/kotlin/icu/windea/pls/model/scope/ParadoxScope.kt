@@ -3,7 +3,6 @@ package icu.windea.pls.model.scope
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
-import icu.windea.pls.core.cache.CacheBuilder
 
 /**
  * 作用域。
@@ -44,7 +43,7 @@ sealed interface ParadoxScope {
      * 表示任何未在规则文件中进一步细分，或未在上下文中进一步推断的作用域。
      */
     object Any : ParadoxScope {
-        override val id: String = "any"
+        override val id: String = ParadoxScopeId.anyScopeId
 
         override fun toString() = id
     }
@@ -57,21 +56,15 @@ sealed interface ParadoxScope {
      * 最常见的情况是通过 `from` 型系统作用域切换到未被定义或无法推断的作用域。
      */
     object Unknown : ParadoxScope {
-        override val id: String = "?"
+        override val id: String = ParadoxScopeId.unknownScopeId
 
         override fun toString() = id
     }
 
     companion object {
-        private val cache = CacheBuilder("maximumSize=1024, expireAfterAccess=30m").build<String, ParadoxScope> { Default(it) }
-
         @JvmStatic
         fun get(id: String): ParadoxScope {
-            return when {
-                id == Any.id -> Any
-                id == Unknown.id -> Unknown
-                else -> cache.get(id)
-            }
+            return ParadoxScopeResolver.get(id)
         }
     }
 }

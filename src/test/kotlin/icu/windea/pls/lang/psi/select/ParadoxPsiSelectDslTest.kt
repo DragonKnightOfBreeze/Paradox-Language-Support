@@ -2,6 +2,7 @@ package icu.windea.pls.lang.psi.select
 
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.containers.TreeTraversal
@@ -373,8 +374,8 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         Assert.assertNull(definition)
     }
 
-    private fun configureScriptFile(path: String): ParadoxScriptFile {
-        myFixture.configureByFile(path)
+    private fun configureScriptFile(@TestDataFile testDataPath: String): ParadoxScriptFile {
+        myFixture.configureByFile(testDataPath)
         return myFixture.file as ParadoxScriptFile
     }
 }

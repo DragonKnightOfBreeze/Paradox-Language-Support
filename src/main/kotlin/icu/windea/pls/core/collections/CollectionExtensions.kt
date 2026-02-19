@@ -88,6 +88,7 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 
 /** 逐个处理元素，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
+    if(this is Collection && this.isEmpty()) return true
     for (e in this) {
         val result = processor(e)
         if (!result) return false
@@ -97,6 +98,7 @@ inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 
 /** 逐个处理条目，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
+    if(this.isEmpty()) return true
     for (entry in this) {
         val result = processor(entry)
         if (!result) return false

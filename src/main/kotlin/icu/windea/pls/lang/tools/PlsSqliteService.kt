@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
-import icu.windea.pls.lang.tools.impl.PlsSqliteServiceImpl
 import org.ktorm.database.Database
 import java.nio.file.Path
 

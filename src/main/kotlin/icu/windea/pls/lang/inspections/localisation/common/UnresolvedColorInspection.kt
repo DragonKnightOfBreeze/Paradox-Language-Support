@@ -27,9 +27,8 @@ class UnresolvedColorInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
-        // 要求是符合条件的本地化文件
-        val injectable = !ignoredInInjectedFiles
-        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = injectable)
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

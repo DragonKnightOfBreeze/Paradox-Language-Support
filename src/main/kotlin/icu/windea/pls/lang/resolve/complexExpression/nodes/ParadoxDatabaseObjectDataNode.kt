@@ -16,8 +16,10 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.typeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.valueNode
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -30,7 +32,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDatabaseObjectDataNode(
     override val text: String,
@@ -94,7 +96,7 @@ class ParadoxDatabaseObjectDataNode(
         }
 
         if (config.type == null) return false
-        if (element !is ParadoxScriptDefinitionElement) return false
+        if (element !is ParadoxDefinitionElement) return false
         if (isForcedBase()) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (definitionInfo.name.isEmpty()) return false
@@ -129,7 +131,7 @@ class ParadoxDatabaseObjectDataNode(
         private val project get() = node.configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
+            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())
         }
 
         // 缓存解析结果以优化性能
@@ -166,7 +168,7 @@ class ParadoxDatabaseObjectDataNode(
             }
 
             val selector = selector(project, element).definition().contextSensitive()
-            return ParadoxDefinitionSearch.search(name, typeToSearch, selector).find()
+            return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).find()
                 ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
 
@@ -187,7 +189,7 @@ class ParadoxDatabaseObjectDataNode(
             }
 
             val selector = selector(project, element).definition().contextSensitive()
-            return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
+            return ParadoxDefinitionSearch.searchElement(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .createResults()
         }

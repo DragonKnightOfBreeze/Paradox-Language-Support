@@ -26,7 +26,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -39,25 +38,26 @@ object ParadoxEconomicCategoryManager {
     private val logger = logger<ParadoxEconomicCategoryManager>()
 
     /**
-     * 输入[definition]的定义类型应当保证是`economic_category`。
+     * 输入的 [definition] 的定义类型应当保证是 `economic_category`。
      */
-    fun getInfo(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
+    fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         if (selectGameType(definition) != ParadoxGameType.Stellaris) return null
-        return doGetInfoFromCache(definition)
+        return getInfoFromCache(definition)
     }
 
-    private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxEconomicCategoryInfo? {
-        if (definition !is ParadoxScriptProperty) return null
+    private fun getInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
-            val value = runReadActionSmartly { doGetInfo(definition) }
-            value.withDependencyItems(definition)
+            runReadActionSmartly {
+                val value = resolveInfo(definition)
+                value.withDependencyItems(definition)
+            }
         }
     }
 
-    private fun doGetInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
+    private fun resolveInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         // 这种写法可能存在一定性能问题，但是问题不大
-        // 兼容继承的mult修正
+        // 兼容继承的 mult 修正
         try {
             val name = definition.name.orNull() ?: return null
             val resources = getResources(definition).orNull() ?: return null // unexpected
@@ -118,16 +118,16 @@ object ParadoxEconomicCategoryManager {
 
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.resource, selector).findAll()
-            .mapTo(mutableSetOf()) { it.name }  // it.name is ok
+        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.resource, selector).findAll()
+            .mapNotNullTo(mutableSetOf()) { it.name.orNull() }  // it.name is ok
     }
 
     private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
-        val parent = data.parent ?: return map
+        val parent = data.parent?.orNull() ?: return map
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
+                ParadoxDefinitionSearch.searchProperty(parent, ParadoxDefinitionTypes.economicCategory, selector).process p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)

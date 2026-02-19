@@ -7,12 +7,12 @@ import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.AssumePredicates
+import icu.windea.pls.test.addAdditionalAllowedRoots
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -30,16 +30,10 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     @Before
     fun setup() {
         AssumePredicates.includeLocalEnv()
-        addAllowedRoots()
-    }
-
-    private fun addAllowedRoots() {
-        // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
-        val additionalAllowedRoots = listOfNotNull(
+        addAdditionalAllowedRoots(
             PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
             PlsPathService.getInstance().getGameDataPath(gameType.title),
         )
-        System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))
     }
 
     @Test

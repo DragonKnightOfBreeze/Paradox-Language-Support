@@ -11,7 +11,7 @@ import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 // com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
@@ -27,7 +27,7 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
             val element = dataContext.getData(CommonDataKeys.PSI_ELEMENT) ?: return@run
             when {
                 element is ParadoxScriptScriptedVariable -> return element
-                element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> return element
+                element is ParadoxDefinitionElement && element.definitionInfo != null -> return element
                 element is ParadoxLocalisationProperty && element.type != null -> return element
             }
         }

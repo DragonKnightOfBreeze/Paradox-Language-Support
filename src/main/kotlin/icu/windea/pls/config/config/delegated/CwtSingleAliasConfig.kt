@@ -1,8 +1,15 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.withLocationPrefix
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
@@ -45,3 +52,27 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 
     companion object : Resolver by CwtSingleAliasConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtSingleAliasConfigResolverImpl : CwtSingleAliasConfig.Resolver, CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    override fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? = doResolve(config)
+
+    private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
+        val key = config.key
+        val name = key.removeSurroundingOrNull("single_alias[", "]")?.orNull()?.optimized() ?: return null
+        logger.debug { "Resolved single alias config (name: $name).".withLocationPrefix(config) }
+        return CwtSingleAliasConfigImpl(config, name)
+    }
+}
+
+private class CwtSingleAliasConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String
+) : UserDataHolderBase(), CwtSingleAliasConfig {
+    override fun toString() = "CwtSingleAliasConfigImpl(name='$name')"
+}
+
+// endregion

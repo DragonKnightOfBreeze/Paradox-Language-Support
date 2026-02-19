@@ -1,0 +1,5 @@
+INJECT:ai_strategy_default = {
+    wargoal_scores = {
+        # ...
+    }
+}

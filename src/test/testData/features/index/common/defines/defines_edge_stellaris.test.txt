@@ -1,0 +1,21 @@
+# edge cases for defines file (Stellaris)
+NGameplay = {
+    MARINE = 1
+    FLEET_POWER = 2
+    NESTED = {
+        INSIDE = 5
+    }
+    $VAR$ = 3
+    A_$PARAM$_B = 4
+    [[COND]OPTION] = 6
+}
+
+$NS$ = {
+    X = 1
+}
+
+N$NS$ = {
+    Y = 1
+}
+
+N_NOT_BLOCK = 1

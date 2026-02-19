@@ -24,8 +24,8 @@ class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestC
     @Before
     fun setup() {
         markIntegrationTest()
-        markRootDirectory("features/inlayPreviews")
-        markConfigDirectory("features/inlayPreviews/.config")
+        markRootDirectory("features/inlayHints")
+        markConfigDirectory("features/inlayHints/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
@@ -35,9 +35,9 @@ class ParadoxDefinitionInfoHintsProviderTest: DeclarativeInlayHintsProviderTestC
     @Test
     fun preview() {
         markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapters.txt")
-        myFixture.configureByFile("features/inlayPreviews/common/chapters/00_chapters.txt")
+        myFixture.configureByFile("features/inlayHints/common/chapters/00_chapters.txt")
         markFileInfo(ParadoxGameType.Stellaris, "common/chapters/categories/00_chapter_categories.txt")
-        myFixture.configureByFile("features/inlayPreviews/common/chapters/categories/00_chapter_categories.txt")
+        myFixture.configureByFile("features/inlayHints/common/chapters/categories/00_chapter_categories.txt")
 
         markFileInfo(ParadoxGameType.Stellaris, "common/chapters/00_chapter_pages.csv")
         val text = loadText("/inlayProviders/paradox.csv.definitionReferenceInfo/preview.csv")

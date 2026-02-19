@@ -1,13 +1,12 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
 import java.util.*
 import java.util.function.IntUnaryOperator
 
 @Suppress("unused")
 object ParadoxEscapeManager {
-
-    fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
+    fun unescapeScriptText(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
         var isEscape = false
         for (c in value) {
             if (isEscape) {
@@ -46,11 +45,11 @@ object ParadoxEscapeManager {
         }
     }
 
-    fun unescapeStringForScript(value: String, type: EscapeType = EscapeType.Default): String {
-        return buildString { unescapeStringForScriptTo(value, this, type) }
+    fun unescapeScriptText(value: String, type: EscapeType = EscapeType.Default): String {
+        return buildString { unescapeScriptText(value, this, type) }
     }
 
-    fun unescapeStringForLocalisationTo(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
+    fun unescapeLocalisationText(value: String, builder: StringBuilder, type: EscapeType = EscapeType.Default) {
         var isEscape = false
         var isLeftBracket = false
         for (c in value) {
@@ -100,8 +99,8 @@ object ParadoxEscapeManager {
         }
     }
 
-    fun unescapeStringForLocalisation(value: String, type: EscapeType = EscapeType.Default): String {
-        return buildString { unescapeStringForLocalisationTo(value, this, type) }
+    fun unescapeLocalisationText(value: String, type: EscapeType = EscapeType.Default): String {
+        return buildString { unescapeLocalisationText(value, this, type) }
     }
 
     fun parseScriptExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {

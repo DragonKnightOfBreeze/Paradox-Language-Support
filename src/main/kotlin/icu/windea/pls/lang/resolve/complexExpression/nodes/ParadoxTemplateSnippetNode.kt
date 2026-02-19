@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -14,12 +13,9 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
@@ -72,17 +68,7 @@ class ParadoxTemplateSnippetNode(
         private val project get() = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            val element = element
-            val resolvedElement = when {
-                element is ParadoxScriptStringExpressionElement -> element.resolved()
-                else -> element
-            }
-            return when {
-                resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-                resolvedElement.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                else -> throw IncorrectOperationException()
-            }
+            return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
         }
 
         // 缓存解析结果以优化性能

@@ -1,0 +1,208 @@
+package icu.windea.pls.lang.util.builders
+
+import com.intellij.codeInsight.documentation.DocumentationManagerUtil
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.scope.toScopeMap
+
+fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
+    return this
+}
+
+fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuilder {
+    append(label) // 直接显示对应的标签文本
+    return this
+}
+
+fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
+    if (context != null && ReferenceLinkService.resolve(refText, context) == null) return appendUnresolvedLink(label)
+    DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
+    return this
+}
+
+fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
+    append("<icon src='ide/external_link_arrow.svg'/>")
+    return this
+}
+
+fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
+    val file = selectFile(element) ?: return this
+    if (PlsFileManager.isInjectedFile(file)) return this // ignored for injected PSI
+    val fileInfo = file.fileInfo ?: return this
+    val rootInfo = fileInfo.rootInfo
+    if (rootInfo !is ParadoxRootInfo.MetadataBased) return this
+
+    append("<span>")
+    // 描述符信息 - 模组名、版本等
+    append("[")
+    append(rootInfo.qualifiedName.escapeXml())
+    append("]")
+    append(" ")
+    grayed {
+        // 相关链接
+        // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
+        val rootUri = rootInfo.rootFile.toNioPath().toUri().toString()
+        appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
+
+        val steamId = rootInfo.steamId
+        if (steamId != null) {
+            append(" | ")
+            val workshopUrlInSteam = when (rootInfo) {
+                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
+                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
+            }
+            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) // 自带外部链接图标
+            appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
+            append(" | ")
+            val workshopUrl = when (rootInfo) {
+                is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
+                is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
+            }
+            appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) // 自带外部链接图标
+        }
+    }
+    append("</span>")
+    appendBr()
+
+    // 文件信息 - 相对于入口目录的路径、入口名（如果不为空）
+    append("[").append(fileInfo.path.path.escapeXml()).append("]")
+    val entryName = fileInfo.entry
+    if (entryName.isNotEmpty()) {
+        grayed { append(" of ").append(entryName.escapeXml()) }
+    }
+    appendBr()
+
+    return this
+}
+
+fun DocumentationBuilder.appendConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
+    if (element.language !is CwtLanguage) return this
+    val file = element.containingFile ?: return this
+    val vFile = file.virtualFile ?: return this
+    val project = file.project
+    val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+    val (fileProvider, configGroup, filePath) = fileProviders.firstNotNullOfOrNull f@{ fileProvider ->
+        val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f null
+        val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f null
+        val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return@f null
+        val filePath = relativePath.substringAfter('/', "").orNull() ?: return@f null
+        tupleOf(fileProvider, configGroup, filePath)
+    } ?: return this
+
+    // 规则分组信息
+    val gameType = configGroup.gameType
+    append("[").append(gameType.title).append(" Config]")
+    val hintMessage = fileProvider.getHintMessage()
+    if (hintMessage.isNotNullOrEmpty()) {
+        append(" ")
+        grayed {
+            append(hintMessage)
+        }
+    }
+    appendBr()
+
+    // 文件信息 - 相对于规则分组根目录的路径
+    append("[").append(filePath.escapeXml()).append("]")
+    appendBr()
+
+    return this
+}
+
+fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    when {
+        ParadoxScopeId.isUnsure(scopeId) -> append(scopeId)
+        else -> {
+            val category = ReferenceLinkType.CwtConfig.Categories.scopes
+            val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
+            appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
+        }
+    }
+    return this
+}
+
+fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    val categories = ReferenceLinkType.CwtConfig.Categories
+    val m = OnceMarker()
+    scopeContext.toScopeMap().forEach { (systemScope, scope) ->
+        if (m.mark()) appendBr()
+        val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
+        appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
+        append(" = ")
+        if (ParadoxScopeId.isUnsure(scope.id)) {
+            append(scope)
+        } else {
+            val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
+            appendPsiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
+        }
+    }
+    return this
+}
+
+@Suppress("UnusedReceiverParameter")
+fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    if (modifierCategories.isEmpty()) return ""
+    return buildDocumentation {
+        append("<pre>")
+        val m = OnceMarker()
+        for (modifierCategory in modifierCategories) {
+            if (m.mark()) append(", ")
+            val category = ReferenceLinkType.CwtConfig.Categories.modifierCategories
+            val link = ReferenceLinkType.CwtConfig.createLink(category, modifierCategory, gameType)
+            appendPsiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
+        }
+        append("</pre>")
+    }
+}
+
+@Suppress("UnusedReceiverParameter")
+fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    return buildDocumentation {
+        append("<pre>")
+        buildScopeDoc(scopeId, gameType, contextElement)
+        append("</pre>")
+    }
+}
+
+@Suppress("UnusedReceiverParameter")
+fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    if (scopeIds.isEmpty()) return ""
+    return buildDocumentation {
+        append("<pre>")
+        val m = OnceMarker()
+        for (scopeId in scopeIds) {
+            if (m.mark()) append(", ")
+            buildScopeDoc(scopeId, gameType, contextElement)
+        }
+        append("</pre>")
+    }
+}
+
+@Suppress("UnusedReceiverParameter")
+fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    return buildDocumentation {
+        append("<pre>")
+        buildScopeContextDoc(scopeContext, gameType, contextElement)
+        append("</pre>")
+    }
+}

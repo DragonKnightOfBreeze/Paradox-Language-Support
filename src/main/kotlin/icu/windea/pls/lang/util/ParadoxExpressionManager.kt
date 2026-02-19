@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.Key
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -30,14 +30,17 @@ import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processChild
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.RegistedKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -46,7 +49,6 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -58,7 +60,9 @@ import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -76,7 +80,7 @@ object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
-        val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedExpressionReferencesDumb by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
     }
 
     // region Common Methods
@@ -198,10 +202,10 @@ object ParadoxExpressionManager {
     }
 
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
-        return doGetParameterRangesInExpressionFromCache(element)
+        return getParameterRangesInExpressionFromCache(element)
     }
 
-    private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
+    private fun getParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterRanges) {
             val value = doGetParameterRangesInExpression(element)
             value.withDependencyItems(element)
@@ -226,6 +230,17 @@ object ParadoxExpressionManager {
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
+    }
+
+    fun resolve(text: String, contextElement: PsiElement?, project: Project): String? {
+        // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
+        run {
+            val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
+            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+            ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
+            ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
+        }
+        return text
     }
 
     // endregion
@@ -327,31 +342,30 @@ object ParadoxExpressionManager {
         return when (element) {
             is ParadoxScriptExpressionElement -> {
                 if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             is ParadoxLocalisationExpressionElement -> {
                 if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             is ParadoxCsvExpressionElement -> {
-                doGetExpressionReferencesFromCache(element)
+                getExpressionReferencesFromCache(element)
             }
             else -> PsiReference.EMPTY_ARRAY
         }
     }
 
-    private fun doGetExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
-        val cacheKey = doGetExpressionReferencesCacheKey()
+    private fun getExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
+        val cacheKey = getExpressionReferencesCacheKey()
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
-    private fun doGetExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
+    private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
-        return key
+        return if (processMergedIndex) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
     }
 
     private fun doGetExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
@@ -394,11 +408,6 @@ object ParadoxExpressionManager {
         return arrayOf(reference)
     }
 
-    fun cleanUpExpressionReferencesCache(element: ParadoxExpressionElement) {
-        val cacheKey = doGetExpressionReferencesCacheKey()
-        element.putUserData(cacheKey, null)
-    }
-
     // endregion
 
     // region Resolve Methods
@@ -426,7 +435,7 @@ object ParadoxExpressionManager {
         val result = ParadoxScriptExpressionService.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotNullOrEmpty()) return result
 
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).singleton.setOrEmpty()
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonSetOrEmpty()
 
         return emptySet()
     }
@@ -524,18 +533,6 @@ object ParadoxExpressionManager {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.resolveElementWithConfig() ?: return null
         return resolved
-    }
-
-    // endregion
-
-    // region Misc Methods
-
-    fun getMatchedAliasKey(element: PsiElement, configGroup: CwtConfigGroup, aliasName: String, key: String, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return constKey
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, options).get(options) }
     }
 
     // endregion

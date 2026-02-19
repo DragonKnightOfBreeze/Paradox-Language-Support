@@ -1,0 +1,68 @@
+types = {
+    # 基础属性定义，含子类型、本地化和图片
+    type[mech] = {
+        path = "common/mechs"
+        path_extension = .txt
+        subtype[heavy] = {
+            weight_class = heavy
+        }
+        subtype[stealth] = {
+            cloaking = yes
+        }
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            icon = icon
+        }
+    }
+
+    # 含子类型，不同的子类型条件
+    type[weapon] = {
+        path = "common/weapons"
+        path_extension = .txt
+        subtype[energy] = {
+            damage_type = energy
+        }
+        subtype[kinetic] = {
+            damage_type = kinetic
+        }
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            ## primary
+            icon = icon
+            ## optional
+            portrait = portrait
+        }
+    }
+
+    # name_field：从指定子属性取名
+    type[pilot] = {
+        path = "common/pilots"
+        path_extension = .txt
+        name_field = "callsign"
+        localisation = {
+            name = "$"
+        }
+    }
+
+    # type_per_file：文件级定义
+    type[space_station] = {
+        path = "common/space_stations"
+        path_extension = .txt
+        type_per_file = yes
+        localisation = {
+            name = "$"
+        }
+    }
+
+    # 无子类型、无本地化、无图片的简单类型
+    type[signal] = {
+        path = "common/signals"
+        path_extension = .txt
+    }
+}

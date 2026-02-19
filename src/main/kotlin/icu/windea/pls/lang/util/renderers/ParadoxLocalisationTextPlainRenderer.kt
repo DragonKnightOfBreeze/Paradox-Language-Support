@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.util.EscapeType
+import icu.windea.pls.core.util.text.EscapeType
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxEscapeManager
@@ -17,7 +18,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -48,8 +48,8 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
     }
 
     context(context: Context)
-    override fun renderString(element: ParadoxLocalisationText) {
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, EscapeType.Default)
+    override fun renderText(element: ParadoxLocalisationText) {
+        val text = ParadoxEscapeManager.unescapeLocalisationText(element.text, EscapeType.Default)
         context.builder.append(text)
     }
 
@@ -80,7 +80,7 @@ class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase
         // 封装变量
         run {
             if (resolved !is ParadoxScriptScriptedVariable) return@run
-            val v = resolved.value ?: PlsStrings.unresolved
+            val v = resolved.value ?: FallbackStrings.unresolved
             context.builder.append(v)
             return
         }

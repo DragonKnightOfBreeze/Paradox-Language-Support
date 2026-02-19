@@ -29,7 +29,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
         val filePath = queryParameters.filePath
         val configExpression = queryParameters.configExpression
         val project = queryParameters.project
-        val gameType = queryParameters.selector.gameType
+        val gameType = queryParameters.gameType
         val contextElement = queryParameters.selector.file?.toPsiFile(project)
 
         if (configExpression == null) {

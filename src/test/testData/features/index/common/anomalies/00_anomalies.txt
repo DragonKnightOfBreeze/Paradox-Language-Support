@@ -1,0 +1,5 @@
+anomaly_1 = alien_signal
+
+anomaly_2 = debris_field
+
+anomaly_3 = ancient_ruin

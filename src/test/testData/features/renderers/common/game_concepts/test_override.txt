@@ -1,0 +1,3 @@
+concept_foo = {
+    tooltip_override = concept_tooltip_loc
+}

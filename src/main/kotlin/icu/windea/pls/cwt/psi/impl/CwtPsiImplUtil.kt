@@ -286,6 +286,16 @@ object CwtPsiImplUtil {
         return getMembersRoot(element).findChildren<_>()
     }
 
+    @JvmStatic
+    fun getLeftBound(element: CwtBlock): PsiElement? {
+        return element.firstChild?.takeIf { it.elementType == LEFT_BRACE }
+    }
+
+    @JvmStatic
+    fun getRightBound(element: CwtBlock): PsiElement? {
+        return element.lastChild?.takeIf { it.elementType == RIGHT_BRACE }
+    }
+
     // endregion
 
     // region CwtDocComment

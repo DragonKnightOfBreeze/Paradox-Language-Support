@@ -42,7 +42,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.getAny().resolveNext(pushScope)
     }
 
     object Constants {
@@ -72,12 +72,12 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         if (finalConfig.key == Constants.TRIGGER_KEY) {
             // 基于 `trigger_scope` 的值得到最终的 `scopeContext`，然后推断属性 `trigger` 的值的 `scopeContext`
             val triggerScopeProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.TRIGGER_SCOPE_KEY).one() } ?: return null
-            val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(triggerScopeProperty) ?: return null
+            val scopeContext = ParadoxScopeManager.getScopeContext(triggerScopeProperty) ?: return null
             val pv = triggerScopeProperty.propertyValue ?: return null
             val expressionString = pv.value
             val configGroup = finalConfig.configGroup
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-            return ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
+            return ParadoxScopeManager.getScopeContext(pv, scopeFieldExpression, scopeContext)
         }
         // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断属性 `parameters` 的 `scopeContext`
         val triggerProperty = selectScope { containerProperty.properties(inline = true).ofKey(Constants.TRIGGER_KEY).one() } ?: return null
@@ -86,7 +86,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData?.pushScope
-        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
+        return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeContext.getAny().resolveNext(pushScope)
     }
 
     object Constants {

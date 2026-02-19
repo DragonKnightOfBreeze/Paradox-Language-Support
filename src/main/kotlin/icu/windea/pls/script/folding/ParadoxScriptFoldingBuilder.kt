@@ -40,8 +40,8 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
             BLOCK -> false
-            PARAMETER_CONDITION -> settings.parameterConditionBlocksByDefault
-            INLINE_MATH -> settings.inlineMathBlocksByDefault
+            PARAMETER_CONDITION -> settings.parameterConditionsByDefault
+            INLINE_MATH -> settings.inlineMathsByDefault
             else -> false
         }
     }
@@ -76,11 +76,11 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
             PARAMETER_CONDITION -> run r@{
-                if (!settings.parameterConditionBlocks) return@r
+                if (!settings.parameterConditions) return@r
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
             INLINE_MATH -> run r@{
-                if (!settings.inlineMathBlocks) return@r
+                if (!settings.inlineMaths) return@r
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }

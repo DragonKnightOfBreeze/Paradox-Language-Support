@@ -13,6 +13,7 @@ public class CwtVisitor extends PsiElementVisitor {
     visitValue(o);
     // visitNamedElement(o);
     // visitBlockElement(o);
+    // visitBoundMemberContainer(o);
   }
 
   public void visitBoolean(@NotNull CwtBoolean o) {
@@ -60,6 +61,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
     visitBlockElement(o);
+    // visitMemberContainer(o);
   }
 
   public void visitString(@NotNull CwtString o) {

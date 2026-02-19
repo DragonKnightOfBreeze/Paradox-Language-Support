@@ -1,14 +1,13 @@
 package icu.windea.pls.ep.resolve.definition
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
  * 提供对定义的继承逻辑的支持。
@@ -25,20 +24,13 @@ interface ParadoxDefinitionInheritSupport {
      *
      * **注意**：需要避免递归。
      */
-    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
-
-    /**
-     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。
-     */
-    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? = null
+    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxDefinitionElement?
 
     /**
      * 如果一个定义继承自另一个定义，在解析其子类型时，可能需要进行额外的处理。
      * 例如，依赖于其父定义的子类型，或是其父定义的特定成员属性的值。
      *
-     * 如果实现了这个方法，需要同时考虑实现 [getModificationTracker]。
-     *
-     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。
+     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`，需要改为访问 [subtypeConfigs]。
      */
     fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean = true
 

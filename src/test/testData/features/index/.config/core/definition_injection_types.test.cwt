@@ -1,0 +1,19 @@
+types = {
+    type[arcane_tome] = {
+        path = "common/arcane_tomes"
+        path_extension = .txt
+    }
+    type[academy_spell] = {
+        path = "common/academy_spells"
+        path_extension = .txt
+    }
+    type[wrong_extension_rule] = {
+        path = "common/forbidden"
+        path_extension = .dat
+    }
+    type[filtered_type] = {
+        path = "common/filtered"
+        path_extension = .txt
+        type_key_filter = "allowed"
+    }
+}

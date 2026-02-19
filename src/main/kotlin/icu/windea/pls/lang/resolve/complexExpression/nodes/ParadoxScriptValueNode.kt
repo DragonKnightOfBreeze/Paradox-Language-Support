@@ -11,8 +11,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.set
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSet
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
@@ -29,7 +29,7 @@ class ParadoxScriptValueNode(
     val config: CwtConfig<*>
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton.set()
+        return config.to.singletonSet()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {

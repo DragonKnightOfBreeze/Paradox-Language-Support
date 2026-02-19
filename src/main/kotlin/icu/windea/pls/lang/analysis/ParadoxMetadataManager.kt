@@ -25,9 +25,7 @@ object ParadoxMetadataManager {
     // region Get Methods
 
     fun getLauncherSettingsJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly {
-            ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile)
-        }
+        return runReadActionSmartly { ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile) }
     }
 
     fun getLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo? {
@@ -49,9 +47,7 @@ object ParadoxMetadataManager {
     }
 
     fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly {
-            ParadoxMetadataService.getMetadataJsonFile(rootFile)
-        }
+        return runReadActionSmartly { ParadoxMetadataService.getMetadataJsonFile(rootFile) }
     }
 
     fun getMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo? {

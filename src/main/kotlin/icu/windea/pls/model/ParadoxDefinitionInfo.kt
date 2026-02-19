@@ -10,146 +10,64 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.orDefault
-import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 定义信息。
+ * 定义的解析信息。
  *
- * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。
- * @property typeKey 定义的类型键（不一定是定义的名字）。
- * @property rootKeys 定义的一组顶级键。
+ * @property source 来源。
+ * @property name 名字。如果是空字符串，则表示此定义是匿名的。
+ * @property type 类型。
+ * @property typeKey 类型键（不一定是定义的名字）。
+ * @property rootKeys 一组顶级键。
+ * @property typeConfig 对应的类型规则。
+ * @property memberPath 成员路径。作为文件的定义的成员路径始终为空。
  */
-class ParadoxDefinitionInfo(
-    val element: ParadoxScriptDefinitionElement, // use element directly here
-    val typeConfig: CwtTypeConfig,
-    name0: String?, // null -> lazy get
-    subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
+data class ParadoxDefinitionInfo(
+    val source: ParadoxDefinitionSource,
+    val name: String,
+    val type: String,
     val typeKey: String,
     val rootKeys: List<String>,
+    val typeConfig: CwtTypeConfig,
 ) : UserDataHolderBase() {
+    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
+
+    @Volatile var element: ParadoxDefinitionElement? = null
+
     val configGroup: CwtConfigGroup get() = typeConfig.configGroup
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
 
-    private val subtypeConfigsCache = ConcurrentHashMap<String, List<CwtSubtypeConfig>>()
-    private val declarationConfigsCache = ConcurrentHashMap<String, Any>()
+    val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
+    val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
+    val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
-    val name: String by lazy { name0 ?: doGetName() }
-    val type: String = typeConfig.name
-    val subtypes: List<String> by lazy { doGetSubtypes() }
-    val types: List<String> by lazy { doGetTypes() }
-    val typesText: String by lazy { types.joinToString(", ") }
+    val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
+    val declaration: CwtPropertyConfig? get() = getDeclaration()
 
-    val memberPath: ParadoxMemberPath = doGetMemberPath()
+    // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
+    val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
+    val images: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getRelatedImageInfos(this)
+    val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
+    val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
+    val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
-    val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
-    val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
+    /** @see ParadoxDefinitionManager.getSubtypeConfigs */
+    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
 
-    val localisations: List<RelatedLocalisationInfo> by lazy { doGetLocalisations() }
-    val images: List<RelatedImageInfo> by lazy { doGetImages() }
-    val modifiers: List<ModifierInfo> by lazy { doGetModifiers() }
-    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { doGetPrimaryLocalisations() }
-    val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
-
-    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
-        return doGetSubtypeConfigs(options)
-    }
-
-    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        return doGetDeclaration(options)
-    }
-
-    private fun doGetName(): String {
-        return ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
-    }
-
-    private fun doGetSubtypes(): List<String> {
-        val result = subtypeConfigs.map { it.name }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetTypes(): List<String> {
-        val result = buildList(subtypes.size + 1) { add(type); addAll(subtypes) }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetMemberPath(): ParadoxMemberPath {
-        // NOTE 2.1.2 file definition has empty member path
-        if(typeConfig.typePerFile/* || element is ParadoxScriptFile*/) return ParadoxMemberPath.resolveEmpty()
-
-        return ParadoxMemberPath.resolve(rootKeys + typeKey).normalize()
-    }
-
-    private fun doGetSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
-        if (typeConfig.subtypes.isEmpty()) return emptyList()
-        val cache = subtypeConfigsCache
-        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
-        val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveSubtypeConfigs(this, options)
-        }
-        return result.optimized()
-    }
-
-    private fun doGetDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? {
-        val cache = declarationConfigsCache
-        val cacheKey = options.orDefault().toHashString().optimized() // optimized to optimize memory
-        val result = cache.getOrPut(cacheKey) {
-            ParadoxDefinitionService.resolveDeclaration(element, this, options) ?: EMPTY_OBJECT
-        }
-        return result.castOrNull()
-    }
-
-    private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedLocalisations(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetImages(): List<RelatedImageInfo> {
-        val result = ParadoxDefinitionService.resolveRelatedImages(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetModifiers(): List<ModifierInfo> {
-        val result = ParadoxDefinitionService.resolveModifiers(this)
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetPrimaryLocalisations(): List<RelatedLocalisationInfo> {
-        val result = localisations.filter { it.primary || it.primaryByInference }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    private fun doGetPrimaryImages(): List<RelatedImageInfo> {
-        val result = images.filter { it.primary || it.primaryByInference }
-        return result.optimized() // optimized to optimize memory
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxDefinitionInfo
-            && name == other.name && typesText == other.typesText && gameType == other.gameType
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(name, typesText, gameType)
-    }
+    /** @see ParadoxDefinitionManager.getDeclaration */
+    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionManager.getDeclaration(this, options)
 
     override fun toString(): String {
-        return "ParadoxDefinitionInfo(name=$name, types=$typesText, gameType=$gameType)"
+        return "ParadoxDefinitionInfo(source=$source, name=$name, type=$type, typeKey=$typeKey, rootKeys=$rootKeys, gameType=$gameType)"
     }
-
-    object Keys : KeyRegistry()
 
     data class RelatedImageInfo(
         val key: String,

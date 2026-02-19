@@ -90,9 +90,8 @@ object PlsDocBundle {
     @Nls
     fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
-            val selector = selector(project, context).definition().contextSensitive()
-                .withGameType(gameType)
-            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
+            val selector = selector(project, context).definition().contextSensitive().withGameType(gameType)
+            val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
             val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
             val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
             return text

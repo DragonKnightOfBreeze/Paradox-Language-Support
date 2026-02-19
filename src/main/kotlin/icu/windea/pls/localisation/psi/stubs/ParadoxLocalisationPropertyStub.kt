@@ -15,7 +15,7 @@ import icu.windea.pls.model.ParadoxLocalisationType
  * @property type 本地化的类型。来自父存根（[ParadoxLocalisationPropertyListStub]）。
  */
 @Suppress("UnstableApiUsage")
-interface ParadoxLocalisationPropertyStub : ParadoxLocaleAwareStub<ParadoxLocalisationProperty> {
+sealed interface ParadoxLocalisationPropertyStub : ParadoxLocaleAwareStub<ParadoxLocalisationProperty> {
     val name: String
     val type: ParadoxLocalisationType
 

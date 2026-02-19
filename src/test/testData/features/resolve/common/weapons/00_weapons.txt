@@ -1,0 +1,16 @@
+plasma_cannon = {
+    damage_type = energy
+    damage = 80
+    range = 5
+}
+
+railgun = {
+    damage_type = kinetic
+    damage = 120
+    range = 8
+}
+
+pulse_blade = {
+    damage = 40
+    range = 1
+}

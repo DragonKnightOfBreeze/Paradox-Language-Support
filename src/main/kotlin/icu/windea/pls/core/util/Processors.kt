@@ -30,6 +30,33 @@ object Processors {
     }
 
     /**
+     * 查重处理器：当处理到第二个满足条件的元素时终止迭代。
+     *
+     * 用于快速判断“是否存在重载/被重载项”（即至少存在两个匹配项）。
+     */
+    open class DuplicateProcessor<T> : Processor<T> {
+        var duplicated: Boolean = false
+            private set
+
+        private var count: Int = 0
+
+        override fun process(e: T): Boolean {
+            if (accept(e)) {
+                count++
+                if (count >= 2) {
+                    duplicated = true
+                    return false
+                }
+            }
+            return true
+        }
+
+        protected open fun accept(e: T): Boolean {
+            return true
+        }
+    }
+
+    /**
      * 收集处理器：将满足条件的元素加入到给定集合 [collection]。
      *
      * 可通过重载 [accept] 指定过滤条件；处理始终返回 `true` 以继续迭代。
@@ -82,6 +109,20 @@ object Processors {
 
     /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]，将元素加入列表。 */
     fun <T> collect(filter: (T) -> Boolean): CollectProcessor<T, MutableList<T>> {
-        return collect(filter)
+        return collect(mutableListOf(), filter)
+    }
+
+    /** 创建一个不带过滤条件的 [DuplicateProcessor]。 */
+    fun <T> duplicate(): DuplicateProcessor<T> {
+        return DuplicateProcessor()
+    }
+
+    /** 创建一个带过滤条件 [filter] 的 [DuplicateProcessor]。 */
+    fun <T> duplicate(filter: (T) -> Boolean): DuplicateProcessor<T> {
+        return object : DuplicateProcessor<T>() {
+            override fun accept(e: T): Boolean {
+                return filter(e)
+            }
+        }
     }
 }

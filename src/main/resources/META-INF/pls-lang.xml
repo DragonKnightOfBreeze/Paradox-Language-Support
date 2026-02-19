@@ -188,6 +188,10 @@
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.script.definitionReferenceInfo"/>
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoSettingsProvider"
+        providerId="paradox.script.definitionInjectionInfo"/>
+    <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_CSV"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.csv.definitionReferenceInfo"/>
@@ -257,14 +261,19 @@
     <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
     <nameSuggestionProvider implementation="icu.windea.pls.lang.refactoring.rename.ParadoxNameSuggestionProvider"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptPropertyRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationParameterRenameInputValidator"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersNameDescRenamerFactory"/>
-    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersIconRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticScriptedVariableRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticScriptedVariablesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedLocalisationsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionRelatedImagesRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersNameDescRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionGeneratedModifiersIconRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticDefinitionsRenamerFactory"/>
+    <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticLocalisationsRenamerFactory"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
@@ -284,31 +293,23 @@
     <stubElementRegistryExtension  implementation="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubRegistry"/>
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionTypeIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$EventIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$TechIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$ResourceIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EconomicCategoryIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$GameConceptIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EventNamespaceIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EventIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$SpriteIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextColorIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextIconIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineNamespaceIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefineVariableIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxComplexEnumValueIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefineIndex"/>
 
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
@@ -364,10 +365,10 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsPathServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsUrlServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsGitServiceImpl"/>
-    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.impl.PlsSqliteServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsPathService" serviceImplementation="icu.windea.pls.lang.tools.PlsPathServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsUrlService" serviceImplementation="icu.windea.pls.lang.tools.PlsUrlServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsGitService" serviceImplementation="icu.windea.pls.lang.tools.PlsGitServiceImpl"/>
+    <applicationService serviceInterface="icu.windea.pls.lang.tools.PlsSqliteService" serviceImplementation="icu.windea.pls.lang.tools.PlsSqliteServiceImpl"/>
     <applicationService serviceInterface="icu.windea.pls.tools.game.launch.ParadoxLaunchGameService" serviceImplementation="icu.windea.pls.tools.game.launch.ParadoxLaunchGameServiceImpl"/>
   </extensions>
 

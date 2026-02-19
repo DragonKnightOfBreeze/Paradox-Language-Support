@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
-import icu.windea.pls.core.util.set
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonSet
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -24,7 +24,7 @@ class ParadoxScopeNode(
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton.set()
+        return config.to.singletonSet()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

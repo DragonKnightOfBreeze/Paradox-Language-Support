@@ -62,7 +62,7 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createBlock(project: Project, text: String): ParadoxScriptBlock {
+    fun createBlockFromText(project: Project, text: String): ParadoxScriptBlock {
         return createValue(project, text)
             .castOrNull<ParadoxScriptBlock>() ?: throw IncorrectOperationException()
     }
@@ -74,12 +74,16 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createParameterCondition(project: Project, expression: String, itemsText: String): ParadoxScriptParameterCondition {
-        val text = "a = { [[$expression] $itemsText ] }"
-        return createRootBlock(project, text)
+    fun createParameterConditionFromText(project: Project, text: String): ParadoxScriptParameterCondition {
+        return createRootBlock(project, "a = { $text }")
             .findChild<ParadoxScriptProperty>()
             ?.findChild<ParadoxScriptBlock>()
             ?.findChild<ParadoxScriptParameterCondition>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createParameterCondition(project: Project, expression: String, itemsText: String): ParadoxScriptParameterCondition {
+        return createParameterConditionFromText(project, "[[$expression] $itemsText ]")
     }
 
     @JvmStatic

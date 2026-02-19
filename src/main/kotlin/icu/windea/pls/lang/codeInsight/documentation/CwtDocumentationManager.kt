@@ -15,14 +15,6 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
-import icu.windea.pls.core.codeInsight.documentation.buildSections
-import icu.windea.pls.core.codeInsight.documentation.content
-import icu.windea.pls.core.codeInsight.documentation.definition
-import icu.windea.pls.core.codeInsight.documentation.getSections
-import icu.windea.pls.core.codeInsight.documentation.grayed
-import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
@@ -30,8 +22,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.builders.DocumentationBuilder
+import icu.windea.pls.core.util.builders.buildDocumentation
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
@@ -55,10 +49,17 @@ import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
+import icu.windea.pls.lang.util.builders.appendConfigFileInfoHeader
+import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.util.builders.getModifierCategoriesText
+import icu.windea.pls.lang.util.builders.getScopeContextText
+import icu.windea.pls.lang.util.builders.getScopeText
+import icu.windea.pls.lang.util.builders.getScopesText
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
+import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -135,7 +136,7 @@ object CwtDocumentationManager {
 
     private fun DocumentationBuilder.buildConfigSymbolDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType, configGroup: CwtConfigGroup) {
         definition {
-            appendCwtConfigFileInfoHeader(element)
+            appendConfigFileInfoHeader(element)
 
             val prefix = configType.prefix
 
@@ -148,7 +149,7 @@ object CwtDocumentationManager {
 
     private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
         definition {
-            appendCwtConfigFileInfoHeader(element)
+            appendConfigFileInfoHeader(element)
 
             val config = element.getUserData(CwtConfigManager.Keys.config)
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
@@ -254,12 +255,12 @@ object CwtDocumentationManager {
             if (sections == null || render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(nameLocalisation)
                 sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(descLocalisation)
+                val richText = ParadoxLocalisationTextQuickDocRenderer().render(descLocalisation)
                 sections["desc"] = richText
             }
         }
@@ -292,7 +293,7 @@ object CwtDocumentationManager {
             run {
                 if (iconFile == null) return@run
                 val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections["icon"] = buildDocumentation { appendImgTag(url) }
+                sections["icon"] = buildDocumentation { appendImage(url) }
             }
         }
     }
@@ -315,7 +316,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeManager.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
@@ -325,7 +326,7 @@ object CwtDocumentationManager {
                     val inputScopes = linkConfig.inputScopes
                     sections[PlsBundle.message("sectionTitle.inputScopes")] = getScopesText(inputScopes, gameType, contextElement)
 
-                    val outputScope = linkConfig.outputScope ?: ParadoxScopeManager.anyScopeId
+                    val outputScope = linkConfig.outputScope ?: ParadoxScopeId.anyScopeId
                     sections[PlsBundle.message("sectionTitle.outputScope")] = getScopeText(outputScope, gameType, contextElement)
                 }
             }
@@ -395,7 +396,7 @@ object CwtDocumentationManager {
         val gameType = configGroup.gameType
         val memberElement = referenceElement.parentOfType<ParadoxScriptMember>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文

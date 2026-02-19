@@ -11,7 +11,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 复制本地化文本到剪贴板。（复制的是HTML文本）
+ * 复制本地化文本到剪贴板（复制的是 HTML 文本）。
  */
 abstract class CopyLocalisationTextAsHtmlIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationTextAsHtml")

@@ -3,23 +3,18 @@ package icu.windea.pls.lang.navigation
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.navigation.ChooseByNameContributorEx
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
-import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.core.process
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolNavigationElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找规则符号。
@@ -41,9 +36,9 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val types = getTypes()
         if (types.isEmpty()) return
         val project = scope.project ?: getCurrentProject() ?: return
-        val gameType = getInferredCurrentGameType(project)
-        CwtConfigSymbolSearch.search(null, types, gameType, project, scope).forEach f@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@f // only accept declarations
+        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
+        CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
+            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // only accept declarations
             val name = it.name
             processor.process(name)
         }
@@ -54,22 +49,14 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         if (types.isEmpty()) return
         val project = parameters.project
         val scope = parameters.searchScope
-        val gameType = getInferredCurrentGameType(project)
-        CwtConfigSymbolSearch.search(null, types, gameType, project, scope).forEach f@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@f // only accept declarations
-            val expressionElement = it.virtualFile?.toPsiFile(project)?.findElementAt(it.elementOffset)?.parentOfType<CwtStringExpressionElement>() ?: return@f
+        val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
+        CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
+            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // only accept declarations
             val name = it.name
-            val configType = CwtConfigType.entries.get(it.type) ?: return@f
-            val element = CwtConfigSymbolNavigationElement(expressionElement, name, configType, it.gameType, project)
-            processor.process(element)
+            val configType = CwtConfigType.entries.get(it.type) ?: return@p true
+            val element = it.element ?: return@p true
+            val navigationElement = CwtConfigSymbolNavigationElement(element, name, configType, it.gameType, project)
+            processor.process(navigationElement)
         }
-    }
-
-    private fun getInferredCurrentGameType(project: Project): ParadoxGameType? {
-        val fileEditorManager = FileEditorManager.getInstance(project)
-        fileEditorManager.selectedEditor?.let { selectGameType(it.file) }?.let { return it }
-        fileEditorManager.selectedEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
-        fileEditorManager.allEditors.firstNotNullOfOrNull { selectGameType(it.file) }?.let { return it }
-        return null
     }
 }

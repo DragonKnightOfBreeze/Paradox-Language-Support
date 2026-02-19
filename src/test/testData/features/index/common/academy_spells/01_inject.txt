@@ -1,0 +1,7 @@
+INJECT:shared_name = {
+    power = 100
+}
+
+INJECT:spell_of_mists = {
+    power = 10
+}

@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.config.util
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
@@ -8,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.util.PsiModificationTracker.*
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
@@ -45,29 +43,29 @@ object CwtConfigSymbolManager {
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         if (!element.isExpression()) return emptyList()
         ProgressManager.checkCanceled()
-        val infos = doGetInfoFromCache(element)
+        val infos = getInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-        ProgressManager.checkCanceled()
-        val infos = doGetInfoFromCache(element)
+        val infos = getInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
         if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
         return references.toTypedArray()
     }
 
-    private fun doGetInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+    private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedSymbolInfos) {
-            val value = doGetInfos(element)
-            val trackers = listOf(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
-            value.withDependencyItems(trackers)
+            ProgressManager.checkCanceled()
+            val value = resolveInfos(element)
+            val dependencies = listOf(element, getInstance(element.project).forLanguage(CwtLanguage))
+            value.withDependencyItems(dependencies)
         }
     }
 
-    private fun doGetInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+    private fun resolveInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
         collectInfos(element, infos)
         return infos.optimized()
@@ -96,8 +94,8 @@ object CwtConfigSymbolManager {
             // aliases
             val n1 = name.substringBefore(':').orNull() ?: return@b
             add(tupleOf(n1, nameOffset, symbolConfigType))
-            // effects & triggers
-            if (configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
+            // modifiers & effects & triggers
+            if (configType != CwtConfigTypes.Modifier && configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
             val n2 = name.substringAfter(':').orNull() ?: return@b
             if (CwtDataExpression.resolve(n2, false).type != CwtDataTypes.Constant) return@b
             add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
@@ -208,7 +206,7 @@ object CwtConfigSymbolManager {
         val patternSet = CwtConfigTextPatternSets.aliasReference
         patternSet.forEach f@{ pattern ->
             val (prefix, suffix) = pattern
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return@f
+            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@f
             val nextOffset = offset + prefix.length
             val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Alias.id, readWriteAccess, nextOffset, element.startOffset, gameType)
             infos += info
@@ -225,14 +223,15 @@ object CwtConfigSymbolManager {
             CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
             CwtConfigTypes.DynamicValueType -> configType
             CwtConfigTypes.SingleAlias -> configType
-            CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> CwtConfigTypes.Alias
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias
+            CwtConfigTypes.Directive -> configType
             else -> null
         }
     }
 
     private fun getSymbolName(text: String, configType: CwtConfigType): String? {
         return when (configType) {
-            CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
             else -> CwtConfigManager.getNameByConfigType(text, configType)
         }
     }

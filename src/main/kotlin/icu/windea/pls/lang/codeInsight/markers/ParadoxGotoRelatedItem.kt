@@ -4,8 +4,8 @@ import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty

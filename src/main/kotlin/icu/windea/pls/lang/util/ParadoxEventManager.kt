@@ -18,12 +18,12 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.select.*
@@ -35,11 +35,14 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
+import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 @Suppress("unused")
 object ParadoxEventManager {
@@ -74,22 +77,19 @@ object ParadoxEventManager {
         return prefix == eventNamespace
     }
 
-    fun getEvents(selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).findAll()
+    fun getEvents(selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): Set<ParadoxScriptProperty> {
+        return ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).findAll()
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String {
+    fun getName(element: ParadoxDefinitionElement): String {
         return element.definitionInfo?.name.or.anonymous()
     }
 
-    fun getNamespace(element: ParadoxScriptDefinitionElement): String {
+    fun getNamespace(element: ParadoxDefinitionElement): String {
         return getName(element).substringBefore('.') // enough
     }
 
-    /**
-     * 得到event的需要匹配的namespace。
-     */
-    fun getMatchedNamespace(event: ParadoxScriptDefinitionElement): ParadoxScriptProperty? {
+    fun getMatchedNamespace(event: ParadoxDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
         while (true) {
             if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
@@ -127,7 +127,7 @@ object ParadoxEventManager {
         return eventConfig.subtypes.values.filter { it in CwtSubtypeGroup.EventAttribute }
     }
 
-    fun getType(element: ParadoxScriptDefinitionElement): String? {
+    fun getType(element: ParadoxDefinitionElement): String? {
         return element.definitionInfo?.let { getType(it) }
     }
 
@@ -137,7 +137,7 @@ object ParadoxEventManager {
         }
     }
 
-    fun getAttributes(element: ParadoxScriptDefinitionElement): Set<String> {
+    fun getAttributes(element: ParadoxDefinitionElement): Set<String> {
         return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
     }
 
@@ -147,21 +147,21 @@ object ParadoxEventManager {
         }
     }
 
-    fun getScope(element: ParadoxScriptDefinitionElement): String {
-        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeManager.anyScopeId
+    fun getScope(element: ParadoxDefinitionElement): String {
+        return element.definitionInfo?.let { getScope(it) } ?: ParadoxScopeId.anyScopeId
     }
 
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventScope) {
-            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeManager.anyScopeId
+            definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.config.optionData.pushScope } ?: ParadoxScopeId.anyScopeId
         }
     }
 
-    fun getLocalizedNameElement(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getLocalizedNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 
-    fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
+    fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
 
@@ -170,14 +170,14 @@ object ParadoxEventManager {
      *
      * TODO 考虑兼容需要内联和事件继承的情况。
      */
-    fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
+    fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
             val value = doGetInvocations(definition)
             CachedValueProvider.Result(value, definition)
         }
     }
 
-    private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
+    private fun doGetInvocations(definition: ParadoxDefinitionElement): Set<String> {
         val result = mutableSetOf<String>()
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -188,6 +188,7 @@ object ParadoxEventManager {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
                 val value = element.value
                 if (result.contains(value)) return
                 if (!isValidEventId(value)) return // 排除非法的事件ID
@@ -209,7 +210,7 @@ object ParadoxEventManager {
     /**
      * 得到作为调用者的事件列表。
      */
-    fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokerEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -217,7 +218,7 @@ object ParadoxEventManager {
         if (name.isNullOrEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
+            ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.event, selector).process p0@{ definition0 ->
                 ProgressManager.checkCanceled()
                 ReferencesSearch.search(definition0, selector.scope).process p@{ ref ->
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
@@ -238,7 +239,7 @@ object ParadoxEventManager {
     /**
      * 得到调用的事件列表。
      */
-    fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ParadoxSearchSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+    fun getInvokedEvents(definition: ParadoxDefinitionElement, selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>): List<ParadoxScriptProperty> {
         // NOTE 1. 目前不兼容封装变量引用
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
@@ -248,7 +249,7 @@ object ParadoxEventManager {
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
+            ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.event, selector).process p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                 if (rDefinitionInfo.name.isEmpty()) return@p true

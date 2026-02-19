@@ -2,12 +2,10 @@ package icu.windea.pls.lang.references.script
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
@@ -15,11 +13,7 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiReferencesAware
-import icu.windea.pls.core.unquote
-import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
@@ -45,22 +39,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        val resolved = resolve()
-        return when {
-            resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            resolved is PsiFileSystemItem -> {
-                // #33
-                val configExpression = config.configExpression
-                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
-                val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
-                val newFilePath = fileInfo.path.parent + "/" + newElementName
-                val pathReference = ep.extract(configExpression, element, newFilePath) ?: throw IncorrectOperationException()
-                element.setValue(pathReference)
-            }
-            resolved.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-            resolved.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            else -> throw IncorrectOperationException()
-        }
+        return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve(), config.configExpression)
     }
 
     override fun isReferenceTo(element: PsiElement): Boolean {

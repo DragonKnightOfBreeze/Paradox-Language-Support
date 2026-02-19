@@ -18,6 +18,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.isExpression
 import javax.swing.JComponent
 
 /**
@@ -37,9 +38,8 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
         if (!PlsFacade.checkConfigGroupInitialized(file.project, file)) return false
         // 判断是否需要忽略内联脚本文件
         if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        // 要求是符合条件的脚本文件
-        val injectable = !ignoredInInjectedFiles
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = injectable)
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -50,6 +50,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
 
             private fun visitExpressionElement(element: ParadoxScriptString) {
                 ProgressManager.checkCanceled()
+                if (!element.isExpression()) return
 
                 // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return

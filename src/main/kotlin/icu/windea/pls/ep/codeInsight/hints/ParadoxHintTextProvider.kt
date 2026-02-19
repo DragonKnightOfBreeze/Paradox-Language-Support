@@ -9,7 +9,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 目前仅支持以下类型的目标：
  *
  * - 封装变量（[ParadoxScriptScriptedVariable]）
- * - 定义（[ParadoxScriptDefinitionElement]）
+ * - 定义（[ParadoxDefinitionElement]）
  * - 复杂枚举（[ParadoxComplexEnumValueElement]）
  * - 动态值（[ParadoxDynamicValueElement]）
  *

@@ -17,17 +17,18 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition() {
     override val source: Source get() = Source.PrimaryLocalisation
 
-    override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+        // raw localisation text
         return doGetHintLocalisation(element, definitionInfo, locale)?.value?.orNull()
     }
 
-    override fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(element)
     }
 }
@@ -36,7 +37,8 @@ class ParadoxInferredScriptedVariableHintTextProvider : ParadoxHintTextProviderB
     override val source: Source get() = Source.NameLocalisation
 
     override fun doGetHintText(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): String? {
-        return ParadoxScriptedVariableManager.getLocalizedName(element)
+        // raw localisation text
+        return doGetHintLocalisation(element, name, locale)?.value?.orNull()
     }
 
     override fun doGetHintLocalisation(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
@@ -96,7 +98,7 @@ class ParadoxExtendedScriptedVariableHintTextProvider : ParadoxHintTextProviderB
 class ParadoxExtendedDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition() {
     override val source get() = Source.Extended
 
-    override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
@@ -105,7 +107,7 @@ class ParadoxExtendedDefinitionHintTextProvider : ParadoxHintTextProviderBase.De
         return hint
     }
 
-    override fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val hint = doGetHintText(element, definitionInfo, locale)?.orNull() ?: return null
         return createHintLocalisation(hint, element)
     }
@@ -114,7 +116,7 @@ class ParadoxExtendedDefinitionHintTextProvider : ParadoxHintTextProviderBase.De
 class ParadoxExtendedGameRuleHintTextProvider : ParadoxHintTextProviderBase.Definition() {
     override val source get() = Source.Extended
 
-    override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.gameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
@@ -123,7 +125,7 @@ class ParadoxExtendedGameRuleHintTextProvider : ParadoxHintTextProviderBase.Defi
         return hint
     }
 
-    override fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val hint = doGetHintText(element, definitionInfo, locale)?.orNull() ?: return null
         return createHintLocalisation(hint, element)
     }
@@ -132,7 +134,7 @@ class ParadoxExtendedGameRuleHintTextProvider : ParadoxHintTextProviderBase.Defi
 class ParadoxExtendedOnActionHintTextProvider : ParadoxHintTextProviderBase.Definition() {
     override val source get() = Source.Extended
 
-    override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
@@ -141,7 +143,7 @@ class ParadoxExtendedOnActionHintTextProvider : ParadoxHintTextProviderBase.Defi
         return hint
     }
 
-    override fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val hint = doGetHintText(element, definitionInfo, locale)?.orNull() ?: return null
         return createHintLocalisation(hint, element)
     }

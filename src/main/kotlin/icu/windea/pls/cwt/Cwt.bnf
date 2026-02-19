@@ -28,6 +28,7 @@ root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
     "icu.windea.pls.cwt.psi.CwtBlockElement"
+    "icu.windea.pls.cwt.psi.CwtMemberContainer"
   ]
   methods=[getValue getMembersRoot getMembers getComponents]
 }
@@ -110,10 +111,11 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtBlockElement"
+    "icu.windea.pls.cwt.psi.CwtBoundMemberContainer"
   ]
   methods=[
     getIcon getName setName getValue setValue
-    getMembersRoot getMembers getComponents
+    getMembersRoot getMembers getLeftBound getRightBound getComponents
   ]
 }
 private block_item ::= general_comment | property | option | value {

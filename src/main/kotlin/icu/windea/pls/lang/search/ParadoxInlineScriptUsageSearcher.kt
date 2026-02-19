@@ -28,22 +28,25 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val inlineScriptExpression = queryParameters.expression
-        processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element -> consumer.process(element) }
+        val expression = queryParameters.expression
+        processQueryForInlineScriptUsages(expression, project, scope) { element -> consumer.process(element) }
     }
 
     private fun processQueryForInlineScriptUsages(
-        inlineScriptExpression: String?,
+        expression: String?,
         project: Project,
         scope: GlobalSearchScope,
         processor: Processor<ParadoxScriptProperty>
     ): Boolean {
-        val indexKey = PlsIndexKeys.InlineScriptUsage
-        if (inlineScriptExpression == null) {
-            return PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element -> processor.process(element) }
+        if (expression == null) {
+            return PlsIndexService.processElementsByKeys(PlsIndexKeys.InlineScriptUsage, project, scope) { _, element ->
+                processor.process(element)
+            }
         } else {
-            if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return true // 排除为空或者带参数的情况
-            return PlsIndexService.processElements(indexKey, inlineScriptExpression, project, scope) { element -> processor.process(element) }
+            if (expression.isEmpty() || expression.isParameterized()) return true // 排除为空或者带参数的情况
+            return PlsIndexService.processElements(PlsIndexKeys.InlineScriptUsage, expression, project, scope) { element ->
+                processor.process(element)
+            }
         }
     }
 }

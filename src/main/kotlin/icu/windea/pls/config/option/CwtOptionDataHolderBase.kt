@@ -6,15 +6,19 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.copy
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.core.util.values.ReversibleValue
+import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeId
 
+/**
+ * @see InlinedDelegateFieldCodeInjectors.CwtOptionDataHolderBase
+ */
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {
         val optionConfigs by registerKey<List<CwtOptionMemberConfig<*>>>(this, emptyList())
@@ -26,7 +30,7 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val replaceScopes by registerKey<Map<String, String>?>(this)
         val pushScope by registerKey<String?>(this)
         val scopeContext by registerKey<ParadoxScopeContext?>(this)
-        val supportedScopes by registerKey(this, ParadoxScopeManager.anyScopeIdSet)
+        val supportedScopes by registerKey(this, ParadoxScopeId.anyScopeIdSet)
         val type by registerKey<String?>(this)
         val hint by registerKey<String?>(this)
         val eventType by registerKey<String?>(this)
@@ -52,8 +56,6 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     }
 
     // region Accessors
-
-    // see: icu.windea.pls.inject.injectors.opt.InlinedDelegateFieldCodeInjectors.CwtOptionDataHolderBase
 
     final override var optionConfigs by Keys.optionConfigs
     final override var apiStatus by Keys.apiStatus

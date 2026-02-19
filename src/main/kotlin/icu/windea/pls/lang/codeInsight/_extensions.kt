@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.codeInsight
 
 import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.cwt.psi.CwtExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 val CwtExpressionElement.type: CwtType get() = CwtTypeManager.getType(this)
@@ -15,5 +15,5 @@ val ParadoxExpressionElement.type: ParadoxType get() = ParadoxTypeManager.getTyp
 val ParadoxExpressionElement.expression: String get() = ParadoxTypeManager.getExpression(this) ?: this.text
 val ParadoxExpressionElement.configExpression: String? get() = ParadoxTypeManager.getConfigExpression(this)
 
-val ParadoxScriptProperty.expression: String get() = "${propertyKey.expression} = ${propertyValue?.expression ?: PlsStrings.unknown}"
-val ParadoxScriptProperty.configExpression: String get() = "${propertyKey.configExpression} = ${propertyValue?.configExpression ?: PlsStrings.unknown}"
+val ParadoxScriptProperty.expression: String get() = "${propertyKey.expression} = ${propertyValue?.expression ?: FallbackStrings.unknown}"
+val ParadoxScriptProperty.configExpression: String get() = "${propertyKey.configExpression} = ${propertyValue?.configExpression ?: FallbackStrings.unknown}"

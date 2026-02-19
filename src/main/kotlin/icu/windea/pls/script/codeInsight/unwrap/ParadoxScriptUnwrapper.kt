@@ -4,8 +4,11 @@ import com.intellij.codeInsight.unwrap.AbstractUnwrapper
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.siblings
+import com.intellij.psi.util.elementType
+import icu.windea.pls.core.children
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -22,28 +25,31 @@ abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper
         }
 
         fun extract(element: PsiElement, containerElement: PsiElement) {
-            var first = containerElement.firstChild.siblings(forward = true).find { isElementToExtract(it) }
-            val last = containerElement.lastChild.siblings(forward = false).find { isElementToExtract(it) }
-            if (first == null || last == null) return
+            val first = containerElement.children(forward = true).find { isElementToExtract(element, it) } ?: return
+            val last = containerElement.children(forward = false).find { isElementToExtract(element, it) } ?: return
             var toExtract = first
             if (isEffective) {
                 toExtract = addRangeBefore(first, last, element.parent, element)
             }
-
+            var current: PsiElement? = first
             do {
-                if (toExtract != null) {
-                    addElementToExtract(toExtract)
-                    toExtract = toExtract.nextSibling
-                }
-                first = first?.nextSibling
-            } while (first != null && first.prevSibling !== last)
+                addElementToExtract(toExtract)
+                toExtract = toExtract.nextSibling
+                current = current?.nextSibling
+            } while (current != null && current.prevSibling !== last)
         }
 
-        private fun isElementToExtract(element: PsiElement): Boolean {
-            return element is PsiComment || element is ParadoxScriptProperty || element is ParadoxScriptValue
-                || element is ParadoxScriptScriptedVariable
-                || element is ParadoxScriptParameterCondition
-                || element is ParadoxScriptInlineParameterCondition
+        private fun isElementToExtract(element: PsiElement, child: PsiElement): Boolean {
+            if (element is ParadoxScriptInlineParameterCondition) {
+                return child.elementType == ParadoxScriptElementTypes.ARGUMENT_TOKEN
+                    || child is ParadoxScriptParameter
+                    || child is ParadoxScriptInlineParameterCondition
+            }
+            return child is PsiComment
+                || child is ParadoxScriptProperty
+                || child is ParadoxScriptValue
+                || child is ParadoxScriptScriptedVariable
+                || child is ParadoxScriptParameterCondition
         }
     }
 }

@@ -1,0 +1,9 @@
+sol = {
+    star_class = G
+    planets = 8
+}
+
+alpha_centauri = {
+    star_class = K
+    planets = 3
+}

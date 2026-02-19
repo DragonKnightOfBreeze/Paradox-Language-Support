@@ -32,8 +32,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  */
 class UnusedDynamicValueInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求是符合条件的脚本文件
-        return ParadoxPsiFileMatcher.isScriptFile(file, smart = true, injectable = true)
+        // 要求是可接受的脚本文件
+        return ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

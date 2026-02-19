@@ -97,14 +97,14 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
-     * @property completeInlineScriptUsages 进行代码补全时，是否需要提供对内联脚本用法的代码补全。
-     * @property completeDefinitionInjectionExpressions 进行代码补全时，是否需要提供对定义注入表达式的代码补全。
-     * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
-     * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模板。
-     * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
-     * @property completeByLocalizedName 是否也根据定义和修正的本地化名称来进行代码补全。
-     * @property completeByExtendedConfigs 是否也根据扩展的规则来进行代码补全。
+     * @property completeVariableNames 是否补全效果子句中现有的变量名称。
+     * @property completeInlineScriptUsages 是否补全内联脚本用法。
+     * @property completeDefinitionInjectionExpressions 是否补全定义注入表达式。
+     * @property completeWithValue 如有可能，应用代码补全后，将会自动插入常量值或花括号。
+     * @property completeWithClauseTemplate 如有可能，也会提供带有子句模板的补全项。应用代码补全后，将会展开可编辑的子句模板，以配置要插入的成员。
+     * @property completeOnlyScopeIsMatched 如果支持，将会过滤掉作用域不匹配的补全项。
+     * @property completeByLocalizedName 如果存在，也会提供基于定义或修正的显示名称（本地化文本）的补全项。
+     * @property completeByExtendedConfigs 如果存在，也会提供基于扩展规则的补全项。
      */
     @Tag("completion")
     class CompletionState : BaseState() {
@@ -149,10 +149,10 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      *
      * @property comments 是否允许折叠多行注释。
      * @property commentsByDefault 是否默认折叠多行注释。
-     * @property parameterConditionBlocks 是否允许折叠参数条件表达式块。
-     * @property parameterConditionBlocksByDefault 是否默认折叠参数条件表达式块。
-     * @property inlineMathBlocks 是否允许折叠内联数学表达式块。
-     * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。
+     * @property parameterConditions 是否允许折叠参数条件表达式块。
+     * @property parameterConditionsByDefault 是否默认折叠参数条件表达式块。
+     * @property inlineMaths 是否允许折叠内联数学表达式块。
+     * @property inlineMathsByDefault 是否默认折叠内联数学表达式块。
      * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
      * @property localisationParametersFullyByDefault 是否默认折叠本地化参数。完全折叠。
      * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。
@@ -172,10 +172,10 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     class FoldingState : BaseState() {
         var comments by property(false)
         var commentsByDefault by property(false)
-        var parameterConditionBlocks by property(true)
-        var parameterConditionBlocksByDefault by property(true)
-        var inlineMathBlocks by property(true)
-        var inlineMathBlocksByDefault by property(true)
+        var parameterConditions by property(true)
+        var parameterConditionsByDefault by property(false)
+        var inlineMaths by property(true)
+        var inlineMathsByDefault by property(true)
         var localisationTexts by property(false)
         var localisationTextsByDefault by property(false)
         var localisationParametersFully by property(false)
@@ -284,26 +284,32 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
-     *
-     * @property injectionForParameterValue 是否在必要时为参数值进行自动语言注入（注入为脚本片段）。
-     * @property injectionForLocalisationText 是否在必要时为字符串字面量进行自动语言注入（注入为本地化文本）。
-     * @property configContextForParameters 是否推断参数值的规则上下文。
-     * @property configContextForParametersFast 推断参数的规则上下文时，是否进行快速推断。
+     * @property injectionForParameterValue 是否在必要时对参数值进行自动语言注入（作为脚本片段）。
+     * @property injectionForLocalisationText 是否在必要时对字符串字面量进行自动语言注入（作为本地化文本）。
+     * @property configContextForParameters 是否推断参数的规则上下文。
+     * @property configContextForParametersFast 推断参数的规则上下文时，是否直接使用第一个有效的推断结果。
+     * @property configContextForParametersFromUsages 推断参数的规则上下文时，是否基于用法。
+     * @property configContextForParametersFromConfig 推断参数的规则上下文时，是否基于扩展规则。
      * @property configContextForInlineScripts 是否推断内联脚本的规则上下文。
-     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否进行快速推断。
-     * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
-     * @property scopeContextForEvents 是否推断event的作用域上下文。
-     * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
+     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否直接使用第一个有效的推断结果。
+     * @property configContextForInlineScriptsFromUsages 推断参数的规则上下文时，是否基于用法。
+     * @property configContextForInlineScriptsFromConfig 推断参数的规则上下文时，是否基于扩展规则。
+     * @property scopeContext 是否推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。
+     * @property scopeContextForEvents 是否推断 `event` 的作用域上下文。
+     * @property scopeContextForOnActions 是否推断 `on_action` 的作用域上下文。
      */
     @Tag("inference")
     class InferenceState : BaseState() {
         var injectionForParameterValue by property(true)
         var injectionForLocalisationText by property(true)
         var configContextForParameters by property(true)
-        var configContextForParametersFast by property(true)
+        var configContextForParametersFast by property(false)
+        var configContextForParametersFromUsages by property(true)
+        var configContextForParametersFromConfig by property(true)
         var configContextForInlineScripts by property(true)
         var configContextForInlineScriptsFast by property(true)
+        var configContextForInlineScriptsFromUsages by property(true)
+        var configContextForInlineScriptsFromConfig by property(true)
         var scopeContext by property(false)
         var scopeContextForEvents by property(false)
         var scopeContextForOnActions by property(false)

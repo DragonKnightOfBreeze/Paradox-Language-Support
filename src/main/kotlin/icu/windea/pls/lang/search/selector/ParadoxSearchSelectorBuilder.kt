@@ -4,11 +4,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
+import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -18,21 +18,21 @@ class ParadoxSearchSelectorBuilder(
 ) {
     fun scriptedVariable() = ParadoxSearchSelector<ParadoxScriptScriptedVariable>(project, context)
 
-    fun definition() = ParadoxSearchSelector<ParadoxScriptDefinitionElement>(project, context)
-
-    fun localisation() = ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context)
+    fun define() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
     fun inlineScriptUsage() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
 
-    fun definitionInjection() = ParadoxSearchSelector<ParadoxScriptProperty>(project, context)
+    fun localisation() = ParadoxSearchSelector<ParadoxLocalisationProperty>(project, context)
 
     fun file() = ParadoxSearchSelector<VirtualFile>(project, context)
+
+    fun definition() = ParadoxSearchSelector<ParadoxDefinitionIndexInfo>(project, context)
+
+    fun definitionInjection() = ParadoxSearchSelector<ParadoxDefinitionInjectionIndexInfo>(project, context)
 
     fun complexEnumValue() = ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
 
     fun dynamicValue() = ParadoxSearchSelector<ParadoxDynamicValueIndexInfo>(project, context)
-
-    fun define() = ParadoxSearchSelector<ParadoxDefineIndexInfo>(project, context)
 
     fun parameter() = ParadoxSearchSelector<ParadoxParameterIndexInfo>(project, context)
 

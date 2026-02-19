@@ -17,6 +17,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
+    private val gameType = ParadoxGameType.Stellaris
+
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
@@ -25,9 +27,11 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     @After
     fun clear() = clearIntegrationTest()
 
+    // region Basic
+
     @Test
     fun testFileLocaleIndex_English() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        markFileInfo(gameType, "localisation/ui/ui_l_english.test.yml")
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val data = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
@@ -36,10 +40,12 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testFileLocaleIndex_SimpChinese() {
-        markFileInfo(ParadoxGameType.Stellaris, "localisation/simp_chinese/ui_l_simp_chinese.test.yml")
+        markFileInfo(gameType, "localisation/simp_chinese/ui_l_simp_chinese.test.yml")
         myFixture.configureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
         val data = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_simp_chinese", key)
     }
+
+    // endregion
 }

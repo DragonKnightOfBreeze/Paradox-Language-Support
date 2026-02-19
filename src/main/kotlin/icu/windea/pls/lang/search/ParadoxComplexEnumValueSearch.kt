@@ -35,7 +35,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
             name: String?,
             enumName: String,
             selector: ParadoxSearchSelector<ParadoxComplexEnumValueIndexInfo>
-        ): ParadoxQuery<ParadoxComplexEnumValueIndexInfo, SearchParameters> {
+        ): ParadoxUnaryQuery<ParadoxComplexEnumValueIndexInfo> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, enumName, selector))
         }
     }

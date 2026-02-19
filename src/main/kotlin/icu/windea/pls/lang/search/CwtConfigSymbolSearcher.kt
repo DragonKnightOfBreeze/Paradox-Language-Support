@@ -2,16 +2,14 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>() {
@@ -22,31 +20,29 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         val scope = queryParameters.scope.withFileTypes(CwtFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val name = queryParameters.name
-        val types = queryParameters.types
-        val gameType = queryParameters.gameType
-
-        val indexId = PlsIndexKeys.ConfigSymbol
-        val keys = types
-        PlsIndexService.processFiles(indexId, keys, project, scope) p@{ file ->
-            ProgressManager.checkCanceled()
-            // check game type at file level
-            if (gameType != null) {
-                val configGroup = CwtConfigManager.getContainingConfigGroup(file, project) ?: return@p true
-                if (configGroup.gameType != ParadoxGameType.Core && configGroup.gameType != gameType) return@p true
-            }
-
-            val fileData = FileBasedIndex.getInstance().getFileData(indexId, file, project)
-            if (fileData.isEmpty()) return@p true
-            types.process p1@{ type ->
-                val infos = fileData[type]
-                if (infos.isNullOrEmpty()) return@p1 true
-                infos.process p2@{ info ->
-                    if (name != null && name != info.name) return@p2 true
-                    info.virtualFile = file
-                    consumer.process(info)
-                }
+        val keys = queryParameters.types
+        PlsIndexService.processAllFileData(CwtConfigSymbolIndex::class.java, keys, project, scope, queryParameters.gameType) { file, fileData ->
+            queryParameters.types.process { type ->
+                val infos = fileData[type].orEmpty()
+                infos.process { info -> processInfo(queryParameters, file, info, consumer) }
             }
         }
+    }
+
+    private fun processInfo(
+        queryParameters: CwtConfigSymbolSearch.SearchParameters,
+        file: VirtualFile,
+        info: CwtConfigSymbolIndexInfo?,
+        consumer: Processor<in CwtConfigSymbolIndexInfo>
+    ): Boolean {
+        if (info == null) return true
+        if (!matchesName(queryParameters, info)) return true
+        info.bind(file, queryParameters.project)
+        return consumer.process(info)
+    }
+
+    private fun matchesName(queryParameters: CwtConfigSymbolSearch.SearchParameters, info: CwtConfigSymbolIndexInfo): Boolean {
+        if (queryParameters.name == null) return true
+        return queryParameters.name == info.name
     }
 }

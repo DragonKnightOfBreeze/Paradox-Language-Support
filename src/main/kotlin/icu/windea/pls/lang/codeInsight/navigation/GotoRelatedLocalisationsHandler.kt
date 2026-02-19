@@ -16,8 +16,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.values.anonymous
+import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
@@ -32,7 +32,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
@@ -133,7 +133,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
                 }
@@ -158,7 +158,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
                 sourceElement.isDefinitionTypeKeyOrName() -> {
-                    val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
+                    val definitionInfo = sourceElement.castOrNull<ParadoxDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())
                 }

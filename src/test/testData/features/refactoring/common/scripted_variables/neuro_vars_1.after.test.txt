@@ -1,0 +1,2 @@
+@evil_neuro = 1
+@other_var = 0

@@ -5,8 +5,8 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.util.listOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBoolean
@@ -67,8 +67,8 @@ object CwtTypeManager {
             is CwtValue -> {
                 val configType = getConfigType(element) ?: return emptyList()
                 when (configType) {
-                    CwtConfigTypes.EnumValue -> element.parent.singleton.listOrEmpty()
-                    CwtConfigTypes.DynamicValue -> element.parent.singleton.listOrEmpty()
+                    CwtConfigTypes.EnumValue -> element.parent.to.singletonListOrEmpty()
+                    CwtConfigTypes.DynamicValue -> element.parent.to.singletonListOrEmpty()
                     else -> emptyList()
                 }
             }

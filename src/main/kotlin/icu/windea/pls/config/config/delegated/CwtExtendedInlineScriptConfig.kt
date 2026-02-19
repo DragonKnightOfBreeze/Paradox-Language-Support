@@ -1,14 +1,22 @@
 package icu.windea.pls.config.config.delegated
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.util.withLocationPrefix
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
- * 内联脚本的扩展规则。
+ * 内联脚本（inline script）的扩展规则。
  *
  * 用于为对应的内联脚本（inline script）指定规则上下文与作用域上下文。
  *
@@ -60,3 +68,59 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMembe
 
     companion object : Resolver by CwtExtendedInlineScriptConfigResolverImpl()
 }
+
+// region Implementations
+
+private class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScriptConfig.Resolver, CwtConfigResolverScope {
+    private val logger = thisLogger()
+
+    override fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig = doResolve(config)
+
+    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
+        val name = if (config is CwtPropertyConfig) config.key else config.value
+        val contextConfigsType = config.optionData.contextConfigsType
+        logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
+        return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
+    }
+}
+
+private class CwtExtendedInlineScriptConfigImpl(
+    override val config: CwtMemberConfig<*>,
+    override val name: String,
+    override val contextConfigsType: String,
+) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
+    private val _containerConfig by lazy { doGetContainerConfig() }
+    private val _contextConfigs by lazy { doGetContextConfigs() }
+
+    override fun getContainerConfig(): CwtMemberConfig<*> {
+        return _containerConfig
+    }
+
+    override fun getContextConfigs(): List<CwtMemberConfig<*>> {
+        return _contextConfigs
+    }
+
+    private fun doGetContainerConfig(): CwtMemberConfig<*> {
+        if (config !is CwtPropertyConfig) return config
+        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    }
+
+    private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
+        val containerConfig = _containerConfig
+        if (containerConfig !is CwtPropertyConfig) return emptyList()
+        val r = when (contextConfigsType) {
+            "multiple" -> containerConfig.configs.orEmpty()
+            // "single" -> containerConfig.valueConfig.singleton.listOrEmpty()
+            else -> containerConfig.valueConfig.to.singletonListOrEmpty()
+        }
+        if (r.isEmpty()) return emptyList()
+        val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
+        return listOf(contextConfig)
+    }
+
+    override fun toString() = "CwtExtendedInlineScriptConfigImpl(name='$name')"
+}
+
+
+// endregion

@@ -68,9 +68,9 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.values.singletonSetOrEmpty
+import icu.windea.pls.core.util.values.to
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.reflect.KProperty
@@ -132,12 +132,12 @@ fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provide
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
-fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, *dependencyItems)
+fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
+    return CachedValueProvider.Result.create(this, *dependencies)
 }
 
-fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, dependencyItems)
+fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
+    return CachedValueProvider.Result.create(this, dependencies)
 }
 
 fun <T> Query<T>.process(consumer: Processor<in T>): Boolean {
@@ -438,14 +438,17 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
 // region PSI Extensions
 
 /**
- * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
+ * 查找位于指定偏移处的 PSI 元素，并尝试对其进行转换。
+ *
+ * @param forward 查找指定偏移之前还是之后的 PSI 元素。默认为 null，表示同时考虑。
  */
 fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null, transform: (element: PsiElement) -> T?): T? {
-    var element0: PsiElement? = null
+    if (offset < 0) return null
+    var current: PsiElement? = null
     if (forward != false) {
         val element = findElementAt(offset)
         if (element != null) {
-            element0 = element
+            current = element
             val result = transform(element)
             if (result != null) {
                 return result
@@ -454,7 +457,7 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
     }
     if (forward != true && offset > 0) {
         val leftElement = findElementAt(offset - 1)
-        if (leftElement != null && leftElement !== element0) {
+        if (leftElement != null && leftElement !== current) {
             val leftResult = transform(leftElement)
             if (leftResult != null) {
                 return leftResult
@@ -464,62 +467,37 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
     return null
 }
 
-/** 在 [startOffset, endOffset) 范围内查找并转换元素。 */
-fun <T : PsiElement> PsiFile.findElementsBetween(
-    startOffset: Int,
-    endOffset: Int,
-    rootTransform: (element: PsiElement) -> PsiElement?,
-    transform: (element: PsiElement) -> T?
-): List<T> {
-    val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
-    val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
-    val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
-    val elements = mutableListOf<T>()
-    root.processChild {
-        val textRange = it.textRange
-        if (textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
-            val isLast = textRange.endOffset >= endOffset
-            val result = transform(it)
-            if (result != null) elements.add(result)
-            !isLast
-        } else {
-            true
-        }
-    }
-    return elements
-}
-
-/** 在 [startOffset, endOffset) 范围内收集所有 PSI 元素（不转换）。 */
-fun PsiFile.findAllElementsBetween(
-    startOffset: Int,
-    endOffset: Int,
-    rootTransform: (element: PsiElement) -> PsiElement?
-): List<PsiElement> {
-    val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
-    val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
-    val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
-    val elements = mutableListOf<PsiElement>()
-    root.processChild {
-        val textRange = it.textRange
-        if (textRange.endOffset > startOffset) {
-            elements.add(it)
-            true
-        } else {
-            if (textRange.startOffset < endOffset) {
+/**
+ * 查找位于指定的开始偏移和结束偏移之间的 PSI 元素。
+ *
+ * 通过对开始偏移处和结束偏移处的 PSI 元素进行转换以得到各自的根元素，得到共同的祖先元素并作为最终的根元素，
+ * 再从根元素的子元素中遍历所有位于开始偏移和结束偏移之间（涉及即可）的 PSI 元素。
+ */
+fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (rootElement: PsiElement) -> PsiElement?): Sequence<PsiElement> {
+    if (startOffset < 0 || endOffset < 0) return emptySequence()
+    if (startOffset >= endOffset) return emptySequence()
+    val startRootElement = findElementAt(startOffset, true, rootTransform) ?: return emptySequence()
+    val endRootElement = findElementAt(endOffset, true, rootTransform) ?: return emptySequence()
+    val root = if (startRootElement.isAncestor(endRootElement)) startRootElement else endRootElement
+    return sequence {
+        root.processChild { element ->
+            val textRange = element.textRange
+            if (textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
                 val isLast = textRange.endOffset >= endOffset
-                elements.add(it)
+                yield(element)
                 !isLast
+            } else {
+                true
             }
-            true
         }
     }
-    return elements
 }
 
 /**
- * @param forward 查找偏移之前还是之后的 PSI 引用，默认为 `null`，表示同时考虑。
+ * @param forward 查找偏移之前还是之后的 PSI 引用。默认为 `null`，表示同时考虑。
  */
 fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (reference: PsiReference) -> Boolean): PsiReference? {
+    if (offset < 0) return null
     if (forward != false) {
         val reference = findReferenceAt(offset)
         if (reference != null && predicate(reference)) {
@@ -848,7 +826,7 @@ inline fun executeWriteCommand(
     makeWritable: PsiElement? = null,
     crossinline command: () -> Unit
 ) {
-    WriteCommandAction.writeCommandAction(project, makeWritable.singleton.setOrEmpty())
+    WriteCommandAction.writeCommandAction(project, makeWritable.to.singletonSetOrEmpty())
         .withName(name).withGroupId(groupId)
         .run(ThrowableRunnable { command() })
 }

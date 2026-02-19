@@ -35,7 +35,8 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position
         val project = parameters.originalFile.project
-        val selector = selector(project, element).scriptedVariable().contextSensitive().distinctByName()
+        val selector = selector(project, element).scriptedVariable().contextSensitive()
+            .distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(it, result) }
     }
 

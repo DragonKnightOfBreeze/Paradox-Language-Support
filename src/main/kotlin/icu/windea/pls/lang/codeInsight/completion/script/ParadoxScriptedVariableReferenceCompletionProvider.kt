@@ -36,8 +36,9 @@ class ParadoxScriptedVariableReferenceCompletionProvider : CompletionProvider<Co
 
         ParadoxCompletionManager.initializeContext(parameters, context)
 
-        // 同时需要同时查找当前文件中的和全局的
-        val selector = selector(project, element).scriptedVariable().contextSensitive().distinctByName()
+        // 需要同时查找当前文件中的和全局的
+        val selector = selector(project, element).scriptedVariable().contextSensitive()
+            .distinctByName()
         ParadoxScriptedVariableSearch.searchLocal(null, selector).processAsync { processScriptedVariable(context, result, it) }
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
 

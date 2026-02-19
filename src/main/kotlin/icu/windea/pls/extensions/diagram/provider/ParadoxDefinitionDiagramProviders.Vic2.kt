@@ -11,7 +11,7 @@ import icu.windea.pls.extensions.diagram.settings.Vic2EventTreeDiagramSettings
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 
 @WithGameType(ParadoxGameType.Vic2)
@@ -36,7 +36,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
         file: VirtualFile?, // umlFile
         override val provider: Vic2EventTreeDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
+        override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Vic2EventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
 

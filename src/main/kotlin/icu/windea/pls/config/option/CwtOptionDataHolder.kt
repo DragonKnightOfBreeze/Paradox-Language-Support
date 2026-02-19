@@ -19,12 +19,10 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor
-import icu.windea.pls.lang.util.ParadoxColorManager
-import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxTagType
+import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
@@ -130,7 +128,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## replace_scopes = { this = country root = country }`
      *
-     * @see ParadoxScopeManager
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
      */
     val replaceScopes: Map<String, String>?
 
@@ -146,7 +145,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## push_scope = country`
      *
-     * @see ParadoxScopeManager
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
      */
     val pushScope: String?
 
@@ -159,7 +159,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：兼容。PLS 会做作用域 ID 归一化。
      *
-     * @see ParadoxScopeManager
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
      */
     val scopeContext: ParadoxScopeContext?
 
@@ -176,7 +177,8 @@ interface CwtOptionDataHolder : UserDataHolder {
      * ## scope = { country planet }
      * ```
      *
-     * @see ParadoxScopeManager
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
      */
     val supportedScopes: Set<String>
 
@@ -353,8 +355,6 @@ interface CwtOptionDataHolder : UserDataHolder {
      * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## modifier_categories = { economic_unit planet }`
-     *
-     * @see ParadoxModifierManager
      */
     val modifierCategories: Set<String>?
 
@@ -368,8 +368,6 @@ interface CwtOptionDataHolder : UserDataHolder {
      * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## color_type = rgb`
-     *
-     * @see ParadoxColorManager
      */
     val colorType: String?
 

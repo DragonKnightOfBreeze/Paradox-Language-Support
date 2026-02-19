@@ -1,0 +1,6 @@
+root = {
+    key = {
+        # comment
+        foo = bar
+    }
+}

@@ -12,7 +12,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
@@ -65,9 +65,9 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
             return doGetHintLocalisation(element, definitionInfo, locale)
         }
 
-        abstract fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String?
+        abstract fun doGetHintText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String?
 
-        abstract fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
+        abstract fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
     }
 
     abstract class ComplexEnumValue : ParadoxHintTextProviderBase() {
