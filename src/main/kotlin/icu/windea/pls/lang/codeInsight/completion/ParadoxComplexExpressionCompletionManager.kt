@@ -221,7 +221,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
                 }
             }
         }
@@ -331,7 +331,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
                 }
             } else if (node is ParadoxValueFieldNode) {
                 if (inRange) {
@@ -382,7 +382,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
                 }
             } else if (node is ParadoxDataSourceNode) {
                 if (inRange) {
@@ -433,7 +433,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeForCommandScopeLinkNode(node, context, result)
                     break
                 } else {
-                    scopeContextInExpression = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContextInExpression)
+                    scopeContextInExpression = ParadoxScopeManager.getScopeContext(element, node, scopeContextInExpression)
                 }
             } else if (node is ParadoxCommandFieldNode) {
                 if (inRange) {
@@ -695,7 +695,7 @@ object ParadoxComplexExpressionCompletionManager {
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
-            context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            context.scopeContext = ParadoxScopeManager.getScopeContext(element, node, scopeContext)
 
             val keywordNode = currentArgNode ?: valueNode
             val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)
@@ -812,7 +812,7 @@ object ParadoxComplexExpressionCompletionManager {
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
-            context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
+            context.scopeContext = ParadoxScopeManager.getScopeContext(element, node, scopeContext)
 
             val keywordNode = currentArgNode ?: valueNode
             val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)

@@ -34,7 +34,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                 val config = configs.firstOrNull() ?: return
                 if (!ParadoxScopeManager.isScopeContextSupported(element)) return
                 val parentMember = ParadoxScopeManager.findParentMember(element, withSelf = false) ?: return
-                val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(parentMember) ?: return
+                val parentScopeContext = ParadoxScopeManager.getScopeContext(parentMember) ?: return
                 val supportedScopes = getSupportedScopes(element, config) ?: return
                 val configGroup = config.configGroup
                 if (!ParadoxScopeManager.matchesScope(parentScopeContext, supportedScopes, configGroup)) {

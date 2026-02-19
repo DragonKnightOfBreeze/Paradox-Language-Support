@@ -107,7 +107,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         val eventType = info.typeExpression.substringBefore('.')
                         if (eventType != definitionInfo.type) return@f // matches definition type
                         val definition = info.definitionElement ?: return@f
-                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(definition) ?: return@f
+                        val scopeContext = ParadoxScopeManager.getScopeContext(definition) ?: return@f
                         val map = with(scopeContext) {
                             buildMap {
                                 put("this", scope.id)
@@ -331,7 +331,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                         val scopesElement = info.scopesElement
                         if (scopesElement != null) {
                             // 从 `scopes = { ... }` 中推断
-                            val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeManager.getScopeContext(scopesElement)
                             ProgressManager.checkCanceled()
                             val map = mutableMapOf<String, String>()
                             scopesElement.properties(inline = true).forEach f@{
@@ -347,7 +347,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                                 val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return@f
-                                val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeManager.getScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }
                             if (map.isEmpty()) return@p false
@@ -484,7 +484,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                         val scopesElement = info.scopesElement
                         if (scopesElement != null) {
                             // 从 `scopes = { ... }` 中推断
-                            val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
+                            val scopeContextOfScopesElement = ParadoxScopeManager.getScopeContext(scopesElement)
                             ProgressManager.checkCanceled()
                             val map = mutableMapOf<String, String>()
                             scopesElement.properties(inline = true).forEach f@{
@@ -500,7 +500,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                                 val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
                                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return@f
-                                val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
+                                val scopeContextOfEachScope = ParadoxScopeManager.getScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }
                             if (map.isEmpty()) return@p false

@@ -132,7 +132,7 @@ object ParadoxCompletionManager {
         val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = true
-        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
 
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
@@ -173,7 +173,7 @@ object ParadoxCompletionManager {
         val occurrences = ParadoxConfigManager.getChildOccurrences(memberElement, parentConfigs)
 
         context.isKey = false
-        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
+        context.scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
 
         for (config in configs) {
             if (shouldComplete(config, occurrences)) {
@@ -200,7 +200,7 @@ object ParadoxCompletionManager {
         if (configs.isEmpty()) return
 
         context.isKey = false
-        context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(propertyElement)
+        context.scopeContext = ParadoxScopeManager.getScopeContext(propertyElement)
 
         for (config in configs) {
             if (config is CwtValueConfig) {

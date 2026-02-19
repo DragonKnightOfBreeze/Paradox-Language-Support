@@ -46,7 +46,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     }
 
     private fun checkExpression(holder: ProblemsHolder, element: ParadoxScriptProperty, config: CwtPropertyConfig) {
-        val resultScopeContext = ParadoxScopeManager.getSwitchedScopeContext(element) ?: return
+        val resultScopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
         val links = resultScopeContext.links
         if (links.isEmpty()) return
         val definitionType by lazy { findParentDefinitionType(element) }

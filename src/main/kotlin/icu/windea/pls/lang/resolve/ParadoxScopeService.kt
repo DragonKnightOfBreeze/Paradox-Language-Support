@@ -217,7 +217,7 @@ object ParadoxScopeService {
         // if matched configs are scope-aware, so do supported
         if (isScopeContextSupportedForDefinitionMember(element)) return true
         // if there is an overridden scope context, so do supported
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
+        val scopeContext = ParadoxScopeManager.getScopeContext(element)
         if (scopeContext?.overriddenProvider != null) return true
         return false
     }
@@ -305,7 +305,7 @@ object ParadoxScopeService {
     private fun evaluateScopeContextForDefinitionMember(element: ParadoxScriptMember): ParadoxScopeContext? {
         // element could be a definition member only if after inlined
         val parentMember = findParentMember(element, withSelf = false)
-        val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getSwitchedScopeContext(parentMember) else null
+        val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getScopeContext(parentMember) else null
         val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
         val config = configs.firstOrNull() ?: return null
 
@@ -318,7 +318,7 @@ object ParadoxScopeService {
             val expressionString = expressionElement.value
             val configGroup = config.configGroup
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
-            val result = ParadoxScopeManager.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
+            val result = ParadoxScopeManager.getScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
             return result
         } else {
             // 优先基于内联前的规则，如果没有，再基于内联后的规则
@@ -345,7 +345,7 @@ object ParadoxScopeService {
     fun evaluateScopeContextForExpression(element: ParadoxScriptMember, expression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
         val parentElement = findParentMember(element, withSelf = false)
         val parentScopeContext = when {
-            parentElement != null -> ParadoxScopeManager.getSwitchedScopeContext(parentElement) ?: ParadoxScopeContext.getAny()
+            parentElement != null -> ParadoxScopeManager.getScopeContext(parentElement) ?: ParadoxScopeContext.getAny()
             else -> ParadoxScopeContext.getAny()
         }
         val expressionElement = when {
@@ -354,7 +354,7 @@ object ParadoxScopeService {
             else -> null
         }
         if (expressionElement == null) return null
-        return ParadoxScopeManager.getSwitchedScopeContext(expressionElement, expression, parentScopeContext)
+        return ParadoxScopeManager.getScopeContext(expressionElement, expression, parentScopeContext)
     }
 
     fun evaluateScopeContextForExpression(element: ParadoxExpressionElement, expression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
@@ -532,7 +532,7 @@ object ParadoxScopeService {
                 if (expressionElement == null) return ParadoxScopeContext.getAny()
                 val dynamicValueElement = ParadoxDynamicValueManager.resolveDynamicValue(expressionElement, name, configExpressions, configGroup)
                 if (dynamicValueElement == null) return ParadoxScopeContext.getAny()
-                return ParadoxScopeManager.getSwitchedScopeContext(dynamicValueElement, inputScopeContext)
+                return ParadoxScopeManager.getScopeContext(dynamicValueElement, inputScopeContext)
             }
             // unexpected, or other specific situations
             else -> {

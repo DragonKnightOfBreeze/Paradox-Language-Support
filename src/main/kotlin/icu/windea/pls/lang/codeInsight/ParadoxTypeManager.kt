@@ -224,7 +224,7 @@ object ParadoxTypeManager {
         }
         if (memberElement == null) return null
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return null
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: return null
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: return null
         return scopeContext
     }
 

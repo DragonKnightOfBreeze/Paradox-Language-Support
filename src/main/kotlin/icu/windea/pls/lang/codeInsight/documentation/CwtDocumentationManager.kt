@@ -396,7 +396,7 @@ object CwtDocumentationManager {
         val gameType = configGroup.gameType
         val memberElement = referenceElement.parentOfType<ParadoxScriptMember>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
+        val scopeContext = ParadoxScopeManager.getScopeContext(memberElement)
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文

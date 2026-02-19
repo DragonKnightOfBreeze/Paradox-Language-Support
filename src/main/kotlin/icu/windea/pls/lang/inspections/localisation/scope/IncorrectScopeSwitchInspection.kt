@@ -46,7 +46,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                 is ParadoxCommandScopeLinkNode -> {
                     val supportedScopes = ParadoxScopeManager.getSupportedScopes(element, node, inputScopeContext)
                     val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
-                    val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
+                    val outputScopeContext = ParadoxScopeManager.getScopeContext(element, node, inputScopeContext)
                     inputScopeContext = outputScopeContext
 
                     if (supportedScopes.isNullOrEmpty()) continue

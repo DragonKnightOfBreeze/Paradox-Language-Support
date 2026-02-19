@@ -102,8 +102,8 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
+        val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
+        val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
         val expression = element.expression
         val description = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
@@ -122,8 +122,8 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val configGroup = config.configGroup
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
-        val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
+        val parentScopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: ParadoxScopeContext.getAny()
+        val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
         val expression = element.expression
         val description = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)

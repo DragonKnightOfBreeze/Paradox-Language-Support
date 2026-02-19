@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * 保存了 **系统作用域** 到 **作用域** 信息的映射。
  * 以便进行取值、回溯、入栈、替换等操作。
  *
- * 注意：求值得到的作用域上下文，一般是指切换后的上下文。即，进入脚本成员的子块后，或者进入链接节点后得到的上下文。
+ * 注意：求值得到的作用域上下文，一般是指切换后的上下文。即，进入脚本成员的子块后，或者进入链接节点后的上下文。
  *
  * @property scope 当前作用域（即 `this`）。
  * @property root 根作用域（即 `root`）。

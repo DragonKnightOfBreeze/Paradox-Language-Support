@@ -62,7 +62,7 @@ object ParadoxScopeManager {
         // does not have scope context -> changed always
         val parentMember = findParentMember(element, withSelf = false)
         if (parentMember == null) return true
-        val parentScopeContext = getSwitchedScopeContext(parentMember)
+        val parentScopeContext = getScopeContext(parentMember)
         if (parentScopeContext == null) return true
         if (parentScopeContext != scopeContext) return true
         if (!isScopeContextSupported(parentMember)) return true
@@ -76,7 +76,7 @@ object ParadoxScopeManager {
         return ParadoxScopeService.isScopeContextSupportedForMember(element, indirect)
     }
 
-    fun getSwitchedScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
+    fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
@@ -87,7 +87,7 @@ object ParadoxScopeManager {
         }
     }
 
-    fun getSwitchedScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
@@ -98,22 +98,22 @@ object ParadoxScopeManager {
         }
     }
 
-    fun getSwitchedScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         // only receive push scope (this scope), ignore others (like root scope, etc.)
-        val scopeContext = getSwitchedScopeContext(element)
+        val scopeContext = getScopeContext(element)
         return inputScopeContext.resolveNext(scopeContext.scope.id)
     }
 
-    fun getSwitchedScopeContext(element: PsiElement, expression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
+    fun getScopeContext(element: PsiElement, expression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
         val memberElement = findParentMember(element, withSelf = true) ?: return null
         return ParadoxScopeService.evaluateScopeContextForExpression(memberElement, expression, configExpression)
     }
 
-    fun getSwitchedScopeContext(element: ParadoxExpressionElement, expression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxExpressionElement, expression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         return ParadoxScopeService.evaluateScopeContextForExpression(element, expression, inputScopeContext)
     }
 
-    fun getSwitchedScopeContextOfNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         return ParadoxScopeService.evaluateScopeContextForNode(element, node, inputScopeContext)
     }
 

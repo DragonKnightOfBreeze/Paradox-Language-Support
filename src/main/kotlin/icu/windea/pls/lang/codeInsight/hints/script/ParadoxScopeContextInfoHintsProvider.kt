@@ -59,7 +59,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
         val project = file.project
 
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element) ?: return
+        val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return
 
         if (context.settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
 
