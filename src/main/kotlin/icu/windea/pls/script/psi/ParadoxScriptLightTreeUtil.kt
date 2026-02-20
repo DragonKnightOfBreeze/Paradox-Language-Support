@@ -43,8 +43,8 @@ object ParadoxScriptLightTreeUtil {
     //         ?.firstChild(tree) { it.tokenType == PROPERTY && predicate(getNameFromPropertyNode(it, tree)) }
     // }
 
-    fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.childrenOfType(tree, STRING_TOKEN).singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
-    }
+    // fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {
+    //     return node.childrenOfType(tree, STRING_TOKEN).singleOrNull()
+    //         ?.internNode(tree)?.toString()?.unquote()
+    // }
 }
