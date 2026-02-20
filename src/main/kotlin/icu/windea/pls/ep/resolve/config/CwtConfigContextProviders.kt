@@ -48,6 +48,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         if (vFile == null) return null
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
+        val memberPathFromFile = memberPathFromFile.normalize()
         val configContext = CwtConfigContext(element, memberPathFromFile, null, memberRole, configGroup)
         return configContext
     }
@@ -77,6 +78,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val definitionMemberPath = definitionInfo.memberPath
+        val memberPathFromFile = memberPathFromFile.normalize()
         val memberPath = definitionMemberPath.relativeTo(memberPathFromFile)?.normalize() ?: return null
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         configContext.definitionInfo = definitionInfo
@@ -127,6 +129,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
 
         val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
+        val memberPathFromFile = memberPathFromFile.normalize()
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
         configContext.parameterElement = parameterElement
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
@@ -179,6 +182,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         if (!ParadoxInlineScriptManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val vFile = selectFile(file)
         if (vFile == null) return null
+        val memberPathFromFile = memberPathFromFile.normalize()
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(memberPathFromFile.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) } + 1)).normalize()
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         return configContext
@@ -220,6 +224,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null
+        val memberPathFromFile = memberPathFromFile.normalize()
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPathFromFile, memberRole, configGroup)
         configContext.inlineScriptExpression = inlineScriptExpression
         return configContext
@@ -277,6 +282,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         if (!ParadoxDefinitionInjectionManager.isSupported(configGroup.gameType)) return null // 忽略游戏类型不支持的情况
         val definitionInjection = selectScope { element.parentDefinitionInjection() } ?: return null
         val definitionInjectionInfo = definitionInjection.definitionInjectionInfo ?: return null
+        val memberPathFromFile = memberPathFromFile.normalize()
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize() // 去除第一个子路径
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         configContext.definitionInjectionInfo = definitionInjectionInfo

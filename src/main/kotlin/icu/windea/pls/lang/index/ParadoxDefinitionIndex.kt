@@ -51,7 +51,6 @@ import java.io.DataOutput
 @Optimized
 class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionIndexInfo>({ it.type }, { it.name })
-    private val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
 
     override fun getName() = PlsIndexKeys.Definition
 
@@ -95,6 +94,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             else -> null
         }
 
+        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -112,9 +113,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             }
 
             private fun processDefinition(element: ParadoxDefinitionElement): Boolean {
+                // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return true
-
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return false
                 if (rootKeys.any { it.isParameterized() }) return false // 排除顶级键可能带参数的情况
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }

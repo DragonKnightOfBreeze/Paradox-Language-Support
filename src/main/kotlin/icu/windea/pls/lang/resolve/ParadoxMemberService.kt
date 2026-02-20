@@ -56,7 +56,8 @@ object ParadoxMemberService {
     }
 
     /**
-     * 得到 [node] 对应的脚本成员的节点的路径。相对于所在文件，顺序从前往后。如果包含参数，则直接返回 `null`。
+     * 得到 [node] 对应的脚本成员的节点的路径。相对于所在文件，顺序从前往后。
+     * 如果包含参数，则直接返回 `null`。
      */
     fun getPath(node: LighterASTNode, tree: LighterAST, file: VirtualFile, limit: Int = 0, maxDepth: Int = 0): ParadoxMemberPath? {
         var current = node
@@ -105,7 +106,8 @@ object ParadoxMemberService {
     }
 
     /**
-     * 得到 [node] 对应的脚本成员的节点的一组顶级键。相对于所在文件，顺序从前往后。如果包含参数，则直接返回 `null`。
+     * 得到 [node] 对应的脚本成员的节点的一组顶级键。相对于所在文件，顺序从前往后。
+     * 如果包含参数，则直接返回 `null`。
      */
     fun getRootKeys(node: LighterASTNode, tree: LighterAST, file: VirtualFile, limit: Int = 0, maxDepth: Int = 0): List<String>? {
         var current = tree.getParent(node) ?: return emptyList()
@@ -169,7 +171,8 @@ object ParadoxMemberService {
     }
 
     /**
-     * 得到 [node] 对应的脚本成员的节点的一组键前缀。顺序从前往后。如果包含参数，则直接返回 `null`。
+     * 得到 [node] 对应的脚本成员的节点的一组键前缀。顺序从前往后。
+     * 如果包含参数，则直接返回 `null`。
      *
      * 找到之前紧邻的一组连续的字符串节点（忽略空白和注释），将它们转化为字符串列表（基于值）。
      */
@@ -208,7 +211,8 @@ object ParadoxMemberService {
     }
 
     /**
-     * 得到 [node] 对应的脚本成员的节点的键前缀。如果包含参数，则直接返回 `null`。
+     * 得到 [node] 对应的脚本成员的节点的键前缀。
+     * 如果包含参数，则直接返回 `null`。
      */
     fun getKeyPrefix(node: LighterASTNode, tree: LighterAST): String? {
         return getKeyPrefixes(node, tree, limit = 1)?.singleOrNull()

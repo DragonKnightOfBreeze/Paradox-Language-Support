@@ -2,8 +2,26 @@
 
 package icu.windea.pls.core.collections
 
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
 import icu.windea.pls.core.isNotNullOrEmpty
 import java.util.*
+
+inline fun <T> ImmutableList(expectedSize: Int, init: (index: Int) -> T): List<T> {
+    require(expectedSize >= 0) { "expectedSize must be non-negative" }
+    if (expectedSize == 0) return emptyList()
+    val builder = ImmutableList.builderWithExpectedSize<T>(expectedSize)
+    repeat(expectedSize) { index -> builder.add(init(index)) }
+    return builder.build()
+}
+
+inline fun <T> ImmutableSet(expectedSize: Int, init: (index: Int) -> T): Set<T> {
+    require(expectedSize >= 0) { "expectedSize must be non-negative" }
+    if (expectedSize == 0) return emptySet()
+    val builder = ImmutableSet.builderWithExpectedSize<T>(expectedSize)
+    repeat(expectedSize) { index -> builder.add(init(index)) }
+    return builder.build()
+}
 
 /**
  * 创建一个可变集合（[MutableSet]）。
@@ -35,3 +53,4 @@ fun <T : Any, C : MutableCollection<T>> mergeTo(destination: C, vararg collectio
 fun <T : Any> merge(vararg collections: Collection<T>?): List<T> {
     return mergeTo(ArrayList(), *collections)
 }
+

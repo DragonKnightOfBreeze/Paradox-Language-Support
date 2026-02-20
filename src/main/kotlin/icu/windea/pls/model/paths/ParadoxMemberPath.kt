@@ -1,9 +1,9 @@
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.removePrefixOrNull
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
 
 /**
@@ -57,7 +57,7 @@ fun ParadoxMemberPath.relativeTo(other: ParadoxMemberPath): ParadoxMemberPath? {
 
 private val stringInterner = Interner.newWeakInterner<String>()
 
-private fun String.internPath() = stringInterner.intern(this)
+private fun String.internString() = stringInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
@@ -100,8 +100,8 @@ private class ParadoxMemberPathImplFromSubPaths(input: List<String>) : ParadoxMe
 }
 
 private class NormalizedParadoxMemberPath(input: ParadoxMemberPath) : ParadoxMemberPathBase() {
-    override val path: String = input.path.internPath()
-    override val subPaths: List<String> = input.subPaths.mapFast { it.internPath() }.optimized()
+    override val path: String = input.path.internString()
+    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internString() }
 }
 
 private object EmptyParadoxMemberPath : ParadoxMemberPathBase() {

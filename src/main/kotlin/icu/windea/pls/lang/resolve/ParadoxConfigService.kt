@@ -135,7 +135,7 @@ object ParadoxConfigService {
     fun getConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         val file = element.containingFile ?: return null
         val gameType = selectGameType(file) ?: return null
-        val memberPathFromFile = ParadoxMemberService.getPath(element)?.normalize() ?: return null
+        val memberPathFromFile = ParadoxMemberService.getPath(element) ?: return null
         val memberRole = ParadoxMemberRole.resolve(element)
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val eps = CwtConfigContextProvider.EP_NAME.extensionList
