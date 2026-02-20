@@ -31,12 +31,13 @@ import icu.windea.pls.script.psi.isBlockMember
 object ParadoxMemberService {
     /**
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
+     * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
-    fun getPath(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): ParadoxMemberPath? {
+    fun getPath(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): ParadoxMemberPath? {
         if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
-        val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
-        if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
-        var current = element
+        val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
+        if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
+        var current: PsiElement = member
         val result = ArrayDeque<String>()
         while (current !is PsiFile) {
             val p = when {
@@ -46,6 +47,7 @@ object ParadoxMemberService {
             }
             if (p != null) {
                 if (maxDepth > 0 && maxDepth <= result.size) return null
+                if (!parameterAware && p.isParameterized()) return null
                 result.addFirst(p)
                 if (limit > 0 && limit == result.size) break
             }
@@ -81,12 +83,13 @@ object ParadoxMemberService {
 
     /**
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组顶级键。相对于所在文件，顺序从前往后。
+     * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
-    fun getRootKeys(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): List<String>? {
-        if(element is PsiFileSystemItem) return emptyList()
-        val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return emptyList()
-        var current = element.parent ?: return emptyList()
+    fun getRootKeys(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
+        if (element is PsiFileSystemItem) return emptyList()
+        val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
+        if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
+        var current: PsiElement = member.parent ?: return emptyList()
         val result = ArrayDeque<String>()
         while (current !is PsiFile) {
             val p = when {
@@ -96,6 +99,7 @@ object ParadoxMemberService {
             }
             if (p != null) {
                 if (maxDepth > 0 && maxDepth <= result.size) return null
+                if (!parameterAware && p.isParameterized()) return null
                 result.addFirst(p)
                 if (limit > 0 && limit == result.size) break
             }
@@ -146,14 +150,15 @@ object ParadoxMemberService {
 
     /**
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组键前缀。顺序从前往后。
+     * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      *
      * 找到之前紧邻的一组连续的字符串节点（忽略空白和注释），将它们转化为字符串列表（基于值）。
      */
-    fun getKeyPrefixes(element: PsiElement, limit: Int = 0, maxDepth: Int = 0): List<String>? {
-        if(element is PsiFileSystemItem) return emptyList()
-        val root = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        if (root !is ParadoxScriptProperty && root !is ParadoxScriptValue) return emptyList()
-        val siblings = element.siblings(forward = false, withSelf = false)
+    fun getKeyPrefixes(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
+        if (element is PsiFileSystemItem) return emptyList()
+        val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
+        if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
+        val siblings = member.siblings(forward = false, withSelf = false)
         val result = ArrayDeque<String>()
         for (e in siblings) {
             when (e) {
@@ -161,6 +166,7 @@ object ParadoxMemberService {
                 is ParadoxScriptString -> {
                     val v = e.value.takeUnless { it.isParameterized() } ?: break
                     if (maxDepth > 0 && maxDepth <= result.size) return null
+                    if (!parameterAware && v.isParameterized()) return null
                     result.addFirst(v)
                     if (limit > 0 && limit == result.size) break
                 }
@@ -207,7 +213,7 @@ object ParadoxMemberService {
      * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的键前缀。
      */
     fun getKeyPrefix(element: PsiElement): String? {
-        return getKeyPrefixes(element, limit = 1)?.singleOrNull()
+        return getKeyPrefixes(element, limit = 1, parameterAware = false)?.singleOrNull()
     }
 
     /**

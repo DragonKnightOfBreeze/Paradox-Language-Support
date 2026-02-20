@@ -43,7 +43,6 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
@@ -107,11 +106,11 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement ?: return
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
-        // 仅提示不在定义声明中的key（顶级键和类型键）
+        // 仅提示不在定义声明中的 key（顶级键和类型键）
         if (!configContext.inRoot()) {
+            // 忽略 rootKeys 深度超出限制，或者带参数的情况
             val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth) ?: return
-            if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
+            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
             context.isKey = true
             completeKey(context, result, memberPath, typeKeyPrefix)

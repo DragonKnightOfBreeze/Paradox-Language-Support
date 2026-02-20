@@ -116,8 +116,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return true
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return false
-                if (rootKeys.any { it.isParameterized() }) return false // 排除顶级键可能带参数的情况
+                // 忽略 rootKeys 深度超出限制，或者带参数的情况
+                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return false
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, rootKeys = rootKeys, typeKeyPrefix = typeKeyPrefix)
                 val typeConfig = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) } ?: return false

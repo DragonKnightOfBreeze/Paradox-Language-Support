@@ -82,9 +82,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
+                // 忽略 rootKeys 深度超出限制，或者带参数的情况
                 val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return
-                if (rootKeys.any { it.isParameterized() }) return // 忽略带参数的情况
+                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue

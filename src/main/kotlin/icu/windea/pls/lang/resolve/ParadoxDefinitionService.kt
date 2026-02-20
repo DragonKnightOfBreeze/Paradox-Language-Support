@@ -85,11 +85,11 @@ object ParadoxDefinitionService {
         val path = fileInfo.path
         val source = resolveSource(element) ?: return null
         val typeKey = getTypeKey(element) ?: return null
+        // 忽略 rootKeys 深度超出限制，或者带参数的情况
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
-        if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
+        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
@@ -106,7 +106,7 @@ object ParadoxDefinitionService {
         if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isCreateMode(mode, configGroup)) return null

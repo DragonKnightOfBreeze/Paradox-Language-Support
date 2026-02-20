@@ -27,6 +27,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.lang.util.builders.ParadoxScriptTextBuilder.parameter as p
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -281,7 +282,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
             val file2 = configureScriptFile(
                 """
                 root = {
-                  "p${'$'}PARAM$"
+                  "p${p("PARAM")}"
                   target = 1
                 }
                 """
@@ -295,13 +296,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
 
     @Test
     fun injectRootKeys_shouldAffectPathAndRootKeys() {
-        val file = configureScriptFile(
-            """
-            root = {
-              k1 = { k2 = { k3 = { k4 = v4 } } }
-            }
-            """
-        )
+        val file = configureScriptFile("root = { k1 = { k2 = { k3 = { k4 = v4 } } } }")
         val virtualFile = file.virtualFile!!
         ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("injected1", "injected2"))
 
@@ -331,13 +326,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
 
     @Test
     fun injectRootKeys_shouldNotAffectLimitedPath() {
-        val file = configureScriptFile(
-            """
-            root = {
-              k1 = { k2 = { k3 = { k4 = v4 } } }
-            }
-            """
-        )
+        val file = configureScriptFile("root = { k1 = { k2 = { k3 = { k4 = v4 } } } }")
         val virtualFile = file.virtualFile!!
         ParadoxAnalysisInjector.injectRootKeys(virtualFile, listOf("injected"))
 
@@ -359,14 +348,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
 
     @Test
     fun keyPrefixes_parameterized_shouldBehaveDifferentlyBetweenPsiAndLighterAst() {
-        val file = configureScriptFile(
-            """
-            root = {
-              "p${'$'}PARAM$"
-              target = 1
-            }
-            """
-        )
+        val file = configureScriptFile("root = { \"p${p("PARAM")}\" target = 1 }")
 
         val target = findProperty(file, "target")
         run {
@@ -384,11 +366,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
 
     @Test
     fun nonMemberElement_shouldReturnEmpty() {
-        val file = configureScriptFile(
-            """
-            root = { k1 = 1 }
-            """
-        )
+        val file = configureScriptFile("root = { k1 = 1 }")
 
         run {
             val path = ParadoxMemberService.getPath(file)

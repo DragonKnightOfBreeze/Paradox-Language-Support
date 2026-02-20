@@ -34,7 +34,7 @@ object ParadoxDefinitionInjectionService {
         if (expression.isParameterized()) return null // 忽略带参数的情况
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val config = configGroup.directivesModel.definitionInjection ?: return null
         val modeConfig = config.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
