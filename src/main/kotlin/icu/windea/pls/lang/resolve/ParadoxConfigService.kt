@@ -70,6 +70,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.property
 import java.util.*
+import kotlin.concurrent.getOrSet
 
 object ParadoxConfigService {
     @Optimized
@@ -174,7 +175,7 @@ object ParadoxConfigService {
         val cache = context.configGroup.configsCache.value.get(rootFile)
         val cached = withRecursionGuard {
             withRecursionCheck(cacheKey) {
-                val resolvingStack = PlsStates.resolvingConfigContextStack.get()
+                val resolvingStack = PlsStates.resolvingConfigContextStack.getOrSet { ArrayDeque() }
                 resolvingStack.addLast(context)
                 try {
                     // use lock-freeze `ConcurrentMap.getOrPut` to prevent IDE freezing problems
