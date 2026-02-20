@@ -260,18 +260,18 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parentMemberContainer_orSelf() {
+    fun parentMemberContainer_withSelf() {
         val file = configureScriptFile("features/select/select_test_1.test.txt")
         val k4 = selectScope { file.ofPath("k1/k2/k3/k4").asProperty().one() }!!
 
-        val parentContainer = selectScope { k4.parentMemberContainer(orSelf = false) }
+        val parentContainer = selectScope { k4.parentMemberContainer(withSelf = false) }
         Assert.assertNotNull(parentContainer)
         Assert.assertTrue(parentContainer!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "k4" })
 
-        val fileAsSelf = selectScope { file.parentMemberContainer(orSelf = true) }
+        val fileAsSelf = selectScope { file.parentMemberContainer(withSelf = true) }
         Assert.assertNotNull(fileAsSelf)
 
-        val fileNoSelf = selectScope { file.parentMemberContainer(orSelf = false) }
+        val fileNoSelf = selectScope { file.parentMemberContainer(withSelf = false) }
         Assert.assertNull(fileNoSelf)
     }
 
@@ -286,7 +286,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
                 .one()
         }!!
 
-        val container = selectScope { parameterConditionProperty.parentMemberContainer(orSelf = false) }
+        val container = selectScope { parameterConditionProperty.parentMemberContainer(withSelf = false) }
         Assert.assertNotNull(container)
         Assert.assertTrue(container!!.members.orEmpty().any { it is ParadoxScriptProperty && it.name == "parameter_condition" })
     }
@@ -367,7 +367,7 @@ class ParadoxPsiSelectDslTest : BasePlatformTestCase() {
         myFixture.configureByText("a.java", "class A {}")
         val file = myFixture.file
 
-        val container = selectScope { file.parentMemberContainer(orSelf = true) }
+        val container = selectScope { file.parentMemberContainer(withSelf = true) }
         Assert.assertNull(container)
 
         val definition = selectScope { file.parentOfKey(propertyName = null) }

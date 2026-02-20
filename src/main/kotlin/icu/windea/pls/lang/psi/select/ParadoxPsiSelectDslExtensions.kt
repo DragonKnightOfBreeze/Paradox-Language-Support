@@ -222,10 +222,10 @@ private fun ParadoxScriptMemberContainer.ofPathInternal(path: String, ignoreCase
 // TODO 2.1.1 further refactoring
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentMemberContainer(orSelf: Boolean = false): ParadoxScriptMemberContainer? {
+fun PsiElement.parentMemberContainer(withSelf: Boolean = false): ParadoxScriptMemberContainer? {
     if (language !is ParadoxScriptLanguage) return null
-    if (orSelf) this.castOrNull<ParadoxScriptMemberContainer>()?.let { return it }
-    return parents(withSelf = orSelf).findIsInstance<ParadoxScriptMemberContainer>()
+    if (withSelf) this.castOrNull<ParadoxScriptMemberContainer>()?.let { return it }
+    return parents(withSelf = withSelf).findIsInstance<ParadoxScriptMemberContainer>()
 }
 
 // TODO 2.1.1 further refactoring
@@ -320,13 +320,13 @@ fun ParadoxDefinitionElement.nameFieldElement(nameField: String?): ParadoxScript
 /**
  * 向上查找第一个符合条件的定义。
  *
- * @param orSelf 结果是否可以是自身。
+ * @param withSelf 结果是否可以是自身。
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinition(orSelf: Boolean = true): ParadoxDefinitionElement? {
+fun PsiElement.parentDefinition(withSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    processParent(withSelf = orSelf) p@{
+    processParent(withSelf = withSelf) p@{
         if (ParadoxPsiMatcher.isDefinition(it)) return it
         true
     }
@@ -336,13 +336,13 @@ fun PsiElement.parentDefinition(orSelf: Boolean = true): ParadoxDefinitionElemen
 /**
  * 向上查找第一个符合条件的定义注入。
  *
- * @param orSelf 结果是否可以是自身。
+ * @param withSelf 结果是否可以是自身。
  */
 context(scope: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinitionInjection(orSelf: Boolean = true): ParadoxScriptProperty? {
+fun PsiElement.parentDefinitionInjection(withSelf: Boolean = true): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
-    processParent(withSelf = orSelf) p@{
+    processParent(withSelf = withSelf) p@{
         if (it is ParadoxScriptRootBlock) return@p false
         if (ParadoxPsiMatcher.isDefinitionInjection(it)) return it
         true
@@ -353,13 +353,13 @@ fun PsiElement.parentDefinitionInjection(orSelf: Boolean = true): ParadoxScriptP
 /**
  * 向上查找第一个符合条件的定义或定义注入。
  *
- * @param orSelf 结果是否可以是自身。
+ * @param withSelf 结果是否可以是自身。
  */
 context(_: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinitionOrInjection(orSelf: Boolean = true): ParadoxDefinitionElement? {
+fun PsiElement.parentDefinitionOrInjection(withSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    processParent(withSelf = orSelf) p@{
+    processParent(withSelf = withSelf) p@{
         if (ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it)) return it
         true
     }
