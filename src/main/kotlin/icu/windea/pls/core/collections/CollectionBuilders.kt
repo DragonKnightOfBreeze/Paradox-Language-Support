@@ -7,7 +7,10 @@ import com.google.common.collect.ImmutableSet
 import icu.windea.pls.core.isNotNullOrEmpty
 import java.util.*
 
-inline fun <T> ImmutableList(expectedSize: Int, init: (index: Int) -> T): List<T> {
+/**
+ * 创建一个期望大小为 [expectedSize] 的不可变列表，并通过 [init] 初始化。
+ */
+inline fun <T : Any> ImmutableList(expectedSize: Int, init: (index: Int) -> T): List<T> {
     require(expectedSize >= 0) { "expectedSize must be non-negative" }
     if (expectedSize == 0) return emptyList()
     val builder = ImmutableList.builderWithExpectedSize<T>(expectedSize)
@@ -15,7 +18,10 @@ inline fun <T> ImmutableList(expectedSize: Int, init: (index: Int) -> T): List<T
     return builder.build()
 }
 
-inline fun <T> ImmutableSet(expectedSize: Int, init: (index: Int) -> T): Set<T> {
+/**
+ * 创建一个期望大小为 [expectedSize] 的不可变集，并通过 [init] 初始化。
+ */
+inline fun <T : Any> ImmutableSet(expectedSize: Int, init: (index: Int) -> T): Set<T> {
     require(expectedSize >= 0) { "expectedSize must be non-negative" }
     if (expectedSize == 0) return emptySet()
     val builder = ImmutableSet.builderWithExpectedSize<T>(expectedSize)
@@ -24,7 +30,7 @@ inline fun <T> ImmutableSet(expectedSize: Int, init: (index: Int) -> T): Set<T> 
 }
 
 /**
- * 创建一个可变集合（[MutableSet]）。
+ * 创建一个可变集（[MutableSet]）。
  *
  * - 若提供 [comparator]，则返回基于 [TreeSet] 的有序集合；
  * - 否则返回标准库默认实现的可变集合。
@@ -53,4 +59,3 @@ fun <T : Any, C : MutableCollection<T>> mergeTo(destination: C, vararg collectio
 fun <T : Any> merge(vararg collections: Collection<T>?): List<T> {
     return mergeTo(ArrayList(), *collections)
 }
-
