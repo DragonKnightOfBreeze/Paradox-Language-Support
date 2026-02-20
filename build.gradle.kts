@@ -127,8 +127,8 @@ dependencies {
     testImplementation("net.bytebuddy:byte-buddy-agent:1.18.3")
 
     // jte - https://github.com/casid/jte
-    testImplementation("gg.jte:jte:3.2.1")
-    testCompileOnly("gg.jte:jte-kotlin:3.2.1")
+    testImplementation("gg.jte:jte:3.2.2")
+    testCompileOnly("gg.jte:jte-kotlin:3.2.2")
 
     // pebble - https://github.com/PebbleTemplates/pebble
     testImplementation("io.pebbletemplates:pebble:3.2.4") {
