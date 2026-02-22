@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.core.loadText
@@ -94,6 +95,7 @@ key = @[ $p + 1 ]
     }
 
     private fun doTest(text: String) {
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         doTestProvider("test.txt", text, ParadoxInlineMathResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }
