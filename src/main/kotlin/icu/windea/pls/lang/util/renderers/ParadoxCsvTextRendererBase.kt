@@ -6,7 +6,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 
-abstract class ParadoxCsvTextRendererBase<C, R> : ParadoxRenderer<C, R> {
+abstract class ParadoxCsvTextRendererBase<C, R> : ParadoxCsvTextRenderer<C, R> {
     final override fun render(input: PsiElement, context: C): R {
         return when (input) {
             is ParadoxCsvFile -> render(input, context)

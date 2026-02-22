@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.imageio.ImageIO
 
 /**
- * 用于将本地化文本渲染为内嵌提示（[InlayPresentation]）。
+ * 将本地化文本渲染为内嵌提示（[InlayPresentation]）的渲染器。
  *
  * 说明：
  * - 仅在当前节点不是标识符或图标时，才会适用截断限制。

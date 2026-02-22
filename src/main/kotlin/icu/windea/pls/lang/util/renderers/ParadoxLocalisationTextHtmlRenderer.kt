@@ -41,7 +41,7 @@ import java.awt.Color
 import javax.imageio.ImageIO
 
 /**
- * 用于将本地化文本渲染为通用的 HTML 文本。
+ * 将本地化文本渲染为通用 HTML 文本的渲染器。
  */
 @Suppress("unused")
 class ParadoxLocalisationTextHtmlRenderer : ParadoxLocalisationTextRendererBase<ParadoxLocalisationTextHtmlRenderer.Context, String>() {

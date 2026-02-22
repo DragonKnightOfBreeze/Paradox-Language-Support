@@ -21,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 用于将本地化文本渲染为去除格式后的纯文本。
+ * 将本地化文本渲染为去除格式后的纯文本的渲染器。
  */
 class ParadoxLocalisationTextPlainRenderer : ParadoxLocalisationTextRendererBase<Context, String>() {
     data class Context(

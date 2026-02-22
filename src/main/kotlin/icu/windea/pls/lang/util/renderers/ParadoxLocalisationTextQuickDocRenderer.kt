@@ -50,9 +50,10 @@ import javax.imageio.ImageIO
 import javax.swing.UIManager
 
 /**
- * 用于将本地化文本渲染为快速文档中使用的 HTML 文本。
+ * 将本地化文本渲染为快速文档中使用的 HTML 文本的渲染器。
  *
- * 使用基于 PSI 超链接协议（`psi_element://`）的链接实现目标导航。
+ * 说明：
+ * - 使用基于 PSI 超链接协议（`psi_element://`）的链接实现目标导航。
  */
 @Suppress("unused")
 class ParadoxLocalisationTextQuickDocRenderer : ParadoxLocalisationTextRendererBase<ParadoxLocalisationTextQuickDocRenderer.Context, String>() {

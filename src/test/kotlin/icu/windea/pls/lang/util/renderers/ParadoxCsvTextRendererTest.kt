@@ -84,7 +84,7 @@ class ParadoxCsvTextRendererTest : BasePlatformTestCase() {
         val id = counter.getAndIncrement()
         myFixture.configureByText("renderer_test_$id.csv", input)
         val file = myFixture.file as ParadoxCsvFile
-        val renderer = ParadoxCsvTextRenderer()
+        val renderer = ParadoxCsvTextPlainRenderer()
         val result = renderer.render(file)
         Assert.assertEquals(expect, result)
     }

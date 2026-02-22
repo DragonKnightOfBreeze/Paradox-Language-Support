@@ -19,7 +19,11 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 用于将脚本片段渲染为纯文本。
+ * 将脚本文本渲染为纯文本的渲染器。
+ *
+ * 说明：
+ * - 移除额外的注释、空行和空白，以及不必要的括起表达式的双引号。
+ * - 可以在一定程度上配置输出格式。
  */
 class ParadoxScriptTextPlainRenderer : ParadoxScriptTextRendererBase<Context, String>() {
     data class Context(
