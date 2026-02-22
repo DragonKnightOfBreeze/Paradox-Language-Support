@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.codeInsight.annotated
 
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -7,6 +7,7 @@ import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -17,19 +18,35 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxAnnotatedManager {
+    // region Prefixes
+
+    const val typePrefix = "@type"
+    const val definitionTypePrefix = "@definition_type"
+    const val overrideStrategyPrefix = "@override_strategy"
+    const val configExpressionPrefix = "@config_expression"
+    const val scopeContextPrefix = "@scope_context"
+
+    // endregion
+
+    // region Annotation Getters
+
     /**
      * 得到类型信息的注解。
+     *
+     * 格式：
+     * - `## @type key_type = value_type`
+     * - `## @type value_type`
      */
     fun getType(element: ParadoxScriptMember): String? {
         return when (element) {
             is ParadoxScriptProperty -> {
                 val keyType = ParadoxTypeManager.getType(element.propertyKey) ?: ParadoxType.Unknown
                 val valueType = element.propertyValue?.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
-                "## type = { ${keyType.id} = ${valueType.id} }"
+                "## $typePrefix ${keyType.id} = ${valueType.id}"
             }
             is ParadoxScriptValue -> {
                 val type = ParadoxTypeManager.getType(element) ?: ParadoxType.Unknown
-                "## type = ${type.id}"
+                "## $typePrefix ${type.id}"
             }
             else -> null
         }
@@ -37,15 +54,22 @@ object ParadoxAnnotatedManager {
 
     /**
      * 得到定义类型信息的注解。
+     *
+     * 格式：
+     * - `## @definition_type = type`
+     * - `## @definition_type = type, subtype_1, subtype_2`
      */
     fun getDefinitionType(element: ParadoxScriptMember): String? {
         if (element !is ParadoxScriptProperty) return null
         val definitionType = ParadoxTypeManager.getDefinitionType(element.propertyKey) ?: return null
-        return "## definition_type = $definitionType"
+        return "## $definitionTypePrefix $definitionType"
     }
 
     /**
      * 得到覆盖方式信息的注解。
+     *
+     * 格式：
+     * - `## @override_strategy = STRATEGY`
      */
     fun getOverrideStrategy(element: ParadoxScriptMember): String? {
         val key = when (element) {
@@ -53,11 +77,15 @@ object ParadoxAnnotatedManager {
             else -> null
         } ?: return null
         val overrideStrategy = ParadoxTypeManager.getOverrideStrategy(key) ?: return null
-        return "## override_strategy = ${overrideStrategy.id}"
+        return "## $overrideStrategyPrefix ${overrideStrategy.id}"
     }
 
     /**
      * 得到规则表达式信息的注解。
+     *
+     * 格式：
+     * - `## @config_expression key_expression = value_expression`
+     * - `## @config_expression value_expression`
      */
     fun getConfigExpression(element: ParadoxScriptMember): String? {
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
@@ -66,12 +94,12 @@ object ParadoxAnnotatedManager {
                 if (config !is CwtPropertyConfig) return null
                 val keyExpression = config.key.quoteIfNecessary()
                 val valueExpression = config.value.quoteIfNecessary()
-                "## config_expression = { $keyExpression = $valueExpression }"
+                "## $configExpressionPrefix $keyExpression = $valueExpression"
             }
             is ParadoxScriptValue -> {
                 if (config !is CwtValueConfig) return null
                 val valueExpression = config.value.quoteIfNecessary()
-                "## config_expression = $valueExpression"
+                "## $configExpressionPrefix $valueExpression"
             }
             else -> null
         }
@@ -80,6 +108,9 @@ object ParadoxAnnotatedManager {
     /**
      * 得到作用域上下文信息的注解。
      *
+     * 格式：
+     * - `## @scope_context this = scope_1 root = scope_2`
+     *
      * @param detailed 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
      */
     fun getScopeContext(element: ParadoxScriptMember, detailed: Boolean): String? {
@@ -87,11 +118,14 @@ object ParadoxAnnotatedManager {
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
         val map = scopeContext.toScopeIdMap(showPrev = detailed)
         if (map.isEmpty()) return null
-        return map.entries.joinToString(" ", "## scope_context = { ", " }") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }
+        return map.entries.joinToString(" ", "## $scopeContextPrefix ") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }
     }
 
     /**
      * 得到类型信息的注解。
+     *
+     * 格式：
+     * - `## @type type_1;type_2`
      */
     fun getTypeForRow(element: ParadoxCsvRowElement): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
@@ -100,11 +134,14 @@ object ParadoxAnnotatedManager {
             val type = column.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
             type.id
         }
-        return types.joinToString(" ", "## type = { ", " }")
+        return types.joinToString(";", "## $typePrefix ")
     }
 
     /**
      * 得到规则表达式信息的注解。
+     *
+     * 格式：
+     * - `## @type expression_1;expression_2`
      */
     fun getConfigExpressionForRow(element: ParadoxCsvRowElement): String? {
         if (element is ParadoxCsvHeader) return null // skip for header
@@ -115,6 +152,8 @@ object ParadoxAnnotatedManager {
             if (!ParadoxCsvManager.isMatchedColumnConfig(column, columnConfig)) return@map FallbackStrings.unknown // require matched
             columnConfig.value
         }
-        return configExpressions.joinToString(" ", "## config_expression = { ", " }")
+        return configExpressions.joinToString(";", "## $configExpressionPrefix ")
     }
+
+    // endregion
 }

@@ -1,2 +1,2 @@
-## type = string
+## @type string
 narrative

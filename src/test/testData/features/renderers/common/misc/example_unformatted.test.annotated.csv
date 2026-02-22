@@ -1,5 +1,5 @@
 id;name;number;status;
-## type = { string string int boolean }
+## @type string;string;int;boolean
 some_id;some_name;0;yes;
-## type = { string string int boolean }
+## @type string;string;int;boolean
 other_id;other_name;1;no;

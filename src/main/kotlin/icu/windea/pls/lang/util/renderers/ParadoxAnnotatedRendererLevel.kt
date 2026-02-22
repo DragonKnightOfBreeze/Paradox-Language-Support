@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.lang.codeInsight.ParadoxAnnotatedManager
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedManager
 
 /**
  * 渲染器的注解级别。

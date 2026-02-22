@@ -1,33 +1,33 @@
-## type = { string = block }
+## @type string = block
 settings = {
-    ## type = { string = boolean }
+    ## @type string = boolean
     boolean_value = yes
-    ## type = { string = float }
+    ## @type string = float
     number_value = 1.0
-    ## type = { string = int }
+    ## @type string = int
     number_value = 1
-    ## type = { string = string }
+    ## @type string = string
     string_value = Foo
-    ## type = { string = string }
+    ## @type string = string
     string_value = "Foo\n bar "
-    ## type = { string = block }
+    ## @type string = block
     values = {
-        ## type = { string = string }
+        ## @type string = string
         foo = bar
     }
-    ## type = { string = block }
+    ## @type string = block
     values = {
-        ## type = int
+        ## @type int
         1
-        ## type = int
+        ## @type int
         2
-        ## type = int
+        ## @type int
         3
     }
-    ## type = { string = color }
+    ## @type string = color
     color = rgb { 142 188 241 }
-    ## type = { string = string }
+    ## @type string = string
     parameter = $PARAM$
-    ## type = { string = inline_math }
+    ## @type string = inline_math
     inline_math = @[  2 + ( $MAX$ - 1 + var )  ]
 }
