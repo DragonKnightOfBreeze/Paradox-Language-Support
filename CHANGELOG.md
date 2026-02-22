@@ -2,13 +2,12 @@
 
 ## Unreleased
 
-- [ ] [Vic3/EU5] Script Value and Static Value #264
-- [ ] [Vic3/EU5] Parser Breaks in CoA #263
-- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
-
 ## 2.1.4
 
 - [x] 修复：修复游戏概念未被正确额解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
+- [ ] [Vic3/EU5] Script Value and Static Value #264
+- [ ] [Vic3/EU5] Parser Breaks in CoA #263
+- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 - [ ] 性能分析与优化 / Performance analysis and optimization
 
