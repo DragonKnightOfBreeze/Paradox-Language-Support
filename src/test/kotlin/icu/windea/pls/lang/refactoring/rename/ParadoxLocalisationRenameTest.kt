@@ -58,7 +58,7 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"
@@ -87,7 +87,7 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt", fanPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"

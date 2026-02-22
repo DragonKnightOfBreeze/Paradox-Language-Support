@@ -1,6 +1,13 @@
-l_simp_chinese:
+﻿l_simp_chinese:
  name_windea:0 "温德娅"
  title_windea:0 "不灭者"
  desc_windea:0 "于遗落庭院中被唤醒的永恒古代造物。"
  title_windea_1:0 "追随者"
  desc_windea_1:0 "离开沉眠之所，踏入真实世界的永恒古代造物。"
+ chapter_awakening:0 "预言书的苏醒"
+ chapter_guidance:0 "预言书的引导"
+ narrative:0 "叙事性"
+ female:0 "女性"
+ species_unknown:0 "未知"
+ creation:0 "造物"
+ the_waker:0 "唤醒者"

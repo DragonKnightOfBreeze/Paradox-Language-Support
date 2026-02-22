@@ -28,9 +28,7 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
-        markIntegrationTest()
-    }
+    fun setup() = markIntegrationTest()
 
     @After
     fun clear() = clearIntegrationTest()

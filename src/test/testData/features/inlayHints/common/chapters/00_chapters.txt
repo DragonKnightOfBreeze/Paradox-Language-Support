@@ -1,7 +1,11 @@
 awakening = {
-    name = c_awakening
+    name = chapter_awakening
+    page = 1
+    category = narrative
 }
 
 guidance = {
-    name = c_guidance
+    name = chapter_guidance
+    page = 2
+    category = narrative
 }

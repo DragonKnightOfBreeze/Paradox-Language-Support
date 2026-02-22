@@ -1,0 +1,8 @@
+## type = { string = block }
+## definition_type = species
+## override_strategy = LIOS
+unknown = {
+    ## type = { string = string }
+    ## config_expression = { name = localisation }
+    name = species_unknown
+}

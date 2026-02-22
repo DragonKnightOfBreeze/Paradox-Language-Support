@@ -217,7 +217,7 @@ object ParadoxTypeManager {
                 when {
                     element.isHeaderColumn() -> columnConfig.key
                     else -> {
-                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // 需要匹配
+                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // require matched
                         columnConfig.value
                     }
                 }

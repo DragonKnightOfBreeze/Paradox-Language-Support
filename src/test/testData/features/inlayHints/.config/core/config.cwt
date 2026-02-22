@@ -28,8 +28,13 @@ types = {
 
 character = {
     name = localisation
+    ## cardinality = 0..1
     title = localisation
+    ## cardinality = 0..1
+    desc = localisation
+    ## cardinality = 0..1
     gender = enum[gender]
+    ## cardinality = 0..1
     species = <species>
     ## cardinality = 0..1
     tags = {
@@ -48,6 +53,8 @@ species = {
 }
 chapter = {
     name = localisation
+    page = int
+    category = enum[chapter_category]
 }
 
 rows = {
@@ -85,3 +92,13 @@ enums = {
         }
     }
 }
+
+### Do nothing.
+## scopes = { character }
+alias[effect:pass] = bool
+### Revival into the real world.
+## scopes = { character }
+alias[effect:revival] = bool
+### Say hello to the real world.
+## scopes = { character }
+alias[effect:say_hello_world] = bool

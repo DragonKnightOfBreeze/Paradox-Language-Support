@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.ui.ColorUtil
@@ -74,8 +75,9 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
     @Test
     fun text_withSv() {
-        markFileInfo(gameType, "common/scripted_variables/global.txt")
-        myFixture.configureByText("global.txt", "@var = 1")
+        configureFile("common/scripted_variables/global.test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         assertResult("Scripted variable: 1", "Scripted variable: $@var$")
         assertResult("Scripted variable: <code>$@unresolved$</code>", "Scripted variable: $@unresolved$")
@@ -105,8 +107,9 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun colorfulText_withColorful_true() {
         withColorful(true) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+            configureFile("interface/fonts.gfx")
+
+            IndexingTestUtil.waitUntilIndexesAreReady(project)
 
             val redColor = Color(252, 86, 70)
             val redHex = ColorUtil.toHex(redColor, true)
@@ -118,8 +121,9 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun colorfulText_withColorful_false() {
         withColorful(false) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+            configureFile("interface/fonts.gfx")
+
+            IndexingTestUtil.waitUntilIndexesAreReady(project)
 
             assertResult("Colorful text: Red text", "Colorful text: §RRed text§!")
         }
@@ -128,8 +132,9 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun colorfulText_unknownColorId() {
         withColorful(true) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+            configureFile("interface/fonts.gfx")
+
+            IndexingTestUtil.waitUntilIndexesAreReady(project)
 
             // `X` is not defined in fonts.gfx -> should not apply any span, but should strip markers
             assertResult("Colorful text: Unknown", "Colorful text: §XUnknown§!")
@@ -146,11 +151,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun parameter_withColorful_true() {
         withColorful(true) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+            configureFile("interface/fonts.gfx")
+            configureFile("localisation/main.test.yml")
 
-            markFileInfo(gameType, "localisation/main.yml")
-            myFixture.configureByFile("features/renderers/localisation/main.yml")
+            IndexingTestUtil.waitUntilIndexesAreReady(project)
 
             assertResult("Parameter: <code>\$KEY$</code> and <code>\$KEY|Y$</code>", "Parameter: \$KEY$ and \$KEY|Y$")
             assertResult("Unresolved: <code>\$unresolved$</code>", "Unresolved: \$unresolved$")
@@ -172,11 +176,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun parameter_withColorful_false() {
         withColorful(false) {
-            markFileInfo(gameType, "interface/fonts.gfx")
-            myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+            configureFile("interface/fonts.gfx")
+            configureFile("localisation/main.test.yml")
 
-            markFileInfo(gameType, "localisation/main.yml")
-            myFixture.configureByFile("features/renderers/localisation/main.yml")
+            IndexingTestUtil.waitUntilIndexesAreReady(project)
 
             assertResult("Windea The Unfading", "\$name_windea$ \$title_windea|B$")
         }
@@ -195,12 +198,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     @Test
     fun conceptCommand_simple() {
         // 注入一个 game_concept 定义：concept_foo
-        markFileInfo(gameType, "common/game_concepts/test.txt")
-        myFixture.configureByFile("features/renderers/common/game_concepts/test.txt")
+        configureFile("common/game_concepts/game_concepts.test.txt")
+        configureFile("localisation/game_concepts.test.yml")
 
-        // 同名 localisation（虽然 conceptText 存在时不必须，但更接近真实写法）
-        markFileInfo(gameType, "localisation/concepts.yml")
-        myFixture.configureByFile("features/renderers/localisation/concepts.yml")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         val r = render("Concept: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("psi_element://"))
@@ -211,16 +212,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
     @Test
     fun conceptCommand_alias_simple() {
-        // concept_foo has alias: concept_bar
-        markFileInfo(gameType, "common/game_concepts/test_alias.txt")
-        myFixture.configureByText(
-            "test_alias.txt",
-            """
-                concept_foo = {
-                    alias = { concept_bar }
-                }
-            """.trimIndent()
-        )
+        configureFile("common/game_concepts/game_concepts_alias.test.txt")
+        configureFile("localisation/game_concepts.test.yml")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         val r = render("Concept: ['concept_bar', Bar]")
         Assert.assertTrue(r.contains("psi_element://"))
@@ -231,12 +226,10 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
     @Test
     fun conceptCommand_tooltipOverride_simple() {
-        // concept_foo defines tooltip_override to a localisation key
-        markFileInfo(gameType, "common/game_concepts/test_override.txt")
-        myFixture.configureByFile("features/renderers/common/game_concepts/test_override.txt")
+        configureFile("common/game_concepts/game_concepts_override.test.txt")
+        configureFile("localisation/game_concepts_override.test.yml")
 
-        markFileInfo(gameType, "localisation/concepts_override.yml")
-        myFixture.configureByFile("features/renderers/localisation/concepts_override.yml")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // no explicit conceptText -> should use tooltip_override
         val r = render("Concept: ['concept_foo']")
@@ -245,6 +238,11 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
         Assert.assertTrue(r.contains("psi_element://"))
         Assert.assertFalse(r.contains("file:/"))
         Assert.assertFalse(r.contains("file:///"))
+    }
+
+    private fun configureFile(path: String) {
+        markFileInfo(gameType, path)
+        myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
     private fun <R> withColorful(value: Boolean, action: () -> R) {

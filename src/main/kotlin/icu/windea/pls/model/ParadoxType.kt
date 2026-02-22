@@ -9,9 +9,9 @@ enum class ParadoxType(val id: String) {
     Color("color"),
     Block("block"),
     Parameter("parameter"),
-    InlineMath("inline math"),
-    CommandExpression("command expression"),
-    DatabaseObjectExpression("database object expression"),
+    InlineMath("inline_math"),
+    CommandExpression("command_expression"),
+    DatabaseObjectExpression("database_object_expression"),
     ;
 
     override fun toString() = id

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util.renderers
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
@@ -59,8 +60,9 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun text_withSv() {
-        markFileInfo(gameType, "common/scripted_variables/global.txt")
-        myFixture.configureByText("global.txt", "@var = 1")
+        configureFile("common/scripted_variables/global.test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         assertResult("Scripted variable: 1", "Scripted variable: $@var$")
         assertResult("Scripted variable: $@unresolved$", "Scripted variable: $@unresolved$")
@@ -68,8 +70,9 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun colorfulText() {
-        markFileInfo(gameType, "interface/fonts.gfx")
-        myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+        configureFile("interface/fonts.gfx")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         assertResult("Colorful text: Red text", "Colorful text: §RRed text§!")
         assertResult("Colorful text: Green text", "Colorful text: §GGreen text§!")
@@ -87,11 +90,10 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun parameter() {
-        markFileInfo(gameType, "interface/fonts.gfx")
-        myFixture.configureByFile("features/renderers/interface/fonts.gfx")
+        configureFile("interface/fonts.gfx")
+        configureFile("localisation/main.test.yml")
 
-        markFileInfo(gameType, "localisation/main.yml")
-        myFixture.configureByFile("features/renderers/localisation/main.yml")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         assertResult("Parameter: \$KEY$ and \$KEY|Y$", "Parameter: \$KEY$ and \$KEY|Y$")
         assertResult("Unresolved: \$unresolved$", "Unresolved: \$unresolved$")
@@ -118,11 +120,10 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun conceptCommand_simple() {
-        markFileInfo(gameType, "common/game_concepts/test.txt")
-        myFixture.configureByFile("features/renderers/common/game_concepts/test.txt")
+        configureFile("common/game_concepts/game_concepts.test.txt")
+        configureFile("localisation/game_concepts.test.yml")
 
-        markFileInfo(gameType, "localisation/concepts.yml")
-        myFixture.configureByFile("features/renderers/localisation/concepts.yml")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         val r = render("Concept: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("Foo"))
@@ -130,6 +131,11 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun conceptCommand_alias_simple() {
+        configureFile("common/game_concepts/game_concepts_alias.test.txt")
+        configureFile("localisation/game_concepts.test.yml")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
         markFileInfo(gameType, "common/game_concepts/test_alias.txt")
         myFixture.configureByText(
             "test_alias.txt",
@@ -146,14 +152,18 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
     @Test
     fun conceptCommand_tooltipOverride_simple() {
-        markFileInfo(gameType, "common/game_concepts/test_override.txt")
-        myFixture.configureByFile("features/renderers/common/game_concepts/test_override.txt")
+        configureFile("common/game_concepts/game_concepts_override.test.txt")
+        configureFile("localisation/game_concepts_override.test.yml")
 
-        markFileInfo(gameType, "localisation/concepts_override.yml")
-        myFixture.configureByFile("features/renderers/localisation/concepts_override.yml")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         val r = render("Concept: ['concept_foo']")
         Assert.assertTrue(r.contains("Tooltip Text"))
+    }
+
+    private fun configureFile(path: String) {
+        markFileInfo(gameType, path)
+        myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
     private fun render(input: String, configure: ParadoxLocalisationTextPlainRenderer.() -> Unit = {}): String {

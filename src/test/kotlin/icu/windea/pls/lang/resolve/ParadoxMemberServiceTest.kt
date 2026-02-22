@@ -5,7 +5,11 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
 import org.junit.After
@@ -377,7 +381,7 @@ class ParadoxMemberServiceTest : BasePlatformTestCase() {
                 "p1"
                 # comment between
                 "p2"
-                
+
                 target = 1
             }
             """

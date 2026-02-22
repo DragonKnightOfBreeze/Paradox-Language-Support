@@ -1,22 +1,23 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
+import icu.windea.pls.lang.codeInsight.ParadoxAnnotatedManager
 
 /**
  * 渲染器的注解级别。
  *
- * @property includeType 是否包含类型信息。参见 [ParadoxTypeManager.getType]。
- * @property includeDefinitionType 是否包含定义类型信息。参见 [ParadoxTypeManager.getDefinitionType]。
- * @property includeOverrideStrategy 是否包含覆盖方式信息。参见 [ParadoxTypeManager.getOverrideStrategy]。
- * @property includeConfigExpression 是否包含配置表达式信息。参见 [ParadoxTypeManager.getConfigExpression]。
- * @property includeScopeContext 是否包含作用域上下文信息。参见 [ParadoxTypeManager.getScopeContext]。
+ * @property includeType 是否包含类型信息。
+ * @property includeDefinitionType 是否包含定义类型信息。
+ * @property includeOverrideStrategy 是否包含覆盖方式信息。
+ * @property includeConfigExpression 是否包含规则表达式信息。
+ * @property includeScopeContext 是否包含作用域上下文信息。
  * @property includeDetailedScopeContext 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
  *
+ * @see ParadoxAnnotatedManager
  * @see ParadoxScriptTextAnnotatedRenderer
  * @see ParadoxCsvTextAnnotatedRenderer
  */
 @Suppress("unused")
-data class ParadoxRendererAnnotatedLevel(
+data class ParadoxAnnotatedRendererLevel(
     val includeType: Boolean = false,
     val includeDefinitionType: Boolean = false,
     val includeOverrideStrategy: Boolean = false,
@@ -26,19 +27,19 @@ data class ParadoxRendererAnnotatedLevel(
 ) {
     companion object {
         @JvmField
-        val BASIC: ParadoxRendererAnnotatedLevel = ParadoxRendererAnnotatedLevel(
+        val BASIC: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
             includeType = true,
         )
 
         @JvmField
-        val DEFAULT: ParadoxRendererAnnotatedLevel = ParadoxRendererAnnotatedLevel(
+        val DEFAULT: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
         )
 
         @JvmField
-        val ADVANCED: ParadoxRendererAnnotatedLevel = ParadoxRendererAnnotatedLevel(
+        val ADVANCED: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
@@ -46,7 +47,7 @@ data class ParadoxRendererAnnotatedLevel(
         )
 
         @JvmField
-        val ALL: ParadoxRendererAnnotatedLevel = ParadoxRendererAnnotatedLevel(
+        val ALL: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
             includeType = true,
             includeDefinitionType = true,
             includeOverrideStrategy = true,

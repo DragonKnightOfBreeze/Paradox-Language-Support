@@ -15,15 +15,13 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxCsvTextRendererTest : BasePlatformTestCase() {
+class ParadoxCsvTextPlainRendererTest : BasePlatformTestCase() {
     private val counter = AtomicInteger()
 
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
-        markIntegrationTest()
-    }
+    fun setup() = markIntegrationTest()
 
     @After
     fun clear() = clearIntegrationTest()
