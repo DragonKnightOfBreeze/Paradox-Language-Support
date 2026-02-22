@@ -10,11 +10,11 @@
       <option name="FOREGROUND" value="4A86E8"/>
     </value>
   </option>
-  <!--<option name="PARADOX_SCRIPT.COLOR">-->
-  <!--  <value>-->
-  <!--    <option name="FOREGROUND" value="000080"/>-->
-  <!--  </value>-->
-  <!--</option>-->
+  <!-- <option name="PARADOX_SCRIPT.COLOR"> -->
+  <!--   <value> -->
+  <!--     <option name="FOREGROUND" value="000080"/> -->
+  <!--   </value> -->
+  <!-- </option> -->
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
       <option name="FOREGROUND" value="66017A"/>
@@ -50,12 +50,12 @@
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-  <!--<option name="PARADOX_SCRIPT.VALUE_FIELD">-->
-  <!--  <value>-->
-  <!--    <option name="FOREGROUND" value="0000FF"/>-->
-  <!--    <option name="FONT_TYPE" value="1"/>-->
-  <!--  </value>-->
-  <!--</option>-->
+  <!-- <option name="PARADOX_SCRIPT.VALUE_FIELD"> -->
+  <!--   <value> -->
+  <!--     <option name="FOREGROUND" value="0000FF"/> -->
+  <!--     <option name="FONT_TYPE" value="1"/> -->
+  <!--   </value> -->
+  <!-- </option> -->
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
       <option name="FOREGROUND" value="000000"/>
@@ -63,10 +63,10 @@
     </value>
   </option>
 
-  <!--<option name="PARADOX_SCRIPT.DIRECTIVE">-->
-  <!--  <value>-->
-  <!--    <option name="FOREGROUND" value="000080"/>-->
-  <!--    <option name="FONT_TYPE" value="1"/>-->
-  <!--  </value>-->
-  <!--</option>-->
+  <!-- <option name="PARADOX_SCRIPT.DIRECTIVE"> -->
+  <!--   <value> -->
+  <!--     <option name="FOREGROUND" value="000080"/> -->
+  <!--     <option name="FONT_TYPE" value="1"/> -->
+  <!--   </value> -->
+  <!-- </option> -->
 </list>

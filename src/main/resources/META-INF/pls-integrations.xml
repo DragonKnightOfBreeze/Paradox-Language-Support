@@ -17,7 +17,7 @@
     <imageToolProvider implementation="icu.windea.pls.integrations.images.tools.PlsMagickToolProvider"/>
 
     <!-- see pls-extension-translation.xml -->
-    <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
+    <!-- <translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/> -->
 
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider$Ck3"/>
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider$Ir"/>

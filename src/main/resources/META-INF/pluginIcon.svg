@@ -1,7 +1,7 @@
-<!--Paradox Chronicle-->
-<!--Here we carve the whispers from the old era, revealing the truths and realities of this land.-->
+<!-- Paradox Chronicle -->
+<!-- Here we carve the whispers from the old era, revealing the truths and realities of this land. -->
 
-<!--A ancient book with a gear pattern engraved on the cover-->
+<!-- An ancient book with a gear pattern engraved on the cover -->
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
   <!-- Book body -->
   <rect x="7" y="4" width="26" height="32" rx="1.5" fill="#E8D5B0" stroke="#8B7355" stroke-width="1.2"/>

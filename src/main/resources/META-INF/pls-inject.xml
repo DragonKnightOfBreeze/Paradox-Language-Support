@@ -16,33 +16,33 @@
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
-    <!--core code injectors-->
+    <!-- core code injectors -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.PathReferenceManagerImplCodeInjector"/>
 
-    <!--code injectors to provide additional features-->
+    <!-- code injectors to provide additional features -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
 
-    <!--code injectors to optimize image readers (delegate to image tools)-->
+    <!-- code injectors to optimize image readers (delegate to image tools) -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.TGAImageReaderCodeInjector"/>
 
-    <!--code injectors to fix bugs-->
+    <!-- code injectors to fix bugs -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.InjectLanguageActionCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.WithAttributesPresentationCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.fix.IdentifierHighlightingComputerCodeInjector"/>
 
-    <!--code injectors to optimize memory-->
+    <!-- code injectors to optimize memory -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.OptimizedFieldCodeInjectors$BasePresentation"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtOptionDataHolderBase"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors$CwtConfigGroupDataHolderBase"/>
 
-    <!--code injectors to optimize performance-->
+    <!-- code injectors to optimize performance -->
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Property"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$PropertyKey"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.addon.CwtPsiCodeInjectors$Option"/>

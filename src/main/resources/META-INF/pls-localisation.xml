@@ -32,7 +32,7 @@
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
 
-    <!--floating toolbar-->
+    <!-- floating toolbar -->
     <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
     <!--suppress PluginXmlValidity -->
     <textEditorCustomizer implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
