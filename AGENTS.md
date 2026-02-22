@@ -261,7 +261,7 @@ For the config system and format of configs and config expressions, see:
 - `docs/en/config.md`
 - `docs/en/ref-config-format.md`
 - `cwt/cwtools-stellaris-config/config` (the real-game config directory)
-- `src/test/testData/fable` (the easter-egg config directory)
+- `src/test/testData/chronicle` (the easter-egg config directory)
 
 ## Agent instructions
 
