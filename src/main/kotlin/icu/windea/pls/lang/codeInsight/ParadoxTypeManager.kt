@@ -5,7 +5,6 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -163,7 +162,7 @@ object ParadoxTypeManager {
 
         // #252 兼容定义注入
         val definitionInjectionInfo = property.definitionInjectionInfo
-        if (definitionInjectionInfo != null) return definitionInjectionInfo.type?.orNull()
+        if (definitionInjectionInfo != null) return definitionInjectionInfo.typeText
 
         return null
     }
@@ -177,6 +176,20 @@ object ParadoxTypeManager {
             is ParadoxLocalisationParameter -> element.resolveLocalisation()?.type
             else -> null
         }
+    }
+
+    /**
+     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
+     */
+    fun getOverrideStrategy(element: PsiElement): ParadoxOverrideStrategy? {
+        val targetElement = when {
+            element is ParadoxScriptScriptedVariable -> element.takeIf { ParadoxPsiMatcher.isGlobalScriptedVariable(it) }
+            element is ParadoxScriptPropertyKey -> element.parent?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
+            element is ParadoxLocalisationProperty -> element.takeIf { ParadoxPsiMatcher.isLocalisation(it) }
+            else -> null
+        }
+        if (targetElement == null) return null
+        return ParadoxOverrideService.getOverrideStrategy(targetElement)
     }
 
     /**
@@ -226,20 +239,6 @@ object ParadoxTypeManager {
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return null
         val scopeContext = ParadoxScopeManager.getScopeContext(memberElement) ?: return null
         return scopeContext
-    }
-
-    /**
-     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
-     */
-    fun getPriority(element: PsiElement): ParadoxOverrideStrategy? {
-        val targetElement = when {
-            element is ParadoxScriptScriptedVariable -> element.takeIf { ParadoxPsiMatcher.isGlobalScriptedVariable(it) }
-            element is ParadoxScriptPropertyKey -> element.parent?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
-            element is ParadoxLocalisationProperty -> element.takeIf { ParadoxPsiMatcher.isLocalisation(it) }
-            else -> null
-        }
-        if (targetElement == null) return null
-        return ParadoxOverrideService.getOverrideStrategy(targetElement)
     }
 
     /**
