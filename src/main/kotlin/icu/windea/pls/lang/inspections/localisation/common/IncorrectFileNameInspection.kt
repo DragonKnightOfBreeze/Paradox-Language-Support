@@ -19,6 +19,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -39,7 +40,8 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile
         if (PlsFileManager.isLightFile(virtualFile)) return false
         if (PlsFileManager.isInjectedFile(virtualFile)) return false
-        return true
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
