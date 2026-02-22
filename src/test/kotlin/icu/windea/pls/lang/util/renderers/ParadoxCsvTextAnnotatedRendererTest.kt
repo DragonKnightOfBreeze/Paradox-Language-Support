@@ -4,6 +4,7 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -39,13 +40,13 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     @Test
     fun example() {
         configureFile("common/misc/example.test.csv")
-        assertResult("common/misc/example.test.csv", ParadoxAnnotatedRendererLevel.BASIC)
+        assertResult("common/misc/example.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
     fun example_unformatted() {
         configureFile("common/misc/example_unformatted.test.csv")
-        assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedRendererLevel.BASIC)
+        assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
@@ -56,7 +57,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        assertResult("common/chapters/00_chapter_pages.csv", ParadoxAnnotatedRendererLevel.ALL)
+        assertResult("common/chapters/00_chapter_pages.csv", ParadoxAnnotatedLevel.ALL)
     }
 
     private fun configureFile(path: String) {
@@ -64,7 +65,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
-    private fun assertResult(path: String, level: ParadoxAnnotatedRendererLevel) {
+    private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxCsvFile
         val renderer = ParadoxCsvTextAnnotatedRenderer().also { it.level = level }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
@@ -40,14 +41,14 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
     fun example() {
         configureFile("common/misc/example.test.txt")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        assertResult("common/misc/example.test.txt", ParadoxAnnotatedRendererLevel.BASIC)
+        assertResult("common/misc/example.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
     fun example_unformatted() {
         configureFile("common/misc/example_unformatted.test.txt")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        assertResult("common/misc/example_unformatted.test.txt", ParadoxAnnotatedRendererLevel.BASIC)
+        assertResult("common/misc/example_unformatted.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
@@ -62,11 +63,11 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedRendererLevel.ALL) // no advanced annotations
-        assertResult("common/characters/tags/00_character_tags.txt", ParadoxAnnotatedRendererLevel.ALL) // no advanced annotations
-        assertResult("common/chapters/00_chapters.txt", ParadoxAnnotatedRendererLevel.ALL)
-        assertResult("common/characters/00_characters.txt", ParadoxAnnotatedRendererLevel.ALL)
-        assertResult("common/species/00_species.txt", ParadoxAnnotatedRendererLevel.ALL)
+        assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
+        assertResult("common/characters/tags/00_character_tags.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
+        assertResult("common/chapters/00_chapters.txt", ParadoxAnnotatedLevel.ALL)
+        assertResult("common/characters/00_characters.txt", ParadoxAnnotatedLevel.ALL)
+        assertResult("common/species/00_species.txt", ParadoxAnnotatedLevel.ALL)
     }
 
     private fun configureFile(path: String) {
@@ -74,7 +75,7 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
-    private fun assertResult(path: String, level: ParadoxAnnotatedRendererLevel) {
+    private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxScriptFile
         val renderer = ParadoxScriptTextAnnotatedRenderer().also { it.level = level }

@@ -1,27 +1,28 @@
 package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedManager
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxScriptAnnotatedManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
  * 将脚本文本渲染为带注解的文本的渲染器。
  *
  * 说明：
- * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedRendererLevel]。
+ * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedLevel]。
  *
  * 支持的注解：
- * - 类型信息。参见 [ParadoxAnnotatedManager.getType]。
- * - 定义类型信息。参见 [ParadoxAnnotatedManager.getDefinitionType]。
- * - 覆盖方式信息。参见 [ParadoxAnnotatedManager.getOverrideStrategy]。
- * - 规则表达式信息。参见 [ParadoxAnnotatedManager.getConfigExpression]。
- * - 作用域上下文信息。参见 [ParadoxAnnotatedManager.getScopeContext]。
+ * - 类型信息。参见 [ParadoxScriptAnnotatedManager.getType]。
+ * - 定义类型信息。参见 [ParadoxScriptAnnotatedManager.getDefinitionType]。
+ * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategy]。
+ * - 规则表达式信息。参见 [ParadoxScriptAnnotatedManager.getConfigExpression]。
+ * - 作用域上下文信息。参见 [ParadoxScriptAnnotatedManager.getScopeContext]。
  */
 class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<ParadoxScriptTextAnnotatedRenderer.Scope, String>() {
     var indent: String = "    "
     var inline: Boolean = false
     var conditional: Boolean = false
-    var level: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel.DEFAULT
+    var level: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel.DEFAULT
 
     override fun createScope(): Scope {
         return Scope(indent, inline, conditional, level)
@@ -31,7 +32,7 @@ class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<ParadoxScri
         indent: String = "    ",
         inline: Boolean = false,
         conditional: Boolean = false,
-        var level: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel.DEFAULT,
+        var level: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel.DEFAULT,
     ) : ParadoxScriptTextPlainRenderer.Scope(indent = indent, inline = inline, conditional = conditional) {
         override fun renderMember(element: ParadoxScriptMember) {
             renderAnnotations(element)
@@ -53,20 +54,20 @@ class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<ParadoxScri
         fun getAnnotations(element: ParadoxScriptMember): List<String> {
             return buildList {
                 if (level.includeType) {
-                    ParadoxAnnotatedManager.getType(element)?.let { add(it) }
+                    ParadoxScriptAnnotatedManager.getType(element)?.let { add(it) }
                 }
                 if (level.includeDefinitionType) {
-                    ParadoxAnnotatedManager.getDefinitionType(element)?.let { add(it) }
+                    ParadoxScriptAnnotatedManager.getDefinitionType(element)?.let { add(it) }
                 }
                 if (level.includeOverrideStrategy) {
-                    ParadoxAnnotatedManager.getOverrideStrategy(element)?.let { add(it) }
+                    ParadoxScriptAnnotatedManager.getOverrideStrategy(element)?.let { add(it) }
                 }
                 if (level.includeConfigExpression) {
-                    ParadoxAnnotatedManager.getConfigExpression(element)?.let { add(it) }
+                    ParadoxScriptAnnotatedManager.getConfigExpression(element)?.let { add(it) }
                 }
                 if (level.includeScopeContext) {
                     val detailed = level.includeDetailedScopeContext
-                    ParadoxAnnotatedManager.getScopeContext(element, detailed)?.let { add(it) }
+                    ParadoxScriptAnnotatedManager.getScopeContext(element, detailed)?.let { add(it) }
                 }
             }
         }

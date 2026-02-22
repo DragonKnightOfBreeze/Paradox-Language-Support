@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
-object ParadoxAnnotatedManager {
+object ParadoxScriptAnnotatedManager {
     // region Prefixes
 
     const val typePrefix = "@type"

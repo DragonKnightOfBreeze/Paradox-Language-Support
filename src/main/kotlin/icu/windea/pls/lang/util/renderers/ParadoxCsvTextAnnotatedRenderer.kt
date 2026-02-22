@@ -1,27 +1,28 @@
 package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedManager
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
 
 /**
  * 将 CSV 文本渲染为带注解的文本的渲染器。
  *
  * 说明：
- * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedRendererLevel]。
+ * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedLevel]。
  *
  * 支持的注解：
- * - 类型信息。参见 [ParadoxAnnotatedManager.getTypeForRow]。
- * - 规则表达式信息。参见 [ParadoxAnnotatedManager.getConfigExpressionForRow]。
+ * - 类型信息。参见 [ParadoxCsvAnnotatedManager.getType]。
+ * - 规则表达式信息。参见 [ParadoxCsvAnnotatedManager.getConfigExpression]。
  */
 class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<ParadoxCsvTextAnnotatedRenderer.Scope, String>() {
-    var level: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel.DEFAULT
+    var level: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel.DEFAULT
 
     override fun createScope(): Scope {
         return Scope(level)
     }
 
     open class Scope(
-        var level: ParadoxAnnotatedRendererLevel,
+        var level: ParadoxAnnotatedLevel,
     ) : ParadoxCsvTextPlainRenderer.Scope() {
         override fun renderRowElement(element: ParadoxCsvRowElement) {
             renderAnnotations(element)
@@ -40,10 +41,10 @@ class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<ParadoxCsvTextAnn
         fun getAnnotations(element: ParadoxCsvRowElement): List<String> {
             return buildList {
                 if (level.includeType) {
-                    ParadoxAnnotatedManager.getTypeForRow(element)?.let { add(it) }
+                    ParadoxCsvAnnotatedManager.getType(element)?.let { add(it) }
                 }
                 if (level.includeConfigExpression) {
-                    ParadoxAnnotatedManager.getConfigExpressionForRow(element)?.let { add(it) }
+                    ParadoxCsvAnnotatedManager.getConfigExpression(element)?.let { add(it) }
                 }
             }
         }

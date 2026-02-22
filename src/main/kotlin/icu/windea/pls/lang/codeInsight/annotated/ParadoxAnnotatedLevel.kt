@@ -1,9 +1,7 @@
-package icu.windea.pls.lang.util.renderers
-
-import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedManager
+package icu.windea.pls.lang.codeInsight.annotated
 
 /**
- * 渲染器的注解级别。
+ * 注解级别。用于配置要包含的注解。
  *
  * @property includeType 是否包含类型信息。
  * @property includeDefinitionType 是否包含定义类型信息。
@@ -12,12 +10,11 @@ import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedManager
  * @property includeScopeContext 是否包含作用域上下文信息。
  * @property includeDetailedScopeContext 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
  *
- * @see ParadoxAnnotatedManager
- * @see ParadoxScriptTextAnnotatedRenderer
- * @see ParadoxCsvTextAnnotatedRenderer
+ * @see ParadoxScriptAnnotatedManager
+ * @see ParadoxCsvAnnotatedManager
  */
 @Suppress("unused")
-data class ParadoxAnnotatedRendererLevel(
+data class ParadoxAnnotatedLevel(
     val includeType: Boolean = false,
     val includeDefinitionType: Boolean = false,
     val includeOverrideStrategy: Boolean = false,
@@ -27,19 +24,19 @@ data class ParadoxAnnotatedRendererLevel(
 ) {
     companion object {
         @JvmField
-        val BASIC: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
+        val BASIC: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
         )
 
         @JvmField
-        val DEFAULT: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
+        val DEFAULT: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
         )
 
         @JvmField
-        val ADVANCED: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
+        val ADVANCED: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
@@ -47,7 +44,7 @@ data class ParadoxAnnotatedRendererLevel(
         )
 
         @JvmField
-        val ALL: ParadoxAnnotatedRendererLevel = ParadoxAnnotatedRendererLevel(
+        val ALL: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
             includeDefinitionType = true,
             includeOverrideStrategy = true,
