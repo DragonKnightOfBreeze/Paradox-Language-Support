@@ -6,10 +6,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.PlsNameValidators
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 
 class ParadoxLocalisationParameterRenameInputValidator : RenameInputValidator {
-    private val elementPattern = PlatformPatterns.psiElement(ParadoxLocalisationParameterElement::class.java)
+    private val elementPattern = PlatformPatterns.psiElement(ParadoxLocalisationParameterLightElement::class.java)
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
         return PlsNameValidators.checkLocalisationParameterName(newName)

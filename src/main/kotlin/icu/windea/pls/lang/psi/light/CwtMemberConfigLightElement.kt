@@ -3,7 +3,6 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.model.CwtMemberType
@@ -11,47 +10,34 @@ import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
-class CwtMemberConfigElement(
+class CwtMemberConfigLightElement(
     parent: PsiElement,
     val config: CwtMemberConfig<*>,
     override val gameType: ParadoxGameType,
     private val project: Project
-) : CwtConfigMockPsiElement(parent) {
-    override fun getIcon(): Icon {
+) : CwtConfigLightElementBase(parent) {
+    override fun getIcon(flags: Int): Icon {
         return when (config.memberType) {
             CwtMemberType.PROPERTY -> PlsIcons.Nodes.CwtProperty
             CwtMemberType.VALUE -> PlsIcons.Nodes.CwtValue
         }
     }
 
-    override fun getName(): String {
-        return config.configExpression.expressionString
-    }
+    override fun getName() = config.configExpression.expressionString
 
-    override fun setName(name: String): PsiElement? {
+    override fun getText() = config.toString()
+
+    override fun getProject() = project
+
+    override fun setName(name: String): PsiElement {
         throw IncorrectOperationException() // cannot rename
     }
 
-    override fun getTypeName(): String {
-        return when (config.memberType) {
-            CwtMemberType.PROPERTY -> PlsBundle.message("cwt.type.property")
-            CwtMemberType.VALUE -> PlsBundle.message("cwt.type.value")
-        }
-    }
-
-    override fun getText(): String {
-        return config.toString()
-    }
-
-    override fun getProject(): Project {
-        return project
-    }
-
     override fun equals(other: Any?): Boolean {
-        return other is CwtMemberConfigElement
+        return other is CwtMemberConfigLightElement
             && config == other.config
-            && project == other.project
             && gameType == other.gameType
+            && project == other.project
     }
 
     override fun hashCode(): Int {

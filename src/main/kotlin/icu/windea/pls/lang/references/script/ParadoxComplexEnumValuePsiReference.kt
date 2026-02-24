@@ -5,7 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -20,6 +20,6 @@ class ParadoxComplexEnumValuePsiReference(
 
     override fun resolve(): PsiElement {
         val readWriteAccess = Access.Write // write (declaration)
-        return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, info.project)
+        return ParadoxComplexEnumValueLightElement(element, info.name, info.enumName, readWriteAccess, info.gameType, info.project)
     }
 }

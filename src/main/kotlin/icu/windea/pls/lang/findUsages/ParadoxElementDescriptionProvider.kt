@@ -13,12 +13,12 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDefinitionMockElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.light.ParadoxModifierElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -43,12 +43,12 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                 definitionInfo.name.or.anonymous()
             }
             is ParadoxLocalisationProperty -> element.type?.let { element.name }
-            is ParadoxDefinitionMockElement -> element.name
-            is ParadoxDynamicValueElement -> element.name
-            is ParadoxComplexEnumValueElement -> element.name
-            is ParadoxParameterElement -> element.name
-            is ParadoxLocalisationParameterElement -> element.name
-            is ParadoxModifierElement -> element.name
+            is ParadoxDefinitionLightElement -> element.name.or.anonymous()
+            is ParadoxDynamicValueLightElement -> element.name
+            is ParadoxComplexEnumValueLightElement -> element.name
+            is ParadoxParameterLightElement -> element.name
+            is ParadoxLocalisationParameterLightElement -> element.name
+            is ParadoxModifierLightElement -> element.name
             else -> null
         }
     }
@@ -63,12 +63,18 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                     null -> null
                 }
             }
-            is ParadoxDefinitionMockElement -> PlsBundle.message("type.definition")
-            is ParadoxDynamicValueElement -> PlsBundle.message("type.dynamicValue")
-            is ParadoxComplexEnumValueElement -> PlsBundle.message("type.complexEnumValue")
-            is ParadoxParameterElement -> PlsBundle.message("type.parameter")
-            is ParadoxLocalisationParameterElement -> PlsBundle.message("type.localisationParameter")
-            is ParadoxModifierElement -> PlsBundle.message("type.modifier")
+            is ParadoxDefinitionLightElement -> PlsBundle.message("type.definition")
+            is ParadoxDynamicValueLightElement -> {
+                val dynamicValueType = element.dynamicValueTypes.firstOrNull() ?: return null
+                when (dynamicValueType) {
+                    "variable" -> PlsBundle.message("type.variable")
+                    else -> PlsBundle.message("type.dynamicValue")
+                }
+            }
+            is ParadoxComplexEnumValueLightElement -> PlsBundle.message("type.complexEnumValue")
+            is ParadoxParameterLightElement -> PlsBundle.message("type.parameter")
+            is ParadoxLocalisationParameterLightElement -> PlsBundle.message("type.localisationParameter")
+            is ParadoxModifierLightElement -> PlsBundle.message("type.modifier")
             else -> null
         }
     }

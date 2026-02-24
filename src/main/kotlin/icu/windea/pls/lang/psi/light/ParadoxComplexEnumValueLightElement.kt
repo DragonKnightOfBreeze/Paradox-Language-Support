@@ -3,7 +3,6 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -11,16 +10,15 @@ import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.Icon
 
-class ParadoxComplexEnumValueElement(
+class ParadoxComplexEnumValueLightElement(
     parent: PsiElement,
     private val name: String,
     val enumName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxMockPsiElement(parent) {
+) : ParadoxLightElementBase(parent) {
     val config: CwtComplexEnumConfig?
         get() = PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
     val caseInsensitive: Boolean
@@ -31,32 +29,20 @@ class ParadoxComplexEnumValueElement(
             else -> ParadoxSearchScopeTypes.All
         }
 
-    override fun getIcon(): Icon {
-        return PlsIcons.Nodes.ComplexEnumValue(enumName)
-    }
+    override fun getIcon(flags: Int) = PlsIcons.Nodes.ComplexEnumValue(enumName)
 
-    override fun getName(): String {
-        return name
-    }
+    override fun getName() = name
 
-    override fun getTypeName(): String {
-        return PlsBundle.message("type.complexEnumValue")
-    }
+    override fun getText() = name
 
-    override fun getText(): String {
-        return name
-    }
-
-    override fun getProject(): Project {
-        return project
-    }
+    override fun getProject() = project
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxComplexEnumValueElement
+        return other is ParadoxComplexEnumValueLightElement
             && name.equals(other.name, caseInsensitive) // # 261
             && enumName == other.enumName
-            && project == other.project
             && gameType == other.gameType
+            && project == other.project
             && searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent)
     }
 

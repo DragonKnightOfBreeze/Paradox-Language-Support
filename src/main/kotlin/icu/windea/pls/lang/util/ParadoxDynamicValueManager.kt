@@ -9,7 +9,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxDynamicValueService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -28,21 +28,21 @@ object ParadoxDynamicValueManager {
         }
     }
 
-    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
         if (!name.isIdentifier()) return null // skip invalid names
         val gameType = configGroup.gameType
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueType = configExpression.value ?: return null
-        return ParadoxDynamicValueElement(element, name, dynamicValueType, readWriteAccess, gameType, configGroup.project)
+        return ParadoxDynamicValueLightElement(element, name, dynamicValueType, readWriteAccess, gameType, configGroup.project)
     }
 
-    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
+    fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueLightElement? {
         if (!name.isIdentifier()) return null // skip invalid names
         val gameType = configGroup.gameType
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
-        return ParadoxDynamicValueElement(element, name, dynamicValueTypes, readWriteAccess, gameType, configGroup.project)
+        return ParadoxDynamicValueLightElement(element, name, dynamicValueTypes, readWriteAccess, gameType, configGroup.project)
     }
 
     fun getPresentableType(types: Set<String>): String {

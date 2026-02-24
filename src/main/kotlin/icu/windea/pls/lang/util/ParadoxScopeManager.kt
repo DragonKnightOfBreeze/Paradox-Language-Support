@@ -21,7 +21,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxScopeMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -87,7 +87,7 @@ object ParadoxScopeManager {
         }
     }
 
-    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
@@ -98,7 +98,7 @@ object ParadoxScopeManager {
         }
     }
 
-    fun getScopeContext(element: ParadoxDynamicValueElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    fun getScopeContext(element: ParadoxDynamicValueLightElement, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         // only receive push scope (this scope), ignore others (like root scope, etc.)
         val scopeContext = getScopeContext(element)
         return inputScopeContext.resolveNext(scopeContext.scope.id)

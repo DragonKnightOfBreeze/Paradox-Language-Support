@@ -7,7 +7,7 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or
@@ -18,7 +18,7 @@ import kotlin.experimental.or
 class ParadoxLocalisationParameterUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch
-        if (target !is ParadoxLocalisationParameterElement) return
+        if (target !is ParadoxLocalisationParameterLightElement) return
 
         val name = target.name
         if (name.isEmpty()) return

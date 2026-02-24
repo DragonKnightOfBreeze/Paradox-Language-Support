@@ -3,7 +3,6 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.model.ParadoxGameType
@@ -13,7 +12,7 @@ import javax.swing.Icon
 /**
  * @see ParadoxParameterSupport
  */
-class ParadoxParameterElement(
+class ParadoxParameterLightElement(
     parent: PsiElement,
     private val name: String,
     val contextName: String,
@@ -22,33 +21,21 @@ class ParadoxParameterElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxMockPsiElement(parent) {
-    override fun getIcon(): Icon {
-        return PlsIcons.Nodes.Parameter
-    }
+) : ParadoxLightElementBase(parent) {
+    override fun getIcon(flags: Int) = PlsIcons.Nodes.Parameter
 
-    override fun getName(): String {
-        return name
-    }
+    override fun getName() = name
 
-    override fun getTypeName(): String {
-        return PlsBundle.message("type.parameter")
-    }
+    override fun getText() = name
 
-    override fun getText(): String {
-        return name
-    }
-
-    override fun getProject(): Project {
-        return project
-    }
+    override fun getProject() = project
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxParameterElement
+        return other is ParadoxParameterLightElement
             && name == other.name
             && contextKey == other.contextKey
-            && project == other.project
             && gameType == other.gameType
+            && project == other.project
     }
 
     override fun hashCode(): Int {

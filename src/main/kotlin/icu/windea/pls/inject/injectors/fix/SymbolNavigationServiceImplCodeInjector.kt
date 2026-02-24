@@ -10,7 +10,7 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
-import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.core.psi.light.LightElementBase
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -25,7 +25,7 @@ class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun getNavigationTargets(project: Project, symbol: Symbol, @InjectReturnValue returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {
         if (returnValue.isEmpty()) return returnValue
-        return returnValue.filter { getElement(it) !is MockPsiElement }
+        return returnValue.filter { getElement(it) !is LightElementBase }
     }
 
     private fun getElement(navigationTarget: NavigationTarget): PsiElement? {

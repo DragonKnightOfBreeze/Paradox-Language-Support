@@ -13,7 +13,7 @@ import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
@@ -56,7 +56,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
             val name = it.name
             val configType = CwtConfigType.entries.get(it.type) ?: return@p true
             val element = it.element ?: return@p true
-            val lightElement = CwtConfigSymbolElement(element, name, configType, ReadWriteAccessDetector.Access.Write, it.gameType, project)
+            val lightElement = CwtConfigSymbolLightElement(element, name, configType, ReadWriteAccessDetector.Access.Write, it.gameType, project)
             processor.process(NavigationAwarePsiElement(lightElement, element))
         }
     }

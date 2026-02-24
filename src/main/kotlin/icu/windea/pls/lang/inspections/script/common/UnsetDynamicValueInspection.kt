@@ -15,7 +15,7 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.selector.selector
@@ -61,7 +61,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if (!ParadoxResolveConstraint.DynamicValue.canResolve(reference)) continue
                     val resolved = reference.resolveFirst()
-                    if (resolved !is ParadoxDynamicValueElement) continue
+                    if (resolved !is ParadoxDynamicValueLightElement) continue
                     if (resolved.readWriteAccess != Access.Read) continue
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {

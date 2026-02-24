@@ -4,9 +4,9 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -46,7 +46,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxComplexEnumValueElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxComplexEnumValueLightElement): String?
     }
 
     abstract class DynamicValue : ParadoxQuickDocTextProviderBase() {
@@ -58,7 +58,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxDynamicValueElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxDynamicValueLightElement): String?
     }
 
     abstract class Parameter : ParadoxQuickDocTextProviderBase() {
@@ -70,6 +70,6 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxParameterElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxParameterLightElement): String?
     }
 }

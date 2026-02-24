@@ -50,7 +50,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.CwtMemberConfigElement
+import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
@@ -446,7 +446,7 @@ object ParadoxExpressionManager {
             // 特殊处理合成的规则
             val gameType = configGroup.gameType
             val project = configGroup.project
-            return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
+            return CwtMemberConfigLightElement(element, resolvedConfig, gameType, project)
         }
 
         return resolvedConfig.pointer.element

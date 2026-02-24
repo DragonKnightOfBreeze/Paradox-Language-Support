@@ -20,7 +20,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
-import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -315,7 +315,7 @@ class ParadoxLocalisationTextQuickDocRenderer : ParadoxLocalisationTextRenderer<
                 i = reference.rangeInElement.endOffset
                 val resolved = reference.resolve()
                 // 不要尝试跳转到 dynamicValue 的声明处
-                if (resolved == null || resolved is MockPsiElement) {
+                if (resolved == null || resolved is LightElementBase) {
                     val s = reference.rangeInElement.substring(text)
                     builder.append(s.escapeXml())
                 } else {

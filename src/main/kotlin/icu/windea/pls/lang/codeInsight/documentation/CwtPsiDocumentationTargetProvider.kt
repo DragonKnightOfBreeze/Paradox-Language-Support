@@ -4,7 +4,7 @@ import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.psi.light.CwtConfigMockPsiElement
+import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 
 class CwtPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     override fun documentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
@@ -15,7 +15,7 @@ class CwtPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
 
     private fun isValid(elementWithDocumentation: PsiElement): Boolean {
         if (elementWithDocumentation.language is CwtLanguage) return true
-        if (elementWithDocumentation is CwtConfigMockPsiElement) return true
+        if (elementWithDocumentation is CwtConfigLightElementBase) return true
         return false
     }
 }

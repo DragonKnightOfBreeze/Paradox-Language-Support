@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.PlsNameValidators
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettings
@@ -87,7 +87,7 @@ object ParadoxScriptInjectionManager {
                     ?: return@lazy null
                 argumentNameElement.references.firstNotNullOfOrNull t@{ reference ->
                     if (reference.rangeInElement != argumentNameRange) return@t null
-                    reference.resolve()?.castOrNull<ParadoxParameterElement>()
+                    reference.resolve()?.castOrNull<ParadoxParameterLightElement>()
                 }
             }
             val injectionInfo = ParadoxParameterValueInjectionInfo(rangeInsideHost, parameterValueQuoted, parameterElementProvider)

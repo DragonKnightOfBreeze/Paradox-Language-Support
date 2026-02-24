@@ -13,8 +13,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -81,7 +81,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
-            val resolved = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
+            val resolved = resolvedElements.findIsInstance<ParadoxComplexEnumValueLightElement>()
             if (resolved == null) return@run
             return ParadoxUsageTypes.COMPLEX_ENUM_VALUE
         }
@@ -96,7 +96,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         // in script value expression
         if (dataType in CwtDataTypeSets.ValueField) {
             val targetElement = targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
-            if (targetElement is ParadoxParameterElement) {
+            if (targetElement is ParadoxParameterLightElement) {
                 return ParadoxUsageTypes.PARAMETER_REFERENCE_5
             }
         }

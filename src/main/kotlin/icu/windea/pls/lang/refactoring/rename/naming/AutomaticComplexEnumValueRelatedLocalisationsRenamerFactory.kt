@@ -6,7 +6,7 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  */
 class AutomaticComplexEnumValueRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if (element !is ParadoxComplexEnumValueElement) return false
+        if (element !is ParadoxComplexEnumValueLightElement) return false
         val name = element.name.orNull() ?: return false
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
         return ParadoxComplexEnumValueManager.getNameLocalisations(name, element, locale).isNotEmpty()

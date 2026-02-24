@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -28,6 +28,6 @@ class ParadoxParameterContextInfo(
     ) {
         val element: PsiElement? get() = elementPointer.element
         val parentElement: PsiElement? get() = elementPointer.element?.parent
-        val parameterElement: ParadoxParameterElement? get() = elementPointer.element?.let { ParadoxParameterManager.getParameterElement(it) }
+        val parameterElement: ParadoxParameterLightElement? get() = elementPointer.element?.let { ParadoxParameterManager.getParameterElement(it) }
     }
 }

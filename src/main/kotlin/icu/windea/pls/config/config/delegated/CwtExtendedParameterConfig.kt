@@ -17,7 +17,7 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.parameter.containingContextReference
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -70,10 +70,10 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberCo
     val inherit: Boolean
 
     /** 得到处理后的“上下文规则容器”。 */
-    fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*>
+    fun getContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*>
 
     /** 得到由其声明的上下文规则列表。 */
-    fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>>
+    fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>>
 
     interface Resolver {
         /** 由成员规则解析为参数的扩展规则。 */
@@ -114,11 +114,11 @@ private class CwtExtendedParameterConfigImpl(
     private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
 
-    override fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*> {
+    override fun getContainerConfig(parameterElement: ParadoxParameterLightElement): CwtMemberConfig<*> {
         return _containerConfig
     }
 
-    override fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+    override fun getContextConfigs(parameterElement: ParadoxParameterLightElement): List<CwtMemberConfig<*>> {
         if (inherit) {
             run {
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run

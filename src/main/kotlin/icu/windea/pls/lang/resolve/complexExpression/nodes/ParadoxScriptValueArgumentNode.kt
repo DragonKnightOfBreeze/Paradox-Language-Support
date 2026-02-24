@@ -8,7 +8,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -48,7 +48,7 @@ class ParadoxScriptValueArgumentNode(
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
 
-        override fun resolve(): ParadoxParameterElement? {
+        override fun resolve(): ParadoxParameterLightElement? {
             val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return null
             return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
         }

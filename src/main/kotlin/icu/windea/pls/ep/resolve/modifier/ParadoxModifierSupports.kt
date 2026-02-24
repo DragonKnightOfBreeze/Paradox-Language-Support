@@ -39,7 +39,7 @@ import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
 import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
 import icu.windea.pls.lang.match.ParadoxConfigExpressionMatchService
-import icu.windea.pls.lang.psi.light.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -72,9 +72,9 @@ var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templa
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierInfo.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
-var ParadoxModifierElement.templateExpression by ParadoxModifierSupport.Keys.templateExpression
-var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
-var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
+var ParadoxModifierLightElement.templateExpression by ParadoxModifierSupport.Keys.templateExpression
+var ParadoxModifierLightElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
+var ParadoxModifierLightElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
 // endregion
 
@@ -134,7 +134,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         return ModificationTracker.NEVER_CHANGED
     }
 
-    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+    override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         return modifierElement.modifierConfig?.categoryConfigMap
     }
 }
@@ -211,11 +211,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         return ParadoxModificationTrackers.scriptFileFromPatterns("**/*.txt")
     }
 
-    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+    override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         return modifierElement.modifierConfig?.categoryConfigMap
     }
 
-    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifierConfig = modifierElement.modifierConfig ?: return false
         val templateExpression = modifierElement.templateExpression ?: return false
 
@@ -418,14 +418,14 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         return ParadoxModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
     }
 
-    override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+    override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory // may be null
         val configGroup = PlsFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
 
-    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(modifierElement: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return false
         val modifierInfo = modifierElement.economicCategoryModifierInfo ?: return false
         val gameType = modifierElement.gameType

@@ -7,10 +7,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -84,21 +84,21 @@ sealed class ParadoxTargetInfo {
                     val type = element.type ?: return null
                     Localisation(name, type)
                 }
-                is ParadoxComplexEnumValueElement -> {
+                is ParadoxComplexEnumValueLightElement -> {
                     val name = element.name.orNull() ?: return null
                     val enumName = element.enumName.orNull() ?: return null
                     ComplexEnumValue(name, enumName)
                 }
-                is ParadoxDynamicValueElement -> {
+                is ParadoxDynamicValueLightElement -> {
                     val name = element.name.orNull() ?: return null
                     val types = element.dynamicValueTypes.orNull() ?: return null
                     DynamicValue(name, types)
                 }
-                is ParadoxParameterElement -> {
+                is ParadoxParameterLightElement -> {
                     val name = element.name.orNull() ?: return null
                     Parameter(name)
                 }
-                is ParadoxLocalisationParameterElement -> {
+                is ParadoxLocalisationParameterLightElement -> {
                     val name = element.name.orNull() ?: return null
                     LocalisationParameter(name)
                 }

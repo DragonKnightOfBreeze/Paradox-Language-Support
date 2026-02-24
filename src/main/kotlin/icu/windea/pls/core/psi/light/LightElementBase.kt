@@ -1,35 +1,60 @@
-package icu.windea.pls.lang.psi.light
+package icu.windea.pls.core.psi.light
 
 import com.intellij.lang.Language
-import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.platform.backend.navigation.NavigationRequest
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.impl.RenameableFakePsiElement
+import com.intellij.psi.impl.light.LightElement
+import javax.swing.Icon
 
 @Suppress("UnstableApiUsage")
-abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement, ItemPresentation {
+abstract class LightElementBase(
+    parent: PsiElement
+) : LightElement(parent.manager, parent.language), PsiNameIdentifierOwner, NavigatablePsiElement {
+    private val myParent: PsiElement = parent
+
     override fun getParent(): PsiElement {
-        return super.getParent()
+        return myParent
     }
 
     override fun getLanguage(): Language {
-        return parent.language
+        return myParent.language
     }
 
     override fun getContainingFile(): PsiFile? {
-        return parent.containingFile
+        return myParent.containingFile
+    }
+
+    override fun getProject(): Project {
+        return myManager.project
+    }
+
+    override fun isWritable(): Boolean {
+        return true
+    }
+
+    override fun setName(name: String): PsiElement? {
+        return null
     }
 
     override fun getNameIdentifier(): PsiElement? {
         return this
     }
 
+    override fun getTextOffset(): Int {
+        return 0
+    }
+
+    override fun getIcon(flags: Int): Icon? {
+        return super.getIcon(flags)
+    }
+
     override fun getTextRange(): TextRange? {
-        return null // return null to avoid incorrect highlight at file start
+        return null
     }
 
     override fun navigationRequest(): NavigationRequest? {

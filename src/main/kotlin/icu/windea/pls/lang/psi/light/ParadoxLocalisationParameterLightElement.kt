@@ -3,50 +3,36 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.Icon
 
 /**
  * @see ParadoxLocalisationParameterSupport
  */
-class ParadoxLocalisationParameterElement(
+class ParadoxLocalisationParameterLightElement(
     parent: PsiElement,
     private val name: String,
     val localisationName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxMockPsiElement(parent) {
-    override fun getIcon(): Icon {
-        return PlsIcons.Nodes.Parameter
-    }
+) : ParadoxLightElementBase(parent) {
+    override fun getIcon(flags: Int) = PlsIcons.Nodes.Parameter
 
-    override fun getName(): String {
-        return name
-    }
+    override fun getName() = name
 
-    override fun getTypeName(): String {
-        return PlsBundle.message("type.localisationParameter")
-    }
+    override fun getText() = name
 
-    override fun getText(): String {
-        return name
-    }
-
-    override fun getProject(): Project {
-        return project
-    }
+    override fun getProject() = project
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxLocalisationParameterElement
+        return other is ParadoxLocalisationParameterLightElement
             && name == other.name
             && localisationName == other.localisationName
-            && project == other.project
             && gameType == other.gameType
+            && project == other.project
     }
 
     override fun hashCode(): Int {

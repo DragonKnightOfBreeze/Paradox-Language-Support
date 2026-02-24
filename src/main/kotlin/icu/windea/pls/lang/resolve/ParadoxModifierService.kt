@@ -12,7 +12,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.codeInsight.completion.gameType
-import icu.windea.pls.lang.psi.light.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -54,7 +54,7 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.getModifierCategories
      */
-    fun getModifierCategories(element: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
+    fun getModifierCategories(element: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
         val gameType = element.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
@@ -65,7 +65,7 @@ object ParadoxModifierService {
     /**
      * @see ParadoxModifierSupport.buildDocumentationDefinition
      */
-    fun getDocumentationDefinition(element: ParadoxModifierElement, builder: DocumentationBuilder): Boolean {
+    fun getDocumentationDefinition(element: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean {
         val gameType = element.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.any f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f false

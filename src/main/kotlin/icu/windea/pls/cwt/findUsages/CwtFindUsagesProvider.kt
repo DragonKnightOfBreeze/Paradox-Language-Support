@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.script.ParadoxScriptLanguage
 
 class CwtFindUsagesProvider : FindUsagesProvider {
@@ -25,7 +25,7 @@ class CwtFindUsagesProvider : FindUsagesProvider {
             is CwtProperty -> true
             is CwtString -> true
             is CwtBlock -> true
-            is MockPsiElement -> element.language == ParadoxScriptLanguage
+            is LightElementBase -> element.language == ParadoxScriptLanguage
             else -> false
         }
     }

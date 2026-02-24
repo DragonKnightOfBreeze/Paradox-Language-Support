@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -19,7 +20,6 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.PlsHintsUtil
-import icu.windea.pls.lang.psi.light.MockPsiElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.util.ParadoxEscapeManager
@@ -367,7 +367,7 @@ class ParadoxLocalisationTextInlayRenderer(val hintsContext: ParadoxHintsContext
                 val s = reference.rangeInElement.substring(text)
                 val resolved = reference.resolve()
                 // 不要尝试跳转到动态值的声明处
-                if (resolved == null || resolved is MockPsiElement) {
+                if (resolved == null || resolved is LightElementBase) {
                     presentations.add(factory.smallText(s))
                 } else {
                     presentations.add(factory.psiSingleReference(factory.smallText(s)) { reference.resolve() })

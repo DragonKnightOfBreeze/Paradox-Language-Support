@@ -6,7 +6,7 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  */
 class AutomaticDynamicValueRelatedLocalisationsRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if (element !is ParadoxDynamicValueElement) return false
+        if (element !is ParadoxDynamicValueLightElement) return false
         val name = element.name.orNull() ?: return false
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
         return ParadoxDynamicValueManager.getNameLocalisations(name, element, locale).isNotEmpty()

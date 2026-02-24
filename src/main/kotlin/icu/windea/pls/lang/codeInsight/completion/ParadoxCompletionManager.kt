@@ -47,8 +47,8 @@ import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -629,7 +629,7 @@ object ParadoxCompletionManager {
                 ProgressManager.checkCanceled()
                 val name = info.name
                 val readWriteAccess = Access.Write // write (declaration)
-                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
+                val element = ParadoxComplexEnumValueLightElement(contextElement, name, enumName, readWriteAccess, gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
@@ -690,7 +690,7 @@ object ParadoxCompletionManager {
                     val name = info.name
                     if (name == keyword) return@p true // 排除和当前输入的同名的
                     val readWriteAccess = info.readWriteAccess
-                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
+                    val element = ParadoxDynamicValueLightElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)

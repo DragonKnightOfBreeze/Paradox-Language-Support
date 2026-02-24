@@ -21,11 +21,11 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.light.ParadoxModifierElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
@@ -87,11 +87,11 @@ object ParadoxDocumentationManager {
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {
-            is ParadoxParameterElement -> getParameterDoc(element, originalElement, hint)
-            is ParadoxLocalisationParameterElement -> getLocalisationParameterDoc(element, originalElement, hint)
-            is ParadoxComplexEnumValueElement -> getComplexEnumValueDoc(element, originalElement, hint)
-            is ParadoxDynamicValueElement -> getDynamicValueDoc(element, originalElement, hint)
-            is ParadoxModifierElement -> getModifierDoc(element, originalElement, hint)
+            is ParadoxParameterLightElement -> getParameterDoc(element, originalElement, hint)
+            is ParadoxLocalisationParameterLightElement -> getLocalisationParameterDoc(element, originalElement, hint)
+            is ParadoxComplexEnumValueLightElement -> getComplexEnumValueDoc(element, originalElement, hint)
+            is ParadoxDynamicValueLightElement -> getDynamicValueDoc(element, originalElement, hint)
+            is ParadoxModifierLightElement -> getModifierDoc(element, originalElement, hint)
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, hint)
             is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, hint)
             is ParadoxScriptFile -> getScriptFileDoc(element, originalElement, hint)
@@ -105,7 +105,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getParameterDoc(element: ParadoxParameterElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getParameterDoc(element: ParadoxParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             buildParameterDefinition(element)
             if (hint) return@buildDocumentation
@@ -113,13 +113,13 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             buildLocalisationParameterDefinition(element)
         }
     }
 
-    private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             if (!hint) initSections()
             buildComplexEnumValueDefinition(element)
@@ -129,7 +129,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getDynamicValueDoc(element: ParadoxDynamicValueLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             if (!hint) initSections()
             buildDynamicValueDefinition(element)
@@ -139,7 +139,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getModifierDoc(element: ParadoxModifierLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             if (!hint) initSections()
             buildModifierDefinition(element)
@@ -258,7 +258,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
+    private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterLightElement) {
         val name = element.name
         definition {
             val r = ParadoxParameterService.getDocumentationDefinition(element, this)
@@ -269,7 +269,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterElement) {
+    private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterLightElement) {
         val name = element.name
         definition {
             val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
@@ -280,7 +280,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueElement) {
+    private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueLightElement) {
         definition {
             val name = element.name
             val enumName = element.enumName
@@ -304,7 +304,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueElement) {
+    private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
         val render = PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -328,7 +328,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueElement) {
+    private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueLightElement) {
         val name = element.name
         val dynamicValueTypes = element.dynamicValueTypes
         val gameType = element.gameType
@@ -357,7 +357,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueElement) {
+    private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
         val render = PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -381,7 +381,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierElement) {
+    private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierLightElement) {
         val name = element.name
         definition {
             val r = ParadoxModifierService.getDocumentationDefinition(element, this)
@@ -399,7 +399,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -453,7 +453,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -484,7 +484,7 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
+    private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
         // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
         if (!PlsSettings.getInstance().state.documentation.showScopes) return
 

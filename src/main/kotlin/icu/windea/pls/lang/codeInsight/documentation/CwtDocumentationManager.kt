@@ -35,8 +35,8 @@ import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
-import icu.windea.pls.lang.psi.light.CwtMemberConfigElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
+import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -71,15 +71,15 @@ object CwtDocumentationManager {
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {
-            is CwtConfigSymbolElement -> getConfigSymbolDoc(element, originalElement, hint)
-            is CwtMemberConfigElement -> getMemberConfigDoc(element, originalElement, hint)
+            is CwtConfigSymbolLightElement -> getConfigSymbolDoc(element, originalElement, hint)
+            is CwtMemberConfigLightElement -> getMemberConfigDoc(element, originalElement, hint)
             is CwtProperty -> getPropertyDoc(element, originalElement, hint)
             is CwtString -> getStringDoc(element, originalElement, hint)
             else -> null
         }
     }
 
-    private fun getConfigSymbolDoc(element: CwtConfigSymbolElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getConfigSymbolDoc(element: CwtConfigSymbolLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             val name = element.name
             val configType = element.configType
@@ -89,7 +89,7 @@ object CwtDocumentationManager {
         }
     }
 
-    private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getMemberConfigDoc(element: CwtMemberConfigLightElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             val name = element.name
             val configType = null
@@ -162,8 +162,8 @@ object CwtDocumentationManager {
                 configType?.isReference == true -> configType.prefix
                 referenceElement is ParadoxScriptPropertyKey -> PlsStrings.definitionPropertyPrefix
                 referenceElement is ParadoxScriptValue -> PlsStrings.definitionValuePrefix
-                element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsStrings.definitionPropertyPrefix
-                element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
+                element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig -> PlsStrings.definitionPropertyPrefix
+                element is CwtMemberConfigLightElement && element.config is CwtValueConfig -> PlsStrings.definitionValuePrefix
                 else -> configType?.prefix
             }
             val finalPrefix = when {
@@ -201,7 +201,7 @@ object CwtDocumentationManager {
                     addModifierRelatedLocalisations(element, referenceElement, name, configGroup)
                     addModifierIcon(element, referenceElement, name, configGroup)
                 }
-                if (element is CwtProperty || (element is CwtMemberConfigElement && element.config is CwtPropertyConfig)) {
+                if (element is CwtProperty || (element is CwtMemberConfigLightElement && element.config is CwtPropertyConfig)) {
                     addScope(element, name, configType, configGroup)
                 }
                 if (referenceElement != null) {

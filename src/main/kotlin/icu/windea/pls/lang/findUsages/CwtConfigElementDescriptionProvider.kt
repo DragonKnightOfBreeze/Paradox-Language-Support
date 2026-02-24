@@ -13,7 +13,7 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 
 class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
@@ -32,7 +32,7 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
         return when (element) {
             is CwtProperty -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
             is CwtString -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
-            is CwtConfigSymbolElement -> element.name
+            is CwtConfigSymbolLightElement -> element.name
             else -> null
         }
     }
@@ -41,7 +41,7 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
         return when (element) {
             is CwtProperty -> getConfigType(element)?.description
             is CwtString -> getConfigType(element)?.description
-            is CwtConfigSymbolElement -> element.configType.description
+            is CwtConfigSymbolLightElement -> element.configType.description
             else -> null
         }
     }
@@ -50,11 +50,11 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
         return getElementName(element)?.let { name -> getElementType(element)?.let { type -> "$type $name" } }
     }
 
-    private fun getConfigType(element: PsiElement): CwtConfigType? {
-        return CwtConfigManager.getConfigType(element)?.takeIf { it.isReference }
-    }
-
     private fun getElementHighlightUsagesDescription(element: PsiElement): String? {
         return getElementNodeText(element)
+    }
+
+    private fun getConfigType(element: PsiElement): CwtConfigType? {
+        return CwtConfigManager.getConfigType(element)?.takeIf { it.isReference }
     }
 }

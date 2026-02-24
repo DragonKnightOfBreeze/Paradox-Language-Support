@@ -5,9 +5,9 @@ import icu.windea.pls.config.documentation
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxTextColorManager
@@ -80,7 +80,7 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
 class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextProviderBase.ComplexEnumValue() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxComplexEnumValueElement): String? {
+    override fun doGetQuickDocText(element: ParadoxComplexEnumValueLightElement): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
@@ -93,7 +93,7 @@ class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextP
 class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProviderBase.DynamicValue() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxDynamicValueElement): String? {
+    override fun doGetQuickDocText(element: ParadoxDynamicValueLightElement): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.dynamicValueTypes) {
@@ -109,7 +109,7 @@ class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProvi
 class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Parameter() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxParameterElement): String? {
+    override fun doGetQuickDocText(element: ParadoxParameterLightElement): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()

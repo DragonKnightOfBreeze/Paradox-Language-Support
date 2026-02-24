@@ -4,7 +4,7 @@ import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.psi.light.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 
 class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     override fun documentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
@@ -15,7 +15,7 @@ class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
 
     private fun isValid(elementWithDocumentation: PsiElement): Boolean {
         if (elementWithDocumentation.language is ParadoxLanguage) return true
-        if (elementWithDocumentation is ParadoxMockPsiElement) return true
+        if (elementWithDocumentation is ParadoxLightElementBase) return true
         return false
     }
 }

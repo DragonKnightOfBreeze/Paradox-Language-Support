@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.psi.light.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * 提供对修正的支持。
  *
  * @see ParadoxModifierInfo
- * @see ParadoxModifierElement
+ * @see ParadoxModifierLightElement
  */
 @WithGameTypeEP
 interface ParadoxModifierSupport {
@@ -34,14 +34,14 @@ interface ParadoxModifierSupport {
 
     fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker? = null
 
-    fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>?
+    fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>?
 
     /**
      * 构建修正的快速文档中的定义部分。
      *
      * @return 此扩展点是否适用。
      */
-    fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = false
+    fun buildDocumentationDefinition(modifierElement: ParadoxModifierLightElement, builder: DocumentationBuilder): Boolean = false
 
     /**
      * 构建定义的快速文档中的定义部分中的对应的生成的修正的那一部分。

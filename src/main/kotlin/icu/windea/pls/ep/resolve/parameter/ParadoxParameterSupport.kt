@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  * 提供对脚本参数的支持。
  *
  * @see ParadoxParameterInfo
- * @see ParadoxParameterElement
+ * @see ParadoxParameterLightElement
  */
 interface ParadoxParameterSupport {
     fun isContext(element: ParadoxDefinitionElement): Boolean
@@ -43,11 +43,11 @@ interface ParadoxParameterSupport {
      */
     fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo?
 
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement?
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement?
 
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement?
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement?
 
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement?
 
     fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
 
@@ -56,7 +56,7 @@ interface ParadoxParameterSupport {
      *
      * @return 此扩展点是否适用。
      */
-    fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
+    fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean
 
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
@@ -70,7 +70,7 @@ interface ParadoxParameterSupport {
      *
      * @return 此扩展点是否适用。
      */
-    fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = false
+    fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = false
 
     object Keys : KeyRegistryWithSync()
 

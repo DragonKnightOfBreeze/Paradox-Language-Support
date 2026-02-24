@@ -6,7 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -36,7 +36,7 @@ class AutomaticDynamicValueRelatedLocalisationsRenamer(element: PsiElement, newN
     override fun entityName() = PlsBundle.message("rename.dynamicValue.relatedLocalisations.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
-        if (element !is ParadoxDynamicValueElement) return
+        if (element !is ParadoxDynamicValueLightElement) return
         val name = element.name.orNull() ?: return
         ProgressManager.checkCanceled()
         val selector = selector(element.project, element).localisation().contextSensitive()

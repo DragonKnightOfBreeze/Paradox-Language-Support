@@ -5,22 +5,22 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.util.*
 
-class ParadoxDefinitionMockElement(
+class ParadoxDefinitionLightElement(
     parent: ParadoxDefinitionElement,
     val definitionInfo: ParadoxDefinitionInfo,
-) : ParadoxMockPsiElement(parent) {
+) : ParadoxLightElementBase(parent) {
     override val gameType get() = definitionInfo.gameType
 
-    override fun getIcon() = PlsIcons.Nodes.Definition(definitionInfo.type)
+    override fun getIcon(flags: Int) = PlsIcons.Nodes.Definition(definitionInfo.type)
 
     override fun getName() = definitionInfo.name
 
-    override fun getTypeName() = definitionInfo.type
+    override fun getText() = null
 
     override fun getProject() = definitionInfo.project
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxDefinitionMockElement && definitionInfo == other.definitionInfo
+        return other is ParadoxDefinitionLightElement && definitionInfo == other.definitionInfo
     }
 
     override fun hashCode(): Int {

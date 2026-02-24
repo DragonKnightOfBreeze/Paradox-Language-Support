@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
 /**
@@ -26,12 +26,12 @@ class CwtConfigUsageTypeProvider : UsageTypeProviderEx {
         if (element.language !is CwtLanguage) return null
         run {
             val targetElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
-            val targetElement = targetElements.findIsInstance<CwtConfigSymbolElement>()
+            val targetElement = targetElements.findIsInstance<CwtConfigSymbolLightElement>()
             if (targetElement == null) return@run
             for (reference in element.references) {
                 ProgressManager.checkCanceled()
                 if (reference !is CwtConfigSymbolPsiReference) continue
-                val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolElement>()
+                val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolLightElement>()
                 if (resolved == null) continue
                 if (resolved != targetElement) continue
                 return when (resolved.readWriteAccess) {

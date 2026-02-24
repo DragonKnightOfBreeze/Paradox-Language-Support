@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
-import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
@@ -24,17 +24,17 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
-    override fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterElement? {
+    override fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterLightElement? {
         val localisationName = localisationElement.name
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
-        val resolved = ParadoxLocalisationParameterElement(localisationElement, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(localisationElement, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 
-    override fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement? {
+    override fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterLightElement? {
         val name = element.name.orNull() ?: return null
         val localisationElement = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
         val localisationName = localisationElement.name.orNull() ?: return null
@@ -42,11 +42,11 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
-        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterLightElement? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
         val name = (rangeInElement?.substring(element.text) ?: element.name).orNull() ?: return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
@@ -55,11 +55,11 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val configGroup = config.configGroup
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 
-    override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         // 不加上文件信息
 
         // 加上名字

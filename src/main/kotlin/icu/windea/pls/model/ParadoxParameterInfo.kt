@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import javax.swing.Icon
@@ -39,12 +39,12 @@ data class ParadoxParameterInfo(
 }
 
 @Suppress("unused")
-fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterElement {
-    return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterLightElement {
+    return ParadoxParameterLightElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         .also { ParadoxParameterSupport.Keys.sync(this, it) }
 }
 
-fun ParadoxParameterElement.toInfo(): ParadoxParameterInfo {
+fun ParadoxParameterLightElement.toInfo(): ParadoxParameterInfo {
     return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project)
         .also { ParadoxParameterSupport.Keys.sync(this, it) }
 }

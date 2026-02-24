@@ -6,9 +6,9 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationManager
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -19,9 +19,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  *
  * - 封装变量（[ParadoxScriptScriptedVariable]）
  * - 定义（[ParadoxDefinitionElement]）
- * - 复杂枚举（[ParadoxComplexEnumValueElement]）
- * - 动态值（[ParadoxDynamicValueElement]）
- * - 参数（[ParadoxParameterElement]）
+ * - 复杂枚举（[ParadoxComplexEnumValueLightElement]）
+ * - 动态值（[ParadoxDynamicValueLightElement]）
+ * - 参数（[ParadoxParameterLightElement]）
  *
  * @see ParadoxDocumentationTarget
  * @see ParadoxDocumentationManager

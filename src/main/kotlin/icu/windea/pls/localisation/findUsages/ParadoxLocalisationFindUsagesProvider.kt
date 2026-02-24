@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationWordScanner
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -15,7 +15,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider {
     override fun canFindUsagesFor(element: PsiElement): Boolean {
         return when (element) {
             is ParadoxLocalisationProperty -> true
-            is MockPsiElement -> element.language == ParadoxLocalisationLanguage
+            is LightElementBase -> element.language == ParadoxLocalisationLanguage
             else -> false
         }
     }

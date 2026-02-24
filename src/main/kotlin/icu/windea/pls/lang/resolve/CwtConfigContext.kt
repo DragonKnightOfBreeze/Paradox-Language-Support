@@ -13,7 +13,7 @@ import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
 import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.light.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -72,7 +72,7 @@ var CwtConfigContext.dynamic: Boolean by registerKey(CwtConfigContext.Keys, fals
 val CwtConfigContext.dynamicCache: MutableMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterElement: ParadoxParameterElement? by registerKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterElement: ParadoxParameterLightElement? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterValueQuoted: Boolean? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptExpression: String? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptHasConflict: Boolean? by registerKey(CwtConfigContext.Keys)

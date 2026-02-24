@@ -31,7 +31,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.dynamicValueNode
@@ -168,7 +168,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDynamicValueScopeContextProvider.getScopeContext
      */
-    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
+    fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = element.gameType
         return ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
@@ -180,7 +180,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDynamicValueInferredScopeContextProvider.getScopeContext
      */
-    fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueElement): ParadoxScopeContext? {
+    fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = dynamicValue.gameType
         var map: Map<String, String>? = null
         ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
@@ -330,7 +330,7 @@ object ParadoxScopeService {
         }
     }
 
-    fun evaluateScopeContextForDynamicValue(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+    fun evaluateScopeContextForDynamicValue(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         // get provided scope context from EPs, and use it if not exact
         val scopeContext = getScopeContext(element)
         if (scopeContext != null && scopeContext.isExact) return scopeContext

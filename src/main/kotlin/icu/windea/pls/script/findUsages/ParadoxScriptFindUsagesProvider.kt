@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
-import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.editor.ParadoxScriptWordScanner
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -17,7 +17,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider {
         return when (element) {
             is ParadoxScriptScriptedVariable -> true
             is ParadoxScriptProperty -> true
-            is MockPsiElement -> element.language == ParadoxScriptLanguage
+            is LightElementBase -> element.language == ParadoxScriptLanguage
             else -> false
         }
     }

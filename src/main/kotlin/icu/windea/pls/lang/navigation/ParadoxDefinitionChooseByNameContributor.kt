@@ -12,7 +12,7 @@ import icu.windea.pls.core.process
 import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.light.ParadoxDefinitionMockElement
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionLightElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
@@ -47,7 +47,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         ParadoxDefinitionSearch.search(name, null, selector).process p@{
             val element = it.element ?: return@p true
             val definitionInfo = element.definitionInfo ?: return@p true
-            val lightElement = ParadoxDefinitionMockElement(element, definitionInfo)
+            val lightElement = ParadoxDefinitionLightElement(element, definitionInfo)
             processor.process(NavigationAwarePsiElement(lightElement, element))
         }
     }
