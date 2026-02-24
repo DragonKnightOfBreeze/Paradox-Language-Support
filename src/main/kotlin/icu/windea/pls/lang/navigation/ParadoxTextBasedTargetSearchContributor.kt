@@ -17,8 +17,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
-import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.search.target.ParadoxTextBasedTargetSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
@@ -39,7 +39,7 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
     // com.intellij.find.impl.TextSearchContributor
     // com.intellij.ide.actions.searcheverywhere.CalculatorSEContributor
 
-    // 注意这里需要使用 NavigationAwarePsiElement 绕过以下内部检查
+    // 注意这里需要使用 NavigationElement 绕过以下内部检查
     // 位置：com.intellij.ide.impl.DataValidators.isDataValid
     // 错误消息：PSI element for DataKey("selectedItems") is provided on EDT by com.intellij.ide.actions.searcheverywhere.SearchEverywhereUI. Use `DataSink.lazy` to provide such data
 
@@ -64,7 +64,7 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
 
         val scope = GlobalSearchScope.projectScope(project)
         ParadoxTextBasedTargetSearch.search(queryText, project, scope).process p@{ element ->
-            consumer.process(FoundItemDescriptor(NavigationAwarePsiElement(element, element), 0))
+            consumer.process(FoundItemDescriptor(NavigationElement(element, element), 0))
         }
     }
 

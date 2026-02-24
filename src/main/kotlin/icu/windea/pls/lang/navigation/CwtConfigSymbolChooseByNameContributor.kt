@@ -7,10 +7,10 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
+import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
-import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.settings.PlsSettings
@@ -51,8 +51,11 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
             if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // declarations only
+            val name = it.name
+            val configType = CwtConfigType.entries.get(it.type) ?: return@p true
             val element = it.element ?: return@p true
-            processor.process(NavigationAwarePsiElement(element, element))
+            val navigationElement = CwtConfigNavigationElement(element, name, configType) // show correct name and icon in navigation view
+            processor.process(navigationElement)
         }
     }
 }

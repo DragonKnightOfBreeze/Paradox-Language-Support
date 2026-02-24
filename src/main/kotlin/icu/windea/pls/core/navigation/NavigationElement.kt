@@ -1,4 +1,4 @@
-package icu.windea.pls.core.psi
+package icu.windea.pls.core.navigation
 
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
@@ -6,7 +6,7 @@ import com.intellij.psi.impl.FakePsiElement
 import java.util.*
 import javax.swing.Icon
 
-class NavigationAwarePsiElement(
+open class NavigationElement(
     private val parent: NavigatablePsiElement,
     private val navigationElement: PsiElement? = null,
 ) : FakePsiElement(), NavigatablePsiElement {
@@ -35,7 +35,7 @@ class NavigationAwarePsiElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is NavigationAwarePsiElement && parent == other.parent
+        return this === other || other is NavigationElement && parent == other.parent
     }
 
     override fun hashCode(): Int {
