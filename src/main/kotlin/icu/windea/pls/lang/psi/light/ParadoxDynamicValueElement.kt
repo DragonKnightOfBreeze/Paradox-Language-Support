@@ -32,8 +32,8 @@ class ParadoxDynamicValueElement(
     override fun getTypeName(): String {
         val dynamicValueType = dynamicValueTypes.first() // first is ok
         return when (dynamicValueType) {
-            "variable" -> PlsBundle.message("script.description.variable")
-            else -> PlsBundle.message("script.description.dynamicValue")
+            "variable" -> PlsBundle.message("type.variable")
+            else -> PlsBundle.message("type.dynamicValue")
         }
     }
 

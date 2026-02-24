@@ -30,7 +30,7 @@ class ParadoxLocalisationParameterElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("localisation.description.parameter")
+        return PlsBundle.message("type.localisationParameter")
     }
 
     override fun getText(): String {

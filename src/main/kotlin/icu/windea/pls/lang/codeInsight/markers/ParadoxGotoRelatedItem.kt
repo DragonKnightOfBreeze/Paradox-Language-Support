@@ -28,6 +28,6 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
         val fileInfo = file.fileInfo ?: return file.virtualFile.path
         val path = fileInfo.path.path
         val qualifiedName = fileInfo.rootInfo.qualifiedName
-        return PlsBundle.message("paradox.goto.related.item.container.name", path, qualifiedName)
+        return PlsBundle.message("goto.related.item.container.name", path, qualifiedName)
     }
 }

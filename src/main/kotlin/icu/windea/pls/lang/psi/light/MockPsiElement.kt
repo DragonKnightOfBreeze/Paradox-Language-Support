@@ -48,10 +48,6 @@ abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(par
         return false // click to show usages
     }
 
-    override fun canNavigateToSource(): Boolean {
-        return false // click to show usages
-    }
-
     override fun getResolveScope(): GlobalSearchScope {
         return ParadoxSearchScope.fromElement(this) ?: super.getResolveScope()
     }

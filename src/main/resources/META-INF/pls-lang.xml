@@ -13,7 +13,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionInjectionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.search.text2TargetSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.textBasedTargetSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -225,6 +225,8 @@
 
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
 
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.findUsages.ParadoxElementDescriptionProvider" order="first"/> <!-- before any base EPs -->
     <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigUsageTypeProvider"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.ParadoxUsageTypeProvider"/>
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
@@ -257,7 +259,7 @@
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider" order="first"/> <!-- before any base EPs -->
     <nameSuggestionProvider implementation="icu.windea.pls.lang.refactoring.rename.ParadoxNameSuggestionProvider"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptPropertyRenameInputValidator"/>
@@ -386,7 +388,7 @@
     <definitionInjectionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
-    <text2TargetSearch implementation="icu.windea.pls.lang.search.target.ParadoxSubstringTextBasedTargetSearcher"/>
+    <textBasedTargetSearch implementation="icu.windea.pls.lang.search.target.ParadoxSubstringTextBasedTargetSearcher"/>
   </extensions>
 
   <applicationListeners>

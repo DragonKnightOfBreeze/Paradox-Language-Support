@@ -32,8 +32,8 @@ class CwtMemberConfigElement(
 
     override fun getTypeName(): String {
         return when (config.memberType) {
-            CwtMemberType.PROPERTY -> PlsBundle.message("cwt.description.property")
-            CwtMemberType.VALUE -> PlsBundle.message("cwt.description.value")
+            CwtMemberType.PROPERTY -> PlsBundle.message("cwt.type.property")
+            CwtMemberType.VALUE -> PlsBundle.message("cwt.type.value")
         }
     }
 

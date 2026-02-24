@@ -43,7 +43,7 @@ class ParadoxComplexEnumValueElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.complexEnumValue")
+        return PlsBundle.message("type.complexEnumValue")
     }
 
     override fun getText(): String {

@@ -32,7 +32,7 @@ class ParadoxParameterElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.parameter")
+        return PlsBundle.message("type.parameter")
     }
 
     override fun getText(): String {

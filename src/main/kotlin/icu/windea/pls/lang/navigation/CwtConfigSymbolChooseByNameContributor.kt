@@ -10,9 +10,10 @@ import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
+import icu.windea.pls.core.navigation.NavigatableFakePsiElement
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.psi.light.CwtConfigSymbolNavigationElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
@@ -38,7 +39,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val project = scope.project ?: getCurrentProject() ?: return
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // only accept declarations
+            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // declarations only
             val name = it.name
             processor.process(name)
         }
@@ -51,12 +52,12 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val scope = parameters.searchScope
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // only accept declarations
+            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // declarations only
             val name = it.name
             val configType = CwtConfigType.entries.get(it.type) ?: return@p true
             val element = it.element ?: return@p true
-            val navigationElement = CwtConfigSymbolNavigationElement(element, name, configType, it.gameType, project)
-            processor.process(navigationElement)
+            val lightElement = CwtConfigSymbolElement(element, name, configType, ReadWriteAccessDetector.Access.Write, it.gameType, project)
+            processor.process(NavigatableFakePsiElement(lightElement))
         }
     }
 }
