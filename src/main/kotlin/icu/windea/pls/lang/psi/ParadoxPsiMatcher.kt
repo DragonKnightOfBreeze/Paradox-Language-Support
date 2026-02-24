@@ -10,6 +10,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -109,6 +110,14 @@ object ParadoxPsiMatcher {
         return element is ParadoxLocalisationParameterLightElement && element.name.orNull() != null
     }
 
+    @OptIn(ExperimentalContracts::class)
+    fun isModifierElement(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxModifierLightElement)
+        }
+        return element is ParadoxModifierLightElement && element.name.orNull() != null
+    }
+
     // endregion
 
     // region Semantic Matchers
@@ -134,7 +143,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
+    fun isInvocationReference(element: PsiElement?, referenceElement: PsiElement): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
@@ -146,7 +155,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInlineScriptUsage(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isInlineScriptUsage(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
@@ -158,7 +167,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isDefinitionInjection(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isDefinitionInjection(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }

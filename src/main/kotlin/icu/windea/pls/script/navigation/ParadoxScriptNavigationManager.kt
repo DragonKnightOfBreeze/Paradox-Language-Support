@@ -15,6 +15,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -62,12 +63,12 @@ object ParadoxScriptNavigationManager {
             is ParadoxScriptProperty -> {
                 run {
                     // 作为内联脚本用法的属性使用特殊图标
-                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
+                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element, selectGameType(element))) return@run
                     return PlsIcons.Nodes.Directive
                 }
                 run {
                     // 作为定义注入的属性使用特殊图标
-                    if (!ParadoxPsiMatcher.isDefinitionInjection(element)) return@run
+                    if (!ParadoxPsiMatcher.isDefinitionInjection(element, selectGameType(element))) return@run
                     return PlsIcons.Nodes.Directive
                 }
                 run {
@@ -155,7 +156,7 @@ object ParadoxScriptNavigationManager {
             is ParadoxScriptProperty -> {
                 run {
                     // 内联脚本表达式
-                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
+                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element, selectGameType(element))) return@run
                     return ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {

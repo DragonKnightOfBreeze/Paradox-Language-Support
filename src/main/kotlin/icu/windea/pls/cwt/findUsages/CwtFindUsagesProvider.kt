@@ -8,13 +8,13 @@ import com.intellij.psi.util.elementType
 import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
+import icu.windea.pls.core.psi.light.LightElementBase
+import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.editor.CwtWordScanner
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
-import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.script.ParadoxScriptLanguage
 
 class CwtFindUsagesProvider : FindUsagesProvider {
     override fun getWordsScanner(): WordsScanner = CwtWordScanner()
@@ -25,7 +25,7 @@ class CwtFindUsagesProvider : FindUsagesProvider {
             is CwtProperty -> true
             is CwtString -> true
             is CwtBlock -> true
-            is LightElementBase -> element.language == ParadoxScriptLanguage
+            is LightElementBase -> element.language == CwtLanguage
             else -> false
         }
     }
