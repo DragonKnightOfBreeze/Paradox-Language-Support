@@ -20,7 +20,7 @@ abstract class ParadoxLocalisationTreeElement<T : PsiElement>(element: T) : PsiT
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxLocalisationNavigationManager.getLocationString(element)
+        return ParadoxLocalisationNavigationManager.getLocalLocationString(element)
     }
 
     protected fun PsiElement.toTreeElement(): ParadoxLocalisationTreeElement<out PsiElement>? {

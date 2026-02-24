@@ -9,12 +9,11 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -76,10 +75,6 @@ object ParadoxScriptNavigationManager {
         return null
     }
 
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptFile -> {
@@ -107,14 +102,35 @@ object ParadoxScriptNavigationManager {
         }
     }
 
+    fun getLongPresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        val fileInfo = element.fileInfo
+        if (fileInfo != null) {
+            val path = fileInfo.path.path
+            val entry = fileInfo.entry
+            return when {
+                entry.isEmpty() -> path
+                else -> "$path ($entry)"
+            }
+        }
+        return element.containingFile?.name
+    }
+
+    fun getLocalLocationString(element: PsiElement): String? {
         return when (element) {
             is ParadoxScriptFile -> {
                 run {
                     // 定义的类型信息和显示名称
                     if (element.name.endsWith(".mod", true)) return@run // 排除模组描述符文件
                     val definitionInfo = element.definitionInfo ?: return@run
-                    return getDefinitionLocationString(element, definitionInfo)
+                    return buildString {
+                        this.append(": ").append(definitionInfo.typeText)
+                        val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
+                        if (localizedName != null) this.append(" ").append(localizedName)
+                    }.optimized() // optimized to optimize memory
                 }
                 null
             }
@@ -127,7 +143,11 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 定义的类型信息和显示名称
                     val definitionInfo = element.definitionInfo ?: return@run
-                    return getDefinitionLocationString(element, definitionInfo)
+                    return buildString {
+                        this.append(": ").append(definitionInfo.typeText)
+                        val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
+                        if (localizedName != null) this.append(" ").append(localizedName)
+                    }.optimized() // optimized to optimize memory
                 }
                 null
             }
@@ -137,14 +157,6 @@ object ParadoxScriptNavigationManager {
             }
             else -> null
         }
-    }
-
-    private fun getDefinitionLocationString(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String {
-        return buildString {
-            append(": ").append(definitionInfo.typeText)
-            val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
-            if (localizedName != null) append(" ").append(localizedName)
-        }.optimized() // optimized to optimize memory
     }
 
     private fun String.formatted(): String {

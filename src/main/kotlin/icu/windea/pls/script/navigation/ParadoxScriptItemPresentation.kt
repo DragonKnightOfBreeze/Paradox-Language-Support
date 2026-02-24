@@ -2,15 +2,7 @@ package icu.windea.pls.script.navigation
 
 import com.intellij.ide.util.treeView.TreeAnchorizer
 import com.intellij.navigation.ItemPresentation
-import com.intellij.navigation.NavigationItem
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
-import icu.windea.pls.core.icon
-import icu.windea.pls.core.util.values.anonymous
-import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import javax.swing.Icon
 
 class ParadoxScriptItemPresentation(
@@ -20,28 +12,17 @@ class ParadoxScriptItemPresentation(
     private val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as PsiElement?
 
     override fun getIcon(unused: Boolean): Icon? {
-        val element = element
-        return element?.icon
+        val element = element ?: return null
+        return ParadoxScriptNavigationManager.getIcon(element)
     }
-
-    // com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 
     override fun getPresentableText(): String? {
-        // 使用 PSI 元素的名字（如果是定义，优先使用定义的名字）
-        val element = element
-        if (element is ParadoxScriptProperty) return element.definitionInfo?.name?.or?.anonymous() ?: element.name
-        if (element is PsiNamedElement) return element.name
-        if (element is NavigationItem) return element.name
-        return null
+        val element = element ?: return null
+        return ParadoxScriptNavigationManager.getPresentableText(element)
     }
 
-    // com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolContainerText
-
     override fun getLocationString(): String? {
-        // 使用相对于入口目录的路径，或者使用虚拟文件的绝对路径
-        val element = element
-        if (element == null) return null
-        return element.fileInfo?.path?.path
-            ?: element.containingFile?.virtualFile?.path
+        val element = element ?: return null
+        return ParadoxScriptNavigationManager.getLocationString(element)
     }
 }

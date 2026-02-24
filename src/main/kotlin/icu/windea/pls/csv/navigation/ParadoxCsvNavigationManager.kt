@@ -9,6 +9,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
@@ -29,12 +30,6 @@ object ParadoxCsvNavigationManager {
         return element.icon
     }
 
-    fun getLongPresentableText(element: PsiElement): String? {
-        val p = getPresentableText(element) ?: return null
-        val l = getLocationString(element) ?: return p
-        return "$p ($l)"
-    }
-
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
             // 文件名
@@ -49,7 +44,26 @@ object ParadoxCsvNavigationManager {
         }
     }
 
+    fun getLongPresentableText(element: PsiElement): String? {
+        val p = getPresentableText(element) ?: return null
+        val l = getLocalLocationString(element) ?: return p
+        return "$p ($l)"
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        val fileInfo = element.fileInfo
+        if (fileInfo != null) {
+            val path = fileInfo.path.path
+            val entry = fileInfo.entry
+            return when {
+                entry.isEmpty() -> path
+                else -> "$path ($entry)"
+            }
+        }
+        return element.containingFile?.name
+    }
+
+    fun getLocalLocationString(element: PsiElement): String? {
         return when (element) {
             // 截断后的对应的表头列的名字
             is ParadoxCsvColumn -> element.getHeaderColumn()?.name?.formatted()

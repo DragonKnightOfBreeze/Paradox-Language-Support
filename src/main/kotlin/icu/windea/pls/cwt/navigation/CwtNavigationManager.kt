@@ -32,10 +32,6 @@ object CwtNavigationManager {
         return null
     }
 
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
             // 名字
@@ -48,8 +44,16 @@ object CwtNavigationManager {
         }
     }
 
-    @Suppress("unused")
+    fun getLongPresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        return element.containingFile?.name
+    }
+
+    @Suppress("unused")
+    fun getLocalLocationString(element: PsiElement): String? {
         return null
     }
 

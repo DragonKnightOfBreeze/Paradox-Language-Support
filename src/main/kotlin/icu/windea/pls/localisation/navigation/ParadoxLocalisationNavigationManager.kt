@@ -5,6 +5,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -14,7 +15,7 @@ import javax.swing.Icon
 
 object ParadoxLocalisationNavigationManager {
     fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
-        return when(element) {
+        return when (element) {
             null -> false
             is ParadoxLocalisationFile -> forFile
             is ParadoxLocalisationLocale -> true
@@ -29,19 +30,15 @@ object ParadoxLocalisationNavigationManager {
     }
 
     fun getPatchedIcon(element: PsiElement): Icon? {
-        when(element) {
+        when (element) {
             is ParadoxLocalisationProperty -> {
                 run {
-                    if(element.type == null) return@run
+                    if (element.type == null) return@run
                     return PlsIcons.Nodes.Localisation
                 }
             }
         }
         return null
-    }
-
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
     }
 
     fun getPresentableText(element: PsiElement): String? {
@@ -58,7 +55,24 @@ object ParadoxLocalisationNavigationManager {
         }
     }
 
+    fun getLongPresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        val fileInfo = element.fileInfo
+        if (fileInfo != null) {
+            val path = fileInfo.path.path
+            val entry = fileInfo.entry
+            return when {
+                entry.isEmpty() -> path
+                else -> "$path ($entry)"
+            }
+        }
+        return element.containingFile?.name
+    }
+
+    fun getLocalLocationString(element: PsiElement): String? {
         return when (element) {
             // 语言区域的展示文本
             is ParadoxLocalisationPropertyList -> selectLocale(element)?.text
