@@ -390,9 +390,9 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindItem(generationSettings::localisationStrategy.toNullableProperty())
                         .bindItem(property)
                     textField().bindText(generationSettings::localisationStrategyText.toNonNullableProperty(""))
-                        .enabledIf(property.transform { it == LocalisationGeneration.SpecificText })
+                        .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
                     localeComboBox(withAuto = true).bindItem(generationSettings::localisationStrategyLocale.toNullableProperty())
-                        .enabledIf(property.transform { it == LocalisationGeneration.FromLocale })
+                        .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
                 }
             }
             // hierarchy
