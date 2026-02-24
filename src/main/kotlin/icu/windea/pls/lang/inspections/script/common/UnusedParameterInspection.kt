@@ -14,7 +14,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.selector.selector

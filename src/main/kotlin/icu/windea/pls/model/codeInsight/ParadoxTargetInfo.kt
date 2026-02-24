@@ -7,10 +7,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty

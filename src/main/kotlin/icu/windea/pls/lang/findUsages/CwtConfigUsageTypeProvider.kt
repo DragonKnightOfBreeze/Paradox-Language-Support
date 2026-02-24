@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.highlighting
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.ProgressManager
@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
 /**

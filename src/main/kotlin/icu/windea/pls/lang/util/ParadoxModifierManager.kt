@@ -31,7 +31,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

@@ -6,10 +6,12 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 
 /**
  * 修正信息。
+ *
+ * @see ParadoxModifierSupport
  */
 data class ParadoxModifierInfo(
     val name: String,

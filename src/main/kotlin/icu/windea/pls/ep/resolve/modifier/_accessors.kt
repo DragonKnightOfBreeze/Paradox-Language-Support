@@ -6,7 +6,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.withSync
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxModifierInfo
 
 val ParadoxModifierSupport.Keys.support by registerKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys).withSync()

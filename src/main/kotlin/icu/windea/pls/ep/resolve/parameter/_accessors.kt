@@ -8,7 +8,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.withSync
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

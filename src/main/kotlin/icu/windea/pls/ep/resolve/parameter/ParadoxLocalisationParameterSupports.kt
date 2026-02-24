@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unknown
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved

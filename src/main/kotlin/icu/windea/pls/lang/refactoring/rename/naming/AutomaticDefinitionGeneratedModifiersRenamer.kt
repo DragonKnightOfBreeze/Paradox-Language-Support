@@ -8,7 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.PlsNameValidators
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
 
 class ParadoxLocalisationParameterRenameInputValidator : RenameInputValidator {
     private val elementPattern = PlatformPatterns.psiElement(ParadoxLocalisationParameterElement::class.java)

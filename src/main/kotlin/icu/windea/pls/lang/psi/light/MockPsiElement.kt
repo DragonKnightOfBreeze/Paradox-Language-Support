@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
@@ -17,7 +17,6 @@ import javax.swing.Icon
 /**
  * 模拟的 PSI 元素。
  * 用于处理并不存在真正意义上的声明处的引用。
- * 这个 API 相比 Symbol API 更加好用。
  */
 @Suppress("UnstableApiUsage")
 abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
@@ -46,6 +45,10 @@ abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(par
     }
 
     override fun canNavigate(): Boolean {
+        return false // click to show usages
+    }
+
+    override fun canNavigateToSource(): Boolean {
         return false // click to show usages
     }
 

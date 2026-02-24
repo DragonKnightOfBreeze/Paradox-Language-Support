@@ -6,7 +6,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector

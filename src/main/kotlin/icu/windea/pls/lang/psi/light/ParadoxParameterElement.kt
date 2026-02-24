@@ -1,34 +1,38 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
 /**
- * 用于为规则文件中的一些符号提供对引用解析和查找用法的支持。
+ * @see ParadoxParameterSupport
  */
-class CwtConfigSymbolElement(
+class ParadoxParameterElement(
     parent: PsiElement,
     private val name: String,
-    val configType: CwtConfigType,
+    val contextName: String,
+    val contextIcon: Icon?,
+    val contextKey: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
-    private val project: Project
-) : CwtConfigMockPsiElement(parent) {
-    override fun getIcon(): Icon? {
-        return configType.icon
+    private val project: Project,
+) : ParadoxMockPsiElement(parent) {
+    override fun getIcon(): Icon {
+        return PlsIcons.Nodes.Parameter
     }
 
     override fun getName(): String {
         return name
     }
 
-    override fun getTypeName(): String? {
-        return configType.description
+    override fun getTypeName(): String {
+        return PlsBundle.message("script.description.parameter")
     }
 
     override fun getText(): String {
@@ -40,15 +44,15 @@ class CwtConfigSymbolElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtConfigSymbolElement
+        return other is ParadoxParameterElement
             && name == other.name
-            && configType == other.configType
-            && gameType == other.gameType
+            && contextKey == other.contextKey
             && project == other.project
+            && gameType == other.gameType
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, configType, gameType, project)
+        return Objects.hash(name, contextKey, project, gameType)
     }
 }
 

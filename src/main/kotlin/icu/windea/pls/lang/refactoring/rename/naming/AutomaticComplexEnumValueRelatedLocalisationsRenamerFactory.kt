@@ -6,7 +6,7 @@ import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager

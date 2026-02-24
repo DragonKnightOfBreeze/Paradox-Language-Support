@@ -34,7 +34,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService

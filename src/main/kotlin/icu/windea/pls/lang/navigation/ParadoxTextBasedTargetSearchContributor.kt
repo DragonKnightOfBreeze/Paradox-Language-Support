@@ -19,7 +19,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
-import icu.windea.pls.lang.psi.mock.NavigationPsiElement
+import icu.windea.pls.lang.psi.light.NavigationPsiElement
 import icu.windea.pls.lang.search.target.ParadoxTextBasedTargetSearch
 import icu.windea.pls.lang.settings.PlsSettings
 

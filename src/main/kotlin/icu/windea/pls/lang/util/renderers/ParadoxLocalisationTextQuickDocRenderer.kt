@@ -20,7 +20,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
-import icu.windea.pls.lang.psi.mock.MockPsiElement
+import icu.windea.pls.lang.psi.light.MockPsiElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings

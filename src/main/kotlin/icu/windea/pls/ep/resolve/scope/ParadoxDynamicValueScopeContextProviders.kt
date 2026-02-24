@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.scope
 
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
 import icu.windea.pls.model.scope.ParadoxScopeContext
 
 class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeContextProvider {

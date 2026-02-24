@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 

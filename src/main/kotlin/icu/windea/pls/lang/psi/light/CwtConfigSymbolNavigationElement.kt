@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -16,7 +16,7 @@ class CwtConfigSymbolNavigationElement(
     val configType: CwtConfigType,
     override val gameType: ParadoxGameType,
     private val project: Project
-) : ParadoxMockPsiElement(parent) {
+) : CwtConfigMockPsiElement(parent) {
     override fun getIcon(): Icon? {
         return configType.icon
     }

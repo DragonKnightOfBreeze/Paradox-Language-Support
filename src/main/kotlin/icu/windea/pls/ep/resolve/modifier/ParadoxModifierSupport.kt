@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -18,6 +18,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 /**
  * 提供对修正的支持。
  *
+ * @see ParadoxModifierInfo
  * @see ParadoxModifierElement
  */
 @WithGameTypeEP

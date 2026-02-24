@@ -82,8 +82,6 @@
     <heavyBracesHighlighter implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxHeavyBraceHighlighter"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigReadWriteAccessDetector"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxReadWriteAccessDetector"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigUsageTypeProvider"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxUsageTypeProvider"/>
 
     <typedHandler implementation="icu.windea.pls.lang.codeInsight.editorActions.ParadoxTypedHandler"/>
 
@@ -227,6 +225,8 @@
 
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
 
+    <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.CwtConfigUsageTypeProvider"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.findUsages.ParadoxUsageTypeProvider"/>
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtPsiDocumentationTargetProvider"/>

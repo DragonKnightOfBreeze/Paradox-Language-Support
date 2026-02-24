@@ -7,7 +7,7 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or

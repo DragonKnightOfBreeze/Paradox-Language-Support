@@ -1,7 +1,7 @@
 package icu.windea.pls.model.injection
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 
 /**
  * 参数值的语言注入信息。

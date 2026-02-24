@@ -5,9 +5,9 @@ import icu.windea.pls.config.documentation
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxTextColorManager

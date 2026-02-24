@@ -14,9 +14,9 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

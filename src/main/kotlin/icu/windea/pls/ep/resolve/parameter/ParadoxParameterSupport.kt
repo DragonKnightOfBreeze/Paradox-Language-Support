@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.util.KeyRegistryWithSync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
@@ -21,6 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * 提供对脚本参数的支持。
  *
+ * @see ParadoxParameterInfo
  * @see ParadoxParameterElement
  */
 interface ParadoxParameterSupport {

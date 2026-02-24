@@ -6,9 +6,9 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationManager
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

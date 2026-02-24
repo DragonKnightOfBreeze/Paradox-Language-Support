@@ -35,8 +35,8 @@ import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
-import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtMemberConfigElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -7,12 +7,11 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxModifierInfo
 import java.util.*
 import javax.swing.Icon
 
 /**
- * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。
- *
  * @see ParadoxModifierSupport
  */
 class ParadoxModifierElement(

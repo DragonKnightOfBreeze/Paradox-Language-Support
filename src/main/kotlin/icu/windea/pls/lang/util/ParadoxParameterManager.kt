@@ -51,7 +51,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.selectGameType

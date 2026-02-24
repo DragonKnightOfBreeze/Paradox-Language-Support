@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.NavigatablePsiElement

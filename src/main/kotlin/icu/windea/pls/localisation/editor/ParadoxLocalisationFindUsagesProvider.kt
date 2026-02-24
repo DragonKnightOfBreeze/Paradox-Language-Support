@@ -10,9 +10,9 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
@@ -59,7 +59,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
             }
             is ParadoxDynamicValueElement -> {
                 when (location) {
-                    UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.dynamicValue")
+                    UsageViewTypeLocation.INSTANCE -> element.typeName
                     UsageViewNodeTextLocation.INSTANCE -> "${element.name}: ${element.dynamicValueTypes.joinToString(" | ")}"
                     else -> element.name
                 }

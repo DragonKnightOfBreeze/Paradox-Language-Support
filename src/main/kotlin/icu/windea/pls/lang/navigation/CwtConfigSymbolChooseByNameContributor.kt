@@ -12,7 +12,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
-import icu.windea.pls.lang.psi.mock.CwtConfigSymbolNavigationElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolNavigationElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.settings.PlsSettings
 

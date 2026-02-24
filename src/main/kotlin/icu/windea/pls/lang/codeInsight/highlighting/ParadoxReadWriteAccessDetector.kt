@@ -7,10 +7,10 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 // 如果在查找用法页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）

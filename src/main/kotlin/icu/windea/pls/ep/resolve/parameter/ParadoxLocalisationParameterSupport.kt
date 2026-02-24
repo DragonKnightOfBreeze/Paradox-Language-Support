@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.util.builders.DocumentationBuilder
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

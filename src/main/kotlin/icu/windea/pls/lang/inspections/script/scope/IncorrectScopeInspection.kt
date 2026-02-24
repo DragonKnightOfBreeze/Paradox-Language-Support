@@ -9,7 +9,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.util.ParadoxConfigManager

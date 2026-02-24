@@ -10,7 +10,7 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
-import icu.windea.pls.lang.psi.mock.MockPsiElement
+import icu.windea.pls.lang.psi.light.MockPsiElement
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible

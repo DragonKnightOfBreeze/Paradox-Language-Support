@@ -7,7 +7,8 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
@@ -29,7 +30,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
         if (resolved !is ParadoxDynamicValueElement) return
 
-        val type = resolved.dynamicValueType
+        val type = ParadoxDynamicValueManager.getPresentableType(resolved.dynamicValueTypes)
         sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": $type".optimized())
         }

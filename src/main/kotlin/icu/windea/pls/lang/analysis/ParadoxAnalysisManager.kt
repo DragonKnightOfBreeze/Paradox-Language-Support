@@ -23,8 +23,8 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
-import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
-import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.light.CwtConfigMockPsiElement
+import icu.windea.pls.lang.psi.light.ParadoxMockPsiElement
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.util.ParadoxLocaleManager

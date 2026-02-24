@@ -21,11 +21,11 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService

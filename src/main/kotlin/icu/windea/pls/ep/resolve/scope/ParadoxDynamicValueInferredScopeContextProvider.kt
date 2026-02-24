@@ -2,7 +2,7 @@ package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 
 /**

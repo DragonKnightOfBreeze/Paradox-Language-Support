@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.highlighting
+package icu.windea.pls.lang.findUsages
 
 import com.intellij.psi.PsiElement
 import com.intellij.usages.PsiElementUsageTarget
@@ -13,8 +13,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager

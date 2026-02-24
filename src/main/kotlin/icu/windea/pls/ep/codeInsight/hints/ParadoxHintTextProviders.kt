@@ -5,8 +5,8 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager

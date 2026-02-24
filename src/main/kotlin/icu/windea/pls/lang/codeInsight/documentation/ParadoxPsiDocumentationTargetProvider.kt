@@ -4,7 +4,7 @@ import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.light.ParadoxMockPsiElement
 
 class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     override fun documentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {

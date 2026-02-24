@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.mock
+package icu.windea.pls.lang.psi.light
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
@@ -9,9 +9,6 @@ import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
-/**
- * 动态值值并不存在一个真正意义上的声明处，用这个模拟。
- */
 class ParadoxDynamicValueElement(
     parent: PsiElement,
     private val name: String,
@@ -22,11 +19,6 @@ class ParadoxDynamicValueElement(
 ) : ParadoxMockPsiElement(parent) {
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
-
-    val dynamicValueType = when {
-        dynamicValueTypes.size == 2 && "event_target" in dynamicValueTypes && "global_event_target" in dynamicValueTypes -> "event_target"
-        else -> dynamicValueTypes.joinToString(" | ")
-    }
 
     override fun getIcon(): Icon {
         val dynamicValueType = dynamicValueTypes.first() // first is ok
