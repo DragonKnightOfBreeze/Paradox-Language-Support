@@ -24,6 +24,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -153,8 +154,11 @@ object ParadoxDefinitionService {
             val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
             if (matched) result += subtypeConfig
         }
-        processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
-        return result.distinctBy { it.name } // it's necessary to distinct by name here since inerit subtypes may be duplicate
+        // avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
+        if (!ParadoxMatchOptionsUtil.skipIndex(options)) {
+            processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
+        }
+        return result.distinctBy { it.name } // it's necessary to distinct by name here since inherit subtypes may be duplicate
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
