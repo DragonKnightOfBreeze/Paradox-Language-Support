@@ -22,11 +22,11 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  */
 class AutomaticDefinitionGeneratedModifiersNameDescRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxDefinitionElement
-        val allRenames = mutableMapOf<PsiElement, String>()
+        val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
-            myElements.add(key as PsiNamedElement)
+            ProgressManager.checkCanceled()
+            myElements += key
             suggestAllNames(key.name, value)
         }
     }
@@ -41,7 +41,8 @@ class AutomaticDefinitionGeneratedModifiersNameDescRenamer(element: PsiElement, 
 
     override fun entityName() = PlsBundle.message("rename.definition.generatedModifiersNameDesc.entityName")
 
-    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
+        if (element !is ParadoxDefinitionElement) return
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.modifiers.orNull() ?: return
         val project = definitionInfo.project

@@ -16,11 +16,11 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  */
 class AutomaticDefinitionRelatedImagesRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxDefinitionElement
-        val allRenames = mutableMapOf<PsiElement, String>()
+        val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
-            myElements.add(key as PsiNamedElement)
+            ProgressManager.checkCanceled()
+            myElements += key
             suggestAllNames(key.name, value)
         }
     }
@@ -35,15 +35,19 @@ class AutomaticDefinitionRelatedImagesRenamer(element: PsiElement, newName: Stri
 
     override fun entityName() = PlsBundle.message("rename.definition.relatedImages.entityName")
 
-    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
+        if (element !is ParadoxDefinitionElement) return
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
-            val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
-            val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
-            resolveResult.elements.forEach { allRenames[it] = finalRename }
+            val rename1 = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
+            val rename = if (rename1.startsWith("GFX_")) rename1 else rename1.substringAfterLast('/')
+            for (resolved in resolveResult.elements) {
+                if (resolved !is PsiNamedElement) continue
+                allRenames[resolved] = rename
+            }
         }
     }
 }
