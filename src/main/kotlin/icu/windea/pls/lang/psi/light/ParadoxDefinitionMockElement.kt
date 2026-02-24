@@ -7,7 +7,7 @@ import java.util.*
 
 class ParadoxDefinitionMockElement(
     parent: ParadoxDefinitionElement,
-    private val definitionInfo: ParadoxDefinitionInfo,
+    val definitionInfo: ParadoxDefinitionInfo,
 ) : ParadoxMockPsiElement(parent) {
     override val gameType get() = definitionInfo.gameType
 

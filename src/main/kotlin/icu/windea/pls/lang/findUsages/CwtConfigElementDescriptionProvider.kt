@@ -13,12 +13,14 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
 
 class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if (location is RefactoringDescriptionLocation) return null
         return when (location) {
-            UsageViewShortNameLocation.INSTANCE, UsageViewLongNameLocation.INSTANCE -> getElementName(element)
+            UsageViewShortNameLocation.INSTANCE -> getElementName(element)
+            UsageViewLongNameLocation.INSTANCE -> getElementName(element)
             UsageViewTypeLocation.INSTANCE -> getElementType(element)
             UsageViewNodeTextLocation.INSTANCE -> getElementNodeText(element)
             HighlightUsagesDescriptionLocation.INSTANCE -> getElementHighlightUsagesDescription(element)
@@ -30,6 +32,7 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
         return when (element) {
             is CwtProperty -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
             is CwtString -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
+            is CwtConfigSymbolElement -> element.name
             else -> null
         }
     }
@@ -38,6 +41,7 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
         return when (element) {
             is CwtProperty -> getConfigType(element)?.description
             is CwtString -> getConfigType(element)?.description
+            is CwtConfigSymbolElement -> element.configType.description
             else -> null
         }
     }

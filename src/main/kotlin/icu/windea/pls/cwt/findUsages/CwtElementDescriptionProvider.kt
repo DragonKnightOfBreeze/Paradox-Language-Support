@@ -21,7 +21,8 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
         if (location is RefactoringDescriptionLocation) return null
         val element = if (element.elementType == CwtElementTypes.LEFT_BRACE) element.parent else element
         return when (location) {
-            UsageViewShortNameLocation.INSTANCE, UsageViewLongNameLocation.INSTANCE -> getElementName(element)
+            UsageViewShortNameLocation.INSTANCE -> getElementName(element)
+            UsageViewLongNameLocation.INSTANCE -> getElementName(element)
             UsageViewTypeLocation.INSTANCE -> getElementType(element)
             UsageViewNodeTextLocation.INSTANCE -> getElementNodeText(element)
             HighlightUsagesDescriptionLocation.INSTANCE -> getElementHighlightUsagesDescription(element)
@@ -48,8 +49,10 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
     }
 
     private fun getElementNodeText(element: PsiElement): String? {
-        if (element is CwtBlock) return PlsBundle.message("cwt.type.block")
-        return getElementName(element)?.let { name -> getElementType(element)?.let { type -> "$type $name" } ?: name }
+        return when (element) {
+            is CwtBlock -> PlsBundle.message("cwt.type.block")
+            else -> getElementName(element)?.let { name -> getElementType(element)?.let { type -> "$type $name" } ?: name }
+        }
     }
 
     private fun getElementHighlightUsagesDescription(element: PsiElement): String? {

@@ -17,7 +17,8 @@ class ParadoxScriptElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if (location is RefactoringDescriptionLocation) return null
         return when (location) {
-            UsageViewShortNameLocation.INSTANCE, UsageViewLongNameLocation.INSTANCE -> getElementName(element)
+            UsageViewShortNameLocation.INSTANCE -> getElementName(element)
+            UsageViewLongNameLocation.INSTANCE -> getElementName(element)
             UsageViewTypeLocation.INSTANCE -> getElementType(element)
             UsageViewNodeTextLocation.INSTANCE -> getElementNodeText(element)
             HighlightUsagesDescriptionLocation.INSTANCE -> getElementHighlightUsagesDescription(element)

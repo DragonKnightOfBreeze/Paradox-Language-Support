@@ -9,15 +9,25 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.cwt.editor.CwtWordScanner
+import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.lang.psi.light.MockPsiElement
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 class CwtFindUsagesProvider : FindUsagesProvider {
     override fun getWordsScanner(): WordsScanner = CwtWordScanner()
 
     override fun canFindUsagesFor(element: PsiElement): Boolean {
-        return element is CwtProperty || element is CwtString || element.elementType == CwtElementTypes.LEFT_BRACE
+        val element = if (element.elementType == CwtElementTypes.LEFT_BRACE) element.parent else element
+        return when (element) {
+            is CwtProperty -> true
+            is CwtString -> true
+            is CwtBlock -> true
+            is MockPsiElement -> element.language == ParadoxScriptLanguage
+            else -> false
+        }
     }
 
     override fun getHelpId(psiElement: PsiElement) = "reference.dialogs.findUsages.other"

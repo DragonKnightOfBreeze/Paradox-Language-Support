@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
@@ -17,6 +18,8 @@ class ParadoxDynamicValueElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
+    val dynamicValueType: String get() = ParadoxDynamicValueManager.getPresentableType(dynamicValueTypes)
+
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 
