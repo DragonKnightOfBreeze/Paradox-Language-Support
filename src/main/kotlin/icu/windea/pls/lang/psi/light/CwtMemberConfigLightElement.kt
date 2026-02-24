@@ -2,7 +2,6 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.model.CwtMemberType
@@ -28,10 +27,6 @@ class CwtMemberConfigLightElement(
     override fun getText() = config.toString()
 
     override fun getProject() = project
-
-    override fun setName(name: String): PsiElement {
-        throw IncorrectOperationException() // cannot rename
-    }
 
     override fun equals(other: Any?): Boolean {
         return other is CwtMemberConfigLightElement

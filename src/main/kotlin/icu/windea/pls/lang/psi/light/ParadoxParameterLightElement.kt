@@ -3,6 +3,7 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.model.ParadoxGameType
@@ -21,7 +22,7 @@ class ParadoxParameterLightElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxLightElementBase(parent) {
+) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
     override fun getIcon(flags: Int) = PlsIcons.Nodes.Parameter
 
     override fun getName() = name
@@ -29,6 +30,14 @@ class ParadoxParameterLightElement(
     override fun getText() = name
 
     override fun getProject() = project
+
+    override fun setName(name: String): PsiElement? {
+        return null
+    }
+
+    override fun getNameIdentifier(): PsiElement {
+        return this
+    }
 
     override fun equals(other: Any?): Boolean {
         return other is ParadoxParameterLightElement

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -18,7 +19,7 @@ class ParadoxComplexEnumValueLightElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxLightElementBase(parent) {
+) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
     val config: CwtComplexEnumConfig?
         get() = PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
     val caseInsensitive: Boolean
@@ -36,6 +37,14 @@ class ParadoxComplexEnumValueLightElement(
     override fun getText() = name
 
     override fun getProject() = project
+
+    override fun setName(name: String): PsiElement? {
+        return null
+    }
+
+    override fun getNameIdentifier(): PsiElement {
+        return this
+    }
 
     override fun equals(other: Any?): Boolean {
         return other is ParadoxComplexEnumValueLightElement

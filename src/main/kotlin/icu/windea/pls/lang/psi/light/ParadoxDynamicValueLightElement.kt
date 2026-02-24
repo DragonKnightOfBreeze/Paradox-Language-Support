@@ -3,6 +3,7 @@ package icu.windea.pls.lang.psi.light
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxGameType
@@ -16,7 +17,7 @@ class ParadoxDynamicValueLightElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxLightElementBase(parent) {
+) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
     val dynamicValueType: String get() = ParadoxDynamicValueManager.getPresentableType(dynamicValueTypes)
 
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
@@ -32,6 +33,14 @@ class ParadoxDynamicValueLightElement(
     override fun getText() = name
 
     override fun getProject() = project
+
+    override fun setName(name: String): PsiElement? {
+        return null
+    }
+
+    override fun getNameIdentifier(): PsiElement {
+        return this
+    }
 
     override fun equals(other: Any?): Boolean {
         return other is ParadoxDynamicValueLightElement
