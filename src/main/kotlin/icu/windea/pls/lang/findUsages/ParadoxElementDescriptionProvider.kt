@@ -27,7 +27,7 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
         if (location is RefactoringDescriptionLocation) return null
         return when (location) {
             UsageViewShortNameLocation.INSTANCE -> getElementName(element)
-            UsageViewLongNameLocation.INSTANCE -> getElementName(element) // NOTE 2.1.4 without name information here
+            UsageViewLongNameLocation.INSTANCE -> getElementName(element) // NOTE 2.1.4 without type information here
             UsageViewTypeLocation.INSTANCE -> getElementType(element)
             UsageViewNodeTextLocation.INSTANCE -> getElementNodeText(element)
             HighlightUsagesDescriptionLocation.INSTANCE -> getElementHighlightUsagesDescription(element)

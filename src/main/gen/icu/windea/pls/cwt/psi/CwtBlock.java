@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement, CwtBoundMemberContainer {
+public interface CwtBlock extends CwtValue, CwtBlockElement, CwtBoundMemberContainer {
 
   @NotNull
   List<CwtDocComment> getDocCommentList();
@@ -30,8 +30,6 @@ public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement, Cw
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getName();
-
-  @NotNull CwtBlock setName(@NotNull String name);
 
   @NotNull String getValue();
 

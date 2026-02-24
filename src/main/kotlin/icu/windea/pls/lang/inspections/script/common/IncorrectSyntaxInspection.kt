@@ -38,40 +38,40 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                checkComparisonOperator(element)
+                checkComparisonOperator(holder, element)
             }
+        }
+    }
 
-            private fun checkComparisonOperator(element: PsiElement) {
-                // 不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
-                if (element !is ParadoxScriptProperty) return
-                val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
-                val propertyKey = element.propertyKey
-                if (canResolveToNumber(propertyKey)) return
-                val propertyValue = element.propertyValue ?: return
-                if (canResolveToNumber(propertyValue)) return
-                val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
-                holder.registerProblem(token, description, ProblemHighlightType.GENERIC_ERROR)
-            }
+    private fun checkComparisonOperator(holder: ProblemsHolder, element: PsiElement) {
+        // 不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
+        if (element !is ParadoxScriptProperty) return
+        val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
+        val propertyKey = element.propertyKey
+        if (canResolveToNumber(propertyKey)) return
+        val propertyValue = element.propertyValue ?: return
+        if (canResolveToNumber(propertyValue)) return
+        val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
+        holder.registerProblem(token, description, ProblemHighlightType.GENERIC_ERROR)
+    }
 
-            @Suppress("unused")
-            private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
-                // number, scalar, parametric
-                return true
-            }
+    @Suppress("unused")
+    private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
+        // number, scalar, parametric
+        return true
+    }
 
-            private fun canResolveToNumber(element: ParadoxScriptValue): Boolean {
-                return when {
-                    element is ParadoxScriptInt -> true
-                    element is ParadoxScriptFloat -> true
-                    element is ParadoxScriptScriptedVariableReference -> {
-                        val resolved = element.resolved() ?: return true
-                        canResolveToNumber(resolved)
-                    }
-                    element is ParadoxScriptString -> true // scalar, parametric
-                    element is ParadoxScriptInlineMath -> true
-                    else -> false
-                }
+    private fun canResolveToNumber(element: ParadoxScriptValue): Boolean {
+        return when {
+            element is ParadoxScriptInt -> true
+            element is ParadoxScriptFloat -> true
+            element is ParadoxScriptScriptedVariableReference -> {
+                val resolved = element.resolved() ?: return true
+                canResolveToNumber(resolved)
             }
+            element is ParadoxScriptString -> true // scalar, parametric
+            element is ParadoxScriptInlineMath -> true
+            else -> false
         }
     }
 }

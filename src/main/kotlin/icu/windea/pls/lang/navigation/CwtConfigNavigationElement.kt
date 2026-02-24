@@ -17,4 +17,3 @@ class CwtConfigNavigationElement(
 
     override fun getIcon(open: Boolean) = configType.icon
 }
-

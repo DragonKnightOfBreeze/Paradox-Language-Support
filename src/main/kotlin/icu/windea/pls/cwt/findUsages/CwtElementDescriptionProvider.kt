@@ -4,15 +4,12 @@ import com.intellij.codeInsight.highlighting.HighlightUsagesDescriptionLocation
 import com.intellij.psi.ElementDescriptionLocation
 import com.intellij.psi.ElementDescriptionProvider
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
 import com.intellij.refactoring.util.RefactoringDescriptionLocation
 import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.cwt.psi.CwtBlock
-import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
@@ -20,7 +17,6 @@ import icu.windea.pls.cwt.psi.CwtString
 class CwtElementDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if (location is RefactoringDescriptionLocation) return null
-        val element = if (element.elementType == CwtElementTypes.LEFT_BRACE) element.parent else element
         return when (location) {
             UsageViewShortNameLocation.INSTANCE -> getElementName(element)
             UsageViewLongNameLocation.INSTANCE -> getElementName(element)
@@ -36,7 +32,6 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
             is CwtOption -> element.name
             is CwtProperty -> element.name
             is CwtString -> element.name
-            is CwtBlock -> element.name
             else -> null
         }
     }
@@ -46,16 +41,12 @@ class CwtElementDescriptionProvider : ElementDescriptionProvider {
             is CwtOption -> PlsBundle.message("cwt.type.option")
             is CwtProperty -> PlsBundle.message("cwt.type.property")
             is CwtString -> PlsBundle.message("cwt.type.value")
-            is CwtBlock -> PlsBundle.message("cwt.type.block")
             else -> null
         }
     }
 
     private fun getElementNodeText(element: PsiElement): String? {
-        return when (element) {
-            is CwtBlock -> PlsBundle.message("cwt.type.block")
-            else -> getElementName(element)?.let { name -> getElementType(element)?.let { type -> "$type $name" } ?: name }
-        }
+        return getElementName(element)?.let { name -> getElementType(element)?.let { type -> "$type $name" } ?: name }
     }
 
     private fun getElementHighlightUsagesDescription(element: PsiElement): String? {

@@ -80,7 +80,7 @@ object ParadoxPsiManager {
         val entry = fileInfo.entry
         return when {
             entry.isEmpty() -> path
-            else -> "$path ($entry)"
+            else -> "$path of $entry"
         }
     }
 

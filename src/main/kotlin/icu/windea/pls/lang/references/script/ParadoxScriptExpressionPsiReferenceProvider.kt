@@ -8,6 +8,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -19,7 +20,7 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
         ProgressManager.checkCanceled()
 
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-        if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY // #131
+        if (!element.isResolvableExpression() && element !is ParadoxScriptBlock) return PsiReference.EMPTY_ARRAY // #131
 
         // 要求规则分组数据已加载完毕
         if (!PlsFacade.checkConfigGroupInitialized(element.project, element)) return PsiReference.EMPTY_ARRAY

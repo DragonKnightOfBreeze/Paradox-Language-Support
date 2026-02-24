@@ -98,7 +98,7 @@ fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
 
 fun ParadoxScriptValue.isDefinitionName(): Boolean {
     // #131
-    if (!this.isResolvableExpression()) return false
+    if (!isResolvableExpression()) return false
 
     val nameProperty = parentProperty ?: return false
     // def = def_name

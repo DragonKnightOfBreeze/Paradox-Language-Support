@@ -267,11 +267,6 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun setName(element: CwtBlock, name: String): CwtBlock {
-        throw IncorrectOperationException() // 不允许重命名
-    }
-
-    @JvmStatic
     fun getValue(element: CwtBlock): String {
         return PlsStrings.blockFolder
     }

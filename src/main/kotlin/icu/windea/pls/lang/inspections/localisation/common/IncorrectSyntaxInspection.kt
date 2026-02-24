@@ -43,9 +43,9 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.1")
         val startOffset = element.startOffset
         for (index in indices) {
-            val rangeInELement = TextRange.from(index, 2)
+            val rangeInElement = TextRange.from(index, 2)
             val fix = ReplaceStringFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1.name"), "[[", startOffset + index, 2)
-            holder.registerProblem(element, rangeInELement, description, fix)
+            holder.registerProblem(element, rangeInElement, description, fix)
         }
     }
 
