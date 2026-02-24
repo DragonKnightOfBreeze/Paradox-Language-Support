@@ -14,7 +14,6 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
-import icu.windea.pls.lang.psi.light.ParadoxDefinitionLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
@@ -43,7 +42,6 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                 definitionInfo.name.or.anonymous()
             }
             is ParadoxLocalisationProperty -> element.type?.let { element.name }
-            is ParadoxDefinitionLightElement -> element.name.or.anonymous()
             is ParadoxDynamicValueLightElement -> element.name
             is ParadoxComplexEnumValueLightElement -> element.name
             is ParadoxParameterLightElement -> element.name
@@ -63,7 +61,6 @@ class ParadoxElementDescriptionProvider : ElementDescriptionProvider {
                     null -> null
                 }
             }
-            is ParadoxDefinitionLightElement -> PlsBundle.message("type.definition")
             is ParadoxDynamicValueLightElement -> {
                 val dynamicValueType = element.dynamicValueTypes.firstOrNull() ?: return null
                 when (dynamicValueType) {
