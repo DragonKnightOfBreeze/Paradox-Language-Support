@@ -17,5 +17,5 @@ data class CwtConfigSymbolIndexInfo(
     override val gameType: ParadoxGameType
 ) : CwtConfigIndexInfo() {
     val element: CwtStringExpressionElement?
-        get() = file?.let { file -> CwtPsiFileManager.findStringExpressionElementFromStartOfffset(file, elementOffset) }
+        get() = file?.let { file -> CwtPsiFileManager.findStringExpressionElementFromStartOffset(file, elementOffset) }
 }

@@ -1,11 +1,12 @@
 package icu.windea.pls.localisation.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -51,6 +52,8 @@ object ParadoxLocalisationNavigationManager {
             is ParadoxLocalisationPropertyList -> element.locale?.name.or.anonymous()
             // 名字
             is ParadoxLocalisationProperty -> element.name
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }
@@ -60,15 +63,7 @@ object ParadoxLocalisationNavigationManager {
     }
 
     fun getLocationString(element: PsiElement): String? {
-        val fileInfo = element.fileInfo
-        if (fileInfo != null) {
-            val path = fileInfo.path.path
-            val entry = fileInfo.entry
-            return when {
-                entry.isEmpty() -> path
-                else -> "$path ($entry)"
-            }
-        }
+        ParadoxPsiManager.getFileInfoText(element)?.let { return it }
         return element.containingFile?.name
     }
 

@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
@@ -40,6 +41,8 @@ object CwtNavigationManager {
             is CwtProperty -> element.name
             // 截断后的名字
             is CwtValue -> element.name.formatted()
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }

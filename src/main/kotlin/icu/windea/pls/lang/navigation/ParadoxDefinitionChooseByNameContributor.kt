@@ -9,7 +9,10 @@ import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
+import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.light.ParadoxDefinitionMockElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
@@ -41,6 +44,11 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         val selector = selector(project).definition().withSearchScope(scope).withGameType(gameType)
-        ParadoxDefinitionSearch.searchElement(name, null, selector).process(processor)
+        ParadoxDefinitionSearch.search(name, null, selector).process p@{
+            val element = it.element ?: return@p true
+            val definitionInfo = element.definitionInfo ?: return@p true
+            val lightElement = ParadoxDefinitionMockElement(element, definitionInfo)
+            processor.process(NavigationAwarePsiElement(lightElement, element))
+        }
     }
 }

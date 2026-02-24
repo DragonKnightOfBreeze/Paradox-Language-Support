@@ -25,5 +25,7 @@ data class ParadoxFileInfo(
     val inMainEntry: Boolean get() = entry.isEmpty() && rootInfo.mainEntries.isEmpty() || entry in rootInfo.mainEntries
     val inExtraEntry: Boolean get() = entry in rootInfo.extraEntries
 
-    fun isPossible(file: VirtualFile): Boolean = group == ParadoxFileGroup.resolvePossible(file.name)
+    fun isPossible(file: VirtualFile): Boolean {
+        return group == ParadoxFileGroup.resolvePossible(file.name)
+    }
 }

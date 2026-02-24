@@ -13,9 +13,6 @@ import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
-/**
- * 复杂枚举值其实也不存在一个真正意义上的声明处，用这个模拟。（通过complexEnum规则匹配到的那些是可以同名的）
- */
 class ParadoxComplexEnumValueElement(
     parent: PsiElement,
     private val name: String,

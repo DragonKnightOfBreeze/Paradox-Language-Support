@@ -74,6 +74,16 @@ object ParadoxPsiManager {
 
     // region Common Methods
 
+    fun getFileInfoText(element: PsiElement): String? {
+        val fileInfo = element.fileInfo ?: return null
+        val path = fileInfo.path.path
+        val entry = fileInfo.entry
+        return when {
+            entry.isEmpty() -> path
+            else -> "$path ($entry)"
+        }
+    }
+
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
         return PlsPsiManager.getOwnedComments(element) { true }
     }

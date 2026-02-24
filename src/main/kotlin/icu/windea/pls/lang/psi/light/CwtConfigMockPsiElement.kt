@@ -1,14 +1,29 @@
 package icu.windea.pls.lang.psi.light
 
-import com.intellij.lang.Language
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiElement
-import icu.windea.pls.cwt.CwtLanguage
+import com.intellij.psi.impl.ResolveScopeManager
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigMockPsiElement(parent: PsiElement) : MockPsiElement(parent) {
-    override fun getLanguage(): Language {
-        return CwtLanguage
+    abstract val gameType: ParadoxGameType
+
+    override fun getResolveScope(): GlobalSearchScope {
+        return ResolveScopeManager.getElementResolveScope(this)
     }
 
-    abstract val gameType: ParadoxGameType
+    override fun getUseScope(): SearchScope {
+        return GlobalSearchScope.allScope(project)
+    }
+
+    override fun getPresentableText(): String? {
+        return name
+    }
+
+    override fun getLocationString(): @NlsSafe String? {
+        val parent = parent
+        return parent.containingFile?.name
+    }
 }

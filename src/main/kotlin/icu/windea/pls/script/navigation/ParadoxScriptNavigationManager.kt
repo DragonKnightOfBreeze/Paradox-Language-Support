@@ -1,5 +1,6 @@
 package icu.windea.pls.script.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
@@ -9,7 +10,7 @@ import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -18,7 +19,6 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 import javax.swing.Icon
@@ -77,6 +77,7 @@ object ParadoxScriptNavigationManager {
 
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
+            // 定义的名字，或者文件的名字
             is ParadoxScriptFile -> {
                 run {
                     // 定义的名字
@@ -86,6 +87,7 @@ object ParadoxScriptNavigationManager {
                 }
                 element.name
             }
+            // 定义的名字，或者属性的名字
             is ParadoxScriptProperty -> {
                 run {
                     // 定义的名字
@@ -94,10 +96,14 @@ object ParadoxScriptNavigationManager {
                 }
                 element.name
             }
-            is ParadoxScriptString -> element.name
+            // 截断后的名字
             is ParadoxScriptValue -> element.value.formatted()
+            // 名字
             is ParadoxScriptScriptedVariable -> "@" + element.name.or.unresolved()
+            // 表达式
             is ParadoxScriptParameterCondition -> element.conditionExpression?.let { "[$it]" }
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }
@@ -107,15 +113,7 @@ object ParadoxScriptNavigationManager {
     }
 
     fun getLocationString(element: PsiElement): String? {
-        val fileInfo = element.fileInfo
-        if (fileInfo != null) {
-            val path = fileInfo.path.path
-            val entry = fileInfo.entry
-            return when {
-                entry.isEmpty() -> path
-                else -> "$path ($entry)"
-            }
-        }
+        ParadoxPsiManager.getFileInfoText(element)?.let { return it }
         return element.containingFile?.name
     }
 

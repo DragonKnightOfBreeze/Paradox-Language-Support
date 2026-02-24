@@ -10,8 +10,8 @@ import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
-import icu.windea.pls.core.navigation.NavigatableFakePsiElement
 import icu.windea.pls.core.process
+import icu.windea.pls.core.psi.NavigationAwarePsiElement
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
@@ -57,7 +57,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
             val configType = CwtConfigType.entries.get(it.type) ?: return@p true
             val element = it.element ?: return@p true
             val lightElement = CwtConfigSymbolElement(element, name, configType, ReadWriteAccessDetector.Access.Write, it.gameType, project)
-            processor.process(NavigatableFakePsiElement(lightElement))
+            processor.process(NavigationAwarePsiElement(lightElement, element))
         }
     }
 }

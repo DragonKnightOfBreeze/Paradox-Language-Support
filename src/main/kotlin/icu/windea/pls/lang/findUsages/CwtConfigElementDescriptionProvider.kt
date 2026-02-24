@@ -28,16 +28,16 @@ class CwtConfigElementDescriptionProvider : ElementDescriptionProvider {
 
     private fun getElementName(element: PsiElement): String? {
         return when (element) {
-            is CwtProperty -> getConfigType(element)?.description
-            is CwtString -> getConfigType(element)?.description
+            is CwtProperty -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
+            is CwtString -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
             else -> null
         }
     }
 
     private fun getElementType(element: PsiElement): String? {
         return when (element) {
-            is CwtProperty -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
-            is CwtString -> getConfigType(element)?.let { configType -> CwtConfigManager.getNameByConfigType(element.name, configType) ?: element.name }
+            is CwtProperty -> getConfigType(element)?.description
+            is CwtString -> getConfigType(element)?.description
             else -> null
         }
     }

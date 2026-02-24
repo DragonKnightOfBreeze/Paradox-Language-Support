@@ -7,7 +7,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxModifierInfo
 import java.util.*
 import javax.swing.Icon
 

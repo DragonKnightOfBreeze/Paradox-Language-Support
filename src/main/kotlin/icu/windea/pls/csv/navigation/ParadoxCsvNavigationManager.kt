@@ -1,5 +1,6 @@
 package icu.windea.pls.csv.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.truncate
@@ -9,7 +10,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
-import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
@@ -40,6 +41,8 @@ object ParadoxCsvNavigationManager {
             is ParadoxCsvRow -> PlsStrings.rowMarker
             // 截断后的名字
             is ParadoxCsvColumn -> element.name.formatted()
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }
@@ -51,15 +54,7 @@ object ParadoxCsvNavigationManager {
     }
 
     fun getLocationString(element: PsiElement): String? {
-        val fileInfo = element.fileInfo
-        if (fileInfo != null) {
-            val path = fileInfo.path.path
-            val entry = fileInfo.entry
-            return when {
-                entry.isEmpty() -> path
-                else -> "$path ($entry)"
-            }
-        }
+        ParadoxPsiManager.getFileInfoText(element)?.let { return it }
         return element.containingFile?.name
     }
 

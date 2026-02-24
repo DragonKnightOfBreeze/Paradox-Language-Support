@@ -2,6 +2,7 @@ package icu.windea.pls.lang.psi.light
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -10,9 +11,6 @@ import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
 
-/**
- * 用于为合成的（注入的/合并后的）规则提供声明处。
- */
 class CwtMemberConfigElement(
     parent: PsiElement,
     val config: CwtMemberConfig<*>,
@@ -28,6 +26,10 @@ class CwtMemberConfigElement(
 
     override fun getName(): String {
         return config.configExpression.expressionString
+    }
+
+    override fun setName(name: String): PsiElement? {
+        throw IncorrectOperationException() // cannot rename
     }
 
     override fun getTypeName(): String {
