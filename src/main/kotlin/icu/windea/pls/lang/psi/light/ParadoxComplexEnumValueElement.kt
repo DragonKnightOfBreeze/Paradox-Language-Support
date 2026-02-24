@@ -32,7 +32,7 @@ class ParadoxComplexEnumValueElement(
         }
 
     override fun getIcon(): Icon {
-        return PlsIcons.Nodes.EnumValue
+        return PlsIcons.Nodes.ComplexEnumValue(enumName)
     }
 
     override fun getName(): String {

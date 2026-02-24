@@ -5,20 +5,25 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.values.unresolved
+import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 import javax.swing.Icon
@@ -71,13 +76,20 @@ object ParadoxScriptNavigationManager {
                     return PlsIcons.Nodes.Definition(definitionInfo.type)
                 }
             }
+            is ParadoxScriptStringExpressionElement -> {
+                run {
+                    // 作为复杂枚举值的字符串表达式使用特殊图标
+                    val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+                    return PlsIcons.Nodes.ComplexEnumValue(complexEnumValueInfo.enumName)
+                }
+            }
         }
         return null
     }
 
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
-            // 定义的名字，或者文件的名字
+            // 定义的名字（可能匿名），或者文件的名字
             is ParadoxScriptFile -> {
                 run {
                     // 定义的名字
@@ -87,7 +99,7 @@ object ParadoxScriptNavigationManager {
                 }
                 element.name
             }
-            // 定义的名字，或者属性的名字
+            // 定义的名字（可能匿名），或者属性的名字
             is ParadoxScriptProperty -> {
                 run {
                     // 定义的名字
@@ -95,6 +107,15 @@ object ParadoxScriptNavigationManager {
                     return definitionInfo.name.or.anonymous()
                 }
                 element.name
+            }
+            // 复杂枚举值的名字，或者截断后的名字
+            is ParadoxScriptStringExpressionElement -> {
+                run {
+                    // 复杂枚举值的名字
+                    val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+                    return complexEnumValueInfo.name
+                }
+                element.value.formatted()
             }
             // 截断后的名字
             is ParadoxScriptValue -> element.value.formatted()
@@ -125,9 +146,8 @@ object ParadoxScriptNavigationManager {
                     if (element.name.endsWith(".mod", true)) return@run // 排除模组描述符文件
                     val definitionInfo = element.definitionInfo ?: return@run
                     return buildString {
-                        this.append(": ").append(definitionInfo.typeText)
-                        val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
-                        if (localizedName != null) this.append(" ").append(localizedName)
+                        append(": ").append(definitionInfo.typeText)
+                        ParadoxDefinitionManager.getLocalizedName(element)?.let { append(" ").append(it) }
                     }.optimized() // optimized to optimize memory
                 }
                 null
@@ -142,16 +162,29 @@ object ParadoxScriptNavigationManager {
                     // 定义的类型信息和显示名称
                     val definitionInfo = element.definitionInfo ?: return@run
                     return buildString {
-                        this.append(": ").append(definitionInfo.typeText)
-                        val localizedName = ParadoxDefinitionManager.getLocalizedName(element)
-                        if (localizedName != null) this.append(" ").append(localizedName)
-                    }.optimized() // optimized to optimize memory
+                        append(": ").append(definitionInfo.typeText)
+                        ParadoxDefinitionManager.getLocalizedName(element)?.let { append(" ").append(it) }
+                    }
+                }
+                null
+            }
+            is ParadoxScriptStringExpressionElement -> {
+                run {
+                    // 复杂枚举值的类型信息和显示名称
+                    val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
+                    return buildString {
+                        append(": ").append(complexEnumValueInfo.enumName)
+                        ParadoxComplexEnumValueManager.getLocalizedName(complexEnumValueInfo.name, element)?.let { append(" ").append(it) }
+                    }
                 }
                 null
             }
             is ParadoxScriptScriptedVariable -> {
-                // 封装变量的值
-                element.value?.let { " = $it" }
+                // 封装变量的值和显示名称
+                buildString {
+                    element.value?.let { append(" = ").append(it) }
+                    ParadoxScriptedVariableManager.getLocalizedName(element)?.let { append(" ").append(it) }
+                }.orNull()
             }
             else -> null
         }

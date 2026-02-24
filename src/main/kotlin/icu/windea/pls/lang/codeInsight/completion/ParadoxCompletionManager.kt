@@ -634,7 +634,7 @@ object ParadoxCompletionManager {
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
                     .withPriority(PlsCompletionPriorities.complexEnumValue)
-                    .withPatchableIcon(PlsIcons.Nodes.EnumValue)
+                    .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
@@ -674,7 +674,7 @@ object ParadoxCompletionManager {
                     val typeFile = valueConfig.pointer.containingFile
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
-                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
+                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
                         .forScriptExpression(context)
                     result.addElement(lookupElement, context)

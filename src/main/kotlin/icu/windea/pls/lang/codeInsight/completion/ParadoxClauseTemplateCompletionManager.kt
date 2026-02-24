@@ -186,24 +186,24 @@ object ParadoxClauseTemplateCompletionManager {
 
     private fun buildClauseText(descriptors: MutableList<ElementDescriptor>, multiline: Boolean, around: Boolean): String {
         return buildString {
-            this.append("{")
-            if (multiline) this.append("\n")
+            append("{")
+            if (multiline) append("\n")
             descriptors.forEach {
                 when (it) {
                     is ValueDescriptor -> {
-                        this.append(it.name.quoteIfNecessary())
+                        append(it.name.quoteIfNecessary())
                     }
                     is PropertyDescriptor -> {
-                        this.append(it.name.quoteIfNecessary())
-                        if (around) this.append(" ")
+                        append(it.name.quoteIfNecessary())
+                        if (around) append(" ")
                         append(it.separator)
-                        if (around) this.append(" ")
-                        this.append(it.value.ifEmpty { "v" })
+                        if (around) append(" ")
+                        append(it.value.ifEmpty { "v" })
                     }
                 }
-                if (multiline) this.append("\n") else this.append(" ")
+                if (multiline) append("\n") else append(" ")
             }
-            this.append("}")
+            append("}")
         }
     }
 

@@ -174,6 +174,9 @@ object PlsIcons {
         }
 
         @JvmStatic
+        fun ComplexEnumValue(type: String?) = EnumValue
+
+        @JvmStatic
         fun DynamicValue(dynamicValueType: String?) = when (dynamicValueType) {
             "variable" -> Variable
             else -> DynamicValue

@@ -48,7 +48,7 @@ object ParadoxLocalisationNavigationManager {
             is ParadoxLocalisationFile -> element.name
             // 名字
             is ParadoxLocalisationLocale -> element.name
-            // 语言环境的名字，或者匿名
+            // 语言环境的名字（可能匿名）
             is ParadoxLocalisationPropertyList -> element.locale?.name.or.anonymous()
             // 名字
             is ParadoxLocalisationProperty -> element.name
