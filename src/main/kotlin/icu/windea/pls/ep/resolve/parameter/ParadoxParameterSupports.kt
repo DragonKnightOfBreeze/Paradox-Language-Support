@@ -49,6 +49,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
@@ -353,13 +354,14 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
-        val startOffset = element.startOffset
+        val offset = ParadoxExpressionManager.getExpressionOffset(expressionElement)
+        val startOffset = element.startOffset + offset
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) // text range of script value name
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         val pointer = expressionElement.createPointer(project)
-        val offset = expressionElement.startOffset
+        val expressionStartOffset = expressionElement.startOffset + offset
         scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
-            if (completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(offset)) return@f
+            if (completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionStartOffset)) return@f
             val argumentName = nameNode.text
             val argumentValue = valueNode?.text
             val argumentNameRange = nameNode.rangeInExpression.shiftRight(startOffset)
@@ -389,9 +391,10 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
         val argumentNode = scriptValueExpression.nodes.find f@{
             if (it !is ParadoxScriptValueArgumentNode) return@f false
-            if (it.rangeInExpression != rangeInElement) return@f false
+            if (it.rangeInExpression.shiftRight(offset) != rangeInElement) return@f false
             true
         } as? ParadoxScriptValueArgumentNode ?: return null
         val name = argumentNode.text.orNull() ?: return null

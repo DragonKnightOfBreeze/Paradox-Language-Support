@@ -24,7 +24,7 @@ data class ParadoxComplexExpressionError(
             isMalformedError() -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
             else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
         }
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        holder.registerProblem(element, description, highlightType, rangeInElement, *fixes)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        holder.registerProblem(element, description, highlightType, rangeInExpression.shiftRight(offset), *fixes)
     }
 }

@@ -22,6 +22,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArg
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -144,16 +145,17 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         return contextConfigs
     }
 
-    private fun getContextConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
-        val configGroup = expressionConfig.configGroup
-        val value = expressionElement.value
-        val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, expressionConfig) ?: return null
-        val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
+    private fun getContextConfigFromExpressionConfig(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
+        val configGroup = config.configGroup
+        val value = element.value
+        val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config) ?: return null
+        val rangeInElement = parameterInfo.element?.textRangeInParent
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
         var result: List<CwtValueConfig>? = null
         expression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (node.rangeInExpression == rangeInExpressionElement) {
-                    result = getConfigsFromNode(expressionElement, expressionConfig, node)
+                if (node.rangeInExpression.shiftRight(offset) == rangeInElement) {
+                    result = getConfigsFromNode(element, config, node)
                     if (result.isNotNullOrEmpty()) return false
                 }
                 return super.visit(node)
@@ -163,8 +165,8 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         return CwtConfigManipulator.inlineWithConfigs(null, result, configGroup)
     }
 
-    private fun getConfigsFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {
-        val configGroup = expressionConfig.configGroup
+    private fun getConfigsFromNode(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {
+        val configGroup = config.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
                 node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
@@ -183,7 +185,9 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()
-                val passingParameterElement = ParadoxParameterService.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return emptyList()
+                val offset = ParadoxExpressionManager.getExpressionOffset(element)
+                val rangeInElement = argumentNode.rangeInExpression.shiftRight(offset)
+                val passingParameterElement = ParadoxParameterService.resolveArgument(element, rangeInElement, config) ?: return emptyList()
                 val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
                 val passingConfigs = passingContextConfigs.singleOrNull()?.configs?.filterIsInstance<CwtValueConfig>().orEmpty()
                 passingConfigs

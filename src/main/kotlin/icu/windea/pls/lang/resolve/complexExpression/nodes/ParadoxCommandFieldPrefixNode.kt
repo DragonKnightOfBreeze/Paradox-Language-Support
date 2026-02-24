@@ -28,9 +28,9 @@ class ParadoxCommandFieldPrefixNode(
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         linkConfigs.forEach { it.resolveElementWithConfig() }
-        return Reference(element, rangeInElement, linkConfigs)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), linkConfigs)
     }
 
     class Reference(element: PsiElement, rangeInElement: TextRange, configs: List<CwtLinkConfig>) :

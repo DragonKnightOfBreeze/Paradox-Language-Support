@@ -33,8 +33,8 @@ class ParadoxScriptValueArgumentNode(
         if (text.isEmpty()) return null
         val reference = valueNode.getReference(element)
         if (reference == null) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset))
     }
 
     /**

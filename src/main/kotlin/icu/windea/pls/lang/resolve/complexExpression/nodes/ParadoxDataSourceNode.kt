@@ -40,8 +40,10 @@ class ParadoxDataSourceNode(
         if (linkConfigs.size == 1) return linkConfigs.first()
         run {
             if (linkConfigsNotDynamicValue.isEmpty()) return@run
+            val offset = ParadoxExpressionManager.getExpressionOffset(element)
+            val rangeInElement = rangeInExpression.shiftRight(offset)
             val resolved = linkConfigs.find {
-                ParadoxExpressionManager.resolveScriptExpression(element, rangeInExpression, it, it.configExpression, exact = false) != null
+                ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.configExpression, exact = false) != null
             }
             if (resolved != null) return resolved
         }
@@ -69,8 +71,8 @@ class ParadoxDataSourceNode(
         if (linkConfigs.isEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, this)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 
     class Reference(

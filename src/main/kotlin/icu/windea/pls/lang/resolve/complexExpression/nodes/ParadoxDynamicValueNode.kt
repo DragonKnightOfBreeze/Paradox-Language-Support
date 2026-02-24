@@ -49,8 +49,8 @@ class ParadoxDynamicValueNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, configs, configGroup)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), text, configs, configGroup)
     }
 
     class Reference(
