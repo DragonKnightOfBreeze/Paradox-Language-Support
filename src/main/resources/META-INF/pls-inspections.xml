@@ -45,7 +45,7 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
                      key="inspection.script.conflictingResolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
                      key="inspection.script.missingExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
