@@ -39,7 +39,9 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
     // com.intellij.find.impl.TextSearchContributor
     // com.intellij.ide.actions.searcheverywhere.CalculatorSEContributor
 
-    // 注意这里需要使用 NavigationAwarePsiElement 绕过以下位置的内部检查：com.intellij.ide.impl.DataValidators.isPsiElementProvided
+    // 注意这里需要使用 NavigationAwarePsiElement 绕过以下内部检查
+    // 位置：com.intellij.ide.impl.DataValidators.isDataValid
+    // 错误消息：PSI element for DataKey("selectedItems") is provided on EDT by com.intellij.ide.actions.searcheverywhere.SearchEverywhereUI. Use `DataSink.lazy` to provide such data
 
     private val delegate = SymbolSearchEverywhereContributor(event)
 

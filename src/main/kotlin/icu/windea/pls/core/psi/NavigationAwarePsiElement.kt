@@ -10,8 +10,6 @@ class NavigationAwarePsiElement(
     private val parent: NavigatablePsiElement,
     private val navigationElement: PsiElement? = null,
 ) : FakePsiElement(), NavigatablePsiElement {
-    // 用于绕过以下位置的内部检查：com.intellij.ide.impl.DataValidators.isPsiElementProvided
-
     override fun getParent(): PsiElement {
         return parent
     }
