@@ -7,7 +7,9 @@ import icu.windea.pls.core.collections.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -21,6 +23,9 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
 
     @Before
     fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun localisations() {

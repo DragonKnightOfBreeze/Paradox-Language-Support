@@ -3,7 +3,9 @@ package icu.windea.pls.localisation.editor
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +18,9 @@ class ParadoxLocalisationBaseAnnotatorTest : BasePlatformTestCase() {
 
     @Before
     fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun testAdjacentIcons_errorAndFix() {

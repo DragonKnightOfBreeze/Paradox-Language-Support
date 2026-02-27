@@ -20,8 +20,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -38,6 +40,9 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     private fun parse(
         text: String,

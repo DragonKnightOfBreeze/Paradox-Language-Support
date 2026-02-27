@@ -29,8 +29,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Before
     fun setup() {
         markIntegrationTest()
-        // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, gameType) // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
     }
 
     @After

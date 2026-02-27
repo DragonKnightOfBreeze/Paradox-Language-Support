@@ -9,8 +9,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObject
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -27,6 +29,9 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     private fun parse(
         text: String,

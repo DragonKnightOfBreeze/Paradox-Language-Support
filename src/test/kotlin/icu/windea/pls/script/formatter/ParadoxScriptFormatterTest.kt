@@ -7,7 +7,9 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +22,9 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
 
     @Before
     fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     private fun reformat(before: String): String {
         myFixture.configureByText("formatter_test.test.txt", before)

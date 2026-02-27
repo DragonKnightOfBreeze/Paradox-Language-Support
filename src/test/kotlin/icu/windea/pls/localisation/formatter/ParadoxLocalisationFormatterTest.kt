@@ -7,7 +7,9 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +22,9 @@ class ParadoxLocalisationFormatterTest : BasePlatformTestCase() {
 
     @Before
     fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     private fun getCommonSettings(): CommonCodeStyleSettings {
         return CodeStyle.getSettings(project).getCommonSettings(ParadoxLocalisationLanguage)
