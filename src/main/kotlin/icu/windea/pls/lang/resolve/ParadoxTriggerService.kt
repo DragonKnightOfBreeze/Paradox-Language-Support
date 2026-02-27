@@ -49,7 +49,7 @@ object ParadoxTriggerService {
     }
 
     fun isComparisonOperatorAllowed(element: ParadoxScriptProperty): Boolean? {
-        // TODO 2.1.4+ 需要检查与完善规则文件（主要是 `triggers.cwt`）
+        // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
         if (!PlsConfigInternalSettings.getInstance().checkComparisonOperators) return null
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
         if (config !is CwtPropertyConfig) return false
