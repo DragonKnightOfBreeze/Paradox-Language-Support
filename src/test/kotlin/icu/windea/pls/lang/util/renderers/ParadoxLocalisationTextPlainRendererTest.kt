@@ -27,14 +27,14 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/renderers")
         initConfigGroups(project, gameType)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun text() {

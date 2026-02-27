@@ -22,13 +22,13 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun nameElement_and_nameFieldElement_variants() {

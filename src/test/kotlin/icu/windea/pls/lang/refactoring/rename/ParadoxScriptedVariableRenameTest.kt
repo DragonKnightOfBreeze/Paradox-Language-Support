@@ -27,7 +27,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
         markRootDirectory("features/refactoring")
@@ -36,7 +36,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() {
+    fun doTearDown() {
         clearIntegrationTest()
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         FileDocumentManager.getInstance().saveAllDocuments()

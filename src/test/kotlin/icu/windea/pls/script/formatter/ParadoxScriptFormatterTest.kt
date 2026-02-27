@@ -21,10 +21,10 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun reformat(before: String): String {
         myFixture.configureByText("formatter_test.test.txt", before)

@@ -25,13 +25,13 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         initConfigGroups(project, gameType) // required (depends on `directive[inline_script]` configs)
         markIntegrationTest()
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Usage Index
 

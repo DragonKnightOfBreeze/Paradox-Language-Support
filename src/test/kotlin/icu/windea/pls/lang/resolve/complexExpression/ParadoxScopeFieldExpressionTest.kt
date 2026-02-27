@@ -35,14 +35,14 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markConfigDirectory("features/complexExpression/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Vic3)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun parse(
         text: String,

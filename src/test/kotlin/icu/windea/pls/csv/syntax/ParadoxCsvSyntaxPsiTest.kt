@@ -19,10 +19,10 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     override fun includeRanges() = true
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() = doTest(true)

@@ -23,7 +23,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
         markConfigDirectory("features/inlayHints/.config")
@@ -31,7 +31,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun preview() {

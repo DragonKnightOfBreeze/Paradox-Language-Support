@@ -17,10 +17,10 @@ class ParadoxScriptBaseAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
     // fun testAdjacentLiterals_errorAndFix() {

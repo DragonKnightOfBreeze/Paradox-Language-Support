@@ -26,13 +26,13 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun parse(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxDynamicValueExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)

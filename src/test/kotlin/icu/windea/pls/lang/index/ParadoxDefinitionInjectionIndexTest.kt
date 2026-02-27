@@ -30,7 +30,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
@@ -38,7 +38,7 @@ class ParadoxDefinitionInjectionIndexTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Basic Injection
 

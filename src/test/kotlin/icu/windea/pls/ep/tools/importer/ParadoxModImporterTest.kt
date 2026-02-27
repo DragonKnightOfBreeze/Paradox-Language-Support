@@ -28,7 +28,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         AssumePredicates.includeLocalEnv()
         addAdditionalAllowedRoots(
             PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),

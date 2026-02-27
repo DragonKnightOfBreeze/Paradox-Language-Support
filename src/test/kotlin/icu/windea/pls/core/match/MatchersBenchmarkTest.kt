@@ -8,7 +8,7 @@ import kotlin.system.measureTimeMillis
 
 class MatchersBenchmarkTest {
     @Before
-    fun setup() = AssumePredicates.includeBenchmark()
+    fun doSetUp() = AssumePredicates.includeBenchmark()
 
     @Suppress("DEPRECATION")
     @Test

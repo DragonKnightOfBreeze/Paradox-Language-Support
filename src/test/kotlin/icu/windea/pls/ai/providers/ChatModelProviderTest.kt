@@ -11,7 +11,7 @@ import org.junit.Test
 
 class ChatModelProviderTest {
     @Before
-    fun setup() = AssumePredicates.includeAi()
+    fun doSetUp() = AssumePredicates.includeAi()
 
     @Test
     fun testOpenAi() {

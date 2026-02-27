@@ -36,13 +36,13 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun parse(
         text: String,

@@ -34,10 +34,10 @@ class ParadoxScriptUnwrappersTest : UnwrapTestCase() {
     override fun createCode(code: String) = code
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region ParadoxScriptScriptedVariableRemover
 

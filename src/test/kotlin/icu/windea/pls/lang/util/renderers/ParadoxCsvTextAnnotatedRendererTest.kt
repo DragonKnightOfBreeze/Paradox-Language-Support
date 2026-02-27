@@ -27,7 +27,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/renderers")
         markConfigDirectory("features/renderers/.config")
@@ -35,7 +35,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() {

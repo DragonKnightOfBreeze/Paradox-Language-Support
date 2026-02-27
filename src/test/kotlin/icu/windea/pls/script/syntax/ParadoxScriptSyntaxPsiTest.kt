@@ -19,10 +19,10 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     override fun includeRanges() = true
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() = doTest(true)

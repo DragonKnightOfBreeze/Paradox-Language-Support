@@ -22,13 +22,13 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun pickModifierWithTemplate(gameType: ParadoxGameType, predicate: (CwtModifierConfig) -> Boolean): CwtModifierConfig? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
