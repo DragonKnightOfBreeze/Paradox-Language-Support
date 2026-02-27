@@ -21,7 +21,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
 
 PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
-The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
+The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
 
 ![](../images/preview_1_en.png)
@@ -37,13 +37,13 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 **Tools & Plugins:**
 
-- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 - [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
+- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 
 **Tutorials & Wikis:**
 
@@ -61,4 +61,10 @@ All forms of contribution and support are welcomed, including but not limited to
 - 📢 Recommend this plugin to friends or in the community.
 - 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
 
-If you are interested in submitting a PR but have any questions about plugin development or config writing, please feel free to contact us via email or [Discord](https://discord.gg/vBpbET2bXT)!
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email](mailto:dk_breeze@qq.com) or [Discord](https://discord.gg/vBpbET2bXT).
+
+## Acknowledgments
+
+[![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+This project is developed with JetBrains IDEs, and supported by the JetBrains Open Source License.
