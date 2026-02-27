@@ -67,4 +67,4 @@ If you are interested in submitting a PR, but have any questions about plugin de
 
 [![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
 
-This project is developed with [JetBrains IDEs](https://jb.gg/OpenSource), and supported by the JetBrains Open Source License.
+This project is developed with JetBrains IDEs, and supported by the JetBrains Open Source License.

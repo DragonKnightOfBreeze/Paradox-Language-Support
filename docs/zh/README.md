@@ -68,4 +68,4 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 [![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
 
-本项目使用 [JetBrains IDEs](https://jb.gg/OpenSource) 进行开发，并获得了 JetBrains 开源项目许可证的支持。
+本项目使用 JetBrains IDEs 进行开发，并获得了 JetBrains 开源项目许可证的支持。
