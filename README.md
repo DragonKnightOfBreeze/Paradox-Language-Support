@@ -2,8 +2,7 @@
 
 [![中文文档][badge:doc-zh]](README_zh.md)
 [![English Documentation][badge:doc-en]](README.md)
-[![Reference Docs][badge:doc-ref]][url:doc-ref]
-
+[![Reference Docs][badge:doc-ref]][url:doc-ref]  
 [![GitHub][badge:github]][url:github]
 [![Release][badge:release]][url:release]
 [![License][badge:license]][url:license]
@@ -11,8 +10,7 @@
 [![Plugin Version][badge:plugin-version]][url:plugin-versions]
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
 [![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
-[![Discord][badge:discord]][url:discord]
-
+[![Discord][badge:discord]][url:discord]  
 [![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
 
 [badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
