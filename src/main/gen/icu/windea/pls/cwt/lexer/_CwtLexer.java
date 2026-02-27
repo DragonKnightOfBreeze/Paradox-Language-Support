@@ -133,11 +133,11 @@ public class _CwtLexer implements FlexLexer {
     "\2\1\1\6\1\7\2\5\1\10\1\11\1\2\1\12"+
     "\2\11\1\13\1\14\1\15\2\5\1\16\4\17\1\20"+
     "\2\17\2\5\1\21\5\0\2\1\1\22\1\1\1\22"+
-    "\1\0\1\3\1\23\1\24\1\25\1\1\1\26\1\10"+
-    "\2\0\2\11\1\27\2\11\1\27\1\0\1\30\1\16"+
-    "\1\0\2\17\1\31\1\17\1\31\1\0\1\32\1\33"+
-    "\1\17\1\34\1\21\5\0\2\22\1\23\1\35\1\11"+
-    "\2\0\2\27\2\0\2\31\1\0";
+    "\1\0\1\3\1\23\1\24\1\25\1\1\1\26\1\27"+
+    "\2\0\2\11\1\30\2\11\1\30\1\0\1\31\1\32"+
+    "\1\0\2\17\1\33\1\17\1\33\1\0\1\34\1\35"+
+    "\1\17\1\36\1\37\5\0\2\22\1\23\1\40\1\11"+
+    "\2\0\2\30\2\0\2\33\1\0";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[104];
@@ -631,62 +631,62 @@ public class _CwtLexer implements FlexLexer {
             { yybegin(YYINITIAL); return STRING_TOKEN;
             }
           // fall through
-          case 30: break;
+          case 33: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 31: break;
+          case 34: break;
           case 3:
             { return COMMENT;
             }
           // fall through
-          case 32: break;
+          case 35: break;
           case 4:
             { yybegin(YYINITIAL); return INT_TOKEN;
             }
           // fall through
-          case 33: break;
+          case 36: break;
           case 5:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 34: break;
+          case 37: break;
           case 6:
             { return LEFT_BRACE;
             }
           // fall through
-          case 35: break;
+          case 38: break;
           case 7:
             { return RIGHT_BRACE;
             }
           // fall through
-          case 36: break;
+          case 39: break;
           case 8:
             { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 37: break;
+          case 40: break;
           case 9:
             { yybegin(IN_OPTION); return STRING_TOKEN;
             }
           // fall through
-          case 38: break;
+          case 41: break;
           case 10:
             { yybegin(YYINITIAL); return EOL;
             }
           // fall through
-          case 39: break;
+          case 42: break;
           case 11:
             { yybegin(YYINITIAL);  return COMMENT;
             }
           // fall through
-          case 40: break;
+          case 43: break;
           case 12:
             { yybegin(IN_OPTION); return INT_TOKEN;
             }
           // fall through
-          case 41: break;
+          case 44: break;
           case 13:
             { int state = yystate();
         if (state == IN_OPTION) yybegin(IN_OPTION_NESTED);
@@ -694,27 +694,27 @@ public class _CwtLexer implements FlexLexer {
         return LEFT_BRACE;
             }
           // fall through
-          case 42: break;
+          case 45: break;
           case 14:
             { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN;
             }
           // fall through
-          case 43: break;
+          case 46: break;
           case 15:
             { yybegin(IN_OPTION_NESTED); return STRING_TOKEN;
             }
           // fall through
-          case 44: break;
+          case 47: break;
           case 16:
             { yybegin(IN_OPTION_NESTED); return INT_TOKEN;
             }
           // fall through
-          case 45: break;
+          case 48: break;
           case 17:
             { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN;
             }
           // fall through
-          case 46: break;
+          case 49: break;
           case 18:
             // general lookahead, find correct zzMarkedPos
             { int zzFState = 6;
@@ -748,28 +748,33 @@ public class _CwtLexer implements FlexLexer {
             { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 47: break;
+          case 50: break;
           case 19:
             { yypushback(yylength() - 2); yybegin(IN_OPTION); return OPTION_COMMENT_START;
             }
           // fall through
-          case 48: break;
+          case 51: break;
           case 20:
             { yybegin(YYINITIAL); return FLOAT_TOKEN;
             }
           // fall through
-          case 49: break;
+          case 52: break;
           case 21:
             { yybegin(YYINITIAL); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 50: break;
+          case 53: break;
           case 22:
             { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 51: break;
+          case 54: break;
           case 23:
+            { yybegin(IN_PROPERTY_VALUE); return DOUBLE_EQUAL_SIGN;
+            }
+          // fall through
+          case 55: break;
+          case 24:
             // general lookahead, find correct zzMarkedPos
             { int zzFState = 6;
               int zzFPos = zzStartRead;
@@ -802,13 +807,18 @@ public class _CwtLexer implements FlexLexer {
             { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN;
             }
           // fall through
-          case 52: break;
-          case 24:
+          case 56: break;
+          case 25:
             { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 53: break;
-          case 25:
+          case 57: break;
+          case 26:
+            { yybegin(IN_OPTION_VALUE); return DOUBLE_EQUAL_SIGN;
+            }
+          // fall through
+          case 58: break;
+          case 27:
             // general lookahead, find correct zzMarkedPos
             { int zzFState = 6;
               int zzFPos = zzStartRead;
@@ -841,27 +851,32 @@ public class _CwtLexer implements FlexLexer {
             { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN;
             }
           // fall through
-          case 54: break;
-          case 26:
+          case 59: break;
+          case 28:
             { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN;
             }
           // fall through
-          case 55: break;
-          case 27:
+          case 60: break;
+          case 29:
             { yybegin(IN_OPTION_NESTED); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 56: break;
-          case 28:
+          case 61: break;
+          case 30:
             { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 57: break;
-          case 29:
+          case 62: break;
+          case 31:
+            { yybegin(IN_OPTION_VALUE_NESTED); return DOUBLE_EQUAL_SIGN;
+            }
+          // fall through
+          case 63: break;
+          case 32:
             { return DOC_COMMENT_TOKEN;
             }
           // fall through
-          case 58: break;
+          case 64: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

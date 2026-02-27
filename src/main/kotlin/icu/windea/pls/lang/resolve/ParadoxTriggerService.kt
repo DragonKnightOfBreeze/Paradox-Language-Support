@@ -2,8 +2,10 @@ package icu.windea.pls.lang.resolve
 
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
@@ -45,5 +47,12 @@ object ParadoxTriggerService {
             else -> false
         }
     }
-}
 
+    fun isComparisonOperatorAllowed(element: ParadoxScriptProperty): Boolean? {
+        // TODO 2.1.4+ 需要检查与完善规则文件（主要是 `triggers.cwt`）
+        if (!PlsConfigInternalSettings.getInstance().checkComparisonOperators) return null
+        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
+        if (config !is CwtPropertyConfig) return false
+        return config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
+    }
+}

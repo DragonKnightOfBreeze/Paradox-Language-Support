@@ -25,6 +25,7 @@ public interface CwtElementTypes {
   IElementType BOOLEAN_TOKEN = CwtElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COMMENT = CwtElementTypeFactory.getTokenType("COMMENT");
   IElementType DOC_COMMENT_TOKEN = CwtElementTypeFactory.getTokenType("DOC_COMMENT_TOKEN");
+  IElementType DOUBLE_EQUAL_SIGN = CwtElementTypeFactory.getTokenType("DOUBLE_EQUAL_SIGN");
   IElementType EOL = CwtElementTypeFactory.getTokenType("<eol>");
   IElementType EQUAL_SIGN = CwtElementTypeFactory.getTokenType("EQUAL_SIGN");
   IElementType FLOAT_TOKEN = CwtElementTypeFactory.getTokenType("FLOAT_TOKEN");

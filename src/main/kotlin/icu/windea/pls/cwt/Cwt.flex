@@ -46,7 +46,7 @@ DOC_COMMENT=###[^\r\n]*
 PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_PROPERTY_KEY_TOKEN})
 UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
 QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
-PROPERTY_KEY_TRAILING=\s*(==|=|\!=|<>)
+PROPERTY_KEY_TRAILING=\s*(=|\!=|<>|==)
 BOOLEAN_TOKEN=(yes|no)
 INT_TOKEN=[+-]?\d+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is permitted
@@ -57,7 +57,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 OPTION_KEY_TOKEN=({UNQUOTED_OPTION_KEY_TOKEN})|({QUOTED_OPTION_KEY_TOKEN})
 UNQUOTED_OPTION_KEY_TOKEN=[^#={}\s\"]+\"?
 QUOTED_OPTION_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
-OPTION_KEY_TRAILING=\s*(==|=|\!=|<>)
+OPTION_KEY_TRAILING=\s*(=|\!=|<>|==)
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are permitted and required
@@ -74,8 +74,9 @@ OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
     {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_SEPARATOR> {
-    "=="|"=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+    "==" { yybegin(IN_PROPERTY_VALUE); return DOUBLE_EQUAL_SIGN; }
 }
 <YYINITIAL, IN_PROPERTY_VALUE> {
     {PROPERTY_KEY_TOKEN} / {PROPERTY_KEY_TRAILING} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
@@ -98,8 +99,9 @@ OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
     {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
 }
 <IN_OPTION_SEPARATOR> {
-    "="|"==" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
+    "=" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
+    "==" { yybegin(IN_OPTION_VALUE); return DOUBLE_EQUAL_SIGN; }
 }
 <IN_OPTION, IN_OPTION_VALUE> {
     {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
@@ -118,8 +120,9 @@ OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
     {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
 }
 <IN_OPTION_SEPARATOR_NESTED> {
-    "="|"==" { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
+    "=" { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
+    "==" { yybegin(IN_OPTION_VALUE_NESTED); return DOUBLE_EQUAL_SIGN; }
 }
 <IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED> {
     {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }

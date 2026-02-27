@@ -13,6 +13,13 @@
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Note that HTML is not available in registry key descriptions -->
+    <registryKey key="pls.settings.config.keepOptionConfigs" defaultValue="false" description="See PlsConfigInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.config.checkComparisonOperators" defaultValue="false" description="See PlsConfigInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+  </extensions>
+
+
   <applicationListeners>
     <listener class="icu.windea.pls.config.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
               topic="icu.windea.pls.config.listeners.CwtConfigDirectoriesListener"/>

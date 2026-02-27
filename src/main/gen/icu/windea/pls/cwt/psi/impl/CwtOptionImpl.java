@@ -14,7 +14,6 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
 public class CwtOptionImpl extends ASTWrapperPsiElement implements CwtOption {
@@ -68,11 +67,6 @@ public class CwtOptionImpl extends ASTWrapperPsiElement implements CwtOption {
   @Override
   public @Nullable String getValue() {
     return CwtPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull CwtSeparatorType getSeparatorType() {
-    return CwtPsiImplUtil.getSeparatorType(this);
   }
 
   @Override

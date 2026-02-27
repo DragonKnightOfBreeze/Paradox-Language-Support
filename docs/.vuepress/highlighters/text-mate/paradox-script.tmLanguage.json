@@ -99,8 +99,8 @@
         },
         {
           "name": "variable.key.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>?{}\\[\\]\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
-          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
+          "begin": "(?=[^@#=<>!?{}\\[\\]\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "end": "$|(?=[@#=<>!?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
             { "include": "#escapes" }
@@ -121,8 +121,8 @@
         },
         {
           "name": "string.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>?{}\\[\\]\\s])",
-          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
+          "begin": "(?=[^@#=<>!?{}\\[\\]\\s])",
+          "end": "$|(?=[@#=<>!?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
             { "include": "#escapes" }
@@ -134,7 +134,7 @@
       "patterns": [
         {
           "name": "variable.interpolation.paradox.script",
-          "match": "\\$[A-Za-z_][A-Za-z0-9_]*(?:\\|[^#$=<>?{}\\[\\]\\s]+)?\\$"
+          "match": "\\$[A-Za-z_][A-Za-z0-9_]*(?:\\|[^#$=<>!?{}\\[\\]\\s]+)?\\$"
         }
       ]
     },

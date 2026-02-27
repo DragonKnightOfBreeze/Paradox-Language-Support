@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
@@ -38,13 +37,30 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     }
 
     private fun checkComparisonOperator(holder: ProblemsHolder, element: PsiElement) {
-        // 不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
         if (element !is ParadoxScriptProperty) return
         val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
+
+        // 所在属性的键与值应可以表示一个数值
         val numberRepresentable = ParadoxTriggerService.isNumberRepresentable(element)
         if (numberRepresentable == false) {
             val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
-            holder.registerProblem(token, description, ProblemHighlightType.GENERIC_ERROR)
+            holder.registerProblem(token, description)
+            return
+        }
+
+        // 所在属性对应的匹配的规则，应在触发器子句规则之内
+        val withinTriggerClause = ParadoxTriggerService.isWithinTriggerClause(element)
+        if (withinTriggerClause == false) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.2")
+            holder.registerProblem(token, description)
+            return
+        }
+
+        // 所在属性对应的匹配的规则，其使用的属性分隔符是 `==`（而非常规的 `=`）
+        val allowed = ParadoxTriggerService.isComparisonOperatorAllowed(element)
+        if (allowed == false) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.3")
+            holder.registerProblem(token, description)
             return
         }
     }

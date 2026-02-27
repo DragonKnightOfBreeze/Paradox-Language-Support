@@ -42,7 +42,7 @@ INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
 FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
 PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted
-ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
+ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
 
 %%
 

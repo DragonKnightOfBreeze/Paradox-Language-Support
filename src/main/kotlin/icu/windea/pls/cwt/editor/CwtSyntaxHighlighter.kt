@@ -17,7 +17,7 @@ class CwtSyntaxHighlighter(
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
             LEFT_BRACE, RIGHT_BRACE -> KA.BRACES_KEYS
-            EQUAL_SIGN, NOT_EQUAL_SIGN -> KA.OPERATOR_KEYS
+            EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN -> KA.OPERATOR_KEYS
             DOC_COMMENT_TOKEN -> KA.DOC_COMMENT_KEYS
             OPTION_COMMENT_START -> KA.OPTION_COMMENT_KEYS
             COMMENT -> KA.COMMENT_KEYS

@@ -18,12 +18,8 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
 
     @Before
     fun setup() = markIntegrationTest()
-
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_combined() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
@@ -40,8 +36,8 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun text_formats_stellaris() = doTest(true)
     @Test
     fun text_icons_vic3() = doTest(true)
-
-    // Added tests for header detection and trailing comment after value
+    @Test
+    fun advanced_combined() = doTest(true)
     @Test
     fun only_header_eof() = doTest(true)
     @Test

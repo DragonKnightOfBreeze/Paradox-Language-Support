@@ -27,7 +27,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 
         // 当用户可能正在输入定义的名字时提示
         val definitionNamePattern = psiElement()
-            .withElementType(ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS)
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 
         // 当用户可能正在输入变量名时提示
@@ -42,7 +42,7 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
 
         // 当用户可能正在输入 scriptExpression 时提示
         val expressionPattern = psiElement()
-            .withElementType(ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS)
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(null, expressionPattern, ParadoxScriptExpressionCompletionProvider())
 
         // 当用户可能正在输入 eventId 时提示
@@ -66,11 +66,11 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
         extend(null, parameterPattern, ParadoxParameterCompletionProvider())
 
         val inlineScriptUsagePattern = psiElement()
-            .withElementType(ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS)
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(null, inlineScriptUsagePattern, ParadoxInlineScriptUsageCompletionProvider())
 
         val definitionInjectionExpressionPattern = psiElement()
-            .withElementType(ParadoxScriptTokenSets.STRING_EXPRESSION_TOKENS)
+            .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(null, definitionInjectionExpressionPattern, ParadoxDefinitionInjectionExpressionCompletionProvider())
     }
 

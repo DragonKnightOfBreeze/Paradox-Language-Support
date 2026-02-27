@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastMap
@@ -29,8 +30,11 @@ object CwtOptionDataProvider {
         if (optionData !is CwtOptionDataHolderBase) return
         if (optionConfigs.isEmpty()) return
         if (PlsStates.resolveForInternalConfigs.get() == true) {
-            processForInternalConfigs(optionData, optionConfigs)
+            optionData.optionConfigs = optionConfigs
             return
+        }
+        if (PlsConfigInternalSettings.getInstance().keepOptionConfigs) {
+            optionData.optionConfigs = optionConfigs
         }
         optionConfigs.forEachFast { config ->
             when (config) {
@@ -38,11 +42,6 @@ object CwtOptionDataProvider {
                 is CwtOptionValueConfig -> processOptionValueConfig(optionData, config)
             }
         }
-    }
-
-    private fun processForInternalConfigs(optionData: CwtOptionDataHolderBase, optionConfigs: List<CwtOptionMemberConfig<*>>) {
-        // NOTE only reserved for internal configs
-        optionData.optionConfigs = optionConfigs
     }
 
     private fun processOptionConfig(optionData: CwtOptionDataHolderBase, config: CwtOptionConfig) {
@@ -184,7 +183,7 @@ object CwtOptionDataProvider {
         val optionConfigs = config.optionConfigs ?: return null
         if (optionConfigs.isEmpty()) return emptyMap()
         val r = FastMap<String, ReversibleValue<String>>()
-        optionConfigs.forEachFast f@{  optionConfig ->
+        optionConfigs.forEachFast f@{ optionConfig ->
             if (optionConfig !is CwtOptionConfig) return@f
             val k = optionConfig.key
             val o = optionConfig.separatorType == CwtSeparatorType.EQUAL

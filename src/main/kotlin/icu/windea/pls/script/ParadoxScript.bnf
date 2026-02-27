@@ -20,8 +20,7 @@
 
 // Grammar for Paradox Script.
 // Notes:
-// - Property separators can be comparison operators as well (e.g. =, !=, <, >, <=, >=, ?=).
-// - Separators can be comparison operators
+// - Property separators can be comparison operators as well.
 
 root ::= root_block ?
 root_block ::= root_block_item + {

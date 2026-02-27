@@ -96,13 +96,8 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun separator_greaterOrEqual() {
-        assertResult("key >= value", "key >= value")
-    }
-
-    @Test
-    fun separator_lessOrEqual() {
-        assertResult("key <= value", "key <= value")
+    fun separator_safeEqual() {
+        assertResult("key ?= value", "key ?= value")
     }
 
     @Test
@@ -111,8 +106,13 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun separator_safeEqual() {
-        assertResult("key ?= value", "key ?= value")
+    fun separator_greaterOrEqual() {
+        assertResult("key >= value", "key >= value")
+    }
+
+    @Test
+    fun separator_lessOrEqual() {
+        assertResult("key <= value", "key <= value")
     }
 
     @Test

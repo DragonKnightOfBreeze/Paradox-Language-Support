@@ -21,15 +21,12 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_nested() = doTest(true)
-    @Test
-    fun attached_comments() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
+    @Test
+    fun property_separators() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
     @Test
@@ -42,9 +39,10 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     fun parameter_conditions() = doTest(true)
     @Test
     fun inline_parameter_conditions() = doTest(true)
-
     @Test
-    fun property_separators() = doTest(true)
+    fun advanced_nested() = doTest(true)
+    @Test
+    fun attached_comments() = doTest(true)
     @Test
     fun inline_math_mismatch() = doTest(true)
     @Test

@@ -20,7 +20,7 @@ export function registerParadoxScript(Prism) {
   if (!Prism || Prism.languages.paradox_script) return;
 
   const parameter = {
-    pattern: /\$[A-Za-z_][A-Za-z0-9_]*(?:\|[^#$=<>?{}\[\]\s]+)?\$/,
+    pattern: /\$[A-Za-z_][A-Za-z0-9_]*(?:\|[^#$=<>!?{}\[\]\s]+)?\$/,
     greedy: true,
     alias: 'class-name',
   }
@@ -78,7 +78,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
+        pattern: /[^@#=<>!?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
         inside: {
           'parameter': parameter,
           'escape': escape,
@@ -97,7 +97,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>?{}\[\]\[\]\s"]+"?/, // exclude brackets here for compatibility
+        pattern: /[^@#=<>!?{}\[\]\s"]+"?/, // exclude brackets here for compatibility
         inside: {
           'parameter': parameter,
           'escape': escape,

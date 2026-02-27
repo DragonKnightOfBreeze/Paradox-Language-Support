@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.psi.util.elementType
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -14,7 +13,6 @@ import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
-import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
@@ -76,12 +74,12 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
 
         var keyElement: CwtOptionKey? = null
         var valueElement: CwtValue? = null
-        var separatorType = CwtSeparatorType.EQUAL
+        var separatorType: CwtSeparatorType? = null
         element.forEachChild { e ->
             when {
                 e is CwtOptionKey -> keyElement = e
                 e is CwtValue -> valueElement = e
-                e.elementType == CwtElementTypes.NOT_EQUAL_SIGN -> separatorType = CwtSeparatorType.NOT_EQUAL
+                separatorType == null -> separatorType = CwtSeparatorType.resolve(e)
             }
         }
 
@@ -91,6 +89,10 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
         }
         if (valueElement == null) {
             logger.warn("Missing option value, skipped.".withLocationPrefix(element))
+            return null
+        }
+        if(separatorType == null) {
+            logger.warn("Missing option separator, skipped.".withLocationPrefix(element))
             return null
         }
 

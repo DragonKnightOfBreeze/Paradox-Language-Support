@@ -55,7 +55,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     propertyKey="property_key" propertyValue="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType
+    getIcon getName setName getNameIdentifier getValue
     getMembersRoot getMembers
   ]
 }
@@ -66,7 +66,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
   ]
   methods=[getIcon getName getValue setValue getReference getReferences]
 }
-private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
+private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private property_value ::= value
 
 value ::= boolean | int | float | string | block {
@@ -141,13 +141,13 @@ option ::= option_key option_separator option_value {
   ]
   methods=[
     option_key="option_key" option_value="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType
+    getIcon getName setName getNameIdentifier getValue
   ]
 }
 option_key ::= OPTION_KEY_TOKEN {
   methods=[getIcon getName getValue]
 }
-private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
+private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN | DOUBLE_EQUAL_SIGN
 private option_value ::= value
 
 // recover rules

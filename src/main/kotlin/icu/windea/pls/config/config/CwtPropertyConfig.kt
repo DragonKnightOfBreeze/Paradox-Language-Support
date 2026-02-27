@@ -6,7 +6,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.psi.util.elementType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
@@ -27,7 +26,6 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
-import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtPropertyKey
@@ -130,12 +128,12 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
 
         var keyElement: CwtPropertyKey? = null
         var valueElement: CwtValue? = null
-        var separatorType = CwtSeparatorType.EQUAL
+        var separatorType: CwtSeparatorType? = null
         element.forEachChild { e ->
             when {
                 e is CwtPropertyKey -> keyElement = e
                 e is CwtValue -> valueElement = e
-                e.elementType == CwtElementTypes.NOT_EQUAL_SIGN -> separatorType = CwtSeparatorType.NOT_EQUAL
+                separatorType == null -> separatorType = CwtSeparatorType.resolve(e)
             }
         }
 
@@ -145,6 +143,10 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         }
         if (valueElement == null) {
             logger.warn("Missing property value, skipped.".withLocationPrefix(element))
+            return null
+        }
+        if(separatorType == null) {
+            logger.warn("Missing property separator, skipped.".withLocationPrefix(element))
             return null
         }
 

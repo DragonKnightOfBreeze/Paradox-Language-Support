@@ -21,9 +21,6 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_quoted() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
@@ -36,7 +33,8 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     fun header_only() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
-
+    @Test
+    fun advanced_quoted() = doTest(true)
     @Test
     fun header_and_rows_crlf() = doTest(true)
     @Test
