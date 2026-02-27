@@ -13,10 +13,11 @@
 [![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
 [![Discord][badge:discord]][url:discord]
 
+[![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
+
 [badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
 [badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
-
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
 [badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
 [badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
@@ -25,15 +26,16 @@
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
 [badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
 [badge:discord]: https://img.shields.io/badge/Discord-Community-blue.svg?logo=discord
+[badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
-
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
 [url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
+[url:jetbrains]: https://jb.gg/OpenSource
 
 ## Overview
 
@@ -52,7 +54,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
 
 PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
-The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
+The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
 
 ![](docs/images/preview_1_en.png)
@@ -105,9 +107,8 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 **Known Limitations:**
 
-- Support for some complex language features in Stellaris is still being improved.
-- Support for unique language features in non-Stellaris games is not yet complete. Feedback and contributions are welcome.
-- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files. Pull Requests are welcome.
+- The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The plugin's built-in config files still need to be continuously improved, and also need to be continuously maintained and updated as the game version is updated. Feedback and contributions are welcome.
 
 ## Technical Details
 
@@ -129,13 +130,13 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 **Tools & Plugins:**
 
-- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 - [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
+- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 
 **Tutorials & Wikis:**
 
@@ -153,4 +154,10 @@ All forms of contribution and support are welcomed, including but not limited to
 - 📢 Recommend this plugin to friends or in the community.
 - 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
 
-If you are interested in submitting a PR but have any questions about plugin development or config writing, please feel free to contact us via email or [Discord](https://discord.gg/vBpbET2bXT).
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email](mailto:dk_breeze@qq.com) or [Discord](https://discord.gg/vBpbET2bXT).
+
+## Acknowledgments
+
+[![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+This project is developed with [JetBrains IDEs](https://jb.gg/OpenSource), and supported by the JetBrains Open Source License.

@@ -14,10 +14,11 @@
 [![Discord][badge:discord]][url:discord]
 [![群聊][badge:qq-group]][url:qq-group]
 
+[![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
+
 [badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
 [badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
 [badge:doc-ref]: https://img.shields.io/badge/参考文档-2f89d7.svg
-
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
 [badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
 [badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
@@ -27,9 +28,9 @@
 [badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
 [badge:discord]: https://img.shields.io/badge/Discord-社区-blue.svg?logo=discord
 [badge:qq-group]: https://img.shields.io/badge/群聊-653824651-blue.svg?logo=qq
+[badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
-
 [url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
 [url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
 [url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
@@ -37,6 +38,7 @@
 [url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
 [url:discord]: https://discord.gg/vBpbET2bXT
 [url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
+[url:jetbrains]: https://jb.gg/OpenSource
 
 ## 概述
 
@@ -55,7 +57,7 @@ Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计�
 - **目录检测**：自动检测游戏目录与模组目录，减少手动配置。
 
 PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。
-其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，并进行了一定的改进与扩展。
+其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循基本一致的语法与格式，并进行了一定的改进与扩展。
 插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#write-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#import-config-files)规则文件，满足个性化开发需求。
 
 ![](docs/images/preview_1_zh.png)
@@ -108,9 +110,8 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 **已知限制：**
 
-- 对 Stellaris 中的部分复杂语言特性的支持仍在完善中。
-- 对非 Stellaris 游戏中的特有语言特性的支持尚不完整，欢迎反馈与贡献。
-- 目前仅为 Stellaris 和 Victoria 3 提供了较为完善的内置规则文件，欢迎提交 Pull Request。
+- 插件对脚本文件与本地化文件的部分复杂语言特性的支持尚不完整，并仍在完善中，欢迎反馈。
+- 插件内置的规则文件仍需持续完善，并随游戏版本更新而持续维护更新，欢迎反馈与贡献。
 
 ## 技术细节
 
@@ -132,13 +133,13 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 **工具与插件：**
 
-- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 - [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
+- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 
 **教程与百科：**
 
@@ -156,4 +157,10 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 - 📢 向朋友或社区推荐本插件。
 - 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
 
-如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系。
+如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件](mailto:dk_breeze@qq.com)或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系。
+
+## 致谢
+
+[![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+本项目使用 [JetBrains IDEs](https://jb.gg/OpenSource) 进行开发，并获得了 JetBrains 开源项目许可证的支持。

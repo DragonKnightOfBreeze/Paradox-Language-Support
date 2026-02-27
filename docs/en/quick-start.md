@@ -46,6 +46,5 @@
 
 ## Known Limitations
 
-- Support for some complex language features in Stellaris is still being improved.
-- Support for unique language features in non-Stellaris games is not yet complete. Feedback and contributions are welcome.
-- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files. Pull Requests are welcome.
+- The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The plugin's built-in config files still need to be continuously improved, and also need to be continuously maintained and updated as the game version is updated. Feedback and contributions are welcome.
