@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 
 /**
- * 通过内嵌提示显示修正的本地化名称。
+ * 通过内嵌提示显示修正的显示名称。
  * 来自对应的本地化。
  */
 @Suppress("UnstableApiUsage")

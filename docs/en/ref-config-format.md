@@ -1055,12 +1055,15 @@ inline_scripts = {
 
 ```cwt
 inline_scripts = {
+    ### Some documentation
     ## replace_scopes = { this = country root = country }
     triggers/some_trigger_snippet
 
+    ### Some documentation
     ## context_configs_type = multiple
     triggers/some_trigger_snippet = { ... }
 
+    ### Some documentation
     ## context_configs_type = multiple
     triggers/some_trigger_snippet = single_alias_right[trigger_clause]
 }
@@ -1159,14 +1162,17 @@ parameters = {
 
 ```cwt
 parameters = {
+    ### Some documentation
     ## replace_scopes = { this = country root = country }
     ## context_key = some_trigger
     PARAM
 
+    ### Some documentation
     ## context_configs_type = multiple
     ## context_key = some_trigger
     PARAM = { ... }
 
+    ### Some documentation
     ## context_configs_type = multiple
     ## context_key = some_trigger
     PARAM = single_alias_right[trigger_clause]

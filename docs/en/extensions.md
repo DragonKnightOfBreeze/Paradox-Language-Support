@@ -228,7 +228,7 @@ Technology tree diagrams display key information about technologies and their pr
 
 ![](../images/extensions/diagram_tech_tree_1.png)
 
-1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as tech card).
+1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as technology card).
 2. Filter nodes by query scope. For example, only show nodes for technologies in open files.
 3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
 

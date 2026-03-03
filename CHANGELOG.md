@@ -14,6 +14,7 @@
 - [x] 修复：修复游戏概念未被正确解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
 - [x] 优化：优化配色方案（尤其是默认主题 Islands Dark 的） / Optimize color scheme (Especially for the default theme Islands Dark)
 - [x] 优化：优化脚本文件的 `IncorrectSyntaxInspection`（更严格的对比较运算符的检查） / OP: Optimize `IncorrectSyntaxInspection` for script files (More strict check for comparison operators)
+- [x] 优化：允许通过扩展规则为内联脚本文件提供快速文档文本 / OP: Make it possible to provide quick doc text for inline script files via extended configs
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.3

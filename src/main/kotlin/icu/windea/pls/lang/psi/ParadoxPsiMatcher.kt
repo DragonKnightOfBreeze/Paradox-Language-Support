@@ -20,6 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -151,6 +152,16 @@ object ParadoxPsiMatcher {
         if (referenceElement !is ParadoxScriptPropertyKey) return false
         val name = element.definitionInfo?.name?.orNull() ?: return false
         if (name != referenceElement.text.unquote()) return false
+        return true
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isInlineSCriptFile(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptFile)
+        }
+        if (element !is ParadoxScriptFile) return false
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(element) == null) return false
         return true
     }
 

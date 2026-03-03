@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 用于得到定义的图形表示。
+ * 用于得到定义的图形展示。
  */
 interface ParadoxDefinitionPresentationProvider {
     fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxDefinitionElement, type: Class<T>, relax: Boolean = false): Boolean

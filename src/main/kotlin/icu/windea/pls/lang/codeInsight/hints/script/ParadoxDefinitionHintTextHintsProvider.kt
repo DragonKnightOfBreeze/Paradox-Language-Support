@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
  * 通过内嵌提示显示定义的提示文本。
- * 来自本地化名称（即最相关的本地化），或者对应的扩展规则。优先级从低到高。
+ * 来自显示名称（即最相关的本地化文本），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.Definition

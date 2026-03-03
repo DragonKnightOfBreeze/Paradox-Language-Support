@@ -18,7 +18,7 @@ import icu.windea.pls.cwt.psi.CwtMember
 /**
  * 内联脚本（inline script）的扩展规则。
  *
- * 用于为对应的内联脚本（inline script）指定规则上下文与作用域上下文。
+ * 用于为对应的内联脚本（inline script）提供额外的提示信息（文档注释），以及指定规则上下文与作用域上下文。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
@@ -34,10 +34,15 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 示例：
  * ```cwt
  * inline_scripts = {
+ *     ### Some documentation
  *     ## replace_scopes = { this = country root = country }
  *     triggers/some_trigger_snippet
+ *
+ *     ### Some documentation
  *     ## context_configs_type = multiple
  *     triggers/some_trigger_snippet = { ... }
+ *
+ *     ### Some documentation
  *     ## context_configs_type = multiple
  *     triggers/some_trigger_snippet = single_alias_right[trigger_clause]
  * }

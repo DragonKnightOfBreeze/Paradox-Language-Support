@@ -11,7 +11,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 /**
- * 复制定义的本地化名称到剪贴板。
+ * 复制定义的显示名称到剪贴板。
  */
 abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyDefinitionLocalizedName")

@@ -14,6 +14,7 @@ import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
@@ -72,6 +73,19 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findByPattern(name, element, configGroup) ?: return null
+        val quickDoc = config.config.documentation?.orNull()
+        return quickDoc
+    }
+}
+
+class ParadoxExtendedInlineScriptQuickDocTextProvider : ParadoxQuickDocTextProviderBase.InlineScript() {
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
+
+    override fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String? {
+        val gameType = selectGameType(element) ?: return null
+        val project = element.project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val config = configGroup.extendedInlineScripts.findByPattern(expression, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }

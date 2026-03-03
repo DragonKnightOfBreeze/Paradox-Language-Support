@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtMember
 /**
  * 复杂枚举值的扩展规则。
  *
- * 用于为对应的复杂枚举值提供额外的提示信息（如文档注释、内嵌提示）。
+ * 用于为对应的复杂枚举值提供额外的提示信息（文档注释和内嵌提示）。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。

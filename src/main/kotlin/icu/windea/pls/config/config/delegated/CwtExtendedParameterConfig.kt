@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 /**
  * 参数的扩展规则。
  *
- * 用于为对应的参数（parameter）提供额外的提示信息（如文档注释），以及指定规则上下文与作用域上下文。
+ * 用于为对应的参数（parameter）提供额外的提示信息（文档注释），以及指定规则上下文与作用域上下文。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
@@ -39,12 +39,17 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 示例：
  * ```cwt
  * parameters = {
+ *     ### Some documentation
  *     ## replace_scopes = { this = country root = country }
  *     ## context_key = some_trigger
  *     PARAM
+ *
+ *     ### Some documentation
  *     ## context_configs_type = multiple
  *     ## context_key = some_trigger
  *     PARAM = { ... }
+ *
+ *     ### Some documentation
  *     ## context_configs_type = multiple
  *     ## context_key = some_trigger
  *     PARAM = single_alias_right[trigger_clause]

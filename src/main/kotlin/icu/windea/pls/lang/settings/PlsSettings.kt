@@ -195,7 +195,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * @property showLocalizedName 是否在层级视图中额外显示本地化名称。
+     * @property showLocalizedName 是否在层级视图中额外显示显示名称。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。
      * @property showLocationInfoByPath 显示位置信息时，是否显示路径。
      * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。

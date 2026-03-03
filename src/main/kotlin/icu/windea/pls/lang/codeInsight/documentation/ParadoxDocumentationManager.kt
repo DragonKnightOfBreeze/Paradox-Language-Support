@@ -202,6 +202,7 @@ object ParadoxDocumentationManager {
     private fun getInlineScriptDoc(element: ParadoxScriptFile, expression: String, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             buildInlineScriptDefinition(element, expression)
+            buildDocumentationContent(element)
         }
     }
 

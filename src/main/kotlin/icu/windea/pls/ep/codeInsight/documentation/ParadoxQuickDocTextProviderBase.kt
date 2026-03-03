@@ -7,8 +7,10 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
@@ -35,6 +37,18 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
         }
 
         abstract fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String?
+    }
+
+    abstract class InlineScript : ParadoxQuickDocTextProviderBase() {
+        override fun getQuickDocText(element: PsiElement): String? {
+            if (!ParadoxPsiMatcher.isInlineSCriptFile(element)) return null
+            val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element) ?: return null
+            if (expression.isEmpty()) return null
+            if (expression.isParameterized()) return null
+            return doGetQuickDocText(element, expression)
+        }
+
+        abstract fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String?
     }
 
     abstract class ComplexEnumValue : ParadoxQuickDocTextProviderBase() {
