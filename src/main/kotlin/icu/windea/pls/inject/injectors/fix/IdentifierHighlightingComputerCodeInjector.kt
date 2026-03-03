@@ -1,6 +1,6 @@
 package icu.windea.pls.inject.injectors.fix
 
-import com.intellij.codeInsight.daemon.impl.IdentifierHighlightingResult
+import com.intellij.openapi.util.Segment
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.contains
 import icu.windea.pls.core.memberProperty
@@ -10,7 +10,6 @@ import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.psi.ParadoxFile
 
-@Suppress("UnstableApiUsage")
 @InjectionTarget("com.intellij.codeInsight.daemon.impl.IdentifierHighlightingComputer")
 class IdentifierHighlightingComputerCodeInjector : CodeInjectorBase() {
     // https://youtrack.jetbrains.com/issue/IJPL-231595/Code-logic-flaw-with-identifier-highlighting
@@ -19,10 +18,11 @@ class IdentifierHighlightingComputerCodeInjector : CodeInjectorBase() {
     // see: com.intellij.codeInsight.daemon.impl.IdentifierHighlightingComputer.computeRanges
 
     private val Any.myPsiFile: PsiFile by memberProperty("myPsiFile", null)
+    private val Any.targets: Collection<Segment> by memberProperty("targets", null)
 
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
-    fun Any.computeRanges(@InjectReturnValue returnValue: IdentifierHighlightingResult): IdentifierHighlightingResult {
+    fun Any.computeRanges(@InjectReturnValue returnValue: Any/* IdentifierHighlightingResult */): Any/* IdentifierHighlightingResult */ {
         run {
             val file = myPsiFile
             if (file !is ParadoxFile) return@run

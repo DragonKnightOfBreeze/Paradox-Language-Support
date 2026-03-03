@@ -2,11 +2,12 @@ package icu.windea.pls.inject.processors
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
+import icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector
 
 /**
  * 用于在创建或者重新解析注入的 PSI 文件时，进行额外的处理。
  *
- * @see icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector
+ * @see InjectionRegistrarImplCodeInjector
  */
 interface InjectedFileProcessor {
     /** 处理注入的 PSI 文件，返回是否需要继续处理。 */

@@ -12,8 +12,6 @@ import com.intellij.util.IncorrectOperationException
 
 /**
  * 可以直接查找用法（或者导航到声明）的 [LightElement]。
- *
- * @see icu.windea.pls.inject.injectors.fix.SymbolNavigationServiceImplCodeInjector
  */
 abstract class LightElementBase(
     parent: PsiElement

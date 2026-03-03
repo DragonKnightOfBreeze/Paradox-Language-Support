@@ -22,7 +22,13 @@ class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
     // 用于在创建或者重新解析注入的PSI文件时，进行额外的处理
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
-    fun cacheEverything(place: Place, documentWindow: Any, viewProvider: Any, psiFile: PsiFile, @InjectReturnValue returnValue: Boolean): Boolean {
+    fun cacheEverything(
+        place: Place,
+        documentWindow: Any/* DocumentWindowImpl */,
+        viewProvider: Any/* InjectedFileViewProvider */,
+        psiFile: PsiFile,
+        @InjectReturnValue returnValue: Boolean
+    ): Boolean {
         runCatchingCancelable {
             InjectedFileProcessor.EP_NAME.extensionList.process { it.process(psiFile) }
         }

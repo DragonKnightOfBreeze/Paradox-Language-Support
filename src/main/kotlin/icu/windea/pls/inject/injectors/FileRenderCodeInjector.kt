@@ -24,22 +24,22 @@ class FileRenderCodeInjector : CodeInjectorBase() {
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
         runCatchingCancelable {
-            if (doCustomize(renderer, value)) return
+            appendQualifiedName(renderer, value)
         }
     }
 
-    private fun doCustomize(renderer: SimpleColoredComponent, value: Any): Boolean {
+    private fun appendQualifiedName(renderer: SimpleColoredComponent, value: Any) {
         val file = when {
             value is FileNode -> value.file
             value is VirtualFile -> value
-            else -> return true
+            else -> return
         }
         val rootInfo = file.rootInfo
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return false
-        if (rootInfo.rootFile != file) return false
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return
+        if (rootInfo.rootFile != file) return
 
         val comment = rootInfo.qualifiedName
         renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-        return false
+        return
     }
 }

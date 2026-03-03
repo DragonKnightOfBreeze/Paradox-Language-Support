@@ -6,10 +6,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtElementTypes
+import icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector
+import icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector
 
 /**
- * @see icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector
- * @see icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector
+ * @see CommentByLineCommentHandlerCodeInjector
+ * @see LineCommentCopyPastePreProcessorCodeInjector
  */
 class CwtCommenter : CodeDocumentationAwareCommenterEx {
     companion object {
