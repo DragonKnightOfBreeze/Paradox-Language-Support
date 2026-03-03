@@ -1,4 +1,4 @@
-# Paradox Language Support
+# Paradox Language Support - the Paradox Chronicle Project
 
 [![中文文档][badge:doc-zh]](README_zh.md)
 [![English Documentation][badge:doc-en]](README.md)
