@@ -30,6 +30,8 @@ class ParadoxScriptCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
         }
     }
 
+    override fun getConfigurableDisplayName() = PlsBundle.message("script.settings.name")
+
     override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.scriptCodeStyleSettings
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {

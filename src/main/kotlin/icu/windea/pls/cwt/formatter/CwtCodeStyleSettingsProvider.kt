@@ -30,6 +30,8 @@ class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
         }
     }
 
+    override fun getConfigurableDisplayName() = PlsBundle.message("cwt.settings.name")
+
     override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.cwtCodeStyleSettings
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {

@@ -27,7 +27,7 @@
     </intentionAction>
     <!-- endregion -->
 
-    <!-- region Paradox script -->
+    <!-- region Paradox Script -->
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
@@ -110,7 +110,7 @@
     </intentionAction>
     <!-- endregion -->
 
-    <!-- region Paradox localisation -->
+    <!-- region Paradox Localisation -->
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>

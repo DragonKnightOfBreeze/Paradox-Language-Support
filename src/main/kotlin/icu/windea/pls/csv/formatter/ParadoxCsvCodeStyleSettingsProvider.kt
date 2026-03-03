@@ -8,6 +8,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.model.constants.PlsPreviewTexts
@@ -24,6 +25,8 @@ class ParadoxCsvCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             }
         }
     }
+
+    override fun getConfigurableDisplayName() = PlsBundle.message("csv.settings.name")
 
     override fun getCodeSample(settingsType: SettingsType) = PlsPreviewTexts.csvCodeStyleSettings
 

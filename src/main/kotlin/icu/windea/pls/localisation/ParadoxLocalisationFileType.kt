@@ -7,7 +7,9 @@ import icu.windea.pls.lang.ParadoxFileType
 object ParadoxLocalisationFileType : ParadoxFileType(ParadoxLocalisationLanguage) {
     override fun getName() = "Paradox Localisation"
 
-    override fun getDescription() = PlsBundle.message("language.name.localisation")
+    override fun getDisplayName() = PlsBundle.message("localisation.language.name")
+
+    override fun getDescription() = PlsBundle.message("localisation.settings.name")
 
     override fun getDefaultExtension() = "yml"
 

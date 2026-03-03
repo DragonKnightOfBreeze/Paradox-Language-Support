@@ -321,13 +321,7 @@ object ParadoxConfigService {
         return result
     }
 
-    private fun matchConfigsForConfigContext(
-        element: PsiElement,
-        expression: ParadoxScriptExpression,
-        configs: List<CwtMemberConfig<*>>,
-        configGroup: CwtConfigGroup,
-        options: ParadoxMatchOptions?
-    ): List<CwtMemberConfig<*>> {
+    private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxScriptExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
             val configExpression = config.configExpression

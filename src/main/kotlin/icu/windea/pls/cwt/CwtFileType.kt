@@ -7,7 +7,9 @@ import icu.windea.pls.PlsIcons
 object CwtFileType : LanguageFileType(CwtLanguage) {
     override fun getName() = "Cwt"
 
-    override fun getDescription() = PlsBundle.message("language.name.cwt")
+    override fun getDisplayName() = PlsBundle.message("cwt.language.name")
+
+    override fun getDescription() = PlsBundle.message("cwt.settings.name")
 
     override fun getDefaultExtension() = "cwt"
 
