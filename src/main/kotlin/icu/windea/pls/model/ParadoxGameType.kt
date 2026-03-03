@@ -88,7 +88,7 @@ enum class ParadoxGameType(
         }
 
         /**
-         * 得到（PLS 目前支持的）所有游戏类型。
+         * 得到（插件目前支持的）所有游戏类型。
          *
          * @param withCore 是否包含通用游戏类型（[ParadoxGameType.Core]）。
          */

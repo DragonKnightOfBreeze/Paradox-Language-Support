@@ -5,7 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.util.registry.Registry
 
 /**
- * PLS 内部规则设置。可以通过 Registry 页面进行调整。
+ * 插件的内部规则设置。可以通过 Registry 页面进行调整。
  */
 @Service
 class PlsConfigInternalSettings {

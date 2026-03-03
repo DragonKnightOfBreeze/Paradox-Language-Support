@@ -136,7 +136,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{remoteConfigDirectory}` 可以配置。
  * - `{directoryName}` 为仓库目录的名字，对于共享的规则分组则为 `core`。
  *
- * 更改配置后，PLS 会自动从配置的远程仓库中克隆和拉取这些规则分组。
+ * 更改配置后，插件会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
  *
  * @see CwtConfigRepositoryManager

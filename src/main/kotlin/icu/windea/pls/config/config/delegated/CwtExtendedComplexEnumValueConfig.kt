@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * 路径定位：`complex_enum_values/{type}/{name}`，`{type}` 匹配枚举名，`{name}` 匹配规则名称。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

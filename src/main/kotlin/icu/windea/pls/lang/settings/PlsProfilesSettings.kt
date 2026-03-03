@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS 资料设置。
+ * 插件的资料设置。
  *
  * 由插件自动根据游戏信息与模组信息进行配置。
  */

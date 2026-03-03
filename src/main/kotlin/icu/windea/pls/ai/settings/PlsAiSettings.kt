@@ -16,7 +16,7 @@ import icu.windea.pls.core.setValue
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS AI 设置。可以在插件的对应设置页面中进行配置。
+ * 插件的 AI 设置。可以在插件的对应设置页面中进行配置。
  */
 @Service
 @State(name = "PlsAiSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])

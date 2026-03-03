@@ -11,7 +11,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
  *
  * 用于验证规则自身的格式与结构。
  *
- * 事实上，基于这些规则，PLS 目前仅提供了适用于规则文件的初步的代码补全。
+ * 事实上，基于这些规则，插件目前仅提供了适用于规则文件的初步的代码补全。
  *
  * @see icu.windea.pls.config.configExpression.CwtSchemaExpression
  * @see icu.windea.pls.config.util.CwtConfigSchemaManager

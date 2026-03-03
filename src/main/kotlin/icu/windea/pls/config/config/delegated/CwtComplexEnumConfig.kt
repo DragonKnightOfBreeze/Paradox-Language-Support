@@ -45,8 +45,8 @@ import icu.windea.pls.core.removeSurroundingOrNull
  *
  * @property name 名称（枚举名）。
  * @property startFromRoot 是否从文件顶部（而非顶级属性）开始查询。
- * @property caseInsensitive （PLS 扩展）是否将复杂枚举值标记为忽略大小写。
- * @property perDefinition （PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
+ * @property caseInsensitive （扩展）是否将复杂枚举值标记为忽略大小写。
+ * @property perDefinition （扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
  * @property searchScopeType 查询作用域类型。目前仅支持 `definition`，或者不指定。
  * @property nameConfig `name` 对应的规则。
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。

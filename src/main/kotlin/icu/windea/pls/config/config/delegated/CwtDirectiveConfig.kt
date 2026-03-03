@@ -31,7 +31,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 路径定位：`directive[{name}]`，`{name}` 匹配规则名称。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

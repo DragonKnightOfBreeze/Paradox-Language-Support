@@ -15,7 +15,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  *
  * 参考：
  * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
- * - PLS 规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 插件的规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
  *
  * @property pointer 指向对应的 PSI 元素的智能指针。
  * @property configGroup 所属规则分组（按项目与游戏类型划分）。

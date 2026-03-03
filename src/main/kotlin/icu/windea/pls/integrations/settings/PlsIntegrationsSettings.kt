@@ -13,7 +13,7 @@ import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS 集成设置。可以在插件的对应设置页面中进行配置。
+ * 插件的集成设置。可以在插件的对应设置页面中进行配置。
  */
 @Service
 @State(name = "PlsIntegrationsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])

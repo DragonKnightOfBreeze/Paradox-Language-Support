@@ -21,7 +21,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
  * 事件目标（event target）、变量（variable）、标志（flag）等通常都会被视为动态值。
  *
- * CWTools 兼容性：部分兼容。PLS 仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
+ * CWTools 兼容性：部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
  *
  * 路径定位：`values/value[{name}]`，`{name}` 匹配规则名称（动态值类型）。
  *

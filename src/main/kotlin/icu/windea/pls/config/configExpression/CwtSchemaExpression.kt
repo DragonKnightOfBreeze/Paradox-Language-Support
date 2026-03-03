@@ -21,7 +21,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * - 约束（[Constraint]）：以 `$$` 起始，如：`$$declaration`。
  * - 枚举（[Enum]）：以 `$enum:` 起始并以 `$` 结尾，如：`$enum:ship_size$`。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt
