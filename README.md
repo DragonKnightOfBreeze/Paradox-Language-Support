@@ -1,8 +1,12 @@
-# Paradox Language Support - the Paradox Chronicle Project
+# [![Paradox Chronicle][plugin-logo]][url:github] Paradox Language Support
+
+### —- The Paradox Chronicle Project
 
 [![中文文档][badge:doc-zh]](README_zh.md)
 [![English Documentation][badge:doc-en]](README.md)
-[![Reference Docs][badge:doc-ref]][url:doc-ref]  
+[![Reference Docs][badge:doc-ref]][url:doc-ref]
+[![Discord][badge:discord]][url:discord]
+<br/>
 [![GitHub][badge:github]][url:github]
 [![Release][badge:release]][url:release]
 [![License][badge:license]][url:license]
@@ -10,34 +14,12 @@
 [![Plugin Version][badge:plugin-version]][url:plugin-versions]
 [![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
 [![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
-[![Discord][badge:discord]][url:discord]  
+<br/>
 [![Supported by JetBrains][badge:jetbrains]][url:jetbrains]
-
-[badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
-[badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
-[badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
-[badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
-[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
-[badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
-[badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
-[badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
-[badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
-[badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
-[badge:discord]: https://img.shields.io/badge/Discord-Community-blue.svg?logo=discord
-[badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
-
-[url:doc-ref]: https://windea.icu/Paradox-Language-Support
-[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
-[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
-[url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
-[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
-[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
-[url:discord]: https://discord.gg/vBpbET2bXT
-[url:jetbrains]: https://jb.gg/OpenSource
 
 ## Overview
 
-Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Language Support is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 
@@ -49,13 +31,27 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
-- **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
+- **Directory Detection**: Automatically detects game and mod directories.
 
-PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
+The plugin implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
 
 ![](docs/images/preview_1_en.png)
+
+## 安装
+
+**使用 IDE 内置插件系统**
+
+`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
+
+**使用 JetBrains Marketplace**
+
+前往 [JetBrains Marketplace][url:plugin-homepage]，点击`Install to ...`按钮进行安装。
+
+**手动安装**
+
+下载[最新版本][url:release-latest]并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ## Getting Started
 
@@ -147,15 +143,44 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 All forms of contribution and support are welcomed, including but not limited to:
 
 - ⭐ Star the project on GitHub.
-- 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).
-- 🔧 Submit Pull Requests (to the [plugin repository](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
+- 🐛 Submit feedback and issues (via [Discord][url:discord] or [GitHub Issues][url:issues]).
+- 🔧 Submit Pull Requests (to the [plugin repository][url:github] (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
 - 📢 Recommend this plugin to friends or in the community.
-- 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
+- 💝 Sponsor the project via [Afdian][url:afdian].
 
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email](mailto:dk_breeze@qq.com) or [Discord](https://discord.gg/vBpbET2bXT).
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email][mailto] or [Discord][url:discord].
 
 ## Acknowledgments
 
 ### Powered by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+[plugin-logo]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/pluginIcon.svg
+
+[badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
+[badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
+[badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
+[badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
+[badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
+[badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
+[badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
+[badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
+[badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
+[badge:discord]: https://img.shields.io/badge/Discord-Community-blue.svg?logo=discord
+[badge:jetbrains]: https://img.shields.io/badge/Supported%20by-JetBrains-000000.svg?style=flat&logo=jetbrains
+
+[url:doc-ref]: https://windea.icu/Paradox-Language-Support
+[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
+[url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
+[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
+[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
+[url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
+[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
+[url:discord]: https://discord.gg/vBpbET2bXT
+[url:afdian]: https://afdian.com/a/dk_breeze
+[url:jetbrains]: https://jb.gg/OpenSource
+
+[mailto]: mailto:dk_breeze@qq.com

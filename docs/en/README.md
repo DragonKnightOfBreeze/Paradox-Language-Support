@@ -26,6 +26,20 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 ![](../images/preview_1_en.png)
 
+## Installation
+
+**Using the IDE built-in plugin system**
+
+`Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
+
+**Using JetBrains Marketplace**
+
+Go to [JetBrains Marketplace][url:plugin-homepage] and install it by clicking the `Install to ...` button.
+
+**Manual Installation**
+
+Download the [latest release][url:release-latest] and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+
 ## Reference Links
 
 **Official Documentation:**
@@ -56,15 +70,25 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 All forms of contribution and support are welcomed, including but not limited to:
 
 - ⭐ Star the project on GitHub.
-- 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).
-- 🔧 Submit Pull Requests (to the [plugin repository](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
+- 🐛 Submit feedback and issues (via [Discord][url:discord] or [GitHub Issues][url:issues]).
+- 🔧 Submit Pull Requests (to the [plugin repository][url:github] (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
 - 📢 Recommend this plugin to friends or in the community.
-- 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
+- 💝 Sponsor the project via [Afdian][url:afdian].
 
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email](mailto:dk_breeze@qq.com) or [Discord](https://discord.gg/vBpbET2bXT).
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email][mailto] or [Discord][url:discord].
 
 ## Acknowledgments
 
 ### Powered by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
+[url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
+[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
+[url:discord]: https://discord.gg/vBpbET2bXT
+[url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
+[url:afdian]: https://afdian.com/a/dk_breeze
+
+[mailto]: mailto:dk_breeze@qq.com

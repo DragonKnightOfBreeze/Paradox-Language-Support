@@ -27,6 +27,20 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 
 ![](../images/preview_1_zh.png)
 
+## 安装
+
+**使用 IDE 内置插件系统**
+
+`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
+
+**使用 JetBrains Marketplace**
+
+前往 [JetBrains Marketplace][url:plugin-homepage]，点击`Install to ...`按钮进行安装。
+
+**手动安装**
+
+下载[最新版本][url:release-latest]并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+
 ## 参考链接
 
 **官方文档：**
@@ -57,15 +71,25 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 欢迎任何形式的贡献与支持，包括但不限于：
 
 - ⭐ 在 GitHub 上收藏项目。
-- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
-- 🔧 提交 Pull Request（提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目），或者[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）。
+- 🐛 提交问题反馈（通过 [Discord][url:discord]、[群聊][url:qq-group] 或 [GitHub Issues][url:issues]）。
+- 🔧 提交 Pull Request（提交至[插件仓库][url:github]（即此项目），或者[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）。
 - 📢 向朋友或社区推荐本插件。
-- 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
+- 💝 通过[爱发电][url:afdian]赞助项目。
 
-如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件](mailto:dk_breeze@qq.com)或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系。
+如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件][mailto]或 [Discord][url:discord] 进行联系。
 
 ## 致谢
 
 ### Powered by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
+
+[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
+[url:issues]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues
+[url:release-latest]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases/latest
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
+[url:discord]: https://discord.gg/vBpbET2bXT
+[url:qq-group]: https://qm.qq.com/q/oRPgLwrTZm
+[url:afdian]: https://afdian.com/a/dk_breeze
+
+[mailto]: mailto:dk_breeze@qq.com

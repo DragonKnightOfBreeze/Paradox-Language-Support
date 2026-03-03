@@ -1,4 +1,8 @@
-Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Language Support - The Paradox Chronicle Project
+
+<br/>
+
+Paradox Language Support is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 
@@ -18,7 +22,7 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 <br/>
 
-Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
+Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
 
 **核心特性：**
 
