@@ -65,7 +65,7 @@ def print_stats(label: str, stats: Stats) -> None:
 
 
 def main() -> None:
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     cwt_root = os.path.join(repo_root, "cwt")
     if not os.path.isdir(cwt_root):
         print("未找到 cwt 目录，无法统计")

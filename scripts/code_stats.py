@@ -65,7 +65,7 @@ def print_stats(label: str, stats: Stats) -> None:
 
 
 def main() -> None:
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     targets = ["src", os.path.join("src", "main"), os.path.join("src", "test")]
     languages = [("Kotlin", ".kt"), ("Java", ".java")]
 
