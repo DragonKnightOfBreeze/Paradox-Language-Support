@@ -2,15 +2,19 @@
 
 ## Unreleased
 
+- [ ] [Vic3/EU5] Parser Breaks in CoA #263
+- [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` #263
+- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
+- [ ] 性能分析与优化 / Performance analysis and optimization
+
 ## 2.1.4
 
 - [x] [Vic3/EU5] Script Value and Static Value #264
-- [ ] [Vic3/EU5] Parser Breaks in CoA #263
+- [ ] Arguments with value no are not recognized as required arguments #278
 - [x] 修复：修复游戏概念未被正确解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
-- [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` #263
-- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
-- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
-- [ ] 性能分析与优化 / Performance analysis and optimization
+- [x] 优化：优化配色方案（尤其是默认主题 Islands Dark 的） / Optimize color scheme (Especially for the default theme Islands Dark)
+- [x] 优化：优化脚本文件的 `IncorrectSyntaxInspection`（更严格的对比较运算符的检查） / OP: Optimize `IncorrectSyntaxInspection` for script files (More strict check for comparison operators)
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.3
 
