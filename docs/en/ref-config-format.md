@@ -2,17 +2,17 @@
 
 <!-- TODO Manual improvement and polish -->
 
-## Positioning & Vision {#vision}
+## Position & Vision {#vision}
 
 This reference targets authors and maintainers who want to "understand / write / extend" CWT configs (CWT config files), and aims to:
 
-- **Unify terminology and boundaries**: align semantics between PLS and CWTools, and clarify PLS extension points and differences.
+- **Unify terminology and boundaries**: align semantics between the plugin and CWTools, and clarify extension points and differences.
 - **Build a mapping from documentation to implementation**: each config item is annotated with the corresponding interfaces/resolvers so you can trace the source code and verify behavior.
 - **Guide to practice**: outline purpose, format, and notes, laying the groundwork for refined examples and validation rules.
 
 ## Overview {#overview}
 
-PLS reads `.cwt` files, builds "config groups", and parses configs into structured "config objects" used by language features (highlighting, completion, navigation, inspections, documentation, etc.).
+The plugin reads `.cwt` files, builds "config groups", and parses configs into structured "config objects" used by language features (highlighting, completion, navigation, inspections, documentation, etc.).
 
 - **Config sources and overriding**: see "Config Groups/Override Strategy" in `docs/en/config.md`. Common sources include built-in, remote, local, and project-local. Later ones override earlier ones by "path + config ID".
 - **Two pillars**:
@@ -391,8 +391,8 @@ enums = {
 - The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
 - `path` and `path_extension` are normalized during resolving.
 - `start_from_root`: Whether to start searching for anchors from the top of the file (rather than from top-level properties).
-- `## case_insensitive`: (PLS extension) Whether to mark complex enum values as case-insensitive.
-- `## per_definition`: (PLS extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
+- `## case_insensitive`: (extension) Whether to mark complex enum values as case-insensitive.
+- `## per_definition`: (extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
 - `name` subsection: Describes how to locate value anchors within matching files; the implementation collects all properties or values named `enum_name` within it as anchors (`enumNameConfigs`).
 
 **Parsing flow (brief)**:
@@ -787,7 +787,7 @@ locales = {
 
 ### Extended Configs {#configs-extended}
 
-> PLS-extended family of configs to enhance IDE features (quick documentation, inlay hints, completion, etc.).
+> Plugin-specific extended configs to enhance IDE features (quick documentation, inlay hints, completion, etc.).
 
 #### Extended Scripted Variable Configs {#config-extended-scripted-variable}
 
@@ -1183,7 +1183,7 @@ parameters = {
 
 **Notes**:
 - `context_key` is required; missing it makes the item ineffective.
-- When `inherit = yes`, the context is taken from the use site; note it can be empty or vary by position. PLS enables "dynamic context" mode on this path.
+- When `inherit = yes`, the context is taken from the use site; note it can be empty or vary by position. The plugin enables "dynamic context" mode on this path.
 - Root-level `single_alias_right[...]` will be inlined before being used as context configs.
 
 #### Extended Complex Enum Value Configs {#config-extended-complex-enum-value}
@@ -1612,7 +1612,7 @@ a_value[anything]_b
 
 #### How to use ANT path patterns in config files {#faq-ant}
 
-PLS extends config expressions. Since plugin version 1.3.6, you can use ANT path patterns for more flexible matching.
+The plugin extends config expressions. Since plugin version 1.3.6, you can use ANT path patterns for more flexible matching.
 
 ```cwt
 # a ant expression use prefix 'ant:'
@@ -1628,7 +1628,7 @@ ant.i:/foo/bar?/*
 
 #### How to use regex in config files {#faq-regex}
 
-PLS extends config expressions. Since plugin veresion 1.3.6, you can use regex for more flexible matching.
+The plugin extends config expressions. Since plugin veresion 1.3.6, you can use regex for more flexible matching.
 
 ```cwt
 # a regex use prefix 're:'

@@ -6,7 +6,7 @@
 
 ## Overview
 
-Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Language Support is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 
@@ -18,9 +18,9 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
-- **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
+- **Directory Detection**: Automatically detects game and mod directories.
 
-PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
+The plugin implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
 
