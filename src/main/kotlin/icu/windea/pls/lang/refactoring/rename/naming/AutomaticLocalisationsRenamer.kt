@@ -13,11 +13,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxLocalisationProperty
-        val allRenames = mutableMapOf<PsiElement, String>()
+        val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
-            myElements.add(key as PsiNamedElement)
+            ProgressManager.checkCanceled()
+            myElements += key
             suggestAllNames(key.name, value)
         }
     }
@@ -32,10 +32,10 @@ class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : Auto
 
     override fun entityName() = PlsBundle.message("rename.localisation.overrides.entityName")
 
-    private fun prepareRenaming(element: ParadoxLocalisationProperty, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
+        if(element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull() ?: return
         val type = element.type ?: return
-
         ProgressManager.checkCanceled()
         val selector = selector(element.project, element).localisation().contextSensitive()
         val targets = ParadoxLocalisationSearch.search(name, type, selector).findAll()

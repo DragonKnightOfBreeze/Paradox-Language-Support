@@ -19,7 +19,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
  * 提供基础的声明规则上下文。
  */
 class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext {
+    override fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext {
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
     }
 
@@ -54,7 +54,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
  * 如果通过 [CwtExtendedGameRuleConfig] 重载了 game rule 的声明规则，则需使用重载后的声明规则上下文。
  */
 class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+    override fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.gameRule) return null
         if (definitionName.isNullOrEmpty()) return null
         val gameRuleConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup) ?: return null
@@ -87,7 +87,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
  * 将其中的数据表达式 `<event>`，替换为此事件类型对应的数据表达式。
  */
 class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+    override fun getContext(element: PsiElement, configGroup: CwtConfigGroup, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.onAction) return null
         if (definitionName.isNullOrEmpty()) return null
         val onActionConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup) ?: return null

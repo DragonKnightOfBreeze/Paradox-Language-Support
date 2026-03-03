@@ -4,7 +4,9 @@ import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +18,10 @@ class ParadoxLocalisationCommenterTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun testCommenterBasics() {

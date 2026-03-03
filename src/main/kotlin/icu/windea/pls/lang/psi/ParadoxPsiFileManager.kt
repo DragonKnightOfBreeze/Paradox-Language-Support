@@ -43,6 +43,7 @@ import icu.windea.pls.script.psi.isExpression
 object ParadoxPsiFileManager {
     // region Find Extensions (from elementOffset)
 
+    @Suppress("unused")
     fun findStringExpressionElementFromStartOffset(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
         if (offset < 0) return null
         if (file.language != ParadoxScriptLanguage) return null

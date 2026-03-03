@@ -2,10 +2,7 @@ package icu.windea.pls.cwt.navigation
 
 import com.intellij.ide.util.treeView.TreeAnchorizer
 import com.intellij.navigation.ItemPresentation
-import com.intellij.navigation.NavigationItem
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
-import icu.windea.pls.core.icon
 import javax.swing.Icon
 
 class CwtItemPresentation(
@@ -15,25 +12,17 @@ class CwtItemPresentation(
     private val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as PsiElement?
 
     override fun getIcon(unused: Boolean): Icon? {
-        val element = element
-        return element?.icon
+        val element = element ?: return null
+        return CwtNavigationManager.getIcon(element)
     }
-
-    // com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 
     override fun getPresentableText(): String? {
-        // 使用 PSI 元素的名字
-        val element = element
-        if (element is PsiNamedElement) return element.name
-        if (element is NavigationItem) return element.name
-        return null
+        val element = element ?: return null
+        return CwtNavigationManager.getPresentableText(element)
     }
 
-    // com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolContainerText
-
     override fun getLocationString(): String? {
-        // 使用文件名
-        val element = element
-        return element?.containingFile?.name
+        val element = element ?: return null
+        return CwtNavigationManager.getLocationString(element)
     }
 }

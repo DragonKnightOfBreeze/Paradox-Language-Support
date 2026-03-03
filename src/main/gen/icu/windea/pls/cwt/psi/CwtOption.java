@@ -8,7 +8,6 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
 public interface CwtOption extends CwtNamedElement, CwtOptionMember {
@@ -28,8 +27,6 @@ public interface CwtOption extends CwtNamedElement, CwtOptionMember {
   @NotNull PsiElement getNameIdentifier();
 
   @Nullable String getValue();
-
-  @NotNull CwtSeparatorType getSeparatorType();
 
   @NotNull GlobalSearchScope getResolveScope();
 

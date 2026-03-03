@@ -1,0 +1,70 @@
+<?xml version='1.0'?>
+<list>
+  <option name="PARADOX_SCRIPT.ARGUMENT">
+    <value>
+      <option name="FOREGROUND" value="56C1D6"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
+    <value>
+      <option name="FOREGROUND" value="56C1D6"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.COLOR">
+    <value>
+      <option name="FOREGROUND" value="D5B778"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.DEFINITION">
+    <value>
+      <option name="FOREGROUND" value="C77DBB"/>
+      <option name="EFFECT_COLOR" value="C77DBB"/>
+      <option name="EFFECT_TYPE" value="1"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.DEFINITION_NAME">
+    <value>
+      <option name="BACKGROUND" value="1A3B2D"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="C77DBB"/>
+      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_TYPE" value="5"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="CF8E6D"/>
+      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_TYPE" value="5"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE">
+    <value>
+      <option name="FOREGROUND" value="C77DBB"/>
+      <option name="EFFECT_COLOR" value="707D95"/>
+      <option name="EFFECT_TYPE" value="5"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.VALUE_FIELD">
+    <value>
+      <option name="FOREGROUND" value="56A8F5"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.VARIABLE">
+    <value>
+      <option name="FOREGROUND" value="BCBEC4"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+
+  <option name="PARADOX_SCRIPT.DIRECTIVE">
+    <value>
+      <option name="FOREGROUND" value="CF8E6D"/>
+      <option name="FONT_TYPE" value="1"/>
+    </value>
+  </option>
+</list>

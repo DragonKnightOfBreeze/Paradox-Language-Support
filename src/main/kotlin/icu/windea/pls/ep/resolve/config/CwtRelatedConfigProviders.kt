@@ -23,9 +23,9 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
@@ -35,6 +35,7 @@ import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -149,15 +150,15 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
-        val finalOffset = offset - textRange.startOffset
-        if (finalOffset < 0) return emptySet()
+        val offsetInExpression = offset - textRange.startOffset - ParadoxExpressionManager.getExpressionOffset(element)
+        if (offsetInExpression < 0) return emptySet()
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return emptySet()
 
         val result = mutableListOf<CwtConfig<*>>()
         complexExpression.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (finalOffset in node.rangeInExpression) {
+                if (offsetInExpression >= node.rangeInExpression.startOffset && offsetInExpression <= node.rangeInExpression.endOffset) {
                     result.addAll(0, node.getRelatedConfigs())
                 }
                 return super.visit(node)
@@ -225,19 +226,19 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             for (reference in element.references) {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
-                        val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
+                        val resolved = reference.resolve()?.castOrNull<ParadoxParameterLightElement>() ?: continue
                         val extendedConfigs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
                             .filterTo(result) { it.contextKey.matchesByPattern(resolved.contextKey, element, configGroup) }
                         result += extendedConfigs
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
-                        val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
+                        val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueLightElement>() ?: continue
                         val extendedConfigs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
                         val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result += extendedConfig
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
-                        val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
+                        val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueLightElement>() ?: continue
                         for (type in resolved.dynamicValueTypes) {
                             val extendedConfigs = configGroup.extendedDynamicValues[type] ?: continue
                             val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue

@@ -31,7 +31,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.dynamicValueNode
@@ -60,6 +60,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
 import icu.windea.pls.lang.resolve.complexExpression.scopeNodes
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
@@ -168,7 +169,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDynamicValueScopeContextProvider.getScopeContext
      */
-    fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext? {
+    fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = element.gameType
         return ParadoxDynamicValueScopeContextProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
@@ -180,7 +181,7 @@ object ParadoxScopeService {
     /**
      * @see ParadoxDynamicValueInferredScopeContextProvider.getScopeContext
      */
-    fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueElement): ParadoxScopeContext? {
+    fun getInferredScopeContext(dynamicValue: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
         val gameType = dynamicValue.gameType
         var map: Map<String, String>? = null
         ParadoxDynamicValueInferredScopeContextProvider.EP_NAME.extensionList.forEach f@{ ep ->
@@ -330,7 +331,7 @@ object ParadoxScopeService {
         }
     }
 
-    fun evaluateScopeContextForDynamicValue(element: ParadoxDynamicValueElement): ParadoxScopeContext {
+    fun evaluateScopeContextForDynamicValue(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
         // get provided scope context from EPs, and use it if not exact
         val scopeContext = getScopeContext(element)
         if (scopeContext != null && scopeContext.isExact) return scopeContext
@@ -439,8 +440,8 @@ object ParadoxScopeService {
             // only support full parameterized node
             if (!node.text.isParameterized(full = true)) return@r1
 
-            val offset = node.rangeInExpression.startOffset
-            val parameter = element.findElementAt(offset)?.parentOfType<ParadoxParameter>() ?: return@r1
+            val startOffset = ParadoxExpressionManager.getExpressionOffset(element) + node.rangeInExpression.startOffset
+            val parameter = element.findElementAt(startOffset)?.parentOfType<ParadoxParameter>() ?: return@r1
             if (parameter.text != node.text) return@r1
             val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1
             val configGroup = node.configGroup

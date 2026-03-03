@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.swing.JComponent
 
 /**
- * 科技的图形表示（科技卡）。
+ * 科技的图形展示（科技卡）。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 @WithDefinitionType(ParadoxDefinitionTypes.technology)

@@ -3,7 +3,9 @@ package icu.windea.pls.localisation.syntax
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.localisation.ParadoxLocalisationParserDefinition
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,13 +19,13 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     override fun includeRanges() = true
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_combined() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
@@ -40,8 +42,8 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     fun text_formats_stellaris() = doTest(true)
     @Test
     fun text_icons_vic3() = doTest(true)
-
-    // Added tests for header detection and trailing comment after value
+    @Test
+    fun advanced_combined() = doTest(true)
     @Test
     fun only_header_eof() = doTest(true)
     @Test

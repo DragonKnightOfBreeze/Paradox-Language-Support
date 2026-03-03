@@ -93,6 +93,8 @@ object ParadoxInlineScriptManager {
         val fileType = file.fileType
         if (fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
+        val gameType = fileInfo.rootInfo.gameType
+        if (!isSupported(gameType)) return null
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
         return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()

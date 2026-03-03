@@ -5,9 +5,11 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -20,11 +22,14 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markConfigDirectory("features/complexExpression/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Vic3)
     }
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     private fun parseScope(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxScopeFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)

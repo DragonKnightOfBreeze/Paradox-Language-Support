@@ -11,7 +11,6 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull CwtBlock o) {
     visitValue(o);
-    // visitNamedElement(o);
     // visitBlockElement(o);
     // visitBoundMemberContainer(o);
   }

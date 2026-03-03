@@ -10,7 +10,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class CwtLocalisationConfigGeneratorTest : CwtConfigGeneratorTest() {
     @Before
-    fun setup() = AssumePredicates.includeConfigGenerator()
+    fun doSetUp() = AssumePredicates.includeConfigGenerator()
 
     @Test
     fun generate_forStellaris() {

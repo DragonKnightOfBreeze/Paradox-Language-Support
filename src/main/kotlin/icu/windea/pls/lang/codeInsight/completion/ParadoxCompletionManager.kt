@@ -43,13 +43,12 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -107,11 +106,11 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement ?: return
         val configContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return
 
-        // 仅提示不在定义声明中的key（顶级键和类型键）
+        // 仅提示不在定义声明中的 key（顶级键和类型键）
         if (!configContext.inRoot()) {
+            // 忽略 rootKeys 深度超出限制，或者带参数的情况
             val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth) ?: return
-            if (memberPath.path.isParameterized()) return // 忽略成员路径带参数的情况
+            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(contextElement) }
             context.isKey = true
             completeKey(context, result, memberPath, typeKeyPrefix)
@@ -630,12 +629,12 @@ object ParadoxCompletionManager {
                 ProgressManager.checkCanceled()
                 val name = info.name
                 val readWriteAccess = Access.Write // write (declaration)
-                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
+                val element = ParadoxComplexEnumValueLightElement(contextElement, name, enumName, readWriteAccess, gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(!complexEnumConfig.caseInsensitive) // # 261
                     .withPriority(PlsCompletionPriorities.complexEnumValue)
-                    .withPatchableIcon(PlsIcons.Nodes.EnumValue)
+                    .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
@@ -675,7 +674,7 @@ object ParadoxCompletionManager {
                     val typeFile = valueConfig.pointer.containingFile
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
-                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
+                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
                         .forScriptExpression(context)
                     result.addElement(lookupElement, context)
@@ -691,7 +690,7 @@ object ParadoxCompletionManager {
                     val name = info.name
                     if (name == keyword) return@p true // 排除和当前输入的同名的
                     val readWriteAccess = info.readWriteAccess
-                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
+                    val element = ParadoxDynamicValueLightElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
                     val lookupElement = LookupElementBuilder.create(element, name)
                         .withPatchableIcon(PlsIcons.Nodes.DynamicValue(dynamicValueType))
                         .withPatchableTailText(tailText)
@@ -766,7 +765,7 @@ object ParadoxCompletionManager {
         ParadoxModifierManager.completeModifier(context, result)
     }
 
-    fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeArgument(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         // 提示参数名（仅限key）
         val contextElement = context.contextElement!!

@@ -8,6 +8,8 @@ import icu.windea.pls.core.optimizer.forList
 import icu.windea.pls.core.optimizer.forMap
 import icu.windea.pls.core.optimizer.forSet
 import icu.windea.pls.core.optimizer.forString
+import icu.windea.pls.core.optimizer.forStringList
+import icu.windea.pls.core.optimizer.forStringSet
 
 /** @see Optimizer.optimize */
 inline fun <T : Any, R : Any> T.optimized(optimizer: Optimizer<T, R>): R {
@@ -29,11 +31,21 @@ inline fun <T : Any, R : Any> R.deoptimized(optimizerProvider: OptimizerRegistry
     return OptimizerRegistry.optimizerProvider().deoptimize(this)
 }
 
-/** @see Optimizer.optimize */
+/** @see OptimizerRegistry.forString */
+@JvmName("optimizedForString")
 inline fun String.optimized() = optimized(OptimizerRegistry.forString())
-/** @see Optimizer.optimize */
+/** @see OptimizerRegistry.forStringList */
+@JvmName("optimizedForStringList")
+inline fun List<String>.optimized() = optimized(OptimizerRegistry.forStringList())
+/** @see OptimizerRegistry.forStringSet */
+@JvmName("optimizedForStringSet")
+inline fun Set<String>.optimized() = optimized(OptimizerRegistry.forStringSet())
+/** @see OptimizerRegistry.forList */
+@JvmName("optimizedForList")
 inline fun <E : Any> List<E>.optimized() = optimized(OptimizerRegistry.forList())
-/** @see Optimizer.optimize */
+/** @see OptimizerRegistry.forSet */
+@JvmName("optimizedForSet")
 inline fun <E : Any> Set<E>.optimized() = optimized(OptimizerRegistry.forSet())
-/** @see Optimizer.optimize */
+/** @see OptimizerRegistry.forMap */
+@JvmName("optimizedForMap")
 inline fun <K : Any, V : Any> Map<K, V>.optimized() = optimized(OptimizerRegistry.forMap())

@@ -14,14 +14,14 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 通过内嵌提示显示复杂枚举值的提示文本。
- * 来自本地化名称（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ * 来自显示名称（即同名的本地化文本），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.ComplexEnumValue
@@ -49,7 +49,7 @@ class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return
         val resolved = reference.resolve() ?: return
-        if (resolved !is ParadoxComplexEnumValueElement) return
+        if (resolved !is ParadoxComplexEnumValueLightElement) return
 
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)

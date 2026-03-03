@@ -47,6 +47,8 @@ class ParadoxParameterContextReferenceInfo(
         val argumentNameRange: TextRange,
         private val argumentValueElementPointer: SmartPsiElementPointer<out PsiElement>?,
         val argumentValueRange: TextRange?,
+        val project: Project,
+        val gameType: ParadoxGameType,
     ) {
         val argumentNameElement: PsiElement? get() = argumentNameElementPointer.element
         val argumentValueElement: PsiElement? get() = argumentValueElementPointer?.element

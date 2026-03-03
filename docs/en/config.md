@@ -14,9 +14,9 @@ Here you can configure the sources of the config groups to enable, as well as th
 
 ### Summary {#config-group-summary}
 
-Many of the language features provided by PLS are driven by CWT config files, which belong to different config groups.
+Many of the language features provided by the plugin are driven by CWT config files, which belong to different config groups.
 
-PLS implements various advanced language features based on config groups composed of CWT config files.
+The plugin implements various advanced language features based on config groups composed of CWT config files.
 
 Config groups can come from different sources. For the same source, there are config groups for each game type, and the shared config group for all game types.
 
@@ -42,7 +42,7 @@ Reference links:
 - `{configDir}` is the parent directory that contains all remote config group directories and can be customized in the plugin settings.
 - `{dirName}` is the repository directory name; for the shared config group, it is `core`.
 
-After you change the settings, PLS will automatically clone and pull these config groups from the configured remote repositories.
+After you change the settings, the plugin will automatically clone and pull these config groups from the configured remote repositories.
 
 #### Global Local Config Groups {#config-group-local}
 

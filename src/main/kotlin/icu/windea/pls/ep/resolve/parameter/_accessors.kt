@@ -8,7 +8,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.withSync
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -25,12 +25,12 @@ var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definiti
 var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
 var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
 
-var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterElement.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterElement.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterElement.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterElement.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+var ParadoxParameterLightElement.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterLightElement.containingContext by ParadoxParameterSupport.Keys.containingContext
+var ParadoxParameterLightElement.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
+var ParadoxParameterLightElement.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterLightElement.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterLightElement.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
 
 var ParadoxParameterContextReferenceInfo.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterContextReferenceInfo.containingContext by ParadoxParameterSupport.Keys.containingContext

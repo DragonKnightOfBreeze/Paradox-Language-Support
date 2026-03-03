@@ -6,21 +6,17 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 用于为各种目标提供提示文本，并渲染到（专门用于渲染提示文本的）内嵌提示中。
  *
  * 目前仅支持以下类型的目标：
  *
- * - 封装变量（[ParadoxScriptScriptedVariable]）
- * - 定义（[ParadoxDefinitionElement]）
- * - 复杂枚举（[ParadoxComplexEnumValueElement]）
- * - 动态值（[ParadoxDynamicValueElement]）
+ * - 封装变量（参见 [ParadoxHintTextProviderBase.ScriptedVariable]）
+ * - 定义（参见 [ParadoxHintTextProviderBase.Definition]）
+ * - 复杂枚举（参见 [ParadoxHintTextProviderBase.ComplexEnumValue]）
+ * - 动态值（参见 [ParadoxHintTextProviderBase.DynamicValue]）
  *
  * @see ParadoxHintsProvider
  * @see ParadoxPsiMatcher
@@ -31,12 +27,12 @@ interface ParadoxHintTextProvider {
     val source: Source get() = Source.Other
 
     /**
-     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为null则优先使用偏好的语言环境。
+     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为 `null` 则优先使用偏好的语言环境。
      */
     fun getHintText(element: PsiElement, locale: CwtLocaleConfig? = null): String?
 
     /**
-     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为null则优先使用偏好的语言环境。
+     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为 `null` 则优先使用偏好的语言环境。
      */
     fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig? = null): ParadoxLocalisationProperty?
 
@@ -46,9 +42,9 @@ interface ParadoxHintTextProvider {
     enum class Source {
         /** 未归类 */
         Other,
-        /** 来自本地化名称（同名的本地化） */
+        /** 来自显示名称（同名的本地化文本） */
         NameLocalisation,
-        /** 来自本地化名称（最相关的本地化） */
+        /** 来自显示名称（最相关的本地化文本） */
         PrimaryLocalisation,
         /** 来自扩展规则 */
         Extended,

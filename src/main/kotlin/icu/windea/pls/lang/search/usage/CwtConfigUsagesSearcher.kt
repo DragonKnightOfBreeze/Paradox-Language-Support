@@ -10,6 +10,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -21,8 +22,8 @@ import icu.windea.pls.cwt.psi.stringValue
  * 规则的用法的查询。
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
-    // - 规则的属性名为 `alias[x:y]` 时，其在脚本文件中匹配的属性名会是 `y`，需要特殊处理
-    // - 规则的属性名为 `directive[x]` 时，其在脚本文件中匹配的属性名可能会是 `x`，需要特殊处理
+    // - 对于别名规则 `alias[x:y]`，其在脚本文件中匹配的属性名是 `y`，需要特殊处理
+    // - 对于指令规则 `directive[x]`，其在脚本文件中匹配的属性名可能是 `x`，需要特殊处理
     // - 对于连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
@@ -49,13 +50,15 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
                 if (aliasSubName != null) extraWords.add(aliasSubName)
             }
             CwtConfigTypes.Directive -> {
-                val inlineName = target.name.removeSurroundingOrNull("directive[", "]")?.orNull()
-                if (inlineName != null) extraWords.add(inlineName)
+                val directiveName = target.name.removeSurroundingOrNull("directive[", "]")?.orNull()
+                if (directiveName != null) extraWords.add(directiveName)
             }
             CwtConfigTypes.Link, CwtConfigTypes.LocalisationLink -> {
                 val prefixProperty = target.propertyValue<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }
                 val prefix = prefixProperty?.propertyValue<CwtString>()?.stringValue?.orNull()
                 if (prefix != null) extraWords.add(prefix)
+                val prefixFromArgument = prefix?.removeSuffixOrNull(":")
+                if (prefixFromArgument != null) extraWords.add(prefixFromArgument)
             }
             else -> pass()
         }

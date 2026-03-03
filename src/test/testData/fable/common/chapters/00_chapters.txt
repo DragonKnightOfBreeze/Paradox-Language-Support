@@ -1,7 +1,0 @@
-awakening = {
-    name = c_awakening
-}
-
-guidance = {
-    name = c_guidance
-}

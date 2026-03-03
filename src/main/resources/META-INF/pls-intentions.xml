@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <!--region CWT-->
+    <!-- region CWT -->
     <intentionAction>
       <language>CWT</language>
       <categoryKey>intention.cwt.category</categoryKey>
@@ -25,9 +25,9 @@
       <className>icu.windea.pls.lang.intentions.cwt.PutMembersOnSeparateLinesIntention</className>
       <descriptionDirectoryName>CwtPutMembersOnSeparateLinesIntention</descriptionDirectoryName>
     </intentionAction>
-    <!--endregion-->
+    <!-- endregion -->
 
-    <!--region Paradox script-->
+    <!-- region Paradox Script -->
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
@@ -108,9 +108,9 @@
       <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.PutMembersOnSeparateLinesIntention</className>
     </intentionAction>
-    <!--endregion-->
+    <!-- endregion -->
 
-    <!--region Paradox localisation-->
+    <!-- region Paradox Localisation -->
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>
@@ -196,9 +196,9 @@
       <categoryKey>intention.localisation.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationFromLocaleIntention</className>
     </intentionAction>
-    <!--endregion-->
+    <!-- endregion -->
 
-    <!--region Paradox CSV-->
+    <!-- region Paradox CSV -->
     <intentionAction>
       <language>PARADOX_CSV</language>
       <categoryKey>intention.csv.category</categoryKey>
@@ -211,6 +211,6 @@
       <className>icu.windea.pls.lang.intentions.csv.UnquoteIdentifierIntention</className>
       <descriptionDirectoryName>CsvUnquoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
-    <!--endregion-->
+    <!-- endregion -->
   </extensions>
 </idea-plugin>

@@ -2,7 +2,22 @@
 
 ## Unreleased
 
+- [ ] [Vic3/EU5] Parser Breaks in CoA #263
+- [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` #263
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) #194
+- [ ] 性能分析与优化 / Performance analysis and optimization
+- [ ] 完善参考文档 / Improve reference documentation 
+- [ ] 补充集成测试 / Supplementary integration tests
+
+## 2.1.4
+
+- [x] [Vic3/EU5] Script Value and Static Value #264
+- [x] Arguments with value no are not recognized as required arguments #278
+- [x] 修复：修复游戏概念未被正确解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
+- [x] 优化：优化配色方案（尤其是默认主题 Islands Dark 的） / Optimize color scheme (Especially for the default theme Islands Dark)
+- [x] 优化：优化脚本文件的 `IncorrectSyntaxInspection`（更严格的对比较运算符的检查） / OP: Optimize `IncorrectSyntaxInspection` for script files (More strict check for comparison operators)
+- [x] 优化：允许通过扩展规则为内联脚本文件提供快速文档文本 / OP: Make it possible to provide quick doc text for inline script files via extended configs
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.3
 
@@ -10,7 +25,7 @@
 - [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified #272
 - [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效 / OP: Optimize the formatting of CWT files, always keep spaces around `!=` and `<>`, to avoid syntax inequality before and after formatting
 - [x] 优化：与重命名有关的相关优化与BUG修复 / OP: Optimizations and bug fixes related to renaming
-- [x] 优化：补充更多缺失的 AtomaticRenamer（关联重命名） / OP: Add more missing `AutomaticRenamer` (association-rename)
+- [x] 优化：补充更多缺失的 `AutomaticRenamer`（关联重命名） / OP: Add more missing `AutomaticRenamer` (association-rename)
 - [x] 优化：为定义注入检测子类型 / OP: Detect subtypes for definition injection #274
 - [x] 优化：将模式为 `REPLACE_OR_CREATE` 的定义注入识别为定义声明 / OP: Detect definition injections with mode `REPLACE_OR_CREATE` as definition declarations #273
 - [x] 新功能：新增 `PutMembersOnOneLineIntention` 和 `PutMembersOnSeparateLinesIntention` / NEW: add `PutMembersOnOneLineIntention` and `PutMembersOnSeparateLinesIntention`

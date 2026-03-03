@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.core.loadText
@@ -22,7 +23,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
         markConfigDirectory("features/inlayHints/.config")
@@ -30,7 +31,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun preview() {
@@ -43,6 +44,7 @@ class ParadoxDefinitionReferenceInfoHintsProviderTest : DeclarativeInlayHintsPro
     }
 
     private fun doTest(text: String) {
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         doTestProvider("test.txt", text, ParadoxDefinitionReferenceInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

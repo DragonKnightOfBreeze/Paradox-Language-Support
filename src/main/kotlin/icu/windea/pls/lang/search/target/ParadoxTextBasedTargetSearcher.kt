@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search.target
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.SearchScope
@@ -28,10 +29,10 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
  */
-abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, ParadoxTextBasedTargetSearch.SearchParameters>() {
+abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<NavigatablePsiElement, ParadoxTextBasedTargetSearch.SearchParameters>() {
     override fun processQuery(
         queryParameters: ParadoxTextBasedTargetSearch.SearchParameters,
-        consumer: Processor<in PsiElement>
+        consumer: Processor<in NavigatablePsiElement>
     ) {
         // 检查是否启用
         if (!PlsSettings.getInstance().state.navigation.seForTextBasedTargets) return
@@ -48,17 +49,17 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
         process(context, consumer)
     }
 
-    protected abstract fun process(context: Context, consumer: Processor<in PsiElement>)
+    protected abstract fun process(context: Context, consumer: Processor<in NavigatablePsiElement>)
 
-    protected abstract fun processText(text: String, context: Context, consumer: Processor<in PsiElement>): Boolean
+    protected abstract fun processText(text: String, context: Context, consumer: Processor<in NavigatablePsiElement>): Boolean
 
-    protected fun processLeafElement(element: PsiElement, context: Context, consumer: Processor<in PsiElement>): Boolean {
+    protected fun processLeafElement(element: PsiElement, context: Context, consumer: Processor<in NavigatablePsiElement>): Boolean {
         if (element.elementType != ParadoxLocalisationElementTypes.TEXT_TOKEN) return true
         val localisation = element.parentOfType<ParadoxLocalisationProperty>() ?: return true
         return processLocalisation(localisation, context, consumer)
     }
 
-    protected fun processLocalisation(element: ParadoxLocalisationProperty, context: Context, consumer: Processor<in PsiElement>): Boolean {
+    protected fun processLocalisation(element: ParadoxLocalisationProperty, context: Context, consumer: Processor<in NavigatablePsiElement>): Boolean {
         val localisation = element
         // 按照以下顺序收集查询结果：封装变量、定义、本地化
         val localisationInfo = ParadoxTargetInfo.from(localisation)

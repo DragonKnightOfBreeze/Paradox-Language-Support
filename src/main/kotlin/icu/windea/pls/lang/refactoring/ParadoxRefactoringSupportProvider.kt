@@ -17,12 +17,14 @@ class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
 
         return when {
             element is ParadoxScriptScriptedVariable -> true
-            element is ParadoxScriptProperty -> isMemberInplaceRenameAvailable(element, context) // may be available
+            element is ParadoxScriptProperty -> isMemberInplaceRenameAvailable(element, context)
             element is ParadoxScriptStringExpressionElement -> true
             element is ParadoxLocalisationProperty -> true
-            // element is ParadoxParameterElement -> true // should be available, but cannot be
-            // element is ParadoxDynamicValueElement -> true // should be available, but cannot be
-            // element is ParadoxComplexEnumValueElement -> true // should be available, but cannot be
+            // element is ParadoxComplexEnumValueLightElement -> true // not available since textRange and textOffset are not provided yet
+            // element is ParadoxDynamicValueLightElement -> true // not available since textRange and textOffset are not provided yet
+            // element is ParadoxParameterLightElement -> true // not available since textRange and textOffset are not provided yet
+            // element is ParadoxLocalisationParameterLightElement -> true // not available since textRange and textOffset are not provided yet
+            // element is ParadoxModifierLightElement -> true // not available since textRange and textOffset are not provided yet
             else -> false
         }
     }

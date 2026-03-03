@@ -18,8 +18,6 @@ fun <E : Any> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimi
 fun <E : Any> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
 fun <K : Any, V : Any> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
 
-private val stringInterner = Interner.newWeakInterner<String>()
-private inline fun String.internString() = stringInterner.intern(this)
 
 private const val SMALL_INTERN_THRESHOLD = 8
 
@@ -27,18 +25,23 @@ private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.jav
 private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
 private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     val className = c.name
+    // Java immutable collections
     if (className.startsWith("java.util.ImmutableCollections$")) return true
-    // Kotlin 标准集合在某些情况下会返回 JDK 的单例实现（例如 listOf("a") -> java.util.Collections$SingletonList）
+    // Kotlin standard collections may return the JDK's singleton implementation in some cases (e.g. listOf("a") -> java.util.Collections$SingletonList）
     if (className.startsWith("java.util.Collections$")) return true
+    // Kotlin collections which are immutable
     if (className.startsWith("kotlin.collections.")) return true
-    // if(className.startsWith("kotlinx.collections.immutable.")) return true // bad memory
+    // Kotlin immutable collections, but bad memory
+    // if(className.startsWith("kotlinx.collections.immutable.")) return true
     return false
 }
 
 private object StringOptimizer : Optimizer.Unary<String> {
+    private val interner = Interner.newWeakInterner<String>()
+
     override fun optimize(input: String): String {
         if (input.isEmpty()) return ""
-        return input.internString()
+        return interner.intern(input)
     }
 }
 

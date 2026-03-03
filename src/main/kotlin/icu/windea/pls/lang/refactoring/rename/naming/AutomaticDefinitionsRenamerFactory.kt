@@ -20,7 +20,6 @@ class AutomaticDefinitionsRenamerFactory : AutomaticRenamerFactory {
         val name = definitionInfo.name
         val type = definitionInfo.type
         if (name.isEmpty()) return false
-
         val selector = selector(element.project, element).definition()
         val processor = Processors.duplicate<ParadoxScriptProperty>()
         ParadoxDefinitionSearch.searchProperty(name, type, selector).process(processor)

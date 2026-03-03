@@ -14,9 +14,9 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxGameType
@@ -43,7 +43,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxDynamicValueElement) return@f
+            if (resolved !is ParadoxDynamicValueLightElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
                 val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
                 addToFileData(info, fileData)
@@ -59,7 +59,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxDynamicValueElement) return@f
+            if (resolved !is ParadoxDynamicValueLightElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
                 val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
                 addToFileData(info, fileData)
@@ -103,7 +103,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxParameterElement) return@f
+            if (resolved !is ParadoxParameterLightElement) return@f
             // note that element.startOffset may not equal to actual parameterElement.startOffset (e.g. in a script value expression)
             val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
             addToFileData(info, fileData)
@@ -146,7 +146,7 @@ class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<Par
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxLocalisationParameterElement) return@f
+            if (resolved !is ParadoxLocalisationParameterLightElement) return@f
             val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
             addToFileData(info, fileData)
         }

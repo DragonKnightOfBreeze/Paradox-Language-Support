@@ -34,7 +34,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * - 整个文本作为动态数据（如 `var`）。
  * - 带前缀（如 `modifier:x`）。
  * - 使用函数调用形式（如 `relations(x)`）。
- * - 使用更复杂的函数调用形式。注意，PLS 尚未提供完整支持。
+ * - 使用更复杂的函数调用形式。注意，插件尚未提供完整支持。
  *
  * 以下是一些常见的链接形式：
  * - **作用域链接（scope link）** - 如 `owner`。
@@ -66,8 +66,8 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * @property name 规则名称（链接名）。
  * @property type 链接类型（`scope`/`value`/`both`，默认为 `scope`）。
  * @property fromData 为动态链接时，是否从后置数据中读取动态数据。对应的节点格式形如 `prefix:data`。
- * @property fromArgument （PLS 扩展）为动态链接时，是否从传参中读取动态数据。对应的节点格式形如 `func(arg)`。
- * @property argumentSeparator （PLS 扩展） 为动态链接且有多个传参时，使用的传参分隔符（`comma`/`pipe`，默认为 `comma`）。
+ * @property fromArgument （扩展）为动态链接时，是否从传参中读取动态数据。对应的节点格式形如 `func(arg)`。
+ * @property argumentSeparator （扩展） 为动态链接且有多个传参时，使用的传参分隔符（`comma`/`pipe`，默认为 `comma`）。
  * @property prefix 为动态链接时，携带的前缀。如果为 `null`，则将整个文本作为动态数据。
  * @property dataSources 数据源（数据表达式）。如果有多个传参，则可以有多个。如果为空，则将链接视为静态链接。
  * @property inputScopes 输入作用域（类型）的集合。

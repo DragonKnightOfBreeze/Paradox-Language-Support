@@ -23,9 +23,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedComm
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -38,11 +40,14 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markConfigDirectory("features/complexExpression/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     private fun parse(
         text: String,

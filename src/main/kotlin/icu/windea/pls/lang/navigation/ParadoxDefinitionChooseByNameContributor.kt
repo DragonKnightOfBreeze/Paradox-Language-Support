@@ -10,6 +10,7 @@ import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
@@ -37,10 +38,16 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
+        val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = GlobalSearchScopeUtil.toGlobalSearchScope(parameters.searchScope, project)
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         val selector = selector(project).definition().withSearchScope(scope).withGameType(gameType)
-        ParadoxDefinitionSearch.searchElement(name, null, selector).process(processor)
+        ParadoxDefinitionSearch.search(name, null, selector).process p@{
+            val element = it.element ?: return@p true
+            val definitionInfo = element.definitionInfo ?: return@p true
+            val navigationElement = ParadoxDefinitionNavigationElement(element, definitionInfo) // show correct name and icon in navigation view
+            processor.process(navigationElement)
+        }
     }
 }

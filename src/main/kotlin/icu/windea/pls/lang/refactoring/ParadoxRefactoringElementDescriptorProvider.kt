@@ -21,10 +21,10 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
                 val name = element.name?.orNull() ?: return null
                 PlsBundle.message("refactoring.scriptedVariable.desc", CommonRefactoringUtil.htmlEmphasize(name))
             }
-            element is ParadoxDefinitionElement && element.definitionInfo != null -> {
+            element is ParadoxDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return null
-                if (definitionInfo.name.isEmpty()) return null // skip for anonymous definitions
-                PlsBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
+                val name = definitionInfo.name.orNull() ?: return null // skip anonymous definitions
+                PlsBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(name))
             }
             element is ParadoxLocalisationProperty -> {
                 val name = element.name.orNull() ?: return null
@@ -34,9 +34,7 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
                 val text = element.name
                 PlsBundle.message("refactoring.file.desc", CommonRefactoringUtil.htmlEmphasize(text))
             }
-            else -> {
-                null
-            }
+            else -> null
         }
     }
 }

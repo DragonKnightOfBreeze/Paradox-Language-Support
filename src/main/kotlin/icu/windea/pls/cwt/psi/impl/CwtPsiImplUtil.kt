@@ -16,7 +16,6 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
-import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
@@ -35,7 +34,6 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
 
@@ -86,19 +84,6 @@ object CwtPsiImplUtil {
     fun getValue(element: CwtOption): String? {
         return element.optionValue?.value
     }
-
-    @JvmStatic
-    fun getSeparatorType(element: CwtOption): CwtSeparatorType {
-        // 这里不能遍历element.children
-        element.forEachChild { child ->
-            when (child.elementType) {
-                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
-            }
-        }
-        return CwtSeparatorType.EQUAL
-    }
-
     // endregion
 
     // region CwtOptionKey
@@ -145,18 +130,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getValue(element: CwtProperty): String? {
         return element.propertyValue?.value
-    }
-
-    @JvmStatic
-    fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
-        // 这里不能遍历element.children
-        element.forEachChild { child ->
-            when (child.elementType) {
-                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
-            }
-        }
-        return CwtSeparatorType.EQUAL
     }
 
     @JvmStatic
@@ -264,11 +237,6 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getName(element: CwtBlock): String {
         return element.value
-    }
-
-    @JvmStatic
-    fun setName(element: CwtBlock, name: String): CwtBlock {
-        throw IncorrectOperationException() // 不允许重命名
     }
 
     @JvmStatic

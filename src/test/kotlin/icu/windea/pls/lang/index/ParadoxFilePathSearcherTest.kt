@@ -27,14 +27,13 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
-        // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
-        initConfigGroups(project, gameType)
+        initConfigGroups(project, gameType) // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Exact Path
 

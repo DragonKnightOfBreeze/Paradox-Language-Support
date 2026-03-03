@@ -73,11 +73,6 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
-  public @NotNull CwtBlock setName(@NotNull String name) {
-    return CwtPsiImplUtil.setName(this, name);
-  }
-
-  @Override
   public @NotNull String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }

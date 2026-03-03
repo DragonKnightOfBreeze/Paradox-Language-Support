@@ -18,7 +18,7 @@ import kotlin.system.measureTimeMillis
  */
 class SimilarityMatchServiceBenchmarkTest {
     @Before
-    fun setup() {
+    fun doSetUp() {
         // benchmark 默认忽略，需要显示包含
         AssumePredicates.includeBenchmark()
         // 确保启用 Caffeine 的 recordStats()，以便获取命中率等统计

@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.propertyValue
 object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptProperty? {
         val definitionSelector = selector(project, contextElement).definition().contextSensitive()
-        val fromName = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
+        val fromName = ParadoxDefinitionSearch.searchProperty(nameOrAlias, ParadoxDefinitionTypes.gameConcept, definitionSelector).find()
         if (fromName != null) return fromName
         val all = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, definitionSelector).findAll()
         return all.find { nameOrAlias == getName(it) || nameOrAlias in getAlias(it) }

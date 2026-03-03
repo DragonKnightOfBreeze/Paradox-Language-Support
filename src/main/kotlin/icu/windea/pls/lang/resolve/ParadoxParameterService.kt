@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtConfig
@@ -14,6 +15,7 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.withRecursionGuard
@@ -23,7 +25,9 @@ import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -31,6 +35,10 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
+import java.util.*
 
 object ParadoxParameterService {
     /**
@@ -68,7 +76,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.resolveParameter
      */
-    fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
+    fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.resolveParameter(element)?.also { it.support = ep }
         }
@@ -77,7 +85,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.resolveConditionParameter
      */
-    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
+    fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.resolveConditionParameter(element)?.also { it.support = ep }
         }
@@ -86,7 +94,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.resolveArgument
      */
-    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
+    fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         return ParadoxParameterSupport.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.resolveArgument(element, rangeInElement, config)?.also { it.support = ep }
         }
@@ -95,7 +103,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.processContext
      */
-    fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+    fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         return ParadoxParameterSupport.EP_NAME.extensionList.any { ep ->
             ep.processContext(parameterElement, onlyMostRelevant, processor)
         }
@@ -113,7 +121,7 @@ object ParadoxParameterService {
     /**
      * @see ParadoxParameterSupport.buildDocumentationDefinition
      */
-    fun getDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean {
+    fun getDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean {
         return ParadoxParameterSupport.EP_NAME.extensionList.any { ep ->
             ep.buildDocumentationDefinition(parameterElement, builder)
         }
@@ -134,11 +142,58 @@ object ParadoxParameterService {
         }
     }
 
-    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
+    fun resolveContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
+        val file = element.containingFile
+        val project = file.project
+        val gameType = selectGameType(file) ?: return null
+        val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
+        val fileConditionExpressions = ArrayDeque<ParadoxParameterConditionExpression>()
+        element.accept(object : PsiRecursiveElementWalkingVisitor() {
+            override fun visitElement(element: PsiElement) {
+                if (element is ParadoxScriptParameterConditionExpression) return visitParameterConditionExpression(element)
+                if (element is ParadoxConditionParameter) return visitConditionParameter(element)
+                if (element is ParadoxParameter) return visitParameter(element)
+                super.visitElement(element)
+            }
+
+            private fun visitParameterConditionExpression(element: ParadoxScriptParameterConditionExpression) {
+                // value may be empty (invalid condition expression)
+                fileConditionExpressions.addLast(ParadoxParameterConditionExpression.resolve(element.text))
+                super.visitElement(element)
+            }
+
+            private fun visitConditionParameter(element: ParadoxConditionParameter) {
+                val name = element.name ?: return
+                val elementPointer = element.createPointer<PsiElement>(file)
+                val info = ParadoxParameterContextInfo.Parameter(elementPointer, name, null, null, project, gameType)
+                parameters.getOrPut(name) { mutableListOf() }.add(info)
+                // 不需要继续向下遍历
+            }
+
+            private fun visitParameter(element: ParadoxParameter) {
+                val name = element.name ?: return
+                val defaultValue = element.defaultValue
+                val conditionalExpressions = ArrayDeque(fileConditionExpressions) // not null
+                val elementPointer = element.createPointer<PsiElement>(file)
+                val info = ParadoxParameterContextInfo.Parameter(elementPointer, name, defaultValue, conditionalExpressions, project, gameType)
+                parameters.getOrPut(name) { mutableListOf() }.add(info)
+                // 不需要继续向下遍历
+            }
+
+            override fun elementFinished(element: PsiElement?) {
+                if (element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
+                    fileConditionExpressions.removeLast()
+                }
+            }
+        })
+        return ParadoxParameterContextInfo(parameters, project, gameType)
+    }
+
+    fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
         return doGetInferredContextConfigsFromConfig(parameterElement, fast)
     }
 
-    private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement, fast: Boolean): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterLightElement, fast: Boolean): List<CwtMemberConfig<*>> {
         val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
         val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup)
         if (configs.isNullOrEmpty()) return emptyList()
@@ -150,7 +205,7 @@ object ParadoxParameterService {
         return config.getContextConfigs(parameterElement)
     }
 
-    fun getInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
+    fun getInferredContextConfigsFromUsages(parameterElement: ParadoxParameterLightElement, fast: Boolean = true): List<CwtMemberConfig<*>> {
         return withRecursionGuard {
             withRecursionCheck(parameterElement) {
                 doGetInferredContextConfigsFromUsages(parameterElement, fast)
@@ -158,7 +213,7 @@ object ParadoxParameterService {
         } ?: emptyList()
     }
 
-    private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement, fast: Boolean): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterLightElement, fast: Boolean): List<CwtMemberConfig<*>> {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()

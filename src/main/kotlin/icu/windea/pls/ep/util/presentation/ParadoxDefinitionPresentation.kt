@@ -3,7 +3,7 @@ package icu.windea.pls.ep.util.presentation
 import javax.swing.JComponent
 
 /**
- * 定义的图形表示。
+ * 定义的图形展示。
  */
 interface ParadoxDefinitionPresentation {
     @Suppress("unused")

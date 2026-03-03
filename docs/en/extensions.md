@@ -17,11 +17,11 @@ Diagram settings are configured in a separate [settings page](#diagram-settings-
 > [!note]
 > The features mentioned in this section require installation and activation of the official [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin.
 
-PLS further integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
+The plugin further integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
 
 ### Link {#md-link}
 
-By specially formatted link text, PLS will try to resolve Markdown links into matching target references (definitions, localizations, etc.),
+By specially formatted link text, the plugin will try to resolve Markdown links into matching target references (definitions, localizations, etc.),
 providing language features such as code navigation and quick documentation in the editor, offering powerful support for mod documentation writing.
 
 This functionality also applies to HTML links and PSI element navigation (definitions, localizations, etc.) in quick documentation.
@@ -105,7 +105,7 @@ Notes:
 
 ### Inline Code {#md-inline-code}
 
-PLS will try to resolve Markdown inline code into matching target references (definitions, localizations, etc.),
+The plugin will try to resolve Markdown inline code into matching target references (definitions, localizations, etc.),
 providing additional language features such as code navigation and quick documentation in the editor.
 
 ![](../images/extensions/md_inline_code_1.png)
@@ -142,7 +142,7 @@ Note:
 ### Code Block {#md-code-block}
 
 By declaring specially formatted attributes after the language ID of Markdown code blocks, you can specify additional information for snippets of script, localization and csv files, such as game type and file path.
-PLS will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
+The plugin will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
 
 ![](../images/extensions/md_code_fence_1.png)
 
@@ -176,7 +176,7 @@ Notes:
 > [!warning]
 > This feature and the Diagrams plugin are only available in professional IDEs (e.g., IntelliJ IDEA Ultimate).
 
-PLS provides several diagrams for displaying information about specific types of definitions and their relationships.
+The plugin provides several diagrams for displaying information about specific types of definitions and their relationships.
 
 Currently, only event trees and technology trees are provided.
 
@@ -211,7 +211,7 @@ Event tree diagrams display key information about events and their invocation re
 
 1. Configure node elements to display. From left to right: type, properties, localized name (event title).
 2. Filter nodes by query scope. For example, only show nodes for events in open files.
-3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
+3. Open the diagram settings pages. From left to right: Diagrams plugin's, The plugin's.
 
 > [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
@@ -228,9 +228,9 @@ Technology tree diagrams display key information about technologies and their pr
 
 ![](../images/extensions/diagram_tech_tree_1.png)
 
-1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as tech card).
+1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as technology card).
 2. Filter nodes by query scope. For example, only show nodes for technologies in open files.
-3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
+3. Open the diagram settings pages. From left to right: Diagrams plugin's, The plugin's.
 
 > [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.

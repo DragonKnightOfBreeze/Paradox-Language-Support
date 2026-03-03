@@ -7,26 +7,26 @@ import com.intellij.psi.PsiReference
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
+import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
-
-// 如果在查找用法页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 
 /**
  * 在查找用法中，区分规则符号的读写使用。
  */
 class CwtConfigReadWriteAccessDetector : ReadWriteAccessDetector() {
+    // 如果在查找用法页面中能够获取具体的读/写图标，就不会再显示 `PsiElement` 对应的图标（`element.presentation.getIcon()`）
+
     override fun isReadWriteAccessible(element: PsiElement): Boolean {
-        return element is CwtConfigSymbolElement
+        return element is CwtConfigSymbolLightElement
     }
 
     override fun isDeclarationWriteAccess(element: PsiElement): Boolean {
-        return element is CwtConfigSymbolElement
+        return element is CwtConfigSymbolLightElement
     }
 
     override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
         if (reference !is CwtConfigSymbolPsiReference) return Access.ReadWrite
-        val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolElement>()
+        val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolLightElement>()
         if (resolved == null) return Access.ReadWrite
         return resolved.readWriteAccess
     }
@@ -38,7 +38,7 @@ class CwtConfigReadWriteAccessDetector : ReadWriteAccessDetector() {
         for (reference in expression.references) {
             ProgressManager.checkCanceled()
             if (reference !is CwtConfigSymbolPsiReference) continue
-            val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolElement>()
+            val resolved = reference.resolveFirst()?.castOrNull<CwtConfigSymbolLightElement>()
             if (resolved == null) continue
             results += resolved.readWriteAccess
         }

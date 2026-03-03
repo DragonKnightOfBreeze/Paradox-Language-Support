@@ -7,11 +7,11 @@
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
     <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
-    <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBaseAnnotator"/>
     <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.editorActions.smartEnter.ParadoxLocalisationSmartEnterProcessor"/>
+    <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.findUsages.ParadoxLocalisationFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.localisation.findUsages.ParadoxLocalisationElementDescriptionProvider"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.folding.ParadoxLocalisationFoldingBuilder"/>
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationImplementationTextSelectioner"/>
@@ -32,7 +32,7 @@
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>
 
-    <!--floating toolbar-->
+    <!-- floating toolbar -->
     <customizableActionGroupProvider implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
     <!--suppress PluginXmlValidity -->
     <textEditorCustomizer implementation="icu.windea.pls.localisation.ui.floating.ParadoxLocalisationTextEditorCustomizer"/>
@@ -40,13 +40,13 @@
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
                              implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationPropertyKeyManipulator"/>
 
+
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
-    <additionalTextAttributes scheme="Darcula Contrast" file="colorSchemes/ParadoxLocalisationDarculaContrast.xml"/>
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxLocalisationHighContrast.xml"/>
-    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxLocalisationIntelliJLight.xml"/>
-    <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxLocalisationDark.xml"/>
     <additionalTextAttributes scheme="Light" file="colorSchemes/ParadoxLocalisationLight.xml"/>
+    <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxLocalisationDark.xml"/>
+    <additionalTextAttributes scheme="Islands Dark" file="colorSchemes/ParadoxLocalisationIslandsDark.xml"/>
   </extensions>
 
   <actions>

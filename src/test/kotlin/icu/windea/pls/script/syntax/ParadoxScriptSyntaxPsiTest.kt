@@ -3,7 +3,9 @@ package icu.windea.pls.script.syntax
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.script.ParadoxScriptParserDefinition
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,19 +19,19 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     override fun includeRanges() = true
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_nested() = doTest(true)
-    @Test
-    fun attached_comments() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
     fun escapes() = doTest(true)
+    @Test
+    fun property_separators() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
     @Test
@@ -42,9 +44,10 @@ class ParadoxScriptSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", 
     fun parameter_conditions() = doTest(true)
     @Test
     fun inline_parameter_conditions() = doTest(true)
-
     @Test
-    fun property_separators() = doTest(true)
+    fun advanced_nested() = doTest(true)
+    @Test
+    fun attached_comments() = doTest(true)
     @Test
     fun inline_math_mismatch() = doTest(true)
     @Test

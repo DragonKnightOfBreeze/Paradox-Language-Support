@@ -4,7 +4,7 @@
 
 1. Open your mod's root directory in the IDE.
 2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
-3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
+3. Click the mod settings button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
 6. Then enjoy your mod development voyage.
@@ -46,6 +46,5 @@
 
 ## Known Limitations
 
-- Support for some complex language features in Stellaris is still being improved.
-- Support for unique language features in non-Stellaris games is not yet complete. Feedback and contributions are welcome.
-- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files. Pull Requests are welcome.
+- The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
+- The plugin's built-in config files still need to be continuously improved, and also need to be continuously maintained and updated as the game version is updated. Feedback and contributions are welcome.

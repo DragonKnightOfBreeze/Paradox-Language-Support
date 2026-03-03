@@ -14,14 +14,14 @@ import icu.windea.pls.cwt.psi.CwtMember
 /**
  * 动态值的扩展规则。
  *
- * 用于为对应的动态值提供额外的提示信息（如文档注释、内嵌提示）。
+ * 用于为对应的动态值提供额外的提示信息（文档注释和内嵌提示）。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
  *
  * 路径定位：`dynamic_values/{type}/{name}`，`{type}` 匹配动态值类型，`{name}` 匹配规则名称。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

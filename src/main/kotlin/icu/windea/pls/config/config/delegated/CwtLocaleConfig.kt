@@ -18,12 +18,12 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * 用于提供语言环境（locale）的相关信息（快速文档、ID、代码等）。
  *
- * PLS 基于这些规则，识别和推断上下文（如本地化文件）中的语言环境，或用户偏好的语言环境，
+ * 插件基于这些规则，识别和推断上下文（如本地化文件）中的语言环境，或用户偏好的语言环境，
  * 以提供更恰当的 UI 展示与提示信息。
  *
  * 路径定位：`locales/{id}`，`{name}` 匹配语言环境 ID。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

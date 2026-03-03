@@ -27,7 +27,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
@@ -35,7 +35,7 @@ class ParadoxDefinitionIndexTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Basic Property Definition
 

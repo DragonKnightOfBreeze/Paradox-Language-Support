@@ -1,8 +1,8 @@
 # AGENTS.md
 
-This repository contains **Paradox Language Support (PLS)**, a large IntelliJ Platform plugin (written in Kotlin) that provides deep IDE support for Paradox mod development.
+This repository contains **Paradox Language Support** (abbr: PLS), a large IntelliJ Platform plugin (written in Kotlin) that provides deep IDE support for Paradox mod development.
 
-PLS is **PSI/index/inspection-driven** (not LSP-based). Many language features are powered by a **config system** based on **CWT config files** (CWT is a DSL similar to Paradox script; the relationship is roughly like **JSON vs JSON Schema**).
+The plugin is **PSI/index/inspection-driven** (not LSP-based). Many language features are powered by a **config system** based on **CWT config files** (CWT is a DSL similar to Paradox script; the relationship is roughly like **JSON vs JSON Schema**).
 
 ## Project quick orientation
 
@@ -13,7 +13,7 @@ PLS is **PSI/index/inspection-driven** (not LSP-based). Many language features a
 - **Paradox CSV** (`PARADOX_CSV`)
 - **CWT** configs (`CWT`, `*.cwt`) used to drive semantics (completion, inspections, navigation, docs, etc.)
 
-In addition to language features, PLS also includes:
+In addition to language features, the plugin also includes:
 
 - **Image support** (DDS/TGA) with optional tool-based rendering/conversion.
 - **Tool integrations** (e.g. ImageMagick, Tiger lint, Translation plugin).
@@ -53,7 +53,7 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### CWT config repositories (important)
 
-PLS bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
+The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 - Prefer local repos in `cwt/<repoDir>`.
 - If missing (common in CI), Gradle can download ZIPs and unzip them into:
@@ -94,7 +94,7 @@ Gradle properties controlling this behavior:
 
 ### Config-driven integration tests (config groups + context injection)
 
-PLS is config-driven. Many features (e.g. directives like `inline_script`, definition injection modes, type inference) depend on **CWT config groups** and a simulated “game/mod context”.
+The plugin is config-driven. Many features (e.g. directives like `inline_script`, definition injection modes, type inference) depend on **CWT config groups** and a simulated “game/mod context”.
 
 Test helpers exist to make these tests deterministic:
 
@@ -261,7 +261,7 @@ For the config system and format of configs and config expressions, see:
 - `docs/en/config.md`
 - `docs/en/ref-config-format.md`
 - `cwt/cwtools-stellaris-config/config` (the real-game config directory)
-- `src/test/testData/fable` (the easter-egg config directory)
+- `src/test/testData/chronicle` (the easter-egg config directory)
 
 ## Agent instructions
 

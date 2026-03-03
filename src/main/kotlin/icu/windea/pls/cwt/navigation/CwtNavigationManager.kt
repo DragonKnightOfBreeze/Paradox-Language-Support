@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
@@ -32,10 +33,6 @@ object CwtNavigationManager {
         return null
     }
 
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
-    }
-
     fun getPresentableText(element: PsiElement): String? {
         return when (element) {
             // 名字
@@ -44,12 +41,22 @@ object CwtNavigationManager {
             is CwtProperty -> element.name
             // 截断后的名字
             is CwtValue -> element.name.formatted()
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }
 
-    @Suppress("unused")
+    fun getLongPresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        return element.containingFile?.name
+    }
+
+    @Suppress("unused")
+    fun getLocalLocationString(element: PsiElement): String? {
         return null
     }
 

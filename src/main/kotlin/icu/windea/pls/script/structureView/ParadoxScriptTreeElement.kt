@@ -11,11 +11,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import javax.swing.Icon
 
 abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
-    override fun getIcon(open: Boolean): Icon? {
-        val element = element ?: return null
-        return ParadoxScriptNavigationManager.getIcon(element)
-    }
-
     override fun getPresentableText(): String? {
         val element = element ?: return null
         return ParadoxScriptNavigationManager.getPresentableText(element)
@@ -23,7 +18,12 @@ abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeEle
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        return ParadoxScriptNavigationManager.getLocationString(element)
+        return ParadoxScriptNavigationManager.getLocalLocationString(element)
+    }
+
+    override fun getIcon(open: Boolean): Icon? {
+        val element = element ?: return null
+        return ParadoxScriptNavigationManager.getIcon(element)
     }
 
     protected fun PsiElement.toTreeElement(): ParadoxScriptTreeElement<out PsiElement>? {

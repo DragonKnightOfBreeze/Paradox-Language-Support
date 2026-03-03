@@ -23,7 +23,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = AssumePredicates.includeAi()
+    fun doSetUp() = AssumePredicates.includeAi()
 
     @Test
     fun testOpenAi() {

@@ -10,7 +10,9 @@ import icu.windea.pls.config.properties
 import icu.windea.pls.config.values
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +25,10 @@ class CwtConfigSelectDslTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun byPath_simple() {

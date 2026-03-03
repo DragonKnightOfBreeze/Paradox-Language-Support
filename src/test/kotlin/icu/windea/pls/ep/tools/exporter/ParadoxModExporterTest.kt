@@ -43,7 +43,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     private val remoteIds = listOf("1623423360", "819148835", "937289339") // UIOD, PD, RS
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         AssumePredicates.includeLocalEnv()
         addAdditionalAllowedRoots(
             PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),

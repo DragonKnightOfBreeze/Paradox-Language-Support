@@ -12,14 +12,13 @@ import com.intellij.ide.actions.searcheverywhere.footer.createPsiExtendedInfo
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.navigation.NavigationElement
 import icu.windea.pls.core.process
-import icu.windea.pls.lang.psi.mock.NavigationPsiElement
 import icu.windea.pls.lang.search.target.ParadoxTextBasedTargetSearch
 import icu.windea.pls.lang.settings.PlsSettings
 
@@ -27,8 +26,7 @@ import icu.windea.pls.lang.settings.PlsSettings
  * 提供基于本地化文本片段的随处搜索（Search Everywhere）。
  *
  * 设计要点：
- * - 直接复用 ParadoxTextBasedTargetSearch 提供的查询逻辑，避免重复实现。
- * - 仅从本地化文本（ParadoxLocalisationText 的纯文本）出发，不解析 $KEY$ 等引用。
+ * - 直接复用 [ParadoxTextBasedTargetSearch] 提供的查询逻辑，避免重复实现。
  * - 渐进式输出，支持取消，保证体验与性能。
  */
 class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : WeightedSearchEverywhereContributor<PsiElement>,
@@ -41,9 +39,9 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
     // com.intellij.find.impl.TextSearchContributor
     // com.intellij.ide.actions.searcheverywhere.CalculatorSEContributor
 
-    // 注意这里需要使用 NavigationPsiElement 绕过如下内部检查：
-    // com.intellij.diagnostic.PluginException: PSI element for DataKey("selectedItems") is provided on EDT by com.intellij.ide.actions.searcheverywhere.SearchEverywhereUI. Use `DataSink.lazy` to provide such data
-    // com.intellij.ide.impl.DataValidators.isDataValid
+    // 注意这里需要使用 NavigationElement 绕过以下内部检查
+    // 位置：com.intellij.ide.impl.DataValidators.isDataValid
+    // 错误消息：PSI element for DataKey("selectedItems") is provided on EDT by com.intellij.ide.actions.searcheverywhere.SearchEverywhereUI. Use `DataSink.lazy` to provide such data
 
     private val delegate = SymbolSearchEverywhereContributor(event)
 
@@ -65,11 +63,8 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
         if (queryText.isEmpty()) return
 
         val scope = GlobalSearchScope.projectScope(project)
-        val search = ParadoxTextBasedTargetSearch.search(queryText, project, scope)
-        search.process p@{ element ->
-            progressIndicator.checkCanceled()
-            if (element !is NavigatablePsiElement) return@p true
-            consumer.process(FoundItemDescriptor(NavigationPsiElement(element), 0))
+        ParadoxTextBasedTargetSearch.search(queryText, project, scope).process p@{ element ->
+            consumer.process(FoundItemDescriptor(NavigationElement(element, element), 0))
         }
     }
 

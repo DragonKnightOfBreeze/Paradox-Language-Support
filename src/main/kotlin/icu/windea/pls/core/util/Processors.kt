@@ -14,11 +14,13 @@ object Processors {
      * 可通过重载 [accept] 指定匹配条件；匹配成功后结果存入 [result] 并返回 `false` 停止迭代。
      */
     open class FindProcessor<T> : Processor<T> {
-        var result: T? = null
+        private var _result: T? = null
+
+        val result: T? get() = _result
 
         override fun process(e: T): Boolean {
             if (accept(e)) {
-                result = e
+                _result = e
                 return false
             }
             return true
@@ -35,16 +37,16 @@ object Processors {
      * 用于快速判断“是否存在重载/被重载项”（即至少存在两个匹配项）。
      */
     open class DuplicateProcessor<T> : Processor<T> {
-        var duplicated: Boolean = false
-            private set
+        private var _duplicated = false
+        private var _count = 0
 
-        private var count: Int = 0
+        val duplicated: Boolean get() = _duplicated
 
         override fun process(e: T): Boolean {
             if (accept(e)) {
-                count++
-                if (count >= 2) {
-                    duplicated = true
+                _count++
+                if (_count >= 2) {
+                    _duplicated = true
                     return false
                 }
             }

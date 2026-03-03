@@ -16,11 +16,11 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  */
 class AutomaticDefinitionRelatedLocalisationsRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
-        element as ParadoxDefinitionElement
-        val allRenames = mutableMapOf<PsiElement, String>()
+        val allRenames = mutableMapOf<PsiNamedElement, String>()
         prepareRenaming(element, newName, allRenames)
         for ((key, value) in allRenames) {
-            myElements.add(key as PsiNamedElement)
+            ProgressManager.checkCanceled()
+            myElements += key
             suggestAllNames(key.name, value)
         }
     }
@@ -35,14 +35,18 @@ class AutomaticDefinitionRelatedLocalisationsRenamer(element: PsiElement, newNam
 
     override fun entityName() = PlsBundle.message("rename.definition.relatedLocalisations.entityName")
 
-    private fun prepareRenaming(element: ParadoxDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
+    private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
+        if (element !is ParadoxDefinitionElement) return
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
-            resolveResult.elements.forEach { allRenames[it] = rename }
+            for (resolved in resolveResult.elements) {
+                allRenames[resolved] = rename
+            }
         }
     }
 }
+

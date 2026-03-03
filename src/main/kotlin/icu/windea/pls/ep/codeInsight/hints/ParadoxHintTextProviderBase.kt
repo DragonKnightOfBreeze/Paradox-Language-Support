@@ -7,8 +7,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -87,9 +87,9 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
             return doGetHintLocalisation(element, locale)
         }
 
-        abstract fun doGetHintText(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): String?
+        abstract fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String?
 
-        abstract  fun doGetHintLocalisation(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
+        abstract  fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
     }
 
     abstract class DynamicValue : ParadoxHintTextProviderBase() {
@@ -110,8 +110,8 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
             return doGetHintLocalisation(element, locale)
         }
 
-        abstract fun doGetHintText(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): String?
+        abstract fun doGetHintText(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): String?
 
-        abstract fun doGetHintLocalisation(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
+        abstract fun doGetHintLocalisation(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty?
     }
 }

@@ -28,6 +28,7 @@ class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         if (!isEnabled()) return
+        val name = PlsChooseByNameUtil.getAdjustedName(name, parameters) // adjust name if necessary
         val project = parameters.project
         val scope = parameters.searchScope
         val idFilter = parameters.idFilter

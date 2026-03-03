@@ -3,8 +3,8 @@
     <applicationConfigurable id="pls.config" parentId="pls" groupWeight="100" bundle="messages.PlsBundle" key="settings.config"
                              instance="icu.windea.pls.config.settings.PlsConfigSettingsConfigurable"/>
 
-    <!--commented out since it's light service-->
-    <!--<applicationService serviceImplementation="icu.windea.pls.config.configGroup.CwtConfigGroupService"/>-->
+    <!-- commented out since it's light service -->
+    <!-- <applicationService serviceImplementation="icu.windea.pls.config.configGroup.CwtConfigGroupService"/> -->
 
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
@@ -12,6 +12,13 @@
     <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
     <vfs.asyncListener implementation="icu.windea.pls.config.configGroup.CwtConfigFileListener"/>
   </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Note that HTML is not available in registry key descriptions -->
+    <registryKey key="pls.settings.config.keepOptionConfigs" defaultValue="false" description="See PlsConfigInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.config.checkComparisonOperators" defaultValue="false" description="See PlsConfigInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+  </extensions>
+
 
   <applicationListeners>
     <listener class="icu.windea.pls.config.listeners.CwtUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
@@ -24,7 +31,7 @@
               topic="icu.windea.pls.config.listeners.CwtConfigRepositoryUrlsListener"/>
   </applicationListeners>
 
-  <!--ExternalSystem.ProjectRefreshActionGroup-->
+  <!-- ExternalSystem.ProjectRefreshActionGroup -->
   <actions>
     <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
       <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>

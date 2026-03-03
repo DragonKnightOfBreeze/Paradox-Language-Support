@@ -14,7 +14,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.selector.selector
@@ -60,7 +60,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     if (!ParadoxResolveConstraint.Parameter.canResolve(reference)) continue
                     val resolved = reference.resolve()
-                    if (resolved !is ParadoxParameterElement) continue
+                    if (resolved !is ParadoxParameterLightElement) continue
                     if (resolved.contextName.isParameterized()) continue // skip if context name is parameterized
                     if (resolved.readWriteAccess != Access.Write) continue
                     val cachedStatus = statusMap[resolved]

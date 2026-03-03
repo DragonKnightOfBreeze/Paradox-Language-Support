@@ -3,7 +3,9 @@ package icu.windea.pls.csv.syntax
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.csv.ParadoxCsvParserDefinition
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,13 +19,13 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     override fun includeRanges() = true
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun example() = doTest(true)
-
-    @Test
-    fun advanced_quoted() = doTest(true)
     @Test
     fun empty() = doTest(true)
     @Test
@@ -36,7 +38,8 @@ class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", Parado
     fun header_only() = doTest(true)
     @Test
     fun only_comments() = doTest(true)
-
+    @Test
+    fun advanced_quoted() = doTest(true)
     @Test
     fun header_and_rows_crlf() = doTest(true)
     @Test

@@ -20,7 +20,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.splitByBlank
@@ -152,120 +151,103 @@ object CwtConfigService {
         return CwtConfigPath.resolve(subPaths)
     }
 
+    @Optimized
     fun resolveConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         if (isInternalFile(file)) return null // 排除内部规则文件
         val configPath = getConfigPath(element) ?: return null
         if (configPath.isEmpty()) return null
 
-        return when {
-            element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {
-                CwtConfigTypes.Type
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]/subtype[*]") -> {
-                CwtConfigTypes.Subtype
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]/modifiers/**") -> {
-                when {
-                    configPath.get(3).surroundsWith("subtype[", "]") -> {
-                        if (configPath.length == 5) return CwtConfigTypes.Modifier
+        val isProperty = element is CwtProperty
+        val length = configPath.length
+        val s0 = configPath.get(0)
+
+        // depth 1: single_alias[*], alias[*], directive[*]
+        if (length == 1 && isProperty) {
+            return when {
+                s0.surroundsWith("single_alias[", "]") -> CwtConfigTypes.SingleAlias
+                s0.surroundsWith("alias[", "]") -> {
+                    val aliasName = s0.substringIn('[', ']', "").substringBefore(':', "")
+                    when (aliasName) {
+                        "modifier" -> CwtConfigTypes.Modifier
+                        "trigger" -> CwtConfigTypes.Trigger
+                        "effect" -> CwtConfigTypes.Effect
+                        else -> CwtConfigTypes.Alias
                     }
+                }
+                s0.surroundsWith("directive[", "]") -> CwtConfigTypes.Directive
+                else -> null
+            }
+        }
+
+        // depth 2+: 基于首段精确分发
+        return when (s0) {
+            "types" -> {
+                if (!isProperty) return null
+                val s1 = configPath.get(1)
+                if (!s1.surroundsWith("type[", "]")) return null
+                when (length) {
+                    2 -> CwtConfigTypes.Type
                     else -> {
-                        if (configPath.length == 4) return CwtConfigTypes.Modifier
+                        val s2 = configPath.get(2)
+                        when {
+                            length == 3 && s2.surroundsWith("subtype[", "]") -> CwtConfigTypes.Subtype
+                            s2 == "modifiers" -> {
+                                val s3 = configPath.get(3)
+                                when {
+                                    s3.surroundsWith("subtype[", "]") -> if (length == 5) CwtConfigTypes.Modifier else null
+                                    else -> if (length == 4) CwtConfigTypes.Modifier else null
+                                }
+                            }
+                            else -> null
+                        }
                     }
                 }
-                null
             }
-            element is CwtProperty && configPath.path.matchesAntPattern("rows/row[*]") -> {
-                CwtConfigTypes.Row
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("enums/enum[*]") -> {
-                CwtConfigTypes.Enum
-            }
-            element is CwtValue && configPath.path.matchesAntPattern("enums/enum[*]/*") -> {
-                CwtConfigTypes.EnumValue
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("enums/complex_enum[*]") -> {
-                CwtConfigTypes.ComplexEnum
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("values/value[*]") -> {
-                CwtConfigTypes.DynamicValueType
-            }
-            element is CwtValue && configPath.path.matchesAntPattern("values/value[*]/*") -> {
-                CwtConfigTypes.DynamicValue
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("single_alias[*]") -> {
-                CwtConfigTypes.SingleAlias
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("alias[*]") -> {
-                val aliasName = configPath.get(0).substringIn('[', ']', "").substringBefore(':', "")
+            "rows" -> if (isProperty && length == 2 && configPath.get(1).surroundsWith("row[", "]")) CwtConfigTypes.Row else null
+            "enums" -> {
+                val s1 = configPath.get(1)
                 when {
-                    aliasName == "modifier" -> return CwtConfigTypes.Modifier
-                    aliasName == "trigger" -> return CwtConfigTypes.Trigger
-                    aliasName == "effect" -> return CwtConfigTypes.Effect
+                    s1.surroundsWith("enum[", "]") -> when {
+                        isProperty && length == 2 -> CwtConfigTypes.Enum
+                        !isProperty && length == 3 -> CwtConfigTypes.EnumValue
+                        else -> null
+                    }
+                    s1.surroundsWith("complex_enum[", "]") -> if (isProperty && length == 2) CwtConfigTypes.ComplexEnum else null
+                    else -> null
                 }
-                CwtConfigTypes.Alias
             }
-            element is CwtProperty && configPath.path.matchesAntPattern("directive[*]") -> {
-                CwtConfigTypes.Directive
+            "values" -> {
+                val s1 = configPath.get(1)
+                if (!s1.surroundsWith("value[", "]")) return null
+                when {
+                    isProperty && length == 2 -> CwtConfigTypes.DynamicValueType
+                    !isProperty && length == 3 -> CwtConfigTypes.DynamicValue
+                    else -> null
+                }
             }
-            element is CwtProperty && configPath.path.matchesAntPattern("links/*") -> {
-                CwtConfigTypes.Link
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("localisation_links/*") -> {
-                CwtConfigTypes.LocalisationLink
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("localisation_promotions/*") -> {
-                CwtConfigTypes.LocalisationPromotion
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("localisation_commands/*") -> {
-                CwtConfigTypes.LocalisationCommand
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("modifier_categories/*") -> {
-                CwtConfigTypes.ModifierCategory
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("modifiers/*") -> {
-                CwtConfigTypes.Modifier
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("scopes/*") -> {
-                CwtConfigTypes.Scope
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("scope_groups/*") -> {
-                CwtConfigTypes.ScopeGroup
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("database_object_types/*") -> {
-                CwtConfigTypes.DatabaseObjectType
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("system_scopes/*") -> {
-                CwtConfigTypes.SystemScope
-            }
-            element is CwtProperty && configPath.path.matchesAntPattern("locales/*") -> {
-                CwtConfigTypes.Locale
-            }
-            configPath.path.matchesAntPattern("scripted_variables/*") -> {
-                CwtConfigTypes.ExtendedScriptedVariable
-            }
-            configPath.path.matchesAntPattern("definitions/*") -> {
-                CwtConfigTypes.ExtendedDefinition
-            }
-            configPath.path.matchesAntPattern("game_rules/*") -> {
-                CwtConfigTypes.ExtendedGameRule
-            }
-            configPath.path.matchesAntPattern("on_actions/*") -> {
-                CwtConfigTypes.ExtendedOnAction
-            }
-            configPath.path.matchesAntPattern("inline_scripts/*") -> {
-                CwtConfigTypes.ExtendedInlineScript
-            }
-            configPath.path.matchesAntPattern("parameters/*") -> {
-                CwtConfigTypes.ExtendedParameter
-            }
-            configPath.path.matchesAntPattern("complex_enum_values/*/*") -> {
-                CwtConfigTypes.ExtendedComplexEnumValue
-            }
-            configPath.path.matchesAntPattern("dynamic_values/*/*") -> {
-                CwtConfigTypes.ExtendedDynamicValue
-            }
+            // isProperty + length == 2
+            "links" -> if (isProperty && length == 2) CwtConfigTypes.Link else null
+            "localisation_links" -> if (isProperty && length == 2) CwtConfigTypes.LocalisationLink else null
+            "localisation_promotions" -> if (isProperty && length == 2) CwtConfigTypes.LocalisationPromotion else null
+            "localisation_commands" -> if (isProperty && length == 2) CwtConfigTypes.LocalisationCommand else null
+            "modifier_categories" -> if (isProperty && length == 2) CwtConfigTypes.ModifierCategory else null
+            "modifiers" -> if (isProperty && length == 2) CwtConfigTypes.Modifier else null
+            "scopes" -> if (isProperty && length == 2) CwtConfigTypes.Scope else null
+            "scope_groups" -> if (isProperty && length == 2) CwtConfigTypes.ScopeGroup else null
+            "database_object_types" -> if (isProperty && length == 2) CwtConfigTypes.DatabaseObjectType else null
+            "system_scopes" -> if (isProperty && length == 2) CwtConfigTypes.SystemScope else null
+            "locales" -> if (isProperty && length == 2) CwtConfigTypes.Locale else null
+            // extended: length == 2, 不检查元素类型
+            "scripted_variables" -> if (length == 2) CwtConfigTypes.ExtendedScriptedVariable else null
+            "definitions" -> if (length == 2) CwtConfigTypes.ExtendedDefinition else null
+            "game_rules" -> if (length == 2) CwtConfigTypes.ExtendedGameRule else null
+            "on_actions" -> if (length == 2) CwtConfigTypes.ExtendedOnAction else null
+            "inline_scripts" -> if (length == 2) CwtConfigTypes.ExtendedInlineScript else null
+            "parameters" -> if (length == 2) CwtConfigTypes.ExtendedParameter else null
+            // extended: length == 3, 不检查元素类型
+            "complex_enum_values" -> if (length == 3) CwtConfigTypes.ExtendedComplexEnumValue else null
+            "dynamic_values" -> if (length == 3) CwtConfigTypes.ExtendedDynamicValue else null
             else -> null
         }
     }

@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.CwtMember
 /**
  * 游戏规则（game rule）的扩展规则。
  *
- * 用于为对应的游戏规则（game rule）提供额外的提示信息（如文档注释、内嵌提示），以及重载声明规则。
+ * 用于为对应的游戏规则（game rule）提供额外的提示信息（文档注释和内嵌提示），以及重载声明规则。
  *
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。

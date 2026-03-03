@@ -48,8 +48,8 @@ class StellarisNameFormatLocalisationNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isEmpty()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, this)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 
     class Reference(

@@ -9,15 +9,17 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "ParadoxRefactoringSettings", storages = [Storage("baseRefactoring.xml")], category = SettingsCategory.CODE)
 class ParadoxRefactoringSettings : PersistentStateComponent<ParadoxRefactoringSettings> {
-    @JvmField var renameRelatedLocalisationsForScriptedVariables = true
     @JvmField var renameScriptedVariables = true
+    @JvmField var renameRelatedLocalisationsForScriptedVariables = true
+    @JvmField var renameDefinitions = true
     @JvmField var renameRelatedLocalisationsForDefinitions = true
     @JvmField var renameRelatedImagesForDefinitions = true
     @JvmField var renameGeneratedModifierForDefinitions = true
     @JvmField var renameGeneratedModifierNameDescForDefinitions = true
     @JvmField var renameGeneratedModifierIconForDefinitions = true
-    @JvmField var renameDefinitions = true
     @JvmField var renameLocalisations = true
+    @JvmField var renameRelatedLocalisationsForComplexEnumValues = true
+    @JvmField var renameRelatedLocalisationsForDynamicValues = true
 
     @JvmField var inlineScriptedVariableThis = false
     @JvmField var inlineScriptedVariableKeep = false

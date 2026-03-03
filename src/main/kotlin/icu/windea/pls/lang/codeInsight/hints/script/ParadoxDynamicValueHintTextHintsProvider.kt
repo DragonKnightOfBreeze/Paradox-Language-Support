@@ -14,7 +14,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.isExpression
 
 /**
  * 通过内嵌提示显示动态值的提示文本。
- * 来自本地化名称（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ * 来自显示名称（即同名的本地化文本），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.DynamicValue
@@ -49,7 +49,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
         if (expression.isParameterized()) return
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
-        if (resolved !is ParadoxDynamicValueElement) return
+        if (resolved !is ParadoxDynamicValueLightElement) return
 
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)

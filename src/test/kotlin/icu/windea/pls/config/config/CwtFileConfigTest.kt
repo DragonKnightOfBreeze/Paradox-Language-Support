@@ -47,7 +47,6 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Int, p.valueConfig!!.valueType)
         }
     }
-
     @Test
     fun testResolve_file_boundaries() {
         myFixture.configureByFile("features/config/file_config_boundaries.test.cwt")

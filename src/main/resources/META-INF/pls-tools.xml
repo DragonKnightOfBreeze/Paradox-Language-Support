@@ -23,7 +23,7 @@
       <reference ref="Pls.OpenModSettings"/>
       <reference ref="Pls.SyncConfigGroupFromRemote"/>
 
-      <reference ref="Pls.LaunchGame.InSteam"/> <!--put the most commonly used launch strategy outside-->
+      <reference ref="Pls.LaunchGame.InSteam"/> <!-- put the most commonly used launch strategy outside -->
       <group id="Pls.Tools.LaunchGame" popup="true">
         <reference ref="Pls.LaunchGame"/>
       </group>

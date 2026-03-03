@@ -26,7 +26,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
@@ -34,7 +34,7 @@ class ParadoxComplexEnumValueIndexTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Basic
 

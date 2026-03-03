@@ -27,7 +27,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
         markRootDirectory("features/refactoring")
@@ -36,7 +36,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() {
+    fun doTearDown() {
         clearIntegrationTest()
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         FileDocumentManager.getInstance().saveAllDocuments()
@@ -54,7 +54,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/scripted_variables/neuro_vars_2.test.txt", otherPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"
@@ -82,7 +82,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/localisation/scripted_variables_l_simp_chinese.test.yml", localisationChinesePath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"
@@ -107,7 +107,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"
@@ -143,7 +143,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"
@@ -170,7 +170,7 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt", fanPath)
 
         // Ensure indexed
-        IndexingTestUtil.waitUntilIndexesAreReadyInAllOpenedProjects()
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
         val newName = "evil_neuro"

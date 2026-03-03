@@ -6,13 +6,13 @@
 
 本文档面向希望“理解/编写/扩展” CWT 规则（CWT config file）的作者与维护者，旨在：
 
-- **统一术语与边界**：对齐 PLS 与 CWTools 的语义，明确 PLS 的扩展点与差异。
+- **统一术语与边界**：对齐插件与 CWTools 的语义，明确插件的扩展点与差异。
 - **建立从文档到实现的映射**：每个规则条目均标注对应接口/解析器，便于回溯源码与验证行为。
 - **指导实践**：概述用途、格式与注意事项，为后续细化示例与校验规则打基础。
 
 ## 总览 {#overview}
 
-PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析为结构化的“规则对象”，供代码高亮/补全/导航/检查/文档等功能使用。
+插件通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析为结构化的“规则对象”，供代码高亮/补全/导航/检查/文档等功能使用。
 
 - **规则来源与覆盖**：见 `docs/zh/config.md` 的“规则分组/覆盖方式”。常见来源包括内置、远程、本地与项目本地，按“路径 + 规则ID”执行后序覆盖。
 - **两大要素**：
@@ -391,8 +391,8 @@ enums = {
 - `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
 - `path` 和 `path_extension` 会在解析时进行规范化处理。
 - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
-- `## case_insensitive`：（PLS 扩展）是否将复杂枚举值标记为忽略大小写。
-- `## per_definition`：（PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
+- `## case_insensitive`：（插件扩展）是否将复杂枚举值标记为忽略大小写。
+- `## per_definition`：（插件扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
 - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
 
 **解析流程（简要）**：
@@ -1055,12 +1055,15 @@ inline_scripts = {
 
 ```cwt
 inline_scripts = {
+    ### Some documentation
     ## replace_scopes = { this = country root = country }
     triggers/some_trigger_snippet
-
+    
+    ### Some documentation
     ## context_configs_type = multiple
     triggers/some_trigger_snippet = { ... }
-
+    
+    ### Some documentation
     ## context_configs_type = multiple
     triggers/some_trigger_snippet = single_alias_right[trigger_clause]
 }
@@ -1159,14 +1162,17 @@ parameters = {
 
 ```cwt
 parameters = {
+    ### Some documentation
     ## replace_scopes = { this = country root = country }
     ## context_key = some_trigger
     PARAM
-
+    
+    ### Some documentation
     ## context_configs_type = multiple
     ## context_key = some_trigger
     PARAM = { ... }
-
+    
+    ### Some documentation
     ## context_configs_type = multiple
     ## context_key = some_trigger
     PARAM = single_alias_right[trigger_clause]
@@ -1177,7 +1183,7 @@ parameters = {
 
 **注意事项**：
 - `context_key` 为必填；缺失将被跳过（不会生效）。
-- `inherit = yes` 时，上下文取自“使用处”，需注意其可为空或因位置不同而变化；PLS 会在该路径下开启“动态上下文”模式。
+- `inherit = yes` 时，上下文取自“使用处”，需注意其可为空或因位置不同而变化；插件会在该路径下开启“动态上下文”模式。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
 #### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}
@@ -1606,7 +1612,7 @@ a_value[anything]_b
 
 #### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
-PLS 对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过 ANT 路径模式进行更加灵活的匹配。
+插件对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过 ANT 路径模式进行更加灵活的匹配。
 
 ```cwt
 # a ant expression use prefix 'ant:'
@@ -1622,7 +1628,7 @@ ant.i:/foo/bar?/*
 
 #### 如何在规则文件中使用正则表达式 {#faq-regex}
 
-PLS 对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过正则表达式进行更加灵活的匹配。
+插件对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过正则表达式进行更加灵活的匹配。
 
 ```cwt
 # a regex use prefix 're:'

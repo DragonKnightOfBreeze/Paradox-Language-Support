@@ -12,7 +12,7 @@ import org.junit.Test
  * - fromEnv(...) 两个重载方法的语义
  */
 class OptionProviderPureTest {
-    private fun nonExistingEnvKey(): String = "NON_EXISTING_PLS_" + System.nanoTime()
+    private fun nonExistingEnvKey(): String = "NON_EXISTING_ENV_KEY_" + System.nanoTime()
 
     // fromEnv = false：优先返回非空 value
     @Test
@@ -73,6 +73,6 @@ class OptionProviderPureTest {
         val p2 = original.fromEnv(true, "PATH", null)
         val v2 = p2.get()
         assertNotNull(v2)
-        assertTrue(v2!!.isNotEmpty())
+        assertTrue(v2.isNotEmpty())
     }
 }

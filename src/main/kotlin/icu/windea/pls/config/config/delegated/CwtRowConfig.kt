@@ -24,7 +24,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  *
  * 路径定位：`rows/row[{name}]`，`{name}` 匹配规则名称（行名）。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

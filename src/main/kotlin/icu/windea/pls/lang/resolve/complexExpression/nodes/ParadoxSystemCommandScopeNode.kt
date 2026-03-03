@@ -31,9 +31,9 @@ class ParadoxSystemCommandScopeNode(
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         config.resolveElementWithConfig()
-        return Reference(element, rangeInElement, config)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), config)
     }
 
     class Reference(

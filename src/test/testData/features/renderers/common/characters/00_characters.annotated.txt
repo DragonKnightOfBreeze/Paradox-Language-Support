@@ -1,0 +1,54 @@
+## @type string = block
+## @definition_type character
+## @override_strategy LIOS
+windea = {
+    ## @type string = string
+    ## @config_expression name = localisation
+    name = name_windea
+    ## @type string = string
+    ## @config_expression title = localisation
+    title = title_windea
+    ## @type string = string
+    ## @config_expression desc = localisation
+    desc = desc_windea
+    ## @type string = string
+    ## @config_expression gender = enum[gender]
+    gender = female
+    ## @type string = string
+    ## @config_expression species = <species>
+    species = unknown
+    ## @type string = block
+    ## @config_expression tags = {...}
+    tags = {
+        ## @type string
+        ## @config_expression enum[character_tag]
+        creation
+    }
+    ## @type string = block
+    ## @config_expression on_awakened = {...}
+    ## @scope_context this = character root = character from = character fromfrom = scene
+    on_awakened = {
+        ## @type string = block
+        ## @config_expression scope_field = {...}
+        ## @scope_context this = character root = character prev = character
+        from = {
+            ## @type string = string
+            ## @config_expression save_global_event_target_as = value_set[global_event_target]
+            ## @scope_context this = character root = character prev = character
+            save_global_event_target_as = the_waker
+        }
+        ## @type string = boolean
+        ## @config_expression pass = bool
+        ## @scope_context this = character root = character from = character fromfrom = scene
+        pass = yes
+    }
+    ## @type string = block
+    ## @config_expression on_abandoned = {...}
+    ## @scope_context this = character root = character from = character fromfrom = scene
+    on_abandoned = {
+        ## @type string = boolean
+        ## @config_expression revival = bool
+        ## @scope_context this = character root = character from = character fromfrom = scene
+        revival = yes
+    }
+}

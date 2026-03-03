@@ -9,7 +9,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -69,7 +69,7 @@ class IncorrectScopeInspection : ScopeInspectionBase() {
                     if (expressionElement !is ParadoxScriptStringExpressionElement) return null
                     ProgressManager.checkCanceled()
                     val resolved = expressionElement.reference?.resolve() ?: return null
-                    if (resolved !is ParadoxModifierElement) return null
+                    if (resolved !is ParadoxModifierLightElement) return null
                     val modifierCategories = ParadoxModifierService.getModifierCategories(resolved)
                     return modifierCategories?.let { ParadoxScopeManager.getSupportedScopes(it) }
                 }

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
@@ -11,22 +10,16 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.resolve.ParadoxTriggerService
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.script.psi.ParadoxScriptFloat
-import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
  * （对于脚本文件）检查是否存在不正确的语法。
  *
- * - 报告不期望的比较操作符。
+ * 包括：
+ * - 不期望的比较运算符。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -38,40 +31,37 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                checkComparisonOperator(element)
+                checkComparisonOperator(holder, element)
             }
+        }
+    }
 
-            private fun checkComparisonOperator(element: PsiElement) {
-                // 不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
-                if (element !is ParadoxScriptProperty) return
-                val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
-                val propertyKey = element.propertyKey
-                if (canResolveToNumber(propertyKey)) return
-                val propertyValue = element.propertyValue ?: return
-                if (canResolveToNumber(propertyValue)) return
-                val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
-                holder.registerProblem(token, description, ProblemHighlightType.GENERIC_ERROR)
-            }
+    private fun checkComparisonOperator(holder: ProblemsHolder, element: PsiElement) {
+        if (element !is ParadoxScriptProperty) return
+        val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
 
-            @Suppress("unused")
-            private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
-                // number, scalar, parametric
-                return true
-            }
+        // 所在属性的键与值应可以表示一个数值
+        val numberRepresentable = ParadoxTriggerService.isNumberRepresentable(element)
+        if (numberRepresentable == false) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
+            holder.registerProblem(token, description)
+            return
+        }
 
-            private fun canResolveToNumber(element: ParadoxScriptValue): Boolean {
-                return when {
-                    element is ParadoxScriptInt -> true
-                    element is ParadoxScriptFloat -> true
-                    element is ParadoxScriptScriptedVariableReference -> {
-                        val resolved = element.resolved() ?: return true
-                        canResolveToNumber(resolved)
-                    }
-                    element is ParadoxScriptString -> true // scalar, parametric
-                    element is ParadoxScriptInlineMath -> true
-                    else -> false
-                }
-            }
+        // 所在属性对应的匹配的规则，应在触发器子句规则之内
+        val withinTriggerClause = ParadoxTriggerService.isWithinTriggerClause(element)
+        if (withinTriggerClause == false) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.2")
+            holder.registerProblem(token, description)
+            return
+        }
+
+        // 所在属性对应的匹配的规则，其使用的属性分隔符是 `==`（而非常规的 `=`）
+        val allowed = ParadoxTriggerService.isComparisonOperatorAllowed(element)
+        if (allowed == false) {
+            val description = PlsBundle.message("inspection.script.incorrectSyntax.desc.3")
+            holder.registerProblem(token, description)
+            return
         }
     }
 }

@@ -90,8 +90,8 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 val keys = settings.key?.to?.singletonList() ?: settings.keys ?: emptyList()
                 for ((index, s) in list.withIndex()) {
                     if (index % 2 == 0) {
-                        // '{ k = v }' will be folded by ParadoxScriptFoldingBuilder
-                        // It's necessary to fold divided 'a = {' and ' ' inside 'a = { k = v }', so fold 'a = {' here
+                        // `{ k = v }` will be folded by ParadoxScriptFoldingBuilder
+                        // It's necessary to fold divided `a = {` and ` ` inside `a = { k = v }`, so fold `a = {` here
                         if (index == 0 && propertyValue is ParadoxScriptBlock) {
                             val propertyValueRange = propertyValue.textRange
                             val textRange = TextRange.create(startOffset, propertyValueRange.startOffset)

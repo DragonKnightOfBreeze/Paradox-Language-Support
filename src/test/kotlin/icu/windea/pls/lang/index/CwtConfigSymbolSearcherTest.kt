@@ -28,7 +28,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
@@ -36,7 +36,7 @@ class CwtConfigSymbolSearcherTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     // region Declarations
 

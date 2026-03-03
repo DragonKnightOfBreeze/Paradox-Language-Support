@@ -7,11 +7,11 @@
     <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
-    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
-    <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
     <annotator language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBaseAnnotator"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
+    <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.findUsages.CwtFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.cwt.findUsages.CwtElementDescriptionProvider"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.highlighting.CwtBraceMatcher"/>

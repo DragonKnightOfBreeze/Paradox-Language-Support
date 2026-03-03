@@ -1,9 +1,8 @@
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
-import icu.windea.pls.core.collections.mapFast
+import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.matchesPath
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
 
@@ -68,7 +67,7 @@ fun ParadoxPath.matchesExtensions(extensions: Collection<String>): Boolean {
 
 private val stringInterner = Interner.newWeakInterner<String>()
 
-private fun String.internPath() = stringInterner.intern(this)
+private fun String.internString() = stringInterner.intern(this)
 private fun String.splitSubPaths() = splitFast('/')
 private fun List<String>.joinSubPaths() = joinToString("/")
 private fun String.getParent() = substringBeforeLast('/', "")
@@ -117,9 +116,9 @@ private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase
 }
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
-    override val path: String = input.path.internPath()
-    override val subPaths: List<String> = input.subPaths.mapFast { it.internPath() }.optimized()
-    override val parent: String = if (input.length == 1) "" else input.parent.internPath()
+    override val path: String = input.path.internString()
+    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internString() }
+    override val parent: String = if (input.length == 1) "" else input.parent.internString()
 }
 
 private object EmptyParadoxPath : ParadoxPathBase() {

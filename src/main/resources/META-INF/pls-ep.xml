@@ -64,6 +64,7 @@
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDefinitionQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedGameRuleQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedOnActionQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedInlineScriptQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedComplexEnumValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedParameterQuickDocTextProvider"/>

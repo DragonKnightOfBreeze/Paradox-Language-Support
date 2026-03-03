@@ -26,6 +26,10 @@ object CwtTokenSets {
     @JvmStatic
     val STRING_EXPRESSION_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
 
+    @Suppress("unused")
+    @JvmField
+    val PROPERTY_SEPARATOR_TOKENS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN)
+
     @JvmField
     val MEMBER_CONTEXT = TokenSet.create(PROPERTY, ROOT_BLOCK, BLOCK)
 

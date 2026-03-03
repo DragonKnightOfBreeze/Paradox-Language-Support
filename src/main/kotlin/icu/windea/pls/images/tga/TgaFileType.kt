@@ -9,9 +9,9 @@ import icu.windea.pls.PlsBundle
 object TgaFileType : UserBinaryFileType() {
     override fun getName() = "TGA"
 
-    override fun getDescription() = PlsBundle.message("filetype.tga.description")
-
     override fun getDisplayName() = PlsBundle.message("filetype.tga.display.name")
+
+    override fun getDescription() = PlsBundle.message("filetype.tga.description")
 
     override fun getIcon() = AllIcons.FileTypes.Image
 }

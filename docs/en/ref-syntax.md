@@ -105,7 +105,7 @@ Comments and documentation:
 - **Documentation Comment**: Starts with `###`; used to provide descriptive text for a member (shown in completion/documentation).
 
 > [!tip]
-> If a documentation comment begins with `####` (or more `#`), PLS will render the comment text directly as HTML.
+> If a documentation comment begins with `####` (or more `#`), the plugin will render the comment text directly as HTML.
 
 Grammar highlights and example:
 
@@ -252,7 +252,7 @@ Paradox Localisation language is a Domain-Specific Language used to provide inte
 Its file extension is `.yml`, but it is not actually valid YAML and must use **UTF-8 WITH BOM** encoding.
 
 > [!tip]
-> PLS can detect file encoding issues in localisation files and supports automatically fixing the encoding.
+> The plugin can detect file encoding issues in localisation files and supports automatically fixing the encoding.
 
 File Structure:
 

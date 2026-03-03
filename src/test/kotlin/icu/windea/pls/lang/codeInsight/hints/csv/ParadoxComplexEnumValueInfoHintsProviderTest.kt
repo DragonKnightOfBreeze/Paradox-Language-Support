@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.hints.csv
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.core.loadText
@@ -18,11 +19,11 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxComplexEnumValueInfoHintsProviderTest: DeclarativeInlayHintsProviderTestCase() {
+class ParadoxComplexEnumValueInfoHintsProviderTest : DeclarativeInlayHintsProviderTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/inlayHints")
         markConfigDirectory("features/inlayHints/.config")
@@ -30,7 +31,7 @@ class ParadoxComplexEnumValueInfoHintsProviderTest: DeclarativeInlayHintsProvide
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun preview() {
@@ -45,6 +46,7 @@ class ParadoxComplexEnumValueInfoHintsProviderTest: DeclarativeInlayHintsProvide
     }
 
     private fun doTest(text: String) {
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         doTestProvider("test.csv", text, ParadoxComplexEnumValueInfoHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

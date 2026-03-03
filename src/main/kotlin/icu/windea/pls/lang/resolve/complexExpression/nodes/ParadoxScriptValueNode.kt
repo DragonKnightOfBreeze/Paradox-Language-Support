@@ -51,8 +51,8 @@ class ParadoxScriptValueNode(
         if (element !is ParadoxScriptStringExpressionElement) return null // unexpected
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, config)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), config)
     }
 
     class Reference(

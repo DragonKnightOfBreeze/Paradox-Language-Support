@@ -24,6 +24,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -85,11 +86,11 @@ object ParadoxDefinitionService {
         val path = fileInfo.path
         val source = resolveSource(element) ?: return null
         val typeKey = getTypeKey(element) ?: return null
+        // 忽略 rootKeys 深度超出限制，或者带参数的情况
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
-        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return null
-        if (rootKeys.any { it.isParameterized() }) return null // 忽略带参数的情况
+        val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null
         val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val matchContext = CwtTypeConfigMatchContext(configGroup, path, typeKey, rootKeys, typeKeyPrefix)
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(matchContext, element) ?: return null
         val name = resolveName(element, typeKey, typeConfig)
@@ -106,7 +107,7 @@ object ParadoxDefinitionService {
         if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return null
         if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         if (!ParadoxDefinitionInjectionManager.isCreateMode(mode, configGroup)) return null
@@ -153,8 +154,11 @@ object ParadoxDefinitionService {
             val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
             if (matched) result += subtypeConfig
         }
-        processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
-        return result.distinctBy { it.name } // it's necessary to distinct by name here since inerit subtypes may be duplicate
+        // avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
+        if (!ParadoxMatchOptionsUtil.skipIndex(options)) {
+            processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
+        }
+        return result.distinctBy { it.name } // it's necessary to distinct by name here since inherit subtypes may be duplicate
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
@@ -165,13 +169,13 @@ object ParadoxDefinitionService {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypeConfigs = ParadoxDefinitionManager.getSubtypeConfigs(definitionInfo, options)
         val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, name, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, name, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
     fun resolveDeclaration(element: PsiElement, type: String, subtypes: List<String>? = null, configGroup: CwtConfigGroup): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
-        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, null, type, subtypes, configGroup)
+        val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, null, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

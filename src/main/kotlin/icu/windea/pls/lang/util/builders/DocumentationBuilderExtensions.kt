@@ -63,7 +63,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         // 相关链接
         // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
         val rootUri = rootInfo.rootFile.toNioPath().toUri().toString()
-        appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
+        appendLink(rootUri, PlsBundle.message("linkLabel.local"))
 
         val steamId = rootInfo.steamId
         if (steamId != null) {
@@ -72,14 +72,14 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
                 is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrlInSteam(steamId)
                 is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrlInSteam(steamId)
             }
-            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) // 自带外部链接图标
+            appendLink(workshopUrlInSteam, PlsBundle.message("linkLabel.steam")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
                 is ParadoxRootInfo.Game -> PlsUrlService.getInstance().getSteamGameStoreUrl(steamId)
                 is ParadoxRootInfo.Mod -> PlsUrlService.getInstance().getSteamWorkshopUrl(steamId)
             }
-            appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) // 自带外部链接图标
+            appendLink(workshopUrl, PlsBundle.message("linkLabel.steamWebsite")) // 自带外部链接图标
         }
     }
     append("</span>")

@@ -7,10 +7,11 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
@@ -19,6 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
@@ -80,33 +82,41 @@ object ParadoxPsiMatcher {
     @OptIn(ExperimentalContracts::class)
     fun isComplexEnumValueElement(element: PsiElement?): Boolean {
         contract {
-            returns(true) implies (element is ParadoxComplexEnumValueElement)
+            returns(true) implies (element is ParadoxComplexEnumValueLightElement)
         }
-        return element is ParadoxComplexEnumValueElement && element.name.orNull() != null
+        return element is ParadoxComplexEnumValueLightElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
     fun isDynamicValueElement(element: PsiElement?): Boolean {
         contract {
-            returns(true) implies (element is ParadoxDynamicValueElement)
+            returns(true) implies (element is ParadoxDynamicValueLightElement)
         }
-        return element is ParadoxDynamicValueElement && element.name.orNull() != null
+        return element is ParadoxDynamicValueLightElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
     fun isParameterElement(element: PsiElement?): Boolean {
         contract {
-            returns(true) implies (element is ParadoxParameterElement)
+            returns(true) implies (element is ParadoxParameterLightElement)
         }
-        return element is ParadoxParameterElement && element.name.orNull() != null
+        return element is ParadoxParameterLightElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
     fun isLocalisationParameterElement(element: PsiElement?): Boolean {
         contract {
-            returns(true) implies (element is ParadoxLocalisationParameterElement)
+            returns(true) implies (element is ParadoxLocalisationParameterLightElement)
         }
-        return element is ParadoxLocalisationParameterElement && element.name.orNull() != null
+        return element is ParadoxLocalisationParameterLightElement && element.name.orNull() != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isModifierElement(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxModifierLightElement)
+        }
+        return element is ParadoxModifierLightElement && element.name.orNull() != null
     }
 
     // endregion
@@ -134,7 +144,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
+    fun isInvocationReference(element: PsiElement?, referenceElement: PsiElement): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
@@ -146,7 +156,17 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInlineScriptUsage(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isInlineSCriptFile(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptFile)
+        }
+        if (element !is ParadoxScriptFile) return false
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(element) == null) return false
+        return true
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isInlineScriptUsage(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
@@ -158,7 +178,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isDefinitionInjection(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isDefinitionInjection(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }

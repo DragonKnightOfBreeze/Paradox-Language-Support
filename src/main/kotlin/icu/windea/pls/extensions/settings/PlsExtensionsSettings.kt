@@ -9,7 +9,7 @@ import com.intellij.openapi.components.service
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS 扩展设置。可以在插件的对应设置页面中进行配置。
+ * 扩展设置。可以在插件的对应设置页面中进行配置。
  */
 @Service
 @State(name = "PlsExtensionsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])

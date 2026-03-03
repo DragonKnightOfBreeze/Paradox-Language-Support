@@ -8,7 +8,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 /**
@@ -25,7 +25,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return
         val resolved = reference.resolve() ?: return
-        if (resolved !is ParadoxComplexEnumValueElement) return
+        if (resolved !is ParadoxComplexEnumValueLightElement) return
 
         val enumName = resolved.enumName
         val configGroup = PlsFacade.getConfigGroup(resolved.project, resolved.gameType)

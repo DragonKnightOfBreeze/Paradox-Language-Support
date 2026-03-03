@@ -19,8 +19,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 /**
  * （对于本地化文件）检查是否存在不正确的语法。
  *
- * - 报告悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。
- * - 报告悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。
+ * 包括：
+ * - 不正确的对左方括号（[LEFT_BRACKET]）的转义。
+ * - 悬挂的彩色文本（[COLORFUL_TEXT]）的结束标记（[COLORFUL_TEXT_END]，`§!`）。
+ * - 悬挂的文本格式（[TEXT_FORMAT]）的结束标记（[TEXT_FORMAT_END]，`#!`）。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -43,9 +45,9 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.1")
         val startOffset = element.startOffset
         for (index in indices) {
-            val rangeInELement = TextRange.from(index, 2)
+            val rangeInElement = TextRange.from(index, 2)
             val fix = ReplaceStringFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1.name"), "[[", startOffset + index, 2)
-            holder.registerProblem(element, rangeInELement, description, fix)
+            holder.registerProblem(element, rangeInElement, description, fix)
         }
     }
 

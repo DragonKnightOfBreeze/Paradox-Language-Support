@@ -62,23 +62,22 @@ class ParadoxCalleeHierarchyTreeStructure(
 
             override fun visitElement(element: PsiElement) {
                 // 兼容向下内联的情况（即使内联后为自身，或者出现递归）
-                if (element is ParadoxScriptMember) {
-                    val inlined = ParadoxInlineService.getInlinedElement(element)
-                    if (inlined != null) {
-                        searchElement(inlined, descriptor, descriptors)
-                        return
-                    }
+                run {
+                    if (element !is ParadoxScriptMember) return@run
+                    val inlined = ParadoxInlineService.getInlinedElement(element) ?: return@run
+                    searchElement(inlined, descriptor, descriptors)
+                    return
                 }
 
                 when {
                     element is ParadoxScriptedVariableReference -> {
-                        addDescriptor(element) // scripted_variable
+                        addDescriptor(element) // scripted variable
                     }
                     element is ParadoxScriptExpressionElement && element.isExpression() -> {
                         addDescriptor(element) // definition | localisation
                     }
                     element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {
-                        addDescriptor(element) // definition
+                        addDescriptor(element) // definition | localisation
                     }
                     element is ParadoxLocalisationParameter -> {
                         addDescriptor(element) // localisation
@@ -125,7 +124,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         when (resolved) {
             is ParadoxScriptScriptedVariable -> {
                 if (!settings.showScriptedVariablesInCallHierarchy) return // 不显示
-                val key = "v:${resolved.name}"
+                val key = "sv:${resolved.name}"
                 if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return

@@ -34,7 +34,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
@@ -49,6 +49,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
@@ -150,31 +151,44 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
             if (completionOffset != -1 && completionOffset in it.textRange) return@f
             val k = it.propertyKey
             val v = it.propertyValue
-            val argumentName = k.value
-            val argumentValue = v?.value
-            arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, argumentValue, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
+            val argument = ParadoxParameterContextReferenceInfo.Argument(k.value,
+                argumentValue = v?.value,
+                argumentNameElementPointer = k.createPointer(project),
+                argumentNameRange = k.textRange,
+                argumentValueElementPointer = v?.createPointer(project),
+                argumentValueRange = v?.textRange,
+                project = project,
+                gameType = gameType
+            )
+            arguments += argument
         }
         val info = ParadoxParameterContextReferenceInfo(
-            contextReferenceElement.createPointer(project),
-            contextName, contextIcon, contextKey,
-            contextNameElement.createPointer(project), contextNameElement.textRange, arguments, project, gameType
+            elementPointer = contextReferenceElement.createPointer(project),
+            contextName = contextName,
+            contextIcon = contextIcon,
+            contextKey = contextKey,
+            contextNameElementPointer = contextNameElement.createPointer(project),
+            contextNameRange = contextNameElement.textRange,
+            arguments = arguments,
+            project = project,
+            gameType = gameType,
         )
         info.definitionName = definitionName
         info.definitionTypes = definitionTypes
         return info
     }
 
-    override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
+    override fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
-    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
+    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
-    private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterElement? {
+    private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterLightElement? {
         val context = findContext(element) ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val definitionName = context.name
@@ -185,20 +199,20 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContext = context.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
         return result
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         if (element !is ParadoxScriptPropertyKey) return null
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, config)
     }
 
-    private fun doResolveArgument(element: ParadoxScriptPropertyKey, config: CwtPropertyConfig): ParadoxParameterElement? {
+    private fun doResolveArgument(element: ParadoxScriptPropertyKey, config: CwtPropertyConfig): ParadoxParameterLightElement? {
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
         val contextReferenceElement = selectScope { element.parentOfKey(fromBlock = true).asProperty() } ?: return null
@@ -212,7 +226,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType
         val project = config.configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
@@ -224,7 +238,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return configGroup.definitionParameterModificationTracker
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+    override fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val definitionName = parameterElement.definitionName ?: return false
         val definitionTypes = parameterElement.definitionTypes ?: return false
         if (definitionName.isParameterized()) return false // skip if context name is parameterized
@@ -246,7 +260,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         return true
     }
 
-    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val definitionName = parameterElement.definitionName ?: return false
         val definitionType = parameterElement.definitionTypes ?: return false
         if (definitionType.isEmpty()) return false
@@ -353,30 +367,43 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
-        val startOffset = element.startOffset
+        val offset = ParadoxExpressionManager.getExpressionOffset(expressionElement)
+        val startOffset = element.startOffset + offset
         val contextNameRange = scriptValueExpression.scriptValueNode.rangeInExpression.shiftRight(startOffset) // text range of script value name
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
         val pointer = expressionElement.createPointer(project)
-        val offset = expressionElement.startOffset
+        val expressionStartOffset = expressionElement.startOffset + offset
         scriptValueExpression.argumentNodes.forEach f@{ (nameNode, valueNode) ->
-            if (completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(offset)) return@f
-            val argumentName = nameNode.text
-            val argumentValue = valueNode?.text
-            val argumentNameRange = nameNode.rangeInExpression.shiftRight(startOffset)
-            val argumentValueRange = valueNode?.rangeInExpression?.shiftRight(startOffset)
-            arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, argumentValue, pointer, argumentNameRange, pointer, argumentValueRange)
+            if (completionOffset != -1 && completionOffset in nameNode.rangeInExpression.shiftRight(expressionStartOffset)) return@f
+            val argument = ParadoxParameterContextReferenceInfo.Argument(
+                argumentName = nameNode.text,
+                argumentValue = valueNode?.text,
+                argumentNameElementPointer = pointer,
+                argumentNameRange = nameNode.rangeInExpression.shiftRight(startOffset),
+                argumentValueElementPointer = pointer,
+                argumentValueRange = valueNode?.rangeInExpression?.shiftRight(startOffset),
+                project = project,
+                gameType = gameType,
+            )
+            arguments += argument
         }
         val info = ParadoxParameterContextReferenceInfo(
-            pointer,
-            contextName, contextIcon, contextKey,
-            pointer, contextNameRange, arguments, project, gameType
+            elementPointer = pointer,
+            contextName = contextName,
+            contextIcon = contextIcon,
+            contextKey = contextKey,
+            contextNameElementPointer = pointer,
+            contextNameRange = contextNameRange,
+            arguments = arguments,
+            project = project,
+            gameType = gameType,
         )
         info.definitionName = definitionName
         info.definitionTypes = definitionTypes
         return info
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         if (rangeInElement == null) return null
         if (config !is CwtMemberConfig<*>) return null
         if (config.configExpression.type !in CwtDataTypeSets.ValueField) return null
@@ -389,9 +416,10 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val definitionName = scriptValueNode.text
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
         val definitionTypes = listOf(ParadoxDefinitionTypes.scriptValue)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
         val argumentNode = scriptValueExpression.nodes.find f@{
             if (it !is ParadoxScriptValueArgumentNode) return@f false
-            if (it.rangeInExpression != rangeInElement) return@f false
+            if (it.rangeInExpression.shiftRight(offset) != rangeInElement) return@f false
             true
         } as? ParadoxScriptValueArgumentNode ?: return null
         val name = argumentNode.text.orNull() ?: return null
@@ -401,7 +429,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
         return result
@@ -412,7 +440,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         return configGroup.scriptValueModificationTracker
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
+    override fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
 
     override fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean) = false
 }
@@ -495,30 +523,44 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
             if (completionOffset != -1 && completionOffset in p.textRange) return@f
             val k = p.propertyKey
             val v = p.propertyValue
-            val argumentName = k.value.orNull()?.takeIf { it != "script" } ?: return@f
-            val argumentValue = v?.value
-            arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, argumentValue, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
+            val argument = ParadoxParameterContextReferenceInfo.Argument(
+                argumentName = k.value.orNull()?.takeIf { it != "script" } ?: return@f,
+                argumentValue = v?.value,
+                argumentNameElementPointer = k.createPointer(project),
+                argumentNameRange = k.textRange,
+                argumentValueElementPointer = v?.createPointer(project),
+                argumentValueRange = v?.textRange,
+                project = project,
+                gameType = gameType,
+            )
+            arguments += argument
         }
         val info = ParadoxParameterContextReferenceInfo(
-            contextReferenceElement.createPointer(project),
-            contextName, contextIcon, contextKey,
-            contextNameElement.createPointer(project), contextNameElement.textRange, arguments, project, gameType
+            elementPointer = contextReferenceElement.createPointer(project),
+            contextName = contextName,
+            contextIcon = contextIcon,
+            contextKey = contextKey,
+            contextNameElementPointer = contextNameElement.createPointer(project),
+            contextNameRange = contextNameElement.textRange,
+            arguments = arguments,
+            project = project,
+            gameType = gameType,
         )
         info.inlineScriptExpression = inlineScriptExpression
         return info
     }
 
-    override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
+    override fun resolveParameter(element: ParadoxParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
-    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
+    override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterLightElement? {
         val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
-    private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterElement? {
+    private fun doResolveParameter(element: PsiElement, name: String): ParadoxParameterLightElement? {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
@@ -527,19 +569,19 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContext = context.createPointer(project)
         result.inlineScriptExpression = expression
         return result
     }
 
-    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
+    override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterLightElement? {
         if (element !is ParadoxScriptPropertyKey) return null
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
         return doResolveArgument(element, config)
     }
 
-    private fun doResolveArgument(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxParameterElement? {
+    private fun doResolveArgument(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxParameterLightElement? {
         // NOTE 2.1.0 这里目前不验证游戏类型
         val contextConfig = selectConfigScope { config.asProperty()?.parentConfig.asProperty() } ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) }
@@ -554,7 +596,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = config.configGroup.gameType
         val project = config.configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
+        val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)
         result.inlineScriptExpression = inlineScriptExpression
         return result
@@ -564,7 +606,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return ParadoxModificationTrackers.InlineScripts
     }
 
-    override fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
+    override fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {
         val expression = parameterElement.inlineScriptExpression ?: return false
         if (expression.isParameterized()) return false // skip if context name is parameterized
         val project = parameterElement.project
@@ -580,7 +622,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         return true
     }
 
-    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
+    override fun buildDocumentationDefinition(parameterElement: ParadoxParameterLightElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val inlineScriptExpression = parameterElement.inlineScriptExpression ?: return false
         if (inlineScriptExpression.isEmpty()) return false
         val filePath = ParadoxInlineScriptManager.getInlineScriptFilePath(inlineScriptExpression) ?: return false

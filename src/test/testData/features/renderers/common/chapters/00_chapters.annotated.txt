@@ -1,0 +1,28 @@
+## @type string = block
+## @definition_type chapter
+## @override_strategy LIOS
+awakening = {
+    ## @type string = string
+    ## @config_expression name = localisation
+    name = chapter_awakening
+    ## @type string = int
+    ## @config_expression page = int
+    page = 1
+    ## @type string = string
+    ## @config_expression category = enum[chapter_category]
+    category = narrative
+}
+## @type string = block
+## @definition_type chapter
+## @override_strategy LIOS
+guidance = {
+    ## @type string = string
+    ## @config_expression name = localisation
+    name = chapter_guidance
+    ## @type string = int
+    ## @config_expression page = int
+    page = 2
+    ## @type string = string
+    ## @config_expression category = enum[chapter_category]
+    category = narrative
+}

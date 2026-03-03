@@ -1,12 +1,3 @@
-# a normal comment in between
-space_prop = 1
-
-## mode == strict
-## mode <> relax
-mode_prop = 0
-
-opt_block_prop = 0
-
 empty_block_prop = {}
 
 prop_float_no_leading_zero = .5

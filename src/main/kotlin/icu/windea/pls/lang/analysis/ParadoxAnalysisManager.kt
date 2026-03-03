@@ -23,8 +23,8 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
-import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
-import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
+import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -263,8 +263,8 @@ object ParadoxAnalysisManager {
             from is VirtualFile -> getFileInfo(from)?.rootInfo?.gameType
             from is PsiDirectory -> selectGameType(selectFile(from))
             from is PsiFile -> selectGameType(selectFile(from))
-            from is CwtConfigMockPsiElement -> from.gameType
-            from is ParadoxMockPsiElement -> from.gameType
+            from is CwtConfigLightElementBase -> from.gameType
+            from is ParadoxLightElementBase -> from.gameType
             from is ParadoxStub<*> -> from.gameType
             from is StubBasedPsiElementBase<*> -> {
                 val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }

@@ -63,8 +63,8 @@ class ParadoxDatabaseObjectDataNode(
         if (config == null) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, this)
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), this)
     }
 
     fun isForcedBase(): Boolean {

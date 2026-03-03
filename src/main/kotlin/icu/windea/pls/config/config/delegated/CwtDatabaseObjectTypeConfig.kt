@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  *
  * 路径定位：`database_object_types/{name}`，`{name}` 匹配规则名称。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：扩展。
  *
  * 示例：
  * ```cwt

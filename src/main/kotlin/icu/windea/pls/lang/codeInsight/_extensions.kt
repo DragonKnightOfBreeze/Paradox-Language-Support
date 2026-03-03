@@ -11,8 +11,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 val CwtExpressionElement.type: CwtType get() = CwtTypeManager.getType(this)
 val CwtExpressionElement.configType: CwtConfigType? get() = CwtTypeManager.getConfigType(this)
 
+val ParadoxExpressionElement.expression: String get() = ParadoxTypeManager.getExpression(this) ?: text
 val ParadoxExpressionElement.type: ParadoxType get() = ParadoxTypeManager.getType(this) ?: ParadoxType.Unknown
-val ParadoxExpressionElement.expression: String get() = ParadoxTypeManager.getExpression(this) ?: this.text
 val ParadoxExpressionElement.configExpression: String? get() = ParadoxTypeManager.getConfigExpression(this)
 
 val ParadoxScriptProperty.expression: String get() = "${propertyKey.expression} = ${propertyValue?.expression ?: FallbackStrings.unknown}"

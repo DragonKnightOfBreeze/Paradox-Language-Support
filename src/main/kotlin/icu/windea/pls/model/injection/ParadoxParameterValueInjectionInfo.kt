@@ -1,7 +1,7 @@
 package icu.windea.pls.model.injection
 
 import com.intellij.openapi.util.TextRange
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 
 /**
  * 参数值的语言注入信息。
@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 class ParadoxParameterValueInjectionInfo(
     val rangeInsideHost: TextRange,
     val parameterValueQuoted: Boolean,
-    parameterElementProvider: Lazy<ParadoxParameterElement?>
+    parameterElementProvider: Lazy<ParadoxParameterLightElement?>
 ) {
     // 这里必须使用懒加载，否则调用 `element.references` 时会导致 SOF
     val parameterElement by parameterElementProvider

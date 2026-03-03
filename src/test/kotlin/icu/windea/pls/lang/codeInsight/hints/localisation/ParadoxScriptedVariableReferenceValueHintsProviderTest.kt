@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.core.loadText
@@ -19,10 +20,10 @@ class ParadoxScriptedVariableReferenceValueHintsProviderTest : DeclarativeInlayH
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = markIntegrationTest()
+    fun doSetUp() = markIntegrationTest()
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun preview() {
@@ -59,6 +60,7 @@ l_default:
     }
 
     private fun doTest(text: String) {
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
         doTestProvider("test.yml", text, ParadoxScriptedVariableReferenceValueHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

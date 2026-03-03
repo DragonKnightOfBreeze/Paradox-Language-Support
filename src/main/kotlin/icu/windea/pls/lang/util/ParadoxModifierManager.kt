@@ -31,7 +31,7 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -73,7 +73,7 @@ object ParadoxModifierManager {
         return ParadoxModifierService.matchesModifier(name, element, configGroup)
     }
 
-    fun resolveModifier(element: ParadoxScriptStringExpressionElement): ParadoxModifierElement? {
+    fun resolveModifier(element: ParadoxScriptStringExpressionElement): ParadoxModifierLightElement? {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
         val project = element.project
@@ -81,7 +81,7 @@ object ParadoxModifierManager {
         return resolveModifier(name, element, configGroup)
     }
 
-    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
+    fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierLightElement? {
         val modifierInfo = getModifierInfo(name, element, configGroup, useSupport)
         return modifierInfo?.toPsiElement(element)
     }
@@ -209,7 +209,7 @@ object ParadoxModifierManager {
     }
 
     @Suppress("unused")
-    fun getModifierInfo(modifierElement: ParadoxModifierElement): ParadoxModifierInfo? {
+    fun getModifierInfo(modifierElement: ParadoxModifierLightElement): ParadoxModifierInfo? {
         val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null
         val project = modifierElement.project

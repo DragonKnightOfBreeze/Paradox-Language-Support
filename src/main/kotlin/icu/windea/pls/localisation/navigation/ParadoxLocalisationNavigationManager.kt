@@ -1,10 +1,12 @@
 package icu.windea.pls.localisation.navigation
 
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -14,7 +16,7 @@ import javax.swing.Icon
 
 object ParadoxLocalisationNavigationManager {
     fun accept(element: PsiElement?, forFile: Boolean = true): Boolean {
-        return when(element) {
+        return when (element) {
             null -> false
             is ParadoxLocalisationFile -> forFile
             is ParadoxLocalisationLocale -> true
@@ -29,19 +31,15 @@ object ParadoxLocalisationNavigationManager {
     }
 
     fun getPatchedIcon(element: PsiElement): Icon? {
-        when(element) {
+        when (element) {
             is ParadoxLocalisationProperty -> {
                 run {
-                    if(element.type == null) return@run
+                    if (element.type == null) return@run
                     return PlsIcons.Nodes.Localisation
                 }
             }
         }
         return null
-    }
-
-    fun getLongPresentableText(element: PsiElement): String? {
-        return getPresentableText(element)
     }
 
     fun getPresentableText(element: PsiElement): String? {
@@ -50,15 +48,26 @@ object ParadoxLocalisationNavigationManager {
             is ParadoxLocalisationFile -> element.name
             // 名字
             is ParadoxLocalisationLocale -> element.name
-            // 语言环境的名字，或者匿名
+            // 语言环境的名字（可能匿名）
             is ParadoxLocalisationPropertyList -> element.locale?.name.or.anonymous()
             // 名字
             is ParadoxLocalisationProperty -> element.name
+            // 回退
+            is NavigatablePsiElement -> element.name
             else -> null
         }
     }
 
+    fun getLongPresentableText(element: PsiElement): String? {
+        return getPresentableText(element)
+    }
+
     fun getLocationString(element: PsiElement): String? {
+        ParadoxPsiManager.getFileInfoText(element)?.let { return it }
+        return element.containingFile?.name
+    }
+
+    fun getLocalLocationString(element: PsiElement): String? {
         return when (element) {
             // 语言区域的展示文本
             is ParadoxLocalisationPropertyList -> selectLocale(element)?.text

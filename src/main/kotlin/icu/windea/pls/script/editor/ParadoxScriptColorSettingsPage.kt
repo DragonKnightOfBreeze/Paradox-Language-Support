@@ -103,7 +103,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName() = PlsBundle.message("language.name.script")
+    override fun getDisplayName() = PlsBundle.message("script.settings.name")
 
     override fun getDemoText() = PlsPreviewTexts.scriptColorSettings
 }

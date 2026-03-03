@@ -5,8 +5,8 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
@@ -50,12 +50,12 @@ class ParadoxInferredScriptedVariableHintTextProvider : ParadoxHintTextProviderB
 class ParadoxInferredComplexEnumValueHintTextProvider : ParadoxHintTextProviderBase.ComplexEnumValue() {
     override val source: Source get() = Source.NameLocalisation
 
-    override fun doGetHintText(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String? {
         // raw localisation text
         return doGetHintLocalisation(element, locale)?.value?.orNull()
     }
 
-    override fun doGetHintLocalisation(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val name = element.name
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
         return ParadoxComplexEnumValueManager.getNameLocalisation(name, element, localeToUse)
@@ -65,12 +65,12 @@ class ParadoxInferredComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
 class ParadoxInferredDynamicValueHintTextProvider : ParadoxHintTextProviderBase.DynamicValue() {
     override val source: Source get() = Source.NameLocalisation
 
-    override fun doGetHintText(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): String? {
         // raw localisation text
         return doGetHintLocalisation(element, locale)?.value?.orNull()
     }
 
-    override fun doGetHintLocalisation(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val name = element.name
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
         return ParadoxDynamicValueManager.getNameLocalisation(name, element, localeToUse)
@@ -152,7 +152,7 @@ class ParadoxExtendedOnActionHintTextProvider : ParadoxHintTextProviderBase.Defi
 class ParadoxExtendedComplexEnumValueHintTextProvider : ParadoxHintTextProviderBase.ComplexEnumValue() {
     override val source get() = Source.Extended
 
-    override fun doGetHintText(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
@@ -161,7 +161,7 @@ class ParadoxExtendedComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
         return hint
     }
 
-    override fun doGetHintLocalisation(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val hint = doGetHintText(element, locale)?.orNull() ?: return null
         return createHintLocalisation(hint, element)
     }
@@ -170,7 +170,7 @@ class ParadoxExtendedComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
 class ParadoxExtendedDynamicValueHintTextProvider : ParadoxHintTextProviderBase.DynamicValue() {
     override val source get() = Source.Extended
 
-    override fun doGetHintText(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): String? {
+    override fun doGetHintText(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.dynamicValueTypes) {
@@ -182,7 +182,7 @@ class ParadoxExtendedDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
         return null
     }
 
-    override fun doGetHintLocalisation(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+    override fun doGetHintLocalisation(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val hint = doGetHintText(element, locale)?.orNull() ?: return null
         return createHintLocalisation(hint, element)
     }

@@ -30,7 +30,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/resolve")
         markConfigDirectory("features/resolve/.config")
@@ -38,7 +38,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String): ParadoxScriptFile {
         markFileInfo(gameType, relPath)

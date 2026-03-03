@@ -4,11 +4,13 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
+import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
@@ -37,6 +39,18 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
         abstract fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String?
     }
 
+    abstract class InlineScript : ParadoxQuickDocTextProviderBase() {
+        override fun getQuickDocText(element: PsiElement): String? {
+            if (!ParadoxPsiMatcher.isInlineSCriptFile(element)) return null
+            val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element) ?: return null
+            if (expression.isEmpty()) return null
+            if (expression.isParameterized()) return null
+            return doGetQuickDocText(element, expression)
+        }
+
+        abstract fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String?
+    }
+
     abstract class ComplexEnumValue : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
             if (!ParadoxPsiMatcher.isComplexEnumValueElement(element)) return null
@@ -46,7 +60,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxComplexEnumValueElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxComplexEnumValueLightElement): String?
     }
 
     abstract class DynamicValue : ParadoxQuickDocTextProviderBase() {
@@ -58,7 +72,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxDynamicValueElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxDynamicValueLightElement): String?
     }
 
     abstract class Parameter : ParadoxQuickDocTextProviderBase() {
@@ -70,6 +84,6 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             return doGetQuickDocText(element)
         }
 
-        abstract fun doGetQuickDocText(element: ParadoxParameterElement): String?
+        abstract fun doGetQuickDocText(element: ParadoxParameterLightElement): String?
     }
 }

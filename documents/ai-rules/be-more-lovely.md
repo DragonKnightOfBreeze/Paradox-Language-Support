@@ -60,4 +60,4 @@ globs:
 - `docs/zh/config.md`
 - `docs/zh/ref-config-format.md`
 - `cwt/cwtools-stellaris-config/config`
-- `src/test/testData/fable`
+- `src/test/testData/chronicle`

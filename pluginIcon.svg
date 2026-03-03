@@ -1,0 +1,24 @@
+<!-- Paradox Chronicle -->
+<!-- Ascend to the tower’s peak and open the book of chronicle, for within it are recorded all our discoveries and foresights. -->
+
+<!-- An ancient book with a gear pattern engraved on the cover -->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <!-- Book body -->
+  <rect x="7" y="4" width="26" height="32" rx="1.5" fill="#E8D5B0" stroke="#8B7355" stroke-width="1.2"/>
+  <!-- Book spine -->
+  <rect x="7.6" y="4.6" width="4.4" height="30.8" rx="0.9" fill="#C4A76C"/>
+  <line x1="12" y1="5" x2="12" y2="35" stroke="#8B7355" stroke-width="0.5"/>
+  <!-- Page edge -->
+  <line x1="13" y1="6" x2="13" y2="34" stroke="#D4C0A0" stroke-width="0.4"/>
+  <!-- Cover bands -->
+  <line x1="14" y1="7.5" x2="31.5" y2="7.5" stroke="#C4A76C" stroke-width="0.5"/>
+  <line x1="14" y1="32.5" x2="31.5" y2="32.5" stroke="#C4A76C" stroke-width="0.5"/>
+  <!-- Large gear: 8-tooth polygon, brass fill, blue stroke -->
+  <polygon points="20.4,13.8 20.5,12.1 22.5,12.1 22.6,13.8 24.0,14.4 25.3,13.2 26.8,14.7 25.6,16.0 26.2,17.4 27.9,17.5 27.9,19.5 26.2,19.6 25.6,21.0 26.8,22.3 25.3,23.8 24.0,22.6 22.6,23.2 22.5,24.9 20.5,24.9 20.4,23.2 19.0,22.6 17.7,23.8 16.2,22.3 17.4,21.0 16.8,19.6 15.1,19.5 15.1,17.5 16.8,17.4 17.4,16.0 16.2,14.7 17.7,13.2 19.0,14.4" fill="#C4983C" stroke="#3D7ABF" stroke-width="0.8" stroke-linejoin="round"/>
+  <circle cx="21.5" cy="18.5" r="2.2" fill="#E8D5B0" stroke="#96791E" stroke-width="0.5"/>
+  <circle cx="21.5" cy="18.5" r="0.7" fill="#96791E"/>
+  <!-- Small gear: 6-tooth polygon, blue fill, blue stroke -->
+  <polygon points="29.9,25.1 30.7,25.4 30.4,26.4 29.6,26.2 28.6,27.1 28.7,28.0 27.7,28.2 27.5,27.4 26.2,27.0 25.5,27.5 24.8,26.8 25.4,26.2 25.1,24.9 24.3,24.6 24.6,23.6 25.4,23.8 26.4,22.9 26.3,22.0 27.3,21.8 27.5,22.6 28.8,23.0 29.5,22.5 30.2,23.2 29.6,23.8" fill="#5A9BD5" stroke="#3D7ABF" stroke-width="0.6" stroke-linejoin="round"/>
+  <circle cx="27.5" cy="25" r="1.1" fill="#E8D5B0" stroke="#3D7ABF" stroke-width="0.4"/>
+  <circle cx="27.5" cy="25" r="0.4" fill="#3D7ABF"/>
+</svg>

@@ -29,7 +29,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("features/index")
         markConfigDirectory("features/index/.config")
@@ -37,7 +37,7 @@ class ParadoxDefinitionInjectionSearcherTest : BasePlatformTestCase() {
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     private fun configureScriptFile(relPath: String, @TestDataFile testDataPath: String) {
         markFileInfo(gameType, relPath)

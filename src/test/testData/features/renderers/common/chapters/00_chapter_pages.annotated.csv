@@ -1,0 +1,7 @@
+name;page;category;
+## @type string;int;string
+## @config_expression <chapter>;int;enum[chapter_category]
+awakening;1;narrative;
+## @type string;int;string
+## @config_expression <chapter>;int;enum[chapter_category]
+guidance;2;narrative;

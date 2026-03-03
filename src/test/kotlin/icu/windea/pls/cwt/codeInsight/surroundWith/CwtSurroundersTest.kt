@@ -26,13 +26,13 @@ class CwtSurroundersTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
+    fun doSetUp() {
         addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
     }
 
     @After
-    fun clear() = clearIntegrationTest()
+    fun doTearDown() = clearIntegrationTest()
 
     @Test
     fun testPropertySurrounder_singleElement() {

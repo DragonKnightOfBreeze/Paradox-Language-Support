@@ -7,7 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
@@ -43,9 +45,12 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import java.io.DataInput
 import java.io.DataOutput
 
+/**
+ * 定义信息的索引。
+ */
+@Optimized
 class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxDefinitionIndexInfo>, ParadoxDefinitionIndexInfo>() {
     private val compressComparator = compareBy<ParadoxDefinitionIndexInfo>({ it.type }, { it.name })
-    private val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
 
     override fun getName() = PlsIndexKeys.Definition
 
@@ -89,6 +94,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             else -> null
         }
 
+        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -106,11 +113,11 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             }
 
             private fun processDefinition(element: ParadoxDefinitionElement): Boolean {
+                // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
                 val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return true
-
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth) ?: return false
-                if (rootKeys.any { it.isParameterized() }) return false // 排除顶级键可能带参数的情况
+                // 忽略 rootKeys 深度超出限制，或者带参数的情况
+                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return false
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, rootKeys = rootKeys, typeKeyPrefix = typeKeyPrefix)
                 val typeConfig = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) } ?: return false
@@ -184,7 +191,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
-        value.forEach { info ->
+        value.forEachFast { info ->
             storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
