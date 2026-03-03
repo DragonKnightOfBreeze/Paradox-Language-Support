@@ -765,7 +765,7 @@ object ParadoxCompletionManager {
         ParadoxModifierManager.completeModifier(context, result)
     }
 
-    fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeArgument(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         // 提示参数名（仅限key）
         val contextElement = context.contextElement!!

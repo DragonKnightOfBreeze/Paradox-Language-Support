@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -28,7 +27,6 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.unquote
@@ -53,8 +51,6 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
-import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxParameterContextInfo
@@ -65,9 +61,7 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -89,161 +83,15 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 得到 [element] 的文本，然后使用指定的一组 [args] 替换其中的占位符。
-     *
-     * 如果 [direct] 为 `true`，则直接将占位符 `$P$` 替换成传入参数 `P` 的值。此时：
-     * - 值可以是多行字符串。
-     * - 如果值是用双引号括起，替换时会被忽略。
-     * - 允许重复的传入参数，按顺序进行替换。
-     *
-     * @param element 用于得到原始文本的 PSI。
-     * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
-     */
-    fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {
-        if (direct) {
-            val oldText = element.text
-            var newText = oldText
-            args.forEach { (k, v) ->
-                newText = newText.replace("$$k$", v.unquote())
-            }
-            return newText
-        } else {
-            val offset = element.startOffset
-            val argMap = args.toMap()
-            val replacements = mutableListOf<Tuple2<TextRange, String>>()
-
-            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-                override fun elementFinished(element: PsiElement) {
-                    run {
-                        if (element !is ParadoxScriptParameterCondition) return@run
-                        val conditionExpression = element.parameterConditionExpression ?: return@run
-                        val parameter = conditionExpression.parameterConditionParameter
-                        val name = parameter.name
-                        val v = argMap[name] ?: return@run
-                        val revert = v.equals("no", true)
-                        val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
-                        if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = ParadoxPsiManager.findMemberElementsToInline(element)
-                            if (start != null && end != null) {
-                                element.parent.addRangeAfter(start, end, element)
-                            }
-                        }
-                        element.delete()
-                    }
-                }
-            })
-
-            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-                override fun visitElement(element: PsiElement) {
-                    run {
-                        if (element !is ParadoxParameter) return@run
-                        val n = element.name ?: return@run
-                        val v0 = argMap[n] ?: return@run
-                        val v = v0
-                        replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
-                        return
-                    }
-                    super.visitElement(element)
-                }
-            })
-
-            var newText = element.text
-            replacements.reversed().forEach { (range, v) ->
-                newText = newText.replaceRange(range.startOffset, range.endOffset, v)
-            }
-            return newText
-        }
-    }
-
-    /**
      * 得到 [element] 对应的参数上下文信息。
      *
      * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
-            val value = doGetContextInfo(element)
+            val value = ParadoxParameterService.resolveContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
-    }
-
-    private fun doGetContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
-        val file = element.containingFile
-        val gameType = selectGameType(file) ?: return null
-        val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
-        val fileConditionExpressions = ArrayDeque<ParadoxParameterConditionExpression>()
-        element.accept(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptParameterConditionExpression) return visitParameterConditionExpression(element)
-                if (element is ParadoxConditionParameter) return visitConditionParameter(element)
-                if (element is ParadoxParameter) return visitParameter(element)
-                super.visitElement(element)
-            }
-
-            private fun visitParameterConditionExpression(element: ParadoxScriptParameterConditionExpression) {
-                // value may be empty (invalid condition expression)
-                fileConditionExpressions.addLast(ParadoxParameterConditionExpression.resolve(element.text))
-                super.visitElement(element)
-            }
-
-            private fun visitConditionParameter(element: ParadoxConditionParameter) {
-                val name = element.name ?: return
-                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, null, null)
-                parameters.getOrPut(name) { mutableListOf() }.add(info)
-                // 不需要继续向下遍历
-            }
-
-            private fun visitParameter(element: ParadoxParameter) {
-                val name = element.name ?: return
-                val defaultValue = element.defaultValue
-                val conditionalExpressions = ArrayDeque(fileConditionExpressions) // not null
-                val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalExpressions)
-                parameters.getOrPut(name) { mutableListOf() }.add(info)
-                // 不需要继续向下遍历
-            }
-
-            override fun elementFinished(element: PsiElement?) {
-                if (element is ParadoxScriptParameterCondition || element is ParadoxScriptInlineParameterCondition) {
-                    fileConditionExpressions.removeLast()
-                }
-            }
-        })
-        return ParadoxParameterContextInfo(parameters, file.project, gameType)
-    }
-
-    /**
-     * 基于指定的参数上下文信息以及输入的一组参数，判断指定名字的参数是否是可选的。
-     */
-    fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
-        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
-        if (parameterInfos.isNullOrEmpty()) return true
-        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
-    }
-
-    /**
-     * 基于指定的参数信息以及输入的一组参数，判断此参数是否是可选的。
-     */
-    fun isOptional(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>? = null): Boolean {
-        // 如果带有默认值，则为可选
-        if (parameterInfo.defaultValue != null) return true
-        // 如果是条件参数，则为可选
-        if (parameterInfo.conditionExpressions == null) return true
-        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
-        if (isOptionalFromConditionExpressions(parameterInfo, argumentNames)) return true
-        // 如果作为传入参数的值，则认为是可选的
-        if (isPassingParameterValue(parameterInfo)) return true
-        return false
-    }
-
-    fun isOptionalFromConditionExpressions(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>?): Boolean {
-        val conditionExpressions = parameterInfo.conditionExpressions
-        if (conditionExpressions.isNullOrEmpty()) return false
-        return !conditionExpressions.all { it.matches(argumentNames) }
-    }
-
-    fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
-        val expressionConfigs = getExpressionConfigs(parameterInfo)
-        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
     }
 
     /**
@@ -276,33 +124,66 @@ object ParadoxParameterManager {
         }
     }
 
-    fun getRequiredParameterNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, argumentNames: MutableSet<String>): MutableSet<String> {
+    fun getRequiredParameterNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo): MutableSet<String> {
         val result = mutableSetOf<String>()
+        val argumentNames = mutableSetOf<String>()
+        val presentArgumentNames = mutableSetOf<String>()
+        for (argument in contextReferenceInfo.arguments) {
+            argumentNames.add(argument.argumentName)
+            if (isPresent(element, argument)) presentArgumentNames.add(argument.argumentName)
+        }
         ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
             ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             for (parameterName in parameterContextInfo.parameters.keys) {
+                // Skip checked parameters
                 if (result.contains(parameterName)) continue
-                if (!isOptional(parameterContextInfo, parameterName, argumentNames)) result.add(parameterName)
+                // Skip optional parameters (`presentArgumentNames` need to be passed here, instead of `argumentNames`)
+                if (isOptional(parameterContextInfo, parameterName, presentArgumentNames)) continue
+                result.add(parameterName)
             }
             false
         }
+        result.removeAll(argumentNames)
         return result
     }
 
-    fun getPresentArgumentNames(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo): MutableSet<String> {
-        val result = mutableSetOf<String>()
-        for (argument in contextReferenceInfo.arguments) {
-            if (!isPresent(element, argument, contextReferenceInfo.project)) continue
-            result.add(argument.argumentName)
-        }
-        return result
+    /**
+     * 基于指定的参数上下文信息，以及一组传入参数的名字，判断指定名字的参数是否是可选的。
+     */
+    fun isOptional(parameterContextInfo: ParadoxParameterContextInfo, parameterName: String, argumentNames: Set<String>? = null): Boolean {
+        val parameterInfos = parameterContextInfo.parameters.get(parameterName)
+        if (parameterInfos.isNullOrEmpty()) return true
+        return parameterInfos.all { parameterInfo -> isOptional(parameterInfo, argumentNames) }
     }
 
-    fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument, project: Project): Boolean {
+    /**
+     * 基于指定的参数信息，以及一组传入参数的名字，判断此参数是否是可选的。
+     */
+    fun isOptional(parameterInfo: ParadoxParameterContextInfo.Parameter, argumentNames: Set<String>? = null): Boolean {
+        // 如果带有默认值，则为可选
+        if (parameterInfo.defaultValue != null) return true
+        // 如果是条件参数，则为可选
+        if (parameterInfo.conditionExpressions == null) return true
+        // 如果从参数条件表达式的堆栈来看是可选的，则为可选
+        if (!parameterInfo.conditionExpressions.all { it.matches(argumentNames) }) return true
+        // 如果作为传入参数的值，则认为是可选的
+        if (isPassingParameterValue(parameterInfo)) return true
+        return false
+    }
+
+    /**
+     * 基于指定的参数信息，判断此参数是否是传递给另一个参数的参数值。
+     */
+    fun isPassingParameterValue(parameterInfo: ParadoxParameterContextInfo.Parameter): Boolean {
+        val expressionConfigs = getExpressionConfigs(parameterInfo)
+        return expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
+    }
+
+    fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument): Boolean {
         val argumentValue = argumentInfo.argumentValue ?: return true
-        val resolved = ParadoxExpressionManager.resolve(argumentValue, element, project)
+        val resolved = ParadoxExpressionManager.resolve(argumentValue, element, argumentInfo.project)
         return resolved != "no"
     }
 
@@ -456,5 +337,72 @@ object ParadoxParameterManager {
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
         return ParadoxParameterService.getParameterizedKeyConfigs(contextConfigs)
+    }
+
+    /**
+     * 得到 [element] 的文本，然后使用指定的一组 [args] 替换其中的占位符。
+     *
+     * 如果 [direct] 为 `true`，则直接将占位符 `$P$` 替换成传入参数 `P` 的值。此时：
+     * - 值可以是多行字符串。
+     * - 如果值是用双引号括起，替换时会被忽略。
+     * - 允许重复的传入参数，按顺序进行替换。
+     *
+     * @param element 用于得到原始文本的 PSI。
+     * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
+     */
+    fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {
+        if (direct) {
+            val oldText = element.text
+            var newText = oldText
+            args.forEach { (k, v) ->
+                newText = newText.replace("$$k$", v.unquote())
+            }
+            return newText
+        } else {
+            val offset = element.startOffset
+            val argMap = args.toMap()
+            val replacements = mutableListOf<Tuple2<TextRange, String>>()
+
+            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                override fun elementFinished(element: PsiElement) {
+                    run {
+                        if (element !is ParadoxScriptParameterCondition) return@run
+                        val conditionExpression = element.parameterConditionExpression ?: return@run
+                        val parameter = conditionExpression.parameterConditionParameter
+                        val name = parameter.name
+                        val v = argMap[name] ?: return@run
+                        val revert = v.equals("no", true)
+                        val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
+                        if ((!revert && operator) || (revert && !operator)) {
+                            val (start, end) = ParadoxPsiManager.findMemberElementsToInline(element)
+                            if (start != null && end != null) {
+                                element.parent.addRangeAfter(start, end, element)
+                            }
+                        }
+                        element.delete()
+                    }
+                }
+            })
+
+            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                override fun visitElement(element: PsiElement) {
+                    run {
+                        if (element !is ParadoxParameter) return@run
+                        val n = element.name ?: return@run
+                        val v0 = argMap[n] ?: return@run
+                        val v = v0
+                        replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
+                        return
+                    }
+                    super.visitElement(element)
+                }
+            })
+
+            var newText = element.text
+            replacements.reversed().forEach { (range, v) ->
+                newText = newText.replaceRange(range.startOffset, range.endOffset, v)
+            }
+            return newText
+        }
     }
 }

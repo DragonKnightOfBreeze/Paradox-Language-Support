@@ -10,7 +10,7 @@
 ## 2.1.4
 
 - [x] [Vic3/EU5] Script Value and Static Value #264
-- [ ] Arguments with value no are not recognized as required arguments #278
+- [x] Arguments with value no are not recognized as required arguments #278
 - [x] 修复：修复游戏概念未被正确解析的回归 BUG / FIX: Fixed a regression bug that game concepts were not correctly resolved
 - [x] 优化：优化配色方案（尤其是默认主题 Islands Dark 的） / Optimize color scheme (Especially for the default theme Islands Dark)
 - [x] 优化：优化脚本文件的 `IncorrectSyntaxInspection`（更严格的对比较运算符的检查） / OP: Optimize `IncorrectSyntaxInspection` for script files (More strict check for comparison operators)

@@ -25,6 +25,8 @@ class ParadoxParameterContextInfo(
         val name: String,
         val defaultValue: String? = null,
         val conditionExpressions: Deque<ParadoxParameterConditionExpression>? = null,
+        val project: Project,
+        val gameType: ParadoxGameType,
     ) {
         val element: PsiElement? get() = elementPointer.element
         val parentElement: PsiElement? get() = elementPointer.element?.parent
