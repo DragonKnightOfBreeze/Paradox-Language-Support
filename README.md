@@ -1,4 +1,4 @@
-# [![Paradox Chronicle][plugin-logo]][url:github] Paradox Language Support
+# Paradox Language Support
 
 ### —- The Paradox Chronicle Project
 
@@ -41,19 +41,19 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 ![](docs/images/preview_1_en.png)
 
-## 安装
+## Installation
 
-**使用 IDE 内置插件系统**
+**Using the IDE built-in plugin system**
 
-`Settings/Preferences` > `Plugins` > `Marketplace` > 搜索 "Paradox Language Support" > `Install`
+`Settings/Preferences` > `Plugins` > `Marketplace` > Search for "Paradox Language Support" > `Install`
 
-**使用 JetBrains Marketplace**
+**Using JetBrains Marketplace**
 
-前往 [JetBrains Marketplace][url:plugin-homepage]，点击`Install to ...`按钮进行安装。
+Go to [JetBrains Marketplace][url:plugin-homepage] and install it by clicking the `Install to ...` button.
 
-**手动安装**
+**Manual Installation**
 
-下载[最新版本][url:release-latest]并手动安装（无需解压）：`Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
+Download the [latest release][url:release-latest] and install it manually (No need to unzip): `Settings/Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`
 
 ## Getting Started
 
@@ -61,7 +61,7 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 1. Open your mod's root directory in the IDE.
 2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
-3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
+3. Click the mod settings button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
 6. Then enjoy your mod development voyage.
@@ -150,7 +150,7 @@ All forms of contribution and support are welcomed, including but not limited to
 - 📢 Recommend this plugin to friends or in the community.
 - 💝 Sponsor the project via [Afdian][url:afdian].
 
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email][mailto] or [Discord][url:discord].
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
 
 ## Acknowledgments
 

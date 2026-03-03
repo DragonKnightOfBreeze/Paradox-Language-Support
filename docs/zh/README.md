@@ -35,7 +35,7 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 
 **使用 JetBrains Marketplace**
 
-前往 [JetBrains Marketplace][url:plugin-homepage]，点击`Install to ...`按钮进行安装。
+前往 [JetBrains Marketplace][url:plugin-homepage]，点击 `Install to ...` 按钮进行安装。
 
 **手动安装**
 

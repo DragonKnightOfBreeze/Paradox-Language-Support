@@ -1,4 +1,4 @@
-# [![Paradox Chronicle][plugin-logo]][url:github]Paradox Language Support
+# Paradox Language Support
 
 ### -— The Paradox Chronicle Project
 
@@ -50,7 +50,7 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 
 **使用 JetBrains Marketplace**
 
-前往 [JetBrains Marketplace][url:plugin-homepage]，点击`Install to ...`按钮进行安装。
+前往 [JetBrains Marketplace][url:plugin-homepage]，点击 `Install to ...` 按钮进行安装。
 
 **手动安装**
 
@@ -62,7 +62,7 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 
 1. 在 IDE 中打开你的模组根目录。
 2. 打开模组描述符文件（`descriptor.mod`，VIC3 和 EU5 中为 `.metadata/metadata.json`）。
-3. 点击编辑器右上角的悬浮工具栏中的 *模组配置* 按钮。
+3. 点击编辑器右上角的悬浮工具栏中的模组设置按钮。
 4. 配置模组的游戏类型、游戏目录及所需的模组依赖。
 5. 确认配置，等待 IDE 完成索引。
 6. 开启你的模组开发之旅。

@@ -75,7 +75,7 @@ All forms of contribution and support are welcomed, including but not limited to
 - 📢 Recommend this plugin to friends or in the community.
 - 💝 Sponsor the project via [Afdian][url:afdian].
 
-If you are interested in submitting a PR, but have any questions about plugin development or config writing, please feel free to contact us via [email][mailto] or [Discord][url:discord].
+If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
 
 ## Acknowledgments
 
