@@ -187,8 +187,8 @@ object ParadoxDocumentationManager {
         // 忽略内联或注入的定义
         if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return null
 
+        // 注意：对于相关图片的信息，在 definition 部分显示在相关本地化的信息之后，在 sections 部分则显示在之前
         return buildDocumentation {
-            // 对于相关图片的信息，在 definition 部分显示在相关本地化的信息之后，在 sections 部分则显示在之前
             if (!hint) initSections()
             buildDefinitionDefinition(element, definitionInfo)
             if (hint) return@buildDocumentation
@@ -201,8 +201,11 @@ object ParadoxDocumentationManager {
 
     private fun getInlineScriptDoc(element: ParadoxScriptFile, expression: String, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
+            if (!hint) initSections()
             buildInlineScriptDefinition(element, expression)
+            if (hint) return@buildDocumentation
             buildDocumentationContent(element)
+            buildSections()
         }
     }
 
@@ -948,8 +951,6 @@ object ParadoxDocumentationManager {
         val ownedComments = ParadoxPsiManager.getOwnedComments(element)
         val commentText = ParadoxPsiManager.getLineCommentText(ownedComments, "<br>")
         if (commentText.isNullOrEmpty()) return
-        content {
-            append(commentText)
-        }
+        content { append(commentText) }
     }
 }
