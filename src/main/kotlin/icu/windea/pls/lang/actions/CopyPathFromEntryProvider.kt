@@ -7,16 +7,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.lang.fileInfo
 
 /**
- * 复制相对于（游戏或模组的）的根目录的路径到剪贴板。
+ * 复制相对于（游戏或模组的）的入口目录的路径到剪贴板。
  */
-class CopyPathFromRootProvider : DumbAwareCopyPathProvider() {
+class CopyPathFromEntryProvider : DumbAwareCopyPathProvider() {
     override fun getPathToElement(project: Project, virtualFile: VirtualFile?, editor: Editor?): String? {
         val fileInfo = virtualFile?.fileInfo ?: return null
         val path = fileInfo.path.path
-        val entry = fileInfo.entry
-        val result = "$entry/$path".trim('/')
-        if (result.isEmpty()) return null // 排除根目录本身
+        val result = path
+        if (result.isEmpty()) return null // 排除入口目录本身
         return result
     }
 }
-
