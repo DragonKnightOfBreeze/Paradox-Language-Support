@@ -161,8 +161,10 @@ object ParadoxMemberService {
     fun isComparisonOperatorAllowed(element: ParadoxScriptProperty): Boolean? {
         // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
         if (!PlsConfigInternalSettings.getInstance().checkComparisonOperators) return null
-        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
-        if (config !is CwtPropertyConfig) return false
-        return config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
+        val configs = ParadoxConfigManager.getConfigs(element)
+        if (configs.isEmpty()) return null
+        return configs.any { config ->
+            config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
+        }
     }
 }
