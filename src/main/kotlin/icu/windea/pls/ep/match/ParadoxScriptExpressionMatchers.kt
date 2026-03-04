@@ -328,7 +328,7 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         // 允许用引号括起
-        return ParadoxMatchResultProvider.forTemplate(context.element, context.configGroup, context.expression.value, context.configExpression)
+        return ParadoxMatchResultProvider.forTemplate(context.element, context.configGroup, context.expression.value, context.configExpression, context.options)
     }
 }
 

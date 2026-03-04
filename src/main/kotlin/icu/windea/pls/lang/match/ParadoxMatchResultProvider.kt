@@ -200,15 +200,16 @@ object ParadoxMatchResultProvider {
         }
     }
 
-    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+    fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, configExpression: CwtDataExpression, options: ParadoxMatchOptions? = null): ParadoxMatchResult {
+        // NOTE 2.1.5 indexing -> should not visit indices -> still need to match constant snippets
+        // if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
 
         val template = configExpression.expressionString
         val key = Keys.cacheForTemplates
-        val cacheKey = "${template}#${expression}"
+        val cacheKey = "${template}#${expression}\u0000${options.toHashString(forMatched = false)}"
+        options.toHashString(forMatched = false)
         return getCached(element, configGroup.project, key, cacheKey) {
-            ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template)
+            ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)
         }
     }
 

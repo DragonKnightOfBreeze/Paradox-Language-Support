@@ -65,8 +65,8 @@ object ParadoxMatchProvider {
         return ParadoxModifierManager.matchesModifier(name, element, configGroup)
     }
 
-    fun matchesTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, templateExpression: String): Boolean {
-        return ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, expression, CwtTemplateExpression.resolve(templateExpression))
+    fun matchesTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, templateExpression: String, options: ParadoxMatchOptions? = null): Boolean {
+        return ParadoxConfigExpressionMatchService.matchesTemplate(element, configGroup, expression, CwtTemplateExpression.resolve(templateExpression), options)
     }
 
     /**
