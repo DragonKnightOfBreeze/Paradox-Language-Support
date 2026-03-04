@@ -13,16 +13,16 @@ import icu.windea.pls.lang.resolve.dynamic
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
+    /**
+     * 根据来自 [matchResultProvider] 的匹配结果，从输入的一组成员规则 [configs] 收集匹配候选项。
+     */
     @Optimized
-    inline fun <T : CwtMemberConfig<*>> collectCandidates(
-        configs: List<T>,
-        matchResultProvider: (T) -> ParadoxMatchResult?
-    ): List<ParadoxMatchCandidate> {
+    inline fun <T : CwtMemberConfig<*>> collectCandidates(configs: List<T>, matchResultProvider: (T) -> ParadoxMatchResult): List<ParadoxMatchCandidate> {
         if (configs.isEmpty()) return emptyList()
         val result = buildList {
             configs.forEachFast f@{ config ->
                 val matchResult = matchResultProvider(config)
-                if (matchResult == null || matchResult == ParadoxMatchResult.NotMatch) return@f
+                if (matchResult == ParadoxMatchResult.NotMatch) return@f
                 val matchCandidate = ParadoxMatchCandidate(config, matchResult)
                 this += matchCandidate
             }
@@ -30,11 +30,11 @@ object ParadoxMatchPipeline {
         return result
     }
 
+    /**
+     * 处理输入的一组匹配候选项 [candidates]，进行进一步的匹配。基于匹配结果的类型。
+     */
     @Optimized
-    fun filter(
-        candidates: List<ParadoxMatchCandidate>,
-        options: ParadoxMatchOptions? = null
-    ): List<CwtMemberConfig<*>> {
+    fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         // 首先尝试直接的精确匹配，如果有结果，则直接返回
         // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         // 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
@@ -44,46 +44,33 @@ object ParadoxMatchPipeline {
         // 如果到这里仍然无法匹配，则直接返回空列表
 
         if (candidates.isEmpty()) return emptyList()
-        val exactMatched = candidates.filterFast { it.result is ParadoxMatchResult.ExactMatch }
-        if (exactMatched.isNotEmpty()) return exactMatched.mapFast { it.value }
 
         val matched = FastList<ParadoxMatchCandidate>()
 
-        addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-        addLazyMatchedConfigs(matched, candidates, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
-
-        candidates.forEachFast f@{
-            if (it.result is ParadoxMatchResult.LazySimpleMatch) return@f run { matched += it } // 直接认为是匹配的
-            if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@f  // 已经匹配过
-            if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@f  // 已经匹配过
-            if (it.result is ParadoxMatchResult.PartialMatch) return@f  // 之后再匹配
-            if (it.result is ParadoxMatchResult.FallbackMatch) return@f  // 之后再匹配
-            if (!it.result.get(options)) return@f
-            matched += it
-        }
+        processMatched(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
-        candidates.forEachFast f@{
-            if (it.result !is ParadoxMatchResult.PartialMatch) return@f
-            matched += it
-        }
+        processLazyMatched(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
+        processLazyMatched(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
+
+        processDirectMatched(candidates, matched, options)
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
-        candidates.forEachFast f@{
-            if (it.result !is ParadoxMatchResult.FallbackMatch) return@f
-            matched += it
-        }
+        processMatched(candidates, matched) { it.result is ParadoxMatchResult.PartialMatch }
+        if (matched.isNotEmpty()) return matched.mapFast { it.value }
+        processMatched(candidates, matched) { it.result is ParadoxMatchResult.FallbackMatch }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
 
         return emptyList()
     }
 
-    private fun addLazyMatchedConfigs(
-        matched: MutableList<ParadoxMatchCandidate>,
-        candidates: List<ParadoxMatchCandidate>,
-        options: ParadoxMatchOptions? = null,
-        predicate: (ParadoxMatchCandidate) -> Boolean
-    ) {
+    private inline fun processMatched(candidates: List<ParadoxMatchCandidate>, matched: FastList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean) {
+        candidates.forEachFast f@{
+            if (predicate(it)) matched += it
+        }
+    }
+
+    private inline fun processLazyMatched(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
         val lazyMatched = candidates.filterFast(predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {
@@ -98,15 +85,23 @@ object ParadoxMatchPipeline {
         }
     }
 
-    @Optimized
-    fun optimize(
-        element: PsiElement,
-        expression: ParadoxScriptExpression,
-        configs: List<CwtMemberConfig<*>>,
-        options: ParadoxMatchOptions? = null
-    ): List<CwtMemberConfig<*>> {
-        // 进行后续优化
+    private fun processDirectMatched(candidates: List<ParadoxMatchCandidate>, matched: FastList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
+        candidates.forEachFast f@{
+            if (it.result is ParadoxMatchResult.LazyRangedMatch) return@f run { matched += it } // 直接认为是匹配的
+            if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@f // 已经匹配过
+            if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@f // 已经匹配过
+            if (it.result is ParadoxMatchResult.PartialMatch) return@f // 之后再匹配
+            if (it.result is ParadoxMatchResult.FallbackMatch) return@f // 之后再匹配
+            if (!it.result.get(options)) return@f
+            matched += it
+        }
+    }
 
+    /**
+     * 对输入的一组已处理过的成员规则 [configs] 进行后续优化。基于 [ParadoxScriptExpressionMatchOptimizer]。
+     */
+    @Optimized
+    fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, element: PsiElement, expression: ParadoxScriptExpression, options: ParadoxMatchOptions? = null): List<T> {
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         var result = configs

@@ -2,11 +2,11 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.isProperty
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -22,7 +22,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
 
     @Optimized
-    override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizerContext): List<CwtMemberConfig<*>>? {
+    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.size <= 1) return null
         if (context.expression.type != ParadoxType.String) return null
         val filtered = configs.filterFast { ParadoxMatchService.isConstantMatch(context.expression, it.configExpression, context.configGroup) }
@@ -37,14 +37,15 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
     override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
 
     @Optimized
-    override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizerContext): List<CwtMemberConfig<*>>? {
+    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.isEmpty()) return null
-        val filtered = configs.filterFast { it.valueType == CwtType.Block && it.isProperty() }.cast<List<CwtPropertyConfig>>()
+        val filtered = configs.filterFast { it.valueType == CwtType.Block && it is CwtPropertyConfig }.cast<List<CwtPropertyConfig>>()
+        if (filtered.isEmpty()) return null
         val filteredGroup = filtered.groupBy { it.key }.values.filter { it.count() > 1 }
         if (filteredGroup.isEmpty()) return null
         val blockElement = context.element.castOrNull<ParadoxScriptProperty>()?.block ?: return null
         val blockExpression = ParadoxScriptExpression.resolveBlock()
-        val configsToRemove = mutableSetOf<CwtPropertyConfig>()
+        val configsToRemove = FastSet<CwtPropertyConfig>()
         filteredGroup.forEachFast f1@{ filteredConfigs ->
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
@@ -56,7 +57,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
             }
         }
         if (configsToRemove.isEmpty()) return null
-        return configs.filterFast { it !in configsToRemove }
+        return configs.filterFast { it is CwtPropertyConfig && it !in configsToRemove }
     }
 }
 
@@ -66,9 +67,9 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
     override fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext) = true
 
     @Optimized
-    override fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizerContext): List<CwtMemberConfig<*>>? {
+    override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.isEmpty()) return null
-        val result = FastList<CwtMemberConfig<*>>()
+        val result = FastList<T>()
         var hasOverride = false
         configs.forEachFast f1@{ config ->
             val overriddenConfigs = ParadoxConfigService.getOverriddenConfigs(context.element, config)

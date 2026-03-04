@@ -22,11 +22,11 @@ interface ParadoxScriptExpressionMatchOptimizer {
     fun isDynamic(context: ParadoxScriptExpressionMatchOptimizerContext): Boolean = false
 
     /**
-     * 按匹配结果过滤了候选的一组成员规则后，进行后续优化。
+     * 按匹配结果处理了候选的一组成员规则后，进行后续优化。
      *
      * @return 优化后的候选规则列表。如果为 `null`，则表示此扩展点不适用。
      */
-    fun optimize(configs: List<CwtMemberConfig<*>>, context: ParadoxScriptExpressionMatchOptimizerContext): List<CwtMemberConfig<*>>?
+    fun <T: CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")

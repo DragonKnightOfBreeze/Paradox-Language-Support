@@ -72,13 +72,13 @@ object ParadoxMatchResultProvider {
     fun forRangedInt(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.intRange ?: return null
         val intValue = value.toIntOrNull() ?: return null
-        return ParadoxMatchResult.LazySimpleMatch { intValue in intRange }
+        return ParadoxMatchResult.LazyRangedMatch { intValue in intRange }
     }
 
     fun forRangedFloat(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val floatRange = configExpression.floatRange ?: return null
         val floatValue = value.toFloatOrNull() ?: return null
-        return ParadoxMatchResult.LazySimpleMatch { floatValue in floatRange }
+        return ParadoxMatchResult.LazyRangedMatch { floatValue in floatRange }
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
@@ -97,12 +97,12 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
-    fun getCached(element: PsiElement, project: Project, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {
+    fun getCached(element: PsiElement, project: Project, key: KeyForCache, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
         val cache = configGroup.getOrPutUserData(key).value.get(rootFile)
-        return cache.get(cacheKey) { ParadoxMatchResult.LazyIndexAwareMatch(predicate) }
+        return cache.get(cacheKey, matchResultProvider)
     }
 
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -117,9 +117,11 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${typeExpression}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
-            when {
-                suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
-                else -> suffixes.any { ParadoxMatchProvider.matchesDefinition(element, project, expression + it, typeExpression) }
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                when {
+                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
+                    else -> suffixes.any { ParadoxMatchProvider.matchesDefinition(element, project, expression + it, typeExpression) }
+                }
             }
         }
     }
@@ -135,9 +137,11 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
-            when {
-                suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
-                else -> suffixes.any { ParadoxMatchProvider.matchesLocalisation(element, project, expression + it) }
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                when {
+                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
+                    else -> suffixes.any { ParadoxMatchProvider.matchesLocalisation(element, project, expression + it) }
+                }
             }
         }
     }
@@ -153,9 +157,11 @@ object ParadoxMatchResultProvider {
             else -> "${suffixes.joinToString(",")}#${expression}"
         }
         return getCached(element, project, key, cacheKey) {
-            when {
-                suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
-                else -> suffixes.any { ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression + it) }
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                when {
+                    suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
+                    else -> suffixes.any { ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression + it) }
+                }
             }
         }
     }
@@ -168,7 +174,9 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
         return getCached(element, project, key, cacheKey) {
-            ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
+            }
         }
     }
 
@@ -176,16 +184,20 @@ object ParadoxMatchResultProvider {
         // indexing -> should not visit indices -> treat as exact match
         if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
 
+        // with search scope type -> not cached
         val searchScopeType = complexEnumConfig.searchScopeType
         if (searchScopeType != null) {
             return ParadoxMatchResult.LazyIndexAwareMatch {
                 ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
             }
         }
+
         val key = Keys.cacheForComplexEnumValues
         val cacheKey = "${enumName}#${name}"
         return getCached(element, project, key, cacheKey) {
-            ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
+            }
         }
     }
 
@@ -196,7 +208,9 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForModifiers
         val cacheKey = name
         return getCached(element, configGroup.project, key, cacheKey) {
-            ParadoxMatchProvider.matchesModifier(element, configGroup, name)
+            ParadoxMatchResult.LazyIndexAwareMatch {
+                ParadoxMatchProvider.matchesModifier(element, configGroup, name)
+            }
         }
     }
 
@@ -209,7 +223,9 @@ object ParadoxMatchResultProvider {
         val cacheKey = "${template}#${expression}\u0000${options.toHashString(forMatched = false)}"
         options.toHashString(forMatched = false)
         return getCached(element, configGroup.project, key, cacheKey) {
-            ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)
+            ParadoxMatchResult.LazyTemplateAwareMatch {
+                ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template, options)
+            }
         }
     }
 

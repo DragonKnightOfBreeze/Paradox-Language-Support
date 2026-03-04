@@ -324,13 +324,12 @@ object ParadoxConfigService {
     private fun matchConfigsForConfigContext(element: PsiElement, expression: ParadoxScriptExpression, configs: List<CwtMemberConfig<*>>, configGroup: CwtConfigGroup, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
-            val configExpression = config.configExpression
-            val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup, options)
+            val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
             ParadoxMatchService.matchScriptExpression(context)
         }
-        val filteredResult = ParadoxMatchPipeline.filter(candidates, options)
-        val optimizedResult = ParadoxMatchPipeline.optimize(element, expression, filteredResult, options)
-        return optimizedResult
+        val result = ParadoxMatchPipeline.process(candidates, options)
+            .let { ParadoxMatchPipeline.optimize(it, element, expression, options) }
+        return result
     }
 
     private fun getParameterizedKeyConfigs(element: ParadoxScriptProperty?, expression: ParadoxScriptExpression): List<CwtValueConfig>? {
@@ -395,18 +394,17 @@ object ParadoxConfigService {
         when (element) {
             is ParadoxScriptProperty -> {
                 // 匹配属性
-                val result = contextConfigs.filterIsProperty()
-                if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
+                val configs = contextConfigs.filterIsProperty()
+                if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, options) }
-                val candidatesForKey = ParadoxMatchPipeline.collectCandidates(result) { config ->
+                val candidatesForKey = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
                     ParadoxMatchService.matchScriptExpression(context)
                 }
-                val filteredResultForKey = ParadoxMatchPipeline.filter(candidatesForKey, options)
-                val optimizedResultForKey = ParadoxMatchPipeline.optimize(element, keyExpression, filteredResultForKey, options)
-                val resultForKey = optimizedResultForKey
+                val resultForKey = ParadoxMatchPipeline.process(candidatesForKey, options)
+                    .let { ParadoxMatchPipeline.optimize(it, element, keyExpression, options) }
                 if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
@@ -417,14 +415,14 @@ object ParadoxConfigService {
                     ParadoxMatchService.matchScriptExpression(context)
                 }
                 if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，则需要考虑回退
-                val finalResult = ParadoxMatchPipeline.filter(candidates, options)
-                if (finalResult.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
-                return finalResult // 返回最终匹配的规则
+                val result = ParadoxMatchPipeline.process(candidates, options)
+                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
+                return result // 返回最终匹配的规则
             }
             else -> {
                 // 匹配文件或单独的值
-                val result = contextConfigs.filterIsValue()
-                if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
+                val configs = contextConfigs.filterIsValue()
+                if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
                 val valueExpression = when (element) {
@@ -432,16 +430,16 @@ object ParadoxConfigService {
                     is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, options)
                     else -> null
                 }
-                if (valueExpression == null) return result // 如果无法得到值表达式，则返回所有上下文值规则
-                val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
+                if (valueExpression == null) return configs // 如果无法得到值表达式，则返回所有上下文值规则
+                val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
                     ParadoxMatchService.matchScriptExpression(context)
                 }
-                if (candidates.isEmpty() && fallback) return result // 如果无结果，则需要考虑回退
-                val finalResult = ParadoxMatchPipeline.filter(candidates, options)
-                    .let { ParadoxMatchPipeline.optimize(element, valueExpression, it, options) }
-                if (finalResult.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
-                return finalResult // 返回最终匹配的规则
+                if (candidates.isEmpty() && fallback) return configs // 如果无结果，则需要考虑回退
+                val result = ParadoxMatchPipeline.process(candidates, options)
+                    .let { ParadoxMatchPipeline.optimize(it, element, valueExpression, options) }
+                if (result.isEmpty() && fallback) return candidates.mapFast { it.value } // 如果无结果，则需要考虑回退
+                return result // 返回最终匹配的规则
             }
         }
     }

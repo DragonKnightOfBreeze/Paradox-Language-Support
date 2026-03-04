@@ -45,8 +45,9 @@ sealed class ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazySimpleMatch -> ParadoxMatchOptionsUtil.relax(options)
-                this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options)
+                this is LazyRangedMatch -> ParadoxMatchOptionsUtil.relax(options) // skip if relax
+                this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options) // skip if relax
+                this is LazyTemplateAwareMatch -> false // do not skip
                 this is LazyIndexAwareMatch -> ParadoxMatchOptionsUtil.skipIndex(options)
                 this is LazyScopeAwareMatch -> ParadoxMatchOptionsUtil.skipScope(options)
                 else -> false
@@ -67,9 +68,11 @@ sealed class ParadoxMatchResult {
         }
     }
 
-    class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyRangedMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+
+    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 

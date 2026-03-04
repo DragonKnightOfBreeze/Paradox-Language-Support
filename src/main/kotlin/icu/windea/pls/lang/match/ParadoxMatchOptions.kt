@@ -7,7 +7,7 @@ import kotlin.experimental.or
  *
  * @property fallback 如果无法进一步匹配，则会使用回退后的匹配到的规则。默认为 `true`。
  * @property acceptDefinition 允许匹配定义自身，即其声明对应的脚本属性。
- * @property relax 对于 [ParadoxMatchResult.LazySimpleMatch] 和 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
+ * @property relax 对于 [ParadoxMatchResult.LazyRangedMatch] 和 [ParadoxMatchResult.LazyBlockAwareMatch]，匹配结果直接返回 `true`。
  * @property skipIndex 对于 [ParadoxMatchResult.LazyIndexAwareMatch]，匹配结果直接返回 `true`。
  * @property skipScope 对于 [ParadoxMatchResult.LazyScopeAwareMatch]，匹配结果直接返回 `true`。
  */
