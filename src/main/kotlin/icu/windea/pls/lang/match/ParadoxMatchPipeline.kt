@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastList
-import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
@@ -36,42 +35,53 @@ object ParadoxMatchPipeline {
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         // 步骤：
-        // - 尝试精确匹配（`ExactMatch`），如果有结果，则直接返回
-        // - 尝试需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
-        // - 尝试需要检测作用域上下文的匹配（`LazyScopeAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
-        // - 尝试其余非延迟的匹配，如果有结果，则直接返回
-        // - 依次尝试各种延迟匹配（`PartialMatch` `FallbackMatch`），如果有结果，则直接返回
-        // - 如果到这里仍然无法匹配，则直接返回空列表
+        // - 处理精确匹配（`ExactMatch`），如果有结果，则仅使用这些结果，并直接返回
+        // - 处理需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
+        // - 处理需要检测作用域上下文的匹配（`LazyScopeAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
+        // - 处理其余的各种直接匹配，如果有结果，则仅使用这些结果
+        // - 处理通配符匹配（`WildcardMatch`），如果有结果，则仅使用这些结果
+        // - 处理部分匹配（`PartialMatch`），如果有结果，则仅使用这些结果
+        // - 处理回退匹配（`FallbackMatch`），如果有结果，则仅使用这些结果
+        // - 如果不是直接返回的情况，还需要处理带参数的匹配（`ParameterizedMatch`），如果有结果，则需要加入最终的结果中
 
         if (candidates.isEmpty()) return emptyList()
-
         val matched = FastList<ParadoxMatchCandidate>()
-
-        processMatched(candidates, matched) { it.result is ParadoxMatchResult.ExactMatch }
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.ExactMatch }
         if (matched.isNotEmpty()) return matched.mapFast { it.value }
-
-        processLazyMatched(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-        processLazyMatched(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
-
-        processDirectMatched(candidates, matched, options)
-        if (matched.isNotEmpty()) return matched.mapFast { it.value }
-
-        processMatched(candidates, matched) { it.result is ParadoxMatchResult.PartialMatch }
-        if (matched.isNotEmpty()) return matched.mapFast { it.value }
-        processMatched(candidates, matched) { it.result is ParadoxMatchResult.FallbackMatch }
-        if (matched.isNotEmpty()) return matched.mapFast { it.value }
-
-        return emptyList()
+        processMain(candidates, matched, options)
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.ParameterizedMatch }
+        return matched.mapFast { it.value }
     }
 
-    private inline fun processMatched(candidates: List<ParadoxMatchCandidate>, matched: FastList<ParadoxMatchCandidate>, predicate: (ParadoxMatchCandidate) -> Boolean) {
+    private fun processMain(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
+        processLazy(candidates, matched, options) { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
+        processLazy(candidates, matched, options) { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
+
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.DirectMatch }
+        if (matched.isNotEmpty()) return
+
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.WildcardMatch }
+        if (matched.isNotEmpty()) return
+
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.PartialMatch }
+        if (matched.isNotEmpty()) return
+
+        processNormal(candidates, matched, options) { it.result is ParadoxMatchResult.FallbackMatch }
+    }
+
+    private inline fun processNormal(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
         candidates.forEachFast f@{
-            if (predicate(it)) matched += it
+            if (it.processed) return@f
+            if (!predicate(it)) return@f
+            it.processed = true
+            if (!it.result.get(options)) return@f
+            matched += it
         }
     }
 
-    private inline fun processLazyMatched(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
-        val lazyMatched = candidates.filterFast(predicate)
+    private inline fun processLazy(candidates: List<ParadoxMatchCandidate>, matched: MutableList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?, predicate: (ParadoxMatchCandidate) -> Boolean) {
+        val lazyMatched = FastList<ParadoxMatchCandidate>()
+        processNormal(candidates, lazyMatched, options, predicate)
         val lazyMatchedSize = lazyMatched.size
         if (lazyMatchedSize == 1) {
             matched += lazyMatched.first()
@@ -82,17 +92,6 @@ object ParadoxMatchPipeline {
                 matched += it
             }
             if (oldMatchedSize == matched.size) matched += lazyMatched.first()
-        }
-    }
-
-    private fun processDirectMatched(candidates: List<ParadoxMatchCandidate>, matched: FastList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
-        candidates.forEachFast f@{
-            if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@f // 已经匹配过
-            if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@f // 已经匹配过
-            if (it.result is ParadoxMatchResult.PartialMatch) return@f // 之后再匹配
-            if (it.result is ParadoxMatchResult.FallbackMatch) return@f // 之后再匹配
-            if (!it.result.get(options)) return@f
-            matched += it
         }
     }
 
