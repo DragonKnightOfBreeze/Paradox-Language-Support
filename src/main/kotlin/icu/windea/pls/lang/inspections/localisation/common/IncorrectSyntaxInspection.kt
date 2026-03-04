@@ -55,7 +55,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         if (element.elementType != COLORFUL_TEXT_END) return
         if (element.nextSibling == null && element.parent?.elementType == COLORFUL_TEXT) return
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.2")
-        val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name", element.text))
+        val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name"))
         holder.registerProblem(element, description, fix)
     }
 
@@ -63,7 +63,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
         if (element.elementType != TEXT_FORMAT_END) return
         if (element.nextSibling == null && element.parent?.elementType == TEXT_FORMAT) return
         val description = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.3")
-        val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name", element.text))
+        val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.2.name"))
         holder.registerProblem(element, description, fix)
     }
 }
