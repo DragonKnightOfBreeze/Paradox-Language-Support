@@ -9,6 +9,8 @@
 - [ ] 完善参考文档 / Improve reference documentation 
 - [ ] 补充集成测试 / Supplementary integration tests
 
+## 2.1.5
+
 ## 2.1.4
 
 - [x] [Vic3/EU5] Script Value and Static Value #264
