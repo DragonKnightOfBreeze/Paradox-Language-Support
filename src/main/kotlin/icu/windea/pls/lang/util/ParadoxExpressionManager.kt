@@ -383,9 +383,9 @@ object ParadoxExpressionManager {
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
-        val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
+        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+        val reference = ParadoxScriptExpressionPsiReference(element, textRange, configs, isKey)
         return reference.collectReferences()
     }
 

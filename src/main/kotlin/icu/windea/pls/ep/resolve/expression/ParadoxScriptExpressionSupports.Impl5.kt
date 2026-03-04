@@ -79,7 +79,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
         if (range1.isEmpty) return null
         val config1 = CwtValueConfig.createMock(config.configGroup, typeExpression)
-        val reference = ParadoxScriptExpressionPsiReference(element, range1, config1, null)
+        val reference = ParadoxScriptExpressionPsiReference(element, range1, listOf(config1))
         return arrayOf(reference)
     }
 

@@ -26,15 +26,23 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
     rangeInElement: TextRange,
-    val config: CwtMemberConfig<*>,
-    val isKey: Boolean?
+    val configs: List<CwtMemberConfig<*>>,
+    val isKey: Boolean? = null
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
-    private val project get() = config.configGroup.project
+    val config: CwtMemberConfig<*> get() = configs.first()
+
+    private val configGroup get() = configs.first().configGroup
+    private val project get() = configGroup.project
 
     init {
-        // 用于处理特殊标签
-        if (config is CwtValueConfig && config.tagType != null) {
-            config.resolveElementWithConfig()
+        processTags()
+    }
+
+    private fun processTags() {
+        for (config in configs) {
+            if (config is CwtValueConfig && config.tagType != null) {
+                config.resolveElementWithConfig()
+            }
         }
     }
 
@@ -74,13 +82,17 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
-        val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        val resolved = configs.firstNotNullOfOrNull { config ->
+            ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        }
         return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        val resolved = configs.flatMap { config ->
+            ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        }
         return resolved.createResults()
     }
 }
