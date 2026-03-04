@@ -18,11 +18,15 @@ sealed class ParadoxMatchResult {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    data object FallbackMatch : ParadoxMatchResult() {
+    data object WildcardMatch : ParadoxMatchResult() {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
     data object PartialMatch : ParadoxMatchResult() {
+        override fun get(options: ParadoxMatchOptions?) = true
+    }
+
+    data object FallbackMatch : ParadoxMatchResult() {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
@@ -45,9 +49,7 @@ sealed class ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazyRangedMatch -> ParadoxMatchOptionsUtil.relax(options) // skip if relax
-                this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options) // skip if relax
-                this is LazyTemplateAwareMatch -> false // do not skip
+                this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options)
                 this is LazyIndexAwareMatch -> ParadoxMatchOptionsUtil.skipIndex(options)
                 this is LazyScopeAwareMatch -> ParadoxMatchOptionsUtil.skipScope(options)
                 else -> false
@@ -68,19 +70,19 @@ sealed class ParadoxMatchResult {
         }
     }
 
-    class LazyRangedMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
-
-    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
 
     companion object {
-        fun of(value: Boolean) = if (value) ExactMatch else NotMatch
+        fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
 
-        fun ofFallback(value: Boolean) = if (value) FallbackMatch else NotMatch
+        fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch
+
+        fun exactOrFallback(value: Boolean) = if (value) ExactMatch else FallbackMatch
     }
 }

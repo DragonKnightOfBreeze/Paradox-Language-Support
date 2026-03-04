@@ -35,13 +35,13 @@ object ParadoxMatchPipeline {
      */
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        // 首先尝试直接的精确匹配，如果有结果，则直接返回
-        // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        // 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        // 然后，尝试非部分非回退的匹配，如果有结果，则直接返回
-        // 然后，尝试部分匹配（可以部分解析为复杂表达式，但存在错误），如果有结果，则直接返回
-        // 然后，尝试回退匹配，如果有结果，则直接返回
-        // 如果到这里仍然无法匹配，则直接返回空列表
+        // 步骤：
+        // - 尝试精确匹配（`ExactMatch`），如果有结果，则直接返回
+        // - 尝试需要检测子句内容的匹配（`LazyBlockAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
+        // - 尝试需要检测作用域上下文的匹配（`LazyScopeAwareMatch`），如果存在匹配项，则保留所有匹配项或者第一个候选项
+        // - 尝试其余非延迟的匹配，如果有结果，则直接返回
+        // - 依次尝试各种延迟匹配（`PartialMatch` `FallbackMatch`），如果有结果，则直接返回
+        // - 如果到这里仍然无法匹配，则直接返回空列表
 
         if (candidates.isEmpty()) return emptyList()
 
@@ -87,7 +87,6 @@ object ParadoxMatchPipeline {
 
     private fun processDirectMatched(candidates: List<ParadoxMatchCandidate>, matched: FastList<ParadoxMatchCandidate>, options: ParadoxMatchOptions?) {
         candidates.forEachFast f@{
-            if (it.result is ParadoxMatchResult.LazyRangedMatch) return@f run { matched += it } // 直接认为是匹配的
             if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@f // 已经匹配过
             if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@f // 已经匹配过
             if (it.result is ParadoxMatchResult.PartialMatch) return@f // 之后再匹配

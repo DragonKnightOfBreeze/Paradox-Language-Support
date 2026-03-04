@@ -72,13 +72,17 @@ object ParadoxMatchResultProvider {
     fun forRangedInt(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val intRange = configExpression.intRange ?: return null
         val intValue = value.toIntOrNull() ?: return null
-        return ParadoxMatchResult.LazyRangedMatch { intValue in intRange }
+        val r = intValue in intRange
+        // 即使数值不在范围之内，也不会直接认为不匹配
+        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.WildcardMatch
     }
 
     fun forRangedFloat(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
         val floatRange = configExpression.floatRange ?: return null
         val floatValue = value.toFloatOrNull() ?: return null
-        return ParadoxMatchResult.LazyRangedMatch { floatValue in floatRange }
+        val r = floatValue in floatRange
+        // 即使数值不在范围之内，也不会直接认为不匹配
+        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.WildcardMatch
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
@@ -87,13 +91,12 @@ object ParadoxMatchResultProvider {
             is ParadoxScriptBlock -> element
             else -> null
         } ?: return ParadoxMatchResult.NotMatch
-
-        // 如果存在子句规则内容为空，则仅当子句内容为空时才认为匹配
+        // 如果子句规则内容为空，则仅当子句内容为空时才认为匹配
         if (config.configs.isNullOrEmpty()) {
-            if (blockElement.members().none()) return ParadoxMatchResult.ExactMatch
-            return ParadoxMatchResult.FallbackMatch
+            val r = blockElement.members().none()
+            return ParadoxMatchResult.exactOrFallback(r)
         }
-
+        // 使用检测子句内容的匹配
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
@@ -106,8 +109,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val typeExpression = configExpression.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         val suffixes = configExpression.suffixes.orEmpty()
@@ -127,8 +130,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val suffixes = configExpression.suffixes.orEmpty()
         val key = Keys.cacheForLocalisations
@@ -147,8 +150,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forSyncedLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val suffixes = configExpression.suffixes.orEmpty()
         val key = Keys.cacheForSyncedLocalisations
@@ -167,8 +170,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val pathReference = expression.normalizePath()
         val key = Keys.cacheForPathReferences
@@ -181,8 +184,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forComplexEnumValue(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         // with search scope type -> not cached
         val searchScopeType = complexEnumConfig.searchScopeType
@@ -202,8 +205,8 @@ object ParadoxMatchResultProvider {
     }
 
     fun forModifier(element: PsiElement, configGroup: CwtConfigGroup, name: String): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+        // indexing -> should not visit indices -> treat as wildcard match
+        if (ParadoxMatchOptionsUtil.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
         val key = Keys.cacheForModifiers
         val cacheKey = name
@@ -231,16 +234,16 @@ object ParadoxMatchResultProvider {
 
     fun forScopeField(element: PsiElement, configGroup: CwtConfigGroup, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxMatchResult {
         return when (configExpression.type) {
-            CwtDataTypes.ScopeField -> ParadoxMatchResult.ExactMatch
+            CwtDataTypes.ScopeField -> ParadoxMatchResult.WildcardMatch
             CwtDataTypes.Scope -> {
-                val expectedScope = configExpression.value ?: return ParadoxMatchResult.ExactMatch
+                val expectedScope = configExpression.value ?: return ParadoxMatchResult.WildcardMatch
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
                 }
             }
             CwtDataTypes.ScopeGroup -> {
-                val expectedScopeGroup = configExpression.value ?: return ParadoxMatchResult.ExactMatch
+                val expectedScopeGroup = configExpression.value ?: return ParadoxMatchResult.WildcardMatch
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
@@ -261,34 +264,34 @@ object ParadoxMatchResultProvider {
         val complexExpression = ParadoxValueFieldExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 
     fun forVariableFieldExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxVariableFieldExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 
     fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 
     fun forDefineReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
         val complexExpression = ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 
     fun forStellarisNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
         val complexExpression = StellarisNameFormatExpression.resolve(text, null, configGroup, config)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 }

@@ -11,6 +11,9 @@
 
 ## 2.1.5
 
+- [x] [Vic3] Scripted triggers not being recognized #279
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 2.1.4
 
 - [x] [Vic3/EU5] Script Value and Static Value #264
