@@ -1,8 +1,10 @@
 # AGENTS.md
 
-This repository contains **Paradox Language Support** (abbr: PLS), a large IntelliJ Platform plugin (written in Kotlin) that provides deep IDE support for Paradox mod development.
+This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ IDEA plugin designed specifically for Paradox game mod developers.
 
-The plugin is **PSI/index/inspection-driven** (not LSP-based). Many language features are powered by a **config system** based on **CWT config files** (CWT is a DSL similar to Paradox script; the relationship is roughly like **JSON vs JSON Schema**).
+It's written in Kotlin and PSI-based (not LSP-based).
+Many language features are powered by the **config system** based on **CWT config files**.
+CWT is a DSL similar to Paradox script, the relationship is roughly like **JSON vs JSON Schema**.
 
 ## Project quick orientation
 
@@ -22,12 +24,13 @@ In addition to language features, the plugin also includes:
 
 ### Repository structure (high level)
 
-- `src/main/kotlin` / `src/main/java` / `src/main/resources`: plugin source
-- `src/main/resources/META-INF/plugin.xml`: plugin entry; most registrations are split into `META-INF/pls-*.xml`
-- `src/test/...`: tests and test data
-- `cwt/`: CWT config repositories (core + per-game downstream repos)
-- `docs/`: reference documentation (including language syntax guidance and config format guidance)
-- `documents/notes/`: maintainer notes
+- `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
+- `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
+- `src/test/testData`: test data files (such as test-specific cwt config files and script files).
+- `src/main/resources/META-INF/plugin.xml`: plugin entry, most registrations are split into `META-INF/pls-*.xml`.
+- `cwt/`: CWT config repositories (core + per-game downstream repos).
+- `docs/`: reference documentation (including language syntax guidance and config format guidance).
+- `documents/notes/`: maintainer documentation (including ai-generated docs and maintainer-written notes).
 
 ## Setup and build commands (Windows)
 
@@ -44,39 +47,26 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 >
 > - `./gradlew <task>`
 
-- Run IDE for debugging:
-  - `./gradlew runIde`
-- Build the plugin ZIP:
-  - `./gradlew buildPlugin`
-- Run tests:
-  - `./gradlew test`
+- Run IDE for debugging: `./gradlew runIde`
+- Build the plugin ZIP: `./gradlew buildPlugin`
+- Run tests: `./gradlew test`
 
 ### CWT config repositories (important)
 
 The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 - Prefer local repos in `cwt/<repoDir>`.
-- If missing (common in CI), Gradle can download ZIPs and unzip them into:
-  - `build/generated/cwt/<repoDir>`
-
-Relevant tasks:
-
-- Prepare configs (download/unzip as needed):
-  - `./gradlew prepareCwtConfigs`
-
-Gradle properties controlling this behavior:
-
-- `-Ppls.cwt.downloadIfMissing=true|false`
-- `-Ppls.cwt.acceptAnyCertificate=true|false` (temporary SSL handshake bypass)
+- If missing (common in CI), Gradle can download ZIPs and unzip them into: `build/generated/cwt/<repoDir>`
+- If necessary, you can check the real-game config files in these local repos.
 
 ## Testing guidance
 
 ### Test taxonomy
 
 - Prefer Kotlin for tests.
-- **Unit tests**: for pure components/tools/extensions; usually no IntelliJ API.
-- **Platform / integration tests**: for PSI/index/query/semantic match/resolve/integrations; uses the IntelliJ test framework.
-- Tooling: **JUnit4 + IntelliJ test framework**.
+- Unit tests: for pure components/tools/extensions; usually no IntelliJ API.
+- Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually uses the IntelliJ test framework.
+- Tooling: JUnit4 + IntelliJ test framework.
 
 ### Test data conventions
 
@@ -88,15 +78,12 @@ Gradle properties controlling this behavior:
 
 - **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase` and compare the parsed tree output.
 - **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByFile(...)`.
-- **Index tests**:
-  - `StubIndex`-based indices (stub-driven PSI data).
-  - `FileBasedIndex`-based indices (file-level computed data).
 
 ### Config-driven integration tests (config groups + context injection)
 
 The plugin is config-driven. Many features (e.g. directives like `inline_script`, definition injection modes, type inference) depend on **CWT config groups** and a simulated “game/mod context”.
 
-Test helpers exist to make these tests deterministic:
+Scope extensions exist to make these tests deterministic:
 
 - `initConfigGroups(project, ...)` initializes the required built-in config groups for the specified game types.
 - `markIntegrationTest()` / `clearIntegrationTest()` toggles integration-test-only behavior and cleans up injected state.
@@ -139,12 +126,6 @@ Some tests are intentionally **disabled by default** and only run when explicitl
   - `-Dpls.test.include.benchmark=true`
   - `-Dpls.test.include.config.generator=true`
 
-Example (run only AI tests when you have local credentials configured):
-
-```bash
-./gradlew test -Dpls.test.include.ai=true --tests "*ChatModelProviderTest*"
-```
-
 ### Best practices
 
 - Prefer **targeted** test runs during development:
@@ -153,46 +134,18 @@ Example (run only AI tests when you have local credentials configured):
 - Prefer adding or updating tests when behavior changes:
   - Unit tests for pure logic.
   - Integration tests for PSI/index/config-driven resolution.
-- Be aware this plugin is **config-driven**:
-  - If your change affects config parsing, config group loading, indexing, or resolve semantics, you may need broader integration coverage.
-  - If your change impacts bundled CWT configs, run `./gradlew prepareCwtConfigs` (or a full `./gradlew test`) to catch packaging/index regressions.
-- Keep test logs actionable:
-  - Avoid introducing tests that rely on external network calls.
-  - If a feature depends on environment variables/keys, tests should be guarded to avoid false failures.
 
 ## Coding conventions
 
 ### Naming
 
-For EP implementation classes, prefer:
-
-- `Domain + Layer + ImplementationType + Role`
-  - Domain examples: `Cwt`, `Paradox`, `Stellaris`
-  - Layer examples: `Base`, `Core`, `Default`
-  - Role: the key part of the EP interface name (e.g. `ExpressionSupport`)
-
-Semantics of common layer words:
-
-- `Default`: the default/most general implementation
-- `Base`: foundational implementation when there are also core/extended implementations
-- `Core`: more advanced built-in implementation
-
-For abstract classes, `Base` may appear as a suffix (e.g. `ParadoxScriptExpressionSupportBase`).
-
-Avoid non-word abbreviations. For example, prefer `context` over `ctx`.
-
-### Imports
-
-- Prefer explicit imports; allow star imports mainly for DSL-style packages.
-- Star import threshold: 50.
-- Star-import is acceptable for known DSL packages, such as:
-  - `com.intellij.ui.dsl.*`
-  - `icu.windea.pls.config.select.*`
-  - `icu.windea.pls.lang.psi.select.*`
+- Prefix class names with the domain name if necessary (e.g., `Cwt` `CwtConfig` `Paradox`).
+- For abstract classes, `Base` may appear as a suffix (e.g., `ParadoxScriptExpressionSupportBase`).
+- Avoid non-word, non-prefix abbreviations (e.g., for `scopeContext`, prefer `context`, `sc` or just `c`, but never `ctx`).
 
 ### Caching
 
-- Prefer `icu.windea.pls.core.util.CachesKt.CacheBuilder`.
+- Prefer `icu.windea.pls.core.util.CachesKt.CacheBuilder` for caching (if `ConcurrentHashMap` it not enough).
 - Prefer `com.github.benmanes.caffeine.cache.Interner` for string interning.
 - Global caches in `icu.windea.pls.core`: usually strong values with size + TTL.
 - Very large caches (e.g. config objects): usually soft values.
@@ -201,9 +154,8 @@ Avoid non-word abbreviations. For example, prefer `context` over `ctx`.
 ### Indexing
 
 - File-level analysis data (e.g., locale, file path): use `FileBasedIndex`.
-- PSI-structure data not depending on dynamic config (e.g., scripted variables, localisations): use `StubIndex`.
-- Data depending on resolved references or config data (see `CwtConfigGroupDataHolder`): consider `FileBasedIndex`.
-- Data from mocked PSI (`MockPsiElement`) or depending on member config (see `CwtMemberConfig`): prefer `ParadoxMergedIndex` for better performance.
+- Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
+- Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
 
 ### Code organization
 
@@ -212,35 +164,35 @@ Package organization:
 - `icu.windea.pls.core`: stdlib/platform/third-party extensions + shared utilities
 - `icu.windea.pls.config`: config/config group/config expression models + services/resolvers/manipulators
 - `icu.windea.pls.tools`: tool-like APIs (launchers, generators, log readers) that are not necessarily “language features”
-- `icu.windea.pls.lang.match` / `icu.windea.pls.lang.resolve`: semantic-level matching/resolution (often config-driven)
+- `icu.windea.pls.lang.match` & `icu.windea.pls.lang.resolve`: semantic-level matching & resolution (often config-driven)
 
-Service vs manager vs util:
+Service vs Manager vs Util:
 
-- `service`: lower-level, may involve EP-driven analysis/match/resolve logic
-- `manager`: higher-level, convenient domain methods; typically hosts caching
-- `util`: narrow-purpose helpers
+- `Service`: lower-level, may involve EP-driven analysis/match/resolve logic
+- `Manager`: higher-level, convenient domain methods; typically hosts caching
+- `Util`: narrow-purpose helpers
 
 ## Domain notes and terminology
 
 ### Translation terms
 
-- CWT Config → CWT 规则 (avoid using "rule" if it specifically means CWT configs)
+- CWT Config → CWT 规则 (prefer translate "config" to "规则", and vice versa, if it specifically means CWT configs)
 - scope → 作用域
 - modifier → 修正
 - trigger → 触发器
 - effect → 效果
 - scripted variable → 封装变量
+- define → 定值
+- localisation → 本地化
 - definition → 定义
   - scripted trigger → 封装触发器
   - scripted effect → 封装效果
   - script value → 脚本值
-  - define → 定值
   - game rule → 游戏规则
   - on action → 动作触发
   - event → 事件
   - event namespace → 事件命名空间
   - sprite -> 精灵
-- localisation → 本地化
 - directive → 指令
   - inline script → 内联脚本
   - definition injection → 定义注入
@@ -256,7 +208,7 @@ For detailed language syntax and recommended examples, see:
 
 ### Config System Guidance
 
-For the config system and format of configs and config expressions, see:
+For the config system and the config format, see:
 
 - `docs/en/config.md`
 - `docs/en/ref-config-format.md`
@@ -268,6 +220,7 @@ For the config system and format of configs and config expressions, see:
 ### Communication
 
 - Prefer Chinese when talking to the main maintainer.
+- Conversation notes may exist in opened files, you can use them to guide the work and suggest next steps, but do not execute unrequested tasks.
 
 ### Markdown output conventions (when you generate or edit Markdown)
 
@@ -283,12 +236,6 @@ For the config system and format of configs and config expressions, see:
 - When referencing types like `PsiElement` in KDoc, prefer KDoc links: `[PsiElement]`.
 - Avoid overly long parameter-by-parameter docs unless truly necessary; prefer describing the method as a whole.
 
-### Working style
-
-- If a task is large/complex and needs a detailed plan, you can consider writing the plan document into `documents/ai-plans/`.
-- If the task is analysis/evaluation/exploration, you can consider writing the report document into `documents/ai-reports/`.
-- If you notice existing conversation notes in opened files, you may use them to guide the work and suggest next steps, but do not execute unrequested tasks.
-
 ### IntelliJ plugin specifics
 
 - Many registrations live under `src/main/resources/META-INF/pls-*.xml` included by `plugin.xml`.
@@ -303,17 +250,17 @@ For the config system and format of configs and config expressions, see:
 - Add/update tests when feasible; distinguish unit vs integration tests.
 - Run `./gradlew test` (or a targeted test task) before finishing.
 
-### Tooling preferences (important)
+## Tooling preferences
 
 Prefer **tool-assisted** workflows over ad-hoc shell usage.
 
-#### General file/text operations
+### General file/text operations
 
 - Prefer built-in tools for common operations (find files by name/glob, search text/regex across the repo, read files before editing, apply well-scoped patches, etc.)
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
 - Avoid blind edits and avoid scanning via shell commands when structured search is available.
 
-#### JetBrains official MCP server (IDE actions)
+### JetBrains official MCP server (IDE actions)
 
 When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available:
 
@@ -321,7 +268,7 @@ When you need to **drive IDE actions** (not just code intelligence), prefer the 
 - IDE inspections / file problems: `get_file_problems`
 - Reformatting: `reformat_file`
 
-#### IDE Index MCP server (semantic code intelligence)
+### IDE Index MCP server (semantic code intelligence)
 
 When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available:
 

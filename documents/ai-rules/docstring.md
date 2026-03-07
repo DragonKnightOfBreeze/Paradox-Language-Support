@@ -1,6 +1,6 @@
 ---
-trigger: model_decision
-description: 如果需要编写文档注释
+trigger: manual
+description: 这是一个关于如何编写文档注释的指南
 globs: 
 ---
 
