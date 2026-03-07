@@ -55,7 +55,7 @@ The plugin also allows selecting multiple images in the project view and perform
 > [!tip]
 > You can jump directly to external image tools from the IDE in several ways:
 > 
-> 1. Using Intellij IDEA's [External Tools](https://www.jetbrains.com/help/idea/configuring-third-party-tools.html) feature
+> 1. Using IntelliJ IDEA's [External Tools](https://www.jetbrains.com/help/idea/configuring-third-party-tools.html) feature
 >    - In the IDE settings page, go to `Tools > External Tools` and configure the external tools.
 >    - Open the target file in the editor (or select it in the project view), then in the right-click menu, go to `External Tools > {toolName}`.
 > 2. Jump directly to the external editor for the image

@@ -55,7 +55,7 @@
 > [!tip]
 > 你可以通过以下几种方式，直接从 IDE 转到外部的图片工具。
 > 
-> 1. 通过 Intellij IDEA 的 [外部工具](https://www.jetbrains.com/help/idea/configuring-third-party-tools.html) 功能
+> 1. 通过 IntelliJ IDEA 的 [外部工具](https://www.jetbrains.com/help/idea/configuring-third-party-tools.html) 功能
 >    - 在 IDE 的设置页面中，点击 `Tools > External Tools`，然后配置好外部工具。
 >    - 在编辑器中打开目标文件（或者在项目视图中选中目标文件），然后在右键菜单中，点击 `External Tools > {toolName}`。
 > 2. 直接转到图片的外部编辑器
