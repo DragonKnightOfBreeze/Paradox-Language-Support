@@ -36,7 +36,6 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see icu.windea.pls.cwt.CwtFileType
 @see src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf
 @see src/main/kotlin/icu/windea/pls/cwt/Cwt.flex
-@see src/main/kotlin/icu/windea/pls/cwt/Cwt.OptionDocument.flex
 -->
 
 This chapter describes the syntax of the CWT language.
@@ -213,7 +212,7 @@ effect = {
     enabled = yes
     level >= 2
     size ?= @my_var
-    color = rgb { 34, 136, 255 }
+    color = rgb { 34 136 255 }
 
     name = "Hello $who|leader$!"
     "tooltip" = "line\nnext line"
@@ -266,7 +265,7 @@ Markup available inside the text (`"<text>"`):
 - **Parameter**: `$name$` or `$name|argument$`. `name` can be a localisation key, command, or scripted variable reference (e.g., `$@var$` is equivalent at the parsing level).
 - **Icon**: `£icon|frame£` (`|frame` can be omitted), embeds a GFX icon when rendered.
 - **Command**: `[text|argument]`, where `text` can be parameterized; commonly used for `Get...`/context calls.
-- **Concept Command (Stellaris)**: `['concept' <rich text>]`, used to link concepts and display descriptive text.
+- **Concept Command (Stellaris)**: `['concept', <rich text>]`, used to link concepts and display descriptive text.
 - **Text Format (CK3/Vic3)**: `#format ... #!`, used to style text blocks.
 - **Text Icons (CK3/Vic3)**: `@icon!` (starts with `@`, ends with `!`).
 
@@ -287,7 +286,7 @@ Notes:
 - Double quotes inside the text generally do not need escaping, but avoid unpaired quotes.
 
 > [!warning]
-> `#format`, `@icon!`, etc., are advanced markup supported by specific games; they are only valid in those games. `['concept' ...]` is only supported in Stellaris.
+> `#format`, `@icon!`, etc., are advanced markup supported by specific games; they are only valid in those games. `['concept', ...]` is only supported in Stellaris.
 
 ## Paradox CSV Language {#paradox-csv}
 

@@ -36,7 +36,6 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see icu.windea.pls.cwt.CwtFileType
 @see src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf
 @see src/main/kotlin/icu/windea/pls/cwt/Cwt.flex
-@see src/main/kotlin/icu/windea/pls/cwt/Cwt.OptionDocument.flex
 -->
 
 本章节说明 CWT 语言的语法。
@@ -213,7 +212,7 @@ effect = {
     enabled = yes
     level >= 2
     size ?= @my_var
-    color = rgb { 34, 136, 255 }
+    color = rgb { 34 136 255 }
 
     name = "Hello $who|leader$!"
     "tooltip" = "line\nnext line"
@@ -266,7 +265,7 @@ Paradox 本地化语言是一种领域特定语言，用于为游戏提供可国
 - **参数**：`$name$` 或 `$name|argument$`。`name` 可为本地化键、命令，或封装变量引用（如 `$@var$` 形式在解析层面等价）。
 - **图标**：`£icon|frame£`（`|frame` 可省略），在渲染时嵌入 GFX 图标。
 - **命令**：`[text|argument]`，其中 `text` 可参数化；常用于 `Get...`/上下文调用。
-- **概念命令（Stellaris）**：`['concept' <rich text>]`，用于链接概念与显示说明文本。
+- **概念命令（Stellaris）**：`['concept', <rich text>]`，用于链接概念与显示说明文本。
 - **文本格式（CK3/Vic3）**：`#format ... #!`，用于样式化文本块。
 - **文本图标（CK3/Vic3）**：`@icon!`（以 `@` 开始、以 `!` 结尾）。
 
@@ -287,7 +286,7 @@ l_english:
 - 文本中的双引号在多数情况下不需要转义，但建议避免不成对的引号。
 
 > [!warning]
-> `#format`、`@icon!` 等为特定游戏支持的进阶标记；仅在对应游戏中有效。`['concept' ...]` 仅 Stellaris 支持。
+> `#format`、`@icon!` 等为特定游戏支持的进阶标记；仅在对应游戏中有效。`['concept', ...]` 仅 Stellaris 支持。
 
 ## Paradox CSV 语言 {#paradox-csv}
 
