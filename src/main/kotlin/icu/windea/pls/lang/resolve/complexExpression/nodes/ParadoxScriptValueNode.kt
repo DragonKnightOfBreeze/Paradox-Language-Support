@@ -28,7 +28,7 @@ class ParadoxScriptValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtConfig<*>
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.to.singletonSet()
     }

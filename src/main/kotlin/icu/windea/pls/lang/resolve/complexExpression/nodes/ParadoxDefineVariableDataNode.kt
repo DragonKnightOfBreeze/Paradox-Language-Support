@@ -13,6 +13,7 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefineSearch
@@ -21,14 +22,14 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
-class ParadoxDefineNamespaceNode(
+class ParadoxDefineVariableDataNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDefineReferenceExpression
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_NAMESPACE_KEY
+        return ParadoxScriptAttributesKeys.DEFINE_VARIABLE_KEY
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -36,7 +37,7 @@ class ParadoxDefineNamespaceNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedDefineNamespace(rangeInExpression, text)
+        return ParadoxComplexExpressionErrorBuilder.unresolvedDefineVariable(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -49,11 +50,12 @@ class ParadoxDefineNamespaceNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDefineNamespaceNode
+        private val node: ParadoxDefineVariableDataNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val expression get() = node.expression
         private val project get() = expression.configGroup.project
-        private val namespace get() = node.text
+        private val namespace get() = expression.namespaceNode?.text
+        private val variableName get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
             throw IncorrectOperationException()
@@ -78,21 +80,23 @@ class ParadoxDefineNamespaceNode(
         }
 
         private fun doResolve(): PsiElement? {
+            if (namespace == null) return null
             val selector = selector(project, element).define().contextSensitive()
-            val resolved = ParadoxDefineSearch.search(namespace, "", selector).find()
+            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
+            if (namespace == null) return ResolveResult.EMPTY_ARRAY
             val selector = selector(project, element).define().contextSensitive()
-            val resolved = ParadoxDefineSearch.search(namespace, "", selector).findAll()
+            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
             return resolved.createResults()
         }
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineNamespaceNode {
-            return ParadoxDefineNamespaceNode(text, textRange, configGroup, expression)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineVariableDataNode {
+            return ParadoxDefineVariableDataNode(text, textRange, configGroup, expression)
         }
     }
 

@@ -31,7 +31,7 @@ class StellarisNameFormatLocalisationNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
             is icu.windea.pls.localisation.ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY

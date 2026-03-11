@@ -34,13 +34,13 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-class ParadoxDatabaseObjectDataNode(
+class ParadoxDatabaseObjectDataDataNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDatabaseObjectExpression,
     val isBase: Boolean,
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     val config = expression.typeNode?.config
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
@@ -125,7 +125,7 @@ class ParadoxDatabaseObjectDataNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDatabaseObjectDataNode
+        private val node: ParadoxDatabaseObjectDataDataNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
@@ -204,8 +204,8 @@ class ParadoxDatabaseObjectDataNode(
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectDataNode {
-            return ParadoxDatabaseObjectDataNode(text, textRange, configGroup, expression, isBase)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectDataDataNode {
+            return ParadoxDatabaseObjectDataDataNode(text, textRange, configGroup, expression, isBase)
         }
     }
 

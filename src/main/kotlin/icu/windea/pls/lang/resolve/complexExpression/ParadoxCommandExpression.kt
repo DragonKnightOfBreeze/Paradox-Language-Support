@@ -162,7 +162,7 @@ private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Re
         }
         nodes += suffixNodes
         if (!incomplete && nodes.isEmpty()) return null
-        expression.finishResolving()
+        expression.finishResolution()
         return expression
     }
 }

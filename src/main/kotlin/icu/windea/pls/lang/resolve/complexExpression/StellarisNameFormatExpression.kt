@@ -419,7 +419,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
             parseTopLevel(0, textLength)
         }
 
-        expression.finishResolving()
+        expression.finishResolution()
         return expression
     }
 }

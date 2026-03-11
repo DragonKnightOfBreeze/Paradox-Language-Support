@@ -10,30 +10,48 @@ import icu.windea.pls.core.runCatchingCancelable
 sealed interface ParadoxMatchResult {
     fun get(options: ParadoxMatchOptions? = null): Boolean
 
+    /** 直接匹配。 */
     sealed interface DirectMatch : ParadoxMatchResult
 
+    /** 延迟匹配。需要按照具体的类型，每次一组依次尝试应用。 */
     sealed interface DeferredMatch : ParadoxMatchResult
 
+    /** 绝对不匹配。 */
     data object NotMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = false
     }
 
+    /** 精确匹配。 */
     data object ExactMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
+    /** 可容忍的精确匹配。在语义解析阶段会认为不是正确的表达式，因而给出警告或错误。 */
+    data object ToleratedExactMatch : ParadoxMatchResult, DirectMatch {
+        override fun get(options: ParadoxMatchOptions?) = true
+    }
+
+    /** 通配符匹配。不验证其中某部分在解析引用后是否合法。 */
     data object WildcardMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
+    /** 更宽松的通配符匹配。这意味着存在另一种更精确的格式。 */
+    data object RelaxWildcardMatch : ParadoxMatchResult, DeferredMatch {
+        override fun get(options: ParadoxMatchOptions?) = true
+    }
+
+    /** 部分匹配。这意味着其中某部分存在格式上的错误。 */
     data object PartialMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
+    /** 回退匹配。其他所有常规匹配都无法应用时才会考虑的匹配。 */
     data object FallbackMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
+    /** 带参数的匹配。 */
     data object ParameterizedMatch : ParadoxMatchResult {
         override fun get(options: ParadoxMatchOptions?) = true
     }

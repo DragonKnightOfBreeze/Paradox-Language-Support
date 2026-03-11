@@ -142,7 +142,7 @@ private class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpress
             nodes += node
         }
         if (!incomplete && nodes.isEmpty()) return null
-        expression.finishResolving()
+        expression.finishResolution()
         return expression
     }
 
