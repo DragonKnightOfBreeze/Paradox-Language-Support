@@ -66,8 +66,8 @@ class ParadoxDirectoryElementNode(
             if (file.isDirectory) {
                 // 直接位于入口目录中，且未被排除
                 if (!directoryNames.add(file.name)) return@p true
-                val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FilePath, file, project)
-                if (!fileData.values.single().included) return@p true
+                val fileData = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.IncludedDirectory, file, project)
+                if (fileData.isEmpty()) return@p true
                 files.add(file)
             } else {
                 // 直接位于入口目录中

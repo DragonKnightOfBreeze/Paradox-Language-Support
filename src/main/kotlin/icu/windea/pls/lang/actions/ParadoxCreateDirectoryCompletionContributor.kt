@@ -11,7 +11,6 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.model.ParadoxFileInfo
 
 /**
@@ -60,18 +59,14 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val pathPrefix = if (path.isEmpty()) "" else "$path/"
         val gameType = fileInfo.rootInfo.gameType
         val project = directory.project
-        val scope = ParadoxSearchScope.fromElement(directory) ?: ParadoxSearchScope.allScope(project, directory)
-        val indexId = PlsIndexKeys.FilePath
-        FileBasedIndex.getInstance().processAllKeys(indexId, p@{ key ->
-            FileBasedIndex.getInstance().processValues(indexId, key, null, pp@{ _, data ->
-                ProgressManager.checkCanceled()
-                if (data.gameType != gameType) return@pp true
-                if (!data.included) return@pp true
-                val p = data.directory.removePrefixOrNull(pathPrefix)
-                if (p.isNotNullOrEmpty()) result.add(p)
-                true
-            }, scope)
-            true
-        }, scope, null)
+        val gameTypePrefix = "${gameType.id}:"
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        for (key in allKeys) {
+            ProgressManager.checkCanceled()
+            if (!key.startsWith(gameTypePrefix)) continue
+            val dir = key.removePrefix(gameTypePrefix)
+            val p = dir.removePrefixOrNull(pathPrefix)
+            if (p.isNotNullOrEmpty()) result.add(p)
+        }
     }
 }

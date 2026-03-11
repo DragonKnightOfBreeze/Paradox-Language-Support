@@ -9,18 +9,22 @@ import icu.windea.pls.lang.fileInfo
 import java.util.*
 
 /**
- * 文件的路径信息的索引。
+ * 已包含的目录的索引。
  *
- * 键为相对于入口目录的路径。
+ * 键的格式为 `{gameTypeId}:{directoryPath}`，其中 `{directoryPath}` 是相对于入口目录的路径。
+ *
+ * 仅索引通过包含检查的目录（排除隐藏目录和某些特定目录）。
+ *
+ * @see PlsIndexUtil.isIncludedDirectory
  */
-class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
+class ParadoxIncludedDirectoryIndex : ScalarIndexExtension<String>() {
     private val inputFilter = IndexInputFilter { it.fileInfo != null }
     private val indexer = DataIndexer<String, Void, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getName() = PlsIndexKeys.FilePath
+    override fun getName() = PlsIndexKeys.IncludedDirectory
 
-    override fun getVersion() = PlsIndexVersions.FilePath
+    override fun getVersion() = PlsIndexVersions.IncludedDirectory
 
     override fun getInputFilter() = inputFilter
 
@@ -33,10 +37,13 @@ class ParadoxFilePathIndex : ScalarIndexExtension<String>() {
     override fun indexDirectories() = true
 
     private fun indexData(fileContent: FileContent): Map<String, Void?> {
-        // 这里索引的路径，使用相对于入口目录的路径
         val file = fileContent.file
+        if (!file.isDirectory) return emptyMap()
+        if (!PlsIndexUtil.isIncludedDirectory(file)) return emptyMap()
         val fileInfo = file.fileInfo ?: return emptyMap()
+        val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path.path
-        return Collections.singletonMap(path, null)
+        val key = "${gameType.id}:$path"
+        return Collections.singletonMap(key, null)
     }
 }

@@ -8,7 +8,6 @@ import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
-import icu.windea.pls.model.index.ParadoxFilePathData
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -33,7 +32,8 @@ object PlsIndexKeys {
 
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
-    val FilePath = ID.create<String, ParadoxFilePathData>("paradox.file.path.index")
+    val FilePath = ID.create<String, Void>("paradox.file.path.index")
+    val IncludedDirectory = ID.create<String, Void>("paradox.includedDirectory.index")
     val ComplexEnumValue = ID.create<String, List<ParadoxComplexEnumValueIndexInfo>>("paradox.complexEnumValue.index")
     val Definition = ID.create<String, List<ParadoxDefinitionIndexInfo>>("paradox.definition.index")
     val DefinitionInjection = ID.create<String, List<ParadoxDefinitionInjectionIndexInfo>>("paradox.definitionInjection.index") // #252
