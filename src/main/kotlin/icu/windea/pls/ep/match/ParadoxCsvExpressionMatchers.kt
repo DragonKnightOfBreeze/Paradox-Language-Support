@@ -23,7 +23,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
         val r = ParadoxTypeResolver.isBoolean(value)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchInt(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
@@ -72,7 +72,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             // match simple enums
             val enumConfig = context.configGroup.enums[enumName] ?: return@run
             val r = value in enumConfig.values
-            return ParadoxMatchResult.of(r)
+            return ParadoxMatchResult.exactOrNot(r)
         }
         run {
             // match complex enums

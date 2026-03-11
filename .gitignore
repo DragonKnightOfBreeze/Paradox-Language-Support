@@ -1,15 +1,20 @@
+# excluded idea settings files
+.idea/dataSources
+.idea/data_source_mapping.xml
+.idea/dataSources.xml
+
+# excluded local cwt configs
 cwt/cwtools-*-config
 
-.clinerules
-# .windsurf # why?
+# excluded ai rules
+.windsurf
+documents/ai-rules/chro*.md
+
+# misc
 notebook
 lib
 tmp
 local.properties
-
-.idea/dataSources
-.idea/data_source_mapping.xml
-.idea/dataSources.xml
 
 ### Kotlin template
 # Compiled class file

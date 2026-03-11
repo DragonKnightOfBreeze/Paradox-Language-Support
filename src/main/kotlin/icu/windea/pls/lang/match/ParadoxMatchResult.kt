@@ -7,30 +7,38 @@ import icu.windea.pls.core.runCatchingCancelable
  *
  * @see ParadoxMatchService
  */
-sealed class ParadoxMatchResult {
-    abstract fun get(options: ParadoxMatchOptions? = null): Boolean
+sealed interface ParadoxMatchResult {
+    fun get(options: ParadoxMatchOptions? = null): Boolean
 
-    data object NotMatch : ParadoxMatchResult() {
+    sealed interface DirectMatch : ParadoxMatchResult
+
+    sealed interface DeferredMatch : ParadoxMatchResult
+
+    data object NotMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = false
     }
 
-    data object ExactMatch : ParadoxMatchResult() {
+    data object ExactMatch : ParadoxMatchResult, DirectMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    data object FallbackMatch : ParadoxMatchResult() {
+    data object WildcardMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    data object PartialMatch : ParadoxMatchResult() {
+    data object PartialMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    data object ParameterizedMatch : ParadoxMatchResult() {
+    data object FallbackMatch : ParadoxMatchResult, DeferredMatch {
         override fun get(options: ParadoxMatchOptions?) = true
     }
 
-    sealed class LazyMatch(predicate: () -> Boolean) : ParadoxMatchResult() {
+    data object ParameterizedMatch : ParadoxMatchResult {
+        override fun get(options: ParadoxMatchOptions?) = true
+    }
+
+    sealed class LazyMatch(predicate: () -> Boolean) : ParadoxMatchResult {
         // use manual lazy implementation instead of kotlin Lazy to optimize memory
         @Volatile
         private var value: Any = predicate
@@ -45,7 +53,6 @@ sealed class ParadoxMatchResult {
 
         private fun skip(options: ParadoxMatchOptions?): Boolean {
             return when {
-                this is LazySimpleMatch -> ParadoxMatchOptionsUtil.relax(options)
                 this is LazyBlockAwareMatch -> ParadoxMatchOptionsUtil.relax(options)
                 this is LazyIndexAwareMatch -> ParadoxMatchOptionsUtil.skipIndex(options)
                 this is LazyScopeAwareMatch -> ParadoxMatchOptionsUtil.skipScope(options)
@@ -67,17 +74,19 @@ sealed class ParadoxMatchResult {
         }
     }
 
-    class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyTemplateAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
-    class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
-    class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
-    class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
+    class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate), DirectMatch
 
     companion object {
-        fun of(value: Boolean) = if (value) ExactMatch else NotMatch
+        fun exactOrNot(value: Boolean) = if (value) ExactMatch else NotMatch
 
-        fun ofFallback(value: Boolean) = if (value) FallbackMatch else NotMatch
+        fun fallbackOrNot(value: Boolean) = if (value) FallbackMatch else NotMatch
+
+        fun exactOrFallback(value: Boolean) = if (value) ExactMatch else FallbackMatch
     }
 }

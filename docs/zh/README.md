@@ -78,6 +78,15 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 
 如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件][mailto]或 [Discord][url:discord] 进行联系。
 
+**贡献规则文件：**
+
+鉴于插件的规则驱动架构，贡献 CWT 规则文件是改善特定游戏支持的最有效方式之一。
+规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等）——保持其更新将直接改善该游戏所有用户的使用体验。
+
+各规则仓库的链接请参见 [cwt/README.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)，规则格式的编写指南请参见[规则文档](https://windea.icu/Paradox-Language-Support/zh/config.html)。
+
+当前维护者与贡献者名单请参见 [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md)。
+
 ## 致谢
 
 ### Powered by

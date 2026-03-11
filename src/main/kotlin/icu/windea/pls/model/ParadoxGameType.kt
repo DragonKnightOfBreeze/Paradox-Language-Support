@@ -98,7 +98,7 @@ enum class ParadoxGameType(
         }
 
         /**
-         * 得到（使用 `.metadata/metdata.json` 作为模组描述符的）所有游戏类型。
+         * 得到（使用 `.metadata/metadata.json` 作为模组描述符的）所有游戏类型。
          */
         @JvmStatic
         fun getAllUseMetadataJson(): List<ParadoxGameType> {

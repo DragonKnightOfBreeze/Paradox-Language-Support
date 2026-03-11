@@ -444,6 +444,9 @@
     <action id="Pls.CopyPathFromRoot" class="icu.windea.pls.lang.actions.CopyPathFromRootProvider">
       <add-to-group group-id="CopyFileReference"/>
     </action>
+    <action id="Pls.CopyPathFromEntry" class="icu.windea.pls.lang.actions.CopyPathFromEntryProvider">
+      <add-to-group group-id="CopyFileReference"/>
+    </action>
     <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>

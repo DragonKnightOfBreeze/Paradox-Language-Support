@@ -29,7 +29,7 @@ Paradox Language Support is the IntelliJ IDEA plugin designed specifically for P
 - **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diff viewing, diagrams and many other features.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
-- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressoins, inline scripts, definition injections, etc.
+- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
@@ -104,7 +104,11 @@ Download the [latest release][url:release-latest] and install it manually (No ne
 **Known Limitations:**
 
 - The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The plugin's built-in config files still need to be continuously improved, and also need to be continuously maintained and updated as the game version is updated. Feedback and contributions are welcome.
+- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
+  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
+  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
+  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
+- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.
 
 ## Technical Details
 
@@ -151,6 +155,15 @@ All forms of contribution and support are welcomed, including but not limited to
 - 💝 Sponsor the project via [Afdian][url:afdian].
 
 If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
+
+**Contributing to Config Files:**
+
+Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
+Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
+
+See the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
+
+For a list of current maintainers and contributors, see [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ## Acknowledgments
 

@@ -35,7 +35,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchBool(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = context.expression.type.isBooleanType()
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchInt(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -66,12 +66,12 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             context.expression.type.isStringType() -> true // unquoted/quoted string -> ok
             else -> false
         }
-        return ParadoxMatchResult.ofFallback(r)
+        return ParadoxMatchResult.fallbackOrNot(r)
     }
 
     private fun matchColorField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         val r = context.expression.type.isColorType() && context.configExpression.value?.let { context.expression.value.startsWith(it) } != false
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchBlock(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -119,14 +119,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     private fun matchPercentageField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         val r = ParadoxTypeResolver.isPercentageField(context.expression.value)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDataField(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
         val datePattern = context.configExpression.value
         val r = ParadoxTypeResolver.isDateField(context.expression.value, datePattern)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchDefinition(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -162,7 +162,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchAbsoluteFilePath(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
-        return ParadoxMatchResult.ExactMatch
+        return ParadoxMatchResult.WildcardMatch
     }
 
     private fun matchPathReference(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
@@ -180,7 +180,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val enumConfig = context.configGroup.enums[enumName]
         if (enumConfig != null) {
             val r = name in enumConfig.values
-            return ParadoxMatchResult.of(r)
+            return ParadoxMatchResult.exactOrNot(r)
         }
         // match complex enums
         val complexEnumConfig = context.configGroup.complexEnums[enumName]
@@ -299,7 +299,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 
     private fun matchTechnologyWithLevel(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!context.expression.type.isStringType()) return ParadoxMatchResult.NotMatch
-        if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.ExactMatch
+        if (context.expression.value.length > 1 && context.expression.value.indexOf('@') >= 1) return ParadoxMatchResult.WildcardMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         return ParadoxMatchResult.NotMatch
     }
@@ -310,13 +310,13 @@ class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.dataType != CwtDataTypes.Constant) return null
         val value = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
         if (!context.configExpression.isKey) {
-            // 作为常量的值也可能是yes/no
+            // 作为常量的值也可能是布尔值（`yes` / `no`）
             val text = context.expression.value
             if ((value == "yes" || value == "no") && text.isLeftQuoted()) return ParadoxMatchResult.NotMatch
         }
-        // 这里也用来匹配空字符串
+        // 兼容空字符串，兼容带参数的情况
         val r = context.expression.matchesConstant(value)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 }
 
@@ -328,7 +328,7 @@ class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (!context.expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         // 允许用引号括起
-        return ParadoxMatchResultProvider.forTemplate(context.element, context.configGroup, context.expression.value, context.configExpression)
+        return ParadoxMatchResultProvider.forTemplate(context.element, context.configGroup, context.expression.value, context.configExpression, context.options)
     }
 }
 
@@ -340,7 +340,7 @@ class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
         val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesAntPattern(pattern, ignoreCase)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 }
 
@@ -352,7 +352,7 @@ class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val pattern = context.configExpression.value ?: return ParadoxMatchResult.NotMatch
         val ignoreCase = context.configExpression.ignoreCase
         val r = context.expression.value.matchesRegex(pattern, ignoreCase)
-        return ParadoxMatchResult.of(r)
+        return ParadoxMatchResult.exactOrNot(r)
     }
 }
 

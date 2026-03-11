@@ -18,7 +18,8 @@ class ParadoxCsvExpressionPsiReference(
     rangeInElement: TextRange,
     val columnConfig: CwtPropertyConfig
 ) : PsiPolyVariantReferenceBase<ParadoxCsvExpressionElement>(element, rangeInElement) {
-    private val project get() = columnConfig.configGroup.project
+    private val configGroup get() = columnConfig.configGroup
+    private val project get() = configGroup.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return ParadoxPsiManager.handleExpressionElementRename(element, rangeInElement, newElementName, resolve())

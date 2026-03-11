@@ -447,7 +447,7 @@ object ParadoxPsiManager {
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         newElementName: String,
-        resolved: PsiElement? = null,
+        resolved: PsiElement?,
         configExpression: CwtDataExpression? = null,
     ): PsiElement {
         return when {

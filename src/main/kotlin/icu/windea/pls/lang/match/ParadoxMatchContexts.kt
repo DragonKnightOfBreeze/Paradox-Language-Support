@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -8,6 +10,7 @@ import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 脚本表达式的匹配上下文。
@@ -28,9 +31,9 @@ data class ParadoxScriptExpressionMatchContext(
     val configGroup: CwtConfigGroup,
     val options: ParadoxMatchOptions? = null,
 ) {
-    val dataType get() = configExpression.type
-    val project get() = configGroup.project
-    val gameType get() = configGroup.gameType
+    val dataType: CwtDataType get() = configExpression.type
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 }
 /**
  * 脚本表达式的优化上下文。
@@ -47,8 +50,8 @@ data class ParadoxScriptExpressionMatchOptimizerContext(
     val configGroup: CwtConfigGroup,
     val options: ParadoxMatchOptions? = null,
 ) {
-    val project get() = configGroup.project
-    val gameType get() = configGroup.gameType
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 }
 
 /**
@@ -67,7 +70,7 @@ data class ParadoxCsvExpressionMatchContext(
     val configExpression: CwtDataExpression,
     val configGroup: CwtConfigGroup,
 ) {
-    val dataType get() = configExpression.type
-    val project get() = configGroup.project
-    val gameType get() = configGroup.gameType
+    val dataType: CwtDataType get() = configExpression.type
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
 }
