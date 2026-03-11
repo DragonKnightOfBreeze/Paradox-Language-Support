@@ -12,6 +12,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于在游戏或模组目录中创建目录时，提示可用项。
@@ -32,14 +33,23 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
     // 基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
-        if (DumbService.isDumb(directory.project)) return emptySet()
-
         val fileInfo = directory.fileInfo ?: return emptySet()
         val path = fileInfo.path.path
         val gameType = fileInfo.rootInfo.gameType
         val pathPrefix = if (path.isEmpty()) "" else "$path/"
         val result = sortedSetOf<String>()
-        if (path.isEmpty()) result.addAll(defaultVariants)
+        processFromDefault(result, path)
+        processFromIndex(result, directory, gameType, pathPrefix)
+        return result.map { it.toVariant() }
+    }
+
+    private fun processFromDefault(result: MutableSet<String>, path: String) {
+        if (path.isNotEmpty()) return
+        result.addAll(defaultVariants)
+    }
+
+    private fun processFromIndex(result: MutableSet<String>, directory: PsiDirectory, gameType: ParadoxGameType, pathPrefix: String) {
+        if (DumbService.isDumb(directory.project)) return
         val project = directory.project
         val scope = GlobalSearchScope.allScope(project)
         ProgressManager.checkCanceled()
@@ -54,7 +64,6 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
             }, scope)
             true
         }, project)
-        return result.map { it.toVariant() }
     }
 
     private fun String.toVariant() = Variant(this, null)

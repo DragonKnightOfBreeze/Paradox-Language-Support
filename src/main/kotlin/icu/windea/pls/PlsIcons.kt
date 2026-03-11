@@ -17,11 +17,13 @@ object PlsIcons {
 
     object General {
         @JvmField
-        val GameDirectory = AllIcons.Modules.SourceRoot
+        val GameDirectory = AllIcons.Nodes.Module
         @JvmField
         val ModDirectory = AllIcons.Modules.SourceRoot
         @JvmField
-        val ConfigGroupDirectory = AllIcons.Modules.ResourcesRoot
+        val EntryDirectory = AllIcons.Modules.SourceRoot
+        @JvmField
+        val ConfigGroupDirectory = AllIcons.Modules.EditFolder
         @JvmField
         val Library = AllIcons.Nodes.PpLibFolder
         @JvmField

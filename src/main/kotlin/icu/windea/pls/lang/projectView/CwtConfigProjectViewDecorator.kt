@@ -17,11 +17,11 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
         forConfigGroupDirectory(node, data)
     }
 
-    private fun forConfigGroupDirectory(node: ProjectViewNode<*>, data: PresentationData) {
-        if (node !is PsiDirectoryNode) return
-        val file = node.virtualFile ?: return
+    private fun forConfigGroupDirectory(node: ProjectViewNode<*>, data: PresentationData): Boolean {
+        if (node !is PsiDirectoryNode) return false
+        val file = node.virtualFile ?: return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file } ?: return
+        val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file } ?: return false
 
         // 特殊图标
         data.setIcon(PlsIcons.General.ConfigGroupDirectory)
@@ -34,5 +34,7 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
             if (hintMessage.isNullOrEmpty()) return@run
             data.locationString = hintMessage
         }
+
+        return true
     }
 }
