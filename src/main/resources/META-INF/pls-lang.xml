@@ -52,6 +52,7 @@
 
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler"/>
 
+    <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxEntryCreateDirectoryCompletionContributor"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
     <!-- icu.windea.pls.lang.codeInsight.completion.cwt.CwtKeywordCompletionProvider -->

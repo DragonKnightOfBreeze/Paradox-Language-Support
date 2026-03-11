@@ -53,7 +53,7 @@ class ParadoxGameElementNode(
         ParadoxFilePathSearch.search(null, null, selector).process p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.length != 1) return@p true // 必须直接位于入口目录中
-            if(!fileInfo.inMainOrExtraEntry) return@p true // 必须位于合法的入口目录中
+            if (!fileInfo.inMainOrExtraEntry) return@p true // 必须位于合法的入口目录中
             if (!isIncluded(file)) return@p true // 必须未被排除
 
             // 必须是目录

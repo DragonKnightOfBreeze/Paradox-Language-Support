@@ -4,7 +4,9 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -44,9 +46,13 @@ open class ParadoxSearchScope(
     companion object {
         @JvmStatic
         fun fromElement(element: PsiElement): GlobalSearchScope? {
-            val psiFile = element.containingFile?.originalFile ?: return null
-            val file = psiFile.virtualFile ?: return null
-            val project = psiFile.project
+            val root = when {
+                element is PsiDirectory -> element
+                element is PsiFile -> element.originalFile
+                else -> element.containingFile?.originalFile ?: return null
+            }
+            val file = root.virtualFile ?: return null
+            val project = root.project
             return fromFile(project, file)
         }
 

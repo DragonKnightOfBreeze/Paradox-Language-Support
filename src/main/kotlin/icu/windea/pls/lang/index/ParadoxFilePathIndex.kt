@@ -55,22 +55,25 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathData
         val fileInfo = file.fileInfo ?: return emptyMap()
         val path = fileInfo.path.path
         val directoryPath = fileInfo.path.parent
+        val entry = fileInfo.entry
         val gameType = fileInfo.rootInfo.gameType
         val included = PlsIndexUtil.includeForFilePathIndex(file)
-        val data = ParadoxFilePathData(directoryPath, included, gameType)
+        val data = ParadoxFilePathData(directoryPath, entry, included, gameType)
         return Collections.singletonMap(path, data)
     }
 
     private fun saveValue(storage: DataOutput, value: ParadoxFilePathData) {
         storage.writeUTFFast(value.directory)
+        storage.writeUTFFast(value.entry)
         storage.writeByte(value.gameType.optimized(OptimizerRegistry.forGameType()))
         storage.writeBoolean(value.included)
     }
 
     private fun readValue(storage: DataInput): ParadoxFilePathData {
         val directory = storage.readUTFFast()
+        val entry = storage.readUTFFast()
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         val included = storage.readBoolean()
-        return ParadoxFilePathData(directory, included, gameType)
+        return ParadoxFilePathData(directory, entry, included, gameType)
     }
 }

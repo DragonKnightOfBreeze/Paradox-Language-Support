@@ -42,7 +42,7 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
     private fun checkTargetExistence(element: ParadoxScriptProperty, definitionInjectionInfo: ParadoxDefinitionInjectionInfo, holder: ProblemsHolder) {
         val target = definitionInjectionInfo.target ?: return
         val type = definitionInjectionInfo.type ?: return
-        if (DumbService.isDumb(holder.project)) return // ignore in dumb mode
+        if (DumbService.isDumb(holder.project)) return // skip for dumb mode
         if (definitionInjectionInfo.isTargetExist(holder.file)) return
         if (definitionInjectionInfo.isRelaxMode()) {
             if (checkForRelaxModes) {
