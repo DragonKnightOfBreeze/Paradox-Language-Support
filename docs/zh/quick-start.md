@@ -47,4 +47,8 @@
 ## 已知限制
 
 - 插件对脚本文件与本地化文件的部分复杂语言特性的支持尚不完整，并仍在完善中，欢迎反馈。
-- 插件内置的规则文件仍需持续完善，并随游戏版本更新而持续维护更新，欢迎反馈与贡献。
+- 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
+  目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
+  其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
+  欢迎向[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)贡献。
+- 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。

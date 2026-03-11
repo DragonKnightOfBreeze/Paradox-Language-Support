@@ -77,6 +77,15 @@ All forms of contribution and support are welcomed, including but not limited to
 
 If you are interested in submitting a PR, but have any questions about plugin development or config writing, feel free to contact us via [email][mailto] or [Discord][url:discord].
 
+**Contributing to Config Files:**
+
+Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
+Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
+
+See the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
+
+For a list of current maintainers and contributors, see [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md).
+
 ## Acknowledgments
 
 ### Powered by

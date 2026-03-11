@@ -47,4 +47,8 @@
 ## Known Limitations
 
 - The plugin's support for some complex language features of script files and localisation files is not yet complete, and is still being improved. Feedback is welcome.
-- The plugin's built-in config files still need to be continuously improved, and also need to be continuously maintained and updated as the game version is updated. Feedback and contributions are welcome.
+- The quality of config-driven features (such as code completion, code inspection and quick documentation) depends on the completeness and up-to-dateness of the CWT config files for each game.
+  Currently, configs are actively maintained for **Stellaris**, **Victoria 3** and **Europa Universalis V**.
+  Configs for other games (such as Crusader Kings III and Hearts of Iron IV) may be outdated, which can result in false warnings or missing completions.
+  Contributions to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) are very welcome.
+- Some advanced or uncommon scripting patterns (e.g. definitions declared within inline scripts, complex localisation commands) are not yet fully supported, and are being improved progressively.

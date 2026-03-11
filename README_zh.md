@@ -105,7 +105,11 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 **已知限制：**
 
 - 插件对脚本文件与本地化文件的部分复杂语言特性的支持尚不完整，并仍在完善中，欢迎反馈。
-- 插件内置的规则文件仍需持续完善，并随游戏版本更新而持续维护更新，欢迎反馈与贡献。
+- 规则驱动的功能（如代码补全、代码检查和快速文档）的质量取决于各游戏 CWT 规则文件的完整度与时效性。
+  目前，**Stellaris**、**Victoria 3** 和 **Europa Universalis V** 的规则正在积极维护中。
+  其他游戏（如 Crusader Kings III、Hearts of Iron IV）的规则可能已过时，这会导致误报警告或缺少补全。
+  欢迎向[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)贡献。
+- 部分高级或不常见的脚本写法（如在内联脚本中声明定义、复杂的本地化命令等）尚未完全支持，正在逐步改进中。
 
 ## 技术细节
 
@@ -152,6 +156,15 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 - 💝 通过[爱发电][url:afdian]赞助项目。
 
 如果你对提交 PR 感兴趣，但就插件开发或规则编写有任何疑问，欢迎通过[邮件][mailto]或 [Discord][url:discord] 进行联系。
+
+**贡献规则文件：**
+
+鉴于插件的规则驱动架构，贡献 CWT 规则文件是改善特定游戏支持的最有效方式之一。
+规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等）——保持其更新将直接改善该游戏所有用户的使用体验。
+
+各规则仓库的链接请参见 [cwt/README.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)，规则格式的编写指南请参见[规则文档](https://windea.icu/Paradox-Language-Support/zh/config.html)。
+
+当前维护者与贡献者名单请参见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
 
 ## 致谢
 
