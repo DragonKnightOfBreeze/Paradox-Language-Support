@@ -37,11 +37,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
@@ -527,7 +527,7 @@ object ParadoxComplexExpressionCompletionManager {
                 break
             }
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            if (node is ParadoxDefineNamespaceNode) {
+            if (node is ParadoxDefineNamespaceDataNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
@@ -538,7 +538,7 @@ object ParadoxComplexExpressionCompletionManager {
                     completeDefineNamespace(context, resultToUse)
                     break
                 }
-            } else if (node is ParadoxDefineVariableNode) {
+            } else if (node is ParadoxDefineVariableDataNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
@@ -1161,7 +1161,7 @@ object ParadoxComplexExpressionCompletionManager {
     fun completeDatabaseObject(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>()
-            ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataNode>()
+            ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataDataNode>()
             ?: return
         val config = node.config ?: return
 
@@ -1192,7 +1192,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.expressionTailText = oldTailText
     }
 
-    private fun completeForcedBaseDatabaseObject(context: ProcessingContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
+    private fun completeForcedBaseDatabaseObject(context: ProcessingContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataDataNode) {
         val configGroup = context.configGroup!!
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return
@@ -1237,7 +1237,7 @@ object ParadoxComplexExpressionCompletionManager {
     fun completeDefineVariable(context: ProcessingContext, result: CompletionResultSet) {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
-        val node = context.node?.castOrNull<ParadoxDefineVariableNode>() ?: return
+        val node = context.node?.castOrNull<ParadoxDefineVariableDataNode>() ?: return
         val namespaceNode = node.expression.namespaceNode ?: return
         val namespace = namespaceNode.text
         val tailText = " from define namespace ${namespace}"

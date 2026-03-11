@@ -98,6 +98,10 @@ object CwtConfigManager {
             if (gameType == null) return false
             return file.parent.toNioPathOrNull()?.any { it.name == "internal" } ?: false
         }
+        return isInternalFile(filePath)
+    }
+
+    fun isInternalFile(filePath: String): Boolean {
         return filePath.startsWith("internal/")
     }
 

@@ -30,7 +30,7 @@ class StellarisNameFormatDefinitionNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val definitionType: String?,
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }

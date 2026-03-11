@@ -32,12 +32,16 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.linkNodes
+import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -74,7 +78,7 @@ object ParadoxMatchResultProvider {
         val intValue = value.toIntOrNull() ?: return null
         val r = intValue in intRange
         // 即使数值不在范围之内，也不会直接认为不匹配
-        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.WildcardMatch
+        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.ToleratedExactMatch
     }
 
     fun forRangedFloat(value: String, configExpression: CwtDataExpression): ParadoxMatchResult? {
@@ -82,7 +86,7 @@ object ParadoxMatchResultProvider {
         val floatValue = value.toFloatOrNull() ?: return null
         val r = floatValue in floatRange
         // 即使数值不在范围之内，也不会直接认为不匹配
-        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.WildcardMatch
+        return if (r) ParadoxMatchResult.ExactMatch else ParadoxMatchResult.ToleratedExactMatch
     }
 
     fun forBlock(element: PsiElement, config: CwtMemberConfig<*>): ParadoxMatchResult {
@@ -234,16 +238,16 @@ object ParadoxMatchResultProvider {
 
     fun forScopeField(element: PsiElement, configGroup: CwtConfigGroup, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxMatchResult {
         return when (configExpression.type) {
-            CwtDataTypes.ScopeField -> ParadoxMatchResult.WildcardMatch
+            CwtDataTypes.ScopeField -> forComplexExpressionFromAttributes(scopeFieldExpression)
             CwtDataTypes.Scope -> {
-                val expectedScope = configExpression.value ?: return ParadoxMatchResult.WildcardMatch
+                val expectedScope = configExpression.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
                 }
             }
             CwtDataTypes.ScopeGroup -> {
-                val expectedScopeGroup = configExpression.value ?: return ParadoxMatchResult.WildcardMatch
+                val expectedScopeGroup = configExpression.value ?: return forComplexExpressionFromAttributes(scopeFieldExpression)
                 ParadoxMatchResult.LazyScopeAwareMatch {
                     val scopeContext = ParadoxScopeManager.getScopeContext(element, scopeFieldExpression, configExpression)
                     ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
@@ -254,44 +258,51 @@ object ParadoxMatchResultProvider {
     }
 
     fun forScopeFieldExpression(configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression, element: PsiElement): ParadoxMatchResult {
-        val complexExpression = ParadoxScopeFieldExpression.resolve(text, null, configGroup)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = ParadoxScopeFieldExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forScopeField(element, configGroup, complexExpression, configExpression)
     }
 
     fun forValueFieldExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxValueFieldExpression.resolve(text, null, configGroup)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = ParadoxValueFieldExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.WildcardMatch
+        return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forVariableFieldExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxVariableFieldExpression.resolve(text, null, configGroup)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = ParadoxVariableFieldExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.WildcardMatch
+        return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.WildcardMatch
+        return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forDefineReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val complexExpression = ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = ParadoxDefineReferenceExpression.resolve(text, null, configGroup) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.WildcardMatch
+        return forComplexExpressionFromAttributes(complexExpression)
     }
 
     fun forStellarisNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
-        val complexExpression = StellarisNameFormatExpression.resolve(text, null, configGroup, config)
-        if (complexExpression == null) return ParadoxMatchResult.NotMatch
+        val complexExpression = StellarisNameFormatExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
-        return ParadoxMatchResult.WildcardMatch
+        return forComplexExpressionFromAttributes(complexExpression)
+    }
+
+    private fun forComplexExpressionFromAttributes(complexExpression: ParadoxComplexExpression): ParadoxMatchResult {
+        // 对于链式表达式，只检查最后一个链接节点的属性即可确定匹配结果
+        val nodeToCheck = if (complexExpression is ParadoxLinkedExpression) {
+            complexExpression.linkNodes.lastOrNull() ?: complexExpression
+        } else {
+            complexExpression
+        }
+        val attributes = ParadoxComplexExpressionUtil.getAttributes(nodeToCheck)
+        if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { RELAX_DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.RelaxWildcardMatch
+        if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.WildcardMatch
+        return ParadoxMatchResult.ExactMatch
     }
 }

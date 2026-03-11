@@ -12,7 +12,9 @@
 ## 2.1.5
 
 - [x] [Vic3] Scripted triggers not being recognized #279
-- [ ] [Vic3] Link regression because of script value implementation #284
+- [x] [Vic3] Link regression because of script value implementation #284
+- [x] 修复：修复无法正确地重载同路径的规则文件的回归 BUG / FIX: Fixed a bug that cannot correctly override same-path config files
+- [x] 修复：修复和优化创建目录时的补全，兼容多种入口形式 / FIX: Fix and optimize create directory completion, compatible with various entry forms
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.4

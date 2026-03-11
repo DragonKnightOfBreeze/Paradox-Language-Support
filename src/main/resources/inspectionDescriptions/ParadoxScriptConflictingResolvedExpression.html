@@ -2,11 +2,27 @@
 <body>
   Reports conflicting resolved expressions.
   <p>
-    An expression (key / value) will be considered as conflicting after resolved in following situations:
+    An expression will be considered as conflicting
+    if it is associated with a block value (e.g., <code>{...}</code>)
+    that matches multiple CWT config expressions with distinct config sources.
+  </p>
+  <!-- tooltip end -->
+  <p>
+    This inspection applies in two cases:
   </p>
   <ul>
-    <li>It's a key expression, and value expression of it is a (non-empty) clause which matches multiple CWT config expressions.</li>
-    <li>It's a value expression, and it is a (non-empty) clause which matches multiple CWT config expressions.</li>
+    <li>A <b>key expression</b> whose corresponding value is a block that matches multiple CWT config expressions.</li>
+    <li>A <b>value expression</b> that is itself a block matching multiple CWT config expressions.</li>
   </ul>
+  <p>
+    Common scenario: in trigger contexts, a linked expression (such as <code>var:xxx</code>) may match
+    both <code>scope_field</code> and <code>value_field</code> aliases,
+    each expecting a different block structure (trigger clause vs. arithmetic operation).
+    This ambiguity is reported as a conflict.
+  </p>
+  <p>
+    Overridden configs (where one config's clause entries are a superset of another's) are automatically excluded
+    from conflict detection.
+  </p>
 </body>
 </html>

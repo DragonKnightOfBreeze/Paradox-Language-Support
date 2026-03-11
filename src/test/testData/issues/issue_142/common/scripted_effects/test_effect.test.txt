@@ -1,0 +1,24 @@
+# Issue #142
+# https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/142
+
+# Only `scope_field` is allowed in effect context (alias: `alias[effect:scope_field]`),
+# so there should be no problems for any cases.
+
+# case 1: `var:test` with trigger-only block content - no conflict
+test_effect_with_var_simple = {
+    var:test = {
+        always = yes
+    }
+}
+
+# case 2: `var:test` with ambiguous block content - no conflict
+test_effect_with_var_complex = {
+    var:test = {
+        root = root
+    }
+}
+
+# case 3: `var:test` with empty block - no conflict
+test_effect_with_var_empty = {
+    var:test = {}
+}

@@ -1,6 +1,7 @@
 # Contributors
 
-<!-- The chronicle keeps faith with those who build alongside it. -->
+<!-- As the pioneer seekers entered the tower, the realistic face of the Chronicle was revealed. -->
+<!-- Which was the truth about the Chronicle and the ********, a truth that will ********** **** *** * **** ****. -->
 
 ## Plugin
 

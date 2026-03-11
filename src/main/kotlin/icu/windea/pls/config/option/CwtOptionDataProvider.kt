@@ -23,18 +23,18 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 
 object CwtOptionDataProvider {
-    // NOTE 2.1.1. 目前不作为 EP
+    // NOTE 2.1.1 目前不作为 EP
 
     @Optimized
     fun process(optionData: CwtOptionDataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
         if (optionData !is CwtOptionDataHolderBase) return
         if (optionConfigs.isEmpty()) return
         if (PlsStates.resolveForInternalConfigs.get() == true) {
-            optionData.optionConfigs = optionConfigs
+            optionData.optionConfigs = optionConfigs // 始终保留选项规则到成员规则的用户数据中
             return
         }
         if (PlsConfigInternalSettings.getInstance().keepOptionConfigs) {
-            optionData.optionConfigs = optionConfigs
+            optionData.optionConfigs = optionConfigs // 此时保留选项规则到成员规则的用户数据中
         }
         optionConfigs.forEachFast { config ->
             when (config) {

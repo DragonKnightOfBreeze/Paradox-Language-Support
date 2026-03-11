@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon
 
 /**
- * 为游戏或模组目录，以及模组描述符文件，提供特殊图标。
+ * 为游戏或模组目录、入口目录以及模组描述符文件，提供特殊图标。
  */
 class ParadoxFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {
@@ -21,14 +21,18 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
         if (file.isDirectory) {
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            if (file != rootInfo.rootFile) return null
-            if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
-            if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
-            val icon = when (rootInfo) {
-                is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
-                is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+            if (file == rootInfo.rootFile) {
+                if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
+                if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
+                val icon = when (rootInfo) {
+                    is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
+                    is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+                }
+                return icon
+            } else {
+                if (fileInfo.path.isNotEmpty()) return null
+                return PlsIcons.General.EntryDirectory
             }
-            return icon
         } else {
             if (fileInfo.group != ParadoxFileGroup.ModDescriptor) return null
             val icon = PlsIcons.FileTypes.ModDescriptor

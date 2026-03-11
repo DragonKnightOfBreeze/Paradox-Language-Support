@@ -22,7 +22,7 @@ data class ParadoxFileInfo(
     val entryPath: Path? get() = if (entry.isEmpty()) rootPath else rootPath?.resolve(entry)
 
     val inMainOrExtraEntry: Boolean get() = inMainEntry || inExtraEntry
-    val inMainEntry: Boolean get() = entry.isEmpty() && rootInfo.mainEntries.isEmpty() || entry in rootInfo.mainEntries
+    val inMainEntry: Boolean get() = (entry.isEmpty() && rootInfo.mainEntries.isEmpty()) || entry in rootInfo.mainEntries
     val inExtraEntry: Boolean get() = entry in rootInfo.extraEntries
 
     fun isPossible(file: VirtualFile): Boolean {

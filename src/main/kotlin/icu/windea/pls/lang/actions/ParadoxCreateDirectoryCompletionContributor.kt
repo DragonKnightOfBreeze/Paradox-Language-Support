@@ -5,19 +5,25 @@ import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.model.ParadoxFileInfo
 
 /**
- * 用于在游戏或模组目录中创建目录时，提示可用项。
+ * 用于在游戏或模组目录中创建目录时，提示可用项（入口目录中的目录，可以多级）。
+ *
+ * 基于已有的包含脚本文件、本地化文件、CSV 文件或图片文件的路径，排除隐藏目录以及某些特定目录。
+ *
+ * NOTE: 普通目录的补全与入口目录的补全是上下文无关的（尽管游戏的实际行为可能确实是上下文有关的）。
+ *
+ * @see ParadoxEntryCreateDirectoryCompletionContributor
  */
 class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionContributor {
-    val defaultVariants = setOf(
+    private val defaultVariants = setOf(
         "common",
         "events",
         "gfx",
@@ -25,37 +31,42 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         "localisation",
     )
 
-    override fun getDescription(): String {
-        return PlsBundle.message("create.directory.completion.description")
-    }
-
-    // 基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
+    override fun getDescription() = PlsBundle.message("create.directory.completion.description")
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
-        if (DumbService.isDumb(directory.project)) return emptySet()
-
         val fileInfo = directory.fileInfo ?: return emptySet()
-        val path = fileInfo.path.path
-        val gameType = fileInfo.rootInfo.gameType
-        val pathPrefix = if (path.isEmpty()) "" else "$path/"
+        if (!fileInfo.inMainOrExtraEntry) return emptySet() // 必须位于合法的入口目录中
         val result = sortedSetOf<String>()
-        if (path.isEmpty()) result.addAll(defaultVariants)
-        val project = directory.project
-        val scope = GlobalSearchScope.allScope(project)
-        ProgressManager.checkCanceled()
-        val indexId = PlsIndexKeys.FilePath
-        FileBasedIndex.getInstance().processAllKeys(indexId, p@{ key ->
-            FileBasedIndex.getInstance().processValues(indexId, key, null, pp@{ _, data ->
-                if (data.gameType != gameType) return@pp true
-                if (!data.included) return@pp true
-                val p = data.directory.removePrefixOrNull(pathPrefix)
-                if (p.isNotNullOrEmpty()) result.add(p)
-                true
-            }, scope)
-            true
-        }, project)
-        return result.map { it.toVariant() }
+        processFromDefault(result, fileInfo)
+        processFromIndex(result, fileInfo, directory)
+        return result.map { Variant(it, null) }
     }
 
-    private fun String.toVariant() = Variant(this, null)
+    private fun processFromDefault(result: MutableSet<String>, fileInfo: ParadoxFileInfo) {
+        val path = fileInfo.path.path
+        if (path.isNotEmpty()) return
+        val pathPrefix = if (path.isEmpty()) "" else "$path/"
+        for (s in defaultVariants) {
+            val p = s.removePrefixOrNull(pathPrefix)
+            if (p.isNotNullOrEmpty()) result.add(p)
+        }
+    }
+
+    private fun processFromIndex(result: MutableSet<String>, fileInfo: ParadoxFileInfo, directory: PsiDirectory) {
+        ProgressManager.checkCanceled()
+        if (DumbService.isDumb(directory.project)) return // skip for dumb mode
+        val path = fileInfo.path.path
+        val pathPrefix = if (path.isEmpty()) "" else "$path/"
+        val gameType = fileInfo.rootInfo.gameType
+        val project = directory.project
+        val gameTypePrefix = "${gameType.id}:"
+        val allKeys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.IncludedDirectory, project)
+        for (key in allKeys) {
+            ProgressManager.checkCanceled()
+            if (!key.startsWith(gameTypePrefix)) continue
+            val dir = key.removePrefix(gameTypePrefix)
+            val p = dir.removePrefixOrNull(pathPrefix)
+            if (p.isNotNullOrEmpty()) result.add(p)
+        }
+    }
 }

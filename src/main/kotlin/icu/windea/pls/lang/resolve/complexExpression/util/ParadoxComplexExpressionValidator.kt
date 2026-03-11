@@ -21,9 +21,9 @@ import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpressi
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkPrefixNode
@@ -122,7 +122,7 @@ object ParadoxComplexExpressionValidator {
         val config = expression.typeNode?.config
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDatabaseObjectDataNode -> {
+                it is ParadoxDatabaseObjectDataDataNode -> {
                     when {
                         config?.localisation != null -> it.text.isParameterAwareIdentifier(".-'")
                         else -> it.text.isParameterAwareIdentifier()
@@ -140,8 +140,8 @@ object ParadoxComplexExpressionValidator {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
-                it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDefineNamespaceDataNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDefineVariableDataNode -> it.text.isParameterAwareIdentifier()
                 else -> true
             }
         }

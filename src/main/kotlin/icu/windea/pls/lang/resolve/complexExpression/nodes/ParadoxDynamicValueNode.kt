@@ -23,7 +23,7 @@ class ParadoxDynamicValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val configs: List<CwtConfig<*>>
-) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return configs
     }

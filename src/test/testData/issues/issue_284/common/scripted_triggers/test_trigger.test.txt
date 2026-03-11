@@ -1,0 +1,23 @@
+# Issue #284: scope link in trigger context should not produce conflicting resolved expression warning
+# https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284
+
+# scope link `owner` scoping to country
+test_trigger_scope_link = {
+    owner = {
+        always = yes
+    }
+}
+
+# chained & all static
+test_trigger_scope_link_chained_all_static = {
+    root.owner = {
+        always = yes
+    }
+}
+
+# chained & last static & previous could be dynamic
+test_trigger_scope_link_chained_last_static = {
+    event_target:x.owner = {
+        always = yes
+    }
+}

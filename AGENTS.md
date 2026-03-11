@@ -72,6 +72,7 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 - Most platform/integration tests use test data under `src/test/testData`.
 - Naming convention is typically `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`.
+- Case convention is typically `snake_case.test.txt`.
 - Some feature tests provide a test-local `.config/` directory under test data to simulate config groups.
 
 ### IntelliJ platform test patterns
@@ -108,8 +109,8 @@ fun tearDown() = clearIntegrationTest()
 Typical per-test file arrangement pattern:
 
 ```kotlin
-markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
-myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
+markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt") // NOTE that marked file path DO NOT starts with `game/`
+myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt") // alignment to marked file path is not required 
 ```
 
 > Note: the intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.

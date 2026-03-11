@@ -1,0 +1,13 @@
+types = {
+    type[test_entity] = {
+        path = "common/test_entities"
+        path_extension = .txt
+    }
+}
+
+test_entity = {
+    # 使用默认的 = 分隔符
+    value_with_equal = int
+    # 使用 == 分隔符
+    value_with_double_equal == int
+}

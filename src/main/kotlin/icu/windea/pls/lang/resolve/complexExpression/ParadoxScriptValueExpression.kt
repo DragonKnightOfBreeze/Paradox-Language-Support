@@ -113,7 +113,7 @@ private class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpre
             n++
         }
         if (!incomplete && nodes.isEmpty()) return null
-        expression.finishResolving()
+        expression.finishResolution()
         return expression
     }
 }
