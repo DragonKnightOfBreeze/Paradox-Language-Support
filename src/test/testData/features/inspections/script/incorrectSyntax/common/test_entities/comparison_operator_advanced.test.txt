@@ -1,0 +1,8 @@
+# 启用 checkComparisonOperators 时的进阶检查
+
+test_entity_1 = {
+    # 匹配的规则使用 = 分隔符，比较运算符不被允许 - 应触发警告 (desc.2)
+    value_with_equal <warning descr="Unexpected comparison operator (matched config of containing property doesn't use `==` as the property separator explicitly)">></warning> 5
+    # 匹配的规则使用 == 分隔符，比较运算符被允许 - 不应触发警告
+    value_with_double_equal > 5
+}

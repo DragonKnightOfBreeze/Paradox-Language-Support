@@ -1,0 +1,16 @@
+# 比较运算符，值不可表示数值 - 应触发警告
+key_block_gt <warning descr="Unexpected comparison operator (key and value of containing property should be number-representable)">></warning> { }
+key_bool_ge <warning descr="Unexpected comparison operator (key and value of containing property should be number-representable)">>=</warning> yes
+key_bool_ne <warning descr="Unexpected comparison operator (key and value of containing property should be number-representable)">!=</warning> no
+key_block_lt <warning descr="Unexpected comparison operator (key and value of containing property should be number-representable)"><</warning> { }
+key_block_le <warning descr="Unexpected comparison operator (key and value of containing property should be number-representable)"><=</warning> { }
+
+# 比较运算符，值可表示数值 - 不应触发警告
+key_int_gt > 5
+key_float_ge >= 3.14
+key_str_lt < some_text
+
+# 非比较运算符 - 不应触发警告
+key_eq_block = { }
+key_eq_bool = yes
+key_eq_int = 5

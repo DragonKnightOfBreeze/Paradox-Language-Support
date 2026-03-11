@@ -1,0 +1,16 @@
+l_english:
+ # 不正确的对左方括号的转义 - 应触发警告
+ test_incorrect_escape:0 "text <warning descr="Incorrect escape for left bracket (should use double left brackets if in a localisation file)">\[</warning> more"
+ test_incorrect_escape_multiple:0 "a <warning descr="Incorrect escape for left bracket (should use double left brackets if in a localisation file)">\[</warning> b <warning descr="Incorrect escape for left bracket (should use double left brackets if in a localisation file)">\[</warning> c"
+ # 悬挂的彩色文本结束标记 - 应触发警告
+ test_dangling_color:0 "text <warning descr="Dangling colorful text end marker">§!</warning>"
+ # 悬挂的文本格式结束标记 - 应触发警告
+ test_dangling_format:0 "text <warning descr="Dangling text format end marker">#!</warning>"
+ # 正确的转义 - 不应触发警告
+ test_valid_escape:0 "text [[ more"
+ # 正常的彩色文本 - 不应触发警告
+ test_valid_color:0 "§G colored text §!"
+ # 正常的文本格式 - 不应触发警告
+ test_valid_format:0 "#v formatted text #!"
+ # 无特殊语法 - 不应触发警告
+ test_plain:0 "plain text"

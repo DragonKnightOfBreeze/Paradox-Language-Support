@@ -72,6 +72,7 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 - Most platform/integration tests use test data under `src/test/testData`.
 - Naming convention is typically `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`.
+- Case convention is typically `snake_case.test.txt`.
 - Some feature tests provide a test-local `.config/` directory under test data to simulate config groups.
 
 ### IntelliJ platform test patterns
