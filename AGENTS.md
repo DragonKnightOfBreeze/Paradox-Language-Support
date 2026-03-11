@@ -109,8 +109,8 @@ fun tearDown() = clearIntegrationTest()
 Typical per-test file arrangement pattern:
 
 ```kotlin
-markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
-myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
+markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt") // NOTE that marked file path DO NOT starts with `game/`
+myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt") // alignment to marked file path is not required 
 ```
 
 > Note: the intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.

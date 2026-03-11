@@ -91,7 +91,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 if (configs.distinctBy { it.pointer }.size == 1) return true
                 // 如果是重载后提供的规则，跳过此检查
                 if (isOverriddenConfigs(configs)) return true
-                // 如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
+                // 如果存在规则，规则的子句中的所有 key 和 value 都可以分别被另一个规则的子句中的所有 key 和 value 包含，则仅使用这些规则
                 val configsToCheck = filterConfigs(element, configs)
                 if (configsToCheck.size == 1) return true
                 return false

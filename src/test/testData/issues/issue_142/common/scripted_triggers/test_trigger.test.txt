@@ -1,0 +1,25 @@
+# Issue #142: `var:xxx` in trigger context may produce conflicting resolved expression warning
+# https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/142
+# TODO
+# In VIC3, `var` link has `type = both`. In trigger context, `scope_field` uses `=` separator
+# while `value_field` uses `==` separator. With `=` in script, only `scope_field` config matches,
+# so simple cases do not produce conflicts.
+
+# case 1: `var:test` with trigger-only block content - conflict happens - no inlining yet
+test_trigger_with_var_simple = {
+    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {
+        always = yes
+    }
+}。
+
+# case 2: `var:test` with ambiguous block content - conflict happens - no non-constant match yet
+test_trigger_with_var_complex = {
+    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {
+        root = root
+    }
+}
+
+# case 3: `var:test` with empty block - conflict happens - exactly ambiguous
+test_effect_with_var_empty = {
+    <warning descr="Expression `var:test = {...}` is resolved into conflicting configs">var:test</warning> = {}
+}
