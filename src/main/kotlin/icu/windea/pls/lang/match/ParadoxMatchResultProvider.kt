@@ -293,7 +293,7 @@ object ParadoxMatchResultProvider {
 
     private fun forComplexExpressionFromAttributes(complexExpression: ParadoxComplexExpression): ParadoxMatchResult {
         val attributes = ParadoxComplexExpressionUtil.getAttributes(complexExpression)
-        if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { PURE_DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.RelaxWildcardMatch
+        if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { RELAX_DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.RelaxWildcardMatch
         if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.WildcardMatch
         return ParadoxMatchResult.ExactMatch
     }
