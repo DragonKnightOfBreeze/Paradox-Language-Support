@@ -1,7 +1,7 @@
 # Issue #284: scope link in effect context should not produce conflicting resolved expression warning
 # https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284
 
-# scope link 'owner' scoping to country
+# scope link `owner` scoping to country
 test_effect_scope_link = {
     owner = {
         always = yes

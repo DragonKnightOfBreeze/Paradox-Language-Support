@@ -35,10 +35,12 @@ import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
@@ -292,7 +294,13 @@ object ParadoxMatchResultProvider {
     }
 
     private fun forComplexExpressionFromAttributes(complexExpression: ParadoxComplexExpression): ParadoxMatchResult {
-        val attributes = ParadoxComplexExpressionUtil.getAttributes(complexExpression)
+        // 对于链式表达式，只检查最后一个链接节点的属性即可确定匹配结果
+        val nodeToCheck = if (complexExpression is ParadoxLinkedExpression) {
+            complexExpression.linkNodes.lastOrNull() ?: complexExpression
+        } else {
+            complexExpression
+        }
+        val attributes = ParadoxComplexExpressionUtil.getAttributes(nodeToCheck)
         if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { RELAX_DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.RelaxWildcardMatch
         if (ParadoxComplexExpressionUtil.checkAttribute(attributes) { DYNAMIC_DATA_AWARE }) return ParadoxMatchResult.WildcardMatch
         return ParadoxMatchResult.ExactMatch

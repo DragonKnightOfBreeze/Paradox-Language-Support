@@ -48,7 +48,7 @@ class Issue284Test : BasePlatformTestCase() {
 
     @Test
     fun testScopeLinkInEffect() {
-        markFileInfo(gameType, "common/scripted_triggers/test_effect.test.txt")
+        markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
         myFixture.configureByFile("issues/issue_284/common/scripted_effects/test_effect.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
