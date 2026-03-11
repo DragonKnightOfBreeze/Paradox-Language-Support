@@ -2,14 +2,9 @@ package icu.windea.pls.lang.codeInsight.annotated
 
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.core.util.values.FallbackStrings
-import icu.windea.pls.csv.psi.ParadoxCsvHeader
-import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.scope.toScopeIdMap
@@ -119,40 +114,6 @@ object ParadoxScriptAnnotatedManager {
         val map = scopeContext.toScopeIdMap(showPrev = detailed)
         if (map.isEmpty()) return null
         return map.entries.joinToString(" ", "## $scopeContextPrefix ") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }
-    }
-
-    /**
-     * 得到类型信息的注解。
-     *
-     * 格式：
-     * - `## @type type_1;type_2`
-     */
-    fun getTypeForRow(element: ParadoxCsvRowElement): String? {
-        if (element is ParadoxCsvHeader) return null // skip for header
-        val columns = element.columnList.orNull() ?: return null
-        val types = columns.map { column ->
-            val type = column.let { ParadoxTypeManager.getType(it) } ?: ParadoxType.Unknown
-            type.id
-        }
-        return types.joinToString(";", "## $typePrefix ")
-    }
-
-    /**
-     * 得到规则表达式信息的注解。
-     *
-     * 格式：
-     * - `## @type expression_1;expression_2`
-     */
-    fun getConfigExpressionForRow(element: ParadoxCsvRowElement): String? {
-        if (element is ParadoxCsvHeader) return null // skip for header
-        val rowConfig = ParadoxCsvManager.getRowConfig(element) ?: return null
-        val columns = element.columnList.orNull() ?: return null
-        val configExpressions = columns.map { column ->
-            val columnConfig = ParadoxCsvManager.getColumnConfig(column, rowConfig) ?: return@map FallbackStrings.unknown
-            if (!ParadoxCsvManager.isMatchedColumnConfig(column, columnConfig)) return@map FallbackStrings.unknown // require matched
-            columnConfig.value
-        }
-        return configExpressions.joinToString(";", "## $configExpressionPrefix ")
     }
 
     // endregion

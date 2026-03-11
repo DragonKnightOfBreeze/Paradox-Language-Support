@@ -4,7 +4,6 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtDocComment
 
 object CwtPsiManager {

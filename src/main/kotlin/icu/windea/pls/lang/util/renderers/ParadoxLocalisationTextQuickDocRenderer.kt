@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -20,7 +21,6 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
-import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings
