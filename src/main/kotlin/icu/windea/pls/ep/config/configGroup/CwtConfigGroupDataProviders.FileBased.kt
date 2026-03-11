@@ -2,6 +2,7 @@ package icu.windea.pls.ep.config.configGroup
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -37,6 +38,7 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -48,9 +50,6 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.Tuple3
-import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withState
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.lang.PlsStates
@@ -72,30 +71,29 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // 后加入的规则文件会覆盖先加入的同路径的规则文件
         // 后加入的数据项会覆盖先加入的同名同类型的数据项
 
-        currentCoroutineContext.ensureActive()
+        checkCanceled()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvidersAndRootDirectories = mutableMapOf<CwtConfigGroupFileProvider, VirtualFile>()
         readAction {
-            for (fileProvider in fileProviders) {
+            fileProviders.forEach { fileProvider ->
                 currentCoroutineContext.ensureActive()
-                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: continue
+                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@forEach
                 fileProvidersAndRootDirectories[fileProvider] = rootDirectory
             }
         }
 
-        currentCoroutineContext.ensureActive()
-        val allInternalFiles = mutableListOf<Tuple2<String, VirtualFile>>()
-        val allFiles = mutableListOf<Tuple3<String, VirtualFile, CwtConfigGroupFileSource>>()
+        checkCanceled()
+        val internalFileInfos = mutableListOf<CwtConfigGroupFileInfo>()
+        val fileInfos = mutableListOf<CwtConfigGroupFileInfo>()
         readAction {
             fileProvidersAndRootDirectories.process { (fileProvider, rootDirectory) ->
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
-                    if (filePath.startsWith("internal/")) {
-                        if (fileProvider.source != CwtConfigGroupFileSource.BuiltIn) return@p true // 不允许覆盖内部规则文件
-                        allInternalFiles.add(tupleOf(filePath, file))
-                    } else {
-                        allFiles.add(tupleOf(filePath, file, fileProvider.source))
+                    val targetFileInfos = when {
+                        CwtConfigManager.isInternalFile(filePath) -> internalFileInfos
+                        else -> fileInfos
                     }
+                    targetFileInfos += CwtConfigGroupFileInfo(filePath, file, fileProvider.source)
                     true
                 }
             }
@@ -103,25 +101,25 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         val overrideBuiltIn = configGroup.gameType != ParadoxGameType.Core
             && PlsConfigSettings.getInstance().state.overrideBuiltIn
-            && allFiles.any { it.third == CwtConfigGroupFileSource.Remote }
-        if (overrideBuiltIn) allFiles.removeIf { it.third == CwtConfigGroupFileSource.BuiltIn }
+            && fileInfos.any { it.source == CwtConfigGroupFileSource.Remote }
+        if (overrideBuiltIn) fileInfos.removeIf { it.source == CwtConfigGroupFileSource.BuiltIn }
 
-        currentCoroutineContext.ensureActive()
+        checkCanceled()
         val internalFileConfigs = mutableMapOf<String, CwtFileConfig>()
         val fileConfigs = mutableMapOf<String, CwtFileConfig>()
         try {
+            // 允许覆盖先加入的同路径的规则文件
             withState(PlsStates.resolveForInternalConfigs) {
-                for ((filePath, file) in allInternalFiles) {
-                    if (internalFileConfigs.containsKey(filePath)) continue
-                    currentCoroutineContext.ensureActive()
+                for ((filePath, file, source) in internalFileInfos) {
+                    checkCanceled()
+                    if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
                     CwtConfigResolverManager.setLocation(filePath, configGroup)
                     val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
                     internalFileConfigs[filePath] = fileConfig
                 }
             }
-            for ((filePath, file) in allFiles) {
-                if (fileConfigs.containsKey(filePath)) continue
-                currentCoroutineContext.ensureActive()
+            for ((filePath, file) in fileInfos) {
+                checkCanceled()
                 CwtConfigResolverManager.setLocation(filePath, configGroup)
                 val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
                 fileConfigs[filePath] = fileConfig
@@ -133,13 +131,12 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         CwtConfigResolverManager.getFileConfigs(configGroup).putAll(fileConfigs)
         CwtConfigResolverManager.getPostProcessActions(configGroup).forEach { it.run() }
 
-        currentCoroutineContext.ensureActive()
         for (fileConfig in internalFileConfigs.values) {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             readAction { processInternalFile(fileConfig) }
         }
         for (fileConfig in fileConfigs.values) {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             readAction { processFile(fileConfig) }
         }
     }
@@ -385,6 +382,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
 
     override suspend fun postProcess(configGroup: CwtConfigGroup) {
+        // NOTE 2.1.5 为了优化内存，完成处理后，文件规则不会保留在规则分组数据中
         val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
         postProcessActions.clear()
         val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)

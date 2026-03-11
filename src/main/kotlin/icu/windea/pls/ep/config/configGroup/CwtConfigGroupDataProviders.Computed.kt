@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.config.configGroup
 
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
@@ -23,20 +24,17 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.ensureActive
 
 /**
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup) {
-        val currentCoroutineContext = currentCoroutineContext()
         val initializer = configGroup.initializer
 
         // compute `type2ModifiersMap` and complete `modifiers`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             for ((name, modifierConfig) in initializer.modifiers) {
                 for (snippetExpression in modifierConfig.template.snippetExpressions) {
                     if (snippetExpression.type == CwtDataTypes.Definition) {
@@ -72,7 +70,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // compute `generatedModifiers` and `predefinedModifiers`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             initializer.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
                 .sortedByDescending { it.template.snippetExpressions.size } // put xxx_<xxx>_xxx before xxx_<xxx>
@@ -84,7 +82,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // compute `swappedTypes` and add missing declarations with swapped type
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             for (typeConfig in initializer.types.values) {
                 if (typeConfig.baseType == null) continue
                 val typeName = typeConfig.name
@@ -104,7 +102,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // add missing localisation links from links
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             val localisationLinksStatic = initializer.localisationLinks.values.filter { it.dataSources.isEmpty() }
             if (localisationLinksStatic.isNotEmpty()) return@run
             val linksStatic = initializer.links.values.filter { it.dataSources.isEmpty() }
@@ -115,7 +113,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // bind `categoryConfigMap` for modifier configs
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             for (modifier in initializer.modifiers.values) {
                 for (category in modifier.categories) {
                     val categoryConfig = initializer.modifierCategories[category] ?: continue
@@ -126,7 +124,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             for ((k, v) in initializer.aliasGroups) {
                 val keysConst = caseInsensitiveStringKeyMap<String>()
                 val keysNoConst = FastSet<String>()
@@ -151,7 +149,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // compute `relatedLocalisationPatterns`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             with(initializer.relatedLocalisationPatterns) {
                 val r = mutableSetOf<String>()
                 initializer.types.values.forEach { c ->
@@ -168,25 +166,25 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         // compute `linksModel`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             computeLinksModel(initializer, initializer.linksModel, initializer.links.values)
         }
 
         // compute `localisationLinksModel`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             computeLinksModel(initializer, initializer.localisationLinksModel, initializer.localisationLinks.values)
         }
 
         // compute `directivesModel`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             computeDirectivesModel(initializer)
         }
 
         // compute `definitionTypesModel`
         run {
-            currentCoroutineContext.ensureActive()
+            checkCanceled()
             computeDefinitionTypeModel(initializer)
         }
     }
