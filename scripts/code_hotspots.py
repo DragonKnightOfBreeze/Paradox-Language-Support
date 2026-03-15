@@ -16,15 +16,26 @@
 #
 # Both views cover Kotlin (.kt) and Java (.java) under src/main and src/test.
 #
+# Output modes:
+#   default   : per-package distribution + large-file hotspots
+#   --summary : top-N hotspot list + overall stats only
+#   --markdown: full markdown document (saved to file)
+#
+# Output defaults to stdout; use --output FILE to write to a file.
+# For --markdown, output defaults to a timestamped file under tmp/reports/.
+#
 # Usage:
-#   python scripts/code_hotspots.py [--threshold N]
+#   python scripts/code_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
+import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Iterable
 
 # ---------------------------------------------------------------------------
@@ -226,6 +237,100 @@ def report_hotspots(records: list[FileRecord], threshold: int) -> None:
     print(f"  Hotspot total lines: {hotspot_lines} / {all_lines}  ({hotspot_lines/all_lines*100:.1f}%)")
 
 # ---------------------------------------------------------------------------
+# Report: summary
+# ---------------------------------------------------------------------------
+
+_SUMMARY_TOP_N = 10
+
+def report_summary(records: list[FileRecord], threshold: int) -> None:
+    """Condensed summary: top-N hotspot list and overall stats."""
+    hot = sorted(records, key=lambda r: r.total, reverse=True)[:_SUMMARY_TOP_N]
+    all_lines = sum(r.total for r in records)
+
+    print(f"=== Code Hotspot Summary (Top {_SUMMARY_TOP_N}) ===")
+    print()
+    print(f"  {'#':>4} {'Lines':>6} {'Code':>6} {'Cmt':>5} {'Blk':>5}  {'File'}")
+    print(f"  {'-'*4} {'-'*6} {'-'*6} {'-'*5} {'-'*5}  {'-'*60}")
+    for i, r in enumerate(hot, 1):
+        print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {r.rel_path}")
+    print()
+    hot_all = [r for r in records if r.total >= threshold]
+    print(f"  Total files  : {len(records):,}")
+    print(f"  Total lines  : {all_lines:,}")
+    print(f"  Hotspots (>= {threshold}): {len(hot_all)} files")
+
+# ---------------------------------------------------------------------------
+# Report: markdown
+# ---------------------------------------------------------------------------
+
+def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) -> str:
+    """Render a GFM markdown table."""
+    aligns = col_aligns or ["---"] * len(headers)
+    lines = [
+        "| " + " | ".join(str(h) for h in headers) + " |",
+        "| " + " | ".join(aligns) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c) for c in row) + " |")
+    return "\n".join(lines)
+
+
+def report_markdown(records: list[FileRecord], threshold: int, out) -> None:
+    """Write a full markdown report document."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out.write("# Code Distribution & Hotspot Report\n\n")
+    out.write(f"> Generated: {ts}\n\n")
+
+    # Per-package distribution
+    pkg_map: dict[tuple[str, str], PackageStats] = defaultdict(PackageStats)
+    for r in records:
+        key = (r.source_root, r.package)
+        ps = pkg_map[key]
+        ps.file_count += 1
+        ps.total_lines += r.total
+        ps.blank_lines += r.blank
+        ps.comment_lines += r.comment
+    sorted_pkgs = sorted(pkg_map.items(), key=lambda kv: kv[1].total_lines, reverse=True)
+
+    out.write("## Per-Package Distribution\n\n")
+    headers = ["Source Root", "Package", "Files", "Total", "Code", "Comment", "Blank"]
+    aligns = [":---", ":---", "---:", "---:", "---:", "---:", "---:"]
+    rows = []
+    for (root, pkg), ps in sorted_pkgs:
+        rows.append([root, pkg, f"{ps.file_count:,}", f"{ps.total_lines:,}",
+                     f"{ps.code_lines:,}", f"{ps.comment_lines:,}", f"{ps.blank_lines:,}"])
+    total_files = sum(ps.file_count for ps in pkg_map.values())
+    total_lines = sum(ps.total_lines for ps in pkg_map.values())
+    total_code  = sum(ps.code_lines  for ps in pkg_map.values())
+    total_cmt   = sum(ps.comment_lines for ps in pkg_map.values())
+    total_blank = sum(ps.blank_lines for ps in pkg_map.values())
+    rows.append(["**TOTAL**", f"**{len(pkg_map)} packages**",
+                 f"**{total_files:,}**", f"**{total_lines:,}**",
+                 f"**{total_code:,}**", f"**{total_cmt:,}**", f"**{total_blank:,}**"])
+    out.write(_md_table(headers, rows, aligns) + "\n\n")
+
+    # Large-file hotspots
+    hot = [r for r in records if r.total >= threshold]
+    hot.sort(key=lambda r: r.total, reverse=True)
+    out.write(f"## Large-File Hotspots (≥ {threshold} lines)\n\n")
+    if not hot:
+        out.write(f"*No files found with ≥ {threshold} lines.*\n\n")
+    else:
+        headers = ["#", "Lines", "Code", "Comment", "Blank", "File"]
+        aligns  = ["---:", "---:", "---:", "---:", "---:", ":---"]
+        rows = []
+        for i, r in enumerate(hot, 1):
+            rows.append([i, f"{r.total:,}", f"{r.code:,}", f"{r.comment:,}",
+                         f"{r.blank:,}", f"`{r.rel_path}`"])
+        out.write(_md_table(headers, rows, aligns) + "\n\n")
+        hotspot_lines = sum(r.total for r in hot)
+        all_lines     = sum(r.total for r in records)
+        out.write(f"Hotspot files: **{len(hot):,}** / {len(records):,}  "
+                  f"({len(hot)/len(records)*100:.1f}%)  "
+                  f"— {hotspot_lines:,} / {all_lines:,} lines "
+                  f"({hotspot_lines/all_lines*100:.1f}%)\n\n")
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
@@ -233,13 +338,40 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Code distribution & hotspot audit")
     parser.add_argument("--threshold", type=int, default=DEFAULT_THRESHOLD,
                         help=f"Line threshold for hotspot report (default: {DEFAULT_THRESHOLD})")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--summary", "-s", action="store_true",
+                      help="Print condensed summary instead of full report")
+    mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
+                      help="Write a full markdown report document")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     records = collect_records(repo_root)
 
-    report_package_distribution(records)
-    report_hotspots(records, args.threshold)
+    if args.markdown:
+        if args.output:
+            md_path = args.output
+        else:
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_dir = os.path.join(repo_root, "tmp", "reports")
+            os.makedirs(report_dir, exist_ok=True)
+            md_path = os.path.join(report_dir, f"code_hotspots_{ts}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            report_markdown(records, args.threshold, f)
+        print(f"Markdown report written to: {md_path}")
+    else:
+        out = open(args.output, "w", encoding="utf-8") if args.output else sys.stdout
+        with contextlib.redirect_stdout(out):
+            if args.summary:
+                report_summary(records, args.threshold)
+            else:
+                report_package_distribution(records)
+                report_hotspots(records, args.threshold)
+        if args.output:
+            out.close()
+            print(f"Report written to: {args.output}")
 
 
 if __name__ == "__main__":

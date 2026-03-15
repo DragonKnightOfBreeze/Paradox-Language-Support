@@ -23,17 +23,24 @@
 #   - Zero comments AND zero blank lines AND total > 500 lines
 #
 # Output modes:
-#   default  : per-repository detailed stats block
-#   --summary: condensed table with one row per repository
+#   default   : per-repository detailed stats block
+#   --summary : condensed table with one row per repository
+#   --markdown: full markdown document (saved to file)
+#
+# Output defaults to stdout; use --output FILE to write to a file.
+# For --markdown, output defaults to a timestamped file under tmp/reports/.
 #
 # Usage:
-#   python scripts/config_stats.py [--summary]
+#   python scripts/config_stats.py [--summary] [--markdown] [--output FILE]
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
+import sys
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Iterable
 
 # ---------------------------------------------------------------------------
@@ -241,6 +248,18 @@ def report_detailed(dir_data: list) -> None:
         print_stats("Generated CWT (.cwt)", grand_generated)
 
 
+def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) -> str:
+    """Render a GFM markdown table."""
+    aligns = col_aligns or ["---"] * len(headers)
+    lines = [
+        "| " + " | ".join(str(h) for h in headers) + " |",
+        "| " + " | ".join(aligns) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c) for c in row) + " |")
+    return "\n".join(lines)
+
+
 def report_summary(dir_data: list) -> None:
     """Condensed table with one row per repository."""
     print("=== CWT Config Statistics Summary ===")
@@ -271,10 +290,63 @@ def report_summary(dir_data: list) -> None:
         print(f"\n  Generated: {grand_gen.file_count} file(s) ({gen_pct_f:.1f}%), {grand_gen.total_lines:,} lines ({gen_pct_l:.1f}%)")
 
 
+def report_markdown(dir_data: list, out) -> None:
+    """Write a full markdown report document."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out.write("# CWT Config Statistics Report\n\n")
+    out.write(f"> Generated: {ts}\n\n")
+
+    headers = ["Repository", "Files", "Total", "Code", "Comment", "Blank"]
+    aligns = [":---", "---:", "---:", "---:", "---:", "---:"]
+
+    out.write("## Repository Summary\n\n")
+    rows = []
+    grand = Stats()
+    grand_gen = Stats()
+    for repo_name, rel_path, combined, generated in dir_data:
+        if combined.file_count == 0:
+            continue
+        rows.append([
+            f"`{repo_name}`",
+            f"{combined.file_count:,}", f"{combined.total_lines:,}",
+            f"{combined.code_lines:,}", f"{combined.comment_lines:,}", f"{combined.blank_lines:,}",
+        ])
+        grand = _merge_stats(grand, combined)
+        if generated.file_count > 0:
+            grand_gen = _merge_stats(grand_gen, generated)
+    rows.append([
+        "**TOTAL**",
+        f"**{grand.file_count:,}**", f"**{grand.total_lines:,}**",
+        f"**{grand.code_lines:,}**", f"**{grand.comment_lines:,}**", f"**{grand.blank_lines:,}**",
+    ])
+    out.write(_md_table(headers, rows, aligns) + "\n\n")
+
+    if grand_gen.file_count > 0:
+        all_lines = grand.total_lines
+        gen_pct_f = grand_gen.file_count / grand.file_count * 100 if grand.file_count else 0.0
+        gen_pct_l = grand_gen.total_lines / all_lines * 100 if all_lines else 0.0
+        out.write("## Generated Files\n\n")
+        out.write(f"Auto-detected: **{grand_gen.file_count}** / {grand.file_count:,} files "
+                  f"({gen_pct_f:.1f}%), "
+                  f"**{grand_gen.total_lines:,}** / {all_lines:,} lines ({gen_pct_l:.1f}%)\n\n")
+        gen_rows = [
+            [f"`{repo}`",
+             f"{g.file_count:,}", f"{g.total_lines:,}",
+             f"{g.code_lines:,}", f"{g.comment_lines:,}", f"{g.blank_lines:,}"]
+            for repo, _, _, g in dir_data if g.file_count > 0
+        ]
+        out.write(_md_table(headers, gen_rows, aligns) + "\n\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="CWT config statistics audit")
-    parser.add_argument("--summary", "-s", action="store_true",
-                        help="Print condensed summary table instead of full report")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--summary", "-s", action="store_true",
+                      help="Print condensed summary table instead of full report")
+    mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
+                      help="Write a full markdown report document")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -292,10 +364,27 @@ def main() -> None:
         combined = _merge_stats(normal, generated)
         dir_data.append((entry.name, rel_path, combined, generated))
 
-    if args.summary:
-        report_summary(dir_data)
+    if args.markdown:
+        if args.output:
+            md_path = args.output
+        else:
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_dir = os.path.join(repo_root, "tmp", "reports")
+            os.makedirs(report_dir, exist_ok=True)
+            md_path = os.path.join(report_dir, f"config_stats_{ts}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            report_markdown(dir_data, f)
+        print(f"Markdown report written to: {md_path}")
     else:
-        report_detailed(dir_data)
+        out = open(args.output, "w", encoding="utf-8") if args.output else sys.stdout
+        with contextlib.redirect_stdout(out):
+            if args.summary:
+                report_summary(dir_data)
+            else:
+                report_detailed(dir_data)
+        if args.output:
+            out.close()
+            print(f"Report written to: {args.output}")
 
 
 if __name__ == "__main__":

@@ -22,13 +22,15 @@
 #   - Zero comments AND zero blank lines AND total > 1000 lines
 #
 # Output modes:
-#   default  : full detailed report (per-entry-type breakdown + combined + generated)
-#   --summary: condensed per-game table with file/line totals and generated percentages
+#   default   : full detailed report (per-entry-type breakdown + combined + generated)
+#   --summary : condensed per-game table with file/line totals and generated percentages
+#   --markdown: full markdown document (saved to file)
 #
 # Output defaults to stdout; use --output FILE to write to a file.
+# For --markdown, output defaults to a timestamped file under tmp/reports/.
 #
 # Usage:
-#   python scripts/game_file_stats.py [--output FILE] [--summary]
+#   python scripts/game_file_stats.py [--summary] [--markdown] [--output FILE]
 
 from __future__ import annotations
 
@@ -37,6 +39,7 @@ import glob
 import os
 import platform
 import sys
+from datetime import datetime
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Iterable, TextIO
@@ -416,6 +419,106 @@ def _total_lines(stats_map: dict[tuple[str, str], Stats]) -> int:
     return sum(s.total_lines for s in stats_map.values())
 
 # ===========================================================================
+# Report: markdown
+# ===========================================================================
+
+def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) -> str:
+    """Render a GFM markdown table."""
+    aligns = col_aligns or ["---"] * len(headers)
+    lines = [
+        "| " + " | ".join(str(h) for h in headers) + " |",
+        "| " + " | ".join(aligns) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c) for c in row) + " |")
+    return "\n".join(lines)
+
+
+def report_markdown(out, game_data: list) -> None:
+    """Write a full markdown report document."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out.write("# Game File Statistics Report\n\n")
+    out.write(f"> Generated: {ts}\n\n")
+
+    if not game_data:
+        out.write("*No locally installed Paradox games detected.*\n")
+        return
+
+    # Summary table
+    out.write("## Summary\n\n")
+    s_hdrs = ["Game", "Files", "Lines", "Gen Files", "Gen Lines", "Gen%"]
+    s_aln  = [":---", "---:", "---:", "---:", "---:", "---:"]
+    s_rows = []
+    for gt, game_dir, normal_map, gen_map in game_data:
+        sm = _merge_stats_maps(normal_map, gen_map)
+        af = _total_files(sm);  al = _total_lines(sm)
+        gf = _total_files(gen_map); gl = _total_lines(gen_map)
+        s_rows.append([gt.title, f"{af:,}", f"{al:,}",
+                       f"{gf:,}", f"{gl:,}", f"{gl/al*100:.1f}%" if al else "0.0%"])
+    out.write(_md_table(s_hdrs, s_rows, s_aln) + "\n\n")
+    out.write(f"Detected {len(game_data)} / {len(GAME_TYPES)} game(s).\n\n")
+
+    # Per-game sections
+    cat_hdrs = ["Entry Type", "Category", "Files", "Total", "Code", "Comment", "Blank"]
+    cat_aln  = [":---", ":---", "---:", "---:", "---:", "---:", "---:"]
+    comb_hdrs = ["Category", "Files", "Total", "Code", "Comment", "Blank"]
+    comb_aln  = [":---", "---:", "---:", "---:", "---:", "---:"]
+
+    for gt, game_dir, normal_map, gen_map in game_data:
+        sm = _merge_stats_maps(normal_map, gen_map)
+        out.write(f"## {gt.title}\n\n")
+        out.write(f"Directory: `{game_dir}`\n\n")
+
+        # Breakdown by entry type + category
+        rows = []
+        for et in ["Main Entry", "Extra Entry"]:
+            for cat, _ in FILE_CATEGORIES:
+                s = sm.get((et, cat), Stats())
+                if s.file_count == 0:
+                    continue
+                rows.append([et, cat, f"{s.file_count:,}", f"{s.total_lines:,}",
+                             f"{s.code_lines:,}", f"{s.comment_lines:,}", f"{s.blank_lines:,}"])
+        if rows:
+            out.write("### By Entry Type\n\n")
+            out.write(_md_table(cat_hdrs, rows, cat_aln) + "\n\n")
+
+        # Combined per category (sum across entry types)
+        comb_rows = []
+        for cat, _ in FILE_CATEGORIES:
+            c = Stats()
+            for et in ["Main Entry", "Extra Entry"]:
+                s = sm.get((et, cat), Stats())
+                if s.file_count > 0:
+                    c.file_count += s.file_count
+                    c.total_lines += s.total_lines
+                    c.blank_lines += s.blank_lines
+                    c.comment_lines += s.comment_lines
+            if c.file_count > 0:
+                comb_rows.append([cat, f"{c.file_count:,}", f"{c.total_lines:,}",
+                                  f"{c.code_lines:,}", f"{c.comment_lines:,}", f"{c.blank_lines:,}"])
+        if comb_rows:
+            out.write("### Combined (All Entries)\n\n")
+            out.write(_md_table(comb_hdrs, comb_rows, comb_aln) + "\n\n")
+
+        # Generated files
+        if _has_any_files(gen_map):
+            gf = _total_files(gen_map); gl = _total_lines(gen_map)
+            af = _total_files(sm);       al = _total_lines(sm)
+            out.write("### Generated Files (auto-detected)\n\n")
+            out.write(f"**{gf:,}** / {af:,} files ({gf/af*100:.1f}%), "
+                      f"**{gl:,}** / {al:,} lines ({gl/al*100:.1f}%)\n\n")
+            gen_rows = []
+            for et in ["Main Entry", "Extra Entry"]:
+                for cat, _ in FILE_CATEGORIES:
+                    s = gen_map.get((et, cat), Stats())
+                    if s.file_count == 0:
+                        continue
+                    gen_rows.append([et, cat, f"{s.file_count:,}", f"{s.total_lines:,}",
+                                    f"{s.code_lines:,}", f"{s.comment_lines:,}", f"{s.blank_lines:,}"])
+            if gen_rows:
+                out.write(_md_table(cat_hdrs, gen_rows, cat_aln) + "\n\n")
+
+# ===========================================================================
 # Entry point
 # ===========================================================================
 
@@ -493,10 +596,13 @@ def report_summary(out: TextIO, game_data: list) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Game file statistics audit")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--summary", "-s", action="store_true",
+                      help="Print condensed summary table instead of full report")
+    mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
+                      help="Write a full markdown report document")
     parser.add_argument("--output", "-o", metavar="FILE",
-                        help="Write report to FILE instead of stdout")
-    parser.add_argument("--summary", "-s", action="store_true",
-                        help="Print condensed summary table instead of full report")
+                        help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()
 
     # Collect per-game data
@@ -508,21 +614,32 @@ def main() -> None:
         normal_map, gen_map = collect_game_stats(game_dir, gt.entry_info)
         game_data.append((gt, game_dir, normal_map, gen_map))
 
-    # Open output destination
-    if args.output:
-        out = open(args.output, "w", encoding="utf-8")
-    else:
-        out = sys.stdout
-
-    try:
-        if args.summary:
-            report_summary(out, game_data)
-        else:
-            report_detailed(out, game_data)
-    finally:
+    if args.markdown:
         if args.output:
-            out.close()
-            print(f"Report written to: {args.output}", file=sys.stderr)
+            md_path = args.output
+        else:
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            report_dir = os.path.join(repo_root, "tmp", "reports")
+            os.makedirs(report_dir, exist_ok=True)
+            md_path = os.path.join(report_dir, f"game_file_stats_{ts}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            report_markdown(f, game_data)
+        print(f"Markdown report written to: {md_path}", file=sys.stderr)
+    else:
+        if args.output:
+            out = open(args.output, "w", encoding="utf-8")
+        else:
+            out = sys.stdout
+        try:
+            if args.summary:
+                report_summary(out, game_data)
+            else:
+                report_detailed(out, game_data)
+        finally:
+            if args.output:
+                out.close()
+                print(f"Report written to: {args.output}", file=sys.stderr)
 
     print(f"Detected {len(game_data)} game(s).", file=sys.stderr)
 

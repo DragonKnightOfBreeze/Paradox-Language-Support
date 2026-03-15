@@ -24,18 +24,25 @@
 #   - Zero comments AND zero blank lines AND total > 500 lines
 #
 # Output modes:
-#   default  : per-subdirectory distribution + large-file hotspots + generated summary
-#   --summary: condensed top-N hotspot list + generated stats only
+#   default   : per-subdirectory distribution + large-file hotspots + generated summary
+#   --summary : condensed top-N hotspot list + generated stats only
+#   --markdown: full markdown document (saved to file)
+#
+# Output defaults to stdout; use --output FILE to write to a file.
+# For --markdown, output defaults to a timestamped file under tmp/reports/.
 #
 # Usage:
-#   python scripts/config_hotspots.py [--threshold N] [--summary]
+#   python scripts/config_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Iterable
 
 # ---------------------------------------------------------------------------
@@ -276,6 +283,97 @@ def report_generated_summary(records: list[FileRecord]) -> None:
         print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {r.rel_path}")
 
 # ---------------------------------------------------------------------------
+# Report: markdown
+# ---------------------------------------------------------------------------
+
+def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) -> str:
+    """Render a GFM markdown table."""
+    aligns = col_aligns or ["---"] * len(headers)
+    lines = [
+        "| " + " | ".join(str(h) for h in headers) + " |",
+        "| " + " | ".join(aligns) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c) for c in row) + " |")
+    return "\n".join(lines)
+
+
+def report_markdown(records: list[FileRecord], threshold: int, out) -> None:
+    """Write a full markdown report document."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out.write("# CWT Config Distribution & Hotspot Report\n\n")
+    out.write(f"> Generated: {ts}\n\n")
+
+    # Per-subdirectory distribution
+    sd_map: dict[tuple[str, str], SubdirStats] = defaultdict(SubdirStats)
+    for r in records:
+        key = (r.repo, r.subdir)
+        ss = sd_map[key]
+        ss.file_count += 1
+        ss.total_lines += r.total
+        ss.blank_lines += r.blank
+        ss.comment_lines += r.comment
+    sorted_sds = sorted(sd_map.items(), key=lambda kv: kv[1].total_lines, reverse=True)
+
+    out.write("## Per-Subdirectory Distribution\n\n")
+    headers = ["Repository", "Subdirectory", "Files", "Total", "Code", "Comment", "Blank"]
+    aligns  = [":---", ":---", "---:", "---:", "---:", "---:", "---:"]
+    rows = []
+    for (repo, subdir), ss in sorted_sds:
+        rows.append([repo, subdir if subdir else "(root)",
+                     f"{ss.file_count:,}", f"{ss.total_lines:,}",
+                     f"{ss.code_lines:,}", f"{ss.comment_lines:,}", f"{ss.blank_lines:,}"])
+    total_f = sum(ss.file_count for ss in sd_map.values())
+    total_l = sum(ss.total_lines for ss in sd_map.values())
+    total_c = sum(ss.code_lines  for ss in sd_map.values())
+    total_cmt = sum(ss.comment_lines for ss in sd_map.values())
+    total_b = sum(ss.blank_lines  for ss in sd_map.values())
+    rows.append(["**TOTAL**", f"**{len(sd_map)} subdirectories**",
+                 f"**{total_f:,}**", f"**{total_l:,}**",
+                 f"**{total_c:,}**", f"**{total_cmt:,}**", f"**{total_b:,}**"])
+    out.write(_md_table(headers, rows, aligns) + "\n\n")
+
+    # Hotspots
+    hot = [r for r in records if r.total >= threshold]
+    hot.sort(key=lambda r: r.total, reverse=True)
+    out.write(f"## Large-File Hotspots (\u2265 {threshold} lines)\n\n")
+    if not hot:
+        out.write(f"*No files found with \u2265 {threshold} lines.*\n\n")
+    else:
+        headers = ["#", "Lines", "Code", "Comment", "Blank", "Tag", "File"]
+        aligns  = ["---:", "---:", "---:", "---:", "---:", ":---", ":---"]
+        rows = []
+        for i, r in enumerate(hot, 1):
+            tag = "GEN" if r.generated else ""
+            rows.append([i, f"{r.total:,}", f"{r.code:,}", f"{r.comment:,}",
+                         f"{r.blank:,}", tag, f"`{r.rel_path}`"])
+        out.write(_md_table(headers, rows, aligns) + "\n\n")
+        hotspot_lines = sum(r.total for r in hot)
+        all_lines     = sum(r.total for r in records)
+        out.write(f"Hotspot files: **{len(hot):,}** / {len(records):,} "
+                  f"({len(hot)/len(records)*100:.1f}%) "
+                  f"\u2014 {hotspot_lines:,} / {all_lines:,} lines "
+                  f"({hotspot_lines/all_lines*100:.1f}%)\n\n")
+
+    # Generated files
+    gen = [r for r in records if r.generated]
+    if gen:
+        gen.sort(key=lambda r: r.total, reverse=True)
+        all_lines = sum(r.total for r in records)
+        gen_lines = sum(r.total for r in gen)
+        gen_pct_f = len(gen) / len(records) * 100 if records else 0.0
+        gen_pct_l = gen_lines / all_lines * 100 if all_lines else 0.0
+        out.write("## Generated Files\n\n")
+        out.write(f"Auto-detected: **{len(gen)}** / {len(records):,} files ({gen_pct_f:.1f}%), "
+                  f"**{gen_lines:,}** / {all_lines:,} lines ({gen_pct_l:.1f}%)\n\n")
+        headers = ["#", "Lines", "Code", "Comment", "Blank", "File"]
+        aligns  = ["---:", "---:", "---:", "---:", "---:", ":---"]
+        rows = [[i, f"{r.total:,}", f"{r.code:,}", f"{r.comment:,}",
+                 f"{r.blank:,}", f"`{r.rel_path}`"]
+                for i, r in enumerate(gen, 1)]
+        out.write(_md_table(headers, rows, aligns) + "\n\n")
+
+# ---------------------------------------------------------------------------
 # Report: summary (condensed)
 # ---------------------------------------------------------------------------
 
@@ -314,8 +412,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="CWT config distribution & hotspot audit")
     parser.add_argument("--threshold", type=int, default=DEFAULT_THRESHOLD,
                         help=f"Line threshold for hotspot report (default: {DEFAULT_THRESHOLD})")
-    parser.add_argument("--summary", "-s", action="store_true",
-                        help="Print condensed summary instead of full report")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--summary", "-s", action="store_true",
+                      help="Print condensed summary instead of full report")
+    mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
+                      help="Write a full markdown report document")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -326,12 +429,29 @@ def main() -> None:
 
     records = collect_records(cwt_root, repo_root)
 
-    if args.summary:
-        report_summary(records, args.threshold)
+    if args.markdown:
+        if args.output:
+            md_path = args.output
+        else:
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_dir = os.path.join(repo_root, "tmp", "reports")
+            os.makedirs(report_dir, exist_ok=True)
+            md_path = os.path.join(report_dir, f"config_hotspots_{ts}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            report_markdown(records, args.threshold, f)
+        print(f"Markdown report written to: {md_path}")
     else:
-        report_subdir_distribution(records)
-        report_hotspots(records, args.threshold)
-        report_generated_summary(records)
+        out = open(args.output, "w", encoding="utf-8") if args.output else sys.stdout
+        with contextlib.redirect_stdout(out):
+            if args.summary:
+                report_summary(records, args.threshold)
+            else:
+                report_subdir_distribution(records)
+                report_hotspots(records, args.threshold)
+                report_generated_summary(records)
+        if args.output:
+            out.close()
+            print(f"Report written to: {args.output}")
 
 
 if __name__ == "__main__":

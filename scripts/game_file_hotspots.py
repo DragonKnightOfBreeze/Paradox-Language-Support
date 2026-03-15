@@ -27,13 +27,15 @@
 #   - Zero comments AND zero blank lines AND total > 1000 lines
 #
 # Output modes:
-#   default  : full detailed report (per-subdirectory distribution + hotspots)
-#   --summary: condensed summary (top-N hotspots + generated stats per game)
+#   default   : full detailed report (per-subdirectory distribution + hotspots)
+#   --summary : condensed summary (top-N hotspots + generated stats per game)
+#   --markdown: full markdown document (saved to file)
 #
 # Output defaults to stdout; use --output FILE to write to a file.
+# For --markdown, output defaults to a timestamped file under tmp/reports/.
 #
 # Usage:
-#   python scripts/game_file_hotspots.py [--threshold N] [--output FILE] [--summary]
+#   python scripts/game_file_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
 
 from __future__ import annotations
 
@@ -44,6 +46,7 @@ import platform
 import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Iterable, TextIO
 
 # ===========================================================================
@@ -482,6 +485,98 @@ def report_generated_summary(out: TextIO, records: list[FileRecord]) -> None:
         out.write(f"  {i:>4} {r.total:>8} {r.code:>8} {r.comment:>6} {r.blank:>6}  {r.category:<14} {r.rel_path}\n")
 
 # ===========================================================================
+# Report: markdown
+# ===========================================================================
+
+def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) -> str:
+    """Render a GFM markdown table."""
+    aligns = col_aligns or ["---"] * len(headers)
+    lines = [
+        "| " + " | ".join(str(h) for h in headers) + " |",
+        "| " + " | ".join(aligns) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c) for c in row) + " |")
+    return "\n".join(lines)
+
+
+def report_markdown(out: TextIO, game_data: list, threshold: int) -> None:
+    """Write a full markdown report document."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    out.write("# Game File Distribution & Hotspot Report\n\n")
+    out.write(f"> Generated: {ts}\n\n")
+
+    if not game_data:
+        out.write("*No locally installed Paradox games detected.*\n")
+        return
+
+    # Summary table
+    out.write("## Summary\n\n")
+    s_hdrs = ["Game", "Files", "Lines", "Gen Files", "Gen Lines", "Gen%",
+              f"Hotspots (\u2265{threshold:,})"]
+    s_aln  = [":---", "---:", "---:", "---:", "---:", "---:", "---:"]
+    s_rows = []
+    for gt, game_dir, records in game_data:
+        tf = len(records)
+        tl = sum(r.total for r in records)
+        gen = [r for r in records if r.generated]
+        gl  = sum(r.total for r in gen)
+        hot = sum(1 for r in records if r.total >= threshold)
+        s_rows.append([gt.title, f"{tf:,}", f"{tl:,}",
+                       f"{len(gen):,}", f"{gl:,}",
+                       f"{gl/tl*100:.1f}%" if tl else "0.0%",
+                       f"{hot:,}"])
+    out.write(_md_table(s_hdrs, s_rows, s_aln) + "\n\n")
+    out.write(f"Detected {len(game_data)} / {len(GAME_TYPES)} game(s).\n\n")
+
+    # Per-game sections
+    for gt, game_dir, records in game_data:
+        tf = len(records)
+        tl = sum(r.total for r in records)
+        gen = [r for r in records if r.generated]
+        gen_lines = sum(r.total for r in gen)
+
+        out.write(f"## {gt.title}\n\n")
+        out.write(f"Directory: `{game_dir}`  \n")
+        out.write(f"Files: **{tf:,}** total, **{tl:,}** lines")
+        if gen:
+            out.write(f"  \nGenerated: **{len(gen):,}** files "
+                      f"({len(gen)/tf*100:.1f}%), "
+                      f"**{gen_lines:,}** lines ({gen_lines/tl*100:.1f}%)")
+        out.write("\n\n")
+
+        # Hotspots
+        hot = [r for r in records if r.total >= threshold]
+        hot.sort(key=lambda r: r.total, reverse=True)
+        out.write(f"### Large-File Hotspots (\u2265 {threshold:,} lines)\n\n")
+        if not hot:
+            out.write(f"*No files with \u2265 {threshold:,} lines.*\n\n")
+        else:
+            headers = ["#", "Lines", "Code", "Comment", "Blank", "Tag", "Category", "File"]
+            aligns  = ["---:", "---:", "---:", "---:", "---:", ":---", ":---", ":---"]
+            rows = []
+            for i, r in enumerate(hot, 1):
+                tag = "GEN" if r.generated else ""
+                rows.append([i, f"{r.total:,}", f"{r.code:,}", f"{r.comment:,}",
+                             f"{r.blank:,}", tag, r.category, f"`{r.rel_path}`"])
+            out.write(_md_table(headers, rows, aligns) + "\n\n")
+            hl = sum(r.total for r in hot)
+            out.write(f"Hotspot files: **{len(hot):,}** / {tf:,} "
+                      f"({len(hot)/tf*100:.1f}%) \u2014 "
+                      f"{hl:,} / {tl:,} lines ({hl/tl*100:.1f}%)\n\n")
+
+        # Generated files
+        if gen:
+            gen_s = sorted(gen, key=lambda r: r.total, reverse=True)
+            out.write("### Generated Files\n\n")
+            headers = ["#", "Lines", "Code", "Comment", "Blank", "Category", "File"]
+            aligns  = ["---:", "---:", "---:", "---:", "---:", ":---", ":---"]
+            rows = [[i, f"{r.total:,}", f"{r.code:,}", f"{r.comment:,}",
+                     f"{r.blank:,}", r.category, f"`{r.rel_path}`"]
+                    for i, r in enumerate(gen_s, 1)]
+            out.write(_md_table(headers, rows, aligns) + "\n\n")
+
+# ===========================================================================
 # Report: detailed (full)
 # ===========================================================================
 
@@ -546,10 +641,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Game file distribution & hotspot audit")
     parser.add_argument("--threshold", type=int, default=DEFAULT_THRESHOLD,
                         help=f"Line threshold for hotspot report (default: {DEFAULT_THRESHOLD})")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--summary", "-s", action="store_true",
+                      help="Print condensed summary instead of full report")
+    mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
+                      help="Write a full markdown report document")
     parser.add_argument("--output", "-o", metavar="FILE",
-                        help="Write report to FILE instead of stdout")
-    parser.add_argument("--summary", "-s", action="store_true",
-                        help="Print condensed summary instead of full report")
+                        help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()
 
     # Collect per-game data (progress to stderr so it doesn't pollute stdout)
@@ -562,21 +660,32 @@ def main() -> None:
         records = collect_records(game_dir, gt.entry_info)
         game_data.append((gt, game_dir, records))
 
-    # Open output destination
-    if args.output:
-        out = open(args.output, "w", encoding="utf-8")
-    else:
-        out = sys.stdout
-
-    try:
-        if args.summary:
-            report_summary(out, game_data, args.threshold)
-        else:
-            report_detailed(out, game_data, args.threshold)
-    finally:
+    if args.markdown:
         if args.output:
-            out.close()
-            print(f"\nReport written to: {args.output}", file=sys.stderr)
+            md_path = args.output
+        else:
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            report_dir = os.path.join(repo_root, "tmp", "reports")
+            os.makedirs(report_dir, exist_ok=True)
+            md_path = os.path.join(report_dir, f"game_file_hotspots_{ts}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            report_markdown(f, game_data, args.threshold)
+        print(f"Markdown report written to: {md_path}", file=sys.stderr)
+    else:
+        if args.output:
+            out = open(args.output, "w", encoding="utf-8")
+        else:
+            out = sys.stdout
+        try:
+            if args.summary:
+                report_summary(out, game_data, args.threshold)
+            else:
+                report_detailed(out, game_data, args.threshold)
+        finally:
+            if args.output:
+                out.close()
+                print(f"\nReport written to: {args.output}", file=sys.stderr)
 
     print(f"Detected {len(game_data)} game(s).", file=sys.stderr)
 
