@@ -14,7 +14,7 @@ import javassist.ClassPool
 @Service
 class CodeInjectorService : Disposable {
     /**
-     * 用于在IDE启动时应用代码注入器。
+     * 用于在 IDE 启动时应用代码注入器。
      */
     class Listener : AppLifecycleListener {
         override fun appFrameCreated(commandLineArgs: MutableList<String>) {

@@ -27,7 +27,7 @@ class PlsPathServiceImpl : PlsPathService {
     // Steam 游戏的实际安装路径：（通过特定命令获取）
     // Steam 游戏的默认安装路径：`steamapps/common`（其子目录是游戏名）
     // 创意工坊安装目录：`steamapps/common/content`（其子目录是游戏的 steamId）
-    // 游戏模组安装目录：`~\Documents\Paradox Interactive\${gameName}\mod`
+    // 游戏模组安装目录：`~\Documents\Paradox Interactive\{gameName}\mod`
 
     override fun initAsync() {
         val coroutineScope = PlsFacade.getCoroutineScope()

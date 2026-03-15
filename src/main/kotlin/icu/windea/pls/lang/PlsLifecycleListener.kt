@@ -18,7 +18,7 @@ import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
+ * 用于在特定生命周期执行特定的代码，例如，在 IDE 启动时初始化一些缓存数据。
  */
 class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
     private val runOncePerApplication = AtomicBoolean(false)
