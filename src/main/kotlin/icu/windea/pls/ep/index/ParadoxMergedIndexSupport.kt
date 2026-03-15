@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
+interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     val id: Byte
 
     val type: Class<T>
@@ -36,6 +36,6 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxIndexInfoSupport<*>>("icu.windea.pls.infoIndexSupport")
+        val EP_NAME = ExtensionPointName<ParadoxMergedIndexSupport<*>>("icu.windea.pls.mergedIndexSupport")
     }
 }

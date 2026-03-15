@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findFast
@@ -17,7 +18,7 @@ import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
-import icu.windea.pls.ep.index.ParadoxIndexInfoSupport
+import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -32,6 +33,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -50,7 +52,7 @@ import kotlin.concurrent.getOrSet
  * 兼容需要内联的情况（此时使用懒加载的索引，即 [VirtualFileGist]）。
  *
  * @see ParadoxIndexInfo
- * @see ParadoxIndexInfoSupport
+ * @see ParadoxMergedIndexSupport
  */
 @Optimized
 class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>, ParadoxIndexInfo>() {
@@ -88,11 +90,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = PlsStates.procssingDefinitionInfoStack.getOrSet { ArrayDeque() }
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                extensionList.forEachFast { ep -> ep.buildData(element, fileData) }
+                buildDataFromSupports(element)
 
                 if (element is ParadoxDefinitionElement) {
                     val definitionInfo = element.definitionInfo
@@ -103,7 +105,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 }
 
                 if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    extensionList.forEachFast { ep -> ep.buildData(element, fileData) }
+                    buildDataFromSupports(element)
                     run {
                         if (definitionInfoStack.isEmpty()) return@run
                         ProgressManager.checkCanceled()
@@ -111,11 +113,23 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                         val configs = ParadoxConfigManager.getConfigs(element, options)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
-                        extensionList.forEachFast { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
+                        buildDataFromSupports(element, configs, definitionInfo)
                     }
                 }
 
                 super.visitElement(element)
+            }
+
+            private fun buildDataFromSupports(element: PsiElement) {
+                supports.forEachFast { ep -> ep.buildData(element, fileData) }
+            }
+
+            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement) {
+                supports.forEachFast { ep -> ep.buildData(element, fileData) }
+            }
+
+            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
+                supports.forEachFast { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
             }
 
             override fun elementFinished(element: PsiElement) {
@@ -135,16 +149,20 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    extensionList.forEachFast { ep -> ep.buildData(element, fileData) }
+                    buildDataFromSupports(element)
                     return
                 }
 
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
+            }
+
+            private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement) {
+                supports.forEachFast { ep -> ep.buildData(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -168,14 +186,12 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (fileData.isEmpty()) return
-        val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         for (key in fileData.keys) {
             val oldValue = fileData.getValue(key)
             if (oldValue.size <= 1) continue
             val id = key.toByte()
-            val support = extensionList.findFast { it.id == id }
-                ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
-                ?: throw UnsupportedOperationException()
+            val support = getSupportOrUnsupported(supports, id)
             val newValue = support.compressData(oldValue)
             fileData[key] = newValue
         }
@@ -184,8 +200,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
         // 用于兼容懒加载的索引
         return buildMap {
-            val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
-            extensionList.forEachFast { ep -> put(ep.id.toString(), emptyList()) }
+            val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+            supports.forEachFast { ep -> put(ep.id.toString(), emptyList()) }
         }
     }
 
@@ -196,9 +212,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
         val firstInfo = value.first()
         val type = firstInfo.javaClass
-        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.findFast { it.type == type }
-            ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
-            ?: throw UnsupportedOperationException()
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val support = getSupportOrUnsupported(supports, type)
         storage.writeByte(support.id)
         val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
@@ -214,13 +229,20 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         if (size == 0) return emptyList()
 
         val id = storage.readByte()
-        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.findFast { it.id == id }
-            ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
-            ?: throw UnsupportedOperationException()
+        val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
+        val support = getSupportOrUnsupported(supports, id)
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }
         }
+    }
+
+    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
+        return supports.findFast { it.type == type }?.castOrNull<ParadoxMergedIndexSupport<ParadoxIndexInfo>>() ?: throw UnsupportedOperationException()
+    }
+
+    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, id: Byte): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
+        return supports.findFast { it.id == id }?.castOrNull<ParadoxMergedIndexSupport<ParadoxIndexInfo>>() ?: throw UnsupportedOperationException()
     }
 }

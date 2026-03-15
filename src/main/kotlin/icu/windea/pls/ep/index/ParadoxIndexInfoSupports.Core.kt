@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynamicValueIndexInfo> {
+class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
     override val id = ParadoxIndexInfoType.DynamicValue.id
@@ -85,7 +85,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
     }
 }
 
-class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParameterIndexInfo> {
+class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
     override val id = ParadoxIndexInfoType.Parameter.id
@@ -128,7 +128,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
     }
 }
 
-class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxLocalisationParameterIndexInfo> {
+class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
     override val id = ParadoxIndexInfoType.LocalisationParameter.id

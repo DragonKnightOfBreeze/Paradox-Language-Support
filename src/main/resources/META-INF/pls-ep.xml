@@ -12,7 +12,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.mergedIndexSupport" interface="icu.windea.pls.ep.index.ParadoxMergedIndexSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher" dynamic="true"/>
@@ -117,14 +117,14 @@
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionMerger"/>
 
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexInfoSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterIndexInfoSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport"/>
 
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionIndexInfoSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventIndexInfoSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventIndexInfoSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventMergedIndexSupport"/>
+    <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport"/>
 
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatChecker"/>

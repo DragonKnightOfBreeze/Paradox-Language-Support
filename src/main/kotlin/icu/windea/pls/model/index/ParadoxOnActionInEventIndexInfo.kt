@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxOnActionInEventIndexInfoSupport
+ * @see icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport
  */
 data class ParadoxOnActionInEventIndexInfo(
     val onActionName: String,

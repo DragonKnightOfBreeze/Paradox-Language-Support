@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport
+ * @see icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
  */
 data class ParadoxInferredScopeContextAwareDefinitionIndexInfo(
     val definitionName: String,

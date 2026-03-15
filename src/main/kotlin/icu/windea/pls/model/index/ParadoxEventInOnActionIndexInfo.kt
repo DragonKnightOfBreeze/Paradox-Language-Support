@@ -4,7 +4,7 @@ import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxEventInOnActionIndexInfoSupport
+ * @see icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport
  */
 data class ParadoxEventInOnActionIndexInfo(
     val eventName: String,

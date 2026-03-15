@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
-class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
+class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     object Constants {
         val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
@@ -81,7 +81,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
     }
 }
 
-class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInOnActionIndexInfo> {
+class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInOnActionIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
     override val id = ParadoxIndexInfoType.EventInOnAction.id
@@ -129,7 +129,7 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
     }
 }
 
-class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInEventIndexInfo> {
+class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
     override val id = ParadoxIndexInfoType.EventInEvent.id
@@ -197,7 +197,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
     }
 }
 
-class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOnActionInEventIndexInfo> {
+class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxOnActionInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
     override val id = ParadoxIndexInfoType.OnActionInEvent.id

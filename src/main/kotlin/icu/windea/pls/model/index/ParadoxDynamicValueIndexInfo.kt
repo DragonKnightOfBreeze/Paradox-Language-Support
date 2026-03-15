@@ -5,7 +5,7 @@ import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see icu.windea.pls.lang.index.ParadoxMergedIndex
- * @see icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport
+ * @see icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport
  */
 data class ParadoxDynamicValueIndexInfo(
     val name: String,
