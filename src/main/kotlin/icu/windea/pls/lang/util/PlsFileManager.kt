@@ -54,7 +54,6 @@ object PlsFileManager {
         val r = VfsUtil.findFile(path, false)
         if (r != null) return r
         if (!createIfMissing) return null
-
         if (application.holdsReadLock()) return null // skip create if in read action
         runWriteAction { VfsUtil.createDirectoryIfMissing(path.toString()) }
         return VfsUtil.findFile(path, true)

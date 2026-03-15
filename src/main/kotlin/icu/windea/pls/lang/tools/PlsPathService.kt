@@ -23,6 +23,8 @@ interface PlsPathService {
 
     /**
      * 得到 [gameName] 对应的游戏数据目录的路径。
+     *
+     * 注意：仅限 Paradox Interactive 游戏。
      */
     fun getGameDataPath(gameName: String): Path?
 
