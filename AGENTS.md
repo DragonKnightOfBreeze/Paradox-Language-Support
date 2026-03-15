@@ -43,9 +43,7 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### Common commands
 
-> On Windows PowerShell, prefer running Gradle via the wrapper:
->
-> - `./gradlew <task>`
+> On Windows PowerShell, prefer running Gradle via the wrapper:`./gradlew <task>`
 
 - Run IDE for debugging: `./gradlew runIde`
 - Build the plugin ZIP: `./gradlew buildPlugin`
@@ -57,7 +55,6 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 - Prefer local repos in `cwt/<repoDir>`.
 - If missing (common in CI), Gradle can download ZIPs and unzip them into: `build/generated/cwt/<repoDir>`
-- If necessary, you can check the real-game config files in these local repos.
 
 ## Testing guidance
 
@@ -109,11 +106,14 @@ fun tearDown() = clearIntegrationTest()
 Typical per-test file arrangement pattern:
 
 ```kotlin
-markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt") // NOTE that marked file path DO NOT starts with `game/`
-myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt") // alignment to marked file path is not required 
+markFileInfo(ParadoxGameType.Stellaris, "common/test/usage_direct_stellaris.test.txt")
+myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 ```
 
-> Note: the intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
+Notes:
+- The intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
+- The marked file path DO NOT start with `game/`.
+- Alignment between real file path and marked file path is not required.
 
 ### Optional / on-demand tests (assume-based)
 
@@ -165,7 +165,10 @@ Package organization:
 - `icu.windea.pls.core`: stdlib/platform/third-party extensions + shared utilities
 - `icu.windea.pls.config`: config/config group/config expression models + services/resolvers/manipulators
 - `icu.windea.pls.tools`: tool-like APIs (launchers, generators, log readers) that are not necessarily “language features”
-- `icu.windea.pls.lang.match` & `icu.windea.pls.lang.resolve`: semantic-level matching & resolution (often config-driven)
+- `icu.windea.pls.lang` - plugin-specific, domain-specific or cross-language codes (components, extensions, utils, etc.)
+  - `icu.windea.pls.lang.match`: semantic-level matching (mainly based on indices, reference resolution and configs)
+  - `icu.windea.pls.lang.resolve`: semantic-level resolution (mainly based on indices, reference resolution and configs)
+  - `icu.windea.pls.lang.util`: high-level managers (e.g., `ParadoxDefinitionManager`) and special components (e.g., renderers)
 
 Service vs Manager vs Util:
 
@@ -213,7 +216,7 @@ For the config system and the config format, see:
 
 - `docs/en/config.md`
 - `docs/en/ref-config-format.md`
-- `cwt/cwtools-stellaris-config/config` (the real-game config directory)
+- `cwt/cwtools-stellaris-config/config` (the real-game config directory for Stellaris, other game types are also available)
 - `src/test/testData/chronicle` (the easter-egg config directory)
 
 ## Agent instructions
@@ -279,6 +282,7 @@ When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP 
 - **Type hierarchy**: use `ide_type_hierarchy`
 - **Finding implementations**: use `ide_find_implementations`
 - **Diagnostics**: use `ide_diagnostics`
+- Etc.
 
 Notes:
 
