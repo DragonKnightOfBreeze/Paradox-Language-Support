@@ -178,6 +178,11 @@ _IDEA_DIRS  = [".idea"]
 _VSCODE_DIRS = [".vscode", "_cwtools", ".cursor", ".windsurf"]
 _VSCODE_MISC = [".cwtools"]   # may be a file or directory
 
+# Patterns looked up in .gitignore as fallback indicators
+# (stripped of leading/trailing slashes before matching)
+_GITIGNORE_IDEA_PATTERNS  = {".idea", "*.iml", ".config"}
+_GITIGNORE_VSCODE_PATTERNS = {".vscode", "_cwtools", ".cwtools", ".cursor", ".windsurf"}
+
 
 def _has_cwt_config_dir(mod_dir: str) -> bool:
     """Return True if .config/ exists and contains at least one .cwt file (PLS custom config dir)."""
@@ -190,43 +195,81 @@ def _has_cwt_config_dir(mod_dir: str) -> bool:
         return False
 
 
+def parse_gitignore_ide_hints(mod_dir: str) -> tuple[list[str], list[str]]:
+    """Parse .gitignore and return (idea_hints, vsc_hints) based on known IDE patterns.
+
+    Used as a fallback when direct filesystem indicators are absent — mod authors
+    often exclude IDE config directories before uploading, but leave .gitignore intact.
+    Returned pattern strings are the raw (normalised) patterns found in the file.
+    """
+    gitignore_path = os.path.join(mod_dir, ".gitignore")
+    if not os.path.isfile(gitignore_path):
+        return [], []
+    idea_hints: list[str] = []
+    vsc_hints:  list[str] = []
+    seen: set[str] = set()
+    try:
+        with open(gitignore_path, encoding="utf-8-sig", errors="ignore") as f:
+            for line in f:
+                pattern = line.strip().lstrip("/").rstrip("/")
+                if not pattern or pattern.startswith("#") or pattern in seen:
+                    continue
+                seen.add(pattern)
+                if pattern in _GITIGNORE_IDEA_PATTERNS:
+                    idea_hints.append(pattern)
+                elif pattern in _GITIGNORE_VSCODE_PATTERNS:
+                    vsc_hints.append(pattern)
+    except OSError:
+        pass
+    return idea_hints, vsc_hints
+
+
 def detect_ide(mod_dir: str) -> tuple[list[str], list[str]]:
     """Detect IDE usage indicators in mod_dir.
 
     Returns (ides, indicators):
       ides       — IDE labels found, e.g. ["IDEA"], ["VSCode"], ["IDEA", "VSCode"], or []
-      indicators — specific filesystem signals, e.g. [".idea", ".iml", ".vscode"]
+      indicators — filesystem signals; direct ones are plain (e.g. ".idea"),
+                   gitignore-inferred ones are prefixed with "~" (e.g. "~.idea")
     """
-    idea_found: list[str] = []
-    vsc_found:  list[str] = []
+    idea_direct: list[str] = []
+    vsc_direct:  list[str] = []
 
-    # --- IDEA ---
+    # --- Direct filesystem detection ---
     if os.path.isdir(os.path.join(mod_dir, ".idea")):
-        idea_found.append(".idea")
+        idea_direct.append(".idea")
     try:
         for fn in os.listdir(mod_dir):
             if fn.endswith(".iml"):
-                idea_found.append(".iml")
+                idea_direct.append(".iml")
                 break
     except OSError:
         pass
     if _has_cwt_config_dir(mod_dir):
-        idea_found.append(".config")
-
-    # --- VSCode / VSCode-based AI IDEs ---
+        idea_direct.append(".config")
     for dirname in _VSCODE_DIRS:
         if os.path.isdir(os.path.join(mod_dir, dirname)):
-            vsc_found.append(dirname)
+            vsc_direct.append(dirname)
     for name in _VSCODE_MISC:
         if os.path.exists(os.path.join(mod_dir, name)):
-            vsc_found.append(name)
+            vsc_direct.append(name)
+
+    # --- .gitignore fallback (only add hints not already covered directly) ---
+    gi_idea, gi_vsc = parse_gitignore_ide_hints(mod_dir)
+    idea_direct_set = set(idea_direct)
+    vsc_direct_set  = set(vsc_direct)
+    idea_gi = [f"~{h}" for h in gi_idea if h not in idea_direct_set]
+    vsc_gi  = [f"~{h}" for h in gi_vsc  if h not in vsc_direct_set]
+
+    all_idea = idea_direct + idea_gi
+    all_vsc  = vsc_direct  + vsc_gi
 
     ides: list[str] = []
-    if idea_found:
+    if all_idea:
         ides.append("IDEA")
-    if vsc_found:
+    if all_vsc:
         ides.append("VSCode")
-    return ides, idea_found + vsc_found
+    return ides, all_idea + all_vsc
 
 # ===========================================================================
 # Mod descriptor
