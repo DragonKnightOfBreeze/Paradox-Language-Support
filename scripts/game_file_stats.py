@@ -264,6 +264,26 @@ def count_lines(file_path: str, category: str) -> tuple[int, int, int]:
     return total, blank, comment
 
 # ===========================================================================
+# Generated-file detection
+# ===========================================================================
+
+_GAME_GEN_HEURISTIC_THRESHOLD = 1000
+
+def is_generated_game(rel_path: str, total: int, blank: int, comment: int) -> bool:
+    """Detect likely auto-generated game files.
+
+    Heuristics:
+      - Path contains a 'generated' directory segment
+      - Zero comments AND zero blank lines AND total > threshold
+    """
+    norm = rel_path.replace(os.sep, "/")
+    if "/generated/" in norm or norm.startswith("generated/"):
+        return True
+    if total > _GAME_GEN_HEURISTIC_THRESHOLD and comment == 0 and blank == 0:
+        return True
+    return False
+
+# ===========================================================================
 # File collection
 # ===========================================================================
 
@@ -284,13 +304,17 @@ def iter_indirect_files(entry_dir: str) -> Iterable[str]:
 
 
 def collect_game_stats(game_dir: str, entry_info: EntryInfo
-                       ) -> dict[tuple[str, str], Stats]:
+                       ) -> tuple[dict[tuple[str, str], Stats],
+                                  dict[tuple[str, str], Stats]]:
     """Collect stats keyed by (entry_type, category).
 
     entry_type is "Main Entry" or "Extra Entry".
     category is "Script", "Localisation", or "CSV".
+
+    Returns (normal_stats_map, generated_stats_map).
     """
-    result: dict[tuple[str, str], Stats] = defaultdict(Stats)
+    normal: dict[tuple[str, str], Stats] = defaultdict(Stats)
+    generated: dict[tuple[str, str], Stats] = defaultdict(Stats)
 
     for entry_type_label, entry_paths in [
         ("Main Entry", entry_info.game_main),
@@ -304,9 +328,11 @@ def collect_game_stats(game_dir: str, entry_info: EntryInfo
                 if cat is None:
                     continue
                 total, blank, comment = count_lines(file_path, cat)
-                result[(entry_type_label, cat)].add_file(total, blank, comment)
+                rel = os.path.relpath(file_path, game_dir)
+                target = generated if is_generated_game(rel, total, blank, comment) else normal
+                target[(entry_type_label, cat)].add_file(total, blank, comment)
 
-    return result
+    return normal, generated
 
 # ===========================================================================
 # Reporting
@@ -347,6 +373,31 @@ def print_combined_stats(out: TextIO, label: str,
                 combined.max_lines = max(combined.max_lines, s.max_lines)
     print_stats(out, label, combined)
 
+
+def _merge_stats_maps(*maps: dict[tuple[str, str], Stats]) -> dict[tuple[str, str], Stats]:
+    """Merge multiple stats maps into one combined map."""
+    result: dict[tuple[str, str], Stats] = defaultdict(Stats)
+    for m in maps:
+        for key, s in m.items():
+            r = result[key]
+            r.file_count += s.file_count
+            r.total_lines += s.total_lines
+            r.blank_lines += s.blank_lines
+            r.comment_lines += s.comment_lines
+            if r.file_count == s.file_count:
+                r.min_lines = s.min_lines
+                r.max_lines = s.max_lines
+            else:
+                if s.file_count > 0:
+                    r.min_lines = min(r.min_lines, s.min_lines)
+                    r.max_lines = max(r.max_lines, s.max_lines)
+    return result
+
+
+def _has_any_files(stats_map: dict[tuple[str, str], Stats]) -> bool:
+    """Check if any Stats in the map has file_count > 0."""
+    return any(s.file_count > 0 for s in stats_map.values())
+
 # ===========================================================================
 # Entry point
 # ===========================================================================
@@ -371,7 +422,8 @@ def main() -> None:
             out.write(f"Game: {gt.title} ({gt.id})\n")
             out.write(f"Directory: {game_dir}\n")
 
-            stats_map = collect_game_stats(game_dir, gt.entry_info)
+            normal_map, gen_map = collect_game_stats(game_dir, gt.entry_info)
+            stats_map = _merge_stats_maps(normal_map, gen_map)
 
             # Per entry type
             for entry_type in ["Main Entry", "Extra Entry"]:
@@ -391,6 +443,15 @@ def main() -> None:
             out.write(f"\n  Combined (all entries):\n")
             for cat, _ in FILE_CATEGORIES:
                 print_combined_stats(out, cat, stats_map)
+
+            # Generated file summary for this game
+            if _has_any_files(gen_map):
+                out.write(f"\n  Generated files (auto-detected):\n")
+                for cat, _ in FILE_CATEGORIES:
+                    print_combined_stats(out, cat, gen_map)
+                out.write(f"\n  Non-generated files:\n")
+                for cat, _ in FILE_CATEGORIES:
+                    print_combined_stats(out, cat, normal_map)
 
         # Grand summary across all detected games
         if detected == 0:

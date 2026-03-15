@@ -18,6 +18,10 @@
 # Option comments (##) are considered part of the effective config and
 # therefore counted as code lines.
 #
+# Auto-generated files are detected and reported separately:
+#   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+#   - Zero comments AND zero blank lines AND total > 500 lines
+#
 # Usage:
 #   python scripts/config_stats.py
 
@@ -125,26 +129,55 @@ def count_file_lines(file_path: str) -> FileLineInfo:
     return info
 
 # ---------------------------------------------------------------------------
+# Generated-file detection
+# ---------------------------------------------------------------------------
+
+_CWT_GEN_HEURISTIC_THRESHOLD = 500
+
+def is_generated_cwt(filename: str, total: int, blank: int, comment: int) -> bool:
+    """Detect likely auto-generated CWT config files.
+
+    Heuristics:
+      - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+      - Zero comments AND zero blank lines AND total > threshold
+    """
+    if ".gen." in filename:
+        return True
+    if total > _CWT_GEN_HEURISTIC_THRESHOLD and comment == 0 and blank == 0:
+        return True
+    return False
+
+# ---------------------------------------------------------------------------
 # Aggregation
 # ---------------------------------------------------------------------------
 
-def collect_stats(base_dir: str, extension: str) -> Stats:
-    """Walk base_dir, aggregate line stats for files with the given extension."""
-    stats = Stats()
+def _add_to_stats(stats: Stats, info: FileLineInfo) -> None:
+    """Add one file's info into an aggregate Stats object."""
+    stats.file_count += 1
+    stats.total_lines += info.total
+    stats.blank_lines += info.blank
+    stats.comment_lines += info.comment
+    if stats.file_count == 1:
+        stats.min_lines = info.total
+        stats.max_lines = info.total
+    else:
+        stats.min_lines = min(stats.min_lines, info.total)
+        stats.max_lines = max(stats.max_lines, info.total)
+
+
+def collect_stats(base_dir: str, extension: str) -> tuple[Stats, Stats]:
+    """Walk base_dir, aggregate line stats for files with the given extension.
+
+    Returns (normal_stats, generated_stats).
+    """
+    normal = Stats()
+    generated = Stats()
     for file_path in iter_files(base_dir, [extension]):
+        fn = os.path.basename(file_path)
         info = count_file_lines(file_path)
-        stats.file_count += 1
-        stats.total_lines += info.total
-        stats.blank_lines += info.blank
-        stats.comment_lines += info.comment
-        # Track per-file min/max based on total lines
-        if stats.file_count == 1:
-            stats.min_lines = info.total
-            stats.max_lines = info.total
-        else:
-            stats.min_lines = min(stats.min_lines, info.total)
-            stats.max_lines = max(stats.max_lines, info.total)
-    return stats
+        target = generated if is_generated_cwt(fn, info.total, info.blank, info.comment) else normal
+        _add_to_stats(target, info)
+    return normal, generated
 
 # ---------------------------------------------------------------------------
 # Reporting
@@ -168,6 +201,25 @@ def print_stats(label: str, stats: Stats) -> None:
 # Entry point
 # ---------------------------------------------------------------------------
 
+def _merge_stats(a: Stats, b: Stats) -> Stats:
+    """Merge two Stats objects into a new combined Stats."""
+    merged = Stats()
+    merged.file_count = a.file_count + b.file_count
+    merged.total_lines = a.total_lines + b.total_lines
+    merged.blank_lines = a.blank_lines + b.blank_lines
+    merged.comment_lines = a.comment_lines + b.comment_lines
+    if a.file_count > 0 and b.file_count > 0:
+        merged.min_lines = min(a.min_lines, b.min_lines)
+        merged.max_lines = max(a.max_lines, b.max_lines)
+    elif a.file_count > 0:
+        merged.min_lines = a.min_lines
+        merged.max_lines = a.max_lines
+    elif b.file_count > 0:
+        merged.min_lines = b.min_lines
+        merged.max_lines = b.max_lines
+    return merged
+
+
 def main() -> None:
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     cwt_root = os.path.join(repo_root, "cwt")
@@ -175,14 +227,23 @@ def main() -> None:
         print("Error: cwt/ directory not found, cannot collect statistics.")
         return
 
+    grand_generated = Stats()
+
     print("=== CWT Config Statistics Report ===")
     for entry in sorted(os.scandir(cwt_root), key=lambda item: item.name):
         if not entry.is_dir():
             continue
         relative_path = os.path.join("cwt", entry.name)
         print(f"\nDirectory: {relative_path}")
-        stats = collect_stats(entry.path, ".cwt")
-        print_stats("CWT (.cwt)", stats)
+        normal, generated = collect_stats(entry.path, ".cwt")
+        combined = _merge_stats(normal, generated)
+        print_stats("CWT (.cwt)", combined)
+        if generated.file_count > 0:
+            grand_generated = _merge_stats(grand_generated, generated)
+
+    if grand_generated.file_count > 0:
+        print(f"\n=== Generated File Summary ===")
+        print_stats("Generated CWT (.cwt)", grand_generated)
 
 
 if __name__ == "__main__":

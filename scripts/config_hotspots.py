@@ -19,6 +19,10 @@
 #   - '##'  (exactly 2): option comment -> counted as code (metadata)
 #   - '###' (3 or more): doc comment   -> counted as comment
 #
+# Auto-generated files are detected and reported separately:
+#   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+#   - Zero comments AND zero blank lines AND total > 500 lines
+#
 # Usage:
 #   python scripts/config_hotspots.py [--threshold N]
 
@@ -50,6 +54,7 @@ class FileRecord:
     total: int = 0
     blank: int = 0
     comment: int = 0
+    generated: bool = False  # likely auto-generated file
 
     @property
     def code(self) -> int:
@@ -115,6 +120,25 @@ def count_lines(file_path: str) -> tuple[int, int, int]:
     return total, blank, comment
 
 # ---------------------------------------------------------------------------
+# Generated-file detection
+# ---------------------------------------------------------------------------
+
+_CWT_GEN_HEURISTIC_THRESHOLD = 500
+
+def is_generated_cwt(filename: str, total: int, blank: int, comment: int) -> bool:
+    """Detect likely auto-generated CWT config files.
+
+    Heuristics:
+      - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+      - Zero comments AND zero blank lines AND total > threshold
+    """
+    if ".gen." in filename:
+        return True
+    if total > _CWT_GEN_HEURISTIC_THRESHOLD and comment == 0 and blank == 0:
+        return True
+    return False
+
+# ---------------------------------------------------------------------------
 # File discovery
 # ---------------------------------------------------------------------------
 
@@ -139,6 +163,7 @@ def collect_records(cwt_root: str, repo_root: str) -> list[FileRecord]:
                     continue
                 abs_path = os.path.join(dirpath, fn)
                 total, blank, comment = count_lines(abs_path)
+                gen = is_generated_cwt(fn, total, blank, comment)
                 rec = FileRecord(
                     path=abs_path,
                     rel_path=os.path.relpath(abs_path, repo_root),
@@ -147,6 +172,7 @@ def collect_records(cwt_root: str, repo_root: str) -> list[FileRecord]:
                     total=total,
                     blank=blank,
                     comment=comment,
+                    generated=gen,
                 )
                 records.append(rec)
     return records
@@ -207,16 +233,43 @@ def report_hotspots(records: list[FileRecord], threshold: int) -> None:
         print(f"  No files found with >= {threshold} lines.")
         return
 
-    print(f"  {'#':>4} {'Lines':>6} {'Code':>6} {'Cmt':>5} {'Blk':>5}  {'File'}")
-    print(f"  {'-'*4} {'-'*6} {'-'*6} {'-'*5} {'-'*5}  {'-'*60}")
+    print(f"  {'#':>4} {'Lines':>6} {'Code':>6} {'Cmt':>5} {'Blk':>5}  {'':>5} {'File'}")
+    print(f"  {'-'*4} {'-'*6} {'-'*6} {'-'*5} {'-'*5}  {'-'*5} {'-'*60}")
     for i, r in enumerate(hot, 1):
-        print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {r.rel_path}")
+        tag = "[GEN]" if r.generated else ""
+        print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {tag:>5} {r.rel_path}")
 
     print()
     print(f"  Total hotspot files: {len(hot)} / {len(records)}  ({len(hot)/len(records)*100:.1f}%)")
     hotspot_lines = sum(r.total for r in hot)
     all_lines = sum(r.total for r in records)
     print(f"  Hotspot total lines: {hotspot_lines} / {all_lines}  ({hotspot_lines/all_lines*100:.1f}%)")
+
+# ---------------------------------------------------------------------------
+# Report: generated file summary
+# ---------------------------------------------------------------------------
+
+def report_generated_summary(records: list[FileRecord]) -> None:
+    """Print a summary of auto-detected generated files."""
+    gen = [r for r in records if r.generated]
+    if not gen:
+        return
+
+    gen.sort(key=lambda r: r.total, reverse=True)
+    all_lines = sum(r.total for r in records)
+    gen_lines = sum(r.total for r in gen)
+    pct = gen_lines / all_lines * 100 if all_lines else 0.0
+
+    print()
+    print(f"=== Generated File Summary ===")
+    print()
+    print(f"  Generated files : {len(gen)} / {len(records)}  ({len(gen)/len(records)*100:.1f}%)")
+    print(f"  Generated lines : {gen_lines} / {all_lines}  ({pct:.1f}%)")
+    print()
+    print(f"  {'#':>4} {'Lines':>6} {'Code':>6} {'Cmt':>5} {'Blk':>5}  {'File'}")
+    print(f"  {'-'*4} {'-'*6} {'-'*6} {'-'*5} {'-'*5}  {'-'*60}")
+    for i, r in enumerate(gen, 1):
+        print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {r.rel_path}")
 
 # ---------------------------------------------------------------------------
 # Entry point
@@ -238,6 +291,7 @@ def main() -> None:
 
     report_subdir_distribution(records)
     report_hotspots(records, args.threshold)
+    report_generated_summary(records)
 
 
 if __name__ == "__main__":

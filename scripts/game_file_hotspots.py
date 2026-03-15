@@ -22,6 +22,10 @@
 # plugin's Kotlin sources (ParadoxGameType, ParadoxEntryInfo, PlsPathServiceImpl,
 # PlsConstants).
 #
+# Auto-generated files are detected and reported separately:
+#   - Path contains a '/generated/' directory segment
+#   - Zero comments AND zero blank lines AND total > 1000 lines
+#
 # Output is written to tmp/reports/game_file_hotspots.txt.
 #
 # Usage:
@@ -225,6 +229,7 @@ class FileRecord:
     total: int = 0
     blank: int = 0
     comment: int = 0
+    generated: bool = False  # likely auto-generated file
 
     @property
     def code(self) -> int:
@@ -268,6 +273,26 @@ def count_lines(file_path: str, category: str) -> tuple[int, int, int]:
     return total, blank, comment
 
 # ===========================================================================
+# Generated-file detection
+# ===========================================================================
+
+_GAME_GEN_HEURISTIC_THRESHOLD = 1000
+
+def is_generated_game(rel_path: str, total: int, blank: int, comment: int) -> bool:
+    """Detect likely auto-generated game files.
+
+    Heuristics:
+      - Path contains a 'generated' directory segment
+      - Zero comments AND zero blank lines AND total > threshold
+    """
+    norm = rel_path.replace(os.sep, "/")
+    if "/generated/" in norm or norm.startswith("generated/"):
+        return True
+    if total > _GAME_GEN_HEURISTIC_THRESHOLD and comment == 0 and blank == 0:
+        return True
+    return False
+
+# ===========================================================================
 # File collection
 # ===========================================================================
 
@@ -302,15 +327,18 @@ def collect_records(game_dir: str, entry_info: EntryInfo) -> list[FileRecord]:
                             continue
                         abs_path = os.path.join(root, fn)
                         total, blank, comment = count_lines(abs_path, cat)
+                        rel = os.path.relpath(abs_path, game_dir)
+                        gen = is_generated_game(rel, total, blank, comment)
                         rec = FileRecord(
                             path=abs_path,
-                            rel_path=os.path.relpath(abs_path, game_dir),
+                            rel_path=rel,
                             entry_type=entry_type_label,
                             subdir=subdir_name,
                             category=cat,
                             total=total,
                             blank=blank,
                             comment=comment,
+                            generated=gen,
                         )
                         records.append(rec)
 
@@ -412,16 +440,41 @@ def report_hotspots(out: TextIO, records: list[FileRecord], threshold: int) -> N
         out.write(f"  No files found with >= {threshold} lines.\n")
         return
 
-    out.write(f"  {'#':>4} {'Lines':>8} {'Code':>8} {'Cmt':>6} {'Blk':>6}  {'Cat':<14} {'File'}\n")
-    out.write(f"  {'-'*4} {'-'*8} {'-'*8} {'-'*6} {'-'*6}  {'-'*14} {'-'*60}\n")
+    out.write(f"  {'#':>4} {'Lines':>8} {'Code':>8} {'Cmt':>6} {'Blk':>6}  {'':>5} {'Cat':<14} {'File'}\n")
+    out.write(f"  {'-'*4} {'-'*8} {'-'*8} {'-'*6} {'-'*6}  {'-'*5} {'-'*14} {'-'*60}\n")
     for i, r in enumerate(hot, 1):
-        out.write(f"  {i:>4} {r.total:>8} {r.code:>8} {r.comment:>6} {r.blank:>6}  {r.category:<14} {r.rel_path}\n")
+        tag = "[GEN]" if r.generated else ""
+        out.write(f"  {i:>4} {r.total:>8} {r.code:>8} {r.comment:>6} {r.blank:>6}  {tag:>5} {r.category:<14} {r.rel_path}\n")
 
     out.write(f"\n  Total hotspot files: {len(hot)} / {len(records)}  ({len(hot)/len(records)*100:.1f}%)\n")
     hotspot_lines = sum(r.total for r in hot)
     all_lines = sum(r.total for r in records)
     pct = hotspot_lines / all_lines * 100 if all_lines else 0.0
     out.write(f"  Hotspot total lines: {hotspot_lines} / {all_lines}  ({pct:.1f}%)\n")
+
+# ===========================================================================
+# Report: generated file summary
+# ===========================================================================
+
+def report_generated_summary(out: TextIO, records: list[FileRecord]) -> None:
+    """Print a summary of auto-detected generated files."""
+    gen = [r for r in records if r.generated]
+    if not gen:
+        return
+
+    gen.sort(key=lambda r: r.total, reverse=True)
+    all_lines = sum(r.total for r in records)
+    gen_lines = sum(r.total for r in gen)
+    pct = gen_lines / all_lines * 100 if all_lines else 0.0
+
+    out.write(f"\n  --- Generated File Summary ---\n\n")
+    out.write(f"  Generated files : {len(gen)} / {len(records)}  ({len(gen)/len(records)*100:.1f}%)\n")
+    out.write(f"  Generated lines : {gen_lines} / {all_lines}  ({pct:.1f}%)\n")
+    out.write(f"\n")
+    out.write(f"  {'#':>4} {'Lines':>8} {'Code':>8} {'Cmt':>6} {'Blk':>6}  {'Cat':<14} {'File'}\n")
+    out.write(f"  {'-'*4} {'-'*8} {'-'*8} {'-'*6} {'-'*6}  {'-'*14} {'-'*60}\n")
+    for i, r in enumerate(gen, 1):
+        out.write(f"  {i:>4} {r.total:>8} {r.code:>8} {r.comment:>6} {r.blank:>6}  {r.category:<14} {r.rel_path}\n")
 
 # ===========================================================================
 # Entry point
@@ -458,6 +511,7 @@ def main() -> None:
             report_subdir_distribution(out, records)
             report_subdir_by_category(out, records)
             report_hotspots(out, records, args.threshold)
+            report_generated_summary(out, records)
 
         if detected == 0:
             out.write("\nNo locally installed Paradox games detected.\n")
