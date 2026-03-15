@@ -17,13 +17,22 @@
 #   - Option comments (##) in CWT are N/A here; Paradox script and
 #     localisation use plain '#' line comments.  CSV has no comments.
 #
-# Output is written to tmp/reports/game_file_stats.txt because it can be long.
+# Auto-generated files are detected and reported separately:
+#   - Path contains a '/generated/' directory segment
+#   - Zero comments AND zero blank lines AND total > 1000 lines
+#
+# Output modes:
+#   default  : full detailed report (per-entry-type breakdown + combined + generated)
+#   --summary: condensed per-game table with file/line totals and generated percentages
+#
+# Output defaults to stdout; use --output FILE to write to a file.
 #
 # Usage:
-#   python scripts/game_file_stats.py
+#   python scripts/game_file_stats.py [--output FILE] [--summary]
 
 from __future__ import annotations
 
+import argparse
 import glob
 import os
 import platform
@@ -398,81 +407,124 @@ def _has_any_files(stats_map: dict[tuple[str, str], Stats]) -> bool:
     """Check if any Stats in the map has file_count > 0."""
     return any(s.file_count > 0 for s in stats_map.values())
 
+
+def _total_files(stats_map: dict[tuple[str, str], Stats]) -> int:
+    return sum(s.file_count for s in stats_map.values())
+
+
+def _total_lines(stats_map: dict[tuple[str, str], Stats]) -> int:
+    return sum(s.total_lines for s in stats_map.values())
+
 # ===========================================================================
 # Entry point
 # ===========================================================================
 
-def main() -> None:
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    report_dir = os.path.join(repo_root, "tmp", "reports")
-    os.makedirs(report_dir, exist_ok=True)
-    report_path = os.path.join(report_dir, "game_file_stats.txt")
+def report_detailed(out: TextIO, game_data: list) -> None:
+    """Full detailed report: per-entry-type breakdown + combined + generated split."""
+    out.write("=== Game File Statistics Report ===\n")
+    if not game_data:
+        out.write("\nNo locally installed Paradox games detected.\n")
+        return
+    for gt, game_dir, normal_map, gen_map in game_data:
+        stats_map = _merge_stats_maps(normal_map, gen_map)
 
-    with open(report_path, "w", encoding="utf-8") as out:
-        out.write("=== Game File Statistics Report ===\n")
+        out.write(f"\n{'='*70}\n")
+        out.write(f"Game: {gt.title} ({gt.id})\n")
+        out.write(f"Directory: {game_dir}\n")
 
-        detected = 0
-        for gt in GAME_TYPES:
-            game_dir = get_steam_game_path(gt.steam_id, gt.title)
-            if game_dir is None or not os.path.isdir(game_dir):
+        for entry_type in ["Main Entry", "Extra Entry"]:
+            has_data = any(
+                stats_map.get((entry_type, cat), Stats()).file_count > 0
+                for cat, _ in FILE_CATEGORIES
+            )
+            if not has_data:
                 continue
-            detected += 1
-
-            out.write(f"\n{'='*70}\n")
-            out.write(f"Game: {gt.title} ({gt.id})\n")
-            out.write(f"Directory: {game_dir}\n")
-
-            normal_map, gen_map = collect_game_stats(game_dir, gt.entry_info)
-            stats_map = _merge_stats_maps(normal_map, gen_map)
-
-            # Per entry type
-            for entry_type in ["Main Entry", "Extra Entry"]:
-                has_data = any(
-                    stats_map.get((entry_type, cat), Stats()).file_count > 0
-                    for cat, _ in FILE_CATEGORIES
-                )
-                if not has_data:
-                    continue
-                out.write(f"\n  {entry_type}:\n")
-                for cat, _ in FILE_CATEGORIES:
-                    key = (entry_type, cat)
-                    s = stats_map.get(key, Stats())
-                    print_stats(out, cat, s)
-
-            # Combined total for this game
-            out.write(f"\n  Combined (all entries):\n")
+            out.write(f"\n  {entry_type}:\n")
             for cat, _ in FILE_CATEGORIES:
-                print_combined_stats(out, cat, stats_map)
+                print_stats(out, cat, stats_map.get((entry_type, cat), Stats()))
 
-            # Generated file summary for this game
-            if _has_any_files(gen_map):
-                out.write(f"\n  Generated files (auto-detected):\n")
-                for cat, _ in FILE_CATEGORIES:
-                    print_combined_stats(out, cat, gen_map)
-                out.write(f"\n  Non-generated files:\n")
-                for cat, _ in FILE_CATEGORIES:
-                    print_combined_stats(out, cat, normal_map)
+        out.write(f"\n  Combined (all entries):\n")
+        for cat, _ in FILE_CATEGORIES:
+            print_combined_stats(out, cat, stats_map)
 
-        # Grand summary across all detected games
-        if detected == 0:
-            out.write("\nNo locally installed Paradox games detected.\n")
+        if _has_any_files(gen_map):
+            out.write(f"\n  Generated files (auto-detected):\n")
+            for cat, _ in FILE_CATEGORIES:
+                print_combined_stats(out, cat, gen_map)
+            out.write(f"\n  Non-generated files:\n")
+            for cat, _ in FILE_CATEGORIES:
+                print_combined_stats(out, cat, normal_map)
+
+    out.write(f"\n{'='*70}\n")
+    out.write(f"Detected {len(game_data)} / {len(GAME_TYPES)} game(s).\n")
+
+
+def report_summary(out: TextIO, game_data: list) -> None:
+    """Condensed per-game table: file/line totals and generated percentages."""
+    out.write("=== Game File Statistics Summary ===\n\n")
+    if not game_data:
+        out.write("  No locally installed Paradox games detected.\n")
+        return
+
+    w = 26
+    hdr = f"  {'Game':<{w}} {'Files':>8}  {'Lines':>12}  {'GenFiles':>9}  {'GenLines':>12}  {'Gen%':>6}\n"
+    sep = f"  {'-'*w} {'-'*8}  {'-'*12}  {'-'*9}  {'-'*12}  {'-'*6}\n"
+    out.write(hdr)
+    out.write(sep)
+
+    grand_files = grand_lines = grand_gen_files = grand_gen_lines = 0
+    for gt, game_dir, normal_map, gen_map in game_data:
+        stats_map = _merge_stats_maps(normal_map, gen_map)
+        all_files = _total_files(stats_map)
+        all_lines = _total_lines(stats_map)
+        gen_files = _total_files(gen_map)
+        gen_lines = _total_lines(gen_map)
+        gen_pct   = gen_lines / all_lines * 100 if all_lines else 0.0
+        grand_files += all_files; grand_lines += all_lines
+        grand_gen_files += gen_files; grand_gen_lines += gen_lines
+        name = gt.title[:w]
+        out.write(f"  {name:<{w}} {all_files:>8,}  {all_lines:>12,}  {gen_files:>9,}  {gen_lines:>12,}  {gen_pct:>5.1f}%\n")
+
+    out.write(sep)
+    grand_pct = grand_gen_lines / grand_lines * 100 if grand_lines else 0.0
+    out.write(f"  {'TOTAL':<{w}} {grand_files:>8,}  {grand_lines:>12,}  {grand_gen_files:>9,}  {grand_gen_lines:>12,}  {grand_pct:>5.1f}%\n")
+    out.write(f"\n  Detected {len(game_data)} / {len(GAME_TYPES)} game(s).\n")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Game file statistics audit")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write report to FILE instead of stdout")
+    parser.add_argument("--summary", "-s", action="store_true",
+                        help="Print condensed summary table instead of full report")
+    args = parser.parse_args()
+
+    # Collect per-game data
+    game_data = []
+    for gt in GAME_TYPES:
+        game_dir = get_steam_game_path(gt.steam_id, gt.title)
+        if game_dir is None or not os.path.isdir(game_dir):
+            continue
+        normal_map, gen_map = collect_game_stats(game_dir, gt.entry_info)
+        game_data.append((gt, game_dir, normal_map, gen_map))
+
+    # Open output destination
+    if args.output:
+        out = open(args.output, "w", encoding="utf-8")
+    else:
+        out = sys.stdout
+
+    try:
+        if args.summary:
+            report_summary(out, game_data)
         else:
-            out.write(f"\n{'='*70}\n")
-            out.write(f"Detected {detected} / {len(GAME_TYPES)} game(s).\n")
+            report_detailed(out, game_data)
+    finally:
+        if args.output:
+            out.close()
+            print(f"Report written to: {args.output}", file=sys.stderr)
 
-    print(f"Report written to: {report_path}")
-    print(f"Detected {detected} game(s).")
-
-    # Print a brief console summary
-    if detected > 0:
-        print(f"\nBrief summary (see full report for details):")
-        with open(report_path, "r", encoding="utf-8") as f:
-            # Print only the first few and last few lines as a teaser
-            lines = f.readlines()
-            # Print game headers and combined stats
-            for line in lines:
-                if line.startswith("Game:") or line.startswith("Detected"):
-                    print(f"  {line.rstrip()}")
+    print(f"Detected {len(game_data)} game(s).", file=sys.stderr)
 
 
 if __name__ == "__main__":

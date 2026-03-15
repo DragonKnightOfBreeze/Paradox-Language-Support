@@ -23,8 +23,12 @@
 #   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
 #   - Zero comments AND zero blank lines AND total > 500 lines
 #
+# Output modes:
+#   default  : per-subdirectory distribution + large-file hotspots + generated summary
+#   --summary: condensed top-N hotspot list + generated stats only
+#
 # Usage:
-#   python scripts/config_hotspots.py [--threshold N]
+#   python scripts/config_hotspots.py [--threshold N] [--summary]
 
 from __future__ import annotations
 
@@ -272,6 +276,37 @@ def report_generated_summary(records: list[FileRecord]) -> None:
         print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {r.rel_path}")
 
 # ---------------------------------------------------------------------------
+# Report: summary (condensed)
+# ---------------------------------------------------------------------------
+
+_SUMMARY_TOP_N = 10
+
+def report_summary(records: list[FileRecord], threshold: int) -> None:
+    """Condensed summary: top-N hotspot list and generated stats."""
+    hot = sorted(records, key=lambda r: r.total, reverse=True)[:_SUMMARY_TOP_N]
+    gen = [r for r in records if r.generated]
+    all_lines = sum(r.total for r in records)
+    gen_lines = sum(r.total for r in gen)
+
+    print()
+    print(f"=== CWT Config Hotspot Summary (Top {_SUMMARY_TOP_N}) ===")
+    print()
+    print(f"  {'#':>4} {'Lines':>6} {'Code':>6} {'Cmt':>5} {'Blk':>5}  {'':>5} {'File'}")
+    print(f"  {'-'*4} {'-'*6} {'-'*6} {'-'*5} {'-'*5}  {'-'*5} {'-'*60}")
+    for i, r in enumerate(hot, 1):
+        tag = "[GEN]" if r.generated else ""
+        print(f"  {i:>4} {r.total:>6} {r.code:>6} {r.comment:>5} {r.blank:>5}  {tag:>5} {r.rel_path}")
+
+    print()
+    if gen:
+        gen_pct_f = len(gen) / len(records) * 100 if records else 0.0
+        gen_pct_l = gen_lines / all_lines * 100 if all_lines else 0.0
+        print(f"  Generated: {len(gen)} / {len(records)} files ({gen_pct_f:.1f}%), {gen_lines:,} / {all_lines:,} lines ({gen_pct_l:.1f}%)")
+    else:
+        print(f"  No generated files detected.")
+    print(f"  Total files: {len(records)}, total lines: {all_lines:,}")
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
@@ -279,6 +314,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="CWT config distribution & hotspot audit")
     parser.add_argument("--threshold", type=int, default=DEFAULT_THRESHOLD,
                         help=f"Line threshold for hotspot report (default: {DEFAULT_THRESHOLD})")
+    parser.add_argument("--summary", "-s", action="store_true",
+                        help="Print condensed summary instead of full report")
     args = parser.parse_args()
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -289,9 +326,12 @@ def main() -> None:
 
     records = collect_records(cwt_root, repo_root)
 
-    report_subdir_distribution(records)
-    report_hotspots(records, args.threshold)
-    report_generated_summary(records)
+    if args.summary:
+        report_summary(records, args.threshold)
+    else:
+        report_subdir_distribution(records)
+        report_hotspots(records, args.threshold)
+        report_generated_summary(records)
 
 
 if __name__ == "__main__":

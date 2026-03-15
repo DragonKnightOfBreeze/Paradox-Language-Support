@@ -22,11 +22,16 @@
 #   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
 #   - Zero comments AND zero blank lines AND total > 500 lines
 #
+# Output modes:
+#   default  : per-repository detailed stats block
+#   --summary: condensed table with one row per repository
+#
 # Usage:
-#   python scripts/config_stats.py
+#   python scripts/config_stats.py [--summary]
 
 from __future__ import annotations
 
+import argparse
 import os
 from dataclasses import dataclass
 from typing import Iterable
@@ -220,30 +225,77 @@ def _merge_stats(a: Stats, b: Stats) -> Stats:
     return merged
 
 
+def report_detailed(dir_data: list) -> None:
+    """Per-repository detailed stats block."""
+    print("=== CWT Config Statistics Report ===")
+    for repo_name, rel_path, combined, generated in dir_data:
+        print(f"\nDirectory: {rel_path}")
+        print_stats("CWT (.cwt)", combined)
+
+    grand_generated = Stats()
+    for _, _, _, generated in dir_data:
+        if generated.file_count > 0:
+            grand_generated = _merge_stats(grand_generated, generated)
+    if grand_generated.file_count > 0:
+        print(f"\n=== Generated File Summary ===")
+        print_stats("Generated CWT (.cwt)", grand_generated)
+
+
+def report_summary(dir_data: list) -> None:
+    """Condensed table with one row per repository."""
+    print("=== CWT Config Statistics Summary ===")
+    print()
+    w = 32
+    hdr = f"  {'Repository':<{w}} {'Files':>6}  {'Total':>8}  {'Code':>8}  {'Cmt':>7}  {'Blk':>7}"
+    sep = f"  {'-'*w} {'-'*6}  {'-'*8}  {'-'*8}  {'-'*7}  {'-'*7}"
+    print(hdr)
+    print(sep)
+
+    grand = Stats()
+    grand_gen = Stats()
+    for repo_name, rel_path, combined, generated in dir_data:
+        if combined.file_count == 0:
+            continue
+        name = repo_name[:w]
+        print(f"  {name:<{w}} {combined.file_count:>6,}  {combined.total_lines:>8,}  {combined.code_lines:>8,}  {combined.comment_lines:>7,}  {combined.blank_lines:>7,}")
+        grand = _merge_stats(grand, combined)
+        if generated.file_count > 0:
+            grand_gen = _merge_stats(grand_gen, generated)
+
+    print(sep)
+    print(f"  {'TOTAL':<{w}} {grand.file_count:>6,}  {grand.total_lines:>8,}  {grand.code_lines:>8,}  {grand.comment_lines:>7,}  {grand.blank_lines:>7,}")
+    if grand_gen.file_count > 0:
+        all_lines = grand.total_lines
+        gen_pct_f = grand_gen.file_count / grand.file_count * 100 if grand.file_count else 0.0
+        gen_pct_l = grand_gen.total_lines / all_lines * 100 if all_lines else 0.0
+        print(f"\n  Generated: {grand_gen.file_count} file(s) ({gen_pct_f:.1f}%), {grand_gen.total_lines:,} lines ({gen_pct_l:.1f}%)")
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="CWT config statistics audit")
+    parser.add_argument("--summary", "-s", action="store_true",
+                        help="Print condensed summary table instead of full report")
+    args = parser.parse_args()
+
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     cwt_root = os.path.join(repo_root, "cwt")
     if not os.path.isdir(cwt_root):
         print("Error: cwt/ directory not found, cannot collect statistics.")
         return
 
-    grand_generated = Stats()
-
-    print("=== CWT Config Statistics Report ===")
+    dir_data = []
     for entry in sorted(os.scandir(cwt_root), key=lambda item: item.name):
         if not entry.is_dir():
             continue
-        relative_path = os.path.join("cwt", entry.name)
-        print(f"\nDirectory: {relative_path}")
+        rel_path = os.path.join("cwt", entry.name)
         normal, generated = collect_stats(entry.path, ".cwt")
         combined = _merge_stats(normal, generated)
-        print_stats("CWT (.cwt)", combined)
-        if generated.file_count > 0:
-            grand_generated = _merge_stats(grand_generated, generated)
+        dir_data.append((entry.name, rel_path, combined, generated))
 
-    if grand_generated.file_count > 0:
-        print(f"\n=== Generated File Summary ===")
-        print_stats("Generated CWT (.cwt)", grand_generated)
+    if args.summary:
+        report_summary(dir_data)
+    else:
+        report_detailed(dir_data)
 
 
 if __name__ == "__main__":

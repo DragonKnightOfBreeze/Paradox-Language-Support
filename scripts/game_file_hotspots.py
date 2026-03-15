@@ -26,10 +26,14 @@
 #   - Path contains a '/generated/' directory segment
 #   - Zero comments AND zero blank lines AND total > 1000 lines
 #
-# Output is written to tmp/reports/game_file_hotspots.txt.
+# Output modes:
+#   default  : full detailed report (per-subdirectory distribution + hotspots)
+#   --summary: condensed summary (top-N hotspots + generated stats per game)
+#
+# Output defaults to stdout; use --output FILE to write to a file.
 #
 # Usage:
-#   python scripts/game_file_hotspots.py [--threshold N]
+#   python scripts/game_file_hotspots.py [--threshold N] [--output FILE] [--summary]
 
 from __future__ import annotations
 
@@ -37,6 +41,7 @@ import argparse
 import glob
 import os
 import platform
+import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Iterable, TextIO
@@ -477,6 +482,63 @@ def report_generated_summary(out: TextIO, records: list[FileRecord]) -> None:
         out.write(f"  {i:>4} {r.total:>8} {r.code:>8} {r.comment:>6} {r.blank:>6}  {r.category:<14} {r.rel_path}\n")
 
 # ===========================================================================
+# Report: detailed (full)
+# ===========================================================================
+
+def report_detailed(out: TextIO, game_data: list, threshold: int) -> None:
+    """Full detailed report: per-subdirectory distribution + hotspots + generated summary."""
+    out.write("=== Game File Distribution & Hotspot Report ===\n")
+    if not game_data:
+        out.write("\nNo locally installed Paradox games detected.\n")
+        return
+    for gt, game_dir, records in game_data:
+        out.write(f"\n{'='*80}\n")
+        out.write(f"Game: {gt.title} ({gt.id})\n")
+        out.write(f"Directory: {game_dir}\n")
+        report_subdir_distribution(out, records)
+        report_subdir_by_category(out, records)
+        report_hotspots(out, records, threshold)
+        report_generated_summary(out, records)
+    out.write(f"\n{'='*80}\n")
+    out.write(f"Detected {len(game_data)} / {len(GAME_TYPES)} game(s).\n")
+
+# ===========================================================================
+# Report: summary (condensed)
+# ===========================================================================
+
+_SUMMARY_TOP_N = 10
+
+def report_summary(out: TextIO, game_data: list, threshold: int) -> None:
+    """Condensed summary: top-N hotspots and generated stats per game."""
+    out.write("=== Game File Hotspot Summary ===\n")
+    if not game_data:
+        out.write("\nNo locally installed Paradox games detected.\n")
+        return
+    for gt, game_dir, records in game_data:
+        total_files = len(records)
+        total_lines = sum(r.total for r in records)
+        gen = [r for r in records if r.generated]
+        gen_lines = sum(r.total for r in gen)
+        gen_file_pct = len(gen) / total_files * 100 if total_files else 0.0
+        gen_line_pct = gen_lines / total_lines * 100 if total_lines else 0.0
+
+        out.write(f"\n[{gt.title}]\n")
+        out.write(f"  Files  : {total_files:,} total, {total_lines:,} lines\n")
+        if gen:
+            out.write(f"  Generated: {len(gen)} files ({gen_file_pct:.1f}%), {gen_lines:,} lines ({gen_line_pct:.1f}%)\n")
+
+        hot = sorted(records, key=lambda r: r.total, reverse=True)[:_SUMMARY_TOP_N]
+        if hot:
+            out.write(f"  Top {_SUMMARY_TOP_N} files:\n")
+            out.write(f"    {'#':>4} {'Lines':>9}  {'':>5} {'Cat':<14} {'File'}\n")
+            out.write(f"    {'-'*4} {'-'*9}  {'-'*5} {'-'*14} {'-'*50}\n")
+            for i, r in enumerate(hot, 1):
+                tag = "[GEN]" if r.generated else ""
+                out.write(f"    {i:>4} {r.total:>9}  {tag:>5} {r.category:<14} {r.rel_path}\n")
+
+    out.write(f"\nDetected {len(game_data)} / {len(GAME_TYPES)} game(s).\n")
+
+# ===========================================================================
 # Entry point
 # ===========================================================================
 
@@ -484,43 +546,39 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Game file distribution & hotspot audit")
     parser.add_argument("--threshold", type=int, default=DEFAULT_THRESHOLD,
                         help=f"Line threshold for hotspot report (default: {DEFAULT_THRESHOLD})")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Write report to FILE instead of stdout")
+    parser.add_argument("--summary", "-s", action="store_true",
+                        help="Print condensed summary instead of full report")
     args = parser.parse_args()
 
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    report_dir = os.path.join(repo_root, "tmp", "reports")
-    os.makedirs(report_dir, exist_ok=True)
-    report_path = os.path.join(report_dir, "game_file_hotspots.txt")
+    # Collect per-game data (progress to stderr so it doesn't pollute stdout)
+    game_data = []
+    for gt in GAME_TYPES:
+        game_dir = get_steam_game_path(gt.steam_id, gt.title)
+        if game_dir is None or not os.path.isdir(game_dir):
+            continue
+        print(f"  Scanning {gt.title}...", file=sys.stderr)
+        records = collect_records(game_dir, gt.entry_info)
+        game_data.append((gt, game_dir, records))
 
-    with open(report_path, "w", encoding="utf-8") as out:
-        out.write("=== Game File Distribution & Hotspot Report ===\n")
+    # Open output destination
+    if args.output:
+        out = open(args.output, "w", encoding="utf-8")
+    else:
+        out = sys.stdout
 
-        detected = 0
-        for gt in GAME_TYPES:
-            game_dir = get_steam_game_path(gt.steam_id, gt.title)
-            if game_dir is None or not os.path.isdir(game_dir):
-                continue
-            detected += 1
-
-            out.write(f"\n{'='*80}\n")
-            out.write(f"Game: {gt.title} ({gt.id})\n")
-            out.write(f"Directory: {game_dir}\n")
-
-            print(f"  Scanning {gt.title}...")
-            records = collect_records(game_dir, gt.entry_info)
-
-            report_subdir_distribution(out, records)
-            report_subdir_by_category(out, records)
-            report_hotspots(out, records, args.threshold)
-            report_generated_summary(out, records)
-
-        if detected == 0:
-            out.write("\nNo locally installed Paradox games detected.\n")
+    try:
+        if args.summary:
+            report_summary(out, game_data, args.threshold)
         else:
-            out.write(f"\n{'='*80}\n")
-            out.write(f"Detected {detected} / {len(GAME_TYPES)} game(s).\n")
+            report_detailed(out, game_data, args.threshold)
+    finally:
+        if args.output:
+            out.close()
+            print(f"\nReport written to: {args.output}", file=sys.stderr)
 
-    print(f"\nReport written to: {report_path}")
-    print(f"Detected {detected} game(s).")
+    print(f"Detected {len(game_data)} game(s).", file=sys.stderr)
 
 
 if __name__ == "__main__":

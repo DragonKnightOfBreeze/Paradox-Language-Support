@@ -119,19 +119,19 @@
       <entry key="repeatable" value="true" />
     </attribute>
     <category>
-      <entry key="materials" value="true" />
-      <entry key="propulsion" value="true" />
-      <entry key="voidcraft" value="true" />
-      <entry key="industry" value="true" />
-      <entry key="field_manipulation" value="true" />
-      <entry key="particles" value="true" />
-      <entry key="computing" value="true" />
-      <entry key="psionics" value="true" />
-      <entry key="new_worlds" value="true" />
-      <entry key="statecraft" value="true" />
-      <entry key="biology" value="true" />
-      <entry key="military_theory" value="true" />
       <entry key="archaeostudies" value="true" />
+      <entry key="biology" value="true" />
+      <entry key="computing" value="true" />
+      <entry key="field_manipulation" value="true" />
+      <entry key="industry" value="true" />
+      <entry key="materials" value="true" />
+      <entry key="military_theory" value="true" />
+      <entry key="new_worlds" value="true" />
+      <entry key="particles" value="true" />
+      <entry key="propulsion" value="true" />
+      <entry key="psionics" value="true" />
+      <entry key="statecraft" value="true" />
+      <entry key="voidcraft" value="true" />
     </category>
     <tier>
       <entry key="0" value="true" />
