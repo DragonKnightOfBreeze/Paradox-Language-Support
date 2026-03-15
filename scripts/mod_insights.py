@@ -36,6 +36,7 @@ import argparse
 import json
 import os
 import platform
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -101,20 +102,49 @@ def get_steam_path() -> str | None:
 
 def _do_get_steam_path() -> str | None:
     if platform.system() == "Windows":
-        try:
-            import winreg
-            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Valve\Steam")
-            val, _ = winreg.QueryValueEx(key, "InstallPath")
-            winreg.CloseKey(key)
-            if val and os.path.isdir(val):
-                return val
-        except (FileNotFoundError, OSError):
-            pass
+        import winreg
+        # 64位系统：WOW6432Node 重定向键；32位系统回退到非重定向键
+        for reg_path in (
+            r"SOFTWARE\WOW6432Node\Valve\Steam",
+            r"SOFTWARE\Valve\Steam",
+        ):
+            try:
+                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
+                val, _ = winreg.QueryValueEx(key, "InstallPath")
+                winreg.CloseKey(key)
+                if val and os.path.isdir(val):
+                    return val
+            except (FileNotFoundError, OSError):
+                pass
     else:
-        p = os.path.join(os.path.expanduser("~"), ".local", "share", "Steam")
-        if os.path.isdir(p):
-            return p
+        home = os.path.expanduser("~")
+        candidates = [
+            os.path.join(home, ".local", "share", "Steam"),
+            os.path.join(home, ".steam", "debian-installation"),
+            os.path.join(home, ".steam", "steam"),
+            os.path.join(home, "snap", "steam", "common", ".local", "share", "Steam"),
+            os.path.join(home, ".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
+        ]
+        for p in candidates:
+            if os.path.isdir(p):
+                return p
     return None
+
+
+def _get_library_folders(steam_path: str) -> list[str]:
+    """Parse steamapps/libraryfolders.vdf and return all known Steam library paths (including steam_path itself)."""
+    libraries = [steam_path]
+    vdf_path = os.path.join(steam_path, "steamapps", "libraryfolders.vdf")
+    try:
+        with open(vdf_path, encoding="utf-8") as f:
+            content = f.read()
+        for m in re.finditer(r'"path"\s+"([^"]+)"', content):
+            raw = m.group(1).replace("\\\\", "\\")
+            if os.path.isdir(raw) and raw not in libraries:
+                libraries.append(raw)
+    except OSError:
+        pass
+    return libraries
 
 
 def get_steam_game_path(steam_id: str, game_title: str) -> str | None:
@@ -126,44 +156,38 @@ def get_steam_game_path(steam_id: str, game_title: str) -> str | None:
 
 
 def _do_get_steam_game_path(steam_id: str, game_title: str) -> str | None:
-    if platform.system() == "Windows":
-        try:
-            import winreg
-            key = winreg.OpenKey(
-                winreg.HKEY_LOCAL_MACHINE,
-                rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
-            )
-            val, _ = winreg.QueryValueEx(key, "InstallLocation")
-            winreg.CloseKey(key)
-            if val and os.path.isdir(val):
-                return val
-        except (FileNotFoundError, OSError):
-            pass
+    # Primary: scan all library folders via libraryfolders.vdf
     steam = get_steam_path()
     if steam:
-        p = os.path.join(steam, "steamapps", "common", game_title)
-        if os.path.isdir(p):
-            return p
+        for library in _get_library_folders(steam):
+            p = os.path.join(library, "steamapps", "common", game_title)
+            if os.path.isdir(p):
+                return p
+    # Windows fallback: registry (64-bit then 32-bit)
+    if platform.system() == "Windows":
+        import winreg
+        for reg_path in (
+            rf"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
+            rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
+        ):
+            try:
+                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
+                val, _ = winreg.QueryValueEx(key, "InstallLocation")
+                winreg.CloseKey(key)
+                if val and os.path.isdir(val):
+                    return val
+            except (FileNotFoundError, OSError):
+                pass
     return None
 
 
-def get_workshop_content_path(steam_id: str, game_dir: str | None = None) -> str | None:
-    """Get the Workshop content directory for a game.
-
-    When game_dir is provided (the game's install path), the library folder is
-    derived from it, which correctly handles secondary Steam library locations.
-    Falls back to the main Steam installation directory.
-    """
-    if game_dir:
-        # game_dir: {library}/steamapps/common/{title}
-        # workshop: {library}/steamapps/workshop/content/{steam_id}
-        steam_apps = os.path.dirname(os.path.dirname(game_dir))
-        p = os.path.join(steam_apps, "workshop", "content", steam_id)
-        if os.path.isdir(p):
-            return p
+def get_workshop_content_path(steam_id: str) -> str | None:
+    """Get the Workshop content directory for a game by scanning all Steam library folders."""
     steam = get_steam_path()
-    if steam:
-        p = os.path.join(steam, "steamapps", "workshop", "content", steam_id)
+    if not steam:
+        return None
+    for library in _get_library_folders(steam):
+        p = os.path.join(library, "steamapps", "workshop", "content", steam_id)
         if os.path.isdir(p):
             return p
     return None
@@ -543,7 +567,7 @@ def main() -> None:
         game_dir = get_steam_game_path(gt.steam_id, gt.title)
         if not game_dir:
             continue
-        ws_path = get_workshop_content_path(gt.steam_id, game_dir)
+        ws_path = get_workshop_content_path(gt.steam_id)
         if not ws_path:
             continue
         mods = discover_mods(gt, ws_path)

@@ -43,6 +43,7 @@ import argparse
 import glob
 import os
 import platform
+import re
 import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -147,24 +148,49 @@ def get_steam_path() -> str | None:
 
 def _do_get_steam_path() -> str | None:
     if platform.system() == "Windows":
-        try:
-            import winreg
-            key = winreg.OpenKey(
-                winreg.HKEY_LOCAL_MACHINE,
-                r"SOFTWARE\WOW6432Node\Valve\Steam",
-            )
-            val, _ = winreg.QueryValueEx(key, "InstallPath")
-            winreg.CloseKey(key)
-            if val and os.path.isdir(val):
-                return val
-        except (FileNotFoundError, OSError):
-            pass
+        import winreg
+        # 64位系统：WOW6432Node 重定向键；32位系统回退到非重定向键
+        for reg_path in (
+            r"SOFTWARE\WOW6432Node\Valve\Steam",
+            r"SOFTWARE\Valve\Steam",
+        ):
+            try:
+                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
+                val, _ = winreg.QueryValueEx(key, "InstallPath")
+                winreg.CloseKey(key)
+                if val and os.path.isdir(val):
+                    return val
+            except (FileNotFoundError, OSError):
+                pass
     else:
         home = os.path.expanduser("~")
-        p = os.path.join(home, ".local", "share", "Steam")
-        if os.path.isdir(p):
-            return p
+        candidates = [
+            os.path.join(home, ".local", "share", "Steam"),
+            os.path.join(home, ".steam", "debian-installation"),
+            os.path.join(home, ".steam", "steam"),
+            os.path.join(home, "snap", "steam", "common", ".local", "share", "Steam"),
+            os.path.join(home, ".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
+        ]
+        for p in candidates:
+            if os.path.isdir(p):
+                return p
     return None
+
+
+def _get_library_folders(steam_path: str) -> list[str]:
+    """Parse steamapps/libraryfolders.vdf and return all known Steam library paths (including steam_path itself)."""
+    libraries = [steam_path]
+    vdf_path = os.path.join(steam_path, "steamapps", "libraryfolders.vdf")
+    try:
+        with open(vdf_path, encoding="utf-8") as f:
+            content = f.read()
+        for m in re.finditer(r'"path"\s+"([^"]+)"', content):
+            raw = m.group(1).replace("\\\\", "\\")
+            if os.path.isdir(raw) and raw not in libraries:
+                libraries.append(raw)
+    except OSError:
+        pass
+    return libraries
 
 
 def get_steam_game_path(steam_id: str, game_title: str) -> str | None:
@@ -177,26 +203,28 @@ def get_steam_game_path(steam_id: str, game_title: str) -> str | None:
 
 
 def _do_get_steam_game_path(steam_id: str, game_title: str) -> str | None:
-    if platform.system() == "Windows":
-        # Try registry first
-        try:
-            import winreg
-            key = winreg.OpenKey(
-                winreg.HKEY_LOCAL_MACHINE,
-                rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
-            )
-            val, _ = winreg.QueryValueEx(key, "InstallLocation")
-            winreg.CloseKey(key)
-            if val and os.path.isdir(val):
-                return val
-        except (FileNotFoundError, OSError):
-            pass
-    # Fallback: default Steam library path
+    # Primary: scan all library folders via libraryfolders.vdf
     steam = get_steam_path()
     if steam:
-        p = os.path.join(steam, "steamapps", "common", game_title)
-        if os.path.isdir(p):
-            return p
+        for library in _get_library_folders(steam):
+            p = os.path.join(library, "steamapps", "common", game_title)
+            if os.path.isdir(p):
+                return p
+    # Windows fallback: registry (64-bit then 32-bit)
+    if platform.system() == "Windows":
+        import winreg
+        for reg_path in (
+            rf"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
+            rf"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steam_id}",
+        ):
+            try:
+                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
+                val, _ = winreg.QueryValueEx(key, "InstallLocation")
+                winreg.CloseKey(key)
+                if val and os.path.isdir(val):
+                    return val
+            except (FileNotFoundError, OSError):
+                pass
     return None
 
 # ===========================================================================
