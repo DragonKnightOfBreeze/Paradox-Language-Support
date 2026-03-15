@@ -8,7 +8,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
- * 用于优化脚本表达式与规则表达式的优化逻辑。
+ * 用于优化脚本表达式与规则表达式的匹配逻辑。
  *
  * @see ParadoxMatchPipeline
  * @see ParadoxScriptExpressionElement
