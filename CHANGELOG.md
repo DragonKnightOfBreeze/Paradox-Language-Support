@@ -9,6 +9,11 @@
 - [ ] 完善参考文档 / Improve reference documentation 
 - [ ] 补充集成测试 / Supplementary integration tests
 
+## 2.1.6-dev
+
+- [ ] 性能分析与优化 / Performance analysis and optimization
+- [ ] 完善参考文档 / Improve reference documentation
+
 ## 2.1.5
 
 - [x] 同步规则文件 / Synchronize config files
