@@ -1,7 +1,10 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.option.CwtOptionDataHolder
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 
 /**

@@ -1,3 +1,5 @@
+@file:Optimized
+
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.diagnostic.thisLogger
@@ -13,6 +15,7 @@ import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.config.util.withLocationPrefix
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized

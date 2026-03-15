@@ -1,6 +1,9 @@
+@file:Optimized
+
 package icu.windea.pls.model.paths
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull

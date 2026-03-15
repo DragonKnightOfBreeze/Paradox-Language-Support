@@ -1,6 +1,9 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized

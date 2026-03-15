@@ -1,7 +1,10 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.isEscapedCharAt

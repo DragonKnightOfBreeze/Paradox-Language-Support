@@ -1,4 +1,8 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression
+
+import icu.windea.pls.core.annotations.Optimized
 
 /**
  * 位置表达式。

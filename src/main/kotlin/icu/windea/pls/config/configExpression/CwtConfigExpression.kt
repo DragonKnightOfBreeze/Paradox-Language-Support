@@ -1,4 +1,8 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression
+
+import icu.windea.pls.core.annotations.Optimized
 
 /**
  * 规则表达式的统一抽象。
