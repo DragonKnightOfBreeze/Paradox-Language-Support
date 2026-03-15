@@ -1,6 +1,7 @@
 package icu.windea.pls.inject
 
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
@@ -9,6 +10,7 @@ import javassist.CtClass
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("unused")
 object CodeInjectorScope {
@@ -21,6 +23,7 @@ object CodeInjectorScope {
 
     @PublishedApi @JvmField @Volatile internal var classPool: ClassPool? = null
     @PublishedApi @JvmField internal val codeInjectors: MutableMap<String, CodeInjector> = mutableMapOf()
+    @PublishedApi @JvmField internal val runSafelyFlags = CacheBuilder().build<String, AtomicBoolean> { AtomicBoolean() }
     @PublishedApi @JvmField internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
 
     @PublishedApi

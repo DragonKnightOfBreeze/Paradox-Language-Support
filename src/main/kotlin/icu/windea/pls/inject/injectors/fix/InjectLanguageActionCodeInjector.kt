@@ -29,8 +29,8 @@ class InjectLanguageActionCodeInjector : CodeInjectorBase() {
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun isAvailable(project: Project, editor: Editor, psiFile: PsiFile): Boolean {
-        run {
-            if (psiFile !is ParadoxScriptFile) return@run
+        runSafely r@{
+            if (psiFile !is ParadoxScriptFile) return@r
             val host = findInjectionHost(editor, psiFile) ?: return false
             if (!InjectionUtils.isInjectLanguageActionEnabled(host)) return false
         }

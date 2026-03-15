@@ -5,7 +5,6 @@ package icu.windea.pls.inject.injectors
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.injected.Place
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
@@ -29,7 +28,7 @@ class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
         psiFile: PsiFile,
         @InjectReturnValue returnValue: Boolean
     ): Boolean {
-        runCatchingCancelable {
+        runSafely {
             InjectedFileProcessor.EP_NAME.extensionList.process { it.process(psiFile) }
         }
         return returnValue

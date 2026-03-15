@@ -4,7 +4,8 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.util.application
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.staticProperty
@@ -12,8 +13,6 @@ import javassist.ClassPool
 
 @Service
 class CodeInjectorService : Disposable {
-    private val logger = logger<CodeInjectorService>()
-
     /**
      * 用于在IDE启动时应用代码注入器。
      */
@@ -31,13 +30,15 @@ class CodeInjectorService : Disposable {
         CodeInjectorScope.classPool = CodeInjectorScope.getClassPool()
 
         val codeInjectors = CodeInjectorScope.codeInjectors
+        val logger = thisLogger()
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
             val codeInjectorId = codeInjector.id
             try {
                 codeInjector.inject()
                 logger.info("Applied code injector: $codeInjectorId")
             } catch (e: Exception) {
-                // NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
+                if (e is ProcessCanceledException) throw e
+                // NOTE IDE 更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
                 logger.warn("ERROR when applying code injector: $codeInjectorId")
                 logger.warn(e.message, e)
             }
@@ -46,7 +47,7 @@ class CodeInjectorService : Disposable {
 
         // clean up class pool
         CodeInjectorScope.classPool = null
-        // tricy but somehow necessary (~20M)
+        // tricky but somehow necessary (~20M)
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
@@ -58,6 +59,7 @@ class CodeInjectorService : Disposable {
         // 避免内存泄露
         CodeInjectorScope.classPool = null
         CodeInjectorScope.codeInjectors.clear()
+        CodeInjectorScope.runSafelyFlags.cleanUp()
     }
 }
 

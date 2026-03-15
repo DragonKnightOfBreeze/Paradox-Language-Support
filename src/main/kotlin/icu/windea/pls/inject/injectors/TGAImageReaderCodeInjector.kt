@@ -20,9 +20,9 @@ class TGAImageReaderCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun Any.read(imageIndex: Int, param: ImageReadParam?): BufferedImage {
-        run {
-            val stream = this.imageInput ?: return@run
-            val image = PlsImageManager.read(imageIndex, param, stream, "tga", "png") ?: return@run
+        runSafely r@{
+            val stream = this.imageInput ?: return@r
+            val image = PlsImageManager.read(imageIndex, param, stream, "tga", "png") ?: return@r
             return image
         }
         continueInvocation()

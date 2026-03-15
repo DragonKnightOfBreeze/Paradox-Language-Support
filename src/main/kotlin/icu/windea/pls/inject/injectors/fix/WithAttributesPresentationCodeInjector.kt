@@ -27,9 +27,9 @@ class WithAttributesPresentationCodeInjector : CodeInjectorBase() {
     @Suppress("unused")
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun Any.paint(g: Graphics2D, attributes: TextAttributes) {
-        run {
-            if (!attributes.checkAttributes()) return@run
-            if (!textAttributesKey.checkAttributesKey()) return@run
+        runSafely r@{
+            if (!attributes.checkAttributes()) return@r
+            if (!textAttributesKey.checkAttributesKey()) return@r
             val other = colorsScheme.getAttributes(textAttributesKey) ?: TextAttributes()
             val result = attributes.clone()
             if (result.foregroundColor == null) {

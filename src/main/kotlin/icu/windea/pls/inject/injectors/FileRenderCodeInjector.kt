@@ -6,7 +6,6 @@ import com.intellij.openapi.fileChooser.tree.FileNode
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleColoredComponent
 import com.intellij.ui.SimpleTextAttributes
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
@@ -23,7 +22,7 @@ class FileRenderCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
-        runCatchingCancelable {
+        runSafely {
             appendQualifiedName(renderer, value)
         }
     }
