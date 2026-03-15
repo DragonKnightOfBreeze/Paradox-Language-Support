@@ -1,12 +1,12 @@
 # Code Distribution & Hotspot Report
 
-> Generated: 2026-03-15 14:38:24
+> Generated: 2026-03-15 19:09:39
 
 ## Per-Package Distribution
 
 | Source Root | Package | Files | Total | Code | Comment | Blank |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| main/kotlin | icu.windea.pls.lang.util | 35 | 4,881 | 4,037 | 343 | 501 |
+| main/kotlin | icu.windea.pls.lang.util | 35 | 4,880 | 4,037 | 343 | 500 |
 | test/kotlin | icu.windea.pls.lang.index | 19 | 4,137 | 2,752 | 529 | 856 |
 | main/kotlin | icu.windea.pls.lang.codeInsight.completion | 11 | 4,046 | 3,525 | 111 | 410 |
 | main/kotlin | icu.windea.pls.config.config.delegated | 35 | 3,604 | 2,026 | 1,170 | 408 |
@@ -14,16 +14,16 @@
 | main/kotlin | icu.windea.pls.lang.resolve | 24 | 3,202 | 2,568 | 367 | 267 |
 | test/kotlin | icu.windea.pls.lang.resolve.complexExpression | 12 | 2,489 | 2,319 | 12 | 158 |
 | main/kotlin | icu.windea.pls.lang.inspections.script.common | 21 | 2,445 | 1,988 | 265 | 192 |
-| main/kotlin | icu.windea.pls.core | 14 | 2,317 | 1,482 | 517 | 318 |
+| main/kotlin | icu.windea.pls.core | 14 | 2,325 | 1,489 | 517 | 319 |
 | main/kotlin | icu.windea.pls.lang.resolve.complexExpression | 14 | 1,934 | 1,321 | 448 | 165 |
 | main/kotlin | icu.windea.pls.lang.psi | 17 | 1,915 | 1,572 | 145 | 198 |
 | main/kotlin | icu.windea.pls.lang.search | 27 | 1,885 | 1,457 | 241 | 187 |
 | main/kotlin | icu.windea.pls.lang.match | 17 | 1,867 | 1,446 | 215 | 206 |
-| main/kotlin | icu.windea.pls.config.config | 13 | 1,819 | 1,314 | 274 | 231 |
+| main/kotlin | icu.windea.pls.config.config | 13 | 1,822 | 1,316 | 274 | 232 |
 | main/kotlin | icu.windea.pls.lang.codeInsight.navigation | 27 | 1,805 | 1,541 | 73 | 191 |
 | main/kotlin | icu.windea.pls.lang.util.renderers | 12 | 1,753 | 1,404 | 158 | 191 |
 | main/kotlin | icu.windea.pls.lang.codeInsight.documentation | 11 | 1,751 | 1,497 | 80 | 174 |
-| main/kotlin | icu.windea.pls.lang.index | 23 | 1,695 | 1,321 | 147 | 227 |
+| main/kotlin | icu.windea.pls.lang.index | 23 | 1,717 | 1,337 | 147 | 233 |
 | main/kotlin | icu.windea.pls.tools.config.generators | 9 | 1,682 | 1,367 | 140 | 175 |
 | main/kotlin | icu.windea.pls.lang.settings | 9 | 1,642 | 1,214 | 280 | 148 |
 | main/kotlin | icu.windea.pls.ep.resolve.expression | 15 | 1,521 | 1,134 | 192 | 195 |
@@ -50,9 +50,9 @@
 | test/kotlin | icu.windea.pls.config.configExpression | 8 | 1,017 | 908 | 24 | 85 |
 | main/kotlin | icu.windea.pls.ep.resolve.config | 8 | 993 | 747 | 139 | 107 |
 | main/kotlin | icu.windea.pls.ep.resolve.scope | 12 | 917 | 737 | 75 | 105 |
+| main/kotlin | icu.windea.pls.config.configExpression | 10 | 901 | 542 | 237 | 122 |
 | test/kotlin | icu.windea.pls.core.util | 5 | 887 | 694 | 33 | 160 |
 | main/kotlin | icu.windea.pls.core.accessor | 11 | 879 | 585 | 169 | 125 |
-| main/kotlin | icu.windea.pls.config.configExpression | 10 | 875 | 526 | 237 | 112 |
 | main/kotlin | icu.windea.pls.lang.actions | 17 | 866 | 695 | 34 | 137 |
 | main/kotlin | icu.windea.pls.lang.intentions.localisation | 11 | 839 | 676 | 43 | 120 |
 | main/kotlin | icu.windea.pls.lang.codeInsight | 13 | 827 | 663 | 80 | 84 |
@@ -110,6 +110,7 @@
 | test/kotlin | icu.windea.pls.script.formatter | 1 | 481 | 367 | 31 | 83 |
 | test/kotlin | icu.windea.pls.lang.refactoring.rename | 3 | 477 | 341 | 49 | 87 |
 | main/kotlin | icu.windea.pls.ep.index | 3 | 476 | 392 | 6 | 78 |
+| main/kotlin | icu.windea.pls.lang.tools | 8 | 475 | 319 | 75 | 81 |
 | test/kotlin | icu.windea.pls.cwt.formatter | 1 | 466 | 364 | 28 | 74 |
 | test/kotlin | icu.windea.pls.localisation.codeInsight.unwrap | 1 | 465 | 371 | 40 | 54 |
 | main/kotlin | icu.windea.pls.localisation.psi | 17 | 453 | 343 | 37 | 73 |
@@ -128,15 +129,14 @@
 | test/kotlin | icu.windea.pls.lang.codeInsight.hints.script | 7 | 413 | 355 | 3 | 55 |
 | main/kotlin | icu.windea.pls.model.scope | 8 | 409 | 278 | 78 | 53 |
 | main/kotlin | icu.windea.pls.lang.search.usage | 8 | 402 | 311 | 41 | 50 |
-| main/kotlin | icu.windea.pls.lang.tools | 8 | 402 | 266 | 66 | 70 |
 | main/kotlin | icu.windea.pls.model.constraints | 6 | 400 | 361 | 10 | 29 |
 | main/kotlin | icu.windea.pls.tools.actions | 4 | 388 | 318 | 23 | 47 |
-| main/kotlin | icu.windea.pls.inject.injectors | 9 | 387 | 292 | 50 | 45 |
+| main/kotlin | icu.windea.pls.inject.injectors | 9 | 386 | 291 | 50 | 45 |
 | main/kotlin | icu.windea.pls.lang.navigation | 9 | 380 | 276 | 44 | 60 |
 | main/kotlin | icu.windea.pls.ai.settings | 2 | 372 | 282 | 54 | 36 |
 | main/kotlin | icu.windea.pls.cwt.psi | 18 | 371 | 252 | 38 | 81 |
+| main/kotlin | icu.windea.pls.model.paths | 3 | 367 | 248 | 50 | 69 |
 | main/kotlin | icu.windea.pls.ep.config.configExpression | 4 | 362 | 289 | 20 | 53 |
-| main/kotlin | icu.windea.pls.model.paths | 3 | 358 | 242 | 50 | 66 |
 | main/kotlin | icu.windea.pls.ai.actions.localisation | 3 | 356 | 301 | 9 | 46 |
 | test/kotlin | icu.windea.pls.lang.intentions.cwt | 2 | 354 | 313 | 10 | 31 |
 | main/kotlin | icu.windea.pls.cwt.editor | 10 | 345 | 286 | 9 | 50 |
@@ -161,6 +161,7 @@
 | main/kotlin | icu.windea.pls.model.index | 15 | 299 | 188 | 78 | 33 |
 | main/kotlin | icu.windea.pls.lang.util.presentation | 3 | 298 | 246 | 17 | 35 |
 | test/kotlin | icu.windea.pls.tools.config.generators | 8 | 293 | 258 | 0 | 35 |
+| main/kotlin | icu.windea.pls.inject | 6 | 291 | 215 | 38 | 38 |
 | main/kotlin | icu.windea.pls.script.usages | 6 | 291 | 235 | 14 | 42 |
 | main/kotlin | icu.windea.pls.config.settings | 5 | 290 | 225 | 36 | 29 |
 | main/kotlin | icu.windea.pls.ep.inspections | 4 | 287 | 239 | 15 | 33 |
@@ -177,7 +178,6 @@
 | main/kotlin | icu.windea.pls.lang.inspections.script.event | 6 | 270 | 217 | 28 | 25 |
 | test/kotlin | icu.windea.pls.config | 1 | 268 | 200 | 16 | 52 |
 | main/kotlin | icu.windea.pls.script.navigation | 4 | 267 | 223 | 21 | 23 |
-| main/kotlin | icu.windea.pls.inject | 6 | 265 | 192 | 35 | 38 |
 | main/kotlin | icu.windea.pls.cwt.formatter | 5 | 263 | 215 | 10 | 38 |
 | main/kotlin | icu.windea.pls.integrations.images.tools | 4 | 263 | 191 | 29 | 43 |
 | test/kotlin | icu.windea.pls.config.select | 1 | 261 | 217 | 0 | 44 |
@@ -349,6 +349,7 @@
 | main/kotlin | icu.windea.pls.core.annotations | 4 | 43 | 23 | 13 | 7 |
 | main/kotlin | icu.windea.pls.cwt.lexer | 3 | 43 | 35 | 0 | 8 |
 | main/kotlin | icu.windea.pls.lang.execution.filters | 1 | 43 | 32 | 7 | 4 |
+| test/kotlin | icu.windea.pls.lang.tools | 1 | 43 | 36 | 0 | 7 |
 | main/kotlin | icu.windea.pls.csv.lexer | 3 | 42 | 34 | 0 | 8 |
 | main/kotlin | icu.windea.pls.extensions.markdown.inspections | 1 | 42 | 33 | 4 | 5 |
 | main/kotlin | icu.windea.pls.core.codeInsight.navigation | 1 | 41 | 35 | 0 | 6 |
@@ -381,7 +382,7 @@
 | main/kotlin | icu.windea.pls.localisation.psi.manipulators | 1 | 17 | 14 | 0 | 3 |
 | main/kotlin | icu.windea.pls.core.codeInsight.hints | 1 | 15 | 12 | 0 | 3 |
 | main/kotlin | icu.windea.pls.csv.codeInsight.editorActions | 1 | 7 | 5 | 0 | 2 |
-| **TOTAL** | **375 packages** | **2,083** | **162,878** | **127,545** | **15,116** | **20,217** |
+| **TOTAL** | **376 packages** | **2,084** | **163,086** | **127,703** | **15,128** | **20,255** |
 
 ## Large-File Hotspots (≥ 500 lines)
 
@@ -409,5 +410,5 @@
 | 20 | 525 | 376 | 40 | 109 | `src\main\kotlin\icu\windea\pls\localisation\psi\impl\ParadoxLocalisationPsiImplUtil.kt` |
 | 21 | 524 | 462 | 14 | 48 | `src\main\kotlin\icu\windea\pls\config\util\manipulators\CwtConfigManipulator.kt` |
 
-Hotspot files: **21** / 2,083  (1.0%)  — 14,961 / 162,878 lines (9.2%)
+Hotspot files: **21** / 2,084  (1.0%)  — 14,961 / 163,086 lines (9.2%)
 

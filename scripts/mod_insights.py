@@ -25,7 +25,7 @@
 #
 # Output modes:
 #   default    : full console report
-#   --markdown : write full markdown report (to --output FILE, or a timestamped file)
+#   --markdown : write full Markdown report (to --output FILE, or a timestamped file)
 #
 # Usage:
 #   python scripts/mod_insights.py [--markdown] [--output FILE]
@@ -224,7 +224,7 @@ def parse_gitignore_ide_hints(mod_dir: str) -> tuple[list[str], list[str]]:
 
     Used as a fallback when direct filesystem indicators are absent — mod authors
     often exclude IDE config directories before uploading, but leave .gitignore intact.
-    Returned pattern strings are the raw (normalised) patterns found in the file.
+    Returned pattern strings are the raw (normalized) patterns found in the file.
     """
     gitignore_path = os.path.join(mod_dir, ".gitignore")
     if not os.path.isfile(gitignore_path):
@@ -556,7 +556,7 @@ def report_markdown(out: TextIO, game_entries: list[GameEntry]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Mod dev environment detector + Workshop stats")
     parser.add_argument("--markdown", "--md", dest="markdown", action="store_true",
-                        help="Write a full markdown report document")
+                        help="Write a full Markdown report document")
     parser.add_argument("--output", "-o", metavar="FILE",
                         help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()

@@ -48,7 +48,8 @@ import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Iterable, TextIO
+from typing import TextIO
+
 
 # ===========================================================================
 # Game metadata (synced from ParadoxGameType + ParadoxEntryInfo)
@@ -631,6 +632,7 @@ def report_detailed(out: TextIO, game_data: list, threshold: int) -> None:
 
 _SUMMARY_TOP_N = 10
 
+# noinspection PyUnusedLocal
 def report_summary(out: TextIO, game_data: list, threshold: int) -> None:
     """Condensed summary: top-N hotspots and generated stats per game."""
     out.write("=== Game File Hotspot Summary ===\n")

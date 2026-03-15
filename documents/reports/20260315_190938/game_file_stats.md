@@ -1,16 +1,17 @@
 # Game File Statistics Report
 
-> Generated: 2026-03-15 14:38:37
+> Generated: 2026-03-15 19:10:02
 
 ## Summary
 
 | Game | Files | Lines | Gen Files | Gen Lines | Gen% |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| Stellaris | 6,962 | 3,852,392 | 15 | 27,752 | 0.7% |
-| Europa Universalis V | 11,738 | 6,266,556 | 80 | 1,850,268 | 29.5% |
+| Stellaris | 6,972 | 3,860,761 | 15 | 27,752 | 0.7% |
+| Europa Universalis IV | 0 | 0 | 0 | 0 | 0.0% |
+| Europa Universalis V | 11,859 | 6,358,558 | 80 | 1,850,278 | 29.1% |
 | Victoria 3 | 6,289 | 4,485,938 | 90 | 2,229,186 | 49.7% |
 
-Detected 3 / 9 game(s).
+Detected 4 / 9 game(s).
 
 ## Stellaris
 
@@ -20,8 +21,8 @@ Directory: `D:\Program Files\Steam\steamapps\common\Stellaris`
 
 | Entry Type | Category | Files | Total | Code | Comment | Blank |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| Main Entry | Script | 4,565 | 2,341,104 | 2,036,561 | 83,108 | 221,435 |
-| Main Entry | Localisation | 2,322 | 1,501,489 | 1,419,698 | 67,533 | 14,258 |
+| Main Entry | Script | 4,565 | 2,341,093 | 2,036,568 | 83,096 | 221,429 |
+| Main Entry | Localisation | 2,332 | 1,509,869 | 1,427,344 | 68,274 | 14,251 |
 | Main Entry | CSV | 2 | 720 | 720 | 0 | 0 |
 | Extra Entry | Script | 37 | 7,239 | 6,051 | 314 | 874 |
 | Extra Entry | Localisation | 36 | 1,840 | 1,833 | 7 | 0 |
@@ -30,18 +31,22 @@ Directory: `D:\Program Files\Steam\steamapps\common\Stellaris`
 
 | Category | Files | Total | Code | Comment | Blank |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| Script | 4,602 | 2,348,343 | 2,042,612 | 83,422 | 222,309 |
-| Localisation | 2,358 | 1,503,329 | 1,421,531 | 67,540 | 14,258 |
+| Script | 4,602 | 2,348,332 | 2,042,619 | 83,410 | 222,303 |
+| Localisation | 2,368 | 1,511,709 | 1,429,177 | 68,281 | 14,251 |
 | CSV | 2 | 720 | 720 | 0 | 0 |
 
 ### Generated Files (auto-detected)
 
-**15** / 6,962 files (0.2%), **27,752** / 3,852,392 lines (0.7%)
+**15** / 6,972 files (0.2%), **27,752** / 3,860,761 lines (0.7%)
 
 | Entry Type | Category | Files | Total | Code | Comment | Blank |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
 | Main Entry | Script | 4 | 4,466 | 4,466 | 0 | 0 |
 | Main Entry | Localisation | 11 | 23,286 | 23,286 | 0 | 0 |
+
+## Europa Universalis IV
+
+Directory: `E:\SteamLibrary\steamapps\common\Europa Universalis IV`
 
 ## Europa Universalis V
 
@@ -51,28 +56,28 @@ Directory: `D:\Program Files\Steam\steamapps\common\Europa Universalis V`
 
 | Entry Type | Category | Files | Total | Code | Comment | Blank |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| Main Entry | Script | 5,896 | 3,872,642 | 3,560,115 | 81,670 | 230,857 |
-| Main Entry | Localisation | 5,316 | 2,330,052 | 2,283,461 | 33,375 | 13,216 |
+| Main Entry | Script | 5,972 | 3,929,708 | 3,610,914 | 83,115 | 235,679 |
+| Main Entry | Localisation | 5,361 | 2,364,907 | 2,317,419 | 33,956 | 13,532 |
 | Main Entry | CSV | 2 | 4,606 | 4,606 | 0 | 0 |
 | Extra Entry | Script | 212 | 48,210 | 40,846 | 1,183 | 6,181 |
-| Extra Entry | Localisation | 312 | 11,046 | 10,858 | 177 | 11 |
+| Extra Entry | Localisation | 312 | 11,127 | 10,939 | 177 | 11 |
 
 ### Combined (All Entries)
 
 | Category | Files | Total | Code | Comment | Blank |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| Script | 6,108 | 3,920,852 | 3,600,961 | 82,853 | 237,038 |
-| Localisation | 5,628 | 2,341,098 | 2,294,319 | 33,552 | 13,227 |
+| Script | 6,184 | 3,977,918 | 3,651,760 | 84,298 | 241,860 |
+| Localisation | 5,673 | 2,376,034 | 2,328,358 | 34,133 | 13,543 |
 | CSV | 2 | 4,606 | 4,606 | 0 | 0 |
 
 ### Generated Files (auto-detected)
 
-**80** / 11,738 files (0.7%), **1,850,268** / 6,266,556 lines (29.5%)
+**80** / 11,859 files (0.7%), **1,850,278** / 6,358,558 lines (29.1%)
 
 | Entry Type | Category | Files | Total | Code | Comment | Blank |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
-| Main Entry | Script | 47 | 1,787,268 | 1,787,268 | 0 | 0 |
-| Main Entry | Localisation | 32 | 58,578 | 58,578 | 0 | 0 |
+| Main Entry | Script | 47 | 1,787,258 | 1,787,258 | 0 | 0 |
+| Main Entry | Localisation | 32 | 58,598 | 58,598 | 0 | 0 |
 | Main Entry | CSV | 1 | 4,422 | 4,422 | 0 | 0 |
 
 ## Victoria 3

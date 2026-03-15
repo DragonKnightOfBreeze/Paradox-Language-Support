@@ -463,7 +463,7 @@ def _md_table(headers: list, rows: list, col_aligns: list[str] | None = None) ->
 
 
 def report_markdown(out, game_data: list) -> None:
-    """Write a full markdown report document."""
+    """Write a full Markdown report document."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     out.write("# Game File Statistics Report\n\n")
     out.write(f"> Generated: {ts}\n\n")
@@ -628,7 +628,7 @@ def main() -> None:
     mode.add_argument("--summary", "-s", action="store_true",
                       help="Print condensed summary table instead of full report")
     mode.add_argument("--markdown", "--md", dest="markdown", action="store_true",
-                      help="Write a full markdown report document")
+                      help="Write a full Markdown report document")
     parser.add_argument("--output", "-o", metavar="FILE",
                         help="Write output to FILE (for --markdown, defaults to a timestamped file)")
     args = parser.parse_args()

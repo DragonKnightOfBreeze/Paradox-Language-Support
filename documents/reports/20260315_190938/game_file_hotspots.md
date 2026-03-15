@@ -1,21 +1,22 @@
 # Game File Distribution & Hotspot Report
 
-> Generated: 2026-03-15 14:38:47
+> Generated: 2026-03-15 19:10:12
 
 ## Summary
 
 | Game | Files | Lines | Gen Files | Gen Lines | Gen% | Hotspots (≥10,000) |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Stellaris | 6,962 | 3,852,392 | 15 | 27,752 | 0.7% | 14 |
-| Europa Universalis V | 11,738 | 6,266,556 | 80 | 1,850,268 | 29.5% | 77 |
+| Stellaris | 6,972 | 3,860,761 | 15 | 27,752 | 0.7% | 14 |
+| Europa Universalis IV | 0 | 0 | 0 | 0 | 0.0% | 0 |
+| Europa Universalis V | 11,859 | 6,358,558 | 80 | 1,850,278 | 29.1% | 77 |
 | Victoria 3 | 6,289 | 4,485,938 | 90 | 2,229,186 | 49.7% | 50 |
 
-Detected 3 / 9 game(s).
+Detected 4 / 9 game(s).
 
 ## Stellaris
 
 Directory: `D:\Program Files\Steam\steamapps\common\Stellaris`  
-Files: **6,962** total, **3,852,392** lines  
+Files: **6,972** total, **3,860,761** lines  
 Generated: **15** files (0.2%), **27,752** lines (0.7%)
 
 ### Large-File Hotspots (≥ 10,000 lines)
@@ -27,7 +28,7 @@ Generated: **15** files (0.2%), **27,752** lines (0.7%)
 | 3 | 15,287 | 13,838 | 337 | 1,112 |  | Script | `events\machine_age_crisis_events.txt` |
 | 4 | 14,253 | 12,263 | 26 | 1,964 |  | Script | `common\resolutions\00_resolutions.txt` |
 | 5 | 13,412 | 11,886 | 760 | 766 |  | Script | `events\overlord_enclaves_events.txt` |
-| 6 | 11,629 | 9,931 | 744 | 954 |  | Script | `events\colony_events_3.txt` |
+| 6 | 11,629 | 9,932 | 743 | 954 |  | Script | `events\colony_events_3.txt` |
 | 7 | 11,516 | 11,516 | 0 | 0 | GEN | Localisation | `localisation\french\fr_custom_loc_keys_l_french.yml` |
 | 8 | 10,648 | 8,859 | 397 | 1,392 |  | Script | `events\ancient_relics_arcsite_events_2.txt` |
 | 9 | 10,555 | 4,660 | 2,189 | 3,706 |  | Script | `interface\credits.txt` |
@@ -37,7 +38,7 @@ Generated: **15** files (0.2%), **27,752** lines (0.7%)
 | 13 | 10,160 | 9,290 | 295 | 575 |  | Script | `events\marauder_events.txt` |
 | 14 | 10,016 | 8,987 | 194 | 835 |  | Script | `events\first_contact_dlc_events.txt` |
 
-Hotspot files: **14** / 6,962 (0.2%) — 176,046 / 3,852,392 lines (4.6%)
+Hotspot files: **14** / 6,972 (0.2%) — 176,046 / 3,860,761 lines (4.6%)
 
 ### Generated Files
 
@@ -59,11 +60,20 @@ Hotspot files: **14** / 6,962 (0.2%) — 176,046 / 3,852,392 lines (4.6%)
 | 14 | 1,067 | 1,067 | 0 | 0 | Script | `gfx\particles\cosmic_storms_assets\particle_storm_1.asset` |
 | 15 | 1,014 | 1,014 | 0 | 0 | Script | `interface\specimens.gfx` |
 
+## Europa Universalis IV
+
+Directory: `E:\SteamLibrary\steamapps\common\Europa Universalis IV`  
+Files: **0** total, **0** lines
+
+### Large-File Hotspots (≥ 10,000 lines)
+
+*No files with ≥ 10,000 lines.*
+
 ## Europa Universalis V
 
 Directory: `D:\Program Files\Steam\steamapps\common\Europa Universalis V`  
-Files: **11,738** total, **6,266,556** lines  
-Generated: **80** files (0.7%), **1,850,268** lines (29.5%)
+Files: **11,859** total, **6,358,558** lines  
+Generated: **80** files (0.7%), **1,850,278** lines (29.1%)
 
 ### Large-File Hotspots (≥ 10,000 lines)
 
@@ -76,25 +86,25 @@ Generated: **80** files (0.7%), **1,850,268** lines (29.5%)
 | 5 | 160,257 | 160,257 | 0 | 0 | GEN | Script | `game\in_game\gfx\map\map_objects\generated_map_object_locators_combat.txt` |
 | 6 | 160,257 | 160,257 | 0 | 0 | GEN | Script | `game\in_game\gfx\map\map_objects\generated_map_object_locators_unit_stack.txt` |
 | 7 | 126,285 | 126,285 | 0 | 0 | GEN | Script | `game\in_game\gfx\map\map_objects\generated_map_object_locators_city.txt` |
-| 8 | 107,058 | 107,057 | 0 | 1 |  | Script | `game\main_menu\setup\start\06_pops.txt` |
-| 9 | 99,702 | 87,938 | 4,118 | 7,646 |  | Script | `game\main_menu\setup\start\05_characters.txt` |
-| 10 | 60,597 | 48,726 | 2,091 | 9,780 |  | Script | `game\main_menu\setup\start\10_countries.txt` |
+| 8 | 107,086 | 107,085 | 0 | 1 |  | Script | `game\main_menu\setup\start\06_pops.txt` |
+| 9 | 100,154 | 88,346 | 4,123 | 7,685 |  | Script | `game\main_menu\setup\start\05_characters.txt` |
+| 10 | 61,826 | 49,644 | 2,136 | 10,046 |  | Script | `game\main_menu\setup\start\10_countries.txt` |
 | 11 | 53,932 | 53,931 | 0 | 1 |  | Script | `game\main_menu\setup\start\08_institutions.txt` |
-| 12 | 49,502 | 49,477 | 0 | 25 |  | Script | `game\in_game\common\customizable_localization\ru_custom_loc.txt` |
-| 13 | 44,764 | 40,810 | 28 | 3,926 |  | Script | `game\main_menu\common\coat_of_arms\coat_of_arms\pre_scripted_countries.txt` |
+| 12 | 49,525 | 49,500 | 0 | 25 |  | Script | `game\in_game\common\customizable_localization\ru_custom_loc.txt` |
+| 13 | 45,451 | 41,455 | 26 | 3,970 |  | Script | `game\main_menu\common\coat_of_arms\coat_of_arms\pre_scripted_countries.txt` |
 | 14 | 42,268 | 28,582 | 12,152 | 1,534 |  | Script | `game\in_game\map_data\named_locations\00_default.txt` |
-| 15 | 31,134 | 31,112 | 0 | 22 |  | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_end_l_russian.yml` |
-| 16 | 30,809 | 30,699 | 31 | 79 |  | Localisation | `game\main_menu\localization\english\character_names_l_english.yml` |
-| 17 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\braz_por\character_names_l_braz_por.yml` |
-| 18 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\french\character_names_l_french.yml` |
-| 19 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\german\character_names_l_german.yml` |
-| 20 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\japanese\character_names_l_japanese.yml` |
-| 21 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\korean\character_names_l_korean.yml` |
-| 22 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\polish\character_names_l_polish.yml` |
-| 23 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\russian\character_names_l_russian.yml` |
-| 24 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\character_names_l_simp_chinese.yml` |
-| 25 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\spanish\character_names_l_spanish.yml` |
-| 26 | 30,714 | 30,699 | 15 | 0 |  | Localisation | `game\main_menu\localization\turkish\character_names_l_turkish.yml` |
+| 15 | 31,136 | 31,114 | 0 | 22 |  | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_end_l_russian.yml` |
+| 16 | 30,794 | 30,684 | 31 | 79 |  | Localisation | `game\main_menu\localization\english\character_names_l_english.yml` |
+| 17 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\braz_por\character_names_l_braz_por.yml` |
+| 18 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\french\character_names_l_french.yml` |
+| 19 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\german\character_names_l_german.yml` |
+| 20 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\japanese\character_names_l_japanese.yml` |
+| 21 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\korean\character_names_l_korean.yml` |
+| 22 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\polish\character_names_l_polish.yml` |
+| 23 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\russian\character_names_l_russian.yml` |
+| 24 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\character_names_l_simp_chinese.yml` |
+| 25 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\spanish\character_names_l_spanish.yml` |
+| 26 | 30,699 | 30,684 | 15 | 0 |  | Localisation | `game\main_menu\localization\turkish\character_names_l_turkish.yml` |
 | 27 | 29,792 | 29,507 | 133 | 152 |  | Localisation | `game\main_menu\localization\english\location_names\location_names_l_english.yml` |
 | 28 | 29,635 | 29,507 | 128 | 0 |  | Localisation | `game\main_menu\localization\braz_por\location_names\location_names_l_braz_por.yml` |
 | 29 | 29,635 | 29,507 | 128 | 0 |  | Localisation | `game\main_menu\localization\french\location_names\location_names_l_french.yml` |
@@ -106,48 +116,48 @@ Generated: **80** files (0.7%), **1,850,268** lines (29.5%)
 | 35 | 29,635 | 29,507 | 128 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\location_names\location_names_l_simp_chinese.yml` |
 | 36 | 29,635 | 29,507 | 128 | 0 |  | Localisation | `game\main_menu\localization\spanish\location_names\location_names_l_spanish.yml` |
 | 37 | 29,635 | 29,507 | 128 | 0 |  | Localisation | `game\main_menu\localization\turkish\location_names\location_names_l_turkish.yml` |
-| 38 | 28,573 | 28,573 | 0 | 0 | GEN | Script | `game\in_game\map_data\location_templates.txt` |
-| 39 | 25,278 | 19,785 | 232 | 5,261 |  | Script | `game\in_game\events\DHE\flavor_ENG.txt` |
-| 40 | 24,983 | 22,165 | 35 | 2,783 |  | Script | `game\main_menu\common\coat_of_arms\coat_of_arms\pre_scripted_dynasties.txt` |
-| 41 | 18,587 | 14,884 | 57 | 3,646 |  | Script | `game\in_game\events\DHE\flavor_TUR.txt` |
-| 42 | 18,318 | 15,147 | 152 | 3,019 |  | Script | `game\in_game\gui\ui_library.gui` |
-| 43 | 16,242 | 14,531 | 33 | 1,678 |  | Script | `game\in_game\events\DHE\flavor_FRA.txt` |
-| 44 | 16,223 | 16,221 | 0 | 2 |  | Script | `game\loading_screen\sound\banks\windows\sb_world_media.txt` |
-| 45 | 15,799 | 13,759 | 2,024 | 16 |  | Localisation | `game\main_menu\localization\english\character_names_dynamic_l_english.yml` |
-| 46 | 14,100 | 14,100 | 0 | 0 | GEN | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_countries_l_russian.yml` |
-| 47 | 13,904 | 11,998 | 23 | 1,883 |  | Script | `game\main_menu\common\modifier_type_definitions\00_modifier_types.txt` |
-| 48 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\braz_por\character_names_dynamic_l_braz_por.yml` |
-| 49 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\french\character_names_dynamic_l_french.yml` |
-| 50 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\german\character_names_dynamic_l_german.yml` |
-| 51 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\japanese\character_names_dynamic_l_japanese.yml` |
-| 52 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\korean\character_names_dynamic_l_korean.yml` |
-| 53 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\polish\character_names_dynamic_l_polish.yml` |
-| 54 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\russian\character_names_dynamic_l_russian.yml` |
-| 55 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\character_names_dynamic_l_simp_chinese.yml` |
-| 56 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\spanish\character_names_dynamic_l_spanish.yml` |
-| 57 | 13,802 | 13,760 | 42 | 0 |  | Localisation | `game\main_menu\localization\turkish\character_names_dynamic_l_turkish.yml` |
-| 58 | 13,644 | 10,598 | 137 | 2,909 |  | Script | `game\in_game\events\DHE\flavor_MOS.txt` |
-| 59 | 13,340 | 11,663 | 6 | 1,671 |  | Script | `game\in_game\events\DHE\flavor_CAS.txt` |
-| 60 | 12,490 | 11,117 | 1,103 | 270 |  | Localisation | `game\main_menu\localization\english\messages_l_english.yml` |
-| 61 | 12,337 | 10,356 | 97 | 1,884 |  | Script | `game\in_game\events\government\societal_values.txt` |
-| 62 | 11,688 | 11,588 | 1 | 99 |  | Script | `game\in_game\common\persistent_dna\custom_characters.txt` |
-| 63 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\braz_por\messages_l_braz_por.yml` |
-| 64 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\french\messages_l_french.yml` |
-| 65 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\german\messages_l_german.yml` |
-| 66 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\japanese\messages_l_japanese.yml` |
-| 67 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\korean\messages_l_korean.yml` |
-| 68 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\polish\messages_l_polish.yml` |
-| 69 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\russian\messages_l_russian.yml` |
-| 70 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\simp_chinese\messages_l_simp_chinese.yml` |
-| 71 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\spanish\messages_l_spanish.yml` |
-| 72 | 11,174 | 11,137 | 36 | 1 |  | Localisation | `game\main_menu\localization\turkish\messages_l_turkish.yml` |
-| 73 | 11,073 | 10,278 | 18 | 777 |  | Script | `game\main_menu\gui\messagetypes.txt` |
-| 74 | 10,920 | 9,200 | 35 | 1,685 |  | Script | `game\main_menu\common\static_modifiers\country.txt` |
-| 75 | 10,556 | 10,141 | 111 | 304 |  | Script | `game\in_game\map_data\definitions.txt` |
+| 38 | 29,055 | 25,717 | 65 | 3,273 |  | Script | `game\main_menu\common\coat_of_arms\coat_of_arms\pre_scripted_dynasties.txt` |
+| 39 | 28,573 | 28,573 | 0 | 0 | GEN | Script | `game\in_game\map_data\location_templates.txt` |
+| 40 | 25,322 | 19,828 | 232 | 5,262 |  | Script | `game\in_game\events\DHE\flavor_ENG.txt` |
+| 41 | 21,813 | 21,811 | 0 | 2 |  | Script | `game\loading_screen\sound\banks\windows\sb_world_media.txt` |
+| 42 | 18,586 | 14,891 | 57 | 3,638 |  | Script | `game\in_game\events\DHE\flavor_TUR.txt` |
+| 43 | 18,325 | 15,154 | 152 | 3,019 |  | Script | `game\in_game\gui\ui_library.gui` |
+| 44 | 16,244 | 14,533 | 33 | 1,678 |  | Script | `game\in_game\events\DHE\flavor_FRA.txt` |
+| 45 | 15,948 | 13,890 | 2,042 | 16 |  | Localisation | `game\main_menu\localization\english\character_names_dynamic_l_english.yml` |
+| 46 | 15,404 | 13,283 | 23 | 2,098 |  | Script | `game\main_menu\common\modifier_type_definitions\00_modifier_types.txt` |
+| 47 | 14,100 | 14,100 | 0 | 0 | GEN | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_countries_l_russian.yml` |
+| 48 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\braz_por\character_names_dynamic_l_braz_por.yml` |
+| 49 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\french\character_names_dynamic_l_french.yml` |
+| 50 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\german\character_names_dynamic_l_german.yml` |
+| 51 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\japanese\character_names_dynamic_l_japanese.yml` |
+| 52 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\korean\character_names_dynamic_l_korean.yml` |
+| 53 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\polish\character_names_dynamic_l_polish.yml` |
+| 54 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\russian\character_names_dynamic_l_russian.yml` |
+| 55 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\character_names_dynamic_l_simp_chinese.yml` |
+| 56 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\spanish\character_names_dynamic_l_spanish.yml` |
+| 57 | 13,932 | 13,890 | 42 | 0 |  | Localisation | `game\main_menu\localization\turkish\character_names_dynamic_l_turkish.yml` |
+| 58 | 13,635 | 10,595 | 137 | 2,903 |  | Script | `game\in_game\events\DHE\flavor_MOS.txt` |
+| 59 | 13,350 | 11,673 | 6 | 1,671 |  | Script | `game\in_game\events\DHE\flavor_CAS.txt` |
+| 60 | 12,865 | 11,434 | 1,154 | 277 |  | Localisation | `game\main_menu\localization\english\messages_l_english.yml` |
+| 61 | 12,357 | 10,375 | 97 | 1,885 |  | Script | `game\in_game\events\government\societal_values.txt` |
+| 62 | 11,792 | 11,691 | 1 | 100 |  | Script | `game\in_game\common\persistent_dna\custom_characters.txt` |
+| 63 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\braz_por\messages_l_braz_por.yml` |
+| 64 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\french\messages_l_french.yml` |
+| 65 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\german\messages_l_german.yml` |
+| 66 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\japanese\messages_l_japanese.yml` |
+| 67 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\korean\messages_l_korean.yml` |
+| 68 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\polish\messages_l_polish.yml` |
+| 69 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\russian\messages_l_russian.yml` |
+| 70 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\simp_chinese\messages_l_simp_chinese.yml` |
+| 71 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\spanish\messages_l_spanish.yml` |
+| 72 | 11,489 | 11,434 | 55 | 0 |  | Localisation | `game\main_menu\localization\turkish\messages_l_turkish.yml` |
+| 73 | 11,344 | 10,512 | 36 | 796 |  | Script | `game\main_menu\gui\messagetypes.txt` |
+| 74 | 11,010 | 9,268 | 38 | 1,704 |  | Script | `game\main_menu\common\static_modifiers\country.txt` |
+| 75 | 10,554 | 10,139 | 111 | 304 |  | Script | `game\in_game\map_data\definitions.txt` |
 | 76 | 10,389 | 8,833 | 103 | 1,453 |  | Script | `game\in_game\events\DHE\flavor_HAB.txt` |
-| 77 | 10,320 | 9,449 | 477 | 394 |  | Script | `game\main_menu\common\coat_of_arms\template_lists\colored_emblem_lists.txt` |
+| 77 | 10,322 | 9,456 | 472 | 394 |  | Script | `game\main_menu\common\coat_of_arms\template_lists\colored_emblem_lists.txt` |
 
-Hotspot files: **77** / 11,738 (0.7%) — 3,466,851 / 6,266,556 lines (55.3%)
+Hotspot files: **77** / 11,859 (0.6%) — 3,485,781 / 6,358,558 lines (54.8%)
 
 ### Generated Files
 
@@ -163,17 +173,17 @@ Hotspot files: **77** / 11,738 (0.7%) — 3,466,851 / 6,266,556 lines (55.3%)
 | 8 | 28,573 | 28,573 | 0 | 0 | Script | `game\in_game\map_data\location_templates.txt` |
 | 9 | 14,100 | 14,100 | 0 | 0 | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_countries_l_russian.yml` |
 | 10 | 4,422 | 4,422 | 0 | 0 | CSV | `game\in_game\map_data\ports.csv` |
-| 11 | 2,322 | 2,322 | 0 | 0 | Script | `game\in_game\common\religious_aspects\folk_default.txt` |
-| 12 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\braz_por\events\DHE\flavor_eng_l_braz_por.yml` |
-| 13 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\french\events\DHE\flavor_eng_l_french.yml` |
-| 14 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\german\events\DHE\flavor_eng_l_german.yml` |
-| 15 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\japanese\events\DHE\flavor_eng_l_japanese.yml` |
-| 16 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\korean\events\DHE\flavor_eng_l_korean.yml` |
-| 17 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\polish\events\DHE\flavor_eng_l_polish.yml` |
-| 18 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\russian\events\DHE\flavor_eng_l_russian.yml` |
-| 19 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\simp_chinese\events\DHE\flavor_eng_l_simp_chinese.yml` |
-| 20 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\spanish\events\DHE\flavor_eng_l_spanish.yml` |
-| 21 | 1,787 | 1,787 | 0 | 0 | Localisation | `game\main_menu\localization\turkish\events\DHE\flavor_eng_l_turkish.yml` |
+| 11 | 2,312 | 2,312 | 0 | 0 | Script | `game\in_game\common\religious_aspects\folk_default.txt` |
+| 12 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\braz_por\events\DHE\flavor_eng_l_braz_por.yml` |
+| 13 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\french\events\DHE\flavor_eng_l_french.yml` |
+| 14 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\german\events\DHE\flavor_eng_l_german.yml` |
+| 15 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\japanese\events\DHE\flavor_eng_l_japanese.yml` |
+| 16 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\korean\events\DHE\flavor_eng_l_korean.yml` |
+| 17 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\polish\events\DHE\flavor_eng_l_polish.yml` |
+| 18 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\russian\events\DHE\flavor_eng_l_russian.yml` |
+| 19 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\simp_chinese\events\DHE\flavor_eng_l_simp_chinese.yml` |
+| 20 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\spanish\events\DHE\flavor_eng_l_spanish.yml` |
+| 21 | 1,788 | 1,788 | 0 | 0 | Localisation | `game\main_menu\localization\turkish\events\DHE\flavor_eng_l_turkish.yml` |
 | 22 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\braz_por\events\DHE\flavor_tur_l_braz_por.yml` |
 | 23 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\french\events\DHE\flavor_tur_l_french.yml` |
 | 24 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\german\events\DHE\flavor_tur_l_german.yml` |
@@ -184,16 +194,16 @@ Hotspot files: **77** / 11,738 (0.7%) — 3,466,851 / 6,266,556 lines (55.3%)
 | 29 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\simp_chinese\events\DHE\flavor_tur_l_simp_chinese.yml` |
 | 30 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\spanish\events\DHE\flavor_tur_l_spanish.yml` |
 | 31 | 1,317 | 1,317 | 0 | 0 | Localisation | `game\main_menu\localization\turkish\events\DHE\flavor_tur_l_turkish.yml` |
-| 32 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\braz_por\scripted_relations_l_braz_por.yml` |
-| 33 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\french\scripted_relations_l_french.yml` |
-| 34 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\german\scripted_relations_l_german.yml` |
-| 35 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\japanese\scripted_relations_l_japanese.yml` |
-| 36 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\korean\scripted_relations_l_korean.yml` |
-| 37 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\polish\scripted_relations_l_polish.yml` |
-| 38 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\russian\scripted_relations_l_russian.yml` |
-| 39 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\simp_chinese\scripted_relations_l_simp_chinese.yml` |
-| 40 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\spanish\scripted_relations_l_spanish.yml` |
-| 41 | 1,238 | 1,238 | 0 | 0 | Localisation | `game\main_menu\localization\turkish\scripted_relations_l_turkish.yml` |
+| 32 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\braz_por\scripted_relations_l_braz_por.yml` |
+| 33 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\french\scripted_relations_l_french.yml` |
+| 34 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\german\scripted_relations_l_german.yml` |
+| 35 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\japanese\scripted_relations_l_japanese.yml` |
+| 36 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\korean\scripted_relations_l_korean.yml` |
+| 37 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\polish\scripted_relations_l_polish.yml` |
+| 38 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\russian\scripted_relations_l_russian.yml` |
+| 39 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\simp_chinese\scripted_relations_l_simp_chinese.yml` |
+| 40 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\spanish\scripted_relations_l_spanish.yml` |
+| 41 | 1,239 | 1,239 | 0 | 0 | Localisation | `game\main_menu\localization\turkish\scripted_relations_l_turkish.yml` |
 | 42 | 1,058 | 1,058 | 0 | 0 | Localisation | `game\main_menu\localization\russian\customizable_localization_ru_rank_l_russian.yml` |
 | 43 | 45 | 45 | 0 | 0 | Script | `game\in_game\gfx\map\map_objects\generated\decal_generator_low.txt` |
 | 44 | 45 | 45 | 0 | 0 | Script | `game\in_game\gfx\map\map_objects\generated\rock_generator_high.txt` |
