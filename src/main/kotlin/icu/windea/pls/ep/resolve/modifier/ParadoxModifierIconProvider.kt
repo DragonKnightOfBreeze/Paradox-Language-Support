@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxModifierInfo
 @WithGameTypeEP
 interface ParadoxModifierIconProvider {
     /**
-     * 注意：这里加入的文件路径是不包含扩展名的。实际上，允许任何合法的扩展名（`.dds`, `.png`, `.tga`）。
+     * 注意：这里加入的文件路径是不包含扩展名的。实际上，允许任何合法的扩展名（`.png`, `.dds`, `.tga`）。
      */
     fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 

@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 /**
  * 从 `modifiers.log` 生成 `modifiers.cwt`。
  *
- * 注意：可能的经济修正（由经济类型生成的修正）会被忽略。
+ * 注意：可能的经济修正（由经济分类生成的修正）会被忽略。
  *
  * @property ignoredNames 需要忽略的修正的名字（忽略大小写）。
  * @property ignoredCategories 需要忽略的修正的分类（忽略大小写）。

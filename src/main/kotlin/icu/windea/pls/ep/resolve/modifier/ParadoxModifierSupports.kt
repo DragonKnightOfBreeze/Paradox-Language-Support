@@ -334,7 +334,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过经济类型（`economic_category`）生成的修正的支持。
+ * 提供对通过经济分类（`economic_category`）生成的修正的支持。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
@@ -433,7 +433,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         // 加上名字
         val name = modifierElement.name.orNull()
         append(PlsStrings.modifierPrefix).append(" <b>").append(name?.escapeXml().or.anonymous()).append("</b>")
-        // 加上经济类型信息
+        // 加上经济分类信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
