@@ -30,7 +30,7 @@ In addition to language features, the plugin also includes:
 - `src/main/resources/META-INF/plugin.xml`: plugin entry, most registrations are split into `META-INF/pls-*.xml`.
 - `cwt/`: CWT config repositories (core + per-game downstream repos).
 - `docs/`: reference documentation (including language syntax guidance and config format guidance).
-- `documents/notes/`: maintainer documentation (including ai-generated docs and maintainer-written notes).
+- `documents/`: maintainer documentation (including ai-generated docs and maintainer-written docs).
 
 ## Setup and build commands (Windows)
 
