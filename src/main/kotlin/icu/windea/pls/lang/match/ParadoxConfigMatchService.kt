@@ -173,7 +173,8 @@ object ParadoxConfigMatchService {
             // 如果 name_field 存在，则要求 type_key 必须是由 type_key_filter 指定的所有可能的 type_key 之一，或者没有指定任何 type_key
             val nameField = typeConfig.nameField
             if (nameField != null) {
-                val result = typeConfig.possibleTypeKeys.isEmpty() || typeConfig.possibleTypeKeys.contains(context.typeKey)
+                val possibleTypeKeys = typeConfig.attributes.possibleTypeKeys
+                val result = possibleTypeKeys.isEmpty() || possibleTypeKeys.contains(context.typeKey)
                 if (!result) return false
             }
         }

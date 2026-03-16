@@ -11,6 +11,12 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
+/**
+ * 声明规则的综合属性的评估器。
+ *
+ * @see CwtDeclarationConfig
+ * @see CwtDeclarationConfigAttributes
+ */
 object CwtDeclarationConfigAttributesEvaluator {
     private data class Context(
         val involvedSubtypes: MutableSet<String> = sortedSetOf(),

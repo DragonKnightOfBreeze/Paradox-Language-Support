@@ -7,7 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 /**
  * 复杂表达式的综合属性。
  *
- * 用于优化索引时的性能，以及进行更准确的语义解析与匹配。
+ * 用于进行更准确的语义解析与匹配。
  *
  * @see ParadoxComplexExpression
  * @see ParadoxComplexExpressionAttributesEvaluator

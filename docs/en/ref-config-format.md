@@ -224,7 +224,6 @@ directive[inline_script] = {
 - **Definition key constraints**:
   - `type_key_prefix` specifies the key prefix; and it provides a corresponding raw-value config (`typeKeyPrefixConfig`) for rendering and hints.
   - `type_key_filter`/`type_key_regex`/`starts_with` constrain the allowed "definition key" values; `skip_root_key` allows skipping some top-level keys to continue matching (case-insensitive, supports multiple groups).
-  - `possibleTypeKeys` is computed from type/subtype filters to support completion and validation.
 
 - **Naming and uniqueness**:
   - `name_field` specifies the source field for display name; `name_from_file` means derive the name from the filename; `unique` is used for conflict checks/navigation hints; `severity` marks the display severity level.
@@ -240,7 +239,6 @@ directive[inline_script] = {
   1. Parse `type[...]` name and required properties; if required fields are missing, skip this type (`CwtTypeConfigResolverImpl`).
   2. Collect file sources and key constraints, build subtype mapping, and parse presentation settings.
   3. Merge `modifiers`: if `modifiers` is declared inside a type config, derive modifier configs and write them into `configGroup.modifiers` and `type2ModifiersMap` (grouped by `type` or `type.subtype`).
-  4. Compute `possibleTypeKeys`, and bind a tag type (`CwtTagType.TypeKeyPrefix`) to `type_key_prefix` when needed.
 
 - **Cooperation with other configs**:
   - Works with `Declaration` to provide context and structural constraints for concrete definitions.

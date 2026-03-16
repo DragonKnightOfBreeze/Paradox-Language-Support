@@ -224,7 +224,6 @@ directive[inline_script] = {
 - **类型键（definition key）约束**：
   - `type_key_prefix` 指定键前缀；并提供对应的原始值规则（`typeKeyPrefixConfig`）用于渲染与提示。
   - `type_key_filter`/`type_key_regex`/`starts_with` 用于约束“类型键”的取值；`skip_root_key` 允许跳过若干顶级键以继续匹配（忽略大小写，支持多组）。
-  - `possibleTypeKeys` 基于类型与子类型的 filter 汇总，便于补全与校验。
 
 - **名称与唯一性**：
   - `name_field` 指定展示名称来源字段；`name_from_file` 表示从文件名推导名称；`unique` 用于冲突检查/导航提示；`severity` 用于标注展示严重级别。
@@ -240,7 +239,6 @@ directive[inline_script] = {
   1. 解析 `type[...]` 名称与必要属性；缺失属性将跳过该类型（`CwtTypeConfigResolverImpl`）。
   2. 收集文件来源与键约束、构造子类型映射、解析展示相关配置。
   3. 合并 `modifiers`：若在类型规则内声明 `modifiers`，将派生对应的修正规则并写入 `configGroup.modifiers` 与 `type2ModifiersMap`（按 `type` 或 `type.subtype` 归档）。
-  4. 计算 `possibleTypeKeys`，并在需要时为 `type_key_prefix` 绑定标签类型（`CwtTagType.TypeKeyPrefix`）。
 
 - **与其他规则协作**：
   - 与 `声明` 协作，用于为具体定义的声明提供上下文与结构约束。

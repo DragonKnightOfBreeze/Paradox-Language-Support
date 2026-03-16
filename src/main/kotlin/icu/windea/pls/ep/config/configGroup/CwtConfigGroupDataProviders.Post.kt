@@ -15,7 +15,7 @@ class CwtPostConfigGroupDataProvider : CwtConfigGroupDataProvider {
         coroutineScope {
             for (typeConfig in initializer.types.values) {
                 launch {
-                    typeConfig.possibleTypeKeys
+                    typeConfig.attributes
                 }
             }
             for (declarationConfig in initializer.declarations.values) {

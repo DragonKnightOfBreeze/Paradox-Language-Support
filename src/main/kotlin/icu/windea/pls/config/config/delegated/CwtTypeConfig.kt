@@ -3,6 +3,8 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
+import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
@@ -14,7 +16,6 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
@@ -60,7 +61,7 @@ import icu.windea.pls.model.ParadoxTagType
  * @property subtypes 对应的子类型规则的集合。
  * @property localisation 对应的本地化展示规则。
  * @property images 对应的的图片展示规则。
- * @property possibleTypeKeys 可能的类型键的集合。
+ * @property attributes 综合属性。
  * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。
  *
  * @see CwtSubtypeConfig
@@ -100,7 +101,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromMember("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
-    val possibleTypeKeys: Set<@CaseInsensitive String>
+    val attributes: CwtTypeConfigAttributes
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
     interface Resolver {
@@ -187,11 +188,8 @@ private class CwtTypeConfigImpl(
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
-    override val possibleTypeKeys: Set<String> by lazy {
-        caseInsensitiveStringSet().apply {
-            typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
-            subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
-        }.optimized()
+    override val attributes: CwtTypeConfigAttributes by lazy {
+        CwtTypeConfigAttributesEvaluator.evaluate(this)
     }
 
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {
