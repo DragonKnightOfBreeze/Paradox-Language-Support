@@ -31,7 +31,7 @@ import org.intellij.plugins.markdown.lang.MarkdownElementTypes
 import org.intellij.plugins.markdown.lang.MarkdownTokenTypes
 import org.intellij.plugins.markdown.lang.psi.impl.MarkdownCodeFence
 
-object PlsMarkdownManager {
+object MarkdownExtensionManager {
     object Keys : KeyRegistry() {
         val cachedPathInjectionInfo by registerKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
     }

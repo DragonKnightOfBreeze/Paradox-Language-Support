@@ -10,7 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.integrations.settings.PlsTigerHighlightDialog
+import icu.windea.pls.integrations.settings.TigerHighlightDialog
 import javax.swing.JComponent
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection
@@ -35,7 +35,7 @@ class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInsp
 
                 link(PlsBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
-                    val dialog = PlsTigerHighlightDialog()
+                    val dialog = TigerHighlightDialog()
                     if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                 }
             }

@@ -16,9 +16,9 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.integrations.PlsIntegrationsBundle
-import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
-import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
-import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.integrations.lints.TigerLintResult.*
+import icu.windea.pls.integrations.lints.tools.LintToolProvider
+import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.ParadoxModificationTrackers
@@ -30,9 +30,9 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.reflect.KMutableProperty0
 
-object PlsTigerLintManager {
+object TigerLintIntegrationManager {
     object Keys : KeyRegistry() {
-        val cachedTigerLintResult by registerKey<CachedValue<PlsTigerLintResult>>(Keys)
+        val cachedTigerLintResult by registerKey<CachedValue<TigerLintResult>>(Keys)
         val tigerLintResultLock by registerKey<Any>(Keys)
     }
 
@@ -41,9 +41,10 @@ object PlsTigerLintManager {
 
     fun isEnabled(): Boolean = PlsIntegrationsSettings.getInstance().state.lint.enableTiger
 
-    fun findTigerTool(gameType: ParadoxGameType): PlsTigerLintToolProvider? {
+    /** @see TigerLintToolProvider */
+    fun findTigerTool(gameType: ParadoxGameType): TigerLintToolProvider? {
         if (!isEnabled()) return null
-        return PlsLintToolProvider.EP_NAME.extensionList.findIsInstance<PlsTigerLintToolProvider> { it.isAvailable(gameType) }
+        return LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) }
     }
 
     fun checkAvailableFor(file: PsiFile): Boolean {
@@ -58,14 +59,14 @@ object PlsTigerLintManager {
         return findTigerTool(gameType) != null
     }
 
-    fun getTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
+    fun getTigerLintResultForFile(file: PsiFile): TigerLintResult? {
         // Tiger 执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
 
         if (!isEnabled()) return null
         return getTigerLintResultForFileFromCache(file)
     }
 
-    private fun getTigerLintResultForFileFromCache(file: PsiFile): PlsTigerLintResult? {
+    private fun getTigerLintResultForFileFromCache(file: PsiFile): TigerLintResult? {
         // 当当前文件发生变化时，或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(file) ?: return null
@@ -76,7 +77,7 @@ object PlsTigerLintManager {
         }
     }
 
-    private fun doGetTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
+    private fun doGetTigerLintResultForFile(file: PsiFile): TigerLintResult? {
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile ?: return null
@@ -90,7 +91,7 @@ object PlsTigerLintManager {
     }
 
     @Suppress("unused")
-    fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
+    fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): TigerLintResult? {
         if (!isEnabled()) return null
         val lock = getTigerLintResultLock(rootDirectory)
         return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
@@ -98,7 +99,7 @@ object PlsTigerLintManager {
         }
     }
 
-    private fun getTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): PlsTigerLintResult? {
+    private fun getTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): TigerLintResult? {
         // 当当前文件（即根目录）发生变化时，或者任意脚本或本地化文件发生变化时（这个条件已经足够），或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(rootDirectory) ?: return null
@@ -117,7 +118,7 @@ object PlsTigerLintManager {
         }
     }
 
-    private fun doGetTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
+    private fun doGetTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): TigerLintResult? {
         val gameType = selectGameType(rootDirectory) ?: return null
         val tool = findTigerTool(gameType) ?: return null
         val result = tool.validateRootDirectory(rootDirectory.virtualFile)
@@ -131,7 +132,7 @@ object PlsTigerLintManager {
         return rootDirectory.virtualFile.getOrPutUserData(Keys.tigerLintResultLock) { Any() }
     }
 
-    private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: PlsTigerLintToolProvider, e: Throwable) {
+    private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: TigerLintToolProvider, e: Throwable) {
         val fileUrl = rootDirectory.virtualFile.presentableUrl
         val title = PlsIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> PlsIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
@@ -148,7 +149,7 @@ object PlsTigerLintManager {
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
-    fun getHighlightSeverity(confidence: Confidence, severity: Severity): PlsLintHighlightSeverity {
+    fun getHighlightSeverity(confidence: Confidence, severity: Severity): LintHighlightSeverity {
         return runCatching { getConfiguredHighlightSeverity(confidence, severity).get() }
             .getOrElse { getDefaultHighlightSeverity(confidence, severity) }
     }
@@ -160,7 +161,7 @@ object PlsTigerLintManager {
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
-    fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<PlsLintHighlightSeverity> {
+    fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<LintHighlightSeverity> {
         val mapping = PlsIntegrationsSettings.getInstance().state.lint.tigerHighlight
         return when (severity) {
             Severity.TIPS -> when (confidence) {
@@ -197,18 +198,18 @@ object PlsTigerLintManager {
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
-    fun getDefaultHighlightSeverity(confidence: Confidence, severity: Severity): PlsLintHighlightSeverity {
+    fun getDefaultHighlightSeverity(confidence: Confidence, severity: Severity): LintHighlightSeverity {
         return when (severity) {
-            Severity.FATAL -> PlsLintHighlightSeverity.ERROR
-            Severity.ERROR -> PlsLintHighlightSeverity.ERROR
-            Severity.WARNING -> PlsLintHighlightSeverity.WARNING
+            Severity.FATAL -> LintHighlightSeverity.ERROR
+            Severity.ERROR -> LintHighlightSeverity.ERROR
+            Severity.WARNING -> LintHighlightSeverity.WARNING
             Severity.UNTIDY -> when (confidence) {
-                Confidence.STRONG -> PlsLintHighlightSeverity.WARNING
-                else -> PlsLintHighlightSeverity.WEAK_WARNING
+                Confidence.STRONG -> LintHighlightSeverity.WARNING
+                else -> LintHighlightSeverity.WEAK_WARNING
             }
             Severity.TIPS -> when (confidence) {
-                Confidence.STRONG -> PlsLintHighlightSeverity.WEAK_WARNING
-                else -> PlsLintHighlightSeverity.INFORMATION
+                Confidence.STRONG -> LintHighlightSeverity.WEAK_WARNING
+                else -> LintHighlightSeverity.INFORMATION
             }
         }
     }

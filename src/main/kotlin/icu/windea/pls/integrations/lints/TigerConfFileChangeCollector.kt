@@ -14,16 +14,16 @@ import icu.windea.pls.core.collections.filterIsInstanceTo
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
-import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.integrations.lints.tools.LintToolProvider
+import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
 
 @Optimized
-class PlsTigerConfFileChangeCollector {
-    private val enabledTools: MutableSet<PlsTigerLintToolProvider> = FastSet()
+class TigerConfFileChangeCollector {
+    private val enabledTools: MutableSet<TigerLintToolProvider> = FastSet()
     private val changedConfFileNames: MutableSet<String> = FastSet()
 
     fun collectChange(events: List<VFileEvent>) {
-        PlsLintToolProvider.EP_NAME.extensionList.filterIsInstanceTo<PlsTigerLintToolProvider, _>(enabledTools) { it.isEnabled() }
+        LintToolProvider.EP_NAME.extensionList.filterIsInstanceTo<TigerLintToolProvider, _>(enabledTools) { it.isEnabled() }
         if (enabledTools.isEmpty()) return
 
         // 仅检查配置文件的文件名是否匹配
@@ -55,7 +55,7 @@ class PlsTigerConfFileChangeCollector {
         return fileName.endsWith(".conf", true)
     }
 
-    private fun getConfFileName(provider: PlsTigerLintToolProvider): String {
+    private fun getConfFileName(provider: TigerLintToolProvider): String {
         return provider.exePath?.orNull()?.normalizePath()?.substringAfterLast('/') ?: "${provider.name}.conf"
     }
 
@@ -66,6 +66,6 @@ class PlsTigerConfFileChangeCollector {
     fun afterVfsChange() {
         val gameType2ConfFileName = enabledTools.associateBy({ it.forGameType }, { getConfFileName(it) })
         val gameTypeChanged = gameType2ConfFileName.filterValues { it in changedConfFileNames }.keys
-        gameTypeChanged.forEach { PlsTigerLintManager.modificationTrackers.getValue(it).incModificationCount() }
+        gameTypeChanged.forEach { TigerLintIntegrationManager.modificationTrackers.getValue(it).incModificationCount() }
     }
 }

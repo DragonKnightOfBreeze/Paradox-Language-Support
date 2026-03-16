@@ -8,7 +8,7 @@ import icu.windea.pls.integrations.PlsIntegrationsBundle
 /**
  * 高亮严重度级别的枚举。
  */
-enum class PlsLintHighlightSeverity(val value: HighlightSeverity?) {
+enum class LintHighlightSeverity(val value: HighlightSeverity?) {
     INFORMATION(HighlightSeverity.INFORMATION),
     WEAK_WARNING(HighlightSeverity.WEAK_WARNING),
     WARNING(HighlightSeverity.WARNING),
@@ -24,7 +24,7 @@ enum class PlsLintHighlightSeverity(val value: HighlightSeverity?) {
         private val values = entries.toList()
         private val valuesNoMerged = values - Merged
 
-        fun getAll(withMerged: Boolean = false): List<PlsLintHighlightSeverity> {
+        fun getAll(withMerged: Boolean = false): List<LintHighlightSeverity> {
             return if (withMerged) values else valuesNoMerged
         }
     }

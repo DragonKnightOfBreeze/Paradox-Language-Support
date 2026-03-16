@@ -8,11 +8,11 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.PlsIntegrationsBundle
-import icu.windea.pls.integrations.images.tools.PlsImageToolProvider
-import icu.windea.pls.integrations.images.tools.PlsMagickToolProvider
-import icu.windea.pls.integrations.lints.PlsTigerLintManager
-import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
-import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.integrations.images.tools.ImageToolProvider
+import icu.windea.pls.integrations.images.tools.MagickToolProvider
+import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
+import icu.windea.pls.integrations.lints.tools.LintToolProvider
+import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.lang.util.PlsOptionsManager
 import icu.windea.pls.model.ParadoxGameType
@@ -24,7 +24,7 @@ object PlsIntegrationsSettingsManager {
     fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
+        val tool = ImageToolProvider.EP_NAME.findExtension(MagickToolProvider::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsIntegrationsBundle.message("settings.integrations.invalidPath"))
     }
@@ -51,7 +51,7 @@ object PlsIntegrationsSettingsManager {
     fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.extensionList.findIsInstance<PlsTigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
+        val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsIntegrationsBundle.message("settings.integrations.lint.tigerPath.invalid"))
     }
@@ -74,6 +74,6 @@ object PlsIntegrationsSettingsManager {
 
         if (!callbackLock.check("onTigerSettingsChanged.${gameType.id}")) return
 
-        PlsTigerLintManager.modificationTrackers.getValue(gameType).incModificationCount()
+        TigerLintIntegrationManager.modificationTrackers.getValue(gameType).incModificationCount()
     }
 }

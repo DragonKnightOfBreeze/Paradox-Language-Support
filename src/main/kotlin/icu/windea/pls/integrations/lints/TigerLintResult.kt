@@ -16,16 +16,16 @@ import java.io.File
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
-data class PlsTigerLintResult(
+data class TigerLintResult(
     val name: String,
     val items: Collection<Item> = emptySet(),
     val itemGroup: Map<String, Collection<Item>> = emptyMap(),
     val error: Throwable? = null
-) : PlsLintResult {
-    fun fromPath(path: String): PlsTigerLintResult? {
+) : LintResult {
+    fun fromPath(path: String): TigerLintResult? {
         val items = itemGroup[path]
         if (items.isNullOrEmpty()) return null
-        return PlsTigerLintResult(name, items)
+        return TigerLintResult(name, items)
     }
 
     data class Item(
@@ -145,10 +145,10 @@ data class PlsTigerLintResult(
 
     companion object {
         @JvmField
-        val EMPTY = PlsTigerLintResult("")
+        val EMPTY = TigerLintResult("")
 
         @JvmStatic
-        fun parse(name: String, outputFile: File): PlsTigerLintResult {
+        fun parse(name: String, outputFile: File): TigerLintResult {
             val items = jsonMapper.readValue<List<Item>>(outputFile)
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
@@ -166,7 +166,7 @@ data class PlsTigerLintResult(
                     }
                 }
             }
-            return PlsTigerLintResult(name, items, itemGroup)
+            return TigerLintResult(name, items, itemGroup)
         }
     }
 }

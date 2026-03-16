@@ -124,7 +124,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                     label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
                     link(PlsBundle.message("link.configure")) {
                         // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
-                        val dialog = PlsTigerHighlightDialog()
+                        val dialog = TigerHighlightDialog()
                         if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                     }
                     contextHelp(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))

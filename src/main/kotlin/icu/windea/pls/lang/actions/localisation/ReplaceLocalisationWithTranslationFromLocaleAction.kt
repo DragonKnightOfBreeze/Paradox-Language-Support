@@ -15,7 +15,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.integrations.translation.TranslationIntegrationManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopup() {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsTranslationManager.findTool() != null
+        return super.isAvailable(e, project) && TranslationIntegrationManager.findTool() != null
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

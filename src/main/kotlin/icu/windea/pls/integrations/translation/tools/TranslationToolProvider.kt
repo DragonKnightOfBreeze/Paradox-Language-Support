@@ -7,7 +7,7 @@ import icu.windea.pls.integrations.translation.TranslateCallback
 /**
  * 提供翻译工具。用于翻译本地化文本。
  */
-interface PlsTranslationToolProvider {
+interface TranslationToolProvider {
     fun isAvailable(): Boolean
 
     suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback)
@@ -15,6 +15,6 @@ interface PlsTranslationToolProvider {
     suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<PlsTranslationToolProvider>("icu.windea.pls.integrations.translationToolProvider")
+        val EP_NAME = ExtensionPointName<TranslationToolProvider>("icu.windea.pls.integrations.translationToolProvider")
     }
 }

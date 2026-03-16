@@ -18,7 +18,7 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
-class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
+class TexconvToolProvider : CommandBasedImageToolProvider() {
     private val texconvExe by lazy { PlsPaths.texconvExeFile }
     private val texconvExeWd by lazy { PlsPaths.texconvExe.parent?.toFile() }
 

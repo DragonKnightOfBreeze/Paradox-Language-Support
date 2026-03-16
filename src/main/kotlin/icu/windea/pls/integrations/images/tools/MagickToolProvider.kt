@@ -17,7 +17,7 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Image Magick](https://www.imagemagick.org)
  */
-class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
+class MagickToolProvider : CommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
         return PlsIntegrationsSettings.getInstance().state.image.enableMagick
     }

@@ -10,7 +10,7 @@ import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.extensions.markdown.PlsMarkdownManager
+import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
 import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -29,7 +29,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     override fun getImplicitReference(element: PsiElement, offsetInElement: Int): PsiSymbolReference? {
         if (!PlsExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
 
-        val identifier = PlsMarkdownManager.getIdentifierFromInlineCode(element) ?: return null
+        val identifier = MarkdownExtensionManager.getIdentifierFromInlineCode(element) ?: return null
         run {
             val name = identifier.removePrefixOrNull("@") ?: return@run
             if (name.isEmpty() || name.containsBlank()) return@run

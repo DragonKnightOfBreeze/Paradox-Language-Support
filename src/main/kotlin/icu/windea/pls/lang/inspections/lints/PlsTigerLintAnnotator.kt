@@ -10,25 +10,25 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.integrations.lints.PlsTigerLintManager
-import icu.windea.pls.integrations.lints.PlsTigerLintResult
-import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
+import icu.windea.pls.integrations.lints.TigerLintResult
+import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
 import java.util.concurrent.Callable
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
 /**
- * @see PlsTigerLintManager
- * @see PlsTigerLintToolProvider
- * @see PlsTigerLintResult
+ * @see TigerLintIntegrationManager
+ * @see TigerLintToolProvider
+ * @see TigerLintResult
  */
-class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsTigerLintResult>() {
+class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>() {
     data class Info(val file: PsiFile)
 
     override fun getPairedBatchInspectionShortName() = PlsTigerLintInspection.SHORT_NAME
 
     override fun collectInformation(file: PsiFile): Info? {
-        if (!PlsTigerLintManager.checkAvailableFor(file)) return null
+        if (!TigerLintIntegrationManager.checkAvailableFor(file)) return null
         return Info(file)
     }
 
@@ -36,13 +36,13 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         return collectInformation(file) // 兼容先前已经检测到错误的情况
     }
 
-    override fun doAnnotate(collectedInfo: Info?): PlsTigerLintResult? {
+    override fun doAnnotate(collectedInfo: Info?): TigerLintResult? {
         val file = collectedInfo?.file ?: return null
-        val task = Callable { PlsTigerLintManager.getTigerLintResultForFile(file) }
+        val task = Callable { TigerLintIntegrationManager.getTigerLintResultForFile(file) }
         return ReadAction.nonBlocking(task).withDocumentsCommitted(file.project).executeSynchronously()
     }
 
-    override fun apply(file: PsiFile, annotationResult: PlsTigerLintResult?, holder: AnnotationHolder) {
+    override fun apply(file: PsiFile, annotationResult: TigerLintResult?, holder: AnnotationHolder) {
         if (annotationResult == null) return
         val items = annotationResult.items
         if (items.isEmpty()) return
@@ -75,12 +75,12 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         }
     }
 
-    private fun getHighlightSeverity(item: PlsTigerLintResult.Item): HighlightSeverity {
-        val tigerHighlightSeverity = PlsTigerLintManager.getHighlightSeverity(item.confidence, item.severity)
+    private fun getHighlightSeverity(item: TigerLintResult.Item): HighlightSeverity {
+        val tigerHighlightSeverity = TigerLintIntegrationManager.getHighlightSeverity(item.confidence, item.severity)
         return tigerHighlightSeverity.value ?: HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING
     }
 
-    private fun getDescription(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
+    private fun getDescription(result: TigerLintResult, item: TigerLintResult.Item): String {
         // output example:
         // error(missing-item): media alias asia_confucianism_shin not defined in gfx/media_aliases/
 
@@ -92,7 +92,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
     }
 
     @Suppress("unused")
-    private fun getExtraMessage(result: PlsTigerLintResult, item: PlsTigerLintResult.Item, location: PlsTigerLintResult.Location): String {
+    private fun getExtraMessage(result: TigerLintResult, item: TigerLintResult.Item, location: TigerLintResult.Location): String {
         val list = buildList {
             item.confidence.name.lowercase().let { add("Confidence: $it") }
             location.tag?.orNull()?.let { add("Tag: $it") }
@@ -102,7 +102,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
     }
 
     @Suppress("unused")
-    private fun getProblemGroup(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
+    private fun getProblemGroup(result: TigerLintResult, item: TigerLintResult.Item): String {
         return "PLS_TIGER_LINT.${result.name}"
     }
 }

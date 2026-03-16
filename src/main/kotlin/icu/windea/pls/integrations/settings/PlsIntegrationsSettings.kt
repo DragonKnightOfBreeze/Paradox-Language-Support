@@ -8,8 +8,8 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
-import icu.windea.pls.integrations.lints.PlsTigerLintManager
-import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
+import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
+import icu.windea.pls.integrations.lints.TigerLintResult.*
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
@@ -107,6 +107,6 @@ class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSe
         var fatalReasonable by enum(from(Confidence.REASONABLE, Severity.FATAL))
         var fatalStrong by enum(from(Confidence.STRONG, Severity.FATAL))
 
-        private fun from(confidence: Confidence, severity: Severity) = PlsTigerLintManager.getDefaultHighlightSeverity(confidence, severity)
+        private fun from(confidence: Confidence, severity: Severity) = TigerLintIntegrationManager.getDefaultHighlightSeverity(confidence, severity)
     }
 }

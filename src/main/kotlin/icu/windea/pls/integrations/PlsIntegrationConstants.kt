@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations
 
-import icu.windea.pls.integrations.lints.PlsTigerLintManager
+import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
 import icu.windea.pls.model.ParadoxGameType
 import org.cef.OS
 
@@ -37,13 +37,13 @@ object PlsIntegrationConstants {
         const val url = "https://github.com/amtep/tiger"
 
         fun pathTip(gameType: ParadoxGameType): String {
-            val name = PlsTigerLintManager.findTigerTool(gameType)?.exePath ?: "tiger"
+            val name = TigerLintIntegrationManager.findTigerTool(gameType)?.exePath ?: "tiger"
             val suffix = if(OS.isWindows()) ".exe" else ""
             return "/path/to/$name$suffix"
         }
 
         fun confPathTip(gameType: ParadoxGameType): String {
-            val name = PlsTigerLintManager.findTigerTool(gameType)?.exePath ?: "tiger"
+            val name = TigerLintIntegrationManager.findTigerTool(gameType)?.exePath ?: "tiger"
             val suffix = ".conf"
             return "/path/to/$name$suffix"
         }

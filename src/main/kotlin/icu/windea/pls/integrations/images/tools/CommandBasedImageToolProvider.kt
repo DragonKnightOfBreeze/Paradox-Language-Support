@@ -20,7 +20,7 @@ import kotlin.io.path.inputStream
 import kotlin.io.path.name
 import kotlin.io.path.outputStream
 
-abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
+abstract class CommandBasedImageToolProvider : ImageToolProvider {
     final override fun isAvailable() = isEnabled() && isSupported() && isValid()
 
     abstract fun isEnabled(): Boolean

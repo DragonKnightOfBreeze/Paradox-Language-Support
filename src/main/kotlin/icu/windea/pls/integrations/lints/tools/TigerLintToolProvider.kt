@@ -9,7 +9,7 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toUuidString
-import icu.windea.pls.integrations.lints.PlsTigerLintResult
+import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.PlsProfilesSettings
@@ -25,7 +25,7 @@ import kotlin.io.path.nameWithoutExtension
  *
  * 目前仅适用于模组目录。
  */
-abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
+abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     abstract val name: String
     abstract val forGameType: ParadoxGameType
     abstract val exePath: String?
@@ -61,16 +61,16 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         return true
     }
 
-    final override fun validateFile(file: VirtualFile): PlsTigerLintResult? {
+    final override fun validateFile(file: VirtualFile): TigerLintResult? {
         return null // unsupported
     }
 
-    final override fun validateRootDirectory(rootDirectory: VirtualFile): PlsTigerLintResult? {
+    final override fun validateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
         return runCatchingCancelable { doValidateRootDirectory(rootDirectory) }
-            .onFailure { thisLogger().warn(it) }.getOrElse { PlsTigerLintResult(name, error = it) }
+            .onFailure { thisLogger().warn(it) }.getOrElse { TigerLintResult(name, error = it) }
     }
 
-    private fun doValidateRootDirectory(rootDirectory: VirtualFile): PlsTigerLintResult? {
+    private fun doValidateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
         val tigerPath = exePath?.trim() ?: return null
         val fullExePath = tigerPath.toPath()
         if (fullExePath.nameWithoutExtension != name) return null
@@ -102,24 +102,24 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         }
         executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
 
-        return PlsTigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
+        return TigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
     }
 
-    class Ck3 : PlsTigerLintToolProvider() {
+    class Ck3 : TigerLintToolProvider() {
         override val name: String = "ck3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
         override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerPath
         override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerConfPath
     }
 
-    class Ir : PlsTigerLintToolProvider() {
+    class Ir : TigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
         override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.irTigerPath
         override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.irTigerConfPath
     }
 
-    class Vic3 : PlsTigerLintToolProvider() {
+    class Vic3 : TigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
         override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.vic3TigerPath

@@ -15,7 +15,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.integrations.translation.TranslationIntegrationManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -28,7 +28,7 @@ class ReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisa
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return super.isAvailable(project, editor, file) && PlsTranslationManager.findTool() != null
+        return super.isAvailable(project, editor, file) && TranslationIntegrationManager.findTool() != null
     }
 
     @Suppress("UnstableApiUsage")

@@ -12,7 +12,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.integrations.translation.TranslationIntegrationManager
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.locale
@@ -39,7 +39,7 @@ object ParadoxLocalisationManipulator {
     suspend fun handleTextWithTranslation(context: ParadoxLocalisationManipulationContext, sourceLocale: CwtLocaleConfig, targetLocale: CwtLocaleConfig) {
         val newText = suspendCancellableCoroutine { continuation ->
             CoroutineScope(continuation.context).launch {
-                PlsTranslationManager.translate(context.newText, sourceLocale, targetLocale) { translated, e ->
+                TranslationIntegrationManager.translate(context.newText, sourceLocale, targetLocale) { translated, e ->
                     if (e != null) {
                         continuation.resumeWithException(e)
                     } else {
