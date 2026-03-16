@@ -2,6 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.attributes.CwtInlinedConfigAttributes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -101,6 +102,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val definitionTypesModel by registerKey<CwtDefinitionTypesModelBase, UserDataHolder>(this) { CwtDefinitionTypesModelBase() }
         val filePathExpressions by registerKey<FastSet<CwtDataExpression>, UserDataHolder>(this) { FastSet() }
         val parameterConfigs by registerKey<FastSet<CwtMemberConfig<*>>, UserDataHolder>(this) { FastSet() }
+        val singleAliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
+        val aliasAttributes by registerKey<FastMap<String, CwtInlinedConfigAttributes>, UserDataHolder>(this) { FastMap() }
     }
 
     // region Accessors
@@ -153,6 +156,8 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val definitionTypesModel by Keys.definitionTypesModel
     final override val filePathExpressions by Keys.filePathExpressions
     final override val parameterConfigs by Keys.parameterConfigs
+    final override val singleAliasAttributes by Keys.singleAliasAttributes
+    final override val aliasAttributes by Keys.aliasAttributes
 
     // endregion
 

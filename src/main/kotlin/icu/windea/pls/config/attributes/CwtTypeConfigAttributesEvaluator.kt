@@ -2,6 +2,7 @@ package icu.windea.pls.config.attributes
 
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
@@ -12,6 +13,7 @@ import icu.windea.pls.core.util.values.ReversibleValue
  * @see CwtTypeConfig
  * @see CwtTypeConfigAttributes
  */
+@Optimized
 object CwtTypeConfigAttributesEvaluator {
     private data class Context(
         val involvedTypeKeys: MutableSet<@CaseInsensitive String> = caseInsensitiveStringSet(),

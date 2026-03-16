@@ -4,25 +4,22 @@ import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 /**
- * 声明规则的综合属性的评估器。
+ * 要内联的规则（单别名规则、别名规则）的综合属性的评估器。
  *
- * @see CwtDeclarationConfig
- * @see CwtDeclarationConfigAttributes
+ * @see CwtSingleAliasConfig
+ * @see CwtAliasConfig
+ * @see CwtInlinedConfigAttributes
  */
 @Optimized
-object CwtDeclarationConfigAttributesEvaluator {
+object CwtInlinedConfigAttributesEvaluator {
     private data class Context(
         val involvedSubtypes: MutableSet<String> = sortedSetOf(),
         var dynamicValueInvolved: Boolean = false,
@@ -30,17 +27,23 @@ object CwtDeclarationConfigAttributesEvaluator {
         var localisationParameterInvolved: Boolean = false,
     )
 
-    fun evaluate(config: CwtDeclarationConfig): CwtDeclarationConfigAttributes {
+    fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
         val context = Context()
-        val visitor = buildVisitor(context, config.configGroup)
-        config.config.accept(visitor)
+        val visitor = buildVisitor(context, configGroup)
+        CwtConfigManipulator.visitSingleAlias(name, singleAliasConfig, visitor)
+        return buildAttributes(context)
+    }
+
+    fun evaluate(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
+        val context = Context()
+        val visitor = buildVisitor(context, configGroup)
+        CwtConfigManipulator.visitAliasGroup(name, aliasConfigGroup, visitor)
         return buildAttributes(context)
     }
 
     private fun buildVisitor(context: Context, configGroup: CwtConfigGroup): CwtMemberConfigInlinedRecursiveVisitor {
         return object : CwtMemberConfigInlinedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
-                if (!inlined) processSubtypeExpression(context, config)
                 processDataExpression(context, config.keyExpression)
                 processDataExpression(context, config.valueExpression)
                 return super.visitProperty(config)
@@ -52,21 +55,15 @@ object CwtDeclarationConfigAttributesEvaluator {
             }
 
             override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { CwtInlinedConfigAttributesEvaluator.evaluate(name, config, configGroup) }
+                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { evaluate(name, config, configGroup) }
                 return handleContext(context, inlinedAttributes)
             }
 
             override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { CwtInlinedConfigAttributesEvaluator.evaluate(name, aliasConfigGroup, configGroup) }
+                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { evaluate(name, aliasConfigGroup, configGroup) }
                 return handleContext(context, inlinedAttributes)
             }
         }
-    }
-
-    private fun processSubtypeExpression(context: Context, config: CwtPropertyConfig) {
-        val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]") ?: return
-        val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-        resolved.subtypes.forEachFast { (subtype, _) -> context.involvedSubtypes.add(subtype) }
     }
 
     private fun processDataExpression(context: Context, dataExpression: CwtDataExpression) {
@@ -92,14 +89,14 @@ object CwtDeclarationConfigAttributesEvaluator {
         return true
     }
 
-    private fun buildAttributes(context: Context): CwtDeclarationConfigAttributes {
-        val result = CwtDeclarationConfigAttributes(
-            context.involvedSubtypes.optimized(),
+    private fun buildAttributes(context: Context): CwtInlinedConfigAttributes {
+        val result = CwtInlinedConfigAttributes(
             context.dynamicValueInvolved,
             context.parameterInvolved,
             context.localisationParameterInvolved,
         )
-        if (result == CwtDeclarationConfigAttributes.EMPTY) return CwtDeclarationConfigAttributes.EMPTY
+        if (result == CwtInlinedConfigAttributes.EMPTY) return CwtInlinedConfigAttributes.EMPTY
+        if (result == CwtInlinedConfigAttributes.ALL) return CwtInlinedConfigAttributes.ALL
         return result
     }
 }

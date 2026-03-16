@@ -75,11 +75,11 @@ class ParadoxDefinitionBasedMergedIndexSupport : ParadoxMergedIndexOptimizer {
  * - 脚本文件默认不可用，本地化文件默认可用。
  */
 class ParadoxFallbackMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForFile(file: ParadoxLocalisationFile): Boolean {
+    override fun isAvailableForFile(file: ParadoxScriptFile): Boolean {
         return false // fallback to false (skip)
     }
 
-    override fun isAvailableForFile(file: ParadoxScriptFile): Boolean {
+    override fun isAvailableForFile(file: ParadoxLocalisationFile): Boolean {
         return true // fallback to true
     }
 }

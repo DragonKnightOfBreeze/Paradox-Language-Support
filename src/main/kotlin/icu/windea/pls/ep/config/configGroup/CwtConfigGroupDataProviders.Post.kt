@@ -1,5 +1,7 @@
 package icu.windea.pls.ep.config.configGroup
 
+import com.intellij.openapi.progress.checkCanceled
+import icu.windea.pls.config.attributes.CwtInlinedConfigAttributesEvaluator
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -8,31 +10,34 @@ import kotlinx.coroutines.launch
  * 用于初始化规则分组中需要最后加载的那些数据。
  */
 class CwtPostConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(configGroup: CwtConfigGroup) {
+
+    override suspend fun postProcess(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
+
+        // load lazy data for various configs
+        run {
+            checkCanceled()
+            initializer.singleAliases.forEach { (k, v) ->
+                initializer.singleAliasAttributes[k] = CwtInlinedConfigAttributesEvaluator.evaluate(k, v, initializer)
+            }
+            checkCanceled()
+            initializer.aliasGroups.forEach { (k, v) ->
+                initializer.aliasAttributes[k] = CwtInlinedConfigAttributesEvaluator.evaluate(k, v.values, initializer)
+            }
+            checkCanceled()
+            initializer.types.values.forEach { it.attributes }
+            checkCanceled()
+            initializer.declarations.values.forEach { it.attributes }
+        }
 
         // load lazy data async for various configs
         coroutineScope {
-            for (typeConfig in initializer.types.values) {
-                launch {
-                    typeConfig.attributes
-                }
+            launch {
+                initializer.declarations.values.forEach { it.configForDeclaration }
             }
-            for (declarationConfig in initializer.declarations.values) {
-                launch {
-                    declarationConfig.attributes
-                    declarationConfig.configForDeclaration
-                }
-            }
-            for (complexEnumConfig in initializer.complexEnums.values) {
-                launch {
-                    complexEnumConfig.enumNameConfigs
-                }
+            launch {
+                initializer.complexEnums.values.forEach { it.enumNameConfigs }
             }
         }
-    }
-
-    override suspend fun postProcess(configGroup: CwtConfigGroup) {
-        // 2.0.7 nothing now (since it's not very necessary)
     }
 }

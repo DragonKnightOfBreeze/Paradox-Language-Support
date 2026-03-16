@@ -1,5 +1,6 @@
 package icu.windea.pls.config.configGroup
 
+import icu.windea.pls.config.attributes.CwtInlinedConfigAttributes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
@@ -152,7 +153,16 @@ interface CwtConfigGroupDataHolder {
     // region Collected
 
     val filePathExpressions: Set<CwtDataExpression>
-    val parameterConfigs: MutableSet<CwtMemberConfig<*>>
+    val parameterConfigs: Set<CwtMemberConfig<*>>
+
+    // endregion
+
+    // region Attributes
+
+    /** 单别名规则的综合属性的映射（键为规则的名字）。 */
+    val singleAliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
+    /** 别名规则的综合属性的映射（键为规则的名字）。 */
+    val aliasAttributes: MutableMap<String, CwtInlinedConfigAttributes>
 
     // endregion
 

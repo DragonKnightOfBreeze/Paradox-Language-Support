@@ -275,8 +275,4 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
     }
-
-    override suspend fun postProcess(configGroup: CwtConfigGroup) {
-        // 2.0.7 nothing now (since it's not very necessary)
-    }
 }

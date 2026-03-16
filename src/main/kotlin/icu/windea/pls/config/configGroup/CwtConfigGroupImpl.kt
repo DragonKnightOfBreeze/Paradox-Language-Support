@@ -5,6 +5,8 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.SimpleModificationTracker
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupDataProvider
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
@@ -25,6 +27,7 @@ class CwtConfigGroupImpl(
     override val initializer = CwtConfigGroupInitializer(project, gameType)
     override val modificationTracker = SimpleModificationTracker()
 
+    @Optimized
     override suspend fun init() {
         // 即使规则数据已全部加载完毕，也可能需要再次重新加载
         mutex.withLock {
@@ -32,8 +35,8 @@ class CwtConfigGroupImpl(
                 val start = System.currentTimeMillis()
                 val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
                 initializer.clear() // 清空以避免数据残留
-                dataProviders.forEach { dataProvider -> dataProvider.process(this) }
-                dataProviders.forEach { dataProvider -> dataProvider.postProcess(this) }
+                dataProviders.forEachFast { dataProvider -> dataProvider.process(this) }
+                dataProviders.forEachFast { dataProvider -> dataProvider.optimize(this) }
                 initializer.copyUserDataTo(this) // 直接一次性替换规则数据
                 initializer.clear() // 清空以避免内存泄露
                 modificationTracker.incModificationCount() // 显式增加修改计数

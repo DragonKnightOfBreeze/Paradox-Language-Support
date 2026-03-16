@@ -381,11 +381,11 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    override suspend fun postProcess(configGroup: CwtConfigGroup) {
+    override suspend fun optimize(configGroup: CwtConfigGroup) {
         // NOTE 2.1.5 为了优化内存，完成处理后，文件规则不会保留在规则分组数据中
-        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
-        postProcessActions.clear()
         val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
         fileConfigs.clear()
+        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
+        postProcessActions.clear()
     }
 }

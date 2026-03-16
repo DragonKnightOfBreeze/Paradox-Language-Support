@@ -97,5 +97,4 @@ private class CwtDeclarationConfigImpl(
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"
 }
 
-
 // endregion

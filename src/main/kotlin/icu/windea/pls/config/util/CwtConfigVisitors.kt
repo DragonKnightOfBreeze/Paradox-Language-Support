@@ -67,18 +67,17 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
         return super.visitValue(config)
     }
 
-    open fun visitInlinedProperty(config: CwtPropertyConfig): Boolean {
+    private fun visitInlinedProperty(config: CwtPropertyConfig): Boolean {
         return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
     }
 
-    open fun visitInlinedValue(config: CwtValueConfig): Boolean {
+    private fun visitInlinedValue(config: CwtValueConfig): Boolean {
         return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
     }
 
     open fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
         return withInlineDepthIncrement { config.config.accept(this) }
     }
-
 
     open fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
         aliasConfigGroup.forEach { aliasConfigs ->
