@@ -31,6 +31,11 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.script.ChangeDefinitionInjectionModeIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_SCRIPT</language>
+      <categoryKey>intention.script.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.script.QuoteIdentifierIntention</className>
     </intentionAction>
     <intentionAction>

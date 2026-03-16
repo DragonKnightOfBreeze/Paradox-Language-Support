@@ -11,6 +11,7 @@ import com.intellij.modcommand.Presentation
 import com.intellij.modcommand.PsiUpdateModCommandAction
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.DelegatedIcon
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -29,7 +30,7 @@ class ChangeLocalisationColorIntention : ModCommandAction {
 
     override fun perform(context: ActionContext): ModCommand {
         val element = findElement(context) ?: return ModCommand.nop()
-        val colorInfos = ParadoxTextColorManager.getInfos(context.project, context.file)
+        val colorInfos = ParadoxTextColorManager.getInfos(context.project, context.file).orNull() ?: return ModCommand.nop()
         val items = colorInfos.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationColor.title"), items)
     }

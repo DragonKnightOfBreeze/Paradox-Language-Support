@@ -13,6 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 
@@ -30,7 +31,7 @@ class ChangeLocalisationLocaleIntention : ModCommandAction {
     override fun perform(context: ActionContext): ModCommand {
         val element = findElement(context) ?: return ModCommand.nop()
         val project = context.project
-        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values
+        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values.orNull() ?: return ModCommand.nop()
         val items = localeConfigs.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationLocale.title"), items)
     }
