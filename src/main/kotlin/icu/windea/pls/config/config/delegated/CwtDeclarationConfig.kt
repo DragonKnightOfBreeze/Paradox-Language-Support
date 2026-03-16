@@ -7,12 +7,9 @@ import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.select.*
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.withLocationPrefix
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
@@ -51,7 +48,6 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  *
  * @property name 名称。
  * @property attributes 综合属性。
- * @property subtypesUsedInDeclaration 其中的子类型表达式（[ParadoxDefinitionSubtypeExpression]）中使用到的子类型的集合。
  * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  *
  * @see CwtTypeConfig
@@ -62,7 +58,6 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val name: String
 
     val attributes: CwtDeclarationConfigAttributes
-    val subtypesUsedInDeclaration: Set<String>
     val configForDeclaration: CwtPropertyConfig
 
     interface Resolver {
@@ -93,20 +88,6 @@ private class CwtDeclarationConfigImpl(
 ) : UserDataHolderBase(), CwtDeclarationConfig {
     override val attributes: CwtDeclarationConfigAttributes by lazy {
         CwtDeclarationConfigAttributesEvaluator.evaluate(this)
-    }
-
-    override val subtypesUsedInDeclaration: Set<String> by lazy {
-        val result = sortedSetOf<String>()
-        selectConfigScope {
-            config.walkDown().asProperty().forEach { c ->
-                val subtypeExpression = c.key.removeSurroundingOrNull("subtype[", "]")
-                if (subtypeExpression != null) {
-                    val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-                    resolved.subtypes.forEach { (subtype, _) -> result.add(subtype) }
-                }
-            }
-        }
-        result.optimized()
     }
 
     override val configForDeclaration: CwtPropertyConfig by lazy {

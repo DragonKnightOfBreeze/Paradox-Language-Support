@@ -27,7 +27,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val gameTypeId = context.configGroup.gameType.id
         val typeString = context.definitionType
         val subtypesString = context.definitionSubtypes?.orNull()?.let { subtypes ->
-            val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
+            val subtypesToDistinct = declarationConfig.attributes.involvedSubtypes
             buildString {
                 for (subtype in subtypes) {
                     if (subtype in subtypesToDistinct) append(".").append(subtype)
