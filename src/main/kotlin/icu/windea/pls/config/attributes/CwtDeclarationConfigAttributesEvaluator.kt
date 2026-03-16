@@ -3,7 +3,9 @@ package icu.windea.pls.config.attributes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
 import icu.windea.pls.core.collections.forEachFast
@@ -39,6 +41,16 @@ object CwtDeclarationConfigAttributesEvaluator {
                 processDataExpression(context, config.valueExpression)
                 return super.visitValue(config)
             }
+
+            override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
+                checkSingleAliasName(context, name).let { if (!it) return true }
+                return super.visitSingleAlias(name, config)
+            }
+
+            override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
+                checkAliasName(context, name).let { if (!it) return true }
+                return super.visitAliasGroup(name, aliasConfigGroup)
+            }
         })
         return buildAttributes(context)
     }
@@ -63,6 +75,26 @@ object CwtDeclarationConfigAttributesEvaluator {
             val r = dataType in CwtDataTypeSets.LocalisationParameterInvolved
             if (r) context.localisationParameterInvolved = true
         }
+    }
+
+    private fun checkSingleAliasName(context: Context, name: String): Boolean {
+        // any trigger or effect clause -> involved (relax check)
+        val involved = "trigger_clause" in name || "effect_clause" in name
+        if (!involved) return true
+        context.dynamicValueInvolved = true
+        context.parameterInvolved = true
+        context.localisationParameterInvolved = true
+        return false
+    }
+
+    private fun checkAliasName(context: Context, name: String): Boolean {
+        // any trigger or effect alias -> involved (relax check)
+        val involved = "trigger" == name || "effect" in name
+        if (!involved) return true
+        context.dynamicValueInvolved = true
+        context.parameterInvolved = true
+        context.localisationParameterInvolved = true
+        return false
     }
 
     private fun buildAttributes(context: Context): CwtDeclarationConfigAttributes {

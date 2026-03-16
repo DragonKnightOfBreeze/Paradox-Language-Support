@@ -229,7 +229,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val config = CwtPropertyConfig.resolve(p, file, group)!!
 
         val visited = mutableListOf<String>()
-        var stopKey = "sa_ref"
+        val stopKey = "sa_ref"
 
         val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
@@ -556,7 +556,7 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         val l2Idx = finished.indexOfFirst { it == "P:l2_wrapper" }
         val l3Idx = finished.indexOfFirst { it == "P:l3_outer" }
         val propIdx = finished.indexOfFirst { it == "P:prop_multi_level_sa" }
-        
+
         assertTrue(l1Idx >= 0 && l2Idx >= 0 && l3Idx >= 0 && propIdx >= 0)
         assertTrue(l1Idx < l2Idx)
         assertTrue(l2Idx < l3Idx)

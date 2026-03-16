@@ -289,12 +289,12 @@ object CwtConfigManipulator {
                 val name = valueExpression.value?.orNull() ?: return true
                 val keyExpression = config.keyExpression
                 if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.value != name) return true // invalid
-                visitInlinedForAlias(name, config.configGroup, visitor)
+                visitInlinedForAliasGroup(name, config.configGroup, visitor)
             }
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
                 val name = valueExpression.value?.orNull() ?: return true
-                visitInlinedForAlias(name, config.configGroup, visitor)
+                visitInlinedForAliasGroup(name, config.configGroup, visitor)
             }
             else -> true
         }
@@ -314,7 +314,7 @@ object CwtConfigManipulator {
             CwtDataTypes.AliasKeysField -> {
                 if (!forAlias) return true
                 val name = valueExpression.value?.orNull() ?: return true
-                visitInlinedForAlias(name, config.configGroup, visitor)
+                visitInlinedForAliasGroup(name, config.configGroup, visitor)
             }
             else -> true
         }
@@ -325,32 +325,46 @@ object CwtConfigManipulator {
         val singleAliasConfig = configGroup.singleAliases[name] ?: return true
         return withRecursionGuard {
             withRecursionCheck("sa:$name") {
-                acceptInlined(singleAliasConfig.config, visitor)
+                when (visitor) {
+                    is CwtMemberConfigInlinedRecursiveVisitor -> visitor.visitSingleAlias(name, singleAliasConfig)
+                    else -> visitSingleAlias(name, singleAliasConfig, visitor)
+                }
             }
         } ?: true
     }
 
-    private fun visitInlinedForAlias(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
+    private fun visitInlinedForAliasGroup(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
         // NOTE 2.1.6 recursion guard is required here
         val aliasConfigGroup = configGroup.aliasGroups[name]?.values?.orNull() ?: return true
         return withRecursionGuard {
             withRecursionCheck("a:$name") check@{
-                aliasConfigGroup.forEach { aliasConfigs ->
-                    aliasConfigs.forEachFast { aliasConfig ->
-                        val r = aliasConfig.config.accept(visitor)
-                        if (!r) return@check false
-                    }
+                when (visitor) {
+                    is CwtMemberConfigInlinedRecursiveVisitor -> visitor.visitAliasGroup(name, aliasConfigGroup)
+                    else -> visitAliasGroup(name, aliasConfigGroup, visitor)
                 }
-                true
             }
         } ?: true
     }
 
-    private fun acceptInlined(config: CwtPropertyConfig, visitor: CwtMemberConfigVisitor): Boolean {
-        return when (visitor) {
-            is CwtMemberConfigInlinedRecursiveVisitor -> visitor.withInlineDepthIncrement { config.accept(visitor) }
-            else -> config.accept(visitor)
+    @Suppress("unused")
+    fun visitSingleAlias(name: String, config: CwtSingleAliasConfig, visitor: CwtMemberConfigVisitor): Boolean {
+        return config.config.accept(visitor)
+    }
+
+    @Suppress("unused")
+    fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, visitor: CwtMemberConfigVisitor): Boolean {
+        aliasConfigGroup.forEach { aliasConfigs ->
+            aliasConfigs.forEachFast { aliasConfig ->
+                val r = visitAlias(name, aliasConfig, visitor)
+                if (!r) return false
+            }
         }
+        return true
+    }
+
+    @Suppress("unused")
+    fun visitAlias(name: String, config: CwtAliasConfig, visitor: CwtMemberConfigVisitor): Boolean {
+        return config.config.accept(visitor)
     }
 
     // endregion

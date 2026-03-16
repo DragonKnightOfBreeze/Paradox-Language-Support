@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.collections.forEachFast
 
 /**
  * 成员规则的访问者。
@@ -51,7 +52,7 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
     val forSingleAlias: Boolean = true,
     val forAlias: Boolean = true,
 ) : CwtMemberConfigRecursiveVisitor() {
-    @PublishedApi internal var _inlineDepth: Int = 0
+    private var _inlineDepth: Int = 0
 
     val inlineDepth: Int get() = _inlineDepth.coerceAtLeast(0)
     val inlined: Boolean get() = _inlineDepth > 0
@@ -74,7 +75,25 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
         return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
     }
 
-    inline fun <T> withInlineDepthIncrement(action: () -> T): T {
+    open fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
+        return withInlineDepthIncrement { config.config.accept(this) }
+    }
+
+
+    open fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
+        aliasConfigGroup.forEach { aliasConfigs ->
+            aliasConfigs.forEachFast { aliasConfig ->
+                visitAlias(aliasConfig).let { if (!it) return false }
+            }
+        }
+        return true
+    }
+
+    open fun visitAlias(config: CwtAliasConfig): Boolean {
+        return withInlineDepthIncrement { config.config.accept(this) }
+    }
+
+    private inline fun <T> withInlineDepthIncrement(action: () -> T): T {
         return try {
             _inlineDepth++
             action()
