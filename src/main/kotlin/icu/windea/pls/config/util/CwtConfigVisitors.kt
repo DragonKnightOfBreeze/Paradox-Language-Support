@@ -51,6 +51,11 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
     val forSingleAlias: Boolean = true,
     val forAlias: Boolean = true,
 ) : CwtMemberConfigRecursiveVisitor() {
+    @PublishedApi internal var _inlineDepth: Int = 0
+
+    val inlineDepth: Int get() = _inlineDepth.coerceAtLeast(0)
+    val inlined: Boolean get() = _inlineDepth > 0
+
     override fun visitProperty(config: CwtPropertyConfig): Boolean {
         visitInlinedProperty(config).let { if (!it) return false }
         return super.visitProperty(config)
@@ -67,5 +72,14 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
 
     open fun visitInlinedValue(config: CwtValueConfig): Boolean {
         return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
+    }
+
+    inline fun <T> withInlineDepthIncrement(action: () -> T): T {
+        return try {
+            _inlineDepth++
+            action()
+        } finally {
+            _inlineDepth--
+        }
     }
 }

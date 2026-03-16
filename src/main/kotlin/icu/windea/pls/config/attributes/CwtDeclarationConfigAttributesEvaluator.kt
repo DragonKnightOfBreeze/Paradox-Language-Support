@@ -5,8 +5,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -22,46 +21,26 @@ object CwtDeclarationConfigAttributesEvaluator {
 
     fun evaluate(config: CwtDeclarationConfig): CwtDeclarationConfigAttributes {
         val context = Context()
-        config.config.acceptChildren(object : CwtMemberConfigRecursiveVisitor() {
+        config.config.acceptChildren(object : CwtMemberConfigInlinedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
-                processSubtypeExpression(context, config)
-                visitForProperty(config).let { if (!it) return false }
+                if (!inlined) processSubtypeExpression(context, config)
+                processDataExpression(context, config.keyExpression)
+                processDataExpression(context, config.valueExpression)
                 return super.visitProperty(config)
             }
 
             override fun visitValue(config: CwtValueConfig): Boolean {
-                visitForValue(config).let { if (!it) return false }
+                processDataExpression(context, config.valueExpression)
                 return super.visitValue(config)
-            }
-
-            private fun visitForProperty(config: CwtPropertyConfig): Boolean {
-                processDataExpression(context, config.keyExpression)
-                processDataExpression(context, config.valueExpression)
-                return visitInlined(config)
-            }
-
-            private fun visitForValue(config: CwtValueConfig): Boolean {
-                processDataExpression(context, config.valueExpression)
-                return visitInlined(config)
-            }
-
-            private fun visitInlined(config: CwtPropertyConfig): Boolean {
-                return CwtConfigManipulator.visitInlined(config, visitor = this)
-            }
-
-            private fun visitInlined(config: CwtValueConfig): Boolean {
-                return CwtConfigManipulator.visitInlined(config, visitor = this)
             }
         })
         return buildAttributes(context)
     }
 
     private fun processSubtypeExpression(context: Context, config: CwtPropertyConfig) {
-        val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]")
-        if (subtypeExpression != null) {
-            val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-            resolved.subtypes.forEachFast { (subtype, _) -> context.involvedSubtypes.add(subtype) }
-        }
+        val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]") ?: return
+        val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
+        resolved.subtypes.forEachFast { (subtype, _) -> context.involvedSubtypes.add(subtype) }
     }
 
     private fun processDataExpression(context: Context, dataExpression: CwtDataExpression) {

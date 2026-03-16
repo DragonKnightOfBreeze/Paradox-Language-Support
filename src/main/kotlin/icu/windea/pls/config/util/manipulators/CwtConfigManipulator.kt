@@ -19,6 +19,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
@@ -324,7 +325,7 @@ object CwtConfigManipulator {
         val singleAliasConfig = configGroup.singleAliases[name] ?: return true
         return withRecursionGuard {
             withRecursionCheck("sa:$name") {
-                singleAliasConfig.config.accept(visitor)
+                acceptInlined(singleAliasConfig.config, visitor)
             }
         } ?: true
     }
@@ -343,6 +344,13 @@ object CwtConfigManipulator {
                 true
             }
         } ?: true
+    }
+
+    private fun acceptInlined(config: CwtPropertyConfig, visitor: CwtMemberConfigVisitor): Boolean {
+        return when (visitor) {
+            is CwtMemberConfigInlinedRecursiveVisitor -> visitor.withInlineDepthIncrement { config.accept(visitor) }
+            else -> config.accept(visitor)
+        }
     }
 
     // endregion
