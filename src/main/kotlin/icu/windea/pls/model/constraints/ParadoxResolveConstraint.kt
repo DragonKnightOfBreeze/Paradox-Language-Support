@@ -56,6 +56,10 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+    /**
+     * @see CwtDataTypeSets.DefinitionAware
+     * @see CwtDataTypes.AliasKeysField
+     */
     Definition {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
@@ -98,6 +102,10 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+    /**
+     * @see CwtDataTypeSets.LocalisationAware
+     * @see CwtDataTypes.AliasKeysField
+     */
     Localisation {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
@@ -123,76 +131,10 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
-    LocalisationReference {
-        override fun canResolveReference(element: PsiElement): Boolean {
-            return Localisation.canResolveReference(element)
-        }
-
-        override fun canResolve(reference: PsiReference): Boolean {
-            return when (reference) {
-                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
-                is ParadoxScriptExpressionPsiReference -> {
-                    // also for synced_localisation
-                    reference.configs.any { config ->
-                        val configExpression = config.configExpression
-                        val dataType = configExpression.type
-                        dataType in CwtDataTypeSets.LocalisationReference || dataType == CwtDataTypes.AliasKeysField
-                    }
-                }
-                else -> Localisation.canResolve(reference)
-            }
-        }
-    },
-    Parameter {
-        override fun canResolveReference(element: PsiElement): Boolean {
-            return when (element) {
-                is ParadoxParameter -> true
-                is ParadoxConditionParameter -> true
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
-                else -> false
-            }
-        }
-
-        override fun canResolve(reference: PsiReference): Boolean {
-            return when (reference) {
-                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
-                is ParadoxScriptExpressionPsiReference -> {
-                    reference.configs.any { config ->
-                        val configExpression = config.configExpression
-                        val dataType = configExpression.type
-                        dataType == CwtDataTypes.Parameter
-                    }
-                }
-                is ParadoxParameterPsiReference -> true
-                is ParadoxConditionParameterPsiReference -> true
-                else -> false
-            }
-        }
-    },
-    LocalisationParameter {
-        override fun canResolveReference(element: PsiElement): Boolean {
-            return when (element) {
-                is ParadoxLocalisationParameter -> true
-                is ParadoxScriptStringExpressionElement -> element.isExpression()
-                else -> false
-            }
-        }
-
-        override fun canResolve(reference: PsiReference): Boolean {
-            return when (reference) {
-                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
-                is ParadoxScriptExpressionPsiReference -> {
-                    reference.configs.any { config ->
-                        val configExpression = config.configExpression
-                        val dataType = configExpression.type
-                        dataType == CwtDataTypes.LocalisationParameter
-                    }
-                }
-                is ParadoxLocalisationParameterPsiReference -> true
-                else -> false
-            }
-        }
-    },
+    /**
+     * @see CwtDataTypes.EnumValue
+     * @see CwtDataTypes.AliasKeysField
+     */
     ComplexEnumValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
@@ -223,6 +165,10 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+    /**
+     * @see CwtDataTypeSets.DynamicValue
+     * @see CwtDataTypes.AliasKeysField
+     */
     DynamicValue {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
@@ -246,7 +192,88 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
-    DynamicValueStrictly {
+    /**
+     * @see CwtDataTypes.Parameter
+     */
+    Parameter {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return when (element) {
+                is ParadoxParameter -> true
+                is ParadoxConditionParameter -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                else -> false
+            }
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxScriptExpressionPsiReference -> {
+                    reference.configs.any { config ->
+                        val configExpression = config.configExpression
+                        val dataType = configExpression.type
+                        dataType == CwtDataTypes.Parameter
+                    }
+                }
+                is ParadoxParameterPsiReference -> true
+                is ParadoxConditionParameterPsiReference -> true
+                else -> false
+            }
+        }
+    },
+    /**
+     * @see CwtDataTypes.LocalisationParameter
+     */
+    LocalisationParameter {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return when (element) {
+                is ParadoxLocalisationParameter -> true
+                is ParadoxScriptStringExpressionElement -> element.isExpression()
+                else -> false
+            }
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxScriptExpressionPsiReference -> {
+                    reference.configs.any { config ->
+                        val configExpression = config.configExpression
+                        val dataType = configExpression.type
+                        dataType == CwtDataTypes.LocalisationParameter
+                    }
+                }
+                is ParadoxLocalisationParameterPsiReference -> true
+                else -> false
+            }
+        }
+    },
+
+    /**
+     * @see CwtDataTypeSets.LocalisationReference
+     * @see CwtDataTypes.AliasKeysField
+     */
+    LocalisationReference {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return Localisation.canResolveReference(element)
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxScriptExpressionPsiReference -> {
+                    // also for synced_localisation
+                    reference.configs.any { config ->
+                        val configExpression = config.configExpression
+                        val dataType = configExpression.type
+                        dataType in CwtDataTypeSets.LocalisationReference || dataType == CwtDataTypes.AliasKeysField
+                    }
+                }
+                else -> Localisation.canResolve(reference)
+            }
+        }
+    },
+    DynamicValueReference {
         override fun canResolveReference(element: PsiElement): Boolean {
             return DynamicValue.canResolveReference(element)
         }

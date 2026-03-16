@@ -18,6 +18,7 @@ import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo
@@ -52,6 +53,7 @@ import kotlin.concurrent.getOrSet
  * 兼容需要内联的情况（此时使用懒加载的索引，即 [VirtualFileGist]）。
  *
  * @see ParadoxIndexInfo
+ * @see ParadoxMergedIndexOptimizer
  * @see ParadoxMergedIndexSupport
  */
 @Optimized
@@ -90,6 +92,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
+        if (!isAvailableForFile(file, optimizers)) return
+
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = PlsStates.procssingDefinitionInfoStack.getOrSet { ArrayDeque() }
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -121,15 +126,15 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             }
 
             private fun buildDataFromSupports(element: PsiElement) {
-                supports.forEachFast { ep -> ep.buildData(element, fileData) }
+                supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
             private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement) {
-                supports.forEachFast { ep -> ep.buildData(element, fileData) }
+                supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
             private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
-                supports.forEachFast { ep -> ep.buildData(element, fileData, configs, definitionInfo) }
+                supports.forEachFast { support -> support.buildData(element, fileData, configs, definitionInfo) }
             }
 
             override fun elementFinished(element: PsiElement) {
@@ -149,6 +154,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
+        if (!isAvailableForFile(file, optimizers)) return
+
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -171,6 +179,19 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 }
             }
         })
+    }
+
+    private fun isAvailableForFile(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        if (PlsFileManager.isInjectedFile(file.virtualFile)) return true // always available
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // always available
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForFile(file)) return true }
+        return false
+    }
+
+    private fun isAvailableForFile(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        if (PlsFileManager.isInjectedFile(file.virtualFile)) return true // always available
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForFile(file)) return true }
+        return false
     }
 
     private fun cleanUpDumbDefinitionCache(element: ParadoxDefinitionElement) {

@@ -237,7 +237,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                         val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result += extendedConfig
                     }
-                    ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
+                    ParadoxResolveConstraint.DynamicValueReference.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueLightElement>() ?: continue
                         for (type in resolved.dynamicValueTypes) {
                             val extendedConfigs = configGroup.extendedDynamicValues[type] ?: continue

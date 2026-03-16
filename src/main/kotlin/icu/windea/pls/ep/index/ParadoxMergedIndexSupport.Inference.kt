@@ -33,10 +33,6 @@ import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
-    object Constants {
-        val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
-    }
-
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
     override val id = ParadoxIndexInfoType.InferredScopeContextAwareDefinition.id
@@ -59,7 +55,8 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
         val dataType = config.configExpression.type
         if (dataType != CwtDataTypes.Definition) return false
         val definitionType = config.configExpression.value?.substringBefore('.') ?: return false
-        if (definitionType !in Constants.DEFINITION_TYPES) return false
+        val definitionTypes = config.configGroup.definitionTypesModel.supportScopeContextInference
+        if (definitionType !in definitionTypes) return false
         return true
     }
 

@@ -3,6 +3,8 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
+import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.select.*
@@ -48,6 +50,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * ```
  *
  * @property name 名称。
+ * @property attributes 综合属性。
  * @property subtypesUsedInDeclaration 其中的子类型表达式（[ParadoxDefinitionSubtypeExpression]）中使用到的子类型的集合。
  * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  *
@@ -58,6 +61,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     @FromName
     val name: String
 
+    val attributes: CwtDeclarationConfigAttributes
     val subtypesUsedInDeclaration: Set<String>
     val configForDeclaration: CwtPropertyConfig
 
@@ -87,6 +91,10 @@ private class CwtDeclarationConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : UserDataHolderBase(), CwtDeclarationConfig {
+    override val attributes: CwtDeclarationConfigAttributes by lazy {
+        CwtDeclarationConfigAttributesEvaluator.evaluate(this)
+    }
+
     override val subtypesUsedInDeclaration: Set<String> by lazy {
         val result = sortedSetOf<String>()
         selectConfigScope {

@@ -80,4 +80,17 @@ object CwtDataTypeSets {
         CwtDataTypes.SuffixAwareLocalisation,
         CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
+
+    val DynamicValueInvolved = arrayOf(
+        *DynamicValue,
+        *ScopeField,
+        *ValueField,
+        *VariableField,
+    )
+    val ParameterInvolved = arrayOf(
+        CwtDataTypes.Parameter
+    )
+    val LocalisationParameterInvolved = arrayOf(
+        CwtDataTypes.LocalisationParameter
+    )
 }

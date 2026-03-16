@@ -74,7 +74,7 @@ class ParadoxDynamicValueNode(
                 // always true
                 ParadoxResolveConstraint.DynamicValue -> true
                 // skip if related link config can have multiple arguments
-                ParadoxResolveConstraint.DynamicValueStrictly -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
+                ParadoxResolveConstraint.DynamicValueReference -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
                 else -> false
             }
         }

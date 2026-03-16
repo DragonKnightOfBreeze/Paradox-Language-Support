@@ -19,13 +19,16 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.isSamePointer
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.CwtMemberConfigVisitor
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
@@ -255,6 +258,7 @@ object CwtConfigManipulator {
         return inlined
     }
 
+    @Optimized
     fun inlineWithConfigs(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
         val inlined = CwtValueConfig.create(
             pointer = emptyPointer(),
@@ -265,6 +269,80 @@ object CwtConfigManipulator {
         )
         mergeOptionData(inlined.optionData, config?.optionData) // merge option data
         return inlined
+    }
+
+    // endregion
+
+    // region Visit Methods
+
+    fun visitInlined(config: CwtPropertyConfig, forSingleAlias: Boolean = true, forAlias: Boolean = true, visitor: CwtMemberConfigVisitor): Boolean {
+        val valueExpression = config.valueExpression
+        return when (valueExpression.type) {
+            CwtDataTypes.SingleAliasRight -> {
+                if (!forSingleAlias) return true
+                val name = valueExpression.value?.orNull() ?: return true
+                visitInlinedForSingleAlias(name, config.configGroup, visitor)
+            }
+            CwtDataTypes.AliasMatchLeft -> {
+                if (!forAlias) return true
+                val name = valueExpression.value?.orNull() ?: return true
+                val keyExpression = config.keyExpression
+                if (keyExpression.type != CwtDataTypes.AliasName || keyExpression.value != name) return true // invalid
+                visitInlinedForAlias(name, config.configGroup, visitor)
+            }
+            CwtDataTypes.AliasKeysField -> {
+                if (!forAlias) return true
+                val name = valueExpression.value?.orNull() ?: return true
+                visitInlinedForAlias(name, config.configGroup, visitor)
+            }
+            else -> true
+        }
+    }
+
+    fun visitInlined(config: CwtValueConfig, forSingleAlias: Boolean = true, forAlias: Boolean = true, visitor: CwtMemberConfigVisitor): Boolean {
+        val valueExpression = config.valueExpression
+        return when (valueExpression.type) {
+            CwtDataTypes.SingleAliasRight -> {
+                if (!forSingleAlias) return true
+                val name = valueExpression.value?.orNull() ?: return true
+                visitInlinedForSingleAlias(name, config.configGroup, visitor)
+            }
+            CwtDataTypes.AliasMatchLeft -> {
+                true // ignored (must be processed on property config level)
+            }
+            CwtDataTypes.AliasKeysField -> {
+                if (!forAlias) return true
+                val name = valueExpression.value?.orNull() ?: return true
+                visitInlinedForAlias(name, config.configGroup, visitor)
+            }
+            else -> true
+        }
+    }
+
+    private fun visitInlinedForSingleAlias(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
+        // NOTE 2.1.6 recursion guard is required here
+        val singleAliasConfig = configGroup.singleAliases[name] ?: return true
+        return withRecursionGuard {
+            withRecursionCheck("sa:$name") {
+                singleAliasConfig.config.accept(visitor)
+            }
+        } ?: true
+    }
+
+    private fun visitInlinedForAlias(name: String, configGroup: CwtConfigGroup, visitor: CwtMemberConfigVisitor): Boolean {
+        // NOTE 2.1.6 recursion guard is required here
+        val aliasConfigGroup = configGroup.aliasGroups[name]?.values?.orNull() ?: return true
+        return withRecursionGuard {
+            withRecursionCheck("a:$name") check@{
+                aliasConfigGroup.forEach { aliasConfigs ->
+                    aliasConfigs.forEachFast { aliasConfig ->
+                        val r = aliasConfig.config.accept(visitor)
+                        if (!r) return@check false
+                    }
+                }
+                true
+            }
+        } ?: true
     }
 
     // endregion

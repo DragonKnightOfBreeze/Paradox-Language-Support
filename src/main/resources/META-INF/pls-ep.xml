@@ -12,6 +12,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.mergedIndexOptimizer" interface="icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.mergedIndexSupport" interface="icu.windea.pls.ep.index.ParadoxMergedIndexSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
@@ -116,6 +117,9 @@
     <dataExpressionResolver id="suffixAware" implementation="icu.windea.pls.ep.config.configExpression.CwtSuffixAwareDataExpressionResolver"/>
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionMerger"/>
+
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxDefinitionBasedMergedIndexSupport"/>
+    <mergedIndexOptimizer implementation="icu.windea.pls.ep.index.ParadoxFallbackMergedIndexOptimizer" order="last"/>
 
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueMergedIndexSupport"/>
     <mergedIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterMergedIndexSupport"/>

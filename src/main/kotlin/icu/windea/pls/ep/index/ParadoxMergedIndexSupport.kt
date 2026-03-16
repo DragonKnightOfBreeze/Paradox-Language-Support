@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.core.collections.asMutable
+import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -12,6 +13,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
+/**
+ * 提供对在合并索引中处理的各种索引数据的支持。包括构建、压缩、保存和读取等功能。
+ *
+ * @see ParadoxMergedIndex
+ * @see ParadoxIndexInfo
+ */
 interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     val id: Byte
 

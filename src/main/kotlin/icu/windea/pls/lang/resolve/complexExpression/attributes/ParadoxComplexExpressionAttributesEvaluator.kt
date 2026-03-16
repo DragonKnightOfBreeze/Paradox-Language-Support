@@ -15,7 +15,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * @see ParadoxComplexExpressionAttributes
  */
 object ParadoxComplexExpressionAttributesEvaluator {
-    data class Context(
+    private data class Context(
         var dynamicDataAware: Boolean = false,
         var relaxDynamicDataAware: Boolean = false,
     )
@@ -27,10 +27,10 @@ object ParadoxComplexExpressionAttributesEvaluator {
         val context = Context()
         node.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (!context.dynamicDataAware && isDynamicDataAware(node)) {
+                if (!context.dynamicDataAware && isDynamicDataInvolved(node)) {
                     context.dynamicDataAware = true
                 }
-                if (!context.relaxDynamicDataAware && isRelaxDynamicDataAware(node)) {
+                if (!context.relaxDynamicDataAware && isRelaxDynamicDataInvolved(node)) {
                     context.relaxDynamicDataAware = true
                 }
                 return super.visit(node)
@@ -38,18 +38,18 @@ object ParadoxComplexExpressionAttributesEvaluator {
         })
 
         var r = 0
-        if (context.dynamicDataAware) r = r or ParadoxComplexExpressionAttributes.DYNAMIC_DATA_AWARE
-        if (context.relaxDynamicDataAware) r = r or ParadoxComplexExpressionAttributes.RELAX_DYNAMIC_DATA_AWARE
+        if (context.dynamicDataAware) r = r or ParadoxComplexExpressionAttributes.DYNAMIC_DATA_INVOLVED
+        if (context.relaxDynamicDataAware) r = r or ParadoxComplexExpressionAttributes.RELAX_DYNAMIC_DATA_INVOLVED
         return r
     }
 
-    private fun isDynamicDataAware(node: ParadoxComplexExpressionNode): Boolean {
+    private fun isDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
         // node -> `ParadoxDynamicDataNode`
 
         return node is ParadoxDynamicDataNode
     }
 
-    private fun isRelaxDynamicDataAware(node: ParadoxComplexExpressionNode): Boolean {
+    private fun isRelaxDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
         // node -> `ParadoxDynamicDataNode`
         // -parent -> `ParadoxLinkValueNode` (single child node)
         // --parent -> `ParadoxLinkNode` (last one)

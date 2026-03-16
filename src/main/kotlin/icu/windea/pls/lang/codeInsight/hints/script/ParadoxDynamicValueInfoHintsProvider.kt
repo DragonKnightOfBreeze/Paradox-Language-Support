@@ -25,7 +25,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         if (expression.isEmpty()) return
         if (expression.isParameterized()) return
 
-        val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
+        val resolveConstraint = ParadoxResolveConstraint.DynamicValueReference
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
         if (resolved !is ParadoxDynamicValueLightElement) return
 

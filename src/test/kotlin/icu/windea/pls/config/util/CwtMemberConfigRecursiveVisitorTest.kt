@@ -39,7 +39,6 @@ class CwtMemberConfigRecursiveVisitorTest : BasePlatformTestCase() {
         return when (config) {
             is CwtPropertyConfig -> "P:${config.key}"
             is CwtValueConfig -> "V:${config.value}"
-            else -> "M"
         }
     }
 
