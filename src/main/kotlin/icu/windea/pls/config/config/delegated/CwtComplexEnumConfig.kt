@@ -10,8 +10,8 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.select.*
 import icu.windea.pls.config.util.CwtConfigResolverScope
+import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -128,14 +128,19 @@ private class CwtComplexEnumConfigImpl(
     override val searchScopeType: String? = if (perDefinition) "definition" else null
 
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
-        selectConfigScope {
-            nameConfig.walkDown().filter { c ->
-                when (c) {
-                    is CwtPropertyConfig -> c.key == "enum_name" || c.stringValue == "enum_name"
-                    is CwtValueConfig -> c.stringValue == "enum_name"
-                }
-            }.toList()
-        }
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        nameConfig.accept(object : CwtMemberConfigRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                if (config.key == "enum_name" || config.stringValue == "enum_name") result.add(config)
+                return super.visitProperty(config)
+            }
+
+            override fun visitValue(config: CwtValueConfig): Boolean {
+                if (config.stringValue == "enum_name") result.add(config)
+                return super.visitValue(config)
+            }
+        })
+        result.optimized()
     }
 
     override fun toString() = "CwtComplexEnumConfigImpl(name='$name')"

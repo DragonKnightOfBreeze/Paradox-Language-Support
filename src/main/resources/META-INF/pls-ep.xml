@@ -98,9 +98,10 @@
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
 
-    <configGroupDataProvider implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupDataProvider" order="first"/>
-    <configGroupDataProvider implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupDataProvider"/>
-    <configGroupDataProvider implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupDataProvider" order="last"/>
+    <configGroupDataProvider id="predefined" implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupDataProvider" order="first"/>
+    <configGroupDataProvider id="fileBased" implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupDataProvider"/>
+    <configGroupDataProvider id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupDataProvider"/>
+    <configGroupDataProvider id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupDataProvider" order="last"/>
 
     <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtRemoteConfigGroupFileProvider"/>
