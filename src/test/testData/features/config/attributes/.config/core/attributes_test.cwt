@@ -1,0 +1,175 @@
+# Test data for CwtDeclarationConfigAttributesEvaluator
+
+types = {
+    type[test_decl_simple] = {
+        path = "common/test_simple"
+    }
+    
+    type[test_decl_with_subtypes] = {
+        path = "common/test_subtypes"
+    }
+    
+    type[test_decl_with_dynamic_value] = {
+        path = "common/test_dynamic"
+    }
+    
+    type[test_decl_with_parameter] = {
+        path = "common/test_param"
+    }
+    
+    type[test_decl_with_loc_parameter] = {
+        path = "common/test_loc"
+    }
+    
+    type[test_decl_with_single_alias] = {
+        path = "common/test_sa"
+    }
+    
+    type[test_decl_with_alias] = {
+        path = "common/test_alias"
+    }
+    
+    type[test_decl_complex] = {
+        path = "common/test_complex"
+    }
+    
+    type[test_decl_inlined_involved] = {
+        path = "common/test_inlined"
+    }
+    
+    type[test_decl_deep_nested] = {
+        path = "common/test_deep"
+    }
+}
+
+single_alias[test_trigger_clause] = {
+    ## cardinality = 0..inf
+    alias_name[test_trigger] = alias_match_left[test_trigger]
+}
+
+single_alias[test_effect_clause] = {
+    ## cardinality = 0..inf
+    alias_name[test_effect] = alias_match_left[test_effect]
+}
+
+single_alias[sa_with_dynamic] = {
+    inner_flag = value[inner_flag]
+    inner_param = $parameter
+}
+
+single_alias[sa_level1] = {
+    layer1 = single_alias_right[sa_level2]
+}
+
+single_alias[sa_level2] = {
+    layer2_value = value[deep_value]
+}
+
+alias[test_trigger:simple] = {
+    check_value = value[test_check]
+}
+
+alias[test_trigger:with_parameter] = {
+    param_check = $parameter
+}
+
+alias[test_effect:basic] = {
+    set_flag = value[test_flag]
+}
+
+alias[test_effect:with_scope] = {
+    target = scope_field
+}
+
+# Simple declaration without any involved data types
+test_decl_simple = {
+    name = scalar
+    value = int
+}
+
+# Declaration with subtypes only
+test_decl_with_subtypes = {
+    name = scalar
+    subtype[variant_a] = {
+        prop_a = bool
+    }
+    subtype[variant_b] = {
+        prop_b = float
+    }
+}
+
+# Declaration with dynamic value involved
+test_decl_with_dynamic_value = {
+    name = scalar
+    flag = value[test_flag]
+    variable = variable_field
+    scope_ref = scope_field
+    value_set_ref = value_set[test_set]
+}
+
+# Declaration with parameters
+test_decl_with_parameter = {
+    name = scalar
+    param_value = $parameter
+    regular_value = int
+}
+
+# Declaration with localisation parameters
+test_decl_with_loc_parameter = {
+    name = scalar
+    loc_param = $localisation_parameter
+    text = localisation
+}
+
+# Declaration with nested single_alias
+test_decl_with_single_alias = {
+    name = scalar
+    triggers = single_alias_right[test_trigger_clause]
+}
+
+# Declaration with alias (via alias_keys_field)
+test_decl_with_alias = {
+    name = scalar
+    effects = alias_keys_field[test_effect]
+}
+
+# Complex declaration: combination of all
+test_decl_complex = {
+    name = scalar
+    
+    subtype[type_a] = {
+        mode = a
+    }
+    subtype[type_b] = {
+        mode = b
+    }
+    
+    # Dynamic value
+    flag = value[complex_flag]
+    variable = variable_field
+    
+    # Parameter
+    param = $parameter
+    
+    # Localisation parameter
+    loc_param = $localisation_parameter
+    
+    # Nested alias
+    triggers = single_alias_right[test_trigger_clause]
+    effects = alias_keys_field[test_effect]
+}
+
+# Declaration where inlined configs contain involved types
+test_decl_inlined_involved = {
+    name = scalar
+    # Direct property: no dynamic value
+    simple_prop = int
+    # Inlined single_alias contains dynamic value
+    nested = single_alias_right[sa_with_dynamic]
+}
+
+# Declaration with deep nesting
+test_decl_deep_nested = {
+    name = scalar
+    deep = single_alias_right[sa_level1]
+}
