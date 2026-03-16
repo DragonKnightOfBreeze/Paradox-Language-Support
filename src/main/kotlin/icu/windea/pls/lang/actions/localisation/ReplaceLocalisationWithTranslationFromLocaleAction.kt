@@ -17,7 +17,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
@@ -41,7 +41,7 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
         val (files, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val total = files.size
-            val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()
+            val allContexts = mutableListOf<ParadoxLocalisationManipulationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
 
@@ -51,7 +51,7 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
 
                 files.forEachConcurrent { file ->
                     val elements = findElements(e, file)
-                    val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
+                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
@@ -79,13 +79,13 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
+    private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
         val locale = selectLocale(context.element) ?: return
         ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale, locale)
     }
 
-    private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
+    private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
         ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }

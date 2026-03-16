@@ -3,13 +3,13 @@ package icu.windea.pls.ai.model.requests
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.util.concurrent.atomic.AtomicInteger
 
 class TranslateLocalisationAiRequest(
     project: Project,
     file: PsiFile,
-    localisationContexts: List<ParadoxLocalisationContext>,
+    localisationContexts: List<ParadoxLocalisationManipulationContext>,
     val targetLocale: CwtLocaleConfig,
     val description: String?
 ) : ManipulateLocalisationAiRequest(project, file, localisationContexts) {

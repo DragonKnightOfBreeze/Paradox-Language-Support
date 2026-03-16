@@ -4,7 +4,7 @@ import com.intellij.DynamicBundle
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.prompts.PromptTemplateEngine
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import org.intellij.lang.annotations.Language
 import java.util.*
 
@@ -31,7 +31,7 @@ object PlsPrompts {
         return fromTemplate(path, variables)
     }
 
-    fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationContext>): String {
+    fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationManipulationContext>): String {
         return localisationContexts.joinToString("\n") { context -> "${context.key}: \"${context.newText}\"" }.trim()
     }
 }

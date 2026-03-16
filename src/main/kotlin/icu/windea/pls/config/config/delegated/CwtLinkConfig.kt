@@ -85,25 +85,25 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * @see ParadoxCommandExpression
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
-    @FromProperty("type: string?")
+    @FromMember("type: string?")
     val type: CwtLinkType
-    @FromProperty("from_data: boolean", defaultValue = "no")
+    @FromMember("from_data: boolean", defaultValue = "no")
     val fromData: Boolean
-    @FromProperty("from_argument: boolean", defaultValue = "no")
+    @FromMember("from_argument: boolean", defaultValue = "no")
     val fromArgument: Boolean
-    @FromProperty("argument_separator: string?", defaultValue = "comma")
+    @FromMember("argument_separator: string?", defaultValue = "comma")
     val argumentSeparator: CwtLinkArgumentSeparator
-    @FromProperty("prefix: string?")
+    @FromMember("prefix: string?")
     val prefix: String?
-    @FromProperty("data_source: string?", multiple = true)
+    @FromMember("data_source: string?", multiple = true)
     val dataSources: List<String>
-    @FromProperty("input_scopes: string[]")
+    @FromMember("input_scopes: string[]")
     val inputScopes: Set<String>
-    @FromProperty("output_scope: string?")
+    @FromMember("output_scope: string?")
     val outputScope: String?
-    @FromProperty("for_definition_type: string?")
+    @FromMember("for_definition_type: string?")
     val forDefinitionType: String?
 
     val isLocalisationLink: Boolean

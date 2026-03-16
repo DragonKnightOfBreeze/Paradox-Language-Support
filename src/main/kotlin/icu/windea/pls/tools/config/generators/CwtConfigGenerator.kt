@@ -15,7 +15,7 @@ import icu.windea.pls.model.ParadoxGameType
  * @property fromScripts 是否从脚本文件生成。
  *
  * @see icu.windea.pls.config.config.CwtConfig
- * @see icu.windea.pls.config.CwtApiStatus
+ * @see icu.windea.pls.config.CwtConfigApiStatus
  */
 interface CwtConfigGenerator {
     val project: Project

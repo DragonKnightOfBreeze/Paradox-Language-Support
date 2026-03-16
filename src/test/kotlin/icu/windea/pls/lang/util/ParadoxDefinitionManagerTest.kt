@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -299,7 +299,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         declaration!!
 
         // 使用 getIdentifierKey 验证声明结构
-        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // signal 声明应包含 frequency 和 priority 字段
         Assert.assertTrue(key.contains("frequency"))
         Assert.assertTrue(key.contains("priority"))
@@ -317,7 +317,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // 基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -340,7 +340,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // 基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -363,7 +363,7 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = CwtConfigManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
         // 只有基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -380,11 +380,11 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
 
         val titan = selectScope { mechFile.ofPath("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
-        val titanKey = CwtConfigManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
+        val titanKey = CwtConfigKeyManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
 
         val plasma = selectScope { weaponFile.ofPath("plasma_cannon").asProperty().one() }!!
         val plasmaInfo = ParadoxDefinitionManager.getInfo(plasma)!!
-        val plasmaKey = CwtConfigManipulator.getIdentifierKey(plasmaInfo.declaration!!, "\u0000", -1)
+        val plasmaKey = CwtConfigKeyManipulator.getIdentifierKey(plasmaInfo.declaration!!, "\u0000", -1)
 
         // 不同类型的声明结构应不同
         Assert.assertNotEquals(titanKey, plasmaKey)

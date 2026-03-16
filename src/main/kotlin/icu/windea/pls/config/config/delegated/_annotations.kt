@@ -1,13 +1,15 @@
 package icu.windea.pls.config.config.delegated
 
 /**
- * 用于标记此属性来自规则文件中的特定成员规则的键。如果规则是单独的值，则直接来自这个值。
+ * 用于标记此属性来自规则文件中的特定成员规则的名字。
+ *
+ * 如果是属性，则来自属性的键；如果是单独的值，则直接来自这个值。
  *
  * @property value 匹配模式。`*` 匹配任意字符， `$` 匹配此属性的值。
  */
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class FromKey(
+annotation class FromName(
     val value: String = "$"
 )
 
@@ -21,7 +23,7 @@ annotation class FromKey(
  */
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class FromOption(
+annotation class FromOptionMember(
     val value: String,
     val defaultValue: String = "",
     val allowedValues: Array<String> = [],
@@ -38,7 +40,7 @@ annotation class FromOption(
  */
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class FromProperty(
+annotation class FromMember(
     val value: String,
     val defaultValue: String = "",
     val allowedValues: Array<String> = [],

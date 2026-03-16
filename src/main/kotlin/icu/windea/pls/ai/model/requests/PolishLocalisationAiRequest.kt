@@ -2,13 +2,13 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.util.concurrent.atomic.AtomicInteger
 
 class PolishLocalisationAiRequest(
     project: Project,
     file: PsiFile,
-    localisationContexts: List<ParadoxLocalisationContext>,
+    localisationContexts: List<ParadoxLocalisationManipulationContext>,
     val description: String?,
 ) : ManipulateLocalisationAiRequest(project, file, localisationContexts) {
     companion object {

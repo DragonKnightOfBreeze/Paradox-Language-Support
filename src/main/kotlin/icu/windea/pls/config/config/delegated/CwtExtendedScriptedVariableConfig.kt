@@ -36,9 +36,9 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property hint 额外提示信息（可选）。
  */
 interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
-    @FromOption("hint: string?")
+    @FromOptionMember("hint: string?")
     val hint: String?
 
     interface Resolver {

@@ -1,11 +1,11 @@
 package icu.windea.pls.config
 
 /**
- * API 状态。
+ * 规则的 API 状态。
  *
  * 用于标记需要特殊处理的规则。
  */
-enum class CwtApiStatus(
+enum class CwtConfigApiStatus(
     val id: String
 ) {
     /**
@@ -33,6 +33,6 @@ enum class CwtApiStatus(
         private val map = entries.associateBy { it.id }
 
         @JvmStatic
-        fun get(id: String): CwtApiStatus? = map[id]
+        fun get(id: String): CwtConfigApiStatus? = map[id]
     }
 }

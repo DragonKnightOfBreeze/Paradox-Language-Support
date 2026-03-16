@@ -42,9 +42,9 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * @see ParadoxScopeContext
  */
 interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
-    @FromProperty(": string[]")
+    @FromMember(": string[]")
     val values: Set<@CaseInsensitive String>
 
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>

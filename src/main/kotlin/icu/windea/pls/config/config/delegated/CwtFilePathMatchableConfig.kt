@@ -14,14 +14,14 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property pathPatterns 允许的路径模式（可多个，使用 ANT 表达式）。
  */
 interface CwtFilePathMatchableConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromProperty("path: string", multiple = true)
+    @FromMember("path: string", multiple = true)
     val paths: Set<String>
-    @FromProperty("path_file: string?")
+    @FromMember("path_file: string?")
     val pathFile: String?
-    @FromProperty("path_extension: string?")
+    @FromMember("path_extension: string?")
     val pathExtension: String?
-    @FromProperty("path_strict: boolean", defaultValue = "no")
+    @FromMember("path_strict: boolean", defaultValue = "no")
     val pathStrict: Boolean
-    @FromProperty("path_pattern: string", multiple = true)
+    @FromMember("path_pattern: string", multiple = true)
     val pathPatterns: Set<String>
 }

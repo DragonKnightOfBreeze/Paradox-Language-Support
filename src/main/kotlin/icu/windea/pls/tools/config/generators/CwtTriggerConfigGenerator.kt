@@ -2,7 +2,7 @@ package icu.windea.pls.tools.config.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
-import icu.windea.pls.config.CwtApiStatus
+import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
@@ -97,7 +97,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
     }
 
     private suspend fun generateHint(outputPath: String, infos: Map<String, TriggerInfo>, configInfos: Map<String, TriggerConfigInfo>): CwtConfigGenerator.Hint {
-        val keptNames = configInfos.filterValues { it.apiStatus == CwtApiStatus.Kept }.keys
+        val keptNames = configInfos.filterValues { it.apiStatus == CwtConfigApiStatus.Kept }.keys
         val oldNames = configInfos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
         val newNames = infos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
         val missingNames = newNames - oldNames
@@ -178,7 +178,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val name: String,
         val description: String,
         val supportedScopes: Set<String>,
-        val apiStatus: CwtApiStatus?,
+        val apiStatus: CwtConfigApiStatus?,
     )
 
     object Keys : KeyRegistry() {

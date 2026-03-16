@@ -1,7 +1,7 @@
 package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolder
-import icu.windea.pls.config.CwtApiStatus
+import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
@@ -61,7 +61,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## api_status = obsolete`
      */
-    val apiStatus: CwtApiStatus?
+    val apiStatus: CwtConfigApiStatus?
 
     /**
      * 允许的出现次数范围（基数表达式）。

@@ -39,9 +39,9 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  */
 interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
-    @FromOption("hint: string?")
+    @FromOptionMember("hint: string?")
     val hint: String?
 
     val configForDeclaration: CwtPropertyConfig?

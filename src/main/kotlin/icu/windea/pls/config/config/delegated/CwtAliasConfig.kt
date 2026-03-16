@@ -47,13 +47,13 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias
  */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("alias[$:*]")
+    @FromName("alias[$:*]")
     val name: String
-    @FromKey("alias[*:$]")
+    @FromName("alias[*:$]")
     val subName: String
-    @FromOption("scope/scopes: string | string[]")
+    @FromOptionMember("scope/scopes: string | string[]")
     val supportedScopes: Set<String>
-    @FromOption("push_scope: string?")
+    @FromOptionMember("push_scope: string?")
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression

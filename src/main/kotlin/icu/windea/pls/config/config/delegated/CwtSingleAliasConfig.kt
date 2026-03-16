@@ -42,7 +42,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias
  */
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("single_alias[$]")
+    @FromName("single_alias[$]")
     val name: String
 
     interface Resolver {

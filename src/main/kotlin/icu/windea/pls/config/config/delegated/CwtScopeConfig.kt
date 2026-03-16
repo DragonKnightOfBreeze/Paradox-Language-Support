@@ -40,11 +40,11 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * @see ParadoxScopeContext
  */
 interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
-    @FromProperty("aliases: string[]")
+    @FromMember("aliases: string[]")
     val aliases: Set<@CaseInsensitive String>
-    @FromProperty("is_subscope_of: string?")
+    @FromMember("is_subscope_of: string?")
     val isSubscopeOf: String?
 
     interface Resolver {

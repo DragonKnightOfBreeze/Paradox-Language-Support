@@ -39,10 +39,10 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property hint 提示文本（可选）。
  */
 interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
     val type: String
-    @FromOption("hint: string?")
+    @FromOptionMember("hint: string?")
     val hint: String?
 
     interface Resolver {

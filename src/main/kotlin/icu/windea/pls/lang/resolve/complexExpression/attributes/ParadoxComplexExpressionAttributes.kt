@@ -1,6 +1,8 @@
-package icu.windea.pls.lang.resolve.complexExpression.util
+package icu.windea.pls.lang.resolve.complexExpression.attributes
 
+import com.intellij.util.BitUtil
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 
 /**
  * 复杂表达式的综合属性。
@@ -13,4 +15,12 @@ object ParadoxComplexExpressionAttributes {
     const val DYNAMIC_DATA_AWARE = 0x1
     /** 涉及动态数据，并且存在另一种更精确的格式。例如，存在另一种带前缀或带参数的格式。 */
     const val RELAX_DYNAMIC_DATA_AWARE = 0x2
+
+    inline fun checkAttribute(attributes: Int, provider: ParadoxComplexExpressionAttributes.() -> Int): Boolean {
+        return BitUtil.isSet(attributes, ParadoxComplexExpressionAttributes.provider())
+    }
+
+    fun getAttributes(node: ParadoxComplexExpressionNode): Int {
+        return ParadoxComplexExpressionAttributesEvaluator.evaluate(node)
+    }
 }

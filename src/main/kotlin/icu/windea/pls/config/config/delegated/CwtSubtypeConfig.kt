@@ -48,17 +48,17 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @see CwtTypeConfig
  */
 interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("subtype[$]")
+    @FromName("subtype[$]")
     val name: String
-    @FromOption("type_key_filter: string | string[]")
+    @FromOptionMember("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
-    @FromOption("type_key_regex: string?")
+    @FromOptionMember("type_key_regex: string?")
     val typeKeyRegex: Regex?
-    @FromOption("starts_with: string?")
+    @FromOptionMember("starts_with: string?")
     val startsWith: String?
-    @FromOption("only_if_not: string[]?")
+    @FromOptionMember("only_if_not: string[]?")
     val onlyIfNot: Set<String>?
-    @FromOption("group: string?")
+    @FromOptionMember("group: string?")
     val group: String?
 
     interface Resolver {

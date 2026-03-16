@@ -17,7 +17,7 @@ import icu.windea.pls.ai.model.toLineFlow
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.PlsPrompts
 import icu.windea.pls.core.coroutines.chunked
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -66,7 +66,7 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
         return SystemMessage.from(text)
     }
 
-    private fun getUserMessage(request: TranslateLocalisationAiRequest, chunk: List<ParadoxLocalisationContext>): UserMessage {
+    private fun getUserMessage(request: TranslateLocalisationAiRequest, chunk: List<ParadoxLocalisationManipulationContext>): UserMessage {
         val text = PlsPrompts.fromLocalisationContexts(chunk)
         logger.debug { "${request.logPrefix} User message: \n$text" }
         return UserMessage.from(text)

@@ -48,18 +48,18 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * ```
  *
  * @property name 名称。
- * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  * @property subtypesUsedInDeclaration 其中的子类型表达式（[ParadoxDefinitionSubtypeExpression]）中使用到的子类型的集合。
+ * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  *
  * @see CwtTypeConfig
  * @see CwtSubtypeConfig
  */
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
 
-    val configForDeclaration: CwtPropertyConfig
     val subtypesUsedInDeclaration: Set<String>
+    val configForDeclaration: CwtPropertyConfig
 
     interface Resolver {
         /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。 */
@@ -87,10 +87,6 @@ private class CwtDeclarationConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : UserDataHolderBase(), CwtDeclarationConfig {
-    override val configForDeclaration: CwtPropertyConfig by lazy {
-        CwtConfigManipulator.inlineSingleAlias(config) ?: config
-    }
-
     override val subtypesUsedInDeclaration: Set<String> by lazy {
         val result = sortedSetOf<String>()
         selectConfigScope {
@@ -103,6 +99,10 @@ private class CwtDeclarationConfigImpl(
             }
         }
         result.optimized()
+    }
+
+    override val configForDeclaration: CwtPropertyConfig by lazy {
+        CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"

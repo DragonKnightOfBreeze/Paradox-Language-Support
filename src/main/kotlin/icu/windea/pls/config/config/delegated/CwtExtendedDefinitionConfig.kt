@@ -44,11 +44,11 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @see CwtOptionDataHolder.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
-    @FromOption("type: string")
+    @FromOptionMember("type: string")
     val type: String
-    @FromOption("hint: string?")
+    @FromOptionMember("hint: string?")
     val hint: String?
 
     interface Resolver {

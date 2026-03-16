@@ -43,13 +43,13 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @see CwtLocationExpression
  */
 interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val key: String
-    @FromProperty(": string")
+    @FromMember(": string")
     val value: String
-    @FromOption("required")
+    @FromOptionMember("required")
     val required: Boolean
-    @FromOption("primary")
+    @FromOptionMember("primary")
     val primary: Boolean
 
     interface Resolver {

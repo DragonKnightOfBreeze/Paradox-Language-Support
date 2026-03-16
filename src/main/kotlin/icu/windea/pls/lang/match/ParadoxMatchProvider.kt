@@ -8,7 +8,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxMatchProvider {
     fun matchesBlock(element: ParadoxScriptBlock, config: CwtMemberConfig<*>): Boolean {
-        val keys = CwtConfigManipulator.getInBlockKeys(config)
+        val keys = CwtConfigKeyManipulator.getInBlockKeys(config)
         if (keys.isEmpty()) return true
 
         // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）

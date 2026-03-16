@@ -148,8 +148,8 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val phantomDecl = phantomInfo.declaration!!
 
         // 不同子类型的声明结构应不同
-        val titanKey = CwtConfigManipulator.getIdentifierKey(titanDecl, "\u0000", -1)
-        val phantomKey = CwtConfigManipulator.getIdentifierKey(phantomDecl, "\u0000", -1)
+        val titanKey = CwtConfigKeyManipulator.getIdentifierKey(titanDecl, "\u0000", -1)
+        val phantomKey = CwtConfigKeyManipulator.getIdentifierKey(phantomDecl, "\u0000", -1)
 
         Assert.assertNotEquals(titanKey, phantomKey)
         Assert.assertTrue(titanKey.contains("shield"))      // heavy 特有
@@ -341,7 +341,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val declarationAfter = infoAfter.declaration
         Assert.assertNotNull(declarationAfter)
 
-        val key = CwtConfigManipulator.getIdentifierKey(declarationAfter!!, "\u0000", -1)
+        val key = CwtConfigKeyManipulator.getIdentifierKey(declarationAfter!!, "\u0000", -1)
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("shield"))  // heavy 子类型字段
     }

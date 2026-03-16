@@ -38,9 +38,9 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
-    @FromProperty("supported_scopes: string | string[]")
+    @FromMember("supported_scopes: string | string[]")
     val supportedScopes: Set<String>
 
     interface Resolver {

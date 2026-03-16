@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.config.CwtApiStatus
+import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
@@ -207,7 +207,7 @@ object CwtConfigManager {
 
     fun isRemoved(config: CwtConfig<*>): Boolean {
         if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
-        return config.config.optionData.apiStatus == CwtApiStatus.Removed
+        return config.config.optionData.apiStatus == CwtConfigApiStatus.Removed
     }
 
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {

@@ -45,13 +45,13 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * @see icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  */
 interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: String
-    @FromProperty("type: string?")
+    @FromMember("type: string?")
     val type: String?
-    @FromProperty("swap_type: string?")
+    @FromMember("swap_type: string?")
     val swapType: String?
-    @FromProperty("localisation: string?")
+    @FromMember("localisation: string?")
     val localisation: String?
 
     /** 根据 [isBase]（基础/替换）返回对应的值规则。 */

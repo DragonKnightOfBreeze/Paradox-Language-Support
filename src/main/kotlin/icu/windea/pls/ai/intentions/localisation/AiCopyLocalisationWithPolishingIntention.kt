@@ -21,7 +21,7 @@ import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
@@ -47,7 +47,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
         val (elements, data) = context
         val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithPolishing.progress.title")) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false

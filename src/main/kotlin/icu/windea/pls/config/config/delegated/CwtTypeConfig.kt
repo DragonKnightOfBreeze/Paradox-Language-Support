@@ -67,37 +67,37 @@ import icu.windea.pls.model.ParadoxTagType
  * @see CwtDeclarationConfig
  */
 interface CwtTypeConfig : CwtFilePathMatchableConfig {
-    @FromKey("type[$]")
+    @FromName("type[$]")
     val name: String
-    @FromProperty("base_type: string?")
+    @FromMember("base_type: string?")
     val baseType: String?
-    @FromProperty("name_field: string?")
+    @FromMember("name_field: string?")
     val nameField: String?
-    @FromProperty("name_from_file: boolean", defaultValue = "no")
+    @FromMember("name_from_file: boolean", defaultValue = "no")
     val nameFromFile: Boolean
-    @FromProperty("type_per_file: boolean", defaultValue = "no")
+    @FromMember("type_per_file: boolean", defaultValue = "no")
     val typePerFile: Boolean
-    @FromProperty("skip_root_key: string | string[]", multiple = true)
+    @FromMember("skip_root_key: string | string[]", multiple = true)
     val skipRootKey: List<List<@CaseInsensitive String>>
-    @FromProperty("type_key_prefix: string?")
+    @FromMember("type_key_prefix: string?")
     val typeKeyPrefix: @CaseInsensitive String?
-    @FromOption("type_key_filter: string | string[]")
+    @FromOptionMember("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
-    @FromOption("type_key_regex: string?")
+    @FromOptionMember("type_key_regex: string?")
     val typeKeyRegex: Regex?
-    @FromOption("starts_with: string?")
+    @FromOptionMember("starts_with: string?")
     val startsWith: @CaseInsensitive String?
-    @FromProperty("unique: boolean", defaultValue = "no")
+    @FromMember("unique: boolean", defaultValue = "no")
     val unique: Boolean
-    @FromProperty("severity: string?")
+    @FromMember("severity: string?")
     val severity: String?
-    @FromOption("graph_related_types: string[]")
+    @FromOptionMember("graph_related_types: string[]")
     val graphRelatedTypes: Set<String>?
-    @FromProperty("subtype[*]: SubtypeInfo", multiple = true)
+    @FromMember("subtype[*]: SubtypeInfo", multiple = true)
     val subtypes: Map<String, CwtSubtypeConfig>
-    @FromProperty("localisation: LocalisationInfo")
+    @FromMember("localisation: LocalisationInfo")
     val localisation: CwtTypeLocalisationConfig?
-    @FromProperty("images: ImagesInfo")
+    @FromMember("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
     val possibleTypeKeys: Set<@CaseInsensitive String>

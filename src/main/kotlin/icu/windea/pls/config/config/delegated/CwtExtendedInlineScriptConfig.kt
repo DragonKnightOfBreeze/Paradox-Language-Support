@@ -55,9 +55,9 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @see CwtOptionDataHolder.pushScope
  */
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
-    @FromOption("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
+    @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String // TODO 2.0.4+ 需要详细说明这个属性的用处与行为
 
     /** 得到处理后的“上下文规则容器”。 */

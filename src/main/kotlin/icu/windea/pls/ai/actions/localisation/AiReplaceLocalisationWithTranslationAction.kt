@@ -22,7 +22,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.concurrent.atomic.AtomicInteger
@@ -47,7 +47,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
         val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.action.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val total = files.size
-            val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()
+            val allContexts = mutableListOf<ParadoxLocalisationManipulationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
@@ -58,7 +58,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
 
                 files.forEachConcurrent { file ->
                     val elements = findElements(e, file)
-                    val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
+                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
@@ -92,7 +92,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
         ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
     }
 
-    private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
+    private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
         ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }

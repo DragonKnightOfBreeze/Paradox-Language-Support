@@ -56,9 +56,9 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * @see CwtDataTypes.DatabaseObject
  */
 interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val name: @CaseInsensitive String
-    @FromOption(": string | string[]")
+    @FromOptionMember(": string | string[]")
     val supportedScopes: Set<String>
 
     interface Resolver {

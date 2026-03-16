@@ -1,7 +1,7 @@
 package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.CwtApiStatus
+import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -22,7 +22,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {
         val optionConfigs by registerKey<List<CwtOptionMemberConfig<*>>>(this, emptyList())
-        val apiStatus by registerKey<CwtApiStatus?>(this)
+        val apiStatus by registerKey<CwtConfigApiStatus?>(this)
         val cardinality by registerKey<CwtCardinalityExpression?>(this)
         val cardinalityMinDefine by registerKey<String?>(this)
         val cardinalityMaxDefine by registerKey<String?>(this)

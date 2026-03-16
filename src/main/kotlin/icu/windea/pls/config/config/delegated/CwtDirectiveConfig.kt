@@ -43,15 +43,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property name 名称。
  */
 interface CwtDirectiveConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("directive[$]")
+    @FromName("directive[$]")
     val name: String
-    @FromProperty("modes: string[]")
+    @FromMember("modes: string[]")
     val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
-    @FromProperty("relax_modes: string[]")
+    @FromMember("relax_modes: string[]")
     val relaxModes: Set<@CaseInsensitive String>
-    @FromProperty("replace_modes: string[]")
+    @FromMember("replace_modes: string[]")
     val replaceModes: Set<@CaseInsensitive String>
-    @FromProperty("create_modes: string[]")
+    @FromMember("create_modes: string[]")
     val createModes: Set<@CaseInsensitive String>
 
     interface Resolver {

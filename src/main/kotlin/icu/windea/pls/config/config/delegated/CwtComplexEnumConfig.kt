@@ -52,13 +52,13 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。
  */
 interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
-    @FromKey("complex_enum[$]")
+    @FromName("complex_enum[$]")
     val name: String
-    @FromProperty("start_from_root: boolean", defaultValue = "no")
+    @FromMember("start_from_root: boolean", defaultValue = "no")
     val startFromRoot: Boolean
-    @FromOption("case_insensitive")
+    @FromOptionMember("case_insensitive")
     val caseInsensitive: Boolean
-    @FromOption("per_definition")
+    @FromOptionMember("per_definition")
     val perDefinition: Boolean
 
     val searchScopeType: String?

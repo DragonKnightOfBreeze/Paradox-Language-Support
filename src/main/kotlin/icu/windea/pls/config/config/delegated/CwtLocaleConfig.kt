@@ -42,9 +42,9 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * @property idWithText 带展示文本的 ID。
  */
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val id: String
-    @FromProperty("codes: string[]")
+    @FromMember("codes: string[]")
     val codes: List<String>
 
     val text: String

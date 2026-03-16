@@ -42,11 +42,11 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * @see ParadoxScopeContext
  */
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey
+    @FromName
     val id: String
-    @FromProperty("base_id: string")
+    @FromMember("base_id: string")
     val baseId: String
-    @FromProperty(": string")
+    @FromMember(": string")
     val name: String
 
     override fun equals(other: Any?): Boolean

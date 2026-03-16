@@ -21,7 +21,7 @@ import icu.windea.pls.ai.services.TranslateLocalisationAiService
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import java.awt.Dimension
 import kotlin.contracts.ExperimentalContracts
@@ -61,7 +61,7 @@ object ParadoxLocalisationAiManipulator {
         }
     }
 
-    private fun checkResult(context: ParadoxLocalisationContext, result: LocalisationAiResult) {
+    private fun checkResult(context: ParadoxLocalisationManipulationContext, result: LocalisationAiResult) {
         if (result.key.isEmpty()) { // 输出内容的格式不正确
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.2"))
         }

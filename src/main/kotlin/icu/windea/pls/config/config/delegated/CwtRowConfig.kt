@@ -45,11 +45,11 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  */
 interface CwtRowConfig : CwtFilePathMatchableConfig {
-    @FromKey("row[$]")
+    @FromName("row[$]")
     val name: String
-    @FromProperty("columns: ColumnConfigs")
+    @FromMember("columns: ColumnConfigs")
     val columns: Map<String, CwtPropertyConfig>
-    @FromProperty("end_column: string?")
+    @FromMember("end_column: string?")
     val endColumn: String?
 
     interface Resolver {

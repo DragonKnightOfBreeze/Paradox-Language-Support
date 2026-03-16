@@ -19,7 +19,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
@@ -40,7 +40,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
@@ -63,7 +63,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
+    private suspend fun handleText(context: ParadoxLocalisationManipulationContext, selectedLocale: CwtLocaleConfig) {
         val locale = selectLocale(context.element) ?: return
          ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale, selectedLocale)
     }

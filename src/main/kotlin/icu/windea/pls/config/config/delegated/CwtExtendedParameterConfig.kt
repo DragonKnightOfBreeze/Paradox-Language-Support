@@ -65,13 +65,13 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * @see CwtOptionDataHolder.pushScope
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
-    @FromKey
+    @FromName
     val name: String
-    @FromOption("context_key: string")
+    @FromOptionMember("context_key: string")
     val contextKey: String
-    @FromOption("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
+    @FromOptionMember("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String
-    @FromOption("inherit", defaultValue = "no")
+    @FromOptionMember("inherit", defaultValue = "no")
     val inherit: Boolean
 
     /** 得到处理后的“上下文规则容器”。 */

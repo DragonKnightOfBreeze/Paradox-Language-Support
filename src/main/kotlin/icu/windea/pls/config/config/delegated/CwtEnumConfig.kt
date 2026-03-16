@@ -39,9 +39,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property valueConfigMap 可选项到对应的值规则的映射。
  */
 interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("enum[$]")
+    @FromName("enum[$]")
     val name: String
-    @FromProperty("values: template_expression[]")
+    @FromMember("values: template_expression[]")
     val values: Set<@CaseInsensitive String>
 
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>

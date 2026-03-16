@@ -1,6 +1,6 @@
 package icu.windea.pls.config.option
 
-import icu.windea.pls.config.CwtApiStatus
+import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -48,7 +48,7 @@ object CwtOptionDataProvider {
         val key = config.key
         when (key) {
             "api_status" -> {
-                val v = config.getOptionValue()?.let { CwtApiStatus.get(it) } ?: return
+                val v = config.getOptionValue()?.let { CwtConfigApiStatus.get(it) } ?: return
                 optionData.apiStatus = v
             }
             "cardinality" -> {
