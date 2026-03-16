@@ -24,15 +24,15 @@ class CwtMemberConfigRecursiveVisitorTest : BasePlatformTestCase() {
     private fun preparePropertyCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
-        return file to group
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        return file to configGroup
     }
 
     private fun prepareValueCases(): Pair<CwtFile, CwtConfigGroup> {
         myFixture.configureByFile("features/config/value_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
-        return file to group
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        return file to configGroup
     }
 
     private fun label(config: CwtMemberConfig<*>): String {

@@ -1,0 +1,39 @@
+# Test data for CwtMemberConfigInlinedRecursiveVisitor
+
+single_alias[sa_simple] = {
+    simple_key = int
+}
+
+single_alias[sa_nested] = {
+    nested = single_alias_right[sa_simple]
+}
+
+alias[test_alias:basic] = {
+    alias_prop = scalar
+}
+
+alias[test_alias:with_block] = {
+    block_key = {
+        inner = bool
+    }
+}
+
+alias[test_alias:recursive] = {
+    ## cardinality = 0..inf
+    alias_name[test_alias] = alias_match_left[test_alias]
+}
+
+# Properties using single_alias
+prop_with_sa = single_alias_right[sa_simple]
+
+prop_with_nested_sa = single_alias_right[sa_nested]
+
+# Properties using alias
+alias_name[test_alias] = alias_match_left[test_alias]
+
+# Mixed structure
+mixed_block = {
+    sa_ref = single_alias_right[sa_simple]
+    alias_name[test_alias] = alias_match_left[test_alias]
+    normal_key = int
+}
