@@ -84,9 +84,10 @@ The plugin is config-driven. Many features (e.g. directives like `inline_script`
 Scope extensions exist to make these tests deterministic:
 
 - `initConfigGroups(project, ...)` initializes the required built-in config groups for the specified game types.
-- `markIntegrationTest()` / `clearIntegrationTest()` toggles integration-test-only behavior and cleans up injected state.
-- `markRootDirectory(...)` and `markConfigDirectory(...)` allow integration tests to inject “root/config directory” information.
-- `markFileInfo(...)` (and `VirtualFile.injectFileInfo(...)`) allow integration tests to inject per-file metadata (game type, logical path, etc.) without requiring a real game installation.
+- `markIntegrationTest()` and `clearIntegrationTest()` toggles integration-test-only behavior and cleans up injected state.
+- `markRootDirectory(...)` allow integration tests to inject root directory path.
+- `markConfigDirectory(...)` allow integration tests to inject config directory path.
+- `markFileInfo(...)` and `VirtualFile.injectFileInfo(...)` allow integration tests to inject per-file metadata (game type, logical path, etc.) without requiring a real game installation.
 
 Minimal setup example (typical for index/resolve tests):
 
@@ -112,7 +113,8 @@ myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 
 Notes:
 - The intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
-- The marked file path DO NOT start with `game/`.
+- The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id, see `ParadoxGameType`) subdirectory.
+- The marked file path DO NOT start with `game/` (see `ParadoxEntryInfo` for details about root directory VS entry directory).
 - Alignment between real file path and marked file path is not required.
 
 ### Optional / on-demand tests (assume-based)
@@ -120,12 +122,7 @@ Notes:
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties.
 
 - Gatekeeping is done via `Assume` predicates (e.g. AI tests, local-environment-only tests, benchmarks).
-- Enable categories using system properties:
-  - `-Dpls.test.include.all=true`
-  - `-Dpls.test.include.ai=true`
-  - `-Dpls.test.include.local.env=true`
-  - `-Dpls.test.include.benchmark=true`
-  - `-Dpls.test.include.config.generator=true`
+- Enable categories using specific system properties (see `AssumePredicates` for details).
 
 ### Best practices
 
@@ -176,7 +173,16 @@ Service vs Manager vs Util:
 - `Manager`: higher-level, convenient domain methods; typically hosts caching
 - `Util`: narrow-purpose helpers
 
-## Domain notes and terminology
+### Code Guidance
+
+Here are some common code patterns:
+
+- How to get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
+- How to get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
+- How to search definitions (e.g., an event with specific event id): See usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
+- How to check out domain or topic specific methods (e.g., definition, scope, recursion): Search declarations for `...Service`, `...Manager`, `...Util` and so on.
+
+## Domain terminology and guidance
 
 ### Translation terms
 
