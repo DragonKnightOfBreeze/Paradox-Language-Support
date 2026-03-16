@@ -27,7 +27,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.unscramble.AnalyzeStacktraceUtil
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.core.orNull
@@ -36,6 +35,7 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.tools.PlsToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.ui.GenerateConfigDialog
 import kotlinx.coroutines.CancellationException
@@ -97,14 +97,14 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
 
     private suspend fun executeGenerator(project: Project, generator: CwtConfigGenerator, params: Params): CwtConfigGenerator.Hint? {
         return try {
-            withBackgroundProgress(project, PlsBundle.message("config.generation.progress.title", generator.getName())) {
+            withBackgroundProgress(project, PlsToolsBundle.message("config.generation.progress.title", generator.getName())) {
                 val (gameType, inputPath, outputPath) = params
                 generator.generate(gameType, inputPath, outputPath)
             }
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("config.generation.notification.failed") + e.message.errorDetails
+            val content = PlsToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
             PlsFacade.createNotification(NotificationType.WARNING, generator.getName(), content).notify(project)
             null
         }
@@ -132,7 +132,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         ConsoleViewUtil.enableReplaceActionForConsoleViewEditor(console.editor!!)
         console.editor!!.settings.isCaretRowShown = true
 
-        val tabTitle = PlsBundle.message("config.generation.console.title", generator.getName())
+        val tabTitle = PlsToolsBundle.message("config.generation.console.title", generator.getName())
         val descriptor = object : RunContentDescriptor(consoleView, null, consoleComponent, tabTitle) {
             override fun isContentReuseProhibited() = true
         }
@@ -198,9 +198,9 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val contentFactory = getInstance()
         val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
         val right = contentFactory.create(project, hint.fileText, CwtFileType)
-        val title = PlsBundle.message("config.generation.console.diff.title", generator.getName())
-        val title1 = PlsBundle.message("config.generation.console.diff.current")
-        val title2 = PlsBundle.message("config.generation.console.diff.generated")
+        val title = PlsToolsBundle.message("config.generation.console.diff.title", generator.getName())
+        val title1 = PlsToolsBundle.message("config.generation.console.diff.current")
+        val title2 = PlsToolsBundle.message("config.generation.console.diff.generated")
         val request = SimpleDiffRequest(title, left, right, title1, title2)
         val requests = SimpleDiffRequestChain(request)
 

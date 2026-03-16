@@ -2,8 +2,8 @@ package icu.windea.pls.tools.actions
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.tools.PlsToolsBundle
 import icu.windea.pls.tools.game.launch.ParadoxLaunchGameService
 
 interface LaunchGameActions {
@@ -25,8 +25,8 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.text = PlsBundle.message("game.launcher.inSteam")
-            e.presentation.description = PlsBundle.message("game.launcher.inSteam.detail", gameType.title)
+            e.presentation.text = PlsToolsBundle.message("game.launcher.inSteam")
+            e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.detail", gameType.title)
         }
 
         override fun actionPerformed(e: AnActionEvent) {
@@ -50,8 +50,8 @@ interface LaunchGameActions {
             e.presentation.isEnabledAndVisible = isAvailable
             if (!isAvailable) return
             val gameType = rootInfo.gameType
-            e.presentation.text = PlsBundle.message("game.launcher.inSteam.withExit")
-            e.presentation.description = PlsBundle.message("game.launcher.inSteam.withExit.detail", gameType.title)
+            e.presentation.text = PlsToolsBundle.message("game.launcher.inSteam.withExit")
+            e.presentation.description = PlsToolsBundle.message("game.launcher.inSteam.withExit.detail", gameType.title)
         }
 
         override fun actionPerformed(e: AnActionEvent) {

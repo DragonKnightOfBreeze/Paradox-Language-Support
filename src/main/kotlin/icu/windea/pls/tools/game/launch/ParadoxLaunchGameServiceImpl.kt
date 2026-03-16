@@ -4,15 +4,15 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.tools.PlsToolsBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ParadoxLaunchGameServiceImpl: ParadoxLaunchGameService {
+class ParadoxLaunchGameServiceImpl : ParadoxLaunchGameService {
     override fun launchGameInSteam(rootInfo: ParadoxRootInfo) {
         // MVP，基于 Steam 超链接协议
         val gameType = rootInfo.gameType
@@ -25,8 +25,8 @@ class ParadoxLaunchGameServiceImpl: ParadoxLaunchGameService {
         val gameType = rootInfo.gameType
         val gameVersion = if (rootInfo is ParadoxRootInfo.MetadataBased) rootInfo.version else null
         val content = when {
-            gameVersion == null -> PlsBundle.message("game.launcher.notification.content.1", gameType.title)
-            else -> PlsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
+            gameVersion == null -> PlsToolsBundle.message("game.launcher.notification.content.1", gameType.title)
+            else -> PlsToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
         }
         val notification = PlsFacade.createNotification(NotificationType.INFORMATION, content)
         notification.notify(project)
