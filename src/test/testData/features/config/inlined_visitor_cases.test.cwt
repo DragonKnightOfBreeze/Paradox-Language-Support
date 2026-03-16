@@ -37,3 +37,83 @@ mixed_block = {
     alias_name[test_alias] = alias_match_left[test_alias]
     normal_key = int
 }
+
+# Multi-level nesting cases
+single_alias[sa_level1] = {
+    l1_key = scalar
+}
+
+single_alias[sa_level2] = {
+    l2_wrapper = single_alias_right[sa_level1]
+}
+
+single_alias[sa_level3] = {
+    l3_outer = single_alias_right[sa_level2]
+}
+
+prop_multi_level_sa = single_alias_right[sa_level3]
+
+# Single alias with multiple nested references
+single_alias[sa_multi_ref] = {
+    ref1 = single_alias_right[sa_simple]
+    ref2 = single_alias_right[sa_level1]
+    own_prop = int
+}
+
+prop_multi_ref = single_alias_right[sa_multi_ref]
+
+# Alias referencing single_alias
+alias[nested_alias:with_sa] = {
+    inner_sa = single_alias_right[sa_simple]
+    alias_own = bool
+}
+
+alias_name[nested_alias] = alias_match_left[nested_alias]
+
+# Single alias referencing alias via alias_keys_field
+single_alias[sa_with_alias] = {
+    keys = alias_keys_field[test_alias]
+}
+
+prop_sa_with_alias = single_alias_right[sa_with_alias]
+
+# Recursive single_alias (should be guarded)
+single_alias[sa_recursive_a] = {
+    recurse = single_alias_right[sa_recursive_b]
+    own_a = int
+}
+
+single_alias[sa_recursive_b] = {
+    back = single_alias_right[sa_recursive_a]
+    own_b = bool
+}
+
+prop_recursive_sa = single_alias_right[sa_recursive_a]
+
+# Self-recursive single_alias
+single_alias[sa_self_recursive] = {
+    self = single_alias_right[sa_self_recursive]
+    safe = scalar
+}
+
+prop_self_recursive = single_alias_right[sa_self_recursive]
+
+# Complex combination: alias with nested single_alias that has multi-level nesting
+alias[complex:type_a] = {
+    nested = single_alias_right[sa_level2]
+}
+
+alias[complex:type_b] = {
+    another = single_alias_right[sa_multi_ref]
+}
+
+alias_name[complex] = alias_match_left[complex]
+
+# Alias keys field with recursion potential
+alias[meta_alias:recursive_variant] = {
+    ## cardinality = 0..inf
+    alias_name[meta_alias] = alias_match_left[meta_alias]
+    break_point = int
+}
+
+alias_name[meta_alias] = alias_match_left[meta_alias]

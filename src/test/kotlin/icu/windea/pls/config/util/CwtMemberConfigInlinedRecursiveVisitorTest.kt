@@ -283,4 +283,283 @@ class CwtMemberConfigInlinedRecursiveVisitorTest : BasePlatformTestCase() {
         assertTrue(propFinishedIdx >= 0)
         assertTrue(simpleKeyFinishedIdx < propFinishedIdx)
     }
+
+    @Test
+    fun testMultiLevelNesting_threeDeepSingleAlias() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问所有三层：prop_multi_level_sa -> l3_outer (from sa_level3) -> l2_wrapper (from sa_level2) -> l1_key (from sa_level1)
+        assertTrue(visited.contains("P:prop_multi_level_sa"))
+        assertTrue(visited.contains("P:l3_outer"))
+        assertTrue(visited.contains("P:l2_wrapper"))
+        assertTrue(visited.contains("P:l1_key"))
+    }
+
+    @Test
+    fun testMultipleReferences_singleAliasWithMultipleNestedRefs() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_ref" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 prop_multi_ref，以及 sa_multi_ref 内的所有引用
+        assertTrue(visited.contains("P:prop_multi_ref"))
+        assertTrue(visited.contains("P:ref1"))
+        assertTrue(visited.contains("P:ref2"))
+        assertTrue(visited.contains("P:own_prop"))
+        // ref1 引用 sa_simple
+        assertTrue(visited.contains("P:simple_key"))
+        // ref2 引用 sa_level1
+        assertTrue(visited.contains("P:l1_key"))
+    }
+
+    @Test
+    fun testAliasWithNestedSingleAlias_combination() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[nested_alias]") }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 alias 中的属性以及其内嵌的 single_alias
+        assertTrue(visited.any { it.contains("alias_name[nested_alias]") })
+        assertTrue(visited.contains("P:inner_sa"))
+        assertTrue(visited.contains("P:alias_own"))
+        // inner_sa 引用 sa_simple
+        assertTrue(visited.contains("P:simple_key"))
+    }
+
+    @Test
+    fun testSingleAliasWithAliasKeysField_combination() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_sa_with_alias" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 prop_sa_with_alias 和 keys 属性，keys 会展开 test_alias
+        assertTrue(visited.contains("P:prop_sa_with_alias"))
+        assertTrue(visited.contains("P:keys"))
+        // 应展开 test_alias 的所有子类型
+        assertTrue(visited.contains("P:alias_prop") || visited.contains("P:block_key"))
+    }
+
+    @Test
+    fun testRecursiveSingleAlias_guardedAndContinues() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_recursive_sa" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 prop_recursive_sa，以及 sa_recursive_a 的属性
+        assertTrue(visited.contains("P:prop_recursive_sa"))
+        assertTrue(visited.contains("P:recurse"))
+        assertTrue(visited.contains("P:own_a"))
+        // 应展开到 sa_recursive_b
+        assertTrue(visited.contains("P:back"))
+        assertTrue(visited.contains("P:own_b"))
+        // 递归守卫应阻止无限循环，验证不会有过多的重复访问
+        val recurseCount = visited.count { it == "P:recurse" }
+        val backCount = visited.count { it == "P:back" }
+        assertTrue(recurseCount <= 2)
+        assertTrue(backCount <= 2)
+    }
+
+    @Test
+    fun testSelfRecursiveSingleAlias_guardedProperly() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_self_recursive" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 prop_self_recursive 和 sa_self_recursive 的属性
+        assertTrue(visited.contains("P:prop_self_recursive"))
+        assertTrue(visited.contains("P:self"))
+        assertTrue(visited.contains("P:safe"))
+        // self 引用自身，递归守卫应阻止无限循环
+        val selfCount = visited.count { it == "P:self" }
+        assertTrue(selfCount <= 2)
+    }
+
+    @Test
+    fun testComplexCombination_aliasWithDeepNestedSingleAlias() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[complex]") }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 alias[complex] 的所有子类型
+        assertTrue(visited.any { it.contains("alias_name[complex]") })
+        // type_a 包含 sa_level2，应展开到 l2_wrapper 和 l1_key
+        assertTrue(visited.contains("P:nested"))
+        assertTrue(visited.contains("P:l2_wrapper"))
+        assertTrue(visited.contains("P:l1_key"))
+        // type_b 包含 sa_multi_ref，应展开其所有引用
+        assertTrue(visited.contains("P:another"))
+        assertTrue(visited.contains("P:ref1") || visited.contains("P:ref2"))
+    }
+
+    @Test
+    fun testRecursiveAlias_guardedAndContinues() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name.startsWith("alias_name[meta_alias]") }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应访问 alias[meta_alias] 及其属性
+        assertTrue(visited.any { it.contains("alias_name[meta_alias]") })
+        assertTrue(visited.contains("P:break_point"))
+        // 递归守卫应阻止无限循环
+        val metaAliasCount = visited.count { it.contains("alias_name[meta_alias]") }
+        assertTrue(metaAliasCount <= 3) // 允许有限次递归
+    }
+
+    @Test
+    fun testDisableInlining_bothFlagsOff() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor(
+            forSingleAlias = false,
+            forAlias = false
+        ) {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 两个标志都关闭，不应展开任何内联
+        assertTrue(visited.contains("P:prop_multi_level_sa"))
+        assertFalse(visited.contains("P:l3_outer"))
+        assertFalse(visited.contains("P:l2_wrapper"))
+        assertFalse(visited.contains("P:l1_key"))
+    }
+
+    @Test
+    fun testPartialInlining_onlySingleAliasEnabled() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "mixed_block" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val visited = mutableListOf<String>()
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor(
+            forSingleAlias = true,
+            forAlias = false
+        ) {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                visited += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 应展开 single_alias 但不展开 alias
+        assertTrue(visited.contains("P:simple_key")) // 从 sa_simple 展开
+        // alias 不应展开
+        val aliasContentFound = visited.any { it.contains("alias_prop") || it.contains("block_key") }
+        assertFalse(aliasContentFound)
+    }
+
+    @Test
+    fun testDeepNestingOrder_verifiesPostOrder() {
+        val (file, group) = prepareCases()
+        val p = file.block!!.findChild<CwtProperty> { it.name == "prop_multi_level_sa" }!!
+        val config = CwtPropertyConfig.resolve(p, file, group)!!
+
+        val started = mutableListOf<String>()
+        val finished = mutableListOf<String>()
+
+        val visitor = object : CwtMemberConfigInlinedRecursiveVisitor() {
+            override fun visitProperty(config: CwtPropertyConfig): Boolean {
+                started += "P:${config.key}"
+                return super.visitProperty(config)
+            }
+
+            override fun visitFinished(config: CwtMemberConfig<*>): Boolean {
+                finished += label(config)
+                return true
+            }
+        }
+
+        assertTrue(config.accept(visitor))
+        // 验证后序遍历：最深的节点先完成
+        val l1Idx = finished.indexOfFirst { it == "P:l1_key" }
+        val l2Idx = finished.indexOfFirst { it == "P:l2_wrapper" }
+        val l3Idx = finished.indexOfFirst { it == "P:l3_outer" }
+        val propIdx = finished.indexOfFirst { it == "P:prop_multi_level_sa" }
+        
+        assertTrue(l1Idx >= 0 && l2Idx >= 0 && l3Idx >= 0 && propIdx >= 0)
+        assertTrue(l1Idx < l2Idx)
+        assertTrue(l2Idx < l3Idx)
+        assertTrue(l3Idx < propIdx)
+    }
 }
