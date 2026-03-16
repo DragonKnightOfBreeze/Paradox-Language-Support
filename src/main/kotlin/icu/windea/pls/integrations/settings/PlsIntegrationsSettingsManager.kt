@@ -3,11 +3,11 @@ package icu.windea.pls.integrations.settings
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.tools.PlsImageToolProvider
 import icu.windea.pls.integrations.images.tools.PlsMagickToolProvider
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
@@ -26,7 +26,7 @@ object PlsIntegrationsSettingsManager {
         if (path.isEmpty()) return null
         val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
         if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+        return builder.warning(PlsIntegrationsBundle.message("settings.integrations.invalidPath"))
     }
 
     // Translation Tools
@@ -53,13 +53,13 @@ object PlsIntegrationsSettingsManager {
         if (path.isEmpty()) return null
         val tool = PlsLintToolProvider.EP_NAME.extensionList.findIsInstance<PlsTigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
         if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerPath.invalid"))
+        return builder.warning(PlsIntegrationsBundle.message("settings.integrations.lint.tigerPath.invalid"))
     }
 
     fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
         if (path.endsWith(".conf", true)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
+        return builder.warning(PlsIntegrationsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
     }
 
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {

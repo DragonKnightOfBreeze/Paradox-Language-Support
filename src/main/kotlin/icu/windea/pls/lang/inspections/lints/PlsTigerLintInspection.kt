@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.integrations.settings.PlsTigerHighlightDialog
 import javax.swing.JComponent
@@ -29,8 +30,8 @@ class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInsp
         callbackLock.reset()
         return panel {
             row {
-                label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
-                contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+                label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
+                contextHelp(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
 
                 link(PlsBundle.message("link.configure")) {
                     // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok

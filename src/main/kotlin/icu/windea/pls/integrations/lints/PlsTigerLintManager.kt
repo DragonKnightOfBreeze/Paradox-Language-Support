@@ -6,7 +6,6 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
@@ -16,6 +15,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
@@ -133,9 +133,9 @@ object PlsTigerLintManager {
 
     private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: PlsTigerLintToolProvider, e: Throwable) {
         val fileUrl = rootDirectory.virtualFile.presentableUrl
-        val title = PlsBundle.message("lint.tiger.notification.warning.title", tool.name)
-        val content = e.message?.let { message -> PlsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
-            ?: PlsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
+        val title = PlsIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
+        val content = e.message?.let { message -> PlsIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
+            ?: PlsIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
         PlsFacade.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
     }
 
@@ -215,19 +215,19 @@ object PlsTigerLintManager {
 
     fun getConfidenceDisplayName(confidence: Confidence): String {
         return when (confidence) {
-            Confidence.WEAK -> PlsBundle.message("lint.tiger.confidence.weak")
-            Confidence.REASONABLE -> PlsBundle.message("lint.tiger.confidence.reasonable")
-            Confidence.STRONG -> PlsBundle.message("lint.tiger.confidence.strong")
+            Confidence.WEAK -> PlsIntegrationsBundle.message("lint.tiger.confidence.weak")
+            Confidence.REASONABLE -> PlsIntegrationsBundle.message("lint.tiger.confidence.reasonable")
+            Confidence.STRONG -> PlsIntegrationsBundle.message("lint.tiger.confidence.strong")
         }
     }
 
     fun getSeverityDisplayName(severity: Severity): String {
         return when (severity) {
-            Severity.TIPS -> PlsBundle.message("lint.tiger.severity.tips")
-            Severity.UNTIDY -> PlsBundle.message("lint.tiger.severity.untidy")
-            Severity.WARNING -> PlsBundle.message("lint.tiger.severity.warning")
-            Severity.ERROR -> PlsBundle.message("lint.tiger.severity.error")
-            Severity.FATAL -> PlsBundle.message("lint.tiger.severity.fatal")
+            Severity.TIPS -> PlsIntegrationsBundle.message("lint.tiger.severity.tips")
+            Severity.UNTIDY -> PlsIntegrationsBundle.message("lint.tiger.severity.untidy")
+            Severity.WARNING -> PlsIntegrationsBundle.message("lint.tiger.severity.warning")
+            Severity.ERROR -> PlsIntegrationsBundle.message("lint.tiger.severity.error")
+            Severity.FATAL -> PlsIntegrationsBundle.message("lint.tiger.severity.fatal")
         }
     }
 }

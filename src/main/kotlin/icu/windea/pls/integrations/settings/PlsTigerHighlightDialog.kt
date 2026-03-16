@@ -7,7 +7,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.PlsLintHighlightSeverity
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
@@ -42,13 +42,13 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
     }
 
     init {
-        title = PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.title")
+        title = PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.title")
         init()
     }
 
     override fun createCenterPanel(): JComponent = panel {
         row {
-            comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
+            comment(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
         }
         createMapping()
     }
@@ -81,12 +81,12 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
 
     // 方案2：采用表格形式，行是严重度，列是置信度，重置按钮在每一行的所有cb之后
     private fun Panel.createMapping() {
-        val severityPrefix = PlsBundle.message("lint.tiger.severity")
-        val confidencePrefix = PlsBundle.message("lint.tiger.confidence")
+        val severityPrefix = PlsIntegrationsBundle.message("lint.tiger.severity")
+        val confidencePrefix = PlsIntegrationsBundle.message("lint.tiger.confidence")
 
         row {
             label("").widthGroup("tiger.c0")
-            label(confidencePrefix + PlsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
+            label(confidencePrefix + PlsIntegrationsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
             Confidence.entries.forEachIndexed { i, e -> label(confidencePrefix + PlsTigerLintManager.getConfidenceDisplayName(e)).widthGroup("tiger.c${i + 2}") }
         }
         Severity.entries.forEach { severity ->
@@ -102,7 +102,7 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
                     highlightSeverityComboBox(option).widthGroup("tiger.c${i + 1}")
                     forceRefreshMergedOption(option, mergedCb)
                 }
-                button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
+                button(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
             }
         }
     }

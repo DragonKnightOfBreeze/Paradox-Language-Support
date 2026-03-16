@@ -1,18 +1,17 @@
 package icu.windea.pls.integrations
 
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.model.ParadoxGameType
 import org.cef.OS
 
 object PlsIntegrationConstants {
     object Texconv {
-        val name get() = PlsBundle.message("integrations.texconv.name")
+        val name get() = PlsIntegrationsBundle.message("integrations.texconv.name")
         const val url = "https://github.com/microsoft/DirectXTex/wiki/Texconv"
     }
 
     object Magick {
-        val name get() = PlsBundle.message("integrations.magick.name")
+        val name get() = PlsIntegrationsBundle.message("integrations.magick.name")
         const val url = "https://www.imagemagick.org"
 
         fun pathTip(): String {
@@ -29,12 +28,12 @@ object PlsIntegrationConstants {
 
     object TranslationPlugin {
         const val id = "cn.yiiguxing.plugin.translate"
-        val name get() = PlsBundle.message("integrations.tp.name")
+        val name get() = PlsIntegrationsBundle.message("integrations.tp.name")
         const val url = "https://github.com/yiiguxing/TranslationPlugin"
     }
 
     object Tiger {
-        val name get() = PlsBundle.message("integrations.tiger.name")
+        val name get() = PlsIntegrationsBundle.message("integrations.tiger.name")
         const val url = "https://github.com/amtep/tiger"
 
         fun pathTip(gameType: ParadoxGameType): String {

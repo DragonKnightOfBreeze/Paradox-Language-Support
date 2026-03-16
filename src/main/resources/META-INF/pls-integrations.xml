@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.integrations" groupWeight="90" parentId="pls" bundle="messages.PlsBundle" key="settings.integrations"
+    <applicationConfigurable id="pls.integrations" groupWeight="80" parentId="pls" bundle="messages.PlsIntegrationsBundle" key="settings.integrations"
                              instance="icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable"/>
 
     <vfs.asyncListener implementation="icu.windea.pls.integrations.lints.PlsTigerConfFileListener"/>

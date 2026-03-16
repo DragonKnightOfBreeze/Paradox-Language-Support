@@ -9,10 +9,11 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.model.constants.PlsHelpTopics
 
 @Suppress("UnstableApiUsage")
-class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
+class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
 
     override fun getHelpTopic() = PlsHelpTopics.integrationsSettings
@@ -26,31 +27,31 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         val settings = PlsIntegrationsSettings.getInstance().state
         return panel {
             // image tools
-            group(PlsBundle.message("settings.integrations.image")) {
+            group(PlsIntegrationsBundle.message("settings.integrations.image")) {
                 val imageSettings = settings.image
 
                 row {
-                    comment(PlsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    comment(PlsIntegrationsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 // enableTexconv
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv"))
-                        .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    checkBox(PlsIntegrationsBundle.message("settings.integrations.image.from.texconv"))
+                        .comment(PlsIntegrationsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(imageSettings::enableTexconv)
                     browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Texconv.url)
                 }
                 // enableMagick
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.magick"))
-                        .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    checkBox(PlsIntegrationsBundle.message("settings.integrations.image.from.magick"))
+                        .comment(PlsIntegrationsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(imageSettings::enableMagick)
                     browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Magick.url)
                 }
                 // magickPath
                 row {
-                    label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
+                    label(PlsIntegrationsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
                     val descriptor = FileChooserDescriptorFactory.singleFile()
-                        .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
+                        .withTitle(PlsIntegrationsBundle.message("settings.integrations.image.magickPath.title"))
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(imageSettings::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsIntegrationConstants.Magick.pathTip()) }
@@ -59,31 +60,31 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
             }
             // translation tools
-            group(PlsBundle.message("settings.integrations.translation")) {
+            group(PlsIntegrationsBundle.message("settings.integrations.translation")) {
                 row {
-                    comment(PlsBundle.message("settings.integrations.translation.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    comment(PlsIntegrationsBundle.message("settings.integrations.translation.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
-                        .comment(PlsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    checkBox(PlsIntegrationsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
+                        .comment(PlsIntegrationsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.TranslationPlugin.url)
                     link(PlsBundle.message("link.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
+                    checkBox(PlsIntegrationsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                     link(PlsBundle.message("link.configureInSettingsPage")) { PlsIntegrationsSettingsManager.openAiSettingsPage() }
                 }
             }
             // linting tools
-            group(PlsBundle.message("settings.integrations.lint")) {
+            group(PlsIntegrationsBundle.message("settings.integrations.lint")) {
                 val lintSettings = settings.lint
 
                 row {
-                    comment(PlsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    comment(PlsIntegrationsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 // enableTiger
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.lint.tiger"))
+                    checkBox(PlsIntegrationsBundle.message("settings.integrations.lint.tiger"))
                         .bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Tiger.url)
@@ -94,9 +95,9 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     val (name, pathProp, confPathProp) = tuple
 
                     row {
-                        label(PlsBundle.message("settings.integrations.lint.tigerPath", name)).widthGroup(groupNameLint)
+                        label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerPath", name)).widthGroup(groupNameLint)
                         val descriptor = FileChooserDescriptorFactory.singleFile()
-                            .withTitle(PlsBundle.message("settings.integrations.lint.tigerPath.title", name))
+                            .withTitle(PlsIntegrationsBundle.message("settings.integrations.lint.tigerPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(pathProp.toNonNullableProperty(""))
                             .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.pathTip(gameType)) }
@@ -105,10 +106,10 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
                     }
                     row {
-                        label(PlsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
+                        label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
                         val descriptor = FileChooserDescriptorFactory.singleFile()
                             // .withExtensionFilter("conf") // 这里不预先按扩展名过滤
-                            .withTitle(PlsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
+                            .withTitle(PlsIntegrationsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(confPathProp.toNonNullableProperty(""))
                             .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.confPathTip(gameType)) }
@@ -120,13 +121,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
                 // tigerHighlighting
                 row {
-                    label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
+                    label(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight"))
                     link(PlsBundle.message("link.configure")) {
                         // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
                         val dialog = PlsTigerHighlightDialog()
                         if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                     }
-                    contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+                    contextHelp(PlsIntegrationsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
                 }
             }
         }
