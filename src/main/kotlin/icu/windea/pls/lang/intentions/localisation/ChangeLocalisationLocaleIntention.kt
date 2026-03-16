@@ -1,76 +1,56 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PriorityAction
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
-import com.intellij.openapi.command.writeCommandAction
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep
-import com.intellij.psi.PsiFile
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModCommand
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.ModPsiUpdater
+import com.intellij.modcommand.Presentation
+import com.intellij.modcommand.PsiUpdateModCommandAction
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
-import kotlinx.coroutines.launch
 
 /**
  * 更改本地化语言环境。
  */
-class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.HIGH
-
+class ChangeLocalisationLocaleIntention : ModCommandAction {
     override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale")
 
-    override fun getText() = familyName
-
-    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset)
-        return element != null
+    override fun getPresentation(context: ActionContext): Presentation? {
+        findElement(context) ?: return null
+        return Presentation.of(familyName).withPriority(PriorityAction.Priority.HIGH)
     }
 
-    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
-        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values.toList()
-        val popup = Popup(project, element, localeConfigs)
-        JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
+    override fun perform(context: ActionContext): ModCommand {
+        val element = findElement(context) ?: return ModCommand.nop()
+        val project = context.project
+        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values
+        val items = localeConfigs.map { ItemIntention(element, it) }
+        return ModCommand.chooseAction(PlsBundle.message("intention.changeLocalisationLocale.title"), items)
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
-        return ParadoxPsiFileManager.findLocalisationLocale(file, offset, true)
+    private fun findElement(context: ActionContext): ParadoxLocalisationLocale? {
+        return ParadoxPsiFileManager.findLocalisationLocale(context.file, context.offset, true)
     }
 
-    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+    private class ItemIntention(
+        element: ParadoxLocalisationLocale,
+        private val localeConfig: CwtLocaleConfig,
+    ) : PsiUpdateModCommandAction<ParadoxLocalisationLocale>(element) {
+        override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale.item", localeConfig.id)
 
-    override fun startInWriteAction() = false
+        override fun getPresentation(context: ActionContext, element: ParadoxLocalisationLocale): Presentation {
+            return Presentation.of(localeConfig.idWithText).withIcon(PlsIcons.Nodes.LocalisationLocale)
+        }
 
-    private class Popup(
-        private val project: Project,
-        private val element: ParadoxLocalisationLocale,
-        items: List<CwtLocaleConfig>
-    ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), items) {
-        override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
-
-        override fun getTextFor(value: CwtLocaleConfig) = value.idWithText
-
-        override fun getDefaultOptionIndex() = 0
-
-        override fun isSpeedSearchEnabled(): Boolean = true
-
-        @Suppress("UnstableApiUsage")
-        override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean) = doFinalStep {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                writeCommandAction(project, PlsBundle.message("intention.changeLocalisationLocale.command")) {
-                    element.setName(selectedValue.id)
-                }
-            }
+        override fun invoke(context: ActionContext, element: ParadoxLocalisationLocale, updater: ModPsiUpdater) {
+            element.setName(localeConfig.id)
         }
     }
 }
-

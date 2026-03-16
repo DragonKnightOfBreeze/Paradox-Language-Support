@@ -32,13 +32,13 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
         val originalColorId = file.findElementAt(parameters.offset)
             ?.takeIf { it.elementType == ParadoxLocalisationElementTypes.COLOR_TOKEN }
         val project = file.project
-        val colorConfigs = ParadoxTextColorManager.getInfos(project, file)
+        val colorInfos = ParadoxTextColorManager.getInfos(project, file)
         val lookupElements = mutableListOf<LookupElement>()
-        for (colorConfig in colorConfigs) {
+        for (colorInfo in colorInfos) {
             ProgressManager.checkCanceled()
-            val element = colorConfig.element ?: continue
-            val name = colorConfig.name
-            val icon = colorConfig.icon
+            val element = colorInfo.element ?: continue
+            val name = colorInfo.name
+            val icon = colorInfo.icon
             val tailText = " from <text_color>"
             val typeFile = element.containingFile
             val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
