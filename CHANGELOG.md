@@ -12,8 +12,9 @@
 ## 2.1.6-dev
 
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
-- [ ] 性能分析与优化 / Performance analysis and optimization
-- [ ] 完善参考文档 / Improve reference documentation
+- [x] 优化：优化索引时的性能，将耗时降低到旧版本的 66%~80% / OP: Optimize performance during indexing, reducing the time taken to 66%~80% of the old version
+- [x] [PROCESSING] 性能分析与优化 / Performance analysis and optimization
+- [x] [PROCESSING] 完善参考文档 / Improve reference documentation
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.5
