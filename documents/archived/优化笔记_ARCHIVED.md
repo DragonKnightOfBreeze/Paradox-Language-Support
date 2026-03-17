@@ -895,7 +895,7 @@ icu.windea.pls - 130.57 MB
 
 #### 内存优化
 
-```markdown
+```
 (count, shallow, retained)
 
 java.lang.Object[] 2,989,547 instances - 141.85 MB, 1.41 GB
