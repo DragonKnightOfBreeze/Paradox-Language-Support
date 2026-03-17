@@ -19,7 +19,7 @@ import javax.swing.JComponent
  *
  * - 基于定义注入的模式，定义目标的存在性必须正确。
  */
-class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase() {
+class IncorrectDefinitionInjectionUsageInspection : DefinitionInjectionInspectionBase() {
     private var checkForRelaxModes = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -28,7 +28,7 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
                 ProgressManager.checkCanceled()
                 val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
                 if (definitionInjectionInfo.target.isNullOrEmpty()) {
-                    val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.1")
+                    val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.1")
                     holder.registerProblem(element.propertyKey, description)
                     return
                 }
@@ -46,12 +46,12 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
         if (definitionInjectionInfo.isTargetExist(holder.file)) return
         if (definitionInjectionInfo.isRelaxMode()) {
             if (checkForRelaxModes) {
-                val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.3", target, type)
+                val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.3", target, type)
                 val highlightType = PlsInspectionUtil.getWeakerHighlightType() // use weaker highlight type
                 holder.registerProblem(element.propertyKey, description, highlightType)
             }
         } else {
-            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjection.desc.2", target, type)
+            val description = PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.desc.2", target, type)
             holder.registerProblem(element.propertyKey, description)
         }
     }
@@ -60,9 +60,9 @@ class IncorrectDefinitionInjectionInspection : DefinitionInjectionInspectionBase
         return panel {
             // checkForRelaxModes
             row {
-                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes"))
+                checkBox(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes"))
                     .bindSelected(::checkForRelaxModes.toAtomicProperty())
-                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjection.option.checkForRelaxModes.tip"))
+                contextHelp(PlsBundle.message("inspection.script.incorrectDefinitionInjectionUsage.option.checkForRelaxModes.tip"))
             }
         }
     }

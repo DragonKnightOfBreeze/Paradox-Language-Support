@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
  */
 class TranslationPluginToolProvider : TranslationToolProvider {
     override fun isAvailable(): Boolean {
-        return true // see pls-extension-translation.xml
+        return true // see: pls-extension-translation.xml
     }
 
     override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback) {

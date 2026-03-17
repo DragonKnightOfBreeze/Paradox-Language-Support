@@ -19,11 +19,11 @@ enum class ParadoxSyntaxConstraint(
     /**
      * `#{tag_name} {text}#!`
      */
-    LocalisationTextFormat(Ck3, Vic3, Eu5), // see #137
+    LocalisationTextFormat(Ck3, Vic3, Eu5), // #137
     /**
      * `@{text_icon_name}!`
      */
-    LocalisationTextIcon(Ck3, Vic3, Eu5),  // see #137
+    LocalisationTextIcon(Ck3, Vic3, Eu5),  // #137
     ;
 
     fun test(target: Any): Boolean {

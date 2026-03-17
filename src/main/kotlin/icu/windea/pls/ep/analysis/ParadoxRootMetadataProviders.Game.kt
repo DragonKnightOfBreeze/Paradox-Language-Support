@@ -57,7 +57,7 @@ class Eu5GameMetadataProvider : ParadoxRootMetadataProvider {
     }
 }
 
-class Victoria3GameMetadataProvider : ParadoxRootMetadataProvider {
+class Vic3GameMetadataProvider : ParadoxRootMetadataProvider {
     override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
         // In some rare cases the Victoria 3 launcher file does not match the expected values.
         // So we detect the binary directly and read the version from the game branch file.

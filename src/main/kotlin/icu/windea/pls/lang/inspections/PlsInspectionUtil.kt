@@ -19,7 +19,6 @@ import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBui
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object PlsInspectionUtil {
-
     context(tool: LocalInspectionTool)
     fun getWeakerHighlightType(condition: Boolean = true): ProblemHighlightType {
         if (!condition) return ProblemHighlightType.GENERIC_ERROR_OR_WARNING

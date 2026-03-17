@@ -25,9 +25,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * @see ParadoxLocalisationTextInjectionInfo
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
-    // see com.intellij.util.InjectionUtils
-    // see com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
-    // see org.intellij.plugins.intelliLang.inject.InjectorUtils
+    // see: com.intellij.util.InjectionUtils
+    // see: com.intellij.psi.impl.source.tree.injected.InjectedFileViewProvider
+    // see: org.intellij.plugins.intelliLang.inject.InjectorUtils
 
     private val toInject = listOf(
         ParadoxScriptStringExpressionElement::class.java,

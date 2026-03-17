@@ -48,8 +48,9 @@ class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<Completion
         if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.AcceptInlineScriptUsage, injectable = true)) return
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return
 
+        // see: icu.windea.pls.lang.inspections.script.inlineScript.UnsupportedInlineScriptUsageInspection
         val extension = file.name.substringAfterLast('.').lowercase()
-        if (extension == "asset") return // see `UnsupportedInlineScriptUsageInspection`
+        if (extension == "asset") return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return

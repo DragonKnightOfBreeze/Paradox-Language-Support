@@ -45,7 +45,7 @@ object ParadoxLocalisationManager {
         // 存在一些特殊的本地化，不能直接用来渲染文本
         val file = element.containingFile ?: return false
         val fileName = file.name
-        if (fileName.startsWith("name_system_")) return true // e.g., name_system_l_english.yml
+        if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
         return false
     }
 
@@ -55,7 +55,7 @@ object ParadoxLocalisationManager {
             // accept left bracket & do not check escape (`[[`)
             if (c == '[') return true
             // accept special markers && check escape
-            if (c in "$£§#" && !text.isEscapedCharAt(i)) return true
+            if (c in "$£§#@" && !text.isEscapedCharAt(i)) return true
         }
         return false
     }
