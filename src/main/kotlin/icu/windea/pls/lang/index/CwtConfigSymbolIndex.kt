@@ -57,11 +57,15 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
             private fun visitStringExpressionElement(element: CwtStringExpressionElement) {
                 val infos = CwtConfigSymbolManager.getInfos(element)
                 if (infos.isEmpty()) return
-                infos.forEachFast { info ->
-                    fileData.getOrPut(info.type) { mutableListOf() }.asMutable() += info
-                }
+                infos.forEachFast { info -> addToFileData(info, fileData) }
             }
         })
+    }
+
+    private fun addToFileData(info: CwtConfigSymbolIndexInfo, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
+        PlsIndexStatisticService.recordConfigSymbol(info.gameType)
+
+        fileData.getOrPut(info.type) { mutableListOf() }.asMutable() += info
     }
 
     override fun saveValue(storage: DataOutput, value: List<CwtConfigSymbolIndexInfo>) {

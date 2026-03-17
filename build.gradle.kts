@@ -356,17 +356,24 @@ tasks {
         archiveBaseName = properties("pluginPackageName")
     }
     runIde {
+        jvmArgs("-Xmx4096m")
+
         systemProperty("idea.is.internal", "true")
         systemProperty("ide.slow.operations.assertion", "false")
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
-        // systemProperty("pls.is.debug", "true")
+
+        systemProperty("pls.is.debug", "true")
         // systemProperty("pls.refresh.builtIn", "true")
-        jvmArgs("-Xmx4096m")
+        // systemProperty("pls.record.cache.status", "true")
+        // systemProperty("pls.record.index.status", "true")
     }
     withType<Test> {
         useJUnit()
+
         systemProperty("ide.slow.operations.assertion", "false")
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
+        // systemProperty("idea.log.debug.categories", "icu.windea.pls")
+
         systemProperty("pls.is.debug", "true")
         // Forward all command-line -D properties that start with "pls.test."
         System.getProperties().stringPropertyNames()

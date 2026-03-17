@@ -162,6 +162,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
     }
 
     private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {
+        PlsIndexStatisticService.recordDefinition(info.gameType)
+
         val ignoreCase = ParadoxDefinitionIndexConstraint.entries.any { it.ignoreCase && it.test(info.type) }
         val name = info.name.letIf(ignoreCase) { it.lowercase() }
         val type = info.type
