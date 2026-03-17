@@ -343,9 +343,9 @@ fun String.quoteIfNecessary(quote: Char = '"', extraChars: String = "", blank: B
 }
 
 /**
- * 判断当前字符串中的指定索引[index]的字符是否被转义。（在前面有连续的奇数个反斜线）
+ * 判断当前字符串中的指定索引 [index] 的字符是否被转义（在前面有连续的奇数个反斜线）。
  */
-fun String.isEscapedCharAt(index: Int): Boolean {
+fun CharSequence.isEscapedCharAt(index: Int): Boolean {
     if (index == 0) return false
     var n = 0
     for (i in (index - 1) downTo 0) {

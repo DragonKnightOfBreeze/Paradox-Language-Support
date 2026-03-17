@@ -42,7 +42,7 @@ object ParadoxLocalisationManager {
 
     @Inferred
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
-        // 存在一些特殊的本地化，不能直接用来渲染文本
+        // There are some special localizations that cannot be used directly to render localisation text
         val file = element.containingFile ?: return false
         val fileName = file.name
         if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
@@ -50,12 +50,14 @@ object ParadoxLocalisationManager {
     }
 
     @Inferred
-    fun isRichText(text: String): Boolean {
-        for ((i, c) in text.withIndex()) {
-            // accept left bracket & do not check escape (`[[`)
-            if (c == '[') return true
-            // accept special markers && check escape
-            if (c in "$£§#@" && !text.isEscapedCharAt(i)) return true
+    fun isRichText(text: CharSequence, checkEscape: Boolean = true): Boolean {
+        for (i in 0 until text.length) {
+            when (text[i]) {
+                // Accept left bracket & do not check escape (`[[` or `\[`)
+                '[' -> return true
+                // Accept other special markers && check escape if `checkEscape = true`
+                '$', '£', '§', '#', '@' -> if (!(checkEscape && text.isEscapedCharAt(i))) return true
+            }
         }
         return false
     }
