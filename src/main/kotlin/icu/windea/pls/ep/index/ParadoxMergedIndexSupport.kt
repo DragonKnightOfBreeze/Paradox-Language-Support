@@ -29,7 +29,7 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
 
     fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?) {}
 
-    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {}
+    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {}
 
     fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 

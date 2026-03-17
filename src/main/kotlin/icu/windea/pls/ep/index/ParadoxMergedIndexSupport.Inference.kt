@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.configExpression.CwtConfigExpressionMatcher
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
@@ -39,7 +39,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
 
     override val type = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.find { matchesConfig(it) }
@@ -47,17 +47,13 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
 
         val definitionName = element.value
         val typeExpression = config.configExpression.value ?: return
-        val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, definitionInfo.gameType)
+        val gameType = config.configGroup.gameType
+        val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, gameType)
         addToFileData(info, fileData)
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        val dataType = config.configExpression.type
-        if (dataType != CwtDataTypes.Definition) return false
-        val definitionType = config.configExpression.value?.substringBefore('.') ?: return false
-        val definitionTypes = config.configGroup.definitionTypesModel.supportScopeContextInference
-        if (definitionType !in definitionTypes) return false
-        return true
+        return CwtConfigExpressionMatcher.isInferredScopeContextAwareDefinitionReference(config.configExpression, config.configGroup)
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
@@ -85,8 +81,8 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxEventInOnActionIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (definitionInfo?.type != ParadoxDefinitionTypes.onAction) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -101,11 +97,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        val dataType = config.configExpression.type
-        if (dataType != CwtDataTypes.Definition) return false
-        val definitionType = config.configExpression.value?.substringBefore('.') ?: return false
-        if (definitionType != ParadoxDefinitionTypes.event) return false
-        return true
+        return CwtConfigExpressionMatcher.isEventReference(config.configExpression)
     }
 
     override fun compressData(value: List<ParadoxEventInOnActionIndexInfo>): List<ParadoxEventInOnActionIndexInfo> {
@@ -133,8 +125,8 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
 
     override val type = ParadoxEventInEventIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (definitionInfo?.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -150,11 +142,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        val dataType = config.configExpression.type
-        if (dataType != CwtDataTypes.Definition) return false
-        val definitionType = config.configExpression.value?.substringBefore('.') ?: return false
-        if (definitionType != ParadoxDefinitionTypes.event) return false
-        return true
+        return CwtConfigExpressionMatcher.isEventReference(config.configExpression)
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
@@ -201,8 +189,8 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxOnActionInEventIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (definitionInfo?.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -218,11 +206,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        val dataType = config.configExpression.type
-        if (dataType != CwtDataTypes.Definition) return false
-        val definitionType = config.configExpression.value?.substringBefore('.') ?: return false
-        if (definitionType != ParadoxDefinitionTypes.onAction) return false
-        return true
+        return CwtConfigExpressionMatcher.isOnActionReference(config.configExpression)
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {

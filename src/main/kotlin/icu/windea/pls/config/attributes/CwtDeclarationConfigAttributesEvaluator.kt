@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.configExpression.CwtConfigExpressionMatcher
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
@@ -71,19 +72,19 @@ object CwtDeclarationConfigAttributesEvaluator {
 
     private fun processDataExpression(context: Context, dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
         if (!context.dynamicValueInvolved) {
-            val r = CwtConfigAttributesUtil.dynamicValueInvolved(dataExpression)
+            val r = CwtConfigExpressionMatcher.isDynamicValue(dataExpression)
             if (r) context.dynamicValueInvolved = true
         }
         if (!context.parameterInvolved) {
-            val r = CwtConfigAttributesUtil.parameterInvolved(dataExpression)
+            val r = CwtConfigExpressionMatcher.isParameter(dataExpression)
             if (r) context.parameterInvolved = true
         }
         if (!context.localisationParameterInvolved) {
-            val r = CwtConfigAttributesUtil.localisationParameterInvolved(dataExpression)
+            val r = CwtConfigExpressionMatcher.isLocalisationParameter(dataExpression)
             if (r) context.localisationParameterInvolved = true
         }
         if (!context.inferredScopeContextAwareDefinitionReferenceInvolved) {
-            val r = CwtConfigAttributesUtil.inferredScopeContextAwareDefinitionReferenceInvolved(dataExpression, configGroup)
+            val r = CwtConfigExpressionMatcher.isInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
             if (r) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
         }
     }
