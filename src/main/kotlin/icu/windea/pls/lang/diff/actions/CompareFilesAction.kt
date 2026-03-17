@@ -42,6 +42,7 @@ import javax.swing.Icon
 /**
  * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。如果是本地化文件的话也忽略路径中的语言环境。
  *
+ * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 可以用于比较二进制文件。（如DDS图片）
  * - 按照覆盖方式进行排序。
  */
@@ -53,7 +54,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if (file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (fileInfo.path.length <= 1) return null // 忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
         // val gameType = fileInfo.rootInfo.gameType
         // val path = fileInfo.path.path
         return file

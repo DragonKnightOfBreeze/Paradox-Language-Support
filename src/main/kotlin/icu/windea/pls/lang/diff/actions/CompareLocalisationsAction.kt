@@ -52,7 +52,7 @@ import javax.swing.Icon
 /**
  * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
  *
- * - 忽略直接位于游戏或模组入口目录下的文件。
+ * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 按照覆盖方式进行排序。
  */
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
@@ -63,7 +63,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         if (file.fileType !is ParadoxLocalisationFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (fileInfo.path.length <= 1) return null // 忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
         // val gameType = fileInfo.rootInfo.gameType
         // val path = fileInfo.path.path
         return file

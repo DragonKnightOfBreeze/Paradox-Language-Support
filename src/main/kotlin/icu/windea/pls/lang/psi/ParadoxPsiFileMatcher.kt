@@ -12,11 +12,11 @@ import kotlin.contracts.contract
 
 object ParadoxPsiFileMatcher {
     /**
-     * 是否是直接位于游戏或模组目录（或者对应的入口目录）中的文件。
+     * 是否是直接位于游戏或模组的根目录下的文件（或者根目录本身）。
      */
-    fun isTopFile(file: PsiFile): Boolean {
+    fun isTopFileFromRoot(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.length <= 1
+        return fileInfo.isTopFromRoot()
     }
 
     /**
@@ -83,10 +83,5 @@ object ParadoxPsiFileMatcher {
             if (injectable && PlsFileManager.isInjectedFile(file.virtualFile)) return true
             return false
         }
-    }
-
-    private fun checkFilePath(file: PsiFile, constraint: ParadoxPathConstraint): Boolean {
-        val fileInfo = file.fileInfo
-        return fileInfo != null && constraint.test(fileInfo.path)
     }
 }

@@ -50,31 +50,31 @@ object ParadoxAnalysisService {
 
     fun resolveFileInfo(file: VirtualFile, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = file.isDirectory
-        val (path, entryName) = resolvePathAndEntryName(file.path, isDirectory, rootInfo) ?: return null
+        val (path, entry) = resolvePathAndEntry(file.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileGroup.Other
+            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
             ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, group, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
         return fileInfo
     }
 
     fun resolveFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = filePath.isDirectory
-        val (path, entryName) = resolvePathAndEntryName(filePath.path, isDirectory, rootInfo) ?: return null
+        val (path, entry) = resolvePathAndEntry(filePath.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileGroup.Other
+            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
             ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, group, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
         return fileInfo
     }
 
-    private fun resolvePathAndEntryName(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
+    private fun resolvePathAndEntry(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val entryInfo = rootInfo.gameType.entryInfo
@@ -83,9 +83,9 @@ object ParadoxAnalysisService {
             is ParadoxRootInfo.Mod -> entryInfo.modEntryMap
         }
         if (entryMap.isEmpty()) return relPath to ""
-        for ((entryName, entryPath) in entryMap) {
+        for ((entry, entryPath) in entryMap) {
             val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
-            return ParadoxPath.resolve(resolved) to entryName
+            return ParadoxPath.resolve(resolved) to entry
         }
         if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
         if (filePath == rootInfo.infoFile?.path) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed

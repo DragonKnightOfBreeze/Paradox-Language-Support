@@ -54,7 +54,7 @@ import javax.swing.Icon
 /**
  * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
  *
- * - 忽略直接位于游戏或模组入口目录下的文件。
+ * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 按照覆盖方式进行排序。
  */
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
@@ -65,7 +65,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         if (file.fileType !is ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (fileInfo.path.length <= 1) return null // 忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.isTopFromRoot()) return null // 忽略直接位于游戏或模组的根目录下的文件
         // val gameType = fileInfo.rootInfo.gameType
         // val path = fileInfo.path.path
         return file

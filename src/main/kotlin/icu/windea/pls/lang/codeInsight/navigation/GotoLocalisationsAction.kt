@@ -28,7 +28,7 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (!ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)) return
-        if (ParadoxPsiFileMatcher.isTopFile(file)) return // 忽略直接位于游戏或模组目录（或者对应的入口目录）中的文件
+        if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
         presentation.isVisible = true
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
