@@ -150,6 +150,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                     if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
                         element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
                         definitionInfoStack.pollLast()
+                        definitionAvailableStatusStack.pollLast()
                         cleanUpDumbDefinitionCache(element)
                     }
                 }
