@@ -91,7 +91,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
         val useLazyIndex = useLazyIndex(file.virtualFile)
+
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         if (!useLazyIndex && !isAvailableForScriptFile(file, optimizers)) return
 
@@ -165,7 +167,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        // NOTE 2.1.6 use lazy index -> config context root may not be a definition -> DO NOT skip on any level
         val useLazyIndex = useLazyIndex(file.virtualFile)
+
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         if (!useLazyIndex && !isAvailableForLocalisationFile(file, optimizers)) return
 
