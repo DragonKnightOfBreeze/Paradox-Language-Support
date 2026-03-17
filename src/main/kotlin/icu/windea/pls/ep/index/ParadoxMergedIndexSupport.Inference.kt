@@ -39,7 +39,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
 
     override val type = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.find { matchesConfig(it) }
@@ -85,7 +85,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxEventInOnActionIndexInfo::class.java
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
         if (definitionInfo.type != ParadoxDefinitionTypes.onAction) return
 
         val expression = element.value
@@ -133,7 +133,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
 
     override val type = ParadoxEventInEventIndexInfo::class.java
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
         if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
@@ -201,7 +201,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxOnActionInEventIndexInfo::class.java
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
         if (definitionInfo.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value

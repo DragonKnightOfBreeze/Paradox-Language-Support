@@ -9,15 +9,17 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
- * 基于定义的方案。
- * - 检查文件级别的定义规则候选项是否存在、对应的定义规则的名字、以及对应的声明规则的综合属性。
+ * 基于定义的优化方案。
+ * - 检查文件级别的类型规则候选项是否存在、对应的类型规则的名字、以及对应的声明规则的综合属性。
+ * - 检查定义级别的类型规则的名字、以及对应的声明规则的综合属性。
  */
-class ParadoxDefinitionBasedMergedIndexSupport : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForFile(file: ParadoxScriptFile): Boolean {
+class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
+    override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
@@ -38,6 +40,21 @@ class ParadoxDefinitionBasedMergedIndexSupport : ParadoxMergedIndexOptimizer {
             val declarationConfig = declarations[typeConfig.name] ?: continue
             if (isInvolvedDeclarationConfig(declarationConfig)) return true
         }
+        return false
+    }
+
+    override fun isAvailableForDefinition(definitionInfo: ParadoxDefinitionInfo): Boolean {
+        val typeConfig = definitionInfo.typeConfig
+        val configGroup = typeConfig.configGroup
+
+        // 如果涉及特定类型的定义，则认为是可用的
+        val definitionTypesModel = configGroup.definitionTypesModel
+        if (isForcedTypeConfig(typeConfig, definitionTypesModel)) return true
+
+        // 检查对应的声明规则的综合属性，如果发现可能包含要索引的数据，则认为是可用的
+        val declarations = configGroup.declarations
+        val declarationConfig = declarations[typeConfig.name] ?: return false
+        if (isInvolvedDeclarationConfig(declarationConfig)) return true
         return false
     }
 
@@ -75,11 +92,11 @@ class ParadoxDefinitionBasedMergedIndexSupport : ParadoxMergedIndexOptimizer {
  * - 脚本文件默认不可用，本地化文件默认可用。
  */
 class ParadoxFallbackMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
-    override fun isAvailableForFile(file: ParadoxScriptFile): Boolean {
+    override fun isAvailableForScriptFile(file: ParadoxScriptFile): Boolean {
         return false // fallback to false (skip)
     }
 
-    override fun isAvailableForFile(file: ParadoxLocalisationFile): Boolean {
+    override fun isAvailableForLocalisationFile(file: ParadoxLocalisationFile): Boolean {
         return true // fallback to true
     }
 }

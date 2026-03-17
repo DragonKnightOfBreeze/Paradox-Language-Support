@@ -26,11 +26,11 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
 
     fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {}
 
-    fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {}
+    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {}
 
-    fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun compressData(value: List<T>): List<T> = value
 

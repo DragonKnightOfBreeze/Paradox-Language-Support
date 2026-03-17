@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
@@ -13,57 +14,55 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
 
 class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
+    private val constraint = ParadoxResolveConstraint.DynamicValue
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
     override val id = ParadoxIndexInfoType.DynamicValue.id
 
     override val type = ParadoxDynamicValueIndexInfo::class.java
 
-    override fun buildData(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val constraint = ParadoxResolveConstraint.DynamicValue
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
         if (!constraint.canResolveReference(element)) return
-        val references = ParadoxExpressionManager.getExpressionReferences(element)
-        references.forEach f@{ reference ->
-            if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxDynamicValueLightElement) return@f
-            resolved.dynamicValueTypes.forEach { dynamicValueType ->
-                val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
-                addToFileData(info, fileData)
-            }
+        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
         }
     }
 
-    override fun buildData(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val constraint = ParadoxResolveConstraint.DynamicValue
+    override fun buildDataForExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (!constraint.canResolveReference(element)) return
-        // use expression references only for expression elements to optimize indexing performance
-        val references = ParadoxExpressionManager.getExpressionReferences(element)
-        references.forEach f@{ reference ->
-            if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxDynamicValueLightElement) return@f
-            resolved.dynamicValueTypes.forEach { dynamicValueType ->
-                val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
-                addToFileData(info, fileData)
-            }
+        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
+        }
+    }
+
+    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        if (resolved !is ParadoxDynamicValueLightElement) return
+        for (dynamicValueType in resolved.dynamicValueTypes) {
+            val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
+            addToFileData(info, fileData)
         }
     }
 
@@ -86,6 +85,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 }
 
 class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxParameterIndexInfo> {
+    private val constraint = ParadoxResolveConstraint.Parameter
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
     override val id = ParadoxIndexInfoType.Parameter.id
@@ -93,21 +93,30 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
     override val type = ParadoxParameterIndexInfo::class.java
 
     override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val constraint = ParadoxResolveConstraint.Parameter
+        if (element is ParadoxScriptExpressionElement) return // skip expression elements first
         if (!constraint.canResolveReference(element)) return
-        // use expression references only for expression elements to optimize indexing performance
-        val references = when {
-            element is ParadoxExpressionElement -> ParadoxExpressionManager.getExpressionReferences(element)
-            else -> element.references
+        val references = element.references
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
         }
-        references.forEach f@{ reference ->
-            if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxParameterLightElement) return@f
-            // note that element.startOffset may not equal to actual parameterElement.startOffset (e.g. in a script value expression)
-            val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
-            addToFileData(info, fileData)
+    }
+
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
+        if (!constraint.canResolveReference(element)) return
+        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
         }
+    }
+
+    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        if (resolved !is ParadoxParameterLightElement) return
+        // note that `element.startOffset` may not equal to actual `parameterElement.startOffset` (e.g. in a script value expression)
+        val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
+        addToFileData(info, fileData)
     }
 
     override fun compressData(value: List<ParadoxParameterIndexInfo>): List<ParadoxParameterIndexInfo> {
@@ -129,27 +138,27 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
 }
 
 class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxLocalisationParameterIndexInfo> {
+    private val constraint = ParadoxResolveConstraint.LocalisationParameter
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
     override val id = ParadoxIndexInfoType.LocalisationParameter.id
 
     override val type = ParadoxLocalisationParameterIndexInfo::class.java
 
-    override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val constraint = ParadoxResolveConstraint.LocalisationParameter
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
         if (!constraint.canResolveReference(element)) return
-        // use expression references only for expression elements to optimize indexing performance
-        val references = when {
-            element is ParadoxExpressionElement -> ParadoxExpressionManager.getExpressionReferences(element)
-            else -> element.references
+        val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
+        for (reference in references) {
+            if (!constraint.canResolve(reference)) continue
+            buildDataFromReference(reference, fileData)
         }
-        references.forEach f@{ reference ->
-            if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
-            if (resolved !is ParadoxLocalisationParameterLightElement) return@f
-            val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
-            addToFileData(info, fileData)
-        }
+    }
+
+    private fun buildDataFromReference(reference: PsiReference, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
+        if (resolved !is ParadoxLocalisationParameterLightElement) return
+        val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
+        addToFileData(info, fileData)
     }
 
     override fun compressData(value: List<ParadoxLocalisationParameterIndexInfo>): List<ParadoxLocalisationParameterIndexInfo> {

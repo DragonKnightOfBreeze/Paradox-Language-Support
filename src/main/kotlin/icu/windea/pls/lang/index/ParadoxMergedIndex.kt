@@ -93,48 +93,52 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     private fun buildDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!isAvailableForFile(file, optimizers)) return
+        if (!isAvailableForScriptFile(file, optimizers)) return
 
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = PlsStates.procssingDefinitionInfoStack.getOrSet { ArrayDeque() }
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                buildDataFromSupports(element)
+                var definitionInfo: ParadoxDefinitionInfo? = null
 
                 if (element is ParadoxDefinitionElement) {
-                    val definitionInfo = element.definitionInfo
+                    definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
                         element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)
                         definitionInfoStack.addLast(definitionInfo)
                     }
                 }
 
-                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    buildDataFromSupports(element)
-                    run {
-                        if (definitionInfoStack.isEmpty()) return@run
-                        ProgressManager.checkCanceled()
-                        val options = ParadoxMatchOptions.DUMB
-                        val configs = ParadoxConfigManager.getConfigs(element, options)
-                        if (configs.isEmpty()) return@run
-                        val definitionInfo = definitionInfoStack.peekLast() ?: return@run
-                        buildDataFromSupports(element, configs, definitionInfo)
-                    }
-                }
+                buildDataFromSupports(element)
+                if (definitionInfo != null) visitWithDefinitionInfo(element, definitionInfo)
 
                 super.visitElement(element)
+            }
+
+            private fun visitWithDefinitionInfo(element: PsiElement, definitionInfo: ParadoxDefinitionInfo) {
+                if (!isAvailableForDefinition(definitionInfo, optimizers)) return
+
+                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
+                    ProgressManager.checkCanceled()
+                    buildDataForExpressionFromSupports(element, definitionInfo)
+                    val options = ParadoxMatchOptions.DUMB
+                    val configs = ParadoxConfigManager.getConfigs(element, options)
+                    if (configs.isNotEmpty()) {
+                        buildDataForExpressionFromSupports(element, definitionInfo, configs)
+                    }
+                }
             }
 
             private fun buildDataFromSupports(element: PsiElement) {
                 supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
-            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement) {
-                supports.forEachFast { support -> support.buildData(element, fileData) }
+            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo) {
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo) }
             }
 
-            private fun buildDataFromSupports(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo) {
-                supports.forEachFast { support -> support.buildData(element, fileData, configs, definitionInfo) }
+            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo, configs) }
             }
 
             override fun elementFinished(element: PsiElement) {
@@ -155,13 +159,13 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
-        if (!isAvailableForFile(file, optimizers)) return
+        if (!isAvailableForLocalisationFile(file, optimizers)) return
 
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    buildDataFromSupports(element)
+                    buildDataForExpressionFromSupports(element)
                     return
                 }
 
@@ -169,8 +173,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 super.visitElement(element)
             }
 
-            private fun buildDataFromSupports(element: ParadoxLocalisationExpressionElement) {
-                supports.forEachFast { ep -> ep.buildData(element, fileData) }
+            private fun buildDataForExpressionFromSupports(element: ParadoxLocalisationExpressionElement) {
+                supports.forEachFast { ep -> ep.buildDataForExpression(element, fileData) }
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -181,16 +185,21 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         })
     }
 
-    private fun isAvailableForFile(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+    private fun isAvailableForScriptFile(file: ParadoxScriptFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
         if (PlsFileManager.isInjectedFile(file.virtualFile)) return true // always available
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // always available
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForFile(file)) return true }
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForScriptFile(file)) return true }
         return false
     }
 
-    private fun isAvailableForFile(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+    private fun isAvailableForLocalisationFile(file: ParadoxLocalisationFile, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
         if (PlsFileManager.isInjectedFile(file.virtualFile)) return true // always available
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForFile(file)) return true }
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForLocalisationFile(file)) return true }
+        return false
+    }
+
+    private fun isAvailableForDefinition(definitionInfo: ParadoxDefinitionInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForDefinition(definitionInfo)) return true }
         return false
     }
 
