@@ -17,7 +17,7 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 data class CwtTypeConfigAttributes(
     val involvedTypeKeys: Set<@CaseInsensitive String> = emptySet(),
     val possibleTypeKeys: Set<@CaseInsensitive String> = emptySet(),
-) {
+) : CwtConfigAttributes {
     companion object {
         @JvmStatic
         val EMPTY = CwtTypeConfigAttributes()

@@ -112,36 +112,42 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
 
                 buildDataFromSupports(element)
 
-                visitWithDefinitionInfo(element)
+                if (element is ParadoxScriptStringExpressionElement) {
+                    visitExpressionElement(element)
+                }
 
                 super.visitElement(element)
             }
 
-            private fun visitWithDefinitionInfo(element: PsiElement) {
-                val definitionInfo = definitionInfoStack.peekLast() ?: return
-                val definitionAvailableStatus = definitionAvailableStatusStack.peekLast() ?: return
-                if (!definitionAvailableStatus) return
+            private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
+                if (!element.isExpression()) return
 
-                if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
-                    ProgressManager.checkCanceled()
-                    buildDataForExpressionFromSupports(element, definitionInfo)
-                    val options = ParadoxMatchOptions.DUMB
-                    val configs = ParadoxConfigManager.getConfigs(element, options)
-                    if (configs.isNotEmpty()) {
-                        buildDataForExpressionFromSupports(element, definitionInfo, configs)
-                    }
-                }
+                val definitionInfo = definitionInfoStack.peekLast()
+                val definitionAvailableStatus = definitionAvailableStatusStack.peekLast()
+                if (definitionAvailableStatus == false) return
+
+                buildDataForExpressionFromSupports(element, definitionInfo)
+
+                if (definitionInfo == null || definitionAvailableStatus == null) return
+
+                ProgressManager.checkCanceled()
+                val options = ParadoxMatchOptions.DUMB
+                val configs = ParadoxConfigManager.getConfigs(element, options)
+                if (configs.isEmpty()) return
+                buildDataForExpressionFromSupports(element, definitionInfo, configs)
             }
 
             private fun buildDataFromSupports(element: PsiElement) {
                 supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo) {
+            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo?) {
+                // containing definition info here CAN be null
                 supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo) }
             }
 
             private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {
+                // containing definition info here CANNOT be null
                 supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo, configs) }
             }
 
@@ -169,12 +175,16 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
-                    buildDataForExpressionFromSupports(element)
+                    visitExpressionElement(element)
                     return
                 }
 
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
+            }
+
+            private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
+                buildDataForExpressionFromSupports(element)
             }
 
             private fun buildDataForExpressionFromSupports(element: ParadoxLocalisationExpressionElement) {

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.attributes
 
-import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -25,6 +24,7 @@ object CwtInlinedConfigAttributesEvaluator {
         var dynamicValueInvolved: Boolean = false,
         var parameterInvolved: Boolean = false,
         var localisationParameterInvolved: Boolean = false,
+        var inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
     )
 
     fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
@@ -44,13 +44,13 @@ object CwtInlinedConfigAttributesEvaluator {
     private fun buildVisitor(context: Context, configGroup: CwtConfigGroup): CwtMemberConfigInlinedRecursiveVisitor {
         return object : CwtMemberConfigInlinedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
-                processDataExpression(context, config.keyExpression)
-                processDataExpression(context, config.valueExpression)
+                processDataExpression(context, config.keyExpression, configGroup)
+                processDataExpression(context, config.valueExpression, configGroup)
                 return super.visitProperty(config)
             }
 
             override fun visitValue(config: CwtValueConfig): Boolean {
-                processDataExpression(context, config.valueExpression)
+                processDataExpression(context, config.valueExpression, configGroup)
                 return super.visitValue(config)
             }
 
@@ -66,19 +66,22 @@ object CwtInlinedConfigAttributesEvaluator {
         }
     }
 
-    private fun processDataExpression(context: Context, dataExpression: CwtDataExpression) {
-        val dataType = dataExpression.type
+    private fun processDataExpression(context: Context, dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
         if (!context.dynamicValueInvolved) {
-            val r = dataType in CwtDataTypeSets.DynamicValueInvolved
+            val r = CwtConfigAttributesUtil.dynamicValueInvolved(dataExpression)
             if (r) context.dynamicValueInvolved = true
         }
         if (!context.parameterInvolved) {
-            val r = dataType in CwtDataTypeSets.ParameterInvolved
+            val r = CwtConfigAttributesUtil.parameterInvolved(dataExpression)
             if (r) context.parameterInvolved = true
         }
         if (!context.localisationParameterInvolved) {
-            val r = dataType in CwtDataTypeSets.LocalisationParameterInvolved
+            val r = CwtConfigAttributesUtil.localisationParameterInvolved(dataExpression)
             if (r) context.localisationParameterInvolved = true
+        }
+        if (!context.inferredScopeContextAwareDefinitionReferenceInvolved) {
+            val r = CwtConfigAttributesUtil.inferredScopeContextAwareDefinitionReferenceInvolved(dataExpression, configGroup)
+            if (r) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
         }
     }
 
@@ -86,6 +89,7 @@ object CwtInlinedConfigAttributesEvaluator {
         if (inlinedAttributes.dynamicValueInvolved) context.dynamicValueInvolved = true
         if (inlinedAttributes.parameterInvolved) context.parameterInvolved = true
         if (inlinedAttributes.localisationParameterInvolved) context.localisationParameterInvolved = true
+        if (inlinedAttributes.inferredScopeContextAwareDefinitionReferenceInvolved) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
         return true
     }
 
@@ -94,9 +98,11 @@ object CwtInlinedConfigAttributesEvaluator {
             context.dynamicValueInvolved,
             context.parameterInvolved,
             context.localisationParameterInvolved,
+            context.inferredScopeContextAwareDefinitionReferenceInvolved,
         )
         if (result == CwtInlinedConfigAttributes.EMPTY) return CwtInlinedConfigAttributes.EMPTY
         if (result == CwtInlinedConfigAttributes.ALL) return CwtInlinedConfigAttributes.ALL
         return result
     }
 }
+

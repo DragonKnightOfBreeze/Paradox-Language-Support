@@ -39,7 +39,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
 
     override val type = ParadoxDynamicValueIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?) {
         // read access or write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -105,7 +105,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
         }
     }
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?) {
         // write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance
@@ -149,7 +149,7 @@ class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport
 
     override val type = ParadoxLocalisationParameterIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?) {
         // write access
         if (!constraint.canResolveReference(element)) return
         val references = ParadoxExpressionManager.getExpressionReferences(element) // use expression references only to optimize performance

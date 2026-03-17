@@ -4,7 +4,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.configGroup.CwtDefinitionTypesModel
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -30,11 +29,10 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         // 如果文件级别的定义规则候选项为空，则认为是不可用的（构建索引数据时，不需要继续递归向下检查定义成员以及其他 PSI 元素）
         if (fileLevelTypeConfigs.isEmpty()) return false
 
-        val definitionTypesModel = configGroup.definitionTypesModel
         val declarations = configGroup.declarations
         for (typeConfig in fileLevelTypeConfigs) {
             // 如果涉及特定类型的定义，则认为是可用的
-            if (isForcedTypeConfig(typeConfig, definitionTypesModel)) return true
+            if (isForcedTypeConfig(typeConfig)) return true
 
             // 检查对应的声明规则的综合属性，如果发现可能包含要索引的数据，则认为是可用的
             val declarationConfig = declarations[typeConfig.name] ?: continue
@@ -48,8 +46,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         val configGroup = typeConfig.configGroup
 
         // 如果涉及特定类型的定义，则认为是可用的
-        val definitionTypesModel = configGroup.definitionTypesModel
-        if (isForcedTypeConfig(typeConfig, definitionTypesModel)) return true
+        if (isForcedTypeConfig(typeConfig)) return true
 
         // 检查对应的声明规则的综合属性，如果发现可能包含要索引的数据，则认为是可用的
         val declarations = configGroup.declarations
@@ -58,7 +55,7 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         return false
     }
 
-    private fun isForcedTypeConfig(typeConfig: CwtTypeConfig, definitionTypesModel: CwtDefinitionTypesModel): Boolean {
+    private fun isForcedTypeConfig(typeConfig: CwtTypeConfig): Boolean {
         val name = typeConfig.name
         return when (name) {
             // see: icu.windea.pls.ep.index.ParadoxEventInOnActionMergedIndexSupport
@@ -66,8 +63,6 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
             // see: icu.windea.pls.ep.index.ParadoxEventInEventMergedIndexSupport
             // see: icu.windea.pls.ep.index.ParadoxOnActionInEventMergedIndexSupport
             ParadoxDefinitionTypes.event -> true
-            // see: icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
-            in definitionTypesModel.supportScopeContextInference -> true
             else -> false
         }
     }
@@ -82,6 +77,8 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
             attributes.parameterInvolved -> true
             // see: icu.windea.pls.ep.index.ParadoxLocalisationParameterMergedIndexSupport
             attributes.localisationParameterInvolved -> true
+            // see: icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport
+            attributes.inferredScopeContextAwareDefinitionReferenceInvolved -> true
             else -> false
         }
     }

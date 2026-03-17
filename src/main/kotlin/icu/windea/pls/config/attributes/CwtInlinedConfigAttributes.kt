@@ -17,12 +17,13 @@ data class CwtInlinedConfigAttributes(
     override val dynamicValueInvolved: Boolean = false,
     override val parameterInvolved: Boolean = false,
     override val localisationParameterInvolved: Boolean = false,
+    override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
         @JvmStatic
         val EMPTY = CwtInlinedConfigAttributes()
         @JvmStatic
-        val ALL = CwtInlinedConfigAttributes(true, true, true)
+        val ALL = CwtInlinedConfigAttributes(true, true, true, true)
     }
 }
 

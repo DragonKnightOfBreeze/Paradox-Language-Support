@@ -19,6 +19,7 @@ data class CwtDeclarationConfigAttributes(
     override val dynamicValueInvolved: Boolean = false,
     override val parameterInvolved: Boolean = false,
     override val localisationParameterInvolved: Boolean = false,
+    override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
         @JvmStatic

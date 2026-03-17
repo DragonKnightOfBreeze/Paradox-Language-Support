@@ -26,7 +26,7 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
 
     fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo) {}
+    fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?) {}
 
     fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo, configs: List<CwtMemberConfig<*>>) {}
 
