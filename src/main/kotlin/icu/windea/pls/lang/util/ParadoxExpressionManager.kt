@@ -89,21 +89,21 @@ object ParadoxExpressionManager {
         // 快速判断，不检测带参数后的语法是否合法
         if (text.length < 2) return false
         if (full) {
-            // $PARAM$ - 仅限 高级插值语法 A
+            // `$PARAM$` - 仅限：高级插值语法 A
             if (!text.startsWith('$')) return false
             if (text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
             return true
         }
-        // a_$PARAM$_b - 高级插值语法 A
+        // `a_$PARAM$_b` - 高级插值语法 A
         if (text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
-        // a_[[PARAM]b]_c - 高级插值语法 B
+        // `a_[[PARAM]b]_c` - 高级插值语法 B
         if (conditionBlock && text.indexOf("[[").let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         return false
     }
 
     @Suppress("unused")
     fun getParameterName(text: String): String? {
-        // $PARAM$ - 仅限 高级插值语法 A
+        // `$PARAM$` - 仅限 高级插值语法 A
         if (!isParameterized(text, full = true)) return null
         return text.substring(1, text.length - 1).substringBefore('|')
     }
@@ -111,9 +111,9 @@ object ParadoxExpressionManager {
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
         // 比较复杂的实现逻辑
         val ranges = mutableListOf<TextRange>()
-        // a_$PARAM$_b - 高级插值语法 A - 深度计数
+        // `a_$PARAM$_b` - 高级插值语法 A - 深度计数
         var depth1 = 0
-        // a_[[PARAM]b]_c - 高级插值语法 B - 深度计数
+        // `a_[[PARAM]b]_c` - 高级插值语法 B - 深度计数
         var depth2 = 0
         var startIndex = -1
         var endIndex = -1

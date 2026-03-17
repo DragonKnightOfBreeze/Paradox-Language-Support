@@ -35,7 +35,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getModeFromExp
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager.getTargetFromExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
-import icu.windea.pls.lang.util.ParadoxDefinitionManager.getTypeKey
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -85,7 +84,7 @@ object ParadoxDefinitionService {
         val gameType = fileInfo.rootInfo.gameType
         val path = fileInfo.path
         val source = resolveSource(element) ?: return null
-        val typeKey = getTypeKey(element) ?: return null
+        val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
         // 忽略 rootKeys 深度超出限制，或者带参数的情况
         val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
         val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return null

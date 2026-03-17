@@ -17,7 +17,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.normalized
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -25,7 +24,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @Suppress("unused")
 object ParadoxDefinitionManager {
@@ -43,14 +41,6 @@ object ParadoxDefinitionManager {
 
         /** 用于标记图片的帧数信息以便后续进行切分。 */
         val imageFrameInfo by registerKey<ImageFrameInfo>(Keys)
-    }
-
-    fun getTypeKey(element: ParadoxDefinitionElement): String? {
-        if (element is ParadoxScriptFile) return element.name.substringBeforeLast('.')
-        val typeKey = element.name
-        if (!typeKey.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
-        if (ParadoxInlineScriptManager.isMatched(typeKey, element)) return null // 排除是内联脚本用法的情况
-        return typeKey
     }
 
     fun getName(element: ParadoxDefinitionElement): String? {

@@ -7,15 +7,20 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
@@ -83,9 +88,9 @@ object ParadoxMemberService {
         return result
     }
 
-    private fun injectRootKeys(current: PsiElement, result: ArrayDeque<String>) {
-        if (current !is PsiFile) return
-        val file = selectFile(current) ?: return
+    private fun injectRootKeys(element: PsiElement, result: ArrayDeque<String>) {
+        if (element !is PsiFile) return
+        val file = selectFile(element) ?: return
         val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(file)
         if (injectedRootKeys.isEmpty()) return
         result.addAll(0, injectedRootKeys)
@@ -127,6 +132,27 @@ object ParadoxMemberService {
     }
 
     /**
+     * 得到 [element] 的类型键。
+     *
+     * 如果是文件定义，则使用去除扩展名后的文件名；如果是属性定义，则直接使用其名字。
+     */
+    fun getTypeKey(element: ParadoxDefinitionElement): String? {
+        val name = element.name
+        if (name.isEmpty()) return null // 不期望
+        if (element is ParadoxScriptFile) return name.substringBeforeLast('.') // 如果是文件定义，则使用去除扩展名后的文件名
+        return isTypeKeyForProperty(name, element) // 如果是属性定义，需要检查是否合法
+    }
+
+    /**
+     * 检查 [name] 是否是（脚本属性的）合法的类型键（会从 [context] 选取游戏类型并检查）。
+     */
+    fun isTypeKeyForProperty(name: String, context: Any?): String? {
+        if (!name.isIdentifier(".-")) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
+        if (ParadoxInlineScriptManager.isMatched(name, context)) return null // 排除是内联脚本用法的情况
+        return name
+    }
+
+    /**
      * 判断 [element] 的键和值是否可以表示一个数值。
      */
     fun isNumberRepresentable(element: ParadoxScriptProperty): Boolean? {
@@ -163,8 +189,10 @@ object ParadoxMemberService {
         if (!PlsConfigInternalSettings.getInstance().checkComparisonOperators) return null
         val configs = ParadoxConfigManager.getConfigs(element)
         if (configs.isEmpty()) return null
-        return configs.any { config ->
-            config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
-        }
+        return configs.any { config -> isComparisonOperatorAllowed(config) }
+    }
+
+    private fun isComparisonOperatorAllowed(config: CwtMemberConfig<*>): Boolean {
+        return config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
     }
 }

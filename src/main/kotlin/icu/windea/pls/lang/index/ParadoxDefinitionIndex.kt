@@ -28,7 +28,6 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
@@ -115,7 +114,7 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
             private fun processDefinition(element: ParadoxDefinitionElement): Boolean {
                 // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
-                val typeKey = ParadoxDefinitionManager.getTypeKey(element) ?: return true
+                val typeKey = ParadoxMemberService.getTypeKey(element) ?: return true
                 // 忽略 rootKeys 深度超出限制，或者带参数的情况
                 val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return false
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
