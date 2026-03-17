@@ -117,7 +117,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                         val options = ParadoxMatchOptions.DUMB
                         val configs = ParadoxConfigManager.getConfigs(element, options)
                         if (configs.isEmpty()) return@run
-                        val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
+                        val definitionInfo = definitionInfoStack.peekLast() ?: return@run
                         buildDataFromSupports(element, configs, definitionInfo)
                     }
                 }

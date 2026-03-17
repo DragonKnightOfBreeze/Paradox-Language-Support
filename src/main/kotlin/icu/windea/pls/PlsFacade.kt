@@ -15,9 +15,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
-/**
- * 通用门面，用于获取协程作用域、各种服务以及各种插件设置。
- */
 @Suppress("unused")
 object PlsFacade {
     // from official documentation: Never acquire service instances prematurely or store them in fields for later use.
@@ -25,12 +22,18 @@ object PlsFacade {
     @Service(Service.Level.APP, Service.Level.PROJECT)
     private class CoroutineScopeService(val coroutineScope: CoroutineScope)
 
+    /**
+     * 得到应用级别的协程作用域。
+     */
     fun getCoroutineScope(): CoroutineScope = service<CoroutineScopeService>().coroutineScope
 
+    /**
+     * 得到指定项目的协程作用域。
+     */
     fun getCoroutineScope(project: Project): CoroutineScope = project.service<CoroutineScopeService>().coroutineScope
 
     /**
-     * 得到默认项目的指定游戏类型的规则分组。不能用于访问 PSI。
+     * 得到应用级别的指定游戏类型的规则分组（不能用于访问 PSI）。
      *
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
@@ -42,7 +45,7 @@ object PlsFacade {
     /**
      * 得到指定项目与游戏类型的规则分组。
      *
-     * @param project 指定的项目。如果是默认项目，则不能用于访问 PSI。
+     * @param project 指定的项目。如果是默认项目，则会得到应用级别的规则分组（不能用于访问 PSI）。
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
@@ -51,7 +54,7 @@ object PlsFacade {
     }
 
     /**
-     * 检查指定项目与上下文（[context]）的规则分组是否已加载完毕。
+     * 检查指定项目与上下文的规则分组是否已加载完毕。
      *
      * @param project 指定的项目。
      * @param context 用于获取游戏类型的上下文对象。
