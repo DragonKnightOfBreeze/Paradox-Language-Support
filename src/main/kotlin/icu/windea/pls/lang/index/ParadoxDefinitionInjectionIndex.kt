@@ -86,7 +86,11 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptProperty) visitProperty(element)
+                if (element is ParadoxScriptProperty) {
+                    visitProperty(element)
+                    return // optimize (definition injections can be only on top level of a script file)
+                }
+
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }

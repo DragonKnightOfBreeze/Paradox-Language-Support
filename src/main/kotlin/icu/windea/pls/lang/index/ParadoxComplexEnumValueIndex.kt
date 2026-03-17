@@ -84,7 +84,10 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+                if (element is ParadoxScriptStringExpressionElement) {
+                    visitStringExpressionElement(element)
+                }
+
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }

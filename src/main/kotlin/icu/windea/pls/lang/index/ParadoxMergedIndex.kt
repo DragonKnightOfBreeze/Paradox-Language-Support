@@ -178,7 +178,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationExpressionElement) {
                     visitExpressionElement(element)
-                    return
+                    return // optimize
                 }
 
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
