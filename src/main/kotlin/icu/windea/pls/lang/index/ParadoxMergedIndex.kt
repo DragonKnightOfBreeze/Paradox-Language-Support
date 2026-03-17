@@ -45,7 +45,6 @@ import icu.windea.pls.script.psi.isExpression
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
-import kotlin.concurrent.getOrSet
 
 /**
  * 脚本文件和本地化文件中的各种信息的索引。
@@ -95,28 +94,33 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         if (!isAvailableForScriptFile(file, optimizers)) return
 
+        val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
+        val definitionAvailableStatusStack = ArrayDeque<Boolean>()
+
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-        val definitionInfoStack = PlsStates.procssingDefinitionInfoStack.getOrSet { ArrayDeque() }
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                var definitionInfo: ParadoxDefinitionInfo? = null
-
                 if (element is ParadoxDefinitionElement) {
-                    definitionInfo = element.definitionInfo
+                    val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
                         element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)
                         definitionInfoStack.addLast(definitionInfo)
+                        val definitionAvailableStatus = isAvailableForDefinition(definitionInfo, optimizers)
+                        definitionAvailableStatusStack.addLast(definitionAvailableStatus)
                     }
                 }
 
                 buildDataFromSupports(element)
-                if (definitionInfo != null) visitWithDefinitionInfo(element, definitionInfo)
+
+                visitWithDefinitionInfo(element)
 
                 super.visitElement(element)
             }
 
-            private fun visitWithDefinitionInfo(element: PsiElement, definitionInfo: ParadoxDefinitionInfo) {
-                if (!isAvailableForDefinition(definitionInfo, optimizers)) return
+            private fun visitWithDefinitionInfo(element: PsiElement) {
+                val definitionInfo = definitionInfoStack.peekLast() ?: return
+                val definitionAvailableStatus = definitionAvailableStatusStack.peekLast() ?: return
+                if (!definitionAvailableStatus) return
 
                 if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                     ProgressManager.checkCanceled()
@@ -154,7 +158,6 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 }
             }
         })
-        PlsStates.procssingDefinitionInfoStack.remove()
     }
 
     private fun buildDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {

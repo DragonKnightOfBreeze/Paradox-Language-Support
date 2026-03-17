@@ -1,7 +1,6 @@
 package icu.windea.pls.lang
 
 import icu.windea.pls.lang.resolve.CwtConfigContext
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import java.util.*
 
 object PlsStates {
@@ -32,13 +31,6 @@ object PlsStates {
      * @see icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
      */
     val incompleteComplexExpression = ThreadLocal<Boolean>()
-
-    /**
-     * 用于得到正在处理的定义信息的堆栈。
-     *
-     * @see icu.windea.pls.lang.index.ParadoxMergedIndex
-     */
-    val procssingDefinitionInfoStack = ThreadLocal<ArrayDeque<ParadoxDefinitionInfo>>()
 
     /**
      * 用于得到正在解析的规则表达式的堆栈。
