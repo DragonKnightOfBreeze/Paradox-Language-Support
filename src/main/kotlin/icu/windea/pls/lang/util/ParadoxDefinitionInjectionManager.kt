@@ -115,6 +115,8 @@ object ParadoxDefinitionInjectionManager {
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
+        // must be on top level
+        if (element.parent !is ParadoxScriptRootBlock) return null
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
         // from cache
@@ -183,15 +185,15 @@ object ParadoxDefinitionInjectionManager {
         return mode in config.replaceModes
     }
 
-    // /**
-    //  * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
-    //  */
-    // fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
-    //     val mode = definitionInjectionInfo.mode
-    //     val configGroup = definitionInjectionInfo.configGroup
-    //     val config = configGroup.directivesModel.definitionInjection ?: return false
-    //     return mode in config.createModes
-    // }
+    /**
+     * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
+     */
+    fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
+        val mode = definitionInjectionInfo.mode
+        val configGroup = definitionInjectionInfo.configGroup
+        val config = configGroup.directivesModel.definitionInjection ?: return false
+        return mode in config.createModes
+    }
 
     /**
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。

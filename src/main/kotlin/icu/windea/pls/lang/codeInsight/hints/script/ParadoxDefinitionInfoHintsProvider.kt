@@ -26,7 +26,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val definitionInfo = definition.definitionInfo ?: return
 
         // 忽略内联或注入的定义
-        if(definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
 
         // 忽略类似 `event_namespace` 这样的定义的值不是子句的定义
         if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return

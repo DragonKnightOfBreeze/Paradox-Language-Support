@@ -36,7 +36,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        val containerElement = selectScope { element.parentDefinitionOrInjection().asProperty() }
+        val containerElement = selectScope { element.parentDefinitionCandidate().asProperty() }
         return containerElement != null
     }
 
@@ -52,7 +52,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 
         // 要求对应的字面量在定义声明内
         // 2.1.0 兼容定义注入
-        val containerElement = selectScope { element.parentDefinitionOrInjection().asProperty() } ?: return false
+        val containerElement = selectScope { element.parentDefinitionCandidate().asProperty() } ?: return false
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) {

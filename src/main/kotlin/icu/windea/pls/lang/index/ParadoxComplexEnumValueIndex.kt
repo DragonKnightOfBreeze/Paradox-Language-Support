@@ -105,7 +105,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
                 val enumName = config.name
 
                 // 2.1.3 兼容定义注入
-                val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionOrInjection() }?.startOffset ?: -1 else -1
+                val definitionElementOffset = if (config.perDefinition) selectScope { element.parentDefinitionCandidate() }?.startOffset ?: -1 else -1
 
                 val info = ParadoxComplexEnumValueIndexInfo(name, enumName, definitionElementOffset, gameType)
                 addToFileData(info, fileData)

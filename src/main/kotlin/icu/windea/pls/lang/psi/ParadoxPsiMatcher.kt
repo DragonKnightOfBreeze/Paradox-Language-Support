@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
@@ -23,7 +24,6 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -44,28 +44,6 @@ object ParadoxPsiMatcher {
             returns(true) implies (element is ParadoxScriptScriptedVariable)
         }
         return element is ParadoxScriptScriptedVariable && element.name?.orNull() != null
-    }
-
-    /**
-     * 是否是（可以获取定义信息的）定义。
-     */
-    @OptIn(ExperimentalContracts::class)
-    fun isDefinition(element: PsiElement?): Boolean {
-        contract {
-            returns(true) implies (element is ParadoxDefinitionElement)
-        }
-        return element is ParadoxDefinitionElement && element.definitionInfo != null // 定义名可以为空（即匿名）
-    }
-
-    /**
-     * 是否是（可以获取定义注入信息的）定义注入。
-     */
-    @OptIn(ExperimentalContracts::class)
-    fun isDefinitionInjection(element: PsiElement?): Boolean {
-        contract {
-            returns(true) implies (element is ParadoxScriptProperty)
-        }
-        return element is ParadoxScriptProperty && element.parent is ParadoxScriptRootBlock && element.definitionInjectionInfo != null
     }
 
     /**
@@ -123,23 +101,63 @@ object ParadoxPsiMatcher {
 
     // region Semantic Matchers
 
+    @OptIn(ExperimentalContracts::class)
     fun isLocalScriptedVariable(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptScriptedVariable)
+        }
         if (!isScriptedVariable(element)) return false
         val path = selectFile(element)?.fileInfo?.path?.path ?: return false
         return !"common/scripted_variables".matchesPath(path)
     }
 
+    @OptIn(ExperimentalContracts::class)
     fun isGlobalScriptedVariable(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptScriptedVariable)
+        }
         if (!isScriptedVariable(element)) return false
         val path = selectFile(element)?.fileInfo?.path?.path ?: return false
         return "common/scripted_variables".matchesPath(path)
     }
 
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinitionCandidate(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxDefinitionElement && element.definitionCandidateInfo != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinition(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxDefinitionElement)
+        }
+        return element is ParadoxDefinitionElement && element.definitionInfo != null // 定义名可以为空（即匿名）
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinitionInjection(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxScriptProperty && element.definitionInjectionInfo != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
     fun isNormalLocalisation(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxLocalisationProperty)
+        }
         return isLocalisation(element) && element.type == ParadoxLocalisationType.Normal
     }
 
+    @OptIn(ExperimentalContracts::class)
     fun isSyncedLocalisation(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxLocalisationProperty)
+        }
         return isLocalisation(element) && element.type == ParadoxLocalisationType.Synced
     }
 
@@ -156,7 +174,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInlineSCriptFile(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isInlineScriptFile(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptFile)
         }
@@ -178,7 +196,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isDefinitionInjection(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
+    fun isDefinitionInjectionUsage(element: PsiElement?, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }

@@ -351,16 +351,16 @@ fun PsiElement.parentDefinitionInjection(withSelf: Boolean = true): ParadoxScrip
 }
 
 /**
- * 向上查找第一个符合条件的定义或定义注入。
+ * 向上查找第一个符合条件的定义候选（定义或定义注入）。
  *
  * @param withSelf 结果是否可以是自身。
  */
 context(_: ParadoxPsiSelectScope)
 @ParadoxPsiSelectDsl
-fun PsiElement.parentDefinitionOrInjection(withSelf: Boolean = true): ParadoxDefinitionElement? {
+fun PsiElement.parentDefinitionCandidate(withSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = withSelf) p@{
-        if (ParadoxPsiMatcher.isDefinition(it) || ParadoxPsiMatcher.isDefinitionInjection(it)) return it
+        if (ParadoxPsiMatcher.isDefinitionCandidate(it)) return it
         true
     }
     return null

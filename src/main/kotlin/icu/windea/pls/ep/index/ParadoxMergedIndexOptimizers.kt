@@ -8,7 +8,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -41,9 +41,9 @@ class ParadoxDefinitionBasedMergedIndexOptimizer : ParadoxMergedIndexOptimizer {
         return false
     }
 
-    override fun isAvailableForDefinition(definitionInfo: ParadoxDefinitionInfo): Boolean {
-        val typeConfig = definitionInfo.typeConfig
-        val configGroup = typeConfig.configGroup
+    override fun isAvailableForDefinition(definitionCandidateInfo: ParadoxDefinitionCandidateInfo): Boolean {
+        val typeConfig = definitionCandidateInfo.typeConfig ?: return false
+        val configGroup = definitionCandidateInfo.configGroup
 
         // 如果涉及特定类型的定义，则认为是可用的
         if (isForcedTypeConfig(typeConfig)) return true

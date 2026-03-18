@@ -13,8 +13,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -157,12 +157,9 @@ object ParadoxTypeManager {
         if (element !is ParadoxScriptPropertyKey) return null
         val property = element.parentProperty ?: return null
 
-        val definitionInfo = property.definitionInfo
-        if (definitionInfo != null) return definitionInfo.typeText
-
         // #252 兼容定义注入
-        val definitionInjectionInfo = property.definitionInjectionInfo
-        if (definitionInjectionInfo != null) return definitionInjectionInfo.typeText
+        val definitionCandidateInfo = property.definitionCandidateInfo
+        if (definitionCandidateInfo != null) return definitionCandidateInfo.typeText
 
         return null
     }

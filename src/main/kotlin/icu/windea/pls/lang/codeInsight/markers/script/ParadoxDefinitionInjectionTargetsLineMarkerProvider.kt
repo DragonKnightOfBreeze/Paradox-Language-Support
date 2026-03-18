@@ -13,6 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
@@ -36,7 +37,7 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
-        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
+        val info = element.definitionInjectionInfo ?: return
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
 

@@ -17,7 +17,9 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.modifier.modifierConfig
+import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
@@ -31,10 +33,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -67,7 +67,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
             val property = element.parentProperty ?: return@run
-            val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(property) ?: return@run
+            val definitionInjectionInfo = property.definitionInjectionInfo ?: return@run
             val modeConfig = definitionInjectionInfo.modeConfig
             result += modeConfig
             val typeConfig = definitionInjectionInfo.typeConfig
@@ -78,7 +78,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 尝试解析为复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
-            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
+            val complexEnumValueInfo = element.complexEnumValueInfo ?: return@run
             val complexEnumConfig = configGroup.complexEnums[complexEnumValueInfo.enumName] ?: return@run
             result += complexEnumConfig
         }

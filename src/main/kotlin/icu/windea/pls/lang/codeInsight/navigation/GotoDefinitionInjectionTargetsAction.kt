@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectGameType
@@ -35,7 +36,7 @@ class GotoDefinitionInjectionTargetsAction : BaseCodeInsightAction() {
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
-        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
+        val info = element.definitionInjectionInfo ?: return
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
         presentation.isEnabledAndVisible = true

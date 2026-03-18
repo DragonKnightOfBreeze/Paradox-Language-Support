@@ -1,9 +1,7 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
@@ -12,7 +10,6 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -29,28 +26,16 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * @property memberPath 成员路径。作为文件的定义的成员路径始终为空。
  */
 data class ParadoxDefinitionInfo(
-    val source: ParadoxDefinitionSource,
+    override val source: ParadoxDefinitionSource,
     val name: String,
-    val type: String,
+    override val type: String,
     val typeKey: String,
     val rootKeys: List<String>,
-    val typeConfig: CwtTypeConfig,
-) : UserDataHolderBase() {
-    val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
-
+    override val typeConfig: CwtTypeConfig,
+) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
     @Volatile var element: ParadoxDefinitionElement? = null
 
-    val configGroup: CwtConfigGroup get() = typeConfig.configGroup
-    val project: Project get() = configGroup.project
-    val gameType: ParadoxGameType get() = configGroup.gameType
-    val declarationConfig: CwtDeclarationConfig? get() = configGroup.declarations.get(type)
-
-    val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
-    val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
-    val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
-
-    val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
-    val declaration: CwtPropertyConfig? get() = getDeclaration()
+    val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
 
     // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
     val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
@@ -59,11 +44,13 @@ data class ParadoxDefinitionInfo(
     val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
+    override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
+
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
-    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
+    override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
 
     /** @see ParadoxDefinitionManager.getDeclaration */
-    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionManager.getDeclaration(this, options)
+    override fun getDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? = ParadoxDefinitionManager.getDeclaration(this, options)
 
     override fun toString(): String {
         return "ParadoxDefinitionInfo(source=$source, name=$name, type=$type, typeKey=$typeKey, rootKeys=$rootKeys, gameType=$gameType)"

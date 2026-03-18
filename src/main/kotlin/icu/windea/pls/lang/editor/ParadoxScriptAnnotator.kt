@@ -132,7 +132,7 @@ class ParadoxScriptAnnotator : Annotator {
     }
 
     private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        if (!ParadoxPsiMatcher.isDefinitionInjection(element, gameType)) return false
+        if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, gameType)) return false
         val name = element.name
         if (name.isParameterized()) return false // 忽略带参数的情况
 

@@ -10,7 +10,10 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -29,7 +32,7 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
-        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return null
+        val info = element.definitionInjectionInfo ?: return null
         if (info.target.isNullOrEmpty()) return null // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return null // 排除目标定义的类型为空的情况
         val targets = mutableListOf<PsiElement>()
@@ -53,16 +56,14 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        if (sourceElement !is ParadoxScriptProperty) return ""
-        val target = ParadoxDefinitionInjectionManager.getInfo(sourceElement)?.target
-        if (target.isNullOrEmpty()) return ""
+        val definitionInjectionInfo = sourceElement.castOrNull<ParadoxScriptProperty>()?.definitionInjectionInfo ?: return ""
+        val target = definitionInjectionInfo.target?.orNull() ?: return ""
         return PlsBundle.message("script.goto.definitionInjections.chooseTitle", target.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        if (sourceElement !is ParadoxScriptProperty) return ""
-        val target = ParadoxDefinitionInjectionManager.getInfo(sourceElement)?.target
-        if (target.isNullOrEmpty()) return ""
+        val definitionInjectionInfo = sourceElement.castOrNull<ParadoxScriptProperty>()?.definitionInjectionInfo ?: return ""
+        val target = definitionInjectionInfo.target?.orNull() ?: return ""
         return PlsBundle.message("script.goto.definitionInjections.findUsagesTitle", target.escapeXml())
     }
 

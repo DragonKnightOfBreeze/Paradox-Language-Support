@@ -68,7 +68,7 @@ object ParadoxScriptNavigationManager {
                 }
                 run {
                     // 作为定义注入的属性使用特殊图标
-                    if (!ParadoxPsiMatcher.isDefinitionInjection(element, selectGameType(element))) return@run
+                    if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, selectGameType(element))) return@run
                     return PlsIcons.Nodes.Directive
                 }
                 run {

@@ -1,14 +1,12 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -24,31 +22,22 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 data class ParadoxDefinitionInjectionInfo(
     val mode: String,
     val target: String?,
-    val type: String?,
+    override val type: String?,
     val modeConfig: CwtValueConfig,
-    val typeConfig: CwtTypeConfig?,
-) {
+    override val typeConfig: CwtTypeConfig?,
+) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
     @Volatile var element: ParadoxScriptProperty? = null
-
-    val configGroup: CwtConfigGroup get() = modeConfig.configGroup
-    val project: Project get() = configGroup.project
-    val gameType: ParadoxGameType get() = configGroup.gameType
-    val declarationConfig: CwtDeclarationConfig? get() = type?.let { configGroup.declarations.get(it) }
-
-    val subtypeConfigs: List<CwtSubtypeConfig> get() = getSubtypeConfigs()
-    val declaration: CwtPropertyConfig? get() = getDeclaration()
-
-    val subtypes: List<String> get() = ParadoxConfigManager.getSubtypes(subtypeConfigs)
-    val types: List<String> get() = ParadoxConfigManager.getTypes(type, subtypeConfigs)
-    val typeText: String get() = ParadoxConfigManager.getTypeText(type, subtypeConfigs)
 
     val expression: String get() = ParadoxDefinitionInjectionManager.getExpression(mode, target)
 
+    override val source: ParadoxDefinitionSource get() = ParadoxDefinitionSource.Injection
+    override val configGroup: CwtConfigGroup get() = modeConfig.configGroup
+
     /** @see ParadoxDefinitionInjectionManager.getSubtypeConfigs */
-    fun getSubtypeConfigs(options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, options)
+    override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionInjectionManager.getSubtypeConfigs(this, options)
 
     /** @see ParadoxDefinitionInjectionManager.getDeclaration */
-    fun getDeclaration(options: ParadoxMatchOptions? = null): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, options)
+    override fun getDeclaration(options: ParadoxMatchOptions?): CwtPropertyConfig? = ParadoxDefinitionInjectionManager.getDeclaration(this, options)
 
     /** @see ParadoxDefinitionInjectionManager.isRelaxMode */
     fun isRelaxMode(): Boolean = ParadoxDefinitionInjectionManager.isRelaxMode(this)

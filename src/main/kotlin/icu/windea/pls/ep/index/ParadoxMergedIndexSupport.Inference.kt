@@ -19,6 +19,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -39,7 +40,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
 
     override val type = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
         val config = configs.find { matchesConfig(it) }
@@ -81,8 +82,9 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxEventInOnActionIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo?.type != ParadoxDefinitionTypes.onAction) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (info !is ParadoxDefinitionInfo) return
+        if (info.type != ParadoxDefinitionTypes.onAction) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -91,8 +93,8 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
         val eventName = element.value
         val typeExpression = config.configExpression.value ?: return
-        val containingOnActionName = definitionInfo.name
-        val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, definitionInfo.gameType)
+        val containingOnActionName = info.name
+        val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, info.gameType)
         addToFileData(info, fileData)
     }
 
@@ -125,8 +127,9 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
 
     override val type = ParadoxEventInEventIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo?.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (info !is ParadoxDefinitionInfo) return
+        if (info.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -134,10 +137,10 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
         if (config == null) return
 
         val eventName = element.value
-        val containingEventName = definitionInfo.name
-        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
+        val containingEventName = info.name
+        val containingEventScope = ParadoxEventManager.getScope(info)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, definitionInfo.gameType)
+        val info = ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, info.gameType)
         addToFileData(info, fileData)
     }
 
@@ -189,8 +192,9 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 
     override val type = ParadoxOnActionInEventIndexInfo::class.java
 
-    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
-        if (definitionInfo?.type != ParadoxDefinitionTypes.event) return
+    override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+        if (info !is ParadoxDefinitionInfo) return
+        if (info.type != ParadoxDefinitionTypes.event) return
 
         val expression = element.value
         if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
@@ -198,10 +202,10 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
         if (config == null) return
 
         val onActionName = element.value
-        val containingEventName = definitionInfo.name
-        val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
+        val containingEventName = info.name
+        val containingEventScope = ParadoxEventManager.getScope(info)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, definitionInfo.gameType)
+        val info = ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, info.gameType)
         addToFileData(info, fileData)
     }
 

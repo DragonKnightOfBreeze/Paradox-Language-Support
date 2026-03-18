@@ -29,7 +29,7 @@ class IntroduceLocalScriptedVariableFix(
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement
-        val containerElmeent = selectScope { element.parentDefinitionOrInjection() } ?: element.containingFile as? ParadoxScriptFile ?: return
+        val containerElmeent = selectScope { element.parentDefinitionCandidate() } ?: element.containingFile as? ParadoxScriptFile ?: return
 
         val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
         executeWriteCommand(project, commandName, makeWritable = file) c@{

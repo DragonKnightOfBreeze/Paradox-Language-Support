@@ -32,7 +32,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         if (file.virtualFile == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        val containerElement = selectScope { element.parentDefinitionOrInjection().asProperty() }
+        val containerElement = selectScope { element.parentDefinitionCandidate().asProperty() }
         return containerElement != null
     }
 

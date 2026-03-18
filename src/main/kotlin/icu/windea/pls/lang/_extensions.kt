@@ -12,6 +12,7 @@ import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.lang.util.ParadoxDefinitionCandidateManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -20,6 +21,7 @@ import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.model.ParadoxDefineInfo
+import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxFileInfo
@@ -48,6 +50,8 @@ inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalysisManager
 inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.selectLocale(from)
 
 inline val ParadoxScriptProperty.defineInfo: ParadoxDefineInfo? get() = ParadoxDefineManager.getInfo(this)
+
+inline val ParadoxDefinitionElement.definitionCandidateInfo: ParadoxDefinitionCandidateInfo? get() = ParadoxDefinitionCandidateManager.getInfo(this)
 
 inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
 

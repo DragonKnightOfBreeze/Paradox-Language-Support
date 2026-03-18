@@ -60,7 +60,7 @@ object ParadoxSearchScopeTypes {
     val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { _, context ->
         // 2.1.3 兼容定义注入
         when {
-            context is PsiElement -> selectScope { context.parentDefinitionOrInjection() }
+            context is PsiElement -> selectScope { context.parentDefinitionCandidate() }
             context is ParadoxComplexEnumValueIndexInfo -> context.definitionElement
             else -> null
         }

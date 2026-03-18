@@ -85,7 +85,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
     }
 
     private fun findParentDefinitionType(element: ParadoxScriptProperty): String? {
-        val fromElement = selectScope { element.parentDefinitionOrInjection() } ?: return null
+        val fromElement = selectScope { element.parentDefinitionCandidate() } ?: return null
         ParadoxDefinitionManager.getType(fromElement)?.let { return it }
         if (fromElement is ParadoxScriptProperty) {
             ParadoxDefinitionInjectionManager.getType(fromElement)?.let { return it }

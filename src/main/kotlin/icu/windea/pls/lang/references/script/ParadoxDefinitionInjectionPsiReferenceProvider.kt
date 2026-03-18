@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.parentProperty
@@ -20,7 +20,7 @@ class ParadoxDefinitionInjectionPsiReferenceProvider : PsiReferenceProvider() {
 
         if (element !is ParadoxScriptPropertyKey) return PsiReference.EMPTY_ARRAY
         val property = element.parentProperty ?: return PsiReference.EMPTY_ARRAY
-        val info = ParadoxDefinitionInjectionManager.getInfo(property) ?: return PsiReference.EMPTY_ARRAY
+        val info = property.definitionInjectionInfo ?: return PsiReference.EMPTY_ARRAY
         val offset = ParadoxExpressionManager.getExpressionOffset(element)
 
         // 兼容目标为空或者目标定义的类型为空的情况，此时仅返回 `modeReference`

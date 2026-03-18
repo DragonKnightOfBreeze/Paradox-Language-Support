@@ -15,13 +15,17 @@ import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer
 import icu.windea.pls.ep.index.ParadoxMergedIndexSupport
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -34,7 +38,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
-import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -57,6 +62,10 @@ import java.util.*
  */
 @Optimized
 class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>, ParadoxIndexInfo>() {
+    object Keys : KeyRegistry() {
+        val definitionCandidate by registerKey<Boolean>(Keys)
+    }
+
     override fun getName() = PlsIndexKeys.Merged
 
     override fun getVersion() = PlsIndexVersions.Merged
@@ -97,24 +106,15 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val optimizers = ParadoxMergedIndexOptimizer.EP_NAME.extensionList
         if (!useLazyIndex && !isAvailableForScriptFile(file, optimizers)) return
 
-        val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
+        val definitionCandidateInfoStack = ArrayDeque<ParadoxDefinitionCandidateInfo>() // definition or definition injection
         val definitionAvailableStatusStack = ArrayDeque<Boolean>()
 
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxDefinitionElement) {
-                    val definitionInfo = element.definitionInfo
-                    if (definitionInfo != null) {
-                        element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)
-                        definitionInfoStack.addLast(definitionInfo)
-                        val definitionAvailableStatus = isAvailableForDefinition(definitionInfo, optimizers)
-                        definitionAvailableStatusStack.addLast(definitionAvailableStatus)
-                    }
-                }
-
                 buildDataFromSupports(element)
 
+                checkContextRoot(element)
                 if (element is ParadoxScriptStringExpressionElement) {
                     visitExpressionElement(element)
                 }
@@ -122,39 +122,52 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 super.visitElement(element)
             }
 
+            private fun checkContextRoot(element: PsiElement) {
+                if (element !is ParadoxDefinitionElement) return
+                val definitionCandidateInfo = element.definitionCandidateInfo ?: return
+
+                // 忽略内联或注入的定义
+                if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline || definitionCandidateInfo.source == ParadoxDefinitionSource.Injection) return
+
+                element.putUserData(Keys.definitionCandidate, true)
+                definitionCandidateInfoStack.addLast(definitionCandidateInfo)
+                val definitionAvailableStatus = isAvailableForDefinition(definitionCandidateInfo, optimizers)
+                definitionAvailableStatusStack.addLast(definitionAvailableStatus)
+            }
+
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if (!element.isExpression()) return
 
-                val definitionInfo = definitionInfoStack.peekLast()
+                val definitionCandidateInfo = definitionCandidateInfoStack.peekLast()
                 val definitionAvailableStatus = definitionAvailableStatusStack.peekLast()
                 if (!useLazyIndex && definitionAvailableStatus != true) return
 
-                buildDataForExpressionFromSupports(element, definitionInfo)
+                buildDataForExpressionFromSupports(element, definitionCandidateInfo)
 
                 ProgressManager.checkCanceled()
                 val options = ParadoxMatchOptions.DUMB
                 val configs = ParadoxConfigManager.getConfigs(element, options)
                 if (configs.isEmpty()) return
-                buildDataForExpressionFromSupports(element, definitionInfo, configs)
+                buildDataForExpressionFromSupports(element, definitionCandidateInfo, configs)
             }
 
             private fun buildDataFromSupports(element: PsiElement) {
                 supports.forEachFast { support -> support.buildData(element, fileData) }
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo?) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo) }
+            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?) {
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, info) }
             }
 
-            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, definitionInfo: ParadoxDefinitionInfo?, configs: List<CwtMemberConfig<*>>) {
-                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, definitionInfo, configs) }
+            private fun buildDataForExpressionFromSupports(element: ParadoxScriptStringExpressionElement, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
+                supports.forEachFast { support -> support.buildDataForExpression(element, fileData, info, configs) }
             }
 
             override fun elementFinished(element: PsiElement) {
                 if (element is ParadoxDefinitionElement) {
-                    if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
-                        element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
-                        definitionInfoStack.pollLast()
+                    if (element.getUserData(Keys.definitionCandidate) == true) {
+                        element.putUserData(Keys.definitionCandidate, null)
+                        definitionCandidateInfoStack.pollLast()
                         definitionAvailableStatusStack.pollLast()
                         cleanUpDumbDefinitionCache(element)
                     }
@@ -211,8 +224,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         return false
     }
 
-    private fun isAvailableForDefinition(definitionInfo: ParadoxDefinitionInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
-        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForDefinition(definitionInfo)) return true }
+    private fun isAvailableForDefinition(definitionCandidateInfo: ParadoxDefinitionCandidateInfo, optimizers: List<ParadoxMergedIndexOptimizer>): Boolean {
+        optimizers.forEachFast { optimizer -> if (optimizer.isAvailableForDefinition(definitionCandidateInfo)) return true }
         return false
     }
 

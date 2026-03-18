@@ -41,7 +41,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
 
     abstract class InlineScript : ParadoxQuickDocTextProviderBase() {
         override fun getQuickDocText(element: PsiElement): String? {
-            if (!ParadoxPsiMatcher.isInlineSCriptFile(element)) return null
+            if (!ParadoxPsiMatcher.isInlineScriptFile(element)) return null
             val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element) ?: return null
             if (expression.isEmpty()) return null
             if (expression.isParameterized()) return null
