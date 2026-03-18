@@ -18,6 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @property type 目标定义的类型。可以为 `null`。
  * @property modeConfig 注入模式对应的规则。
  * @property typeConfig 目标定义的类型对应的规则。
+ * @property expression 定义注入表达式。格式：`{mode}:{target}`。
  */
 data class ParadoxDefinitionInjectionInfo(
     val mode: String,

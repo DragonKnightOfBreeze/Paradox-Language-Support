@@ -59,7 +59,7 @@ interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberC
     companion object : Resolver by CwtExtendedDefinitionConfigResolverImpl()
 }
 
-// region
+// region Implementations
 
 private class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()

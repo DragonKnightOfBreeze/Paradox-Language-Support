@@ -7,7 +7,6 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -88,19 +87,21 @@ private class CwtTypeImagesConfigImpl(
     override val config: CwtPropertyConfig,
     override val locationConfigs: List<Pair<String?, CwtLocationConfig>>
 ) : UserDataHolderBase(), CwtTypeImagesConfig {
-    private val configsCache = CacheBuilder().build<String, List<CwtLocationConfig>>().cancelable()
+    private val configsCache = CacheBuilder().build<String, List<CwtLocationConfig>>()
 
     override fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
         val cacheKey = subtypes.joinToString(",")
-        return configsCache.get(cacheKey) {
-            val result = mutableListOf<CwtLocationConfig>()
-            for ((subtypeExpression, locationConfig) in locationConfigs) {
-                if (subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                    result.add(locationConfig)
-                }
+        return configsCache.get(cacheKey) { computeConfigs(subtypes).optimized() }
+    }
+
+    private fun computeConfigs(subtypes: List<String>): MutableList<CwtLocationConfig> {
+        val result = mutableListOf<CwtLocationConfig>()
+        for ((subtypeExpression, locationConfig) in locationConfigs) {
+            if (subtypeExpression == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
+                result.add(locationConfig)
             }
-            result
         }
+        return result
     }
 
     override fun toString() = "CwtTypeImagesConfigImpl(locationConfigs=$locationConfigs)"

@@ -94,8 +94,8 @@ private class CwtExtendedInlineScriptConfigImpl(
     override val name: String,
     override val contextConfigsType: String,
 ) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
-    private val _containerConfig by lazy { doGetContainerConfig() }
-    private val _contextConfigs by lazy { doGetContextConfigs() }
+    private val _containerConfig by lazy { computeContainerConfig() }
+    private val _contextConfigs by lazy { computeContextConfigs() }
 
     override fun getContainerConfig(): CwtMemberConfig<*> {
         return _containerConfig
@@ -105,13 +105,13 @@ private class CwtExtendedInlineScriptConfigImpl(
         return _contextConfigs
     }
 
-    private fun doGetContainerConfig(): CwtMemberConfig<*> {
+    private fun computeContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
-    private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
+    private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
         val containerConfig = _containerConfig
         if (containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {

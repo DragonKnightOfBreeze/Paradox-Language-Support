@@ -93,12 +93,18 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
-                if (!element.isExpression()) return
+                val elementName = element.name
+                if (elementName.isParameterized()) return // 排除可能带参数的情况
 
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
-                val name = element.value
-                if (name.isParameterized()) return // 排除可能带参数的情况
+                processComplexEnumValue(element, elementName)
+            }
+
+            private fun processComplexEnumValue(element: ParadoxScriptStringExpressionElement, elementName: String) {
+                if (!element.isExpression()) return
+
+                val name = elementName
+                // if (name.isParameterized()) return
                 if (ParadoxInlineScriptManager.isMatched(name, gameType)) return // 排除是内联脚本用法的情况
                 val matchContext = fileLevelMatchContext/*.copy()*/
                 val config = fileLevelConfigs.find { ParadoxConfigMatchService.matchesComplexEnum(matchContext, element, it) } ?: return

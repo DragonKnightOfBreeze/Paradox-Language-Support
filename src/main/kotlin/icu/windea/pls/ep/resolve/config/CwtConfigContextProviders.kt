@@ -77,9 +77,8 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         if (fileInfo == null) return null
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val definitionMemberPath = definitionInfo.memberPath
         val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = definitionMemberPath.relativeTo(memberPathFromFile)?.normalize() ?: return null
+        val memberPath = definitionInfo.memberPath.relativeTo(memberPathFromFile)?.normalize() ?: return null
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         configContext.definitionInfo = definitionInfo
         return configContext

@@ -35,7 +35,7 @@ data class ParadoxDefinitionInfo(
 ) : UserDataHolderBase(), ParadoxDefinitionCandidateInfo {
     @Volatile var element: ParadoxDefinitionElement? = null
 
-    val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
+    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
 
     // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
     val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)

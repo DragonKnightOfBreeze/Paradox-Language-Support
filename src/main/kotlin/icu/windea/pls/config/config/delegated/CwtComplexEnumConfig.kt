@@ -125,9 +125,14 @@ private class CwtComplexEnumConfigImpl(
     override val perDefinition: Boolean,
     override val nameConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
-    override val searchScopeType: String? = if (perDefinition) "definition" else null
+    override val searchScopeType: String? = computeSearchScopeType()
+    override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy { computeEnumNameConfigs().optimized() }
 
-    override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
+    private fun computeSearchScopeType(): String? {
+        return if (perDefinition) "definition" else null
+    }
+
+    private fun computeEnumNameConfigs(): List<CwtMemberConfig<*>> {
         val result = mutableListOf<CwtMemberConfig<*>>()
         nameConfig.accept(object : CwtMemberConfigRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
@@ -140,7 +145,7 @@ private class CwtComplexEnumConfigImpl(
                 return super.visitValue(config)
             }
         })
-        result.optimized()
+        return result
     }
 
     override fun toString() = "CwtComplexEnumConfigImpl(name='$name')"

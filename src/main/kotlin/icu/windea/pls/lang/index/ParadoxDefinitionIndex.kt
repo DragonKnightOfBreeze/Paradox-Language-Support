@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
@@ -88,41 +89,66 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (fileLevelTypeConfigs.isEmpty()) return
         fileLevelMatchContext.matchPath = false
 
-        val typeConfigForInjection = when {
-            ParadoxDefinitionInjectionManager.isSupported(gameType) -> fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(fileLevelMatchContext, it) }
-            else -> null
-        }
+        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs)
 
-        val maxDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val rootKeyStack = ArrayDeque<String>()
+        ParadoxMemberService.injectRootKeys(psiFile, rootKeyStack)
+
+        // 预计算候选类型规则中最大的顶级键深度，用于限制 PSI 遍历深度
+        val maxDefinitionDepth = PlsInternalSettings.getInstance().maxDefinitionDepth
+        val maxRootKeyDepth = fileLevelTypeConfigs.maxOf { it.maxRootKeyDepth }
+        val effectiveMaxDepth = (minOf(maxRootKeyDepth, maxDefinitionDepth) - rootKeyStack.size).coerceAtLeast(0)
 
         // 2.1.3 这里需要使用 accept 而非 acceptChildren，因为 psiFile 也可能是一个定义
         psiFile.accept(object : PsiRecursiveElementWalkingVisitor() {
+            var depth = 0
+
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxDefinitionElement) {
-                    visitDefinitionElement(element)
+                if (element is ParadoxScriptProperty) {
+                    visitProperty(element)
+                    if (depth > effectiveMaxDepth) return // optimize
                 }
 
                 if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
-            private fun visitDefinitionElement(element: ParadoxDefinitionElement) {
-                ProgressManager.checkCanceled()
-                // 2.1.3 检查是否是 create_mode 的定义注入
-                processDefinitionFromInjection(element).let { if (!it) return }
+            override fun visitFile(element: PsiFile) {
+                if (element !is ParadoxScriptFile) return
+                val elementName = element.name
+
                 // 2.1.3 直接匹配，不经过缓存数据，以优化性能
-                processDefinition(element)
+                processNormalDefinition(element, elementName)
+
+                super.visitFile(element)
             }
 
-            private fun processDefinition(element: ParadoxDefinitionElement): Boolean {
+            private fun visitProperty(element: ParadoxScriptProperty) {
+                val elementName = element.name
+                if (elementName.isEmpty() || elementName.isParameterized()) return // 排除为空字符串或者可能带参数的情况
+
+                // 2.1.3 直接匹配，不经过缓存数据，以优化性能
+                processDefinition(element, elementName)
+
+                rootKeyStack.addLast(elementName)
+                depth++
+            }
+
+            private fun processDefinition(element: ParadoxScriptProperty, elementName: String) {
+                // 2.1.3 检查是否是注入的定义（注入模式属于 create_modes）
+                processInjectedDefinition(element, elementName).let { if (!it) return }
+                // 2.1.3 检查是否是普通定义
+                processNormalDefinition(element, elementName)
+            }
+
+            private fun processNormalDefinition(element: ParadoxDefinitionElement, elementName: String): Boolean {
                 // 匹配性检查
                 val source = ParadoxDefinitionService.resolveSource(element) ?: return true
-                val typeKey = ParadoxMemberService.getTypeKey(element) ?: return true
-                // 忽略 rootKeys 深度超出限制，或者带参数的情况
-                val rootKeys = ParadoxMemberService.getRootKeys(element, maxDepth = maxDepth, parameterAware = false) ?: return false
+                val typeKey = ParadoxMemberService.getTypeKey(element, elementName) ?: return true
+                val rootKeys = rootKeyStack // reuse root key stack here to optimize performance
                 val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
                 val matchContext = fileLevelMatchContext.copy(typeKey = typeKey, rootKeys = rootKeys, typeKeyPrefix = typeKeyPrefix)
-                val typeConfig = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesType(matchContext, element, it) } ?: return false
+                val typeConfig = getMatchedTypeConfig(matchContext, element, fileLevelTypeConfigs) ?: return false
                 val type = typeConfig.name.orNull() ?: return false
                 val name = ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
                 val fastSubtypes = ParadoxConfigMatchService.getFastMatchedSubtypeConfigs(typeConfig, typeKey).map { it.name }.optimized()
@@ -132,8 +158,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 return false
             }
 
-            private fun processDefinitionFromInjection(element: ParadoxDefinitionElement): Boolean {
-                if (element !is ParadoxScriptProperty) return true
+            private fun processInjectedDefinition(element: ParadoxScriptProperty, elementName: String): Boolean {
+                if (depth > 0) return true // optimize
 
                 // 可用性检查
                 if (element.parent !is ParadoxScriptRootBlock) return true
@@ -142,8 +168,8 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
 
                 // 匹配性检查
                 val source = ParadoxDefinitionSource.Injection
-                val expression = element.name
-                if (expression.isEmpty() || expression.isParameterized()) return true
+                val expression = elementName
+                // if (expression.isEmpty() || expression.isParameterized()) return true
                 val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expression) ?: return true
                 if (mode.isEmpty()) return false
                 if (!ParadoxDefinitionInjectionManager.isCreateMode(mode, configGroup)) return false
@@ -160,7 +186,23 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
                 addToFileData(info, fileData)
                 return false
             }
+
+            override fun elementFinished(element: PsiElement) {
+                if (element is ParadoxScriptProperty) {
+                    rootKeyStack.removeLastOrNull()
+                    depth--
+                }
+            }
         })
+    }
+
+    private fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesType(context, element, it) }
+    }
+
+    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        if (!ParadoxDefinitionInjectionManager.isSupported(context.gameType)) return null
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
     }
 
     private fun addToFileData(info: ParadoxDefinitionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionIndexInfo>>) {

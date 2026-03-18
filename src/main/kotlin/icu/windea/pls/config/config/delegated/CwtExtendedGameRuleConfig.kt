@@ -74,9 +74,11 @@ private class CwtExtendedGameRuleConfigImpl(
     override val name: String,
     override val hint: String?
 ) : UserDataHolderBase(), CwtExtendedGameRuleConfig {
-    override val configForDeclaration: CwtPropertyConfig? by lazy {
-        if (config !is CwtPropertyConfig) return@lazy null
-        CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    override val configForDeclaration: CwtPropertyConfig? by lazy { computeConfigForDeclaration() }
+
+    private fun computeConfigForDeclaration(): CwtPropertyConfig? {
+        if (config !is CwtPropertyConfig) return null
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtExtendedGameRuleConfigImpl(name='$name')"

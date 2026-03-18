@@ -105,7 +105,7 @@ object ParadoxDefinitionManager {
     fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
         // NOTE 2.1.2 file definition has empty member path
         if (definitionInfo.typeConfig.typePerFile) return ParadoxMemberPath.resolveEmpty()
-        return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey).normalize()
+        return ParadoxMemberPath.resolve(definitionInfo.rootKeys + definitionInfo.typeKey)
     }
 
     fun getRelatedLocalisationInfos(definitionInfo: ParadoxDefinitionInfo): List<ParadoxDefinitionInfo.RelatedLocalisationInfo> {

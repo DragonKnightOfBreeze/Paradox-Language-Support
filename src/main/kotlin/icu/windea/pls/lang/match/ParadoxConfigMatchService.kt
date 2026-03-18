@@ -34,6 +34,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
@@ -84,17 +85,18 @@ object ParadoxConfigMatchService {
     }
 
     fun getMatchedTypeConfig(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement): CwtTypeConfig? {
-        val candicates = getTypeConfigCandidates(context)
-        if (candicates.isEmpty()) return null
+        val candidates = getTypeConfigCandidates(context)
+        if (candidates.isEmpty()) return null
         context.matchPath = false
-        return candicates.find { matchesType(context, element, it) }
+        return candidates.find { matchesType(context, element, it) }
     }
 
     fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext): CwtTypeConfig? {
-        val candicates = getTypeConfigCandidates(context)
-        if (candicates.isEmpty()) return null
+        if (!ParadoxDefinitionInjectionManager.isSupported(context.gameType)) return null
+        val candidates = getTypeConfigCandidates(context)
+        if (candidates.isEmpty()) return null
         context.matchPath = false
-        return candicates.find { matchesTypeForInjection(context, it) }
+        return candidates.find { matchesTypeForInjection(context, it) }
     }
 
     fun matchesType(context: CwtTypeConfigMatchContext, element: ParadoxDefinitionElement, typeConfig: CwtTypeConfig): Boolean {
@@ -409,10 +411,10 @@ object ParadoxConfigMatchService {
     }
 
     fun getMatchedComplexEnumConfig(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptStringExpressionElement): CwtComplexEnumConfig? {
-        val candicates = getComplexEnumConfigCandidates(context)
-        if (candicates.isEmpty()) return null
+        val candidates = getComplexEnumConfigCandidates(context)
+        if (candidates.isEmpty()) return null
         context.matchPath = false
-        return candicates.find { matchesComplexEnum(context, element, it) }
+        return candidates.find { matchesComplexEnum(context, element, it) }
     }
 
     fun matchesComplexEnum(context: CwtComplexEnumConfigMatchContext, element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig): Boolean {
@@ -575,10 +577,10 @@ object ParadoxConfigMatchService {
     }
 
     fun getMatchedRowConfig(context: CwtRowConfigMatchContext): CwtRowConfig? {
-        val candicates = getRowConfigCandidates(context)
-        if (candicates.isEmpty()) return null
+        val candidates = getRowConfigCandidates(context)
+        if (candidates.isEmpty()) return null
         context.matchPath = false
-        return candicates.find { matchesRow(context, it) }
+        return candidates.find { matchesRow(context, it) }
     }
 
     fun matchesRow(context: CwtRowConfigMatchContext, rowConfig: CwtRowConfig): Boolean {

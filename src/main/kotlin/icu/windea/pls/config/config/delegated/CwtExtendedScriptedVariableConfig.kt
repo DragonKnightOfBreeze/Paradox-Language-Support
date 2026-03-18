@@ -72,5 +72,4 @@ private class CwtExtendedScriptedVariableConfigImpl(
     override fun toString() = "CwtExtendedScriptedVariableConfigImpl(name='$name')"
 }
 
-
 // endregion

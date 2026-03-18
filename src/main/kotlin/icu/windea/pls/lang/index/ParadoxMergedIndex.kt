@@ -49,7 +49,6 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 import java.io.DataInput
 import java.io.DataOutput
-import java.util.*
 
 /**
  * 脚本文件和本地化文件中的各种信息的索引。
@@ -138,10 +137,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 if (!element.isExpression()) return
 
-                val definitionCandidateInfo = definitionCandidateInfoStack.peekLast()
-                val definitionAvailableStatus = definitionAvailableStatusStack.peekLast()
+                val definitionCandidateInfo = definitionCandidateInfoStack.lastOrNull()
+                val definitionAvailableStatus = definitionAvailableStatusStack.lastOrNull()
                 if (!useLazyIndex && definitionAvailableStatus != true) return
 
+                ProgressManager.checkCanceled()
                 buildDataForExpressionFromSupports(element, definitionCandidateInfo)
 
                 ProgressManager.checkCanceled()
@@ -167,8 +167,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 if (element is ParadoxDefinitionElement) {
                     if (element.getUserData(Keys.definitionCandidate) == true) {
                         element.putUserData(Keys.definitionCandidate, null)
-                        definitionCandidateInfoStack.pollLast()
-                        definitionAvailableStatusStack.pollLast()
+                        definitionCandidateInfoStack.removeLastOrNull()
+                        definitionAvailableStatusStack.removeLastOrNull()
                         cleanUpDumbDefinitionCache(element)
                     }
                 }

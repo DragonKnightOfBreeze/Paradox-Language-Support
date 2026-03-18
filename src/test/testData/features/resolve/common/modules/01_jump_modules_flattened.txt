@@ -1,0 +1,11 @@
+# injected_root_keys = { modules }
+
+jump_module = {
+    name = double_jump_module
+    jump_height = 10
+    jump_chance = 2
+}
+jump_module = {
+    name = super_jump_module
+    jump_height = 18
+}

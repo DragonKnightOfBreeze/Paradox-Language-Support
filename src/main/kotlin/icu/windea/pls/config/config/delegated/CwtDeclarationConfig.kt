@@ -86,12 +86,11 @@ private class CwtDeclarationConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
 ) : UserDataHolderBase(), CwtDeclarationConfig {
-    override val attributes: CwtDeclarationConfigAttributes by lazy {
-        CwtDeclarationConfigAttributesEvaluator.evaluate(this)
-    }
+    override val attributes: CwtDeclarationConfigAttributes by lazy { CwtDeclarationConfigAttributesEvaluator.evaluate(this) }
+    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
-    override val configForDeclaration: CwtPropertyConfig by lazy {
-        CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    private fun computeConfigForDeclaration(): CwtPropertyConfig {
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"

@@ -19,6 +19,7 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
+import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
@@ -33,10 +34,11 @@ import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxMemberService {
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的路径。相对于所在文件，顺序从前往后。
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
     fun getPath(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): ParadoxMemberPath? {
+        if (element.language != ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return ParadoxMemberPath.resolveEmpty()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return ParadoxMemberPath.resolveEmpty()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return ParadoxMemberPath.resolveEmpty()
@@ -56,15 +58,16 @@ object ParadoxMemberService {
             }
             current = current.parent ?: break
         }
-        injectRootKeys(current, result)
+        if (current is ParadoxScriptFile) injectRootKeys(current, result)
         return ParadoxMemberPath.resolve(result)
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组顶级键。相对于所在文件，顺序从前往后。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组顶级键。相对于所在文件，顺序从前往后。
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      */
     fun getRootKeys(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
+        if (element.language != ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
@@ -88,21 +91,24 @@ object ParadoxMemberService {
         return result
     }
 
-    private fun injectRootKeys(element: PsiElement, result: ArrayDeque<String>) {
-        if (element !is PsiFile) return
-        val file = selectFile(element) ?: return
-        val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(file)
+    /**
+     * 使用 [element] 作为上下文，为 [result] 注入一组顶级键。
+     */
+    fun injectRootKeys(element: PsiElement, result: MutableList<String>) {
+        val vFile = selectFile(element) ?: return
+        val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(vFile)
         if (injectedRootKeys.isEmpty()) return
         result.addAll(0, injectedRootKeys)
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组键前缀。顺序从前往后。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的一组键前缀。顺序从前往后。
      * 如果 [parameterAware] 为 `false`，且包含参数，则直接返回 `null`。
      *
      * 找到之前紧邻的一组连续的字符串节点（忽略空白和注释），将它们转化为字符串列表（基于值）。
      */
     fun getKeyPrefixes(element: PsiElement, limit: Int = 0, maxDepth: Int = 0, parameterAware: Boolean = true): List<String>? {
+        if (element.language != ParadoxScriptLanguage) return null
         if (element is PsiFileSystemItem) return emptyList()
         val member = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (member !is ParadoxScriptProperty && member !is ParadoxScriptValue) return emptyList()
@@ -125,7 +131,7 @@ object ParadoxMemberService {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的键前缀。
+     * 得到 [element] 对应的脚本成员（[ParadoxScriptMember]）的键前缀。
      */
     fun getKeyPrefix(element: PsiElement): String? {
         return getKeyPrefixes(element, limit = 1, parameterAware = false)?.singleOrNull()
@@ -136,11 +142,10 @@ object ParadoxMemberService {
      *
      * 如果是文件定义，则使用去除扩展名后的文件名；如果是属性定义，则直接使用其名字。
      */
-    fun getTypeKey(element: ParadoxDefinitionElement): String? {
-        val name = element.name
-        if (name.isEmpty()) return null // 不期望
-        if (element is ParadoxScriptFile) return name.substringBeforeLast('.') // 如果是文件定义，则使用去除扩展名后的文件名
-        return isTypeKeyForProperty(name, element) // 如果是属性定义，需要检查是否合法
+    fun getTypeKey(element: ParadoxDefinitionElement, elementName: String = element.name): String? {
+        if (elementName.isEmpty()) return null // 不期望
+        if (element is ParadoxScriptFile) return elementName.substringBeforeLast('.') // 如果是文件定义，则使用去除扩展名后的文件名
+        return isTypeKeyForProperty(elementName, element) // 如果是属性定义，需要检查是否合法
     }
 
     /**

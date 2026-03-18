@@ -129,14 +129,13 @@ private class CwtModifierConfigImpl(
     override val categories: Set<String> = emptySet() // category names
 ) : UserDataHolderBase(), CwtModifierConfig {
     override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
+    override val template: CwtTemplateExpression = CwtTemplateExpression.resolve(name)
+    override val supportedScopes: Set<String> by lazy { computeSupportedScopes() }
 
-    override val template = CwtTemplateExpression.resolve(name)
-
-    override val supportedScopes: Set<String> by lazy {
-        if (categoryConfigMap.isNotEmpty()) {
-            ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
-        } else {
-            config.optionData.supportedScopes
+    private fun computeSupportedScopes(): Set<String> {
+        return when {
+            categoryConfigMap.isNotEmpty() -> ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
+            else -> config.optionData.supportedScopes
         }
     }
 

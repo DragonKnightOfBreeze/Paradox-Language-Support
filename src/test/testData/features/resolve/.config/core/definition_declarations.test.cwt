@@ -13,6 +13,13 @@ mech = {
     }
 }
 
+jump_module = {
+    name = scalar
+    jump_height = int
+    ## cardinality = 0..1
+    jump_chance = int
+}
+
 weapon = {
     damage = int
     range = int

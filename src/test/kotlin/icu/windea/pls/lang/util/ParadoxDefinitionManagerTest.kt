@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.select.*
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -75,6 +76,39 @@ class ParadoxDefinitionManagerTest : BasePlatformTestCase() {
 
         val names = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop)?.name }.toSet()
         Assert.assertEquals(setOf("titan_mk3", "phantom", "vanguard"), names)
+    }
+
+    @Test
+    fun testGetInfo_WithRootKeys() {
+        val file = configureScriptFile("common/modules/00_jump_modules.txt", "features/resolve/common/modules/00_jump_modules.txt")
+
+        val definitions = selectScope { file.ofPath("modules/*").asProperty().all() }
+        Assert.assertEquals(2, definitions.size)
+
+        val infos = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop) }
+        Assert.assertEquals(2, infos.size)
+        Assert.assertTrue(infos.all { it.type == "jump_module" })
+        Assert.assertTrue(infos.all { it.typeKey == "jump_module" })
+
+        val names = infos.map { it.name }.toSet()
+        Assert.assertEquals(setOf("double_jump_module", "super_jump_module"), names)
+    }
+
+    @Test
+    fun testGetInfo_WithInjectedRootKeys() {
+        val file = configureScriptFile("common/modules/01_jump_modules_flattened.txt", "features/resolve/common/modules/01_jump_modules_flattened.txt")
+        ParadoxAnalysisInjector.injectRootKeys(file.virtualFile, listOf("modules"))
+
+        val definitions = selectScope { file.properties().asProperty().all() }
+        Assert.assertEquals(2, definitions.size)
+
+        val infos = definitions.mapNotNull { prop -> ParadoxDefinitionManager.getInfo(prop) }
+        Assert.assertEquals(2, infos.size)
+        Assert.assertTrue(infos.all { it.type == "jump_module" })
+        Assert.assertTrue(infos.all { it.typeKey == "jump_module" })
+
+        val names = infos.map { it.name }.toSet()
+        Assert.assertEquals(setOf("double_jump_module", "super_jump_module"), names)
     }
 
     // endregion

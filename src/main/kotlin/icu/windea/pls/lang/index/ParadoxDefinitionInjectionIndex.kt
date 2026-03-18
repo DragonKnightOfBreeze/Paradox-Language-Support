@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
@@ -82,7 +83,8 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
         if (fileLevelTypeConfigs.isEmpty()) return
-        val typeConfigForInjection = fileLevelTypeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(fileLevelMatchContext, it) } ?: return
+
+        val typeConfigForInjection = getMatchedTypeConfigForInjection(fileLevelMatchContext, fileLevelTypeConfigs) ?: return
 
         psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -96,31 +98,37 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
             }
 
             private fun visitProperty(element: ParadoxScriptProperty) {
-                ProgressManager.checkCanceled()
-                processDefinitionInjection(element)
+                val elementName = element.name
+                if (elementName.isEmpty() || elementName.isParameterized()) return // 排除为空字符串或者可能带参数的情况
+
+                // 2.1.3 直接匹配，不经过缓存数据，以优化性能
+                processDefinitionInjection(element, elementName)
             }
 
-            private fun processDefinitionInjection(element: ParadoxScriptProperty): Boolean {
+            private fun processDefinitionInjection(element: ParadoxScriptProperty, elementName: String) {
                 // 可用性检查
-                if (element.parent !is ParadoxScriptRootBlock) return true
+                if (element.parent !is ParadoxScriptRootBlock) return
                 val propertyValue = element.propertyValue
-                if (propertyValue !is ParadoxScriptBlock) return true
+                if (propertyValue !is ParadoxScriptBlock) return
 
                 // 匹配性检查
-                val expression = element.name
-                if (expression.isEmpty() || expression.isParameterized()) return true
-                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expression) ?: return true
-                if (mode.isEmpty()) return false
-                if (config.modeConfigs[mode] == null) return false
-                val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return false
-                if (target.isEmpty()) return false
-                val type = typeConfigForInjection.name.orNull() ?: return false
+                val expression = elementName
+                // if (expression.isEmpty() || expression.isParameterized()) return
+                val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(expression) ?: return
+                if (mode.isEmpty()) return
+                if (config.modeConfigs[mode] == null) return
+                val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(expression) ?: return
+                if (target.isEmpty()) return
+                val type = typeConfigForInjection.name.orNull() ?: return
 
                 val info = ParadoxDefinitionInjectionIndexInfo(mode, target, type, element.startOffset, gameType)
                 addToFileData(info, fileData)
-                return false
             }
         })
+    }
+
+    private fun getMatchedTypeConfigForInjection(context: CwtTypeConfigMatchContext, typeConfigs: Collection<CwtTypeConfig>): CwtTypeConfig? {
+        return typeConfigs.find { ParadoxConfigMatchService.matchesTypeForInjection(context, it) }
     }
 
     private fun addToFileData(info: ParadoxDefinitionInjectionIndexInfo, fileData: MutableMap<String, List<ParadoxDefinitionInjectionIndexInfo>>) {

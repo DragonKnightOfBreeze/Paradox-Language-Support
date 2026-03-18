@@ -18,6 +18,15 @@ types = {
         }
     }
 
+    # skip_root_key + type_key_filter
+    ## type_key_filter = { jump_module }
+    type[jump_module] = {
+        path = "common/modules"
+        path_extension = .txt
+        skip_root_key = modules
+        name_field = name
+    }
+
     # 含子类型，不同的子类型条件
     type[weapon] = {
         path = "common/weapons"

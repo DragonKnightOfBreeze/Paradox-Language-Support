@@ -13,44 +13,44 @@ class PlsInternalSettings {
     /**
      * 渲染本地化文本时，使用的文本字体大小。这会影响在快速文档中渲染图标时，使用的最终缩放。
      */
-    val localisationFontSize get() = Registry.intValue("pls.settings.localisationFontSize", 18)
+    val localisationFontSize get() = Registry.intValue("pls.settings.localisationFontSize", 18).coerceAtLeast(0)
 
     /**
      * 渲染本地化文本时，视为文本图标的图标的大小限制。这会影响在快速文档中渲染图标时，使用的最终缩放。
      */
-    val localisationTextIconSizeLimit get() = Registry.intValue("pls.settings.localisationTextIconSizeLimit", 36)
+    val localisationTextIconSizeLimit get() = Registry.intValue("pls.settings.localisationTextIconSizeLimit", 36).coerceAtLeast(0)
 
     /**
      * 在快速文档中渲染的图片的最大尺寸。如果超出，则会基于此尺寸进行缩放。
      *
      * @see org.intellij.images.fileTypes.ImageDocumentationProvider.MAX_IMAGE_SIZE
      */
-    val maxImageSizeForDocumentation get() = Registry.intValue("pls.settings.maxImageSize.for.documentation", 300)
+    val maxImageSizeForDocumentation get() = Registry.intValue("pls.settings.maxImageSize.for.documentation", 300).coerceAtLeast(0)
 
     /**
      * 内嵌提示中的本地化文本的默认长度限制。如果超出，则会被截断。
      */
-    val localisationLengthLimitForInlay get() = Registry.intValue("pls.settings.localisationTextLengthLimit.for.inlay", 60)
+    val localisationLengthLimitForInlay get() = Registry.intValue("pls.settings.localisationTextLengthLimit.for.inlay", 60).coerceAtLeast(0)
 
     /**
      * 内嵌提示中的图标的默认高度限制。如果超出，则不会被渲染。
      */
-    val iconHeightLimitForInlay get() = Registry.intValue("pls.settings.iconHeightLimit.for.inlay", 36)
+    val iconHeightLimitForInlay get() = Registry.intValue("pls.settings.iconHeightLimit.for.inlay", 36).coerceAtLeast(0)
 
     /**
      * 面包屑导航、导航栏、结构视图中的文本长度限制。适用于字符串字面量。如果超出，则会被截断。
      */
-    val textLengthLimitForPresentation get() = Registry.intValue("pls.settings.textLengthLimit.for.presentation", 60)
+    val textLengthLimitForPresentation get() = Registry.intValue("pls.settings.textLengthLimit.for.presentation", 60).coerceAtLeast(0)
 
     /**
      * 在提示信息中显示的条目的数量限制（某些提示文本会用到）。
      */
-    val itemLimit get() = Registry.intValue("pls.settings.itemLimit", 5)
+    val itemLimit get() = Registry.intValue("pls.settings.itemLimit", 5).coerceAtLeast(0)
 
     /**
      * 定义相对于脚本文件的最大深度（用于优化性能）。从0开始。
      */
-    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 4)
+    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 4).coerceAtLeast(0)
 
     /**
      * 默认的封装变量的名字（执行重构与生成操作时会用到）。
