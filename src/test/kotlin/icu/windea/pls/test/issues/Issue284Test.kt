@@ -18,8 +18,9 @@ import org.junit.runners.JUnit4
 /**
  * Issue #284: scope link 在 trigger 上下文中不应产生冲突的解析结果。
  *
+ * See: [#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284)
+ *
  * @see ConflictingResolvedExpressionInspection
- * @see <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284">Issue #284</a>
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -31,7 +32,7 @@ class Issue284Test : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("issues/issue_284")
+        markRootDirectory("issues/284")
         initConfigGroups(project, gameType)
         myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
     }
@@ -42,14 +43,14 @@ class Issue284Test : BasePlatformTestCase() {
     @Test
     fun testScopeLinkInTrigger() {
         markFileInfo(gameType, "common/scripted_triggers/test_trigger.test.txt")
-        myFixture.configureByFile("issues/issue_284/common/scripted_triggers/test_trigger.test.txt")
+        myFixture.configureByFile("issues/284/common/scripted_triggers/test_trigger.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
 
     @Test
     fun testScopeLinkInEffect() {
         markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
-        myFixture.configureByFile("issues/issue_284/common/scripted_effects/test_effect.test.txt")
+        myFixture.configureByFile("issues/284/common/scripted_effects/test_effect.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
 }

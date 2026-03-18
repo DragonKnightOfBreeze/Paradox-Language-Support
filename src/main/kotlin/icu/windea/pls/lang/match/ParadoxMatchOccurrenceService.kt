@@ -42,15 +42,11 @@ object ParadoxMatchOccurrenceService {
     }
 
     fun getChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
-        if (configs.isEmpty()) return emptyMap()
-        val result = doGetChildOccurrences(element, configs)
-        return result
-    }
-
-    private fun doGetChildOccurrences(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         // 兼容需要考虑内联的情况（如内联脚本）
         // 兼容匹配键的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
         // 得到的子规则需要先按优先级排序
+
+        if (configs.isEmpty()) return emptyMap()
 
         ProgressManager.checkCanceled()
         val configGroup = configs.first().configGroup

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- [ ] [Vic3/EU5] Parser Breaks in CoA [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
+- [ ] [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263) [Vic3/EU5] Parser Breaks in CoA
 - [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)
 - [ ] 性能分析与优化 / Performance analysis and optimization
@@ -11,6 +11,7 @@
 
 ## 2.1.6-dev
 
+- [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
 - [x] 优化：优化索引时的性能，将耗时降低到旧版本的 (Sellaris/VIC3/EU5 65%/47%/25%) / OP: Optimize performance during indexing, reducing the time taken to (Sellaris/VIC3/EU5 65%/47%/25%) of the old version
 - [x] [PROCESSING] 性能分析与优化 / Performance analysis and optimization

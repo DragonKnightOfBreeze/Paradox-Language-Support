@@ -18,8 +18,9 @@ import org.junit.runners.JUnit4
 /**
  * Issue #142: `var:xxx` 在 trigger 上下文中目前会产生冲突的解析结果。
  *
+ * See: [#142](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/142)
+ *
  * @see ConflictingResolvedExpressionInspection
- * @see <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/142">Issue #142</a>
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -31,7 +32,7 @@ class Issue142Test : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("issues/issue_142")
+        markRootDirectory("issues/142")
         initConfigGroups(project, gameType)
         myFixture.enableInspections(ConflictingResolvedExpressionInspection::class.java)
     }
@@ -42,14 +43,14 @@ class Issue142Test : BasePlatformTestCase() {
     @Test
     fun testVarInTrigger() {
         markFileInfo(gameType, "common/scripted_triggers/test_trigger.test.txt")
-        myFixture.configureByFile("issues/issue_142/common/scripted_triggers/test_trigger.test.txt")
+        myFixture.configureByFile("issues/142/common/scripted_triggers/test_trigger.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
 
     @Test
     fun testVarInEffect() {
         markFileInfo(gameType, "common/scripted_effects/test_effect.test.txt")
-        myFixture.configureByFile("issues/issue_142/common/scripted_effects/test_effect.test.txt")
+        myFixture.configureByFile("issues/142/common/scripted_effects/test_effect.test.txt")
         myFixture.checkHighlighting(true, false, false)
     }
 

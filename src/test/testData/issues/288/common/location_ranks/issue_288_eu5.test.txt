@@ -1,0 +1,9 @@
+INJECT:city = {
+    build_time = 365
+}
+
+INJECT:city = {
+    build_time = 365
+
+    rank_modifier = {}
+}
