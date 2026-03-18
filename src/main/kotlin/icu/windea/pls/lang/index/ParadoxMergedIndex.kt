@@ -126,8 +126,8 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
                 if (element !is ParadoxDefinitionElement) return
                 val definitionCandidateInfo = element.definitionCandidateInfo ?: return
 
-                // 忽略内联或注入的定义
-                if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline || definitionCandidateInfo.source == ParadoxDefinitionSource.Injection) return
+                // 忽略内联的定义
+                if (definitionCandidateInfo.source == ParadoxDefinitionSource.Inline) return
 
                 element.putUserData(Keys.definitionCandidate, true)
                 definitionCandidateInfoStack.addLast(definitionCandidateInfo)
