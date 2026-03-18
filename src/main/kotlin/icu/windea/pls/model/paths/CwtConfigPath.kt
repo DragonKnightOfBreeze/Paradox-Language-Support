@@ -59,9 +59,11 @@ fun CwtConfigPath.relativeTo(other: CwtConfigPath): CwtConfigPath? {
 
 // region Implementations
 
-private val stringInterner = Interner.newWeakInterner<String>()
+private val pathInterner = Interner.newWeakInterner<String>()
+private val subPathInterner = Interner.newWeakInterner<String>()
 
-private fun String.internString() = stringInterner.intern(this)
+private fun String.internPath() = pathInterner.intern(this)
+private fun String.internSubPath() = subPathInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').mapFast { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
@@ -104,8 +106,8 @@ private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPath
 }
 
 private class NormalizedCwtConfigPath(input: CwtConfigPath) : CwtConfigPathBase() {
-    override val path: String = input.path.internString()
-    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internString() }
+    override val path: String = if (input.length == 1) input.path.internSubPath() else input.path.internPath()
+    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

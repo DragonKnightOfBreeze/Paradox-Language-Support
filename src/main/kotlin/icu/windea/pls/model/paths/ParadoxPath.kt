@@ -68,9 +68,11 @@ fun ParadoxPath.matchesExtensions(extensions: Collection<String>): Boolean {
 
 // region Implementations
 
-private val stringInterner = Interner.newWeakInterner<String>()
+private val pathInterner = Interner.newWeakInterner<String>()
+private val subPathInterner = Interner.newWeakInterner<String>()
 
-private fun String.internString() = stringInterner.intern(this)
+private fun String.internPath() = pathInterner.intern(this)
+private fun String.internSubPath() = subPathInterner.intern(this)
 private fun String.splitSubPaths() = splitFast('/')
 private fun List<String>.joinSubPaths() = joinToString("/")
 private fun String.getParent() = substringBeforeLast('/', "")
@@ -119,9 +121,9 @@ private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase
 }
 
 private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
-    override val path: String = input.path.internString()
-    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internString() }
-    override val parent: String = if (input.length == 1) "" else input.parent.internString()
+    override val path: String = if (input.length == 1) input.path.internSubPath() else input.path.internPath()
+    override val subPaths: List<String> = ImmutableList(input.subPaths.size) { input.subPaths[it].internSubPath() }
+    override val parent: String = if (input.length == 1) "" else input.parent.internPath()
 }
 
 private object EmptyParadoxPath : ParadoxPathBase() {
