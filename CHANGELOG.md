@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions seperated by comma
 - [ ] [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263) [Vic3/EU5] Parser Breaks in CoA
 - [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)
