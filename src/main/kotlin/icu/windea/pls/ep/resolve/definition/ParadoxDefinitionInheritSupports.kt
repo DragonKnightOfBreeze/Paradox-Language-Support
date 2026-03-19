@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.resolve.definition
 
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
+import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.util.data.StellarisEventData
 import icu.windea.pls.lang.annotations.WithGameType

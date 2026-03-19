@@ -4,7 +4,10 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
@@ -44,7 +47,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * @see CwtDataTypes.DatabaseObject
  * @see icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  */
-interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
     @FromMember("type: string?")

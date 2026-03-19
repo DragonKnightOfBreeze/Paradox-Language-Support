@@ -3,6 +3,12 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -18,6 +24,7 @@ import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
  * 复杂枚举规则。
@@ -51,7 +58,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * @property nameConfig `name` 对应的规则。
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。
  */
-interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
+interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
     @FromName("complex_enum[$]")
     val name: String
     @FromMember("start_from_root: boolean", defaultValue = "no")

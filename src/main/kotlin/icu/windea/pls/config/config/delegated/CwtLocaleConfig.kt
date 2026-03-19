@@ -4,7 +4,10 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -41,7 +44,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * @property shortId 去除前缀 `l_` 的简短 ID。
  * @property idWithText 带展示文本的 ID。
  */
-interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val id: String
     @FromMember("codes: string[]")

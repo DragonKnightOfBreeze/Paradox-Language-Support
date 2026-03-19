@@ -4,6 +4,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.getValue
@@ -72,5 +73,15 @@ val CwtOptionMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType
 
 /** 将选项值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。 */
 val CwtOptionMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
+
+// endregion
+
+// region CwtLinkConfig Accessors
+
+/** 是否为静态链接。 */
+val CwtLinkConfig.isStatic: Boolean get() = dataSources.isEmpty()
+
+/** 使用函数调用形式时采用的前缀（作为函数名）。 */
+val CwtLinkConfig.prefixFromArgument: String? get() = prefix?.removeSuffix(":")
 
 // endregion

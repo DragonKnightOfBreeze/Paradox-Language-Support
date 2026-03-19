@@ -13,13 +13,13 @@ import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
-import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
@@ -162,19 +162,19 @@ object CwtConfigManager {
         }
     }
 
-    fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
+    fun getFilePathPatterns(config: CwtFilePathMatchableConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.filePathPatterns) {
             CwtConfigService.getFilePathPatterns(config).optimized() // optimized to optimize memory
         }
     }
 
-    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
+    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.filePathPatternsForPriority) {
             CwtConfigService.getFilePathPatternsForPriority(config).optimized() // optimized to optimize memory
         }
     }
 
-    fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
+    fun matchesFilePathPattern(config: CwtFilePathMatchableConfig<*>, filePath: ParadoxPath): Boolean {
         // This method should be very fast
         // 1.4.2 use optimized match logic, DO NOT use config.filePathPatterns here
 

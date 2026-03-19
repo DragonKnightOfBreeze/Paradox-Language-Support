@@ -4,8 +4,8 @@ package icu.windea.pls.config
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
@@ -18,9 +18,9 @@ import icu.windea.pls.core.removePrefixOrNull
 
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
-val CwtFilePathMatchableConfig.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
+val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
 
-val CwtFilePathMatchableConfig.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
+val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
 
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if (size <= 1) return toListOrThis()

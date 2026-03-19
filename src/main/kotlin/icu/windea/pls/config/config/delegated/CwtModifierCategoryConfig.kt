@@ -3,7 +3,10 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.option.CwtOptionDataHolder
@@ -37,7 +40,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * @see CwtOptionDataHolder.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
-interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
     @FromMember("supported_scopes: string | string[]")

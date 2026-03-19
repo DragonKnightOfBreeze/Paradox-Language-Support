@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes.Constant
 import icu.windea.pls.config.CwtDataTypes.TemplateExpression
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -67,7 +68,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * @see CwtOptionDataHolder.replaceScopes
  * @see CwtOptionDataHolder.pushScope
  */
-interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     val name: String
     val categories: Set<String> // category names
     val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig>

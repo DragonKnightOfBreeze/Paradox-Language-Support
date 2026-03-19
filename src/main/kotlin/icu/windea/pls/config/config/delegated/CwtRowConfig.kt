@@ -3,6 +3,11 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
@@ -15,6 +20,7 @@ import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
  * 行规则。
@@ -44,7 +50,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * @property columns 各列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  */
-interface CwtRowConfig : CwtFilePathMatchableConfig {
+interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
     @FromName("row[$]")
     val name: String
     @FromMember("columns: ColumnConfigs")

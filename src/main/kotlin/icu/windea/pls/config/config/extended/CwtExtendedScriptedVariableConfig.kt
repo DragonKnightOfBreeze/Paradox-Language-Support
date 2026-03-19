@@ -1,10 +1,13 @@
-package icu.windea.pls.config.config.delegated
+package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -35,7 +38,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property name 名称。
  * @property hint 额外提示信息（可选）。
  */
-interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
+interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
     val name: String
     @FromOptionMember("hint: string?")

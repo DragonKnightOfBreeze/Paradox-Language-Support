@@ -5,7 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.delegated.isStatic
+import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.values.singletonSet

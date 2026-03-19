@@ -3,8 +3,14 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
+import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
@@ -22,6 +28,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.values.ReversibleValue
+import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxTagType
 
 /**
@@ -68,7 +75,7 @@ import icu.windea.pls.model.ParadoxTagType
  * @see CwtSubtypeConfig
  * @see CwtDeclarationConfig
  */
-interface CwtTypeConfig : CwtFilePathMatchableConfig {
+interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
     @FromName("type[$]")
     val name: String
     @FromMember("base_type: string?")

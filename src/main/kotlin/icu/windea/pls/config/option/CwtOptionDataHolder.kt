@@ -8,11 +8,11 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig

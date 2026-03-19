@@ -1,4 +1,7 @@
-package icu.windea.pls.config.config.delegated
+package icu.windea.pls.config.config
+
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 
 /**
  * 子规则分组。

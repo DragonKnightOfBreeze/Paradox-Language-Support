@@ -10,7 +10,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
+import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.process
 import icu.windea.pls.core.util.KeyRegistry

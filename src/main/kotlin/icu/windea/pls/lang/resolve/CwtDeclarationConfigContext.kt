@@ -3,8 +3,8 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue

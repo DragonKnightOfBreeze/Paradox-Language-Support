@@ -4,7 +4,10 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -36,7 +39,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property values 可选项集合（不忽略大小写）。
  * @property valueConfigMap 可选项到对应的值规则的映射。
  */
-interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("value[$]")
     val name: String
     @FromMember("values: template_expression[]")

@@ -3,9 +3,11 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributes
 import icu.windea.pls.config.attributes.CwtDeclarationConfigAttributesEvaluator
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -53,7 +55,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * @see CwtTypeConfig
  * @see CwtSubtypeConfig
  */
-interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
 

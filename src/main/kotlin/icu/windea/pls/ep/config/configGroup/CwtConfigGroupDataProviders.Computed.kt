@@ -7,8 +7,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
-import icu.windea.pls.config.config.delegated.isStatic
-import icu.windea.pls.config.config.delegated.prefixFromArgument
+import icu.windea.pls.config.config.isStatic
+import icu.windea.pls.config.config.prefixFromArgument
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer

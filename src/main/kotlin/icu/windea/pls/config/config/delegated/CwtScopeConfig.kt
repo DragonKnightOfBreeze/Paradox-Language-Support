@@ -3,7 +3,10 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromMember
+import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -39,7 +42,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * @see ParadoxScope
  * @see ParadoxScopeContext
  */
-interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
     val name: String
     @FromMember("aliases: string[]")

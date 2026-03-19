@@ -13,7 +13,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
+import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.process

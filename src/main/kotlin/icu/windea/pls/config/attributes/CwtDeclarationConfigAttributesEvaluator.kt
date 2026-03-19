@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.configExpression.CwtConfigExpressionMatcher
+import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
@@ -72,19 +72,19 @@ object CwtDeclarationConfigAttributesEvaluator {
 
     private fun processDataExpression(context: Context, dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
         if (!context.dynamicValueInvolved) {
-            val r = CwtConfigExpressionMatcher.isDynamicValue(dataExpression)
+            val r = CwtConfigExpressionMatchService.matchesDynamicValue(dataExpression)
             if (r) context.dynamicValueInvolved = true
         }
         if (!context.parameterInvolved) {
-            val r = CwtConfigExpressionMatcher.isParameter(dataExpression)
+            val r = CwtConfigExpressionMatchService.matchesParameter(dataExpression)
             if (r) context.parameterInvolved = true
         }
         if (!context.localisationParameterInvolved) {
-            val r = CwtConfigExpressionMatcher.isLocalisationParameter(dataExpression)
+            val r = CwtConfigExpressionMatchService.matchesLocalisationParameter(dataExpression)
             if (r) context.localisationParameterInvolved = true
         }
         if (!context.inferredScopeContextAwareDefinitionReferenceInvolved) {
-            val r = CwtConfigExpressionMatcher.isInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
+            val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
             if (r) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
         }
     }

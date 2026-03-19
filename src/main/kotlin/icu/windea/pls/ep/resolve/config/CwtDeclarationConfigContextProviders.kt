@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull

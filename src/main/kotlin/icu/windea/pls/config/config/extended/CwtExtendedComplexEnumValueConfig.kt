@@ -1,10 +1,13 @@
-package icu.windea.pls.config.config.delegated
+package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -38,7 +41,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 枚举名。
  * @property hint 提示文本（可选）。
  */
-interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
+interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>>, CwtIdMatchableConfig<CwtMember> {
     @FromName
     val name: String
     val type: String

@@ -3,7 +3,7 @@ package icu.windea.pls.tools.config.generators
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.CwtFileConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.config.util.CwtConfigExpressionManager

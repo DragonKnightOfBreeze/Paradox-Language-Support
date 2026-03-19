@@ -10,7 +10,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
-import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager.Keys
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
@@ -276,7 +275,7 @@ object CwtConfigService {
         return documentation
     }
 
-    fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
+    fun getFilePathPatterns(config: CwtFilePathMatchableConfig<*>): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathExtension = config.pathExtension
@@ -320,7 +319,7 @@ object CwtConfigService {
         return result
     }
 
-    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
+    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig<*>): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathStrict = config.pathStrict

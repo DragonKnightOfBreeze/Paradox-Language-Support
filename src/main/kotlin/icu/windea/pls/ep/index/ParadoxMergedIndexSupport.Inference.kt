@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.memberConfig
-import icu.windea.pls.config.configExpression.CwtConfigExpressionMatcher
+import icu.windea.pls.config.match.CwtConfigExpressionMatchService
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
@@ -57,7 +57,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatcher.isInferredScopeContextAwareDefinitionReference(config.configExpression, config.configGroup)
+        return CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(config.configExpression, config.configGroup)
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
@@ -102,7 +102,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatcher.isEventReference(config.configExpression)
+        return CwtConfigExpressionMatchService.matchesEventReference(config.configExpression)
     }
 
     override fun compressData(value: List<ParadoxEventInOnActionIndexInfo>): List<ParadoxEventInOnActionIndexInfo> {
@@ -148,7 +148,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatcher.isEventReference(config.configExpression)
+        return CwtConfigExpressionMatchService.matchesEventReference(config.configExpression)
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {
@@ -213,7 +213,7 @@ class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<Parad
     }
 
     private fun matchesConfig(config: CwtMemberConfig<*>): Boolean {
-        return CwtConfigExpressionMatcher.isOnActionReference(config.configExpression)
+        return CwtConfigExpressionMatchService.matchesOnActionReference(config.configExpression)
     }
 
     private fun getScopesElementOffset(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>): Int? {

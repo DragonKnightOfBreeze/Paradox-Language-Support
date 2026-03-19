@@ -20,7 +20,7 @@ import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated.isStatic
+import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig

@@ -3,7 +3,10 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigResolverManager
@@ -46,7 +49,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias
  */
-interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("alias[$:*]")
     val name: String
     @FromName("alias[*:$]")
