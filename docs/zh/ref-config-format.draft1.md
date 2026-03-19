@@ -238,8 +238,7 @@ types = {
 
         # Key constraints and prefix
         type_key_prefix = civic_
-        ## type_key_filter = { civic_ }  # include sets
-        ## type_key_filter <> { origin_ }  # exclude sets
+        ## type_key_filter = { +civic_ -origin_ }  # include/exclude sets
         ## starts_with = civic_
         ## skip_root_key = { potential }
 
