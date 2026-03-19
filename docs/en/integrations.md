@@ -89,7 +89,7 @@ You can access these features from multiple entry points (tools menu, editor rig
 
 Here is a demonstration of using AI to batch translate localization texts:
 
-<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="../assets/integrations/translate_and_replace_1.png" />
+<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="/assets/integrations/translate_and_replace_1.png" />
 
 > [!info]
 > - For manipulation tasks based on the [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), they are executed concurrently at the file level and at each localization entry level within the file.

@@ -89,7 +89,7 @@
 
 以下是一个使用 AI 批量翻译本地化文本的演示：
 
-<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="../assets/integrations/translate_and_replace_1.png" />
+<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="/assets/integrations/translate_and_replace_1.png" />
 
 > [!info]
 > - 对于基于 [Translation 插件](https://github.com/yiiguxing/TranslationPlugin) 的操作任务，会在文件级别以及文件中的每个本地化条目级别并发执行。
