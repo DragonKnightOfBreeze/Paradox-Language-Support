@@ -6,7 +6,7 @@
 
 可以在这里配置是否启用 AI 集成，相关功能的一些具体的配置项，以及 AI 服务的提供商。
 
-![](../images/ai/ai_settings_1.png)
+![](../assets/ai/ai_settings_1.png)
 
 ## 相关功能 {#features}
 

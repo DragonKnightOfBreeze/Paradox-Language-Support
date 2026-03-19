@@ -4,7 +4,7 @@ import { getHighlighterOptions } from "./configs/highlighters.js";
 
 export default hopeTheme({
   hostname: "https://windea.icu",
-  logo: null, // no logo
+  favicon: "/images/favicon.png",
   repo: "DragonKnightOfBreeze/Paradox-Language-Support",
 
   author: {

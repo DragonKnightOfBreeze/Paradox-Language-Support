@@ -10,7 +10,7 @@
 
 图表需要在单独的[设置页面](#diagram-settings-page)中进行配置。
 
-![](../images/extensions/extensions_settings_1.png)
+![](../assets/extensions/extensions_settings_1.png)
 
 ## Markdown {#md}
 
@@ -26,7 +26,7 @@
 
 此功能同样适用于 HTML 链接，以及快速文档中的 PSI 元素导航（定义、本地化等）。
 
-![](../images/extensions/md_link_1.png)
+![](../assets/extensions/md_link_1.png)
 
 对于不同类型的引用链接，其格式与示例如下：
 
@@ -108,9 +108,9 @@
 插件可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义、本地化等），
 从而在编辑器中额外提供代码导航、快速文档等语言功能。
 
-![](../images/extensions/md_inline_code_1.png)
+![](../assets/extensions/md_inline_code_1.png)
 
-![](../images/extensions/md_inline_code_2.png)
+![](../assets/extensions/md_inline_code_2.png)
 
 对于不同类型的目标，其格式与示例如下：
 
@@ -144,7 +144,7 @@
 通过在 Markdown 代码块的语言 ID 后面声明特定格式的属性，可以为其中的脚本/本地化/CSV文件的片段指定额外信息，例如游戏类型和文件路径。
 插件会根据这些信息来匹配 CWT 规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
 
-![](../images/extensions/md_code_fence_1.png)
+![](../assets/extensions/md_code_fence_1.png)
 
 注入信息的格式与示例如下：
 
@@ -187,7 +187,7 @@ defense_army = {
 > - 在弹出的层级的工具窗口中，通过可折叠的树状视图，可以查看同一类型的所有定义的信息。
 > - 如果定义类型为事件或科技，也可以对应地以事件树或科技树的形式展示层级视图。
 > 
-> ![](../images/extensions/diagram_hierarchy_1.png)
+> ![](../assets/extensions/diagram_hierarchy_1.png)
 
 ### 设置页面 {#diagram-settings-page}
 
@@ -195,7 +195,7 @@ defense_army = {
 
 可以在此根据多种条件，配置各类图表需要显示的节点。
 
-![](../images/extensions/diagram_settings_1.png)
+![](../assets/extensions/diagram_settings_1.png)
 
 ### 事件树 {#diagram-event-tree}
 
@@ -207,7 +207,7 @@ defense_army = {
 
 事件树的图表展示了事件的关键信息，以及事件之间的调用关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 
-![](../images/extensions/diagram_event_tree_1.png)
+![](../assets/extensions/diagram_event_tree_1.png)
 
 1. 用于设置要显示的节点元素。从左到右依次是类型、属性、显示名称（事件标题）。
 2. 用于按查询作用域过滤要显示的节点。例如，仅显示已打开的文件中的事件对应的节点。
@@ -226,7 +226,7 @@ defense_army = {
 
 科技树的图表展示了科技的关键信息，以及科技之间的先后关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 
-![](../images/extensions/diagram_tech_tree_1.png)
+![](../assets/extensions/diagram_tech_tree_1.png)
 
 1. 用于设置要显示的节点元素。从左到右依次是类型、属性、显示名称（科技名）、图形展示（以科技卡的形式）。
 2. 用于按查询作用域过滤要显示的节点。例如，仅显示已打开的文件中的科技对应的节点。

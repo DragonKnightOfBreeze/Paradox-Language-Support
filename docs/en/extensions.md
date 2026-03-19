@@ -10,7 +10,7 @@ Here you can configure which extension features to enable.
 
 Diagram settings are configured in a separate [settings page](#diagram-settings-page).
 
-![](../images/extensions/extensions_settings_1.png)
+![](../assets/extensions/extensions_settings_1.png)
 
 ## Markdown {#md}
 
@@ -26,7 +26,7 @@ providing language features such as code navigation and quick documentation in t
 
 This functionality also applies to HTML links and PSI element navigation (definitions, localizations, etc.) in quick documentation.
 
-![](../images/extensions/md_link_1.png)
+![](../assets/extensions/md_link_1.png)
 
 For different types of reference links, the formats and examples are as follows:
 
@@ -108,9 +108,9 @@ Notes:
 The plugin will try to resolve Markdown inline code into matching target references (definitions, localizations, etc.),
 providing additional language features such as code navigation and quick documentation in the editor.
 
-![](../images/extensions/md_inline_code_1.png)
+![](../assets/extensions/md_inline_code_1.png)
 
-![](../images/extensions/md_inline_code_2.png)
+![](../assets/extensions/md_inline_code_2.png)
 
 For different types of targets, the formats and examples are as follows:
 
@@ -144,7 +144,7 @@ Note:
 By declaring specially formatted attributes after the language ID of Markdown code blocks, you can specify additional information for snippets of script, localization and csv files, such as game type and file path.
 The plugin will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
 
-![](../images/extensions/md_code_fence_1.png)
+![](../assets/extensions/md_code_fence_1.png)
 
 Injection format and examples:
 
@@ -187,7 +187,7 @@ Currently, only event trees and technology trees are provided.
 > - In the hierarchy tool window, view information for all definitions of the same type through a collapsible tree view.
 > - If the definition type is event or technology, the hierarchy view can be displayed as an event tree or technology tree.
 > 
-> ![](../images/extensions/diagram_hierarchy_1.png)
+> ![](../assets/extensions/diagram_hierarchy_1.png)
 
 ### Settings Page {#diagram-settings-page}
 
@@ -195,7 +195,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Language Suppo
 
 Here you can configure which nodes to display for various diagram types based on multiple conditions.
 
-![](../images/extensions/diagram_settings_1.png)
+![](../assets/extensions/diagram_settings_1.png)
 
 ### Event Tree {#diagram-event-tree}
 
@@ -207,7 +207,7 @@ You can open event tree diagrams in several ways:
 
 Event tree diagrams display key information about events and their invocation relationships. Use the toolbar at the top to configure which node elements to display and filter nodes.
 
-![](../images/extensions/diagram_event_tree_1.png)
+![](../assets/extensions/diagram_event_tree_1.png)
 
 1. Configure node elements to display. From left to right: type, properties, localized name (event title).
 2. Filter nodes by query scope. For example, only show nodes for events in open files.
@@ -226,7 +226,7 @@ If the current game type is *Stellaris*, you can open technology tree diagrams i
 
 Technology tree diagrams display key information about technologies and their prerequisite relationships. Use the toolbar at the top to configure which node elements to display and filter nodes.
 
-![](../images/extensions/diagram_tech_tree_1.png)
+![](../assets/extensions/diagram_tech_tree_1.png)
 
 1. Configure node elements to display. From left to right: type, properties, localized name (technology name), presentation (displayed as technology card).
 2. Filter nodes by query scope. For example, only show nodes for technologies in open files.

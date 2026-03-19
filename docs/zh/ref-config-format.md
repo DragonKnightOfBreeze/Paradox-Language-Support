@@ -1067,7 +1067,7 @@ inline_scripts = {
 }
 ```
 
-![](../images/config/inline_scripts_1.png)
+![](../assets/config/inline_scripts_1.png)
 
 **注意事项**：
 - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
@@ -1177,7 +1177,7 @@ parameters = {
 }
 ```
 
-![](../images/config/parameters_1.png)
+![](../assets/config/parameters_1.png)
 
 **注意事项**：
 - `context_key` 为必填；缺失将被跳过（不会生效）。

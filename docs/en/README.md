@@ -20,11 +20,11 @@ Paradox Language Support is the IntelliJ IDEA plugin designed specifically for P
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
 - **Directory Detection**: Automatically detects game and mod directories.
 
-The plugin implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
+The plugin implements its core language features based on its own [config system](config.md).
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
-The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
+The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](config.md#write-config-files) and [import](config.md#import-config-files) config files to meet personalized development needs.
 
-![](../images/preview_1_en.png)
+![](../assets/preview_1_en.png)
 
 ## Installation
 
@@ -82,7 +82,7 @@ If you are interested in submitting a PR, but have any questions about plugin de
 Given the plugin's config-driven architecture, contributing to the CWT config files is one of the most impactful ways to improve support for a specific game.
 Config files define the semantics (definitions, modifiers, scopes, effects, triggers, etc.) that power code completion, code inspection and documentation — keeping them up to date directly improves the experience for all users of that game.
 
-See the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) for links, and the [config documentation](https://windea.icu/Paradox-Language-Support/en/config.html) for guidance on the config format.
+See the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md) for links, and the [config documentation](config.md) for guidance on the config format.
 
 For a list of current maintainers and contributors, see [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md).
 

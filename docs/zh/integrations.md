@@ -10,7 +10,7 @@
 
 可以在这里配置要启用的工具集成，以及具体的工具集成选项。
 
-![](../images/integrations/integrations_settings_1.png)
+![](../assets/integrations/integrations_settings_1.png)
 
 ## 图片工具 {#image-tools}
 
@@ -36,9 +36,9 @@
 此外，插件也提供不同图片格式（PNG、DDS 和 TGA）之间的相互转换的动作。
 插件也允许直接在项目视图中选择多个图片，然后执行图片类型的批量转换。
 
-![](../images/integrations/convert_image_format_1.png)
+![](../assets/integrations/convert_image_format_1.png)
 
-![](../images/integrations/convert_image_format_2.png)<!--batch-->
+![](../assets/integrations/convert_image_format_2.png)<!--batch-->
 
 > [!warning]
 > 请注意， [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 对 DDS 图片的支持存在一些限制，例如，它不支持 DX11 格式。
@@ -62,9 +62,9 @@
 >    - 在操作系统上，配置好图片的打开方式。
 >    - 在编辑器中打开目标文件（或者在项目视图中选中目标文件），然后在右键菜单中，点击 `Jump to External Editor`。
 > 
-> ![](../images/integrations/jump_to_image_editor_1.png)
+> ![](../assets/integrations/jump_to_image_editor_1.png)
 > 
-> ![](../images/integrations/jump_to_image_editor_2.png)
+> ![](../assets/integrations/jump_to_image_editor_2.png)
 
 ## 翻译工具 {#translation-tools}
 
@@ -81,15 +81,15 @@
 
 你可以从多个入口（工具菜单，编辑器右键菜单，项目视图的右键菜单，等等）， 在多个批处理级别（光标位置对应的本地化，光标选取范围涉及到的所有本地化，或是项目视图中选中的文件和目录中的所有本地化） 访问这些功能。
 
-![](../images/integrations/translation_entry_intentions_1.png)
+![](../assets/integrations/translation_entry_intentions_1.png)
 
-![](../images/integrations/translation_entry_actions_1.png)
+![](../assets/integrations/translation_entry_actions_1.png)
 
-![](../images/integrations/translation_entry_actions_2.png)<!--batch-->
+![](../assets/integrations/translation_entry_actions_2.png)<!--batch-->
 
 以下是一个使用 AI 批量翻译本地化文本的演示：
 
-<ArtPlayer src="/videos/integrations/translate_and_replace_1.mp4" poster="../images/translate_and_replace_1.png" />
+<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="..//assets/integrations/translate_and_replace_1.png" />
 
 > [!info]
 > - 对于基于 [Translation 插件](https://github.com/yiiguxing/TranslationPlugin) 的操作任务，会在文件级别以及文件中的每个本地化条目级别并发执行。
@@ -113,9 +113,9 @@
 如果启用并正确配置了与这些工具的集成，插件可以提供额外的代码检查。
 你可以直接在问题视图中查看检查结果，或是执行全局代码检查并查看总览。
 
-![](../images/integrations/lint_results_1.png)
+![](../assets/integrations/lint_results_1.png)
 
-![](../images/integrations/lint_results_2.png)<!--batch-->
+![](../assets/integrations/lint_results_2.png)<!--batch-->
 
 > [!tip]
 > 你可以通过以下几种方式，在项目级别或者模组级别选择性禁用检查工具。

@@ -2,7 +2,7 @@
 
 ### -— The Paradox Chronicle Project
 
-<!-- Here we carve the whispers from the old era, concerning the truths and realities of this land. -->
+<!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
 
 [![中文文档][badge:doc-zh]](README_zh.md)
 [![English Documentation][badge:doc-en]](README.md)

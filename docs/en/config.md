@@ -8,7 +8,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Language Suppo
 
 Here you can configure the sources of the config groups to enable, as well as the related urls and directories.
 
-![](../images/config/config_settings_1.png)
+![](../assets/config/config_settings_1.png)
 
 ## Config Group {#config-group}
 

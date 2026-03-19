@@ -24,6 +24,7 @@ export function getPrismPlugins() {
   ]
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function getShikiPlugins() {
   if (usePrism) return [];
   return [

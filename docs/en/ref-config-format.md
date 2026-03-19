@@ -1067,7 +1067,7 @@ inline_scripts = {
 }
 ```
 
-![](../images/config/inline_scripts_1.png)
+![](../assets/config/inline_scripts_1.png)
 
 **Notes**:
 - Keep default `single` when only one context config is needed; use `multiple` to declare multiple.
@@ -1177,7 +1177,7 @@ parameters = {
 }
 ```
 
-![](../images/config/parameters_1.png)
+![](../assets/config/parameters_1.png)
 
 **Notes**:
 - `context_key` is required; missing it makes the item ineffective.

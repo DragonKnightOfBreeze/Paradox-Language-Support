@@ -10,7 +10,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Language Suppo
 
 Here you can configure which tool integrations to enable and specify their options.
 
-![](../images/integrations/integrations_settings_1.png)
+![](../assets/integrations/integrations_settings_1.png)
 
 ## Image Tools {#image-tools}
 
@@ -36,9 +36,9 @@ In certain scenarios, the plugin needs to split images to render quick documenta
 Additionally, the plugin provides actions for converting between different image formats (PNG, DDS, and TGA).
 The plugin also allows selecting multiple images in the project view and performing batch conversion of image types.
 
-![](../images/integrations/convert_image_format_1.png)
+![](../assets/integrations/convert_image_format_1.png)
 
-![](../images/integrations/convert_image_format_2.png)<!--batch-->
+![](../assets/integrations/convert_image_format_2.png)<!--batch-->
 
 > [!warning]
 > Note that [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) has some limitations in supporting DDS images, such as not supporting DX11 formats.
@@ -62,9 +62,9 @@ The plugin also allows selecting multiple images in the project view and perform
 >    - Configure the default application for opening images in your operating system.
 >    - Open the target file in the editor (or select it in the project view), then in the right-click menu, click `Jump to External Editor`.
 > 
-> ![](../images/integrations/jump_to_image_editor_1.png)
+> ![](../assets/integrations/jump_to_image_editor_1.png)
 > 
-> ![](../images/integrations/jump_to_image_editor_2.png)
+> ![](../assets/integrations/jump_to_image_editor_2.png)
 
 ## Translation Tools {#translation-tools}
 
@@ -81,15 +81,15 @@ They can be used to batch translate localization texts, then copy to the system 
 
 You can access these features from multiple entry points (tools menu, editor right-click menu, project view right-click menu, etc.) at multiple batch levels (localization at the cursor position, all localizations in the selected range, or all localizations in selected files and directories in the project view).
 
-![](../images/integrations/translation_entry_intentions_1.png)
+![](../assets/integrations/translation_entry_intentions_1.png)
 
-![](../images/integrations/translation_entry_actions_1.png)
+![](../assets/integrations/translation_entry_actions_1.png)
 
-![](../images/integrations/translation_entry_actions_2.png)<!--batch-->
+![](../assets/integrations/translation_entry_actions_2.png)<!--batch-->
 
 Here is a demonstration of using AI to batch translate localization texts:
 
-<ArtPlayer src="/videos/integrations/translate_and_replace_1.mp4" poster="../images/translate_and_replace_1.png" />
+<ArtPlayer src="/assets/integrations/translate_and_replace_1.mp4" poster="..//assets/integrations/translate_and_replace_1.png" />
 
 > [!info]
 > - For manipulation tasks based on the [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), they are executed concurrently at the file level and at each localization entry level within the file.
@@ -113,9 +113,9 @@ The plugin integrates the following linting tools to provide additional code ins
 If these tool integrations are enabled and correctly configured, the plugin can provide additional code inspections.
 You can view the inspection results directly in the Problems view, or perform a global code inspection and view the overview.
 
-![](../images/integrations/lint_results_1.png)
+![](../assets/integrations/lint_results_1.png)
 
-![](../images/integrations/lint_results_2.png)<!--batch-->
+![](../assets/integrations/lint_results_2.png)<!--batch-->
 
 > [!tip]
 > You can selectively disable linting tools at the project level or mod level in the following ways:

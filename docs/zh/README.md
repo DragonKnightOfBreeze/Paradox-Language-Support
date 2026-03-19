@@ -21,11 +21,11 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 - **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
 - **目录检测**：自动检测游戏目录与模组目录。
 
-插件基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。
+插件基于自身的[规则系统](config.md)实现核心语言功能。
 其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循基本一致的语法与格式，并进行了一定的改进与扩展。
-插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#write-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#import-config-files)规则文件，满足个性化开发需求。
+插件内置最新版本规则，开箱即用，同时也支持[自定义](config.md#write-config-files)与[导入](config.md#import-config-files)规则文件，满足个性化开发需求。
 
-![](../images/preview_1_zh.png)
+![](../assets/preview_1_zh.png)
 
 ## 安装
 
@@ -83,7 +83,7 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 鉴于插件的规则驱动架构，贡献 CWT 规则文件是改善特定游戏支持的最有效方式之一。
 规则文件定义了驱动代码补全、代码检查和文档提示的语义信息（定义、修正、作用域、效果、触发器等）——保持其更新将直接改善该游戏所有用户的使用体验。
 
-各规则仓库的链接请参见 [cwt/README.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)，规则格式的编写指南请参见[规则文档](https://windea.icu/Paradox-Language-Support/zh/config.html)。
+各规则仓库的链接请参见 [cwt/README.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)，规则格式的编写指南请参见[规则文档](config.md)。
 
 当前维护者与贡献者名单请参见 [CONTRIBUTORS.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/CONTRIBUTORS.md)。
 
