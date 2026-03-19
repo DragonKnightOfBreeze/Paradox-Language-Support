@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 
 enum class ParadoxSeparatorType(val text: String) {
     EQUAL("="),
-    SAFE_EQUAL("?="), // supported in ck3 and vic3, see #102
+    SAFE_EQUAL("?="), // supported in ck3, vic3 and eu5, see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/86
     NOT_EQUAL("!="),
     LT("<"),
     GT(">"),
