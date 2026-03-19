@@ -9,14 +9,6 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
@@ -29,6 +21,14 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
@@ -103,21 +103,21 @@ interface CwtConfigGroupDataHolder {
 
     // region Extended
 
-    // template_expression - configs
+    // pattern - configs
     val extendedScriptedVariables: Map<String, CwtExtendedScriptedVariableConfig>
-    // template_expression - configs
+    // pattern - configs
     val extendedDefinitions: Map<String, List<CwtExtendedDefinitionConfig>>
-    // template_expression - config
+    // pattern - config
     val extendedGameRules: Map<String, CwtExtendedGameRuleConfig>
-    // template_expression - config
+    // pattern - config
     val extendedOnActions: Map<String, CwtExtendedOnActionConfig>
-    // complex_enum_name - template_expression - config
+    // enum_name - pattern - config
     val extendedComplexEnumValues: Map<String, Map<String, CwtExtendedComplexEnumValueConfig>>
-    // dynamic_value_type - template_expression - config
+    // dynamic_value_type - pattern - config
     val extendedDynamicValues: Map<String, Map<String, CwtExtendedDynamicValueConfig>>
-    // template_expression - config
+    // pattern - config
     val extendedInlineScripts: Map<String, CwtExtendedInlineScriptConfig>
-    // template_expression - configs
+    // pattern - configs
     val extendedParameters: Map<String, List<CwtExtendedParameterConfig>>
 
     // endregion

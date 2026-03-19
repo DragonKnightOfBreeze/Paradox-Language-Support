@@ -42,7 +42,7 @@ inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): 
 }
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */
-inline fun <reified R, C: MutableCollection<in R>> Iterable<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> Iterable<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
     for (element in this) if (element is R && predicate(element)) destination.add(element)
     return destination
 }
@@ -86,9 +86,9 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
     }
 }
 
-/** 逐个处理元素，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+/** 逐个处理元素。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
-    if(this is Collection && this.isEmpty()) return true
+    if (this is Collection && this.isEmpty()) return true
     for (e in this) {
         val result = processor(e)
         if (!result) return false
@@ -96,11 +96,22 @@ inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     return true
 }
 
-/** 逐个处理条目，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+/** 逐个处理条目。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
 inline fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
-    if(this.isEmpty()) return true
+    if (this.isEmpty()) return true
     for (entry in this) {
         val result = processor(entry)
+        if (!result) return false
+    }
+    return true
+}
+
+/** 如果 [key] 为 `null`，则仅处理 [key] 对应的值，否则逐个处理值。如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。 */
+inline fun <K, V> Map<K, V>.processValue(key: K?, processor: (V) -> Boolean): Boolean {
+    if (this.isEmpty()) return true
+    if (key != null) return this[key]?.let { processor(it) } ?: true
+    for (value in values) {
+        val result = processor(value)
         if (!result) return false
     }
     return true
@@ -183,11 +194,11 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
  * 如果当前列表存在指定的作为前缀的子列表 [prefix]（可以为空），则去除并返回。否则，返回 `null`。
  * 如果指定了通配符 [wildcard]，则当前缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
  */
-fun <T: Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
+fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
     if (prefix.isEmpty()) return this
     if (prefix.size > this.size) return null
     for ((i, e) in prefix.withIndex()) {
-        if(wildcard != null && wildcard == e) continue
+        if (wildcard != null && wildcard == e) continue
         if (e != this[i]) return null
     }
     return this.drop(prefix.size)
@@ -197,11 +208,11 @@ fun <T: Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): L
  * 如果当前列表存在指定的作为后缀的子列表 [suffix]（可以为空），则去除并返回，否则返回 `null`。
  * 如果指定了通配符 [wildcard]，则当后缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
  */
-fun <T: Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
+fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
     if (suffix.isEmpty()) return this
     if (suffix.size > this.size) return null
     for ((i, e) in suffix.withIndex()) {
-        if(wildcard != null && wildcard == e) continue
+        if (wildcard != null && wildcard == e) continue
         if (e != this[this.size - suffix.size + i]) return null
     }
     return this.dropLast(suffix.size)

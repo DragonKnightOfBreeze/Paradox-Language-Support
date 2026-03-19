@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.config.CwtDelegatedConfig
-import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
@@ -50,7 +49,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @see CwtTypeConfig
  */
-interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
+interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromName("subtype[$]")
     val name: String
     @FromOptionMember("type_key_filter: string | string[]")

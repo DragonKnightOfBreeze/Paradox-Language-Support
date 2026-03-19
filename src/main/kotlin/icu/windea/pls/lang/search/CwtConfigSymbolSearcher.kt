@@ -12,6 +12,9 @@ import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
+/**
+ * 规则符号的查询器。
+ */
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.SearchParameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
