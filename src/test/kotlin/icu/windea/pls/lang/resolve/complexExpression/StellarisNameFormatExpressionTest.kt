@@ -104,7 +104,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxBlankNode>(" ", 20 to 21)
                     node<ParadoxCommandNode>("[This.GetCapitalSystemNameOrRandom]", 21 to 56) {
                         node<ParadoxMarkerNode>("[", 21 to 22)
-                        expression<ParadoxCommandExpression>("This.GetCapitalSystemNameOrRandom", 22 to 55) {
+                        node<ParadoxCommandExpression>("This.GetCapitalSystemNameOrRandom", 22 to 55) {
                             node<ParadoxSystemCommandScopeNode>("This", 22 to 26)
                             node<ParadoxOperatorNode>(".", 26 to 27)
                             node<ParadoxPredefinedCommandFieldNode>("GetCapitalSystemNameOrRandom", 27 to 55)
@@ -232,7 +232,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxMarkerNode>("{", 0 to 1)
                 node<ParadoxCommandNode>("[Root.GetName]", 1 to 15) {
                     node<ParadoxMarkerNode>("[", 1 to 2)
-                    expression<ParadoxCommandExpression>("Root.GetName", 2 to 14) {
+                    node<ParadoxCommandExpression>("Root.GetName", 2 to 14) {
                         node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
                         node<ParadoxOperatorNode>(".", 6 to 7)
                         node<ParadoxPredefinedCommandFieldNode>("GetName", 7 to 14)
@@ -264,7 +264,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxBlankNode>(" ", 6 to 7)
                     node<ParadoxCommandNode>("[Root.GetName]", 7 to 21) {
                         node<ParadoxMarkerNode>("[", 7 to 8)
-                        expression<ParadoxCommandExpression>("Root.GetName", 8 to 20) {
+                        node<ParadoxCommandExpression>("Root.GetName", 8 to 20) {
                             node<ParadoxSystemCommandScopeNode>("Root", 8 to 12)
                             node<ParadoxOperatorNode>(".", 12 to 13)
                             node<ParadoxPredefinedCommandFieldNode>("GetName", 13 to 20)
@@ -311,7 +311,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxMarkerNode>("{", 0 to 1)
                 node<ParadoxCommandNode>("[Root.", 1 to 7) {
                     node<ParadoxMarkerNode>("[", 1 to 2)
-                    expression<ParadoxCommandExpression>("Root.", 2 to 7) {
+                    node<ParadoxCommandExpression>("Root.", 2 to 7) {
                         node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
                         node<ParadoxOperatorNode>(".", 6 to 7)
                         node<ParadoxDynamicCommandFieldNode>("", 7 to 7) {
@@ -519,7 +519,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxMarkerNode>("{", 0 to 1)
                 node<ParadoxCommandNode>("[Root.", 1 to 7) {
                     node<ParadoxMarkerNode>("[", 1 to 2)
-                    expression<ParadoxCommandExpression>("Root.", 2 to 7) {
+                    node<ParadoxCommandExpression>("Root.", 2 to 7) {
                         node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
                         node<ParadoxOperatorNode>(".", 6 to 7)
                         node<ParadoxDynamicCommandFieldNode>("", 7 to 7) {
@@ -598,7 +598,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                 node<StellarisNameFormatLocalisationNode>("x", 1 to 2)
                 node<ParadoxCommandNode>("[Root.GetName]", 2 to 16) {
                     node<ParadoxMarkerNode>("[", 2 to 3)
-                    expression<ParadoxCommandExpression>("Root.GetName", 3 to 15) {
+                    node<ParadoxCommandExpression>("Root.GetName", 3 to 15) {
                         node<ParadoxSystemCommandScopeNode>("Root", 3 to 7)
                         node<ParadoxOperatorNode>(".", 7 to 8)
                         node<ParadoxPredefinedCommandFieldNode>("GetName", 8 to 15)

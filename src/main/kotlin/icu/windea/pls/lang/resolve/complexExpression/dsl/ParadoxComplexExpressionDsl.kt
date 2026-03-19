@@ -33,18 +33,6 @@ inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
 }
 
 @ParadoxComplexExpressionDsl
-inline fun <reified T : ParadoxComplexExpression> ParadoxComplexExpressionDslNode.expression(
-    text: String,
-    rangeInExpression: TypedTuple2<Int>,
-    block: ParadoxComplexExpressionDslNode.() -> Unit = {}
-): ParadoxComplexExpressionDslNode {
-    val node = ParadoxComplexExpressionDslNode(T::class, text, rangeInExpression, mutableListOf())
-    block(node)
-    nodes += node
-    return node
-}
-
-@ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpressionNode> ParadoxComplexExpressionDslNode.node(
     text: String,
     rangeInExpression: TypedTuple2<Int>,

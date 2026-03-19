@@ -84,7 +84,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueFieldNode>(s, 0 to 26) {
                 node<ParadoxValueFieldPrefixNode>("value:", 0 to 6)
                 node<ParadoxValueFieldValueNode>("some_sv|PARAM|VALUE|", 6 to 26) {
-                    expression<ParadoxScriptValueExpression>("some_sv|PARAM|VALUE|", 6 to 26) {
+                    node<ParadoxScriptValueExpression>("some_sv|PARAM|VALUE|", 6 to 26) {
                         node<ParadoxScriptValueNode>("some_sv", 6 to 13)
                         node<ParadoxMarkerNode>("|", 13 to 14)
                         node<ParadoxScriptValueArgumentNode>("PARAM", 14 to 19)
@@ -109,7 +109,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueFieldNode>("value:some_sv|A|B|.owner", 5 to 29) {
                 node<ParadoxValueFieldPrefixNode>("value:", 5 to 11)
                 node<ParadoxValueFieldValueNode>("some_sv|A|B|.owner", 11 to 29) {
-                    expression<ParadoxScriptValueExpression>("some_sv|A|B|.owner", 11 to 29) {
+                    node<ParadoxScriptValueExpression>("some_sv|A|B|.owner", 11 to 29) {
                         node<ParadoxScriptValueNode>("some_sv", 11 to 18)
                         node<ParadoxMarkerNode>("|", 18 to 19)
                         node<ParadoxScriptValueArgumentNode>("A", 19 to 20)
@@ -134,7 +134,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
                 node<ParadoxMarkerNode>("(", 9 to 10)
                 node<ParadoxValueFieldValueNode>("root", 10 to 14) {
-                    expression<ParadoxScopeFieldExpression>("root", 10 to 14) {
+                    node<ParadoxScopeFieldExpression>("root", 10 to 14) {
                         node<ParadoxSystemScopeNode>("root", 10 to 14)
                     }
                 }
@@ -154,11 +154,11 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("relations", 0 to 9)
                 node<ParadoxMarkerNode>("(", 9 to 10)
                 node<ParadoxValueFieldValueNode>("scope:some_scope", 10 to 26) {
-                    expression<ParadoxScopeFieldExpression>("scope:some_scope", 10 to 26) {
+                    node<ParadoxScopeFieldExpression>("scope:some_scope", 10 to 26) {
                         node<ParadoxDynamicScopeLinkNode>("scope:some_scope", 10 to 26) {
                             node<ParadoxScopeLinkPrefixNode>("scope:", 10 to 16)
                             node<ParadoxScopeLinkValueNode>("some_scope", 16 to 26) {
-                                expression<ParadoxDynamicValueExpression>("some_scope", 16 to 26) {
+                                node<ParadoxDynamicValueExpression>("some_scope", 16 to 26) {
                                     node<ParadoxDynamicValueNode>("some_scope", 16 to 26)
                                 }
                             }
@@ -183,7 +183,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxOperatorNode>(".", 10 to 11)
             node<ParadoxDynamicValueFieldNode>("some_variable", 11 to 24) {
                 node<ParadoxValueFieldValueNode>("some_variable", 11 to 24) {
-                    expression<ParadoxDynamicValueExpression>("some_variable", 11 to 24) {
+                    node<ParadoxDynamicValueExpression>("some_variable", 11 to 24) {
                         node<ParadoxDynamicValueNode>("some_variable", 11 to 24)
                     }
                 }
@@ -200,7 +200,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxValueFieldExpression>("", 0 to 0) {
             node<ParadoxDynamicValueFieldNode>("", 0 to 0) {
                 node<ParadoxValueFieldValueNode>("", 0 to 0) {
-                    expression<ParadoxDynamicValueExpression>("", 0 to 0) {
+                    node<ParadoxDynamicValueExpression>("", 0 to 0) {
                         node<ParadoxDynamicValueNode>("", 0 to 0)
                     }
                 }
@@ -221,7 +221,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5 to 15)
                 node<ParadoxMarkerNode>("(", 15 to 16)
                 node<ParadoxScopeLinkValueNode>("root, some_building", 16 to 35) {
-                    expression<ParadoxScopeFieldExpression>("root", 16 to 20) {
+                    node<ParadoxScopeFieldExpression>("root", 16 to 20) {
                         node<ParadoxSystemScopeNode>("root", 16 to 20)
                     }
                     node<ParadoxMarkerNode>(",", 20 to 21)
@@ -235,7 +235,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 37 to 47)
                 node<ParadoxMarkerNode>("(", 47 to 48)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job", 48 to 67) {
-                    expression<ParadoxDynamicValueExpression>("some_flag", 48 to 57) {
+                    node<ParadoxDynamicValueExpression>("some_flag", 48 to 57) {
                         node<ParadoxDynamicValueNode>("some_flag", 48 to 57)
                     }
                     node<ParadoxMarkerNode>(",", 57 to 58)
@@ -260,7 +260,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5 to 15)
                 node<ParadoxMarkerNode>("(", 15 to 16)
                 node<ParadoxScopeLinkValueNode>("root, some_building,", 16 to 36) {
-                    expression<ParadoxScopeFieldExpression>("root", 16 to 20) {
+                    node<ParadoxScopeFieldExpression>("root", 16 to 20) {
                         node<ParadoxSystemScopeNode>("root", 16 to 20)
                     }
                     node<ParadoxMarkerNode>(",", 20 to 21)
@@ -275,7 +275,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 38 to 48)
                 node<ParadoxMarkerNode>("(", 48 to 49)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job,", 49 to 69) {
-                    expression<ParadoxDynamicValueExpression>("some_flag", 49 to 58) {
+                    node<ParadoxDynamicValueExpression>("some_flag", 49 to 58) {
                         node<ParadoxDynamicValueNode>("some_flag", 49 to 58)
                     }
                     node<ParadoxMarkerNode>(",", 58 to 59)
@@ -301,7 +301,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5 to 15)
                 node<ParadoxMarkerNode>("(", 15 to 16)
                 node<ParadoxScopeLinkValueNode>("root", 16 to 20) {
-                    expression<ParadoxScopeFieldExpression>("root", 16 to 20) {
+                    node<ParadoxScopeFieldExpression>("root", 16 to 20) {
                         node<ParadoxSystemScopeNode>("root", 16 to 20)
                     }
                 }
@@ -312,7 +312,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 22 to 32)
                 node<ParadoxMarkerNode>("(", 32 to 33)
                 node<ParadoxValueFieldValueNode>("some_flag", 33 to 42) {
-                    expression<ParadoxDynamicValueExpression>("some_flag", 33 to 42) {
+                    node<ParadoxDynamicValueExpression>("some_flag", 33 to 42) {
                         node<ParadoxDynamicValueNode>("some_flag", 33 to 42)
                     }
                 }
@@ -334,7 +334,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5 to 15)
                 node<ParadoxMarkerNode>("(", 15 to 16)
                 node<ParadoxScopeLinkValueNode>("root,", 16 to 21) {
-                    expression<ParadoxScopeFieldExpression>("root", 16 to 20) {
+                    node<ParadoxScopeFieldExpression>("root", 16 to 20) {
                         node<ParadoxSystemScopeNode>("root", 16 to 20)
                     }
                     node<ParadoxMarkerNode>(",", 20 to 21)
@@ -346,7 +346,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 23 to 33)
                 node<ParadoxMarkerNode>("(", 33 to 34)
                 node<ParadoxValueFieldValueNode>("some_flag,", 34 to 44) {
-                    expression<ParadoxDynamicValueExpression>("some_flag", 34 to 43) {
+                    node<ParadoxDynamicValueExpression>("some_flag", 34 to 43) {
                         node<ParadoxDynamicValueNode>("some_flag", 34 to 43)
                     }
                     node<ParadoxMarkerNode>(",", 43 to 44)
@@ -407,7 +407,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxStringLiteralNode>("'foo bar'", 24 to 33)
                     node<ParadoxMarkerNode>(",", 33 to 34)
                     node<ParadoxBlankNode>(" ", 34 to 35)
-                    expression<ParadoxDynamicValueExpression>("some_variable", 35 to 48) {
+                    node<ParadoxDynamicValueExpression>("some_variable", 35 to 48) {
                         node<ParadoxDynamicValueNode>("some_variable", 35 to 48)
                     }
                 }
@@ -418,7 +418,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 50 to 60)
                 node<ParadoxMarkerNode>("(", 60 to 61)
                 node<ParadoxValueFieldValueNode>("some_flag, some_job", 61 to 80) {
-                    expression<ParadoxDynamicValueExpression>("some_flag", 61 to 70) {
+                    node<ParadoxDynamicValueExpression>("some_flag", 61 to 70) {
                         node<ParadoxDynamicValueNode>("some_flag", 61 to 70)
                     }
                     node<ParadoxMarkerNode>(",", 70 to 71)
@@ -441,22 +441,22 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("colonial_charter_utility", 0 to 24)
                 node<ParadoxMarkerNode>("(", 24 to 25)
                 node<ParadoxValueFieldValueNode>("scope:target|scope:some", 25 to 48) {
-                    expression<ParadoxScopeFieldExpression>("scope:target", 25 to 37) {
+                    node<ParadoxScopeFieldExpression>("scope:target", 25 to 37) {
                         node<ParadoxDynamicScopeLinkNode>("scope:target", 25 to 37) {
                             node<ParadoxScopeLinkPrefixNode>("scope:", 25 to 31)
                             node<ParadoxScopeLinkValueNode>("target", 31 to 37) {
-                                expression<ParadoxDynamicValueExpression>("target", 31 to 37) {
+                                node<ParadoxDynamicValueExpression>("target", 31 to 37) {
                                     node<ParadoxDynamicValueNode>("target", 31 to 37)
                                 }
                             }
                         }
                     }
                     node<ParadoxMarkerNode>("|", 37 to 38)
-                    expression<ParadoxScopeFieldExpression>("scope:some", 38 to 48) {
+                    node<ParadoxScopeFieldExpression>("scope:some", 38 to 48) {
                         node<ParadoxDynamicScopeLinkNode>("scope:some", 38 to 48) {
                             node<ParadoxScopeLinkPrefixNode>("scope:", 38 to 44)
                             node<ParadoxScopeLinkValueNode>("some", 44 to 48) {
-                                expression<ParadoxDynamicValueExpression>("some", 44 to 48) {
+                                node<ParadoxDynamicValueExpression>("some", 44 to 48) {
                                     node<ParadoxDynamicValueNode>("some", 44 to 48)
                                 }
                             }

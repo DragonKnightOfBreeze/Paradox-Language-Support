@@ -61,7 +61,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
             node<ParadoxMarkerNode>("@", 13 to 14)
-            expression<ParadoxScopeFieldExpression>("root", 14 to 18) {
+            node<ParadoxScopeFieldExpression>("root", 14 to 18) {
                 node<ParadoxScopeLinkNode>("root", 14 to 18)
             }
         }
@@ -76,7 +76,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildComplexExpression<ParadoxDynamicValueExpression>(s, 0 to s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
             node<ParadoxMarkerNode>("@", 13 to 14)
-            expression<ParadoxScopeFieldExpression>("root.owner", 14 to 24) {
+            node<ParadoxScopeFieldExpression>("root.owner", 14 to 24) {
                 node<ParadoxScopeLinkNode>("root", 14 to 18)
                 node<ParadoxOperatorNode>(".", 18 to 19)
                 node<ParadoxScopeLinkNode>("owner", 19 to 24)
