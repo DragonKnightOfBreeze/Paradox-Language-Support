@@ -14,7 +14,6 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.ofKey
@@ -29,6 +28,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
 import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -39,9 +39,7 @@ import java.io.DataOutput
 class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
-    override val id = ParadoxIndexInfoType.InferredScopeContextAwareDefinition.id
-
-    override val type = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.InferredScopeContextAwareDefinition
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         val expression = element.value
@@ -81,9 +79,7 @@ class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMerg
 class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInOnActionIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
-    override val id = ParadoxIndexInfoType.EventInOnAction.id
-
-    override val type = ParadoxEventInOnActionIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.EventInOnAction
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return
@@ -126,9 +122,7 @@ class ParadoxEventInOnActionMergedIndexSupport : ParadoxMergedIndexSupport<Parad
 class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxEventInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
-    override val id = ParadoxIndexInfoType.EventInEvent.id
-
-    override val type = ParadoxEventInEventIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.EventInEvent
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return
@@ -191,9 +185,7 @@ class ParadoxEventInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxE
 class ParadoxOnActionInEventMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxOnActionInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
-    override val id = ParadoxIndexInfoType.OnActionInEvent.id
-
-    override val type = ParadoxOnActionInEventIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.OnActionInEvent
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?, configs: List<CwtMemberConfig<*>>) {
         if (info !is ParadoxDefinitionInfo) return

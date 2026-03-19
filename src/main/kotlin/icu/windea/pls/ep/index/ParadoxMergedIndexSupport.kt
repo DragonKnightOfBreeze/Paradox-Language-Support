@@ -10,6 +10,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfoType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
@@ -21,9 +22,7 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  */
 interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
-    val id: Byte
-
-    val type: Class<T>
+    val indexInfoType: ParadoxIndexInfoType<T>
 
     fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
@@ -40,9 +39,9 @@ interface ParadoxMergedIndexSupport<T : ParadoxIndexInfo> {
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 
     fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        PlsIndexStatisticService.recordMerged(info.gameType, id)
+        PlsIndexStatisticService.recordMerged(info.gameType, indexInfoType)
 
-        fileData.getOrPut(id.toString()) { mutableListOf() }.asMutable() += info
+        fileData.getOrPut(indexInfoType.key.toString()) { mutableListOf() }.asMutable() += info
     }
 
     companion object INSTANCE {

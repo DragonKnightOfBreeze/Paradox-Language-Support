@@ -6,9 +6,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
@@ -23,7 +23,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val indexInfoType = ParadoxIndexInfoType.LocalisationParameter
+        val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
         PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, queryParameters.gameType) { file, infos ->
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }

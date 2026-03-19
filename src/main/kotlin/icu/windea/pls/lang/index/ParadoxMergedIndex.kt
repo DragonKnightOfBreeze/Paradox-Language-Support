@@ -246,8 +246,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         for (key in fileData.keys) {
             val oldValue = fileData.getValue(key)
             if (oldValue.size <= 1) continue
-            val id = key.toByte()
-            val support = getSupportOrUnsupported(supports, id)
+            val support = getSupportOrUnsupported(supports, key.toByte())
             val newValue = support.compressData(oldValue)
             fileData[key] = newValue
         }
@@ -257,7 +256,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         // 用于兼容懒加载的索引
         return buildMap {
             val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-            supports.forEachFast { ep -> put(ep.id.toString(), emptyList()) }
+            supports.forEachFast { ep -> put(ep.indexInfoType.key.toString(), emptyList()) }
         }
     }
 
@@ -270,7 +269,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val type = firstInfo.javaClass
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, type)
-        storage.writeByte(support.id)
+        storage.writeByte(support.indexInfoType.key)
         val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         var previousInfo: ParadoxIndexInfo? = null
@@ -284,9 +283,9 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val id = storage.readByte()
+        val key = storage.readByte()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
-        val support = getSupportOrUnsupported(supports, id)
+        val support = getSupportOrUnsupported(supports, key)
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
@@ -294,11 +293,11 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         }
     }
 
-    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { it.type == type }?.castOrNull<ParadoxMergedIndexSupport<ParadoxIndexInfo>>() ?: throw UnsupportedOperationException()
+    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, key: Byte): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
+        return supports.findFast { it.indexInfoType.key == key }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 
-    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, id: Byte): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
-        return supports.findFast { it.id == id }?.castOrNull<ParadoxMergedIndexSupport<ParadoxIndexInfo>>() ?: throw UnsupportedOperationException()
+    private fun getSupportOrUnsupported(supports: List<ParadoxMergedIndexSupport<*>>, type: Class<ParadoxIndexInfo>): ParadoxMergedIndexSupport<ParadoxIndexInfo> {
+        return supports.findFast { it.indexInfoType.type == type }?.castOrNull() ?: throw UnsupportedOperationException()
     }
 }

@@ -21,6 +21,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfoType
 
 object PlsIndexService {
     // region FileBasedIndex Methods
@@ -62,7 +63,7 @@ object PlsIndexService {
 
         val index = EXTENSION_POINT_NAME.findExtensionOrFail(ParadoxMergedIndex::class.java)
         val indexId = index.name
-        val key = indexInfoType.id.toString()
+        val key = indexInfoType.key.toString()
         val keys = setOf(key)
         return FileBasedIndex.getInstance().processFilesContainingAnyKey(indexId, keys, scope, null, null) p@{ file ->
             ProgressManager.checkCanceled()

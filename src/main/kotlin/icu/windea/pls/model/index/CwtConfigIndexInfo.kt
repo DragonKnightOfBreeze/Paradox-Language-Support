@@ -1,5 +1,6 @@
 package icu.windea.pls.model.index
 
+import icu.windea.pls.lang.index.CwtConfigIndexInfoAwareFileBasedIndex
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -7,7 +8,7 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * @property gameType 游戏类型。
  *
- * @see icu.windea.pls.lang.index.CwtConfigIndexInfoAwareFileBasedIndex
+ * @see CwtConfigIndexInfoAwareFileBasedIndex
  */
 sealed class CwtConfigIndexInfo : IndexInfo() {
     abstract val gameType: ParadoxGameType

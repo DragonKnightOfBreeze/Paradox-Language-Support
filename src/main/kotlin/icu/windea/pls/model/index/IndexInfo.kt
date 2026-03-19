@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.index.IndexInfoAwareFileBasedIndex
 
 /**
  * 索引信息。
@@ -12,7 +13,7 @@ import icu.windea.pls.core.toPsiFile
  * @property virtualFile 所属的虚拟文件。需要先通过 [bind] 绑定才能获取（使用 [QueryExecutor] 进行查询时会自动绑定）。
  * @property project 所属的项目。需要先通过 [bind] 绑定才能获取（使用 [QueryExecutor] 进行查询时会自动绑定）。
  *
- * @see icu.windea.pls.lang.index.IndexInfoAwareFileBasedIndex
+ * @see IndexInfoAwareFileBasedIndex
  */
 sealed class IndexInfo {
     @Volatile private var _virtualFile: VirtualFile? = null

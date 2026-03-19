@@ -13,7 +13,6 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
@@ -24,6 +23,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfoTypes
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -35,9 +35,7 @@ class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxD
     private val constraint = ParadoxResolveConstraint.DynamicValue
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
-    override val id = ParadoxIndexInfoType.DynamicValue.id
-
-    override val type = ParadoxDynamicValueIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.DynamicValue
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
         // read access or write access
@@ -90,9 +88,7 @@ class ParadoxParameterMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxPara
     private val constraint = ParadoxResolveConstraint.Parameter
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
-    override val id = ParadoxIndexInfoType.Parameter.id
-
-    override val type = ParadoxParameterIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.Parameter
 
     override fun buildData(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         // read access
@@ -145,9 +141,7 @@ class ParadoxLocalisationParameterMergedIndexSupport : ParadoxMergedIndexSupport
     private val constraint = ParadoxResolveConstraint.LocalisationParameter
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
-    override val id = ParadoxIndexInfoType.LocalisationParameter.id
-
-    override val type = ParadoxLocalisationParameterIndexInfo::class.java
+    override val indexInfoType = ParadoxIndexInfoTypes.LocalisationParameter
 
     override fun buildDataForExpression(element: ParadoxScriptStringExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>, info: ParadoxDefinitionCandidateInfo?) {
         // write access
