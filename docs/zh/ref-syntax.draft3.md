@@ -5,10 +5,11 @@
 本文档是 Paradox Language Support 插件所支持的四种语言的语法参考。
 文档内容反映的是插件的解析实现，而非游戏引擎的底层行为——二者在多数情况下一致，但不排除存在差异。
 
+@see docs/zh/ref-syntax.md (original)
+@see docs/zh/ref-syntax.draft.md (previous draft)
 @see src/test/testData/cwt/example.test.cwt
 @see src/test/testData/script/example.test.txt
 @see src/test/testData/localisation/example.test.yml
-@see src/test/testData/csv/example.test.yml
 -->
 
 ## 总览 {#overview}
