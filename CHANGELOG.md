@@ -14,7 +14,7 @@
 
 - [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
-- [x] 优化：优化索引时的性能，将耗时降低到旧版本的 (Sellaris/VIC3/EU5 65%/47%/25%) / OP: Optimize performance during indexing, reducing the time taken to (Sellaris/VIC3/EU5 65%/47%/25%) of the old version
+- [x] 优化：优化索引时的性能，将耗时降低到旧版本的 (Stellaris/VIC3/EU5 65%/47%/25%) / OP: Optimize performance during indexing, reducing the time taken to (Stellaris/VIC3/EU5 65%/47%/25%) of the old version
 - [x] 性能分析与优化 / Performance analysis and optimization
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 

@@ -191,7 +191,7 @@ These expressions and structures change the behavior of the script parser at gam
 Different directives can have different config structures.
 
 Language features currently involved:
-- **Inline_script**: (Sellaris) will be replaced by the content of the target file during the parsing phase, and arguments can be specified.
+- **Inline_script**: (Stellaris) will be replaced by the content of the target file during the parsing phase, and arguments can be specified.
 - **definition_injection**: (VIC3/EU5) will inject or replace The declaration of the target definition during the parsing phase, and the mode can be specified to determine the specific behavior.
 
 **Path location**: `directive[{name}]`, where `{name}` is the config name.
