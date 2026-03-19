@@ -11,48 +11,47 @@ import icu.windea.pls.model.constants.PlsStrings
  *
  * ### 标准规则类型
  *
- * 从标准CWT规则文件中解析：
+ * 从标准 CWT 规则文件中解析：
  *
- * - [Type] - 类型规则，路径：`types / type[*]`
- * - [Subtype] - 子类型规则，路径：`types / type[*] / subtype[*]`
- * - [Row] - 行规则（用于CSV），路径：`rows / row[*]`
- * - [Enum] - 枚举规则，路径：`enums / enum[*]`
- * - [ComplexEnum] - 复杂枚举规则，路径：`enums / complex_enum[*]`
- * - [EnumValue] - 枚举值，路径：`enums / enum[*] / -`（值，非属性）
- * - [DynamicValueType] - 动态值类型规则，路径：`values / value[*]`
- * - [DynamicValue] - 动态值，路径：`values / value[*] / -`（值，非属性）
- * - [SingleAlias] - 单别名规则，路径：`single_alias[*]`
- * - [Alias] - 别名规则，路径：`alias[*]`
- * - [Directive] - 指令规则，路径：`directive[*]`
- * - [Link] - 链接规则，路径：`links / *`
- * - [LocalisationLink] - 本地化链接规则，路径：`localisation_links / *`
- * - [LocalisationPromotion] - 本地化提升规则，路径：`localisation_promotions / *`
- * - [LocalisationCommand] - 本地化命令规则，路径：`localisation_commands / *`
- * - [ModifierCategory] - 修正分类规则，路径：`modifier_categories / *`
- * - [Modifier] - 修正规则，路径：`modifiers / *` 或 `types / type[*] / modifiers / *` 或 `alias[modifier:*]`
- * - [Trigger] - 触发器规则，路径：`alias[trigger:*]`
- * - [Effect] - 效果规则，路径：`alias[effect:*]`
- * - [Scope] - 作用域规则，路径：`scopes / *`
- * - [ScopeGroup] - 作用域组规则，路径：`scope_groups / *`
- * - [DatabaseObjectType] - 数据库对象类型规则，路径：`database_object_types / *`
- * - [SystemScope] - 系统作用域规则，路径：`system_scopes / *`
- * - [Locale] - 区域规则，路径：`locales / *`
+ * - [Type][CwtConfigTypes.Type] - 类型规则，路径：`types / type[*]`
+ * - [Subtype][CwtConfigTypes.Subtype] - 子类型规则，路径：`types / type[*] / subtype[*]`
+ * - [Row][CwtConfigTypes.Row] - 行规则（用于CSV），路径：`rows / row[*]`
+ * - [Enum][CwtConfigTypes.Enum] - 枚举规则，路径：`enums / enum[*]`
+ * - [ComplexEnum][CwtConfigTypes.ComplexEnum] - 复杂枚举规则，路径：`enums / complex_enum[*]`
+ * - [EnumValue][CwtConfigTypes.EnumValue] - 枚举值，路径：`enums / enum[*] / -`（值，非属性）
+ * - [DynamicValueType][CwtConfigTypes.DynamicValueType] - 动态值类型规则，路径：`values / value[*]`
+ * - [DynamicValue][CwtConfigTypes.DynamicValue] - 动态值，路径：`values / value[*] / -`（值，非属性）
+ * - [SingleAlias][CwtConfigTypes.SingleAlias] - 单别名规则，路径：`single_alias[*]`
+ * - [Alias][CwtConfigTypes.Alias] - 别名规则，路径：`alias[*]`
+ * - [Directive][CwtConfigTypes.Directive] - 指令规则，路径：`directive[*]`
+ * - [Link][CwtConfigTypes.Link] - 链接规则，路径：`links / *`
+ * - [LocalisationLink][CwtConfigTypes.LocalisationLink] - 本地化链接规则，路径：`localisation_links / *`
+ * - [LocalisationPromotion][CwtConfigTypes.LocalisationPromotion] - 本地化提升规则，路径：`localisation_promotions / *`
+ * - [LocalisationCommand][CwtConfigTypes.LocalisationCommand] - 本地化命令规则，路径：`localisation_commands / *`
+ * - [ModifierCategory][CwtConfigTypes.ModifierCategory] - 修正分类规则，路径：`modifier_categories / *`
+ * - [Modifier][CwtConfigTypes.Modifier] - 修正规则，路径：`modifiers / *` 或 `types / type[*] / modifiers / *` 或 `alias[modifier:*]`
+ * - [Trigger][CwtConfigTypes.Trigger] - 触发器规则，路径：`alias[trigger:*]`
+ * - [Effect][CwtConfigTypes.Effect] - 效果规则，路径：`alias[effect:*]`
+ * - [Scope][CwtConfigTypes.Scope] - 作用域规则，路径：`scopes / *`
+ * - [ScopeGroup][CwtConfigTypes.ScopeGroup] - 作用域组规则，路径：`scope_groups / *`
+ * - [DatabaseObjectType][CwtConfigTypes.DatabaseObjectType] - 数据库对象类型规则，路径：`database_object_types / *`
+ * - [SystemScope][CwtConfigTypes.SystemScope] - 系统作用域规则，路径：`system_scopes / *`
+ * - [Locale][CwtConfigTypes.Locale] - 语言区域规则，路径：`locales / *`
  *
  * ### 扩展规则类型
  *
  * 从插件扩展的规则文件中解析（不检查元素是属性还是值）：
  *
- * - [ExtendedScriptedVariable] - 封装变量扩展规则，路径：`scripted_variables / *`
- * - [ExtendedDefinition] - 定义扩展规则，路径：`definitions / *`
- * - [ExtendedGameRule] - 游戏规则扩展规则，路径：`game_rules / *`
- * - [ExtendedOnAction] - 动作触发扩展规则，路径：`on_actions / *`
- * - [ExtendedInlineScript] - 内联脚本扩展规则，路径：`inline_scripts / *`
- * - [ExtendedParameter] - 参数扩展规则，路径：`parameters / *`
- * - [ExtendedDynamicValue] - 动态值扩展规则，路径：`dynamic_values / * / *`
- * - [ExtendedComplexEnumValue] - 复杂枚举值扩展规则，路径：`complex_enum_values / * / *`
+ * - [ExtendedScriptedVariable][CwtConfigTypes.ExtendedScriptedVariable] - 封装变量扩展规则，路径：`scripted_variables / *`
+ * - [ExtendedDefinition][CwtConfigTypes.ExtendedDefinition] - 定义扩展规则，路径：`definitions / *`
+ * - [ExtendedGameRule][CwtConfigTypes.ExtendedGameRule] - 游戏规则扩展规则，路径：`game_rules / *`
+ * - [ExtendedOnAction][CwtConfigTypes.ExtendedOnAction] - 动作触发扩展规则，路径：`on_actions / *`
+ * - [ExtendedInlineScript][CwtConfigTypes.ExtendedInlineScript] - 内联脚本扩展规则，路径：`inline_scripts / *`
+ * - [ExtendedParameter][CwtConfigTypes.ExtendedParameter] - 参数扩展规则，路径：`parameters / *`
+ * - [ExtendedDynamicValue][CwtConfigTypes.ExtendedDynamicValue] - 动态值扩展规则，路径：`dynamic_values / * / *`
+ * - [ExtendedComplexEnumValue][CwtConfigTypes.ExtendedComplexEnumValue] - 复杂枚举值扩展规则，路径：`complex_enum_values / * / *`
  *
  * @see CwtConfigType
- * @see icu.windea.pls.config.config.CwtConfigService.resolveConfigType
  */
 @Suppress("unused")
 object CwtConfigTypes {
@@ -194,7 +193,7 @@ object CwtConfigTypes {
         .prefix(PlsStrings.systemScopePrefix)
         .description(PlsBundle.message("cwt.config.description.systemScope"))
         .build()
-    /** 区域规则。路径：`locales / *`。 */
+    /** 语言区域规则。路径：`locales / *`。 */
     val Locale = CwtConfigType.builder("locale").reference()
         .icon(PlsIcons.Nodes.LocalisationLocale)
         .prefix(PlsStrings.localePrefix)

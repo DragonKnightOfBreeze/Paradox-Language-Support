@@ -119,8 +119,8 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
 
         fromLiteral(CwtDataTypes.VariableField, "variable_field")
         fromRanged(CwtDataTypes.VariableField, "variable_field") { floatRange = FloatRangeInfo.from(it) }
-        fromLiteral(CwtDataTypes.VariableField, "variable_field32")
-        fromRanged(CwtDataTypes.VariableField, "variable_field32") { floatRange = FloatRangeInfo.from(it) }
+        fromLiteral(CwtDataTypes.VariableField, "variable_field_32")
+        fromRanged(CwtDataTypes.VariableField, "variable_field_32") { floatRange = FloatRangeInfo.from(it) }
         fromLiteral(CwtDataTypes.IntVariableField, "int_variable_field")
         fromRanged(CwtDataTypes.IntVariableField, "int_variable_field") { intRange = IntRangeInfo.from(it) }
         fromLiteral(CwtDataTypes.IntVariableField, "int_variable_field_32")

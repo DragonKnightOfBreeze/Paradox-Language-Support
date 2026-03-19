@@ -261,7 +261,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.floatRange)
         }
         run {
-            val e = CwtDataExpression.resolve("variable_field32(0.0..1.0]", false)
+            val e = CwtDataExpression.resolve("variable_field_32(0.0..1.0]", false)
             assertEquals(CwtDataTypes.VariableField, e.type)
             assertEquals(FloatRangeInfo.from("(0.0..1.0]"), e.floatRange)
         }

@@ -1,7 +1,11 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.config.CwtDataType.Companion.entries
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.match.ParadoxMatchResult
 
 /**
  * 数据类型。
@@ -11,22 +15,22 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  *
  * ### 解析逻辑
  *
- * 规则表达式的字符串由[CwtDataExpressionResolver][icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver]
- * 解析为[CwtDataExpression]，其中包含对应的数据类型。解析器按扩展点注册顺序依次尝试：
+ * 规则表达式的字符串由 [CwtDataExpressionResolver] 解析为 [CwtDataExpression]，
+ * 其中包含对应的数据类型。解析器按扩展点注册顺序依次尝试：
  *
- * - **基本类型**：字面量匹配（如`bool`→[CwtDataTypes.Bool]）或带范围参数（如`int[0..100]`→[CwtDataTypes.Int]）。
- * - **核心类型**：参数化匹配（如`<type>`→[CwtDataTypes.Definition]，`enum[name]`→[CwtDataTypes.EnumValue]）。
- * - **模板表达式**：包含引用占位符的模式（如`a_<b>_enum[c]`→[CwtDataTypes.TemplateExpression]）。
- * - **Ant模式**：`ant:`或`ant.i:`前缀（→[CwtDataTypes.Ant]）。
- * - **正则模式**：`re:`或`re.i:`前缀（→[CwtDataTypes.Regex]）。
- * - **后缀感知类型**：含`|`分隔的后缀列表（如`<type>|suffix1,suffix2`→[CwtDataTypes.SuffixAwareDefinition]）。
- * - **常量**：不含特殊字符的普通字符串（→[CwtDataTypes.Constant]）。
+ * - **基本类型**：字面量匹配（如 `bool`→[CwtDataTypes.Bool]）或带范围参数（如 `int[0..100]` → [CwtDataTypes.Int]）。
+ * - **核心类型**：参数化匹配（如 `<type>`→[CwtDataTypes.Definition]，`enum[name]` → [CwtDataTypes.EnumValue]）。
+ * - **模板表达式**：包含引用占位符的模式（如 `a_<b>_enum[c]`→[CwtDataTypes.TemplateExpression]）。
+ * - **Ant模式**：`ant:` 或 `ant.i:`前缀（→[CwtDataTypes.Ant]）。
+ * - **正则模式**：`re:` 或 `re.i:` 前缀（→[CwtDataTypes.Regex]）。
+ * - **后缀感知类型**：含 `|` 分隔的后缀列表（如 `<type>|suffix1,suffix2`→[CwtDataTypes.SuffixAwareDefinition]）。
+ * - **常量**：不含特殊字符的普通字符串（→ [CwtDataTypes.Constant]）。
  *
  * ### 匹配逻辑
  *
- * 脚本表达式与规则表达式的匹配由[ParadoxScriptExpressionMatcher][icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher]
- * 驱动，根据规则表达式的数据类型分派到对应的匹配分支。匹配结果为[ParadoxMatchResult][icu.windea.pls.lang.match.ParadoxMatchResult]，
- * 存在多个候选规则时优先选择[priority]更高的数据表达式。
+ * 脚本表达式与规则表达式的匹配由 [ParadoxScriptExpressionMatcher]
+ * 驱动，根据规则表达式的数据类型分派到对应的匹配分支。匹配结果为 [ParadoxMatchResult]，
+ * 存在多个候选规则时优先选择 [priority] 更高的数据表达式。
  *
  * ### 数据类型分类
  *
@@ -36,7 +40,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  *
  * ### 备注
  *
- * 为优化性能，此类使用引用相等（identity equality）而非结构相等。所有实例通过[Builder]构建并注册到[entries]中。
+ * 为优化性能，此类使用引用相等（identity equality）而非结构相等。所有实例通过 [Builder] 构建并注册到 [entries] 中。
  *
  * @property id 唯一标识符。
  * @property isReference 是否表示一个可导航的引用。
@@ -48,8 +52,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * @see CwtDataTypes
  * @see CwtDataTypeSets
  * @see CwtDataExpression
- * @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
- * @see icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+ * @see CwtDataExpressionResolver
+ * @see ParadoxScriptExpressionMatcher
  */
 @Suppress("unused")
 class CwtDataType private constructor(

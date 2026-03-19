@@ -38,6 +38,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * #### 解析要点
  * - 模板来源：若配置为修正（`CwtModifierConfig`），取其 `template`；否则取 `configExpression` 中的 [CwtDataTypes.TemplateExpression]。
  * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
+ *
+ * @see CwtTemplateExpression
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
     interface Resolver {
