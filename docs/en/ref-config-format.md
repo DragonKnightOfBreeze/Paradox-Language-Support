@@ -30,7 +30,6 @@ Terminology:
 <!-- @see icu.windea.pls.config.configGroup.CwtConfigGroup -->
 <!-- @see icu.windea.pls.config.config.CwtPropertyConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.* -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.* -->
 
 ## Configs {#configs}
 
@@ -96,7 +95,6 @@ priorities = {
 #### Declaration Configs {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
 <!-- @see icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider -->
 <!-- @see icu.windea.pls.ep.config.CwtInjectedConfigProvider -->
@@ -147,7 +145,6 @@ event = {
 #### System Scope Configs {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
 <!-- @see cwt/core/system_scopes.core.cwt -->
 
 - **Purpose**: provide metadata for built-in "system-level scopes" (This/Root/Prev/From, etc.) for quick documentation and scope stack derivation.
@@ -181,7 +178,6 @@ system_scopes = {
 #### Directive Configs {#config-directive}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDirectiveConfigResolverImpl -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 <!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/common/definition_injections.cwt -->
@@ -208,8 +204,6 @@ directive[inline_script] = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl -->
 
 - **Purpose**: locate and name "definitions" by file path/key, and optionally declare subtypes, presentation and images.
 - **Path location**:
@@ -282,8 +276,6 @@ types = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
 
@@ -352,8 +344,6 @@ some_definition = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtEnumConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverImpl -->
 
 - **Purpose**: provide value sets for the data expression `enum[...]`.
   - Simple enum: a fixed set of values, all declared in config files.
@@ -420,7 +410,6 @@ enums = {
 #### Dynamic Value Type Configs {#config-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl -->
 
 - **Purpose**: provide predefined (hard-coded) dynamic value sets for the data expression `value[...]`, as an alternative to fixed literals, for completion and validation.
 - **Path location**: `values/value[{name}]`, where `{name}` is the dynamic value type name.
@@ -449,7 +438,6 @@ values = {
 #### Link Configs {#config-link}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl -->
 
 - **Purpose**: provide semantics and type (scope/value) constraints for "field/function-like" nodes in complex expressions, supporting chained access, completion, and inspections.
 - **Path location**:
@@ -517,8 +505,6 @@ links = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeGroupConfigResolverImpl -->
 
 - **Purpose**: define "scope types" and their aliases (`scopes`), and group scopes (`scope_groups`) for scope checks, chaining constraints, and hints.
 
@@ -552,8 +538,6 @@ scope_groups = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierCategoryConfigResolverImpl -->
 
 - **Purpose**: declare modifiers and their categories, used for icon rendering, completion, and scope validation.
 
@@ -620,8 +604,6 @@ modifier_categories = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationPromotionConfigResolverImpl -->
 
 - **Purpose**: declare the availability and allowed scopes of localisation command fields (Get...), and declare localisation scope promotions to keep command fields available after switching scope via localisation links.
 
@@ -666,8 +648,6 @@ localisation_links = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl -->
 
 - **Purpose**: configure name/description/required localisation keys and main images/splitting configs for a definition type, for UI, navigation, and hints.
 - **Path location**:
@@ -703,7 +683,6 @@ types = {
 #### Database Object Type Configs {#config-db-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl -->
 
 - **Purpose**: define types and formats for "database object expressions" in localisation (e.g., `['civic:some_civic', ...]`), enabling resolution to definitions or localisation in UI and hints.
 - **Path location**: `database_object_types/{name}`, where `{name}` is the prefix (e.g., `civic`).
@@ -727,7 +706,6 @@ database_object_types = {
 #### Location Configs {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
 
 - **Purpose**: Declares the location key and location expression for resources such as images/localization.
 - **Path Location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
@@ -735,7 +713,6 @@ database_object_types = {
 #### Row Configs {#config-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl -->
 
 - **Purpose**: Declares column names and value types for CSV rows, used for completion/validation.
 - **Path Location**: `rows/row[{name}]`.
@@ -763,7 +740,6 @@ rows = {
 #### Locale Configs {#config-locale}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
 
 - **Purpose**: declare basic information about locales to recognize project/user-preferred locales and improve UI display and localisation validation.
 - **Path location**: `locales/{id}`, where `{id}` is like `l_english`.
@@ -790,7 +766,6 @@ locales = {
 #### Extended Scripted Variable Configs {#config-extended-scripted-variable}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl -->
 
 - **Purpose**: provide extra hints (quick doc, inlay hints, etc.) for scripted variables.
 - **Path location**: `scripted_variables/{name}`.
@@ -835,7 +810,6 @@ scripted_variables = {
 #### Extended Definition Configs {#config-extended-definition}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl -->
 
 - **Purpose**: provide extra context and hint information for concrete definitions.
   - Use cases: docs/hints (`hint`), bind definition type (`type` required), and optionally specify scope context via `replace_scopes`/`push_scope`.
@@ -893,7 +867,6 @@ definitions = {
 #### Extended Game Rule Configs {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
 
 - **Purpose**: provide docs/hints for game rules (aka definitions of type `game_rule`), and optionally override declaration configs.
 - **Path location**: `game_rules/{name}`.
@@ -943,7 +916,6 @@ game_rules = {
 #### Extended On Action Configs {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
 
 - **Purpose**: provide docs/hints for on actions (aka definitions of type `on_action`), and specify `event_type` to influence event-related references in the declaration context.
 - **Path location**: `on_actions/{name}`.
@@ -992,7 +964,6 @@ on_actions = {
 #### Extended Inline Script Configs {#config-extended-inline-script}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl -->
 
 - **Purpose**: declare context config(s) and scope context for specific inline scripts so that completion/validation at call sites is correct.
 - **Path location**: `inline_scripts/{name}`.
@@ -1077,7 +1048,6 @@ inline_scripts = {
 #### Extended Parameter Configs {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
 
 - **Purpose**: provide docs/context enhancements for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers/effects/inline scripts:
   - Bind a context key (pointing to a concrete trigger/effect/inline script context).
@@ -1187,7 +1157,6 @@ parameters = {
 #### Extended Complex Enum Value Configs {#config-extended-complex-enum-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl -->
 
 - **Purpose**: provide docs/hints (quick docs, inlay hints, etc.) for concrete entries of complex enums.
 - **Path location**: `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the entry name or a matching pattern.
@@ -1237,7 +1206,6 @@ complex_enum_values = {
 #### Extended Dynamic Value Configs {#config-extended-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDynamicValueConfigResolverImpl -->
 
 - **Purpose**: provide docs/hints for specific dynamic values under a dynamic value type.
 - **Path location**: `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the entry name or a matching pattern.
@@ -1297,7 +1265,6 @@ dynamic_values = {
 #### Schema Config {#config-internal-schema}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 <!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
 <!-- @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager -->
@@ -1330,7 +1297,6 @@ some_key = $any              # goes into properties
 #### Folding Settings Configs {#config-internal-folding}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
 <!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
 <!-- @see cwt/core/internal/folding_settings.cwt -->
 
@@ -1375,7 +1341,6 @@ folds = {
 #### Postfix Template Settings Configs {#config-internal-postfix}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
 <!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate -->
 <!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate -->
 <!-- @see cwt/core/internal/postfix_template_settings.cwt -->
