@@ -17,7 +17,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType

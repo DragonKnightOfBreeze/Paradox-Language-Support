@@ -36,7 +36,6 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope

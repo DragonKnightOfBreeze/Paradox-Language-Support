@@ -14,7 +14,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.select.*
+import icu.windea.pls.config.select.asValue
+import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.config.select.walkUp
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider

@@ -26,7 +26,6 @@ import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

@@ -8,7 +8,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.select.nameElement
 import icu.windea.pls.lang.select.selectScope

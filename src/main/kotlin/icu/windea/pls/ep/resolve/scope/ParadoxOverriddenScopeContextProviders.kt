@@ -12,7 +12,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.select.ofKey

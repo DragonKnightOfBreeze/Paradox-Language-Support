@@ -22,7 +22,6 @@ import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector

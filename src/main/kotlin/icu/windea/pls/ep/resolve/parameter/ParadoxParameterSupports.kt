@@ -20,7 +20,8 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
 import icu.windea.pls.config.configGroup.scriptValueModificationTracker
-import icu.windea.pls.config.select.*
+import icu.windea.pls.config.select.asProperty
+import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
@@ -36,7 +37,6 @@ import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression

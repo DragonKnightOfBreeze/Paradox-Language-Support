@@ -8,9 +8,9 @@ import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.test.AssumePredicates
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

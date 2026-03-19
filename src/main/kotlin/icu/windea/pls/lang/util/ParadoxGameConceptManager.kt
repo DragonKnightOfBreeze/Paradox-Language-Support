@@ -7,7 +7,6 @@ import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector

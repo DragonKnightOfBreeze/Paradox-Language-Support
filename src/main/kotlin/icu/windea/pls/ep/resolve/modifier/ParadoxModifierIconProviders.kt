@@ -7,7 +7,6 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

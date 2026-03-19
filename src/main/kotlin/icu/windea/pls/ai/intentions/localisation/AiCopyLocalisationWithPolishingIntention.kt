@@ -21,8 +21,8 @@ import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 

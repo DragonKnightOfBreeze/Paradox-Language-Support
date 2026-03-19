@@ -18,8 +18,8 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.integrations.translation.TranslationIntegrationManager
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect

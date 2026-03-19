@@ -15,7 +15,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.select.ofKey
 import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope

@@ -17,7 +17,6 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
-import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.select.ofKey
