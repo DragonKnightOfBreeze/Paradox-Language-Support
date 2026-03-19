@@ -12,7 +12,9 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.parentDefinition
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

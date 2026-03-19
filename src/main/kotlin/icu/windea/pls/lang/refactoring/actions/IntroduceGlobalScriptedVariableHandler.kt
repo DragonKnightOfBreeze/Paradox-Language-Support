@@ -16,8 +16,11 @@ import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
+import icu.windea.pls.lang.select.asProperty
+import icu.windea.pls.lang.select.parentDefinitionCandidate
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory

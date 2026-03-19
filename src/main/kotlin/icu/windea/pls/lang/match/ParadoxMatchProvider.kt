@@ -11,7 +11,7 @@ import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -19,6 +19,9 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.select.ofKey
+import icu.windea.pls.lang.select.one
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement

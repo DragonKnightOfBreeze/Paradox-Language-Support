@@ -1,6 +1,6 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
-package icu.windea.pls.lang.psi.select
+package icu.windea.pls.lang.select
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
@@ -18,7 +18,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.selectLiteralValue
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxMemberPath
@@ -26,25 +25,37 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
+import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptFloat
+import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
+
+// region Common
+
+context(scope: ParadoxPsiSelectScope)
+inline fun <T : PsiElement> Sequence<T>.one(): T? = firstOrNull()
+
+context(scope: ParadoxPsiSelectScope)
+inline fun <T : PsiElement> Sequence<T>.all(): List<T> = toList()
+
+// endregion
 
 // region Walks
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement.walkUp(): Sequence<PsiElement> {
     return generateSequence(this) { if (it is PsiFile) null else it.parent } // without walking directories
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxScriptMemberContainer.walkDown(traversal: TreeTraversal = TreeTraversal.PRE_ORDER_DFS, conditional: Boolean? = null, inline: Boolean? = null): Sequence<ParadoxScriptMember> {
     val seeds = members(conditional, inline).asIterable()
     return generateSequenceFromSeeds(traversal, seeds) { it.members(conditional, inline).asIterable() }
@@ -55,61 +66,51 @@ fun ParadoxScriptMemberContainer.walkDown(traversal: TreeTraversal = TreeTravers
 // region Casts
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement?.asProperty(): ParadoxScriptProperty? {
     return this?.castOrNull()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<PsiElement>.asProperty(): Sequence<ParadoxScriptProperty> {
     return filterIsInstance<ParadoxScriptProperty>()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement?.asValue(): ParadoxScriptValue? {
     return this?.castOrNull()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<PsiElement>.asValue(): Sequence<ParadoxScriptValue> {
     return filterIsInstance<ParadoxScriptValue>()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement?.asBlock(): ParadoxScriptBlock? {
     return this?.castOrNull()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<PsiElement>.asBlock(): Sequence<ParadoxScriptBlock> {
     return filterIsInstance<ParadoxScriptBlock>()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement?.asMember(): ParadoxScriptMember? {
     return this?.castOrNull()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<PsiElement>.asMember(): Sequence<ParadoxScriptMember> {
     return filterIsInstance<ParadoxScriptMember>()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement?.asMemberContainer(): ParadoxScriptMemberContainer? {
     return this?.castOrNull()
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContainer> {
     return filterIsInstance<ParadoxScriptMemberContainer>()
 }
@@ -119,79 +120,79 @@ fun Sequence<PsiElement>.asMemberContainer(): Sequence<ParadoxScriptMemberContai
 // region Queries
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
+fun ParadoxScriptMember.selectLiteralValue(): String? {
+    return when (this) {
+        is ParadoxScriptProperty -> propertyValue?.selectLiteralValue()
+        is ParadoxScriptBoolean -> value
+        is ParadoxScriptInt -> value
+        is ParadoxScriptFloat -> value
+        is ParadoxScriptString -> value
+        else -> null
+    }
+}
+
+context(scope: ParadoxPsiSelectScope)
 fun ParadoxScriptProperty.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): ParadoxScriptProperty? {
     if (key.isEmpty()) return null
     return takeIf { PathMatcher.matches(it.name, key, ignoreCase, usePattern) }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<ParadoxScriptProperty>.ofKey(key: String, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<ParadoxScriptProperty> {
     if (key.isEmpty()) return emptySequence()
     return filter { PathMatcher.matches(it.name, key, ignoreCase, usePattern) }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxScriptProperty.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): ParadoxScriptProperty? {
     return takeIf { keys.any { key -> PathMatcher.matches(it.name, key, ignoreCase, usePattern) } }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<ParadoxScriptProperty>.ofKeys(keys: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true): Sequence<ParadoxScriptProperty> {
     return filter { property -> keys.any { key -> PathMatcher.matches(property.name, key, ignoreCase, usePattern) } }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> T.ofValue(value: String, ignoreCase: Boolean = true): T? {
     return takeIf { selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> Sequence<T>.ofValue(value: String, ignoreCase: Boolean = true): Sequence<T> {
     return filter { it.selectLiteralValue().equals(value, ignoreCase) }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> T.ofValues(values: Collection<String>, ignoreCase: Boolean = true): T? {
     return takeIf { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun <T : ParadoxScriptMember> Sequence<T>.ofValues(values: Collection<String>, ignoreCase: Boolean = true): Sequence<T> {
     return filter { it.selectLiteralValue().let { v -> v != null && values.any { value -> v.equals(value, ignoreCase) } } }
 }
 
 /** @see ParadoxMemberPath */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxScriptMemberContainer.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember> {
     return ofPathInternal(path, ignoreCase, usePattern, conditional, inline)
 }
 
 /** @see ParadoxMemberPath */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<ParadoxScriptMemberContainer>.ofPath(path: String, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember> {
     return flatMap { it.ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
 }
 
 /** @see ParadoxMemberPath */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxScriptMemberContainer.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember> {
     return paths.asSequence().flatMap { path -> ofPathInternal(path, ignoreCase, usePattern, conditional, inline) }
 }
 
 /** @see ParadoxMemberPath */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun Sequence<ParadoxScriptMemberContainer>.ofPaths(paths: Collection<String>, ignoreCase: Boolean = true, usePattern: Boolean = true, conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMember> {
     return flatMap { paths.asSequence().flatMap { path -> it.ofPathInternal(path, ignoreCase, usePattern, conditional, inline) } }
 }
@@ -221,7 +222,6 @@ private fun ParadoxScriptMemberContainer.ofPathInternal(path: String, ignoreCase
 
 // TODO 2.1.1 further refactoring
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement.parentMemberContainer(withSelf: Boolean = false): ParadoxScriptMemberContainer? {
     if (language !is ParadoxScriptLanguage) return null
     if (withSelf) this.castOrNull<ParadoxScriptMemberContainer>()?.let { return it }
@@ -236,7 +236,6 @@ fun PsiElement.parentMemberContainer(withSelf: Boolean = false): ParadoxScriptMe
  * @param fromBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = true, fromBlock: Boolean = false): ParadoxScriptMemberContainer? {
     if (language !is ParadoxScriptLanguage) return null
     var current = this
@@ -265,7 +264,6 @@ fun PsiElement.parentOfKey(propertyName: String? = null, ignoreCase: Boolean = t
  * @see ParadoxMemberPath
  */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = true, definitionType: String? = null): ParadoxScriptMemberContainer? {
     // if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberContainer = this
@@ -297,7 +295,6 @@ fun ParadoxScriptMember.parentOfPath(path: String = "", ignoreCase: Boolean = tr
 
 /** @see CwtTypeConfig.nameField */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxDefinitionElement.nameElement(nameField: String?): ParadoxScriptExpressionElement? {
     // no conditional or inline here
     if (nameField == null) return asProperty()?.propertyKey
@@ -306,7 +303,6 @@ fun ParadoxDefinitionElement.nameElement(nameField: String?): ParadoxScriptExpre
 
 /** @see CwtTypeConfig.nameField */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun ParadoxDefinitionElement.nameFieldElement(nameField: String?): ParadoxScriptValue? {
     // no conditional or inline here
     return when (nameField) {
@@ -323,7 +319,6 @@ fun ParadoxDefinitionElement.nameFieldElement(nameField: String?): ParadoxScript
  * @param withSelf 结果是否可以是自身。
  */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement.parentDefinition(withSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = withSelf) p@{
@@ -339,7 +334,6 @@ fun PsiElement.parentDefinition(withSelf: Boolean = true): ParadoxDefinitionElem
  * @param withSelf 结果是否可以是自身。
  */
 context(scope: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
 fun PsiElement.parentDefinitionInjection(withSelf: Boolean = true): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = withSelf) p@{
@@ -355,8 +349,7 @@ fun PsiElement.parentDefinitionInjection(withSelf: Boolean = true): ParadoxScrip
  *
  * @param withSelf 结果是否可以是自身。
  */
-context(_: ParadoxPsiSelectScope)
-@ParadoxPsiSelectDsl
+context(scope: ParadoxPsiSelectScope)
 fun PsiElement.parentDefinitionCandidate(withSelf: Boolean = true): ParadoxDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = withSelf) p@{

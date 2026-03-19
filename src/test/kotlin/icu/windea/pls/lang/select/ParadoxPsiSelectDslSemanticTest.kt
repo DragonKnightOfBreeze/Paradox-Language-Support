@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.select
+package icu.windea.pls.lang.select
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -241,7 +241,7 @@ class ParadoxPsiSelectDslSemanticTest : BasePlatformTestCase() {
         markFileInfo(ParadoxGameType.Stellaris, "common/test_inline_param.txt")
         myFixture.configureByText(
             "test_inline_param.txt",
-            "inline_script = test/inline_script_param\$PARAM\$"
+            "inline_script = test/inline_script_param\$PARAM$"
         )
 
         val file = myFixture.file as ParadoxScriptFile

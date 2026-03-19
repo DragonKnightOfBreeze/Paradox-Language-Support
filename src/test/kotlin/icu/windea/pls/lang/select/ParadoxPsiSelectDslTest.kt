@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi.select
+package icu.windea.pls.lang.select
 
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset

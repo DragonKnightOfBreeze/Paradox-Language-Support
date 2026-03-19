@@ -9,7 +9,9 @@ import com.intellij.usages.rules.PsiElementUsage
 import com.intellij.usages.rules.SingleParentUsageGroupingRule
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.parentDefinitionInjection
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty

@@ -15,8 +15,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInt
-import icu.windea.pls.script.psi.ParadoxScriptMember
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -54,17 +52,6 @@ fun <T : ParadoxScriptExpressionElement> T.resolved(): ParadoxScriptExpressionEl
 }
 
 // Value Resolve Extensions
-
-fun ParadoxScriptMember.selectLiteralValue(): String? {
-    return when (this) {
-        is ParadoxScriptProperty -> this.propertyValue?.selectLiteralValue()
-        is ParadoxScriptBoolean -> this.value
-        is ParadoxScriptInt -> this.value
-        is ParadoxScriptFloat -> this.value
-        is ParadoxScriptString -> this.value
-        else -> null
-    }
-}
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     val resolved = resolved() ?: return null

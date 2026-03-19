@@ -13,7 +13,11 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.asProperty
+import icu.windea.pls.lang.select.parentDefinition
+import icu.windea.pls.lang.select.parentDefinitionInjection
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile

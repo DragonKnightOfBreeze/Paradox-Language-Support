@@ -17,7 +17,11 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.ofKey
+import icu.windea.pls.lang.select.one
+import icu.windea.pls.lang.select.parentOfKey
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo

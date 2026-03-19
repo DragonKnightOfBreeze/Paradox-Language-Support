@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 
 /**
- * 一种特殊的带有上下文的序列。
+ * 带有上下文的序列。
  */
 class WalkingSequence<T>(
     private val delegate: Sequence<T> = emptySequence(),
@@ -20,29 +20,19 @@ class WalkingSequence<T>(
 /**
  * [WalkingSequence] 的上下文。
  *
- * 可携带额外的元数据，并在遍历时使用。这些元数据可用于定制遍历逻辑。
+ * 可以携带额外的元数据，从而定制序列的构建逻辑。
  */
 class WalkingContext : UserDataHolderBase() {
     object Keys : KeyRegistry()
 
-    operator fun plus(other: WalkingContext): WalkingContext {
-        Keys.copy(other, this)
-        return this
+    @JvmInline
+    value class Builder(val context: WalkingContext) {
+        inline operator fun <T> plus(value: T): T = value
     }
-
-    inline operator fun <T> plus(value: T): T = value
 }
 
 /**
- * [WalkingContext] 的构建器。
- */
-@JvmInline
-value class WalkingContextBuilder(val context: WalkingContext) {
-    inline operator fun <T> plus(value: T): T = value
-}
-
-/**
- * 对 [WalkingSequence] 进行转换。上下文会被保留。
+ * 转换 [WalkingSequence] 并保留上下文。
  */
 inline fun <T, R> WalkingSequence<T>.transform(block: Sequence<T>.() -> Sequence<R>): WalkingSequence<R> {
     return WalkingSequence(block(this), context)
@@ -51,8 +41,8 @@ inline fun <T, R> WalkingSequence<T>.transform(block: Sequence<T>.() -> Sequence
 /**
  * 更新 [WalkingSequence] 的上下文。
  */
-inline fun <T> WalkingSequence<T>.context(block: WalkingContextBuilder.() -> Unit): WalkingSequence<T> {
-    block(WalkingContextBuilder(context))
+inline fun <T> WalkingSequence<T>.context(block: WalkingContext.Builder.() -> Unit): WalkingSequence<T> {
+    block(WalkingContext.Builder(context))
     return this
 }
 
@@ -60,4 +50,4 @@ inline fun <T> WalkingSequence<T>.context(block: WalkingContextBuilder.() -> Uni
 var WalkingContext.forward: Boolean by registerKey(WalkingContext.Keys) { true }
 
 /** @see WalkingContext.forward */
-inline infix fun WalkingContextBuilder.forward(value: Boolean? = true) = apply { value?.let { context.forward = it } }
+inline infix fun WalkingContext.Builder.forward(value: Boolean? = true) = apply { value?.let { context.forward = it } }

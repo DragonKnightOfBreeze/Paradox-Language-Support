@@ -3,7 +3,6 @@
 package icu.windea.pls.lang.psi
 
 import icu.windea.pls.core.collections.WalkingContext
-import icu.windea.pls.core.collections.WalkingContextBuilder
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.transform
@@ -22,13 +21,13 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
 
 /** @see WalkingContext.conditional */
-inline infix fun WalkingContextBuilder.conditional(value: Boolean? = true) = apply { value?.let { context.conditional = it } }
+inline infix fun WalkingContext.Builder.conditional(value: Boolean? = true) = apply { value?.let { context.conditional = it } }
 
 /** 如果包含内联脚本用法，是否需要先进行内联。默认为 `false`。 */
 var WalkingContext.inline: Boolean by registerKey(WalkingContext.Keys) { false }
 
 /** @see WalkingContext.inline */
-inline infix fun WalkingContextBuilder.inline(value: Boolean? = true) = apply { value?.let { context.inline = it } }
+inline infix fun WalkingContext.Builder.inline(value: Boolean? = true) = apply { value?.let { context.inline = it } }
 
 // Builders
 

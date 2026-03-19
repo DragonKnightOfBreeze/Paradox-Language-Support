@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigSelectDslTest : BasePlatformTestCase() {
+class CwtConfigSelectTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before

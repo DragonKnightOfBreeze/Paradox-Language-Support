@@ -14,7 +14,9 @@ import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.parentDefinition
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes

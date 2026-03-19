@@ -72,7 +72,7 @@
 | main/kotlin | icu.windea.pls.lang.actions.localisation | 5 | 685 | 581 | 23 | 81 |
 | main/kotlin | icu.windea.pls.ai.prompts | 8 | 680 | 464 | 138 | 78 |
 | main/kotlin | icu.windea.pls.ai.intentions.localisation | 6 | 673 | 547 | 44 | 82 |
-| test/kotlin | icu.windea.pls.lang.psi.select | 2 | 673 | 548 | 0 | 125 |
+| test/kotlin | icu.windea.pls.lang.select | 2 | 673 | 548 | 0 | 125 |
 | main/kotlin | icu.windea.pls.lang.index.stubs | 8 | 672 | 578 | 13 | 81 |
 | main/kotlin | icu.windea.pls.images.actions | 6 | 654 | 573 | 13 | 68 |
 | main/kotlin | icu.windea.pls.ep.codeInsight.hints | 5 | 653 | 468 | 100 | 85 |
@@ -123,7 +123,7 @@
 | main/kotlin | icu.windea.pls.lang.codeInsight.hints | 11 | 435 | 357 | 15 | 63 |
 | main/kotlin | icu.windea.pls.lang.inspections.csv.common | 6 | 432 | 347 | 39 | 46 |
 | main/kotlin | icu.windea.pls.lang.intentions.script | 5 | 423 | 289 | 73 | 61 |
-| main/kotlin | icu.windea.pls.lang.psi.select | 2 | 421 | 312 | 53 | 56 |
+| main/kotlin | icu.windea.pls.lang.select | 2 | 421 | 312 | 53 | 56 |
 | main/kotlin | icu.windea.pls.lang.listeners | 14 | 419 | 281 | 69 | 69 |
 | main/kotlin | icu.windea.pls.lang.refactoring.actions | 5 | 416 | 333 | 30 | 53 |
 | test/kotlin | icu.windea.pls.lang.codeInsight.hints.script | 7 | 413 | 355 | 3 | 55 |

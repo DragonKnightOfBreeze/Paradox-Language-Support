@@ -57,9 +57,3 @@ fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
         else -> this
     } as? T
 }
-
-// Value Resolve Extensions
-
-fun CwtMemberConfig<*>.selectLiteralValue(): String? {
-    return if (configs == null) value else null
-}

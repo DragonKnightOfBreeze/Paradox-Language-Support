@@ -6,7 +6,13 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.all
+import icu.windea.pls.lang.select.asProperty
+import icu.windea.pls.lang.select.ofKey
+import icu.windea.pls.lang.select.ofPath
+import icu.windea.pls.lang.select.one
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile

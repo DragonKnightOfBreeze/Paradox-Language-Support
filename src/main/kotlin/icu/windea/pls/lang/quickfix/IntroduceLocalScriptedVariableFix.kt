@@ -14,7 +14,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.select.*
+import icu.windea.pls.lang.select.*
+import icu.windea.pls.lang.select.parentDefinitionCandidate
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class IntroduceLocalScriptedVariableFix(
