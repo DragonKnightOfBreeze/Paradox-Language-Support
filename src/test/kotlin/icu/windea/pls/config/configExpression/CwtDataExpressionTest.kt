@@ -310,10 +310,10 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.ShaderEffect, CwtDataExpression.resolve("\$shader_effect", false).type)
         }
         run {
-            assertEquals(CwtDataTypes.DatabaseObject, CwtDataExpression.resolve("\$database_object", false).type)
+            assertEquals(CwtDataTypes.DefineReference, CwtDataExpression.resolve("\$define_reference", false).type)
         }
         run {
-            assertEquals(CwtDataTypes.DefineReference, CwtDataExpression.resolve("\$define_reference", false).type)
+            assertEquals(CwtDataTypes.DatabaseObject, CwtDataExpression.resolve("\$database_object", false).type)
         }
         run {
             val e = CwtDataExpression.resolve("stellaris_name_format[format_x]", false)

@@ -130,7 +130,7 @@ fun <T : JComponent> Cell<T>.smallerFont() = applyToComponent { font = JBUI.Font
 /**
  * 将当前的 Kotlin 属性转换为原子属性（[AtomicBooleanProperty]）。
  * 绑定原子属性后，修改操作会立即生效。
- * */
+ */
 fun KMutableProperty0<Boolean>.toAtomicProperty(): AtomicBooleanProperty {
     return AtomicBooleanProperty(get()).also { p -> p.afterChange { set(it) } }
 }
@@ -138,7 +138,7 @@ fun KMutableProperty0<Boolean>.toAtomicProperty(): AtomicBooleanProperty {
 /**
  * 将当前的 Kotlin 属性转换为原子属性（[AtomicProperty]）。
  * 绑定原子属性后，修改操作会立即生效。
- * */
+ */
 fun <T> KMutableProperty0<T>.toAtomicProperty(): AtomicProperty<T> {
     return AtomicProperty(get()).also { p -> p.afterChange { set(it) } }
 }
@@ -146,7 +146,7 @@ fun <T> KMutableProperty0<T>.toAtomicProperty(): AtomicProperty<T> {
 /**
  * 将当前的 Kotlin 属性转换为原子属性（[AtomicProperty]），并指定默认值（[defaultValue]）。
  * 绑定原子属性后，修改操作会立即生效。
- * */
+ */
 fun <T : Any> KMutableProperty0<T?>.toAtomicProperty(defaultValue: T): AtomicProperty<T> {
     return AtomicProperty(get() ?: defaultValue).also { p -> p.afterChange { set(it) } }
 }

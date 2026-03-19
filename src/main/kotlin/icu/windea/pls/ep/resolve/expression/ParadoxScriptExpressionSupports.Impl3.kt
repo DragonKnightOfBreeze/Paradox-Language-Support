@@ -131,20 +131,6 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressi
 }
 
 /**
- * @see CwtDataTypes.DatabaseObject
- * @see ParadoxDatabaseObjectExpression
- */
-class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.DatabaseObject
-    }
-
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
-    }
-}
-
-/**
  * @see CwtDataTypes.DefineReference
  * @see ParadoxDefineReferenceExpression
  */
@@ -155,6 +141,20 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpres
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
+    }
+}
+
+/**
+ * @see CwtDataTypes.DatabaseObject
+ * @see ParadoxDatabaseObjectExpression
+ */
+class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.DatabaseObject
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }
 

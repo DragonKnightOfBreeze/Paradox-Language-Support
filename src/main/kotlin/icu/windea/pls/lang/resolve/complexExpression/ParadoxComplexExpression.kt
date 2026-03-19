@@ -83,8 +83,8 @@ private class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.Re
             dataType in CwtDataTypeSets.ValueField -> ParadoxValueFieldExpression.resolve(text, range, configGroup)
             dataType in CwtDataTypeSets.VariableField -> ParadoxVariableFieldExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.Command -> ParadoxCommandExpression.resolve(text, range, configGroup)
-            dataType == CwtDataTypes.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.DefineReference -> ParadoxDefineReferenceExpression.resolve(text, range, configGroup)
+            dataType == CwtDataTypes.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(text, range, configGroup)
             dataType == CwtDataTypes.StellarisNameFormat -> StellarisNameFormatExpression.resolve(text, range, configGroup, config ?: return null)
             else -> null
         }

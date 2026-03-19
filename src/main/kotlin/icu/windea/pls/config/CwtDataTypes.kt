@@ -1,6 +1,65 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.config.CwtDataTypes.AbsoluteFilePath
+import icu.windea.pls.config.CwtDataTypes.AliasKeysField
+import icu.windea.pls.config.CwtDataTypes.AliasMatchLeft
+import icu.windea.pls.config.CwtDataTypes.AliasName
+import icu.windea.pls.config.CwtDataTypes.Ant
+import icu.windea.pls.config.CwtDataTypes.Any
+import icu.windea.pls.config.CwtDataTypes.Block
+import icu.windea.pls.config.CwtDataTypes.Bool
+import icu.windea.pls.config.CwtDataTypes.ColorField
+import icu.windea.pls.config.CwtDataTypes.Command
+import icu.windea.pls.config.CwtDataTypes.Constant
+import icu.windea.pls.config.CwtDataTypes.DatabaseObject
+import icu.windea.pls.config.CwtDataTypes.DateField
+import icu.windea.pls.config.CwtDataTypes.DefineReference
+import icu.windea.pls.config.CwtDataTypes.Definition
+import icu.windea.pls.config.CwtDataTypes.DynamicValue
+import icu.windea.pls.config.CwtDataTypes.EnumValue
+import icu.windea.pls.config.CwtDataTypes.FileName
+import icu.windea.pls.config.CwtDataTypes.FilePath
+import icu.windea.pls.config.CwtDataTypes.Float
+import icu.windea.pls.config.CwtDataTypes.Icon
+import icu.windea.pls.config.CwtDataTypes.InlineLocalisation
+import icu.windea.pls.config.CwtDataTypes.Int
+import icu.windea.pls.config.CwtDataTypes.IntValueField
+import icu.windea.pls.config.CwtDataTypes.IntVariableField
+import icu.windea.pls.config.CwtDataTypes.Localisation
+import icu.windea.pls.config.CwtDataTypes.LocalisationParameter
+import icu.windea.pls.config.CwtDataTypes.Modifier
+import icu.windea.pls.config.CwtDataTypes.Parameter
+import icu.windea.pls.config.CwtDataTypes.ParameterValue
+import icu.windea.pls.config.CwtDataTypes.PercentageField
+import icu.windea.pls.config.CwtDataTypes.Regex
+import icu.windea.pls.config.CwtDataTypes.Scalar
+import icu.windea.pls.config.CwtDataTypes.Scope
+import icu.windea.pls.config.CwtDataTypes.ScopeField
+import icu.windea.pls.config.CwtDataTypes.ScopeGroup
+import icu.windea.pls.config.CwtDataTypes.ShaderEffect
+import icu.windea.pls.config.CwtDataTypes.SingleAliasRight
+import icu.windea.pls.config.CwtDataTypes.StellarisNameFormat
+import icu.windea.pls.config.CwtDataTypes.SuffixAwareDefinition
+import icu.windea.pls.config.CwtDataTypes.SuffixAwareLocalisation
+import icu.windea.pls.config.CwtDataTypes.SuffixAwareSyncedLocalisation
+import icu.windea.pls.config.CwtDataTypes.SyncedLocalisation
+import icu.windea.pls.config.CwtDataTypes.TechnologyWithLevel
+import icu.windea.pls.config.CwtDataTypes.TemplateExpression
+import icu.windea.pls.config.CwtDataTypes.Value
+import icu.windea.pls.config.CwtDataTypes.ValueField
+import icu.windea.pls.config.CwtDataTypes.ValueSet
+import icu.windea.pls.config.CwtDataTypes.VariableField
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -30,8 +89,8 @@ import icu.windea.pls.model.ParadoxGameType
  * - [Modifier] - 修正引用
  * - [AbsoluteFilePath] / [FilePath] / [FileName] / [Icon] - 文件路径引用
  * - [EnumValue] - 枚举值引用（简单枚举或复杂枚举）
- * - [Value] / [ValueSet] / [DynamicValue] - 动态值引用
- * - [ScopeField] / [Scope] / [ScopeGroup] - 作用域相关引用
+ * - [Value] / [ValueSet] / [DynamicValue] - 动态值表达式
+ * - [ScopeField] / [Scope] / [ScopeGroup] - 作用域字段表达式
  * - [ValueField] / [IntValueField] / [VariableField] / [IntVariableField] - 值/变量字段表达式
  *
  * ### 别名与指令类型
@@ -44,19 +103,19 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * ### 特殊类型
  *
- * - [Command] - 命令表达式（如`Root.GetName`）
- * - [DatabaseObject] - 数据库对象表达式（如`civic:x:y`）
- * - [DefineReference] - 定值引用表达式（如`define:NPortrait|GRACEFUL_AGING_START`）
- * - [StellarisNameFormat] - 群星名称格式表达式
+ * - [Command] - 命令表达式（如 `Root.GetName`）
+ * - [DefineReference] - 定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）
+ * - [DatabaseObject] - 数据库对象表达式（如 `civic:x:y`）
+ * - [StellarisNameFormat] - Stellaris 名称格式表达式
  * - [ShaderEffect] - 着色器效果
- * - [TechnologyWithLevel] - 带等级的科技（如`some_repeatable_tech@1`）
+ * - [TechnologyWithLevel] - 带等级的科技（如 `some_repeatable_tech@1`）
  *
  * ### 模式感知类型
  *
  * - [Constant] - 常量（精确匹配）
- * - [TemplateExpression] - 模板表达式（如`a_<b>_enum[c]`）
- * - [Ant] - Ant路径模式（如`ant:/foo/bar?/\*`）
- * - [Regex] - 正则表达式模式（如`re:foo.*bar`）
+ * - [TemplateExpression] - 模板表达式（如 `a_<b>_enum[c]`）
+ * - [Ant] - Ant路径模式（如 `ant:/foo/bar?/\*`）
+ * - [Regex] - 正则表达式模式（如 `re:foo.*bar`）
  *
  * ### 后缀感知类型
  *
@@ -105,7 +164,7 @@ object CwtDataTypes {
      * 标量类型。规则表达式：`scalar` 或 `wildcard_scalar`。
      *
      * 匹配脚本中的大多数非子句表达式（字符串、数字、布尔值等），作为低优先级的宽泛匹配。
-     * 作为键时总是匹配。`wildcard_scalar`变体会设置通配符标记。
+     * 作为键时总是匹配。`wildcard_scalar` 变体会设置通配符标记。
      */
     val Scalar = CwtDataType.builder("Scalar")
         .withPriority(2.0) // very low
@@ -113,7 +172,7 @@ object CwtDataTypes {
     /**
      * 颜色字段类型。规则表达式：`colour_field`、`color_field`、`colour[type]` 或 `color[type]`。
      *
-     * 匹配脚本中的颜色值。带参数时（如`colour[rgb]`），还会验证颜色类型前缀。
+     * 匹配脚本中的颜色值。带参数时（如 `colour[rgb]`），还会验证颜色类型前缀。
      */
     val ColorField = CwtDataType.builder("ColorField")
         .withPriority(90.0) // very high
@@ -121,7 +180,7 @@ object CwtDataTypes {
     /**
      * 子句类型。仅用于内部表示，不对应规则表达式字符串。
      *
-     * 匹配脚本中的花括号块（`{ ... }`）。要求值位置且表达式类型为Block，并递归匹配子句内容。
+     * 匹配脚本中的花括号块（`{ ... }`）。要求值位置且表达式类型为 Block，并递归匹配子句内容。
      */
     val Block = CwtDataType.builder("Block")
         .withPriority(100.0) // highest
@@ -130,7 +189,7 @@ object CwtDataTypes {
     /**
      * 百分比字段类型。规则表达式：`percentage_field`。
      *
-     * 匹配脚本中的百分比值字符串（如`50%`）。
+     * 匹配脚本中的百分比值字符串（如 `50%`）。
      */
     val PercentageField = CwtDataType.builder("PercentageField")
         .withPriority(90.0)
@@ -138,7 +197,7 @@ object CwtDataTypes {
     /**
      * 日期字段类型。规则表达式：`date_field` 或 `date_field[format]`。
      *
-     * 匹配脚本中的日期值字符串（如`2200.1.1`）。带参数时还会验证日期格式。
+     * 匹配脚本中的日期值字符串（如 `2200.1.1`）。带参数时还会验证日期格式。
      */
     val DateField = CwtDataType.builder("DateField")
         .withPriority(90.0)
@@ -147,8 +206,8 @@ object CwtDataTypes {
     /**
      * 定义引用类型。规则表达式：`<type>` 或 `<type.subtype>`。
      *
-     * 匹配脚本中对指定类型定义的引用。表达式须为合法标识符（允许`.`和`-`），
-     * 可以是整数或浮点数（如`<technology_tier>`的情况）。匹配时验证引用的定义是否存在。
+     * 匹配脚本中对指定类型定义的引用。表达式须为合法标识符（允许 `.` 和 `-`），
+     * 可以是整数或浮点数（如 `<technology_tier>` 的情况）。匹配时验证引用的定义是否存在。
      */
     val Definition = CwtDataType.builder("Definition").reference()
         .withPriority(70.0)
@@ -165,7 +224,7 @@ object CwtDataTypes {
     /**
      * 同步本地化引用类型。规则表达式：`localisation_synced`。
      *
-     * 与[Localisation]类似，但指向同步本地化键。
+     * 与 [Localisation] 类似，但指向同步本地化键。
      */
     val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference()
         .withPriority(60.0)
@@ -224,9 +283,8 @@ object CwtDataTypes {
     /**
      * 枚举值类型。规则表达式：`enum[name]`。
      *
-     * 匹配脚本中对枚举值的引用。优先级动态计算：
-     * 简单枚举（在规则组的`enums`中）为80.0，复杂枚举（在`complexEnums`中）为45.0。
-     * 简单枚举时精确匹配枚举值列表；复杂枚举时通过索引查询。
+     * 匹配脚本中对枚举值的引用。
+     * 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference()
         .withPriority { configExpression, configGroup ->
@@ -236,10 +294,14 @@ object CwtDataTypes {
             0.0 // unexpected
         }
         .build()
+
     /**
      * 动态值读取类型。规则表达式：`value[name]`。
      *
-     * 匹配脚本中对已声明动态值的读取引用。表达式须为合法标识符（允许`.`）。
+     * 匹配脚本中的动态值表达式，表示对已声明动态值的读取引用。
+     * 动态值的名字须为合法标识符（允许`.`）。
+     *
+     * @see ParadoxDynamicValueExpression
      */
     val Value = CwtDataType.builder("Value").reference()
         .withPriority(40.0)
@@ -247,7 +309,10 @@ object CwtDataTypes {
     /**
      * 动态值写入类型。规则表达式：`value_set[name]`。
      *
-     * 匹配脚本中对动态值的写入（声明）引用。表达式须为合法标识符（允许`.`）。
+     * 匹配脚本中的动态值表达式，表示对动态值的写入（声明）引用。
+     * 动态值的名字须为合法标识符（允许`.`）。
+     *
+     * @see ParadoxDynamicValueExpression
      */
     val ValueSet = CwtDataType.builder("ValueSet").reference()
         .withPriority(40.0)
@@ -255,7 +320,10 @@ object CwtDataTypes {
     /**
      * 动态值类型。规则表达式：`dynamic_value[name]`。
      *
-     * 匹配脚本中对动态值的引用（不区分读写）。表达式须为合法标识符（允许`.`）。
+     * 匹配脚本中的动态值表达式，表示对动态值的引用（不区分读写）。
+     * 动态值的名字须为合法标识符（允许`.`）。
+     *
+     * @see ParadoxDynamicValueExpression
      */
     val DynamicValue = CwtDataType.builder("DynamicValue").reference()
         .withPriority(40.0)
@@ -264,7 +332,9 @@ object CwtDataTypes {
     /**
      * 作用域字段类型。规则表达式：`scope_field`。
      *
-     * 匹配脚本中的作用域字段表达式（可包含作用域链，如`root.owner`）。
+     * 匹配脚本中的作用域字段表达式（可包含作用域链，如 `root.owner`）。
+     *
+     * @see ParadoxScopeFieldExpression
      */
     val ScopeField = CwtDataType.builder("ScopeField").reference()
         .withPriority(50.0)
@@ -273,7 +343,9 @@ object CwtDataTypes {
      * 作用域类型。规则表达式：`scope[type]`。
      *
      * 匹配脚本中的作用域字段表达式，同时约束输出作用域类型。
-     * 参数为`any`时等同于[ScopeField]。
+     * 参数为 `any` 时等同于 [ScopeField]。
+     *
+     * @see ParadoxScopeFieldExpression
      */
     val Scope = CwtDataType.builder("Scope").reference()
         .withPriority(50.0)
@@ -282,15 +354,20 @@ object CwtDataTypes {
      * 作用域组类型。规则表达式：`scope_group[name]`。
      *
      * 匹配脚本中的作用域字段表达式，约束输出作用域属于指定的作用域组。
+     *
+     * @see ParadoxScopeFieldExpression
      */
     val ScopeGroup = CwtDataType.builder("ScopeGroup").reference()
         .withPriority(50.0)
         .build()
+
     /**
      * 值字段类型。规则表达式：`value_field` 或 `value_field[min..max]`。
      *
      * 匹配浮点数或值字段表达式（可包含作用域链和动态值引用）。
-     * 带范围参数时还会验证数值范围。
+     * 带范围参数时还会限制数值范围。
+     *
+     * @see ParadoxValueFieldExpression
      */
     val ValueField = CwtDataType.builder("ValueField").reference()
         .withPriority(45.0)
@@ -299,15 +376,20 @@ object CwtDataTypes {
      * 整数值字段类型。规则表达式：`int_value_field` 或 `int_value_field[min..max]`。
      *
      * 匹配整数或整数值字段表达式（可包含作用域链和动态值引用）。
-     * 带范围参数时还会验证数值范围。
+     * 带范围参数时还会限制数值范围。
+     *
+     * @see ParadoxValueFieldExpression
      */
     val IntValueField = CwtDataType.builder("IntValueField").reference()
         .withPriority(45.0)
         .build()
+
     /**
      * 变量字段类型。规则表达式：`variable_field`、`variable_field[min..max]` 或 `variable_field32`。
      *
      * 匹配浮点数或变量字段表达式（可包含作用域链和封装变量引用）。
+     *
+     * @see ParadoxVariableFieldExpression
      */
     val VariableField = CwtDataType.builder("VariableField").reference()
         .withPriority(45.0)
@@ -316,18 +398,36 @@ object CwtDataTypes {
      * 整数变量字段类型。规则表达式：`int_variable_field` 或 `int_variable_field_32`。
      *
      * 匹配整数或整数变量字段表达式（可包含作用域链和封装变量引用）。
+     *
+     * @see ParadoxVariableFieldExpression
      */
     val IntVariableField = CwtDataType.builder("IntVariableField").reference()
         .withPriority(45.0)
         .build()
 
-    /** 单别名右侧类型。规则表达式：`single_alias_right[name]`。不直接参与脚本匹配，由别名解析机制处理。 */
+    /**
+     * 单别名右侧类型。规则表达式：`single_alias_right[name]`。
+     *
+     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+     */
     val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
-    /** 别名名称类型。规则表达式：`alias_name[name]`。匹配时解析别名子键并递归匹配。 */
-    val AliasName = CwtDataType.builder("AliasName").reference().build()
-    /** 别名键字段类型。规则表达式：`alias_keys_field[name]`。匹配逻辑同[AliasName]。 */
+    /**
+     * 别名键字段类型。规则表达式：`alias_keys_field[name]`。
+     *
+     * 匹配时解析别名子键并递归匹配。
+     */
     val AliasKeysField = CwtDataType.builder("AliasKeysField").reference().build()
-    /** 别名匹配左侧类型。规则表达式：`alias_match_left[name]`。不直接参与脚本匹配，由别名解析机制处理。 */
+    /**
+     * 别名名称类型。规则表达式：`alias_name[name]`。
+     *
+     * 匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft] 组合使用。
+     */
+    val AliasName = CwtDataType.builder("AliasName").reference().build()
+    /**
+     * 别名匹配左侧类型。规则表达式：`alias_match_left[name]`。
+     *
+     * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName] 组合使用。
+     */
     val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
 
     /**
@@ -358,18 +458,31 @@ object CwtDataTypes {
     /**
      * 命令表达式类型。规则表达式：`$command`。
      *
-     * 匹配脚本中的命令表达式（如`Root.GetName`）。目前不支持用来匹配脚本表达式。
+     * 匹配脚本中的命令表达式（如 `Root.GetName`）。目前不支持用来匹配脚本表达式。
      *
+     * @see ParadoxCommandExpression
      * @since 2.1.1
      */
     val Command = CwtDataType.builder("Command").reference()
         .withPriority(45.0)
         .build()
     /**
+     * 定值引用表达式类型。规则表达式：`$define_reference`。
+     *
+     * 匹配脚本中的定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）。
+     *
+     * @see ParadoxDefineReferenceExpression
+     * @since 1.3.25
+     */
+    val DefineReference = CwtDataType.builder("DefineReference").reference()
+        .withPriority(60.0)
+        .build()
+    /**
      * 数据库对象表达式类型。规则表达式：`$database_object`。
      *
      * 匹配脚本中的数据库对象表达式（如`civic:x:y`），由冒号分隔的多段引用组成。
      *
+     * @see ParadoxDatabaseObjectExpression
      * @since 1.3.9
      */
     // @WithGameType(ParadoxGameType.Stellaris) // not limited yet
@@ -377,20 +490,11 @@ object CwtDataTypes {
         .withPriority(60.0)
         .build()
     /**
-     * 定值引用表达式类型。规则表达式：`$define_reference`。
+     * Stellaris 名称格式表达式类型。规则表达式：`stellaris_name_format[type]`。
      *
-     * 匹配脚本中的定值引用表达式（如`define:NPortrait|GRACEFUL_AGING_START`）。
+     * 匹配脚本中的 Stellaris 名称格式表达式。仅限 Stellaris 游戏类型。
      *
-     * @since 1.3.25
-     */
-    // @WithGameType(ParadoxGameType.Vic3) // not limited yet
-    val DefineReference = CwtDataType.builder("DefineReference").reference()
-        .withPriority(60.0)
-        .build()
-    /**
-     * 群星名称格式表达式类型。规则表达式：`stellaris_name_format[type]`。
-     *
-     * 匹配脚本中的群星名称格式表达式。仅限群星游戏类型。
+     * @see StellarisNameFormatExpression
      */
     @WithGameType(ParadoxGameType.Stellaris)
     val StellarisNameFormat = CwtDataType.builder("StellarisNameFormat").reference()
@@ -400,7 +504,7 @@ object CwtDataTypes {
     /**
      * 着色器效果类型。规则表达式：`$shader_effect`。
      *
-     * 匹配`.shader`文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+     * 匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
      */
     // effects in .shader files
     val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/)
@@ -409,8 +513,8 @@ object CwtDataTypes {
     /**
      * 带等级的科技类型。规则表达式：`<technology_with_level>`。
      *
-     * 匹配脚本中的带等级科技引用（如`some_repeatable_tech@1`），通过`@`分隔科技名和等级。
-     * 仅限群星游戏类型。优先级低于[Definition]。
+     * 匹配脚本中的带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
+     * 仅限群星游戏类型。优先级低于 [Definition]。
      */
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference()
@@ -431,8 +535,11 @@ object CwtDataTypes {
     /**
      * 模板表达式类型（模式感知）。规则表达式示例：`a_<b>_enum[c]_value[d]`。
      *
-     * 由常量文本片段和引用占位符（如`<type>`、`enum[name]`、`value[name]`）交替组成的模式。
+     * 由常量文本片段和引用占位符（如 `<type>`、`enum[name]`、`value[name]`）交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+     *
+     * @see CwtTemplateExpression
+     * @see ParadoxTemplateExpression
      */
     val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware()
         .withPriority(65.0)
@@ -464,7 +571,7 @@ object CwtDataTypes {
      * 后缀感知定义引用类型。规则表达式：`<type>|suffix1,suffix2,...`。
      *
      * 由基础定义引用和逗号分隔的后缀列表组成。匹配时同时验证定义引用和后缀。
-     * 若后缀列表为空，则退化为普通的[Definition]。
+     * 如果后缀列表为空，则退化为普通的 [Definition]。
      *
      * @since 2.0.5
      */
@@ -474,7 +581,7 @@ object CwtDataTypes {
      * 后缀感知本地化引用类型。规则表达式：`localisation|suffix1,suffix2,...`。
      *
      * 由基础本地化引用和逗号分隔的后缀列表组成。匹配时同时验证本地化引用和后缀。
-     * 若后缀列表为空，则退化为普通的[Localisation]。
+     * 如果后缀列表为空，则退化为普通的 [Localisation]。
      *
      * @since 2.0.5
      */
@@ -484,7 +591,7 @@ object CwtDataTypes {
      * 后缀感知同步本地化引用类型。规则表达式：`localisation_synced|suffix1,suffix2,...`。
      *
      * 由基础同步本地化引用和逗号分隔的后缀列表组成。匹配时同时验证同步本地化引用和后缀。
-     * 若后缀列表为空，则退化为普通的[SyncedLocalisation]。
+     * 如果后缀列表为空，则退化为普通的 [SyncedLocalisation]。
      *
      * @since 2.0.5
      */

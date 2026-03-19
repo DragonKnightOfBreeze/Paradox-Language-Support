@@ -153,14 +153,14 @@
                      key="inspection.script.incorrectDynamicValueExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDynamicValueExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDatabaseObjectExpression"
-                     key="inspection.script.incorrectDatabaseObjectExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
-                     enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDatabaseObjectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefineReferenceExpression"
                      key="inspection.script.incorrectDefineReferenceExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDefineReferenceExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDatabaseObjectExpression"
+                     key="inspection.script.incorrectDatabaseObjectExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDatabaseObjectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="StellarisScriptIncorrectNameFormatExpression"
                      key="inspection.script.incorrectStellarisNameFormatExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
