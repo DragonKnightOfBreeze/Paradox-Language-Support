@@ -8,7 +8,7 @@
 @see src/test/testData/cwt/example.test.cwt
 @see src/test/testData/script/example.test.txt
 @see src/test/testData/localisation/example.test.yml
-@see src/test/testData/csv/example.test.yml
+@see src/test/testData/csv/example.test.csv
 -->
 
 ## 总览 {#overview}
@@ -151,7 +151,6 @@ Language id: `PARADOX_SCRIPT`; extensions: `.txt`, `.gfx`, `.gui`, etc.
 @see icu.windea.pls.model.ParadoxSeparatorType
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
-@see icu.windea.pls.model.ParadoxSeparatorType
 
 Note on unquoted key/string character restrictions:
 The first character additionally excludes `@` (to avoid ambiguity with scripted variable references),

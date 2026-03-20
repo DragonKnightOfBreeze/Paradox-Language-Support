@@ -1,70 +1,93 @@
 # Appendix: Config Format Reference
 
-<!-- TODO Manual improvement and polish -->
+<!--
+@doc-meta
+This document is the reference manual for the CWT config format, describing the purpose, format, fields, and considerations of the various configs supported by the plugin.
+The content is based on the implementation of the Paradox Language Support plugin and is compatible with the CWTools config format in most cases, but differs in details and extension points.
 
-## Position & Vision {#vision}
-
-This reference targets authors and maintainers who want to "understand / write / extend" CWT configs (CWT config files), and aims to:
-
-- **Unify terminology and boundaries**: align semantics between the plugin and CWTools, and clarify extension points and differences.
-- **Build a mapping from documentation to implementation**: each config item is annotated with the corresponding interfaces/resolvers so you can trace the source code and verify behavior.
-- **Guide to practice**: outline purpose, format, and notes, laying the groundwork for refined examples and validation rules.
+@see docs/zh/config.md
+@see icu.windea.pls.config.config.*
+@see icu.windea.pls.config.configExpression.*
+-->
 
 ## Overview {#overview}
 
-The plugin reads `.cwt` files, builds "config groups", and parses configs into structured "config objects" used by language features (highlighting, completion, navigation, inspections, documentation, etc.).
+This document is the reference manual for the CWT config format, intended for all readers who wish to understand, write, or extend CWT config files — including mod authors, config file co-maintainers, plugin maintainers, and AI programming assistants.
 
-- **Config sources and overriding**: see "Config Groups/Override Strategy" in `docs/en/config.md`. Common sources include built-in, remote, local, and project-local. Later ones override earlier ones by "path + config ID".
-- **Two pillars**:
-  - Configs: define allowed shapes and contexts for keys/values/blocks (e.g., types, enums, aliases, links ...).
-  - Config expressions: describe the syntax used in string fields of configs for value/matching (e.g., `<type>`, `enum[...]`, `value[...]`, cardinality/template/location expressions).
-- **Parsing flow (simplified)**:
-  1. Read config groups and build PSI for config files.
-  2. Use resolvers (by interface category) to build delegated/internal config objects.
-  3. Language features query and apply these configs by context (scope, type name, declaration context, etc.).
+This document aims to:
 
-Terminology:
-- "Config(s)" include base configs, normal configs, extended configs, and internal configs.
-- "Base configs" (e.g., `CwtPropertyConfig`) are generic syntax-tree-level nodes and are not described one by one here.
+- **Unify terminology and boundaries**: Align the plugin's semantics with CWTools, clarifying the plugin's extension points and differences.
+- **Establish a mapping from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
+- **Guide practice**: Outline the purpose, format, and considerations of each config type, laying the foundation for correctly writing and maintaining config files.
 
-<!-- @see icu.windea.pls.config.configGroup.CwtConfigGroup -->
-<!-- @see icu.windea.pls.config.config.CwtPropertyConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.* -->
+The plugin reads `.cwt` config files, builds "config groups", and parses the configs within into structured "config objects". These config objects are widely used in language features such as syntax highlighting, completion, navigation, inspections, and quick documentation. The config system is composed of two major elements:
+
+- **Configs**: Each config defines the allowed forms and contextual constraints for keys, values, or blocks, such as types, enums, aliases, links, etc. See the [Configs](#configs) chapter for details.
+- **Config expressions**: Structured syntax embedded in string fields of configs, used to describe value forms or matching patterns, such as `<type>`, `enum[...]`, `value[...]`, as well as cardinality expressions, template expressions, location expressions, etc. See the [Config Expressions](#config-expressions) chapter for details.
+
+Additionally, a parsed config expression yields a specific **data type**, which determines what keys or values in script files the expression can match. See the [Data Types](#data-types) chapter for details.
+
+For an overall introduction to the config system (such as config groups, config overriding, custom configs, etc.), see [config.md](config.md).
 
 ## Configs {#configs}
 
-<!-- @see icu.windea.pls.config.config -->
+<!-- @see icu.windea.pls.config.config.CwtConfig -->
 
-> This chapter introduces the purpose, key format points, and parsing notes for various configs to help you understand and write these special structures correctly.
+> This chapter introduces the purpose, format essentials, and considerations of various configs, helping readers correctly understand and write them.
+
+### Summary {#configs-summary}
+
+#### Representation Conventions for Config Fields
+
+Each config is composed of several **fields**. Fields come from various sources in config files; this document uses the following format for unified description:
+
+- **Property fields**: Regular properties appearing in the config body in the form `key = value`. The document uses the field name directly, such as `path`, `name_field`.
+- **Option fields**: Fields appearing as option comments in the form `## key = value`. The document prefixes them with `## `, such as `## cardinality`, `## push_scope`.
+- **Boolean options**: Valueless markers appearing as option comments in the form `## key`. The document also prefixes them with `## `, such as `## primary`, `## inherit`. Note that this differs from `## key = yes` — boolean options take effect with just the marker name.
+- **Documentation comments**: Documentation comments in the form `### text`, typically used to provide quick documentation text.
+- **Value fields**: Values appearing directly in the config body (rather than as the value side of a property), such as enum value lists.
+
+Field names use `snake_case` form in config files.
+
+#### Processing Flow
+
+The overall processing flow of configs can be simplified into three stages:
+
+1. Read config files from config groups and build their syntax trees (PSI).
+2. Use the corresponding resolver for each config category to transform syntax tree nodes into structured config objects.
+3. In each language feature, query and apply these config objects based on the current context (scope, type name, declaration context, etc.).
+
+The source and overriding mechanisms for configs are detailed in the "Config Groups" and "Override Methods" sections of [config.md](config.md).
+
+The "configs" in this document are categorized by level as follows:
+
+- **Base configs**: Such as `CwtPropertyConfig`, generic syntax-tree-level nodes used to carry properties and values from config files. This document does not cover base configs individually.
+- **[Normal configs](#configs-normal)**: Core configs that drive various language features, including types, aliases, enums, links, scopes, etc.
+- **[Extended configs](#configs-extended)**: Additional configs for enhancing plugin functionality, such as providing extra context and hints for specific definitions or inline scripts.
+- **[Internal configs](#configs-internal)**: Configs used internally by the plugin, currently not supporting (or not yet supporting) customization.
 
 ### Normal Configs {#configs-normal}
 
-> These configs drive various language features, including but not limited to code completion, code inspection, quick documentation, inlay hints, etc.
+> These configs drive a wide variety of language features, including but not limited to code completion, code inspection, quick documentation, inlay hints, etc.
 
-#### Priority Configs {#config-priority}
+#### Priority Config {#config-priority}
 
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/priorities.core.cwt -->
 
-Priority configs are used to configure how targets are overridden.
+Priority configs configure the override strategy for "targets" (files, global scripted variables, definitions, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries). When no directory mapping is matched, the default is `LIOS` (Last In, Only Served).
 
-- **Purpose**: provide a unified strategy for overriding/merging of "targets", affecting the order of effect and the sort order of non-stream queries.
-- **Applicable targets**: files, global scripted variables, definitions, localisations, etc.
-- **Default value**: when no directory mapping matches, `LIOS` (last-in wins) is used.
+**Override strategies**:
 
-**Override strategies and behavior**:
-- `FIOS` (First In, Only Served): Read only once. The first-loaded one takes effect, and subsequent ones will be just ignored.
-- `LIOS` (Last In, Only Served): Later reads override. The last loaded overrides the first loaded.
-- `DUPL` (Duplicates): Whole-file override. Must be overridden entirely by a file with the same path.
-- `ORDERED` (Ordered): Sequential reading. Existing ones cannot be overwritten, and later loaded ones will be sequentially added or merged.
+- **`FIOS`** (First In, Only Served): The first loaded takes effect; later ones are ignored.
+- **`LIOS`** (Last In, Only Served): Later loaded overrides earlier loaded.
+- **`DUPL`** (Duplicates): Whole-file override; must be replaced entirely with a file at the same path.
+- **`ORDERED`** (Ordered): Read in order; later loaded items are added or merged in sequence without overriding existing entries.
 
-**Sorting and loading notes**:
-- Sort order of non-stream query results is driven by priority; under the same path, load order (game/dependency chain) determines the precedence.
-- Within the same file, later items override earlier ones.
-- See `ParadoxPriorityProvider.getComparator()` for the implementation and defaults.
+Query (non-streaming) result sorting is driven by priority; within the same path, the load order (game / dependency chain) determines precedence. Within the same file, later items override earlier ones.
 
-**Format notes**:
+**Format description**:
 
 ```cwt
 priorities = {
@@ -78,7 +101,7 @@ priorities = {
 }
 ```
 
-**Examples**:
+**Example**:
 
 ```cwt
 priorities = {
@@ -89,110 +112,113 @@ priorities = {
 }
 ```
 
-- Two mods both define an event with the same name under `events/`: because `events = fios`, the mod read earlier (loaded earlier) takes effect and the later one is ignored.
-- Two mods both add entries under `common/on_actions/`: because `ordered`, they will be merged in order without overriding.
+- Two mods both define an event with the same name in `events/`: Due to `events = fios`, the mod loaded first takes effect, and the later one is ignored.
+- Two mods both add entries in `common/on_actions/`: Due to `ordered`, entries are merged in order without overriding.
 
-#### Declaration Configs {#config-declaration}
+#### Declaration Config {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
-<!-- @see icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
 
-- **Purpose**: declare the structure of a "definition entry" for completion, inspections, quick documentation, etc.
-- **Path location**: `{name}`, where `{name}` is the config name (i.e., the "definition type"). A top-level property whose key is a valid identifier and is not matched by other configs falls back to being parsed as a declaration config.
-- **Dependent context**: `CwtDeclarationConfigContextProvider` constructs the declaration context (definition name, type, subtype). Game Rule/On Action can rewrite the context via extended configs.
+Declaration configs describe the structure of "definition entries" and serve as the foundation for features such as completion, inspection, and quick documentation.
 
-- **Parsing flow (implementation summary)**:
-  1. Parse the name: skip if the key is not a valid identifier (`CwtDeclarationConfigResolverImpl`).
-  2. Root-level inlining: if RHS is `single_alias_right[...]`, expand it into normal property configs first (`CwtConfigManipulator.inlineSingleAlias`).
-  3. Build the final config tree:
-     - Deep-copy and trim/flatten by subtype (`deepCopyConfigsInDeclarationConfig`).
-     - If a `subtype[...]` matches the context subtype: flatten its children; if not, skip; non-`subtype[...]` nodes recurse normally.
-     - Inject derived configs (`CwtInjectedConfigProvider.injectConfigs`) and uniformly set `parentConfig` to keep the parent chain.
-  4. Subtype cache key: scan `subtype[...]` to collect used subtype set (`subtypesUsedInDeclaration`), and combine it with the current context to build the cache key, avoiding cache invalidation by irrelevant subtypes.
+**Path location**: `{name}`, where `{name}` is the config name (i.e. the "definition type" name). Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being parsed as declaration configs.
 
-- **Cooperation with other configs**:
-  - Can reference aliases and single-aliases inside a declaration (`alias_name[...]`/`alias_match_left[...]`, `single_alias_right[...]`).
-  - Swapped-type declarations can be nested directly under the base type declaration.
+The processing flow of declaration configs is roughly as follows: First, only top-level properties with valid identifier keys are treated as declaration configs. If the root-level value of the declaration is `single_alias_right[...]`, inline expansion is performed first. Then, the plugin trims and flattens the config tree by subtypes — `subtype[...]` blocks matching the current context subtypes are expanded to sibling-level sub-configs, while non-matching ones are skipped. The resulting config tree is used to drive completion, inspection, and other features.
+
+Declaration configs can cooperate with other configs: [aliases and single aliases](#config-alias) (`alias_name[...]` / `alias_match_left[...]`, `single_alias_right[...]`) can be referenced within declarations. Swapped type declarations can be nested directly within the corresponding base type's declaration. Game rules and on actions can also have their declaration context overridden through [extended configs](#configs-extended).
 
 **Example**:
 
 ```cwt
-event = {
-    id = scalar
+# from `common/buildings.cwt` of stellaris config group
 
-    # Refine the structure by subtype; only takes effect under the matching subtype
-    subtype[triggered] = {
-        ## cardinality = 0..1
-        weight_multiplier = {
-            factor = float
-            alias_name[modifier_rule] = alias_match_left[modifier_rule]
-        }
-    }
+## push_scope = planet
+building = {
+    ## cardinality = 0..inf
+    ## replace_scopes = { this = planet root = planet }
+    desc = single_alias_right[triggered_desc_clause]
 
     ## cardinality = 0..1
-    # The root-level single alias will be inlined before parsing
-    trigger = single_alias_right[trigger_clause]
+    owner_type = corporate
+
+    ## cardinality = 0..1
+    ruined_icon = icon[gfx/interface/icons/buildings]
+
+    ## cardinality = 0..1
+    ruined_icon = <sprite>
+
+    ## cardinality = 0..1
+    building_sets = {
+        ## cardinality = 0..inf
+        enum[building_set]
+    }
+
+    # ...
 }
 ```
 
-**Notes**:
-- `subtype[...]` only takes effect when it matches the context subtype; otherwise it is ignored (no errors).
-- Root-level `single_alias_right[...]` is expanded first and then participates in subsequent parsing and inspections.
-- To ensure upward tracing in later features, all newly added nodes will have `parentConfig` (parent pointer) injected.
+**Considerations**:
 
-#### System Scope Configs {#config-system-scope}
+- `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
+- Root-level `single_alias_right[...]` is expanded first, then participates in subsequent parsing and inspection.
+- To ensure that downstream features can "trace back upward", generated config nodes maintain parent config references.
+
+#### System Scope Config {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
 <!-- @see cwt/core/system_scopes.core.cwt -->
 
-- **Purpose**: provide metadata for built-in "system-level scopes" (This/Root/Prev/From, etc.) for quick documentation and scope stack derivation.
-- **Path location**: `system_scopes/{id}`, where `{id}` is the system scope ID.
-- **Fields**:
-  - `id`: system scope ID.
-  - `base_id`: base scope ID; defaults to `id` if unspecified. Used to categorize scope families (e.g., `Prev*`, `From*`) for display and documentation.
-  - `: string`: human-readable name; defaults to `id` if unspecified.
+System scope configs provide metadata for built-in "system-level scopes" (such as This, Root, Prev, From, etc.), used for quick documentation and scope stack derivation.
 
-- **Parsing flow (implementation summary)**:
-  - Read `id = key`, `base_id = properties['base_id'] ?: id`, and `name = stringValue ?: id` (`CwtSystemScopeConfigResolverImpl`).
-  - Equality is compared by `id` (same `id` means the same system scope).
+**Path location**: `system_scopes/{id}`, where `{id}` is the system scope ID.
 
-- **Cooperation with other configs**:
-  - Works together with "Scopes and Scope Groups" to drive scope checks and hints.
-  - Some extended configs may use the option `replace_scopes` to map system scopes to concrete scope types under the current context (e.g., map `this/root/from` to `country`).
-  - Note: `replace_scopes` does not support replacing the `prev` series of system scopes (`prev/prevprev/...`); see "How to specify scope context in config files" in `docs/en/config.md`.
+**Field meanings**:
 
-**Example (built-in)**:
+- `id`: System scope ID.
+- `base_id`: Base scope ID; defaults to `id` when not specified. Used to classify scopes of the same family (e.g. `Prev` / `PrevPrev`, `From` / `FromFrom`).
+- `: string` (value): Readable name; defaults to `id` when not specified.
+
+System scope configs, together with [scope configs and scope group configs](#config-scope), determine scope checking and hints. In some [extended configs](#configs-extended), the option `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in the current context (e.g. mapping `this` / `root` / `from` to `country`). Note that `## replace_scopes` does not support replacing `prev`-series system scopes.
+
+**Example**:
 
 ```cwt
+# from `system_scopes.core.cwt` of core config group
+
 system_scopes = {
     This = {}
     Root = {}
     Prev = { base_id = Prev }
+    PrevPrev = { base_id = Prev }
+    PrevPrevPrev = { base_id = Prev }
+    PrevPrevPrevPrev = { base_id = Prev }
     From = { base_id = From }
-    # Chain members like PrevPrev/FromFrom are omitted
+    FromFrom = { base_id = From }
+    FromFromFrom = { base_id = From }
+    FromFromFromFrom = { base_id = From }
 }
 ```
 
-#### Directive Configs {#config-directive}
+#### Directive Config {#config-directive}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-<!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
-<!-- @see cwt/cwtools-eu5-config/config/common/definition_injections.cwt -->
+<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Used to describe special expressions and structures in script files that are different from general abstractions, and provide additional metadata for hints and validation.
-These expressions and structures change the behavior of the script parser at game runtime, allowing you to modify, extend, or reuse existing script snippets.
-Different directives can have different config structures.
+Directive configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
 
-Language features currently involved:
-- **Inline_script**: (Stellaris) will be replaced by the content of the target file during the parsing phase, and arguments can be specified.
-- **definition_injection**: (VIC3/EU5) will inject or replace The declaration of the target definition during the parsing phase, and the mode can be specified to determine the specific behavior.
+Currently involved directives include:
+
+- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during parsing, with parameters support.
+- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during parsing, with mode support to determine specific behavior.
 
 **Path location**: `directive[{name}]`, where `{name}` is the config name.
 
-**Example**：
+**Example**:
 
 ```cwt
 directive[inline_script] = {
@@ -200,117 +226,172 @@ directive[inline_script] = {
 }
 ```
 
-#### Type Configs and Subtype Configs {#config-type}
+#### Type Config and Subtype Config {#config-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesType -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesTypeFast -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtype -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtypeFast -->
 
-- **Purpose**: locate and name "definitions" by file path/key, and optionally declare subtypes, presentation and images.
-- **Path location**:
-  - Type: `types/type[{type}]`, where `{type}` is the definition type name.
-  - Subtype: `types/type[{type}]/subtype[{subtype}]`.
+Type configs locate and name "definitions" based on conditions such as "file path / key name", and can declare subtypes, display information, and images.
 
-- **File matching and sources**:
-  - `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` together determine which files are scanned.
-  - Paths are normalized by removing the `game/` prefix and unifying separators; `path_extension` should not include the dot (e.g., `.txt` -> `txt`).
-  - `type_per_file` means "one type instance per file".
+**Path location**:
 
-- **Definition key constraints**:
-  - `type_key_prefix` specifies the key prefix; and it provides a corresponding raw-value config (`typeKeyPrefixConfig`) for rendering and hints.
-  - `type_key_filter`/`type_key_regex`/`starts_with` constrain the allowed "definition key" values; `skip_root_key` allows skipping some top-level keys to continue matching (case-insensitive, supports multiple groups).
+- Type: `types/type[{type}]`, where `{type}` is the definition type name.
+- Subtype: `types/type[{type}]/subtype[{subtype}]`.
 
-- **Naming and uniqueness**:
-  - `name_field` specifies the source field for display name; `name_from_file` means derive the name from the filename; `unique` is used for conflict checks/navigation hints; `severity` marks the display severity level.
+**Type fields**:
 
-- **Subtypes**:
-  - Options: `type_key_filter`, `type_key_regex`, `starts_with`, `only_if_not`, `group`.
-  - Matching is trimmed in declaration order; usually used together with `subtype[...]` in declaration configs to refine structure and checks.
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
+- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
+- `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
+- `type_per_file`: When set to `yes`, indicates "one type instance per file" (the definition corresponds to the entire script file rather than a property within it).
+- `name_field`: Reads the display name from the property key specified within the definition body. When present, the type key only accepts values explicitly listed in `## type_key_filter`, or is unrestricted.
+- `name_from_file`: When set to `yes`, derives the definition name from the filename.
+- `unique`: When set to `yes`, enables duplicate name conflict checking.
+- `severity`: Reporting level for duplicate name conflicts (e.g. `warning`, `error`).
+- `skip_root_key`: Allows skipping several top-level keys before continuing to match the type key. The value is a curly-brace set, supporting multiple groups (case-insensitive, supports wildcards `any`/`*`/`?`). If `skip_root_key` is non-empty but the file has no root keys, matching fails; if empty but the file has root keys, matching also fails.
+- `type_key_prefix`: Required prefix for the type key (case-insensitive).
+- `## type_key_filter`: Filter condition for the type key (option comment, case-insensitive). Supports inclusion sets `{ a b }` and exclusion sets `<> { x y }`.
+- `## type_key_regex`: Regex filter for the type key (option comment, case-insensitive).
+- `## starts_with`: Prefix filter for the type key (option comment, case-insensitive).
+- `## graph_related_types`: Declares graph-related types (option comment), used for inter-definition dependency graphs.
+- `localisation`: Localisation display section, see [Type Presentation Config](#config-type-presentation) for details.
+- `images`: Image display section, see [Type Presentation Config](#config-type-presentation) for details.
+- `modifiers`: Modifier section, which derives [modifier configs](#config-modifier) bound to the type.
 
-- **Presentation**:
-  - `localisation`/`images` subsections configure display texts and images for a type.
+**Type matching flow**:
 
-- **Parsing flow (implementation summary)**:
-  1. Parse `type[...]` name and required properties; if required fields are missing, skip this type (`CwtTypeConfigResolverImpl`).
-  2. Collect file sources and key constraints, build subtype mapping, and parse presentation settings.
-  3. Merge `modifiers`: if `modifiers` is declared inside a type config, derive modifier configs and write them into `configGroup.modifiers` and `type2ModifiersMap` (grouped by `type` or `type.subtype`).
+For a property (or entire file) in a script file, type matching proceeds through the following steps in order:
 
-- **Cooperation with other configs**:
-  - Works with `Declaration` to provide context and structural constraints for concrete definitions.
-  - Works with `Modifier/Modifier Category`, deriving type-related modifier configs via `modifiers`.
+1. **Element type check**: When `type_per_file` is `yes`, the definition must correspond to the entire script file; otherwise it must correspond to a property.
+2. **Path matching**: First checks `path_pattern` (ANT patterns) — if any matches, the check passes; otherwise checks `path_file` or `path_extension`, then checks `path` (including `path_strict`). When both `path` and `path_extension`/`path_file` are non-empty, both must be satisfied.
+3. **Type key check** (in order): `## starts_with` → `## type_key_regex` → `## type_key_filter` → `name_field` constraint (if `name_field` exists, the type key may only be one of the values explicitly listed in `## type_key_filter`, or is unrestricted).
+4. **Root key check**: Determines whether root keys need to be skipped based on `skip_root_key`.
+5. **Type key prefix check**: Checks whether the prefix matches based on `type_key_prefix` (case-insensitive).
+6. **Declaration structure check**: Checks whether the definition's property value is consistent with the expected structure of the [declaration config](#config-declaration) (e.g. if the declaration config expects a block, the property value must be a block).
+
+**Subtype fields**:
+
+Subtypes are determined through content matching. Subtypes are checked one by one in declaration order, typically used together with `subtype[...] = {...}` in [declaration configs](#config-declaration) to refine structure and validation.
+
+- `## type_key_filter`: Filters by type key (option comment, case-insensitive).
+- `## type_key_regex`: Filters by type key regex (option comment, case-insensitive).
+- `## starts_with`: Filters by type key prefix (option comment, case-sensitive).
+- `## push_scope`: Scope type pushed when matched (option comment).
+- `## display_name`: Display name for the subtype (option comment).
+- `only_if_not`: Mutually exclusive with specified subtypes — only continues checking if none of the specified subtypes have matched.
+- `## group`: Subtype group name (option comment). Subtypes within the same group are mutually exclusive (at most one matches).
+
+**Subtype matching flow**:
+
+1. **Mutual exclusion check**: If any subtype specified in `only_if_not` has already matched, skip.
+2. **Type key check**: Checks in order: `## starts_with` (case-sensitive) → `## type_key_regex` → `## type_key_filter` (case-insensitive).
+3. **Content matching**: If the subtype declaration body (`subtype[...] = { ... }`) contains property or value configs, recursively checks whether the definition body contains matching properties and values. Matching methods include exact boolean matching, string/data expression matching, and recursive matching of nested blocks. If the declaration body is empty (`{}`), only the type key check needs to pass for a match.
+
+Type configs cooperate with [declaration configs](#config-declaration) to provide context and structural constraints for specific definition declarations.
 
 **Example**:
 
 ```cwt
+# from `events/events.cwt` of stellaris config group
+
 types = {
-    type[civic_or_origin] = {
-        # File sources
-        path = "game/common/governments/civics"   # the prefix `game/` will be removed automatically
+    ## graph_related_types = { special_project anomaly_category }
+    type[event] = {
+        name_field = id
+        path = "game/events"
         path_extension = .txt
 
-        # Key constraints and prefix
-        type_key_prefix = civic_
-        ## type_key_filter = { +civic_ -origin_ }  # include/exclude sets
-        ## starts_with = civic_
-        ## skip_root_key = { potential }
-
-        # Subtype
-        subtype[origin] = {
-            ## type_key_filter = +origin_
-            ## group = lifecycle
+        subtype[inherited] = {
+            base = <event>
         }
 
-        # Presentation
-        localisation = { name_field = name }
-        images = { main = icon }
+        ## group = event_attribute
+        subtype[triggered] = {
+            is_triggered_only = yes
+        }
+
+        ## group = event_type
+        ## type_key_filter = country_event
+        ## push_scope = country
+        ## display_name = Country Event
+        subtype[country] = {}
+
+        ## group = event_type
+        ## type_key_filter = planet_event
+        ## push_scope = planet
+        ## display_name = Planet Event
+        subtype[planet] = {}
+
+        # ... more event type subtypes (ship, fleet, system, etc.)
     }
 }
 ```
 
-**Notes**:
-- Missing any required property will cause the type to be skipped (a log entry will be emitted).
-- `path` and `path_pattern` can be used together; `path_strict` enforces strict matching.
-- `skip_root_key` is a multi-group setting: if any group matches the sequence of top-level keys in the file, the matcher can skip them and continue to match the definition key.
-- Subtype matching is order-sensitive; place more specific configs earlier.
+```cwt
+# from `common/buildings.cwt` of stellaris config group
+# which represents `localisation` and `images` sections
 
-#### Alias Configs and Single Alias Configs {#config-alias}
+types = {
+    type[building] = {
+        path = "game/common/buildings"
+        path_extension = .txt
+        subtype[capital] = {
+            capital = yes
+        }
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            icon = icon
+            icon = "gfx/interface/icons/buildings/$.dds"
+        }
+    }
+}
+```
+
+**Considerations**:
+
+- `path` is a required field; if missing, the type will be skipped.
+- `skip_root_key` is a multi-group setting: if any group matches the file's top-level key sequence, skipping is allowed and type key matching continues.
+- Subtype matching is "order-sensitive"; place more specific configs earlier.
+- Subtypes within the same `## group` are mutually exclusive (e.g. `country`, `planet`, `ship`, etc. in the `event_type` group).
+
+#### Alias Config and Single Alias Config {#config-alias}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
 
-- **Purpose**: abstract reusable config snippets as named aliases that can be referenced and expanded in multiple places; a single-alias is for one-to-one reuse on the value side.
-- **Path location**:
-  - Alias: `alias[{name}:{subName}]` (`{subName}` is a constrained data expression).
-  - Single alias: `single_alias[{name}]`.
+Alias configs abstract reusable config fragments into "named aliases" that can be referenced and expanded in multiple places. Single aliases are used for one-to-one reuse on the "value side".
 
-- **Syntax and reference**:
-  - Declare an alias: `alias[effect:some_effect] = { ... }`
-  - Use an alias: write `alias_name[effect] = alias_match_left[effect]` at the use site
-  - Declare a single alias: `single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
-  - Use a single alias: `potential = single_alias_right[trigger_clause]`
+**Path location**:
 
-- **Option semantics (alias)**:
-  - `scope/scopes`: allowed input scope set (`supportedScopes`).
-  - `push_scope`: output scope (`outputScope`).
-  - `subName` supports a constrained data expression and is parsed as `subNameExpression`; it also serves as `configExpression` for matching and hints.
+- Alias: `alias[{name}:{subName}]` (`{subName}` is a restricted data expression).
+- Single alias: `single_alias[{name}]`.
 
-- **Parsing and inlining (implementation summary)**:
-  - Parse `name`/`subName` from the key (`CwtAliasConfigResolverImpl`).
-  - Expand at use site: `CwtConfigManipulator.inlineAlias` copies the alias body as normal property configs:
-    - After expansion the key equals subName (`key = subName`), and the value/children are deep-copied while keeping options.
-    - If the expanded RHS is `single_alias_right[...]`, it will continue to inline the single-alias (cascading expansion).
-    - After expansion, the result participates in injection (`CwtInjectedConfigProvider.injectConfigs`) and parent pointer backfill, then enters regular validation/completion flows.
-  - Single alias expands on the value side: `CwtConfigManipulator.inlineSingleAlias` replaces the entire declaration into the value and child block at the use site.
+**Declaration and reference syntax**:
 
-- **Cooperation with other configs**:
-  - Often used with "Declaration" to reuse trigger/effect snippets inside definition declarations.
-  - Works with "Types and Subtypes" as part of modifier configs or context constraints.
+- Declare alias: `alias[effect:some_effect] = { ... }`
+- Use alias: `alias_name[effect] = alias_match_left[effect]`
+- Declare single alias: `single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
+- Use single alias: `potential = single_alias_right[trigger_clause]`
+
+Aliases support specifying scope constraints via options: `## scope` / `## scopes` declares the allowed input scope set, and `## push_scope` declares the output scope. The alias `subName` supports restricted data expressions for matching and hints.
+
+At the usage site, the alias body is copied as a regular property config (key = sub-name, value and sub-configs deep-copied, options preserved). If the value side of the expanded result is still `single_alias_right[...]`, cascading expansion continues. Aliases are commonly used in combination with [declaration configs](#config-declaration) to reuse trigger / effect fragments within definition declarations.
 
 **Example**:
 
 ```cwt
-# Alias: define an effect snippet
+# Alias: define an effect fragment
 alias[effect:apply_bonus] = {
     add_modifier = {
         modifier = enum[modifier_rule]
@@ -323,7 +404,7 @@ scripted_effect = {
     alias_name[effect] = alias_match_left[effect]
 }
 
-# Single alias: define a trigger-block snippet
+# Single alias: define a trigger-block fragment
 single_alias[trigger_clause] = {
     alias_name[trigger] = alias_match_left[trigger]
 }
@@ -335,35 +416,30 @@ some_definition = {
 }
 ```
 
-**Notes**:
-- The unique key of an alias is `name:subName`; duplicates are processed by the overriding strategy/priority.
-- Cardinality and option checks happen after expansion; consider the final semantics at the use site rather than the declaration.
-- `subName` is a constrained data expression; you can use templates/enums to increase reuse, but avoid being too broad and causing mismatches.
+**Considerations**:
 
-#### Enum Configs and Complex Enum Configs {#config-enum}
+- The alias unique key is composed of `name:subName`; duplicate definitions are handled by the override strategy / priority.
+- Cardinality and option validation occur only after expansion; consider the final semantics at the expansion site rather than at the declaration site.
+- `subName` is a data expression (restricted); templates / enums can be used to increase reusability, but avoid being too broad to prevent false matches.
+
+#### Enum Config and Complex Enum Config {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
-- **Purpose**: provide value sets for the data expression `enum[...]`.
-  - Simple enum: a fixed set of values, all declared in config files.
-  - Complex enum: dynamically collect enum values from script files by path/anchors.
+Enum configs provide the value set for data expressions `enum[...]`. Depending on the source of values, they are divided into simple enums and complex enums.
 
-- **Path location**:
-  - Simple: `enums/enum[{name}]`
-  - Complex: `enums/complex_enum[{name}]`
+**Path location**:
+
+- Simple enum: `enums/enum[{name}]`
+- Complex enum: `enums/complex_enum[{name}]`
 
 ---
 
-**Simple Enum**:
+**Simple Enum**
 
-Fields and implementation:
-- `name`: enum name.
-- `values`: candidate set (case-insensitive).
-- `valueConfigMap`:
-- The current implementation supports constant values only; template expressions are not supported.
-
-Declaration:
+The value set of a simple enum is entirely declared in config files; matching is case-insensitive. The current implementation only supports constant values and does not support template expressions.
 
 ```cwt
 enums = {
@@ -373,22 +449,15 @@ enums = {
 
 ---
 
-**Complex Enum**:
+**Complex Enum**
 
-**Matching Logic**:
-- The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
-- `path` and `path_extension` are normalized during resolving.
-- `start_from_root`: Whether to start searching for anchors from the top of the file (rather than from top-level properties).
-- `## case_insensitive`: (extension) Whether to mark complex enum values as case-insensitive.
-- `## per_definition`: (extension) Whether to restrict the equivalence of complex enum values with the same name and type to the definition level, rather than the file level.
-- `name` subsection: Describes how to locate value anchors within matching files; the implementation collects all properties or values named `enum_name` within it as anchors (`enumNameConfigs`).
+Complex enums dynamically collect enum values from script files based on path and anchor points.
 
-**Parsing flow (brief)**:
-1. Simple: parse `enum[...]` and its value list; build a case-insensitive value set and mapping (`CwtEnumConfigResolverImpl`).
-2. Complex: parse file sources and the `name` subsection and anchors; during indexing, collect actual values (`enum_name`) from matched files.
-3. Both serve completion and validation of `enum[...]`.
+The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan (path matching logic is the same as in [type configs](#config-type)). `start_from_root` specifies whether to start searching for anchor points from the file top (rather than the next level below top-level properties). The `name` section describes how to locate value anchors in matching files — the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
 
-Declaration (example):
+**Complex enum matching flow**: For each string expression in a matching file, the plugin checks whether it can serve as an anchor for a complex enum value. The specific steps are: First, find config entries containing `enum_name` in the `name` section; then, based on the position where `enum_name` appears (as a property key, property value, or block member value), determine the current expression's role — if `enum_name` is on the property key side, the current property key is the enum value anchor; if `enum_name` is on the property value side, the current property's value is the enum value anchor; if `enum_name` is a block member value, that value itself is the enum value anchor. Finally, match parent structures upward layer by layer from the anchor until reaching the root of the `name` section (`start_from_root` being `yes` requires reaching the file root level; otherwise, reaching the next level below top-level properties is sufficient).
+
+Plugin extension options: The boolean option `## case_insensitive` marks complex enum values as case-insensitive; the boolean option `## per_definition` limits the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
 
 ```cwt
 enums = {
@@ -402,30 +471,21 @@ enums = {
 }
 ```
 
-**Notes**:
-- Simple enums currently support constant values only; if you write a template expression, it will not be parsed as a template.
-- A complex enum without a `name` subsection or without any `enum_name` anchors found in matched files will result in an empty enum.
-- Simple enum values are case-insensitive by default, and complex enum values are case-sensitive by default.
+**Considerations**:
 
-#### Dynamic Value Type Configs {#config-dynamic-value}
+- Simple enums currently only support constant values; template expressions will not be parsed as templates.
+- If a complex enum lacks a `name` section or no `enum_name` anchors are found in matching files, the enum will be empty.
+- Simple enum values are case-insensitive by default; complex enum values are case-sensitive by default.
+
+#### Dynamic Value Type Config {#config-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 
-- **Purpose**: provide predefined (hard-coded) dynamic value sets for the data expression `value[...]`, as an alternative to fixed literals, for completion and validation.
-- **Path location**: `values/value[{name}]`, where `{name}` is the dynamic value type name.
+Dynamic value type configs provide a set of "predefined (hardcoded)" dynamic values for the data expression `value[...]`, replacing fixed literals to facilitate completion and validation. The current implementation only supports constant values and does not support template expressions.
 
-- **Fields and limits**:
-  - `name`: dynamic value type name.
-  - `values`: value set (case-insensitive).
-  - `valueConfigMap`: mapping from value to its value config.
-  - The current implementation supports constant values only; template expressions are not supported.
+**Path location**: `values/value[{name}]`, where `{name}` is the dynamic value type name.
 
-- **Parsing flow (implementation summary)**:
-  - Parse the `value[...]` name and the value list, build a case-insensitive set and mapping (`CwtDynamicValueTypeConfigResolverImpl`).
-  - Used by `value[...]` during completion and validation.
-
-- **Relation to extended configs**:
-  - If you need to declare scope context (e.g., only accepts a push scope) or generate values dynamically by context, refer to the extended config "Dynamic Value (Extended)".
+To declare "scope context" for dynamic values or dynamically generate values based on context, see [Extended Config for Dynamic Values](#config-extended-dynamic-value).
 
 **Example**:
 
@@ -435,92 +495,109 @@ values = {
 }
 ```
 
-#### Link Configs {#config-link}
+#### Link Config {#config-link}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
 
-- **Purpose**: provide semantics and type (scope/value) constraints for "field/function-like" nodes in complex expressions, supporting chained access, completion, and inspections.
-- **Path location**:
-  - Regular links: `links/{name}`
-  - Localisation links: `localisation_links/{name}` (if not declared explicitly, static regular links are copied automatically)
+Link configs provide semantic and type constraints (scope / value) for "field / function-like" nodes in complex expressions, supporting chained access and completion checking.
 
-- **Static vs Dynamic**:
-  - Static link: no `data_source`, represents a fixed node name (e.g., `owner`).
-  - Dynamic link: declares `data_source` and/or `prefix`/`from_*`, and can carry dynamic data (e.g., `modifier:x`, `relations(x)`, `var:x`).
+**Path location**:
 
-- **Fields and semantics (implementation)**:
-  - `type`：link type (`scope`/`value`/`both`, default to `scope`).
-  - `from_data`：whether to read dynamic data from text data (format `prefix:data`).
-  - `from_argument`：whether to read dynamic data from arguments (format `func(arg)`).
-  - `argument_separator`：the argument separator to use when there are multiple arguments (`comma`/`pipe`, default to `comma`).
-  - `prefix`: prefix for dynamic links; when `from_argument = yes`, the parser removes a trailing colon to avoid `prefix:` duplication.
-  - `data_source` (multiple): each is a data expression that constrains legal values of dynamic data, supporting multi-argument scenarios.
-  - `input_scopes`: input scope set; both `input_scope` and `input_scopes` are accepted by the resolver.
-  - `output_scope`: output scope; empty means passthrough/derived from data source.
-  - `for_definition_type`: only available under the specified definition type.
+- Regular links: `links/{name}`
+- Localisation links: `localisation_links/{name}` (if not explicitly declared, static regular links are automatically copied)
 
-- **Parsing flow (implementation summary)**:
-  - Read fields and normalize: scope IDs are normalized via `ParadoxScopeManager.getScopeId()`.
-  - Validation: when `from_data` or `from_argument` is `yes`, at least one `data_source` must exist.
-  - Build data expressions: parse `CwtDataExpression` for each `data_source`, supporting multiple parameters (use `delegatedWith(index)` to specify the current parameter when needed).
-  - Localisation links: can be copied from regular links (static) or parsed separately.
+**Static and dynamic**: Links without a declared `data_source` are static links, representing only a fixed node name (e.g. `owner`). Links with a declared `data_source` and/or `prefix` / `from_*` are dynamic links that can carry dynamic data (e.g. `modifier:x`, `relations(x)`, `var:x`).
+
+**Main fields**:
+
+- `type`: Link type (`scope` / `value` / `both`, defaults to `scope`).
+- `from_data`: Whether to read dynamic data from text data (format like `prefix:data`).
+- `from_argument`: Whether to read dynamic data from arguments (format like `func(arg)`).
+- `argument_separator`: Separator for multiple arguments (`comma` / `pipe`, defaults to `comma`).
+- `prefix`: Prefix for the dynamic link.
+- `data_source` (multi-valued): Each data source is a data expression constraining the valid values for dynamic data.
+- `input_scopes`: Input scope set; can be a single value or a set, supporting both `input_scope` and `input_scopes` notations.
+- `output_scope`: Output scope; when empty, indicates passthrough or derivation based on data source.
+- `for_definition_type`: Only available within the specified definition type.
 
 **Example**:
 
 ```cwt
+# from `links.cwt` of stellaris config group
+
 links = {
     # Static scope link
-    owner = {
-        input_scopes = { any }
-        output_scope = any
+    planet = {
+        input_scopes = { megastructure planet pop_group leader army starbase deposit archaeological_site }
+        output_scope = planet
     }
-
-    # Dynamic value link (with prefix)
-    modifier = {
+    
+    # Dynamic value link (without prefix)
+    variable = {
         type = value
         from_data = yes
-        prefix = modifier
-        data_source = dynamic_value[test_flag]
-        input_scopes = { any }
+        data_source = value[variable]
     }
-
-    # Dynamic scope link (function-like)
-    relations = {
-        from_argument = yes
-        data_source = <country>           # multiple data sources can be mixed
-        data_source = dynamic_value[test_flag]
-        input_scopes = { country }
-        # empty output_scope -> derived based on data source and implementation
+    
+    # Dynamic value link (with prefix)
+    script_value = {
+        from_data = yes
+        type = value
+        prefix = value:
+        data_source = <script_value>
     }
 }
 ```
 
-**Notes**:
-- `prefix` should not contain quotes or parentheses; `input_scopes` uses a brace-enclosed set syntax (e.g., `{ country }`).
-- Multiple `data_source` entries are allowed; for multi-argument links, use `delegatedWith(index)` to switch the current parameter expression.
-- If the dynamic link argument is a single-quoted literal, treat it as a literal; generally no completion is provided.
-- Prefer the `<type>` shorthand in `data_source` (e.g., `<country>`) over `definition[country]`.
+```cwt
+# from `links.core.cwt` of core config group
 
-#### Scope Configs and Scope Group Configs {#config-scope}
+links = {
+    event_target = {
+        from_data = yes
+        type = scope
+        prefix = event_target:
+        data_source = value[event_target]
+    }
+}
+```
+
+**Considerations**:
+
+- `prefix` should not contain quotes or parentheses; `input_scopes` uses curly-brace set syntax (e.g. `{ country }`).
+- Multiple `data_source` values can be mixed.
+- If a dynamic link argument is a single-quoted literal, it is treated as a literal and typically does not provide completion.
+
+#### Scope Config and Scope Group Config {#config-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
 
-- **Purpose**: define "scope types" and their aliases (`scopes`), and group scopes (`scope_groups`) for scope checks, chaining constraints, and hints.
+Scope configs define "scope types" and their aliases; scope group configs group scopes together. Both are used for scope checking, link constraints, and hints.
 
-- **Path location and fields**:
-  - Scope: `scopes/{name}`
-    - `name`: scope ID.
-    - `aliases: string[]`: alias set (case-insensitive).
-  - Scope group: `scope_groups/{name}`
-    - `name`: group name.
-    - `: string[]`: scope IDs in this group (case-insensitive).
+**Path location and fields**:
+
+- Scope: `scopes/{name}`
+  - `name`: Scope ID.
+  - `aliases: string[]`: Alias set (case-insensitive).
+- Scope group: `scope_groups/{name}`
+  - `name`: Group name.
+  - `: string[]` (value list): Set of scope IDs within the group (case-insensitive).
+
+Scope configs and system scopes together determine the scope stack and semantics; together with link configs, they constrain the input / output scopes of chained access. In extended configs, `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in a specific context.
 
 **Example**:
 
 ```cwt
+# from `scopes.cwt` of stellaris config group
+
 scopes = {
     Country = { aliases = { country } }
+    Leader = { aliases = { leader } }
+    System = { aliases = { galacticobject system galactic_object } }
+    Planet = { aliases = { planet } }
+    "Pop Group" = { aliases = { pop_group } }
+    "Pop Job" = { aliases = { job pop_job } }
 }
 
 scope_groups = {
@@ -530,56 +607,47 @@ scope_groups = {
 }
 ```
 
-**Cooperation with other configs**:
-- Works with "System Scopes" to determine scope stacks and meanings; works with "Links" to constrain input/output scopes for chaining.
-- In extended configs, you can specify `replace_scopes` to map system scopes to concrete scope types under specific contexts.
-
-#### Modifier Configs and Modifier Category Configs {#config-modifier}
+#### Modifier Config and Modifier Category Config {#config-modifier}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
 
-- **Purpose**: declare modifiers and their categories, used for icon rendering, completion, and scope validation.
+Modifier configs declare modifiers and their categories, used for icon rendering, completion, and scope validation.
 
-- **Path location**:
-  - Modifier:
-    - `modifiers/{name}` (`{name}` can be a constant or a template expression)
-    - `types/type[{type}]/modifiers/{name}` (where `$` is replaced with `<{type}>`)
-    - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}` (use `{type}.{subtype}` as the type expression for replacement)
-  - Modifier category: `modifier_categories/{name}`
+**Path location**:
 
-- **Fields and semantics (modifier)**:
-  - `name`: templated name (e.g., `job_<job>_add`), supporting dynamically generated modifiers.
-  - `categories: string | string[]`: category names; determine the allowed scope types.
-  - `supportedScopes`: allowed scope set.
-    - If `categoryConfigMap` is resolved, derive scopes from categories (`ParadoxScopeManager.getSupportedScopes(...)`).
-    - Otherwise, fall back to the modifier's local option `supported_scopes` (if present).
+- Modifier:
+  - `modifiers/{name}` (`{name}` can be a constant or template expression)
+  - `types/type[{type}]/modifiers/{name}` (where `$` is replaced with `<{type}>`)
+  - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}` (`{type}.{subtype}` participates as a type expression in replacement)
+- Modifier category: `modifier_categories/{name}`
 
-- **Fields and semantics (modifier category)**:
-  - `name`: category name (e.g., `Pops`).
-  - `supported_scopes: string | string[]`: allowed scope set of this category.
+**Modifier fields**: `name` is a templated name (e.g. `job_<job>_add`), supporting matching of dynamically generated modifiers. `categories` is a set of category names that determine the allowed scope types. If category mapping has been resolved, scopes are aggregated based on categories; otherwise, it falls back to the modifier's own `supported_scopes` option.
 
-- **Parsing flow (implementation summary)**:
-  - Modifier (`CwtModifierConfigResolverImpl`):
-    1. Parse `categories` from value or value-list; skip if missing.
-    2. If from a type config's `modifiers`, replace `$` in `name` with `<{typeExpression}>`, where `typeExpression` is `type` or `type.subtype`.
-    3. Parse template expressions and compute `supportedScopes` (from categories or local options).
-  - Modifier category (`CwtModifierCategoryConfigResolverImpl`):
-    1. Parse `name` and `supported_scopes`.
+**Modifier category fields**: `name` is the category name (e.g. `Pops`), and `supported_scopes` is the set of scopes allowed for that category.
 
-- **Cooperation with other configs**:
-  - Works with `Types and Subtypes` via `modifiers` to derive type-bound modifier configs.
-  - Cooperates with `Scopes/Links/System Scopes` for scope checks and hints.
+Modifier configs work in conjunction with the `modifiers` section of [type configs](#config-type): Modifier names declared in type configs use `$` as a placeholder, which is replaced with `<{type}>` or `<{type}.{subtype}>` during parsing, thereby deriving type-bound modifier configs.
 
 **Example**:
 
 ```cwt
-# Independent modifiers
+# from `modifiers.cwt` and `modifiers.categories.cwt` of stellaris config group
+
+# Standalone modifier declarations
 modifiers = {
     pop_happiness = { Pops }
     job_<job>_add = { Planets }
 }
 
+# Modifier categories
+modifier_categories = {
+    Pops = {
+        supported_scopes = { species pop_group planet sector galacticobject country }
+    }
+}
+```
+
+```cwt
 # Modifiers declared in type configs (will derive templated names)
 types = {
     type[job] = {
@@ -588,41 +656,33 @@ types = {
         }
     }
 }
-
-# Modifier categories
-modifier_categories = {
-    Pops = { supported_scopes = { species pop_group planet } }
-}
 ```
 
-**Notes**:
-- A modifier entry without `categories` will be skipped (ineffective).
-- For modifier names under type configs, use `$` placeholders consistent with type/subtype expressions.
-- `supported_scopes` in categories should use standard scope IDs; parsing will normalize case automatically.
+**Considerations**:
 
-#### Localisation Command Configs and Localisation Promotion Configs {#config-localisation}
+- Modifier entries missing `categories` will be skipped (not effective).
+- Modifier names in type configs use `$` as a placeholder; ensure they correspond to the type / subtype expression.
+- `supported_scopes` within categories should use standard scope IDs; case is automatically normalized during parsing.
+
+#### Localisation Command Config and Localisation Promotion Config {#config-localisation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
 
-- **Purpose**: declare the availability and allowed scopes of localisation command fields (Get...), and declare localisation scope promotions to keep command fields available after switching scope via localisation links.
+Localisation command configs declare the availability and allowed scopes of "localisation command fields" (e.g. `GetCountryType`). Localisation promotion configs declare "localisation scope promotions", allowing corresponding command fields to be used after switching scopes via localisation links.
 
-- **Path location**:
-  - Localisation command: `localisation_commands/{name}` (`{name}` is case-insensitive)
-  - Localisation promotion: `localisation_promotions/{name}` (`{name}` is case-insensitive; corresponds to a localisation link name)
+**Path location**:
 
-- **Fields and semantics**:
-  - Command: `supported_scopes: string | string[]` (allowed scope types)
-  - Promotion: `supported_scopes: string | string[]` (allowed scopes after promotion)
+- Localisation command: `localisation_commands/{name}` (name is case-insensitive)
+- Localisation promotion: `localisation_promotions/{name}` (name is case-insensitive, corresponds to a localisation link name)
 
-- **Parsing flow (implementation summary)**:
-  - Command (`CwtLocalisationCommandConfigResolverImpl`): parse name (case-insensitive) and `supported_scopes`.
-  - Promotion (`CwtLocalisationPromotionConfigResolverImpl`): parse name (case-insensitive, match localisation link name) and `supported_scopes`.
-  - In localisation texts, after switching scope via a localisation link, use the promotion configs to determine which command fields are valid.
+Both include a `supported_scopes` field declaring the set of allowed scope types.
 
 **Example**:
 
 ```cwt
+# from `localisation.cwt` of stellaris config group
+
 localisation_commands = {
     GetCountryType = { country }
 }
@@ -631,36 +691,29 @@ localisation_promotions = {
     Ruler = { country }
 }
 
-localisation_links = {
-    ruler = { ... }
-}
-
 # In localisation text:
 # [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
 ```
 
-**Notes**:
-- Names are case-insensitive; keep the spelling style consistent with actual command fields to improve searchability.
-- Promotion names should match localisation link names; otherwise they won't match correctly.
-- When cooperating with "Links (Localisation Links)", static regular links are copied automatically as localisation links; for dynamic behavior, declare localisation links separately.
+**Considerations**:
 
-#### Type Presentation Configs {#config-type-presentation}
+- Names are case-insensitive; maintain spelling consistent with actual usage for searchability.
+- The promotion config name should match the localisation link name; otherwise, correct matching cannot occur.
+- Static regular links are automatically copied as localisation links; if dynamic behavior is needed, declare localisation links separately.
+
+#### Type Presentation Config {#config-type-presentation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
 
-- **Purpose**: configure name/description/required localisation keys and main images/splitting configs for a definition type, for UI, navigation, and hints.
-- **Path location**:
-  - Localisation: `types/type[{type}]/localisation`
-  - Images: `types/type[{type}]/images`
+Type presentation configs configure "name / description / required localisation keys" and "primary image / frame rules" display information for definition types, for use in UI, navigation, and hints.
 
-- **Fields and semantics**:
-  - Both share the same structure: pairs of "subtype expression + location configs" (`locationConfigs`).
-  - At runtime, filter and merge by the actual set of definition subtypes to obtain the final config list (`getConfigs(subtypes)`).
-  - For location configs, see "Location and Row Matching" → `CwtLocationConfig`. Common options:
-    - `required`: whether this item is mandatory (report hint/error if missing).
-    - `primary`: whether this item is the primary one (e.g., for main icon/name).
-  - For location expressions, see "Config Expressions → Location Expression".
+**Path location**:
+
+- Localisation: `types/type[{type}]/localisation`
+- Images: `types/type[{type}]/images`
+
+Both share the same structure: composed of "subtype expression + location config" pairs. At runtime, they are filtered and merged based on the actual "definition's subtype set" to produce the final config list. Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
 
 **Example**:
 
@@ -674,53 +727,64 @@ types = {
         }
         images = {
             ## primary ## required
-            icon = "icon|icon_frame"  # image location expression; supports frame and name path parameters
+            icon = "icon|icon_frame"  # image location expression
         }
     }
 }
 ```
 
-#### Database Object Type Configs {#config-db-type}
+#### Database Object Type Config {#config-db-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-- **Purpose**: define types and formats for "database object expressions" in localisation (e.g., `['civic:some_civic', ...]`), enabling resolution to definitions or localisation in UI and hints.
-- **Path location**: `database_object_types/{name}`, where `{name}` is the prefix (e.g., `civic`).
+Database object type configs define the type and format of "database object expressions" (e.g. `['civic:some_civic', ...]`) in localisation, supporting parsing them as definitions or localisation in UI and hints.
 
-- **Fields and semantics**:
-  - `type`: if present, for `prefix:object`, treat `object` as a definition reference of that type.
-  - `swap_type`: if present, for `prefix:object:swap`, treat `swap` as a definition reference of the "swapped type".
-  - `localisation`: if present, for `prefix:object`, treat `object` as a localisation key.
+**Path location**: `database_object_types/{name}`, where `{name}` is the prefix (e.g. `civic`).
 
-**Example**：
+**Field meanings**:
+
+- `type`: If present, treats the `object` in `prefix:object` as a definition reference of this type.
+- `swap_type`: If present, treats the `swap` in `prefix:object:swap` as a swapped type definition reference.
+- `localisation`: If present, treats the `object` in `prefix:object` as a localisation key.
+
+**Example**:
 
 ```cwt
+# from `database_object_types.cwt` of stellaris config group
+
 database_object_types = {
     civic = {
         type = civic_or_origin
         swap_type = swapped_civic
     }
+    technology = {
+        type = technology
+        swap_type = swapped_technology
+    }
+    job = {
+        localisation = job_
+    }
 }
 ```
 
-#### Location Configs {#config-location}
+#### Location Config {#config-location}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
 
-- **Purpose**: Declares the location key and location expression for resources such as images/localization.
-- **Path Location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
+Location configs declare the locating key and location expression for resources such as images / localisation, used in the `localisation` and `images` sections of type presentation configs.
 
-#### Row Configs {#config-row}
+**Path location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
+
+#### Row Config {#config-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
 
-- **Purpose**: Declares column names and value types for CSV rows, used for completion/validation.
-- **Path Location**: `rows/row[{name}]`.
+Row configs declare column names and value forms for CSV rows, used for completion and inspection.
 
-**Matching Logic**:
-- The combination of `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` determines the set of files to be scanned.
-- `path` and `path_extension` are normalized during parsing.
-- `columns` (column name → column config), `end_column` (termination column name, columns after a match are considered optional trailing columns).
+**Path location**: `rows/row[{name}]`.
+
+The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan. The `columns` section declares the mapping from column names to column configs, and `end_column` declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
 
 **Example**:
 
@@ -737,18 +801,19 @@ rows = {
 }
 ```
 
-#### Locale Configs {#config-locale}
+#### Locale Config {#config-locale}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-- **Purpose**: declare basic information about locales to recognize project/user-preferred locales and improve UI display and localisation validation.
-- **Path location**: `locales/{id}`, where `{id}` is like `l_english`.
+Locale configs declare basic information about locales, facilitating identification of the project / user's preferred locale and improving UI display and localisation validation.
 
-- **Fields and semantics**:
-  - `id`: locale ID.
-  - `codes: string[]`: language codes included in the locale (e.g., `en`, `en-US`).
-  - Derived fields: `shortId` (prefix `l_` removed), `idWithText` (with display text).
-  - Resolver extra capability: can auto-detect by IDE/OS or provide fallback (internal use).
+**Path location**: `locales/{id}`, where `{id}` is e.g. `l_english`.
+
+**Field meanings**:
+
+- `id`: Locale ID.
+- `codes: string[]`: Language codes included in this locale (e.g. `en`, `zh-CN`).
+- Derived fields: `shortId` (with `l_` prefix removed), `idWithText` (with display text).
 
 **Example**:
 
@@ -761,26 +826,23 @@ locales = {
 
 ### Extended Configs {#configs-extended}
 
-> Plugin-specific extended configs to enhance IDE features (quick documentation, inlay hints, completion, etc.).
+> These configs are used to enhance the plugin's functionality, such as specifying config contexts, providing additional quick documentation and inlay hint text, etc.
+>
+> Extended configs share several common characteristics:
+> - Most extended configs support multiple **name matching** methods: constants, [template expressions](#config-expression-template), [ANT path patterns](#faq-ant), and [regular expressions](#faq-regex).
+> - Most extended configs support providing quick documentation text via documentation comments.
+> - Most extended configs support providing inlay hint text via option comments (`## hint`).
+> - Some extended configs support specifying **scope context** via option comments (`## replace_scopes` / `## push_scope`).
 
-#### Extended Scripted Variable Configs {#config-extended-scripted-variable}
+#### Extended Config for Scripted Variables {#config-extended-scripted-variable}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig -->
 
-- **Purpose**: provide extra hints (quick doc, inlay hints, etc.) for scripted variables.
-- **Path location**: `scripted_variables/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides additional hints (quick documentation, inlay hints, etc.) for scripted variables in scripts.
 
-- **Fields and semantics**:
-  - `name`: variable name or its matching pattern.
-  - `hint: string?`: optional extra hint text (for inlay hints or documentation).
+**Path location**: `scripted_variables/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedScriptedVariableConfigResolverImpl`).
-  - Option extraction: read hint text from `hint` option if present.
-  - Application: match against scripted variable references in scripts by name/pattern, injecting docs and hints into the UI.
-
-**Format**:
+**Format description**:
 
 ```cwt
 scripted_variables = {
@@ -793,53 +855,30 @@ scripted_variables = {
 }
 ```
 
-**Example**:
+**Considerations**:
 
-```cwt
-scripted_variables = {
-    ### Some documentation
-    ## hint = §RSome hint text§!
-    x # or write `x = 1`
-}
-```
+- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
+- This entry only provides "hint enhancement" and is not responsible for declaring or validating the value and type of scripted variables.
 
-**Notes**:
-- Name can use template/ANT/regex patterns; avoid overly broad patterns that cause mismatches.
-- This entry only provides hint enhancements; it does not declare or validate the value/type of scripted variables.
-
-#### Extended Definition Configs {#config-extended-definition}
+#### Extended Config for Definitions {#config-extended-definition}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
-- **Purpose**: provide extra context and hint information for concrete definitions.
-  - Use cases: docs/hints (`hint`), bind definition type (`type` required), and optionally specify scope context via `replace_scopes`/`push_scope`.
-- **Path location**: `definitions/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides additional context and hint information for specific "definitions", including documentation / hints (`## hint`), bound definition type (`## type`, required), and optionally specified scope context (`## replace_scopes` / `## push_scope`).
 
-- **Fields and semantics**:
-  - `name`: definition name or its matching pattern.
-  - `type: string` (required): the definition type this extended item targets. Missing value causes the item to be skipped.
-  - `hint: string?`: optional hint text (for quick docs/inlay hints).
-  - Scope context (options):
-    - `replace_scopes`: rewrite system scope mapping, e.g., `{ this = country root = country }`.
-    - `push_scope`: declare output scope, used by chaining/inspections.
+**Path location**: `definitions/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedDefinitionConfigResolverImpl`).
-  - Required check: missing `type` will skip this item and log a warning.
-  - Option extraction: read `hint`; `replace_scopes`/`push_scope` are parsed by common option parsers and used by later context building.
-
-**Format**:
+**Format description**:
 
 ```cwt
 definitions = {
     # 'x' or 'x = xxx'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
+
     ### Some documentation
     ## type = civic_or_origin.civic
     x
-    
+
     # since 1.3.5, scope context related options are also available here
     ## type = scripted_trigger
     ## replace_scopes = { this = country root = country }
@@ -847,56 +886,22 @@ definitions = {
 }
 ```
 
-**Example**:
+**Considerations**:
 
-```cwt
-definitions = {
-    ### Some documentation
-    ## hint = §RSome hint text§!
-    ## replace_scopes = { this = country root = country }
-    ## type = scripted_trigger
-    x # or `x = ...`
-}
-```
+- `type` is required; if missing, the entry will be skipped.
+- This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
 
-**Notes**:
-- `type` is required; missing it will skip the item (ineffective).
-- The name can use template/ANT/regex patterns; avoid overly broad matches that cause false positives.
-- This extension provides documentation/context enhancements only; it does not directly change the declaration structure. Cooperation with the declaration happens at use sites during context building and inspections/documentation.
-
-#### Extended Game Rule Configs {#config-extended-game-rule}
+#### Extended Config for Game Rules {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
-- **Purpose**: provide docs/hints for game rules (aka definitions of type `game_rule`), and optionally override declaration configs.
-- **Path location**: `game_rules/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides documentation / hint enhancement for game rules (i.e. definitions of type `game_rule`), and supports "overriding [declaration configs](#config-declaration)".
 
-- **Fields and semantics**:
-  - `name`: name or its matching pattern.
-  - `hint: string?`: optional hint text (for quick docs/inlay hints).
-  - `configForDeclaration: CwtPropertyConfig?`: if the current item is a property node, its value/children will be used as an "override declaration" at the use site; if the value is `single_alias_right[...]`, it will be inlined first.
+**Path location**: `game_rules/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedGameRuleConfigResolverImpl`).
-  - `configForDeclaration`: only valid when it is a property node; call `inlineSingleAlias(...)` on the value if applicable, otherwise use the original value.
-  - Use-site cooperation: `GameRuleCwtDeclarationConfigContextProvider` overrides the declaration with `configForDeclaration` when this extended config matches, and it has child configs.
+When the entry is a property node (e.g. `x = { ... }` or `x = single_alias_right[...]`), its value or sub-block acts as a "declaration config override" at the usage site. Only property nodes produce an override effect; pure value nodes only provide hints.
 
-**Format**:
-
-```cwt
-game_rules = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to override declaration config
-    
-    ### Some documentation
-    ## replace_scopes = { this = country root = country }
-    x
-}
-```
-
-**Example**:
+**Format description**:
 
 ```cwt
 game_rules = {
@@ -904,40 +909,45 @@ game_rules = {
     ## hint = §RSome hint text§!
     x # provide hint only
 
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
     y = single_alias_right[trigger_clause] # override declaration via single alias
 }
 ```
 
-**Notes**:
-- Only property nodes produce `configForDeclaration` and participate in overriding; pure value nodes do not.
-- If the value is `single_alias_right[...]`, it will be inlined before being used as an override.
-- This extension only affects the source/structure of declaration and the hints; it does not change global priority or override strategies.
+**Example**:
 
-#### Extended On Action Configs {#config-extended-on-action}
+```cwt
+# from `game_rules.cwt` of stellaris config group
+
+game_rules = {
+    ### This rule is a condition for declaring war
+    ### Root = country, attacker
+    ### This = country, target
+    ## replace_scopes = { this = country root = country }
+    can_declare_war
+}
+```
+
+**Considerations**:
+
+- If the value is `single_alias_right[...]`, it is first inlined and expanded, then takes effect as the override config.
+- This extension only affects the "source / structure of the [declaration config](#config-declaration)" and "hint information"; it does not change the overall priority and override strategy.
+
+#### Extended Config for On Actions {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
 
-- **Purpose**: provide docs/hints for on actions (aka definitions of type `on_action`), and specify `event_type` to influence event-related references in the declaration context.
-- **Path location**: `on_actions/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides documentation / hint enhancement for on actions (i.e. definitions of type `on_action`), and specifies the "event type" to influence event-related references in the declaration context.
 
-- **Fields and semantics**:
-  - `name`: name or its matching pattern.
-  - `event_type: string` (required): event type. Used to substitute event-related data expressions (e.g., `<event>`) in the declaration context with the expression for that event type.
-  - `hint: string?`: optional hint text (for quick docs/inlay hints).
+**Path location**: `on_actions/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedOnActionConfigResolverImpl`).
-  - Required check: missing `event_type` will skip this item and log a warning.
-  - Use-site cooperation: after matching this extended config, `OnActionCwtDeclarationConfigContextProvider` substitutes event placeholders in the declaration context with the specified `event_type` to drive completion/inspections and quick docs.
+`## event_type` (required) declares the event type, used to replace event-related data expressions in the declaration context with expressions corresponding to that event type.
 
-**Format**:
+**Format description**:
 
 ```cwt
 on_actions = {
-    # 'x' or 'x = xxx'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-
     ### Some documentation
     ## replace_scopes = { this = country root = country }
     ## event_type = country
@@ -948,57 +958,45 @@ on_actions = {
 **Example**:
 
 ```cwt
+# from `on_actions.cwt` of stellaris config group
+
 on_actions = {
-  ### Some documentation
-  ## hint = §RSome hint text§!
-  ## event_type = country
-  x
+    ### Triggers when the game starts
+    ## replace_scopes = { this = no_scope root = no_scope }
+    ## event_type = scopeless
+    on_game_start
+
+    ## replace_scopes = { this = country root = country }
+    ## event_type = country
+    on_game_start_country
 }
 ```
 
-**Notes**:
-- `event_type` is required; missing it makes the item ineffective.
-- Name can use template/ANT/regex patterns; avoid overly broad patterns.
-- If scope replacement is needed, combine with general options (e.g., `replace_scopes`), but whether it participates in specific checks depends on the use-site context and feature implementation.
+**Considerations**:
 
-#### Extended Inline Script Configs {#config-extended-inline-script}
+- `## event_type` is required; if missing, the entry will be skipped.
+- If scope replacement is needed, use `## replace_scopes` in combination.
+
+#### Extended Config for Inline Scripts {#config-extended-inline-script}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
 
-- **Purpose**: declare context config(s) and scope context for specific inline scripts so that completion/validation at call sites is correct.
-- **Path location**: `inline_scripts/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
-- **File mapping**: when `name` is `x/y`, the file is `common/inline_scripts/x/y.txt`.
+Declares "context configs" and "scope context" for specific inline scripts, used to provide correct completion and inspection at call sites.
 
-- **Fields and semantics**:
-  - `name`: inline script name or its matching pattern.
-  - `context_configs_type: string = single | multiple` (default `single`): aggregation shape of context configs.
-    - `single`: take value (`value`) as the context config.
-    - `multiple`: take child configs list (`configs`) as the context configs.
-  - Scope context (options):
-    - `replace_scopes`: rewrite system scope mappings.
-    - `push_scope`: declare output scope.
+**Path location**: `inline_scripts/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions. When `name` is `x/y`, the corresponding file is `common/inline_scripts/x/y.txt`.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedInlineScriptConfigResolverImpl`).
-  - Container config: if it is a property node, first apply `inlineSingleAlias(...)` to its value (supports root-level single alias) to get the container config (`getContainerConfig()`).
-  - Context configs:
-    - If `context_configs_type = multiple`, take the container config's child configs; otherwise take the container config's value config.
-    - Wrap into a consumable "context configs container" via `inlineWithConfigs(...)` (`getContextConfigs()` returns a single-element list).
+`## context_configs_type` controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
 
-**Format**:
+**Format description**:
 
 ```cwt
 inline_scripts = {
-    # 'x' or 'x = xxx'
-    # 'x' is an inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' is an inline script expression
+    # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-    # note extended documentation is unavailable for inline scripts
+    # use 'x = xxx' to declare context config(s)
 
     x
-
-    # more detailed examples for declaring context config(s)
 
     ## context_configs_type = multiple
     x = {
@@ -1008,95 +1006,50 @@ inline_scripts = {
         possible = single_alias_right[trigger_clause]
     }
 
-    # since 1.3.5, scope context related options are also available here
-
+    # scope context options are also available
     ## replace_scopes = { this = country root = country }
     x
 
-    # since 1.3.6, using single alias at root level is also available here
-
+    # using single alias at root level is also available
     ## context_configs_type = multiple
     x = single_alias_right[trigger_clause]
 }
 ```
 
-**Example**:
-
-```cwt
-inline_scripts = {
-    ### Some documentation
-    ## replace_scopes = { this = country root = country }
-    triggers/some_trigger_snippet
-
-    ### Some documentation
-    ## context_configs_type = multiple
-    triggers/some_trigger_snippet = { ... }
-
-    ### Some documentation
-    ## context_configs_type = multiple
-    triggers/some_trigger_snippet = single_alias_right[trigger_clause]
-}
-```
-
 ![](../assets/config/inline_scripts_1.png)
 
-**Notes**:
-- Keep default `single` when only one context config is needed; use `multiple` to declare multiple.
-- Root-level `single_alias_right[...]` will be inlined before being used as context configs.
-- This extension only provides context/scope information; it does not directly constrain where/How many times the inline script can be called.
+**Considerations**:
 
-#### Extended Parameter Configs {#config-extended-parameter}
+- If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
+- Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
+
+#### Extended Config for Parameters {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
 
-- **Purpose**: provide docs/context enhancements for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers/effects/inline scripts:
-  - Bind a context key (pointing to a concrete trigger/effect/inline script context).
-  - Declare context configs and scope context.
-  - Support inheriting context from use sites.
-- **Path location**: `parameters/{name}`.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides documentation and context enhancement for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers / effects / inline scripts: binding context keys, declaring context configs and scope context, and supporting context inheritance from usage sites.
 
-- **Fields and semantics**:
-  - `name`: parameter name or its matching pattern.
-  - `context_key: string` (required): context key (e.g., `scripted_trigger@X`) used to locate the source of the parameter's context configs.
-  - `context_configs_type: string = single | multiple` (default `single`): aggregation shape of context configs.
-    - `single`: take value (`value`) as the context config.
-    - `multiple`: take child configs list (`configs`) as the context configs.
-  - `inherit: boolean = no`: whether to inherit context (configs and scopes) from the use site.
-  - Scope context (options):
-    - `replace_scopes`: rewrite system scope mapping.
-    - `push_scope`: declare output scope.
+**Path location**: `parameters/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedParameterConfigResolverImpl`).
-  - Required check: missing `context_key` will skip this item and log a warning.
-  - Container config: if it is a property node, first apply `inlineSingleAlias(...)` to its value to get the container config (`getContainerConfig(...)`).
-  - Context configs:
-    - If `inherit = yes`: climb from the parameter's use site to the containing script member and take its resolved context config list (dynamic context).
-    - Otherwise: according to `context_configs_type`, extract `value` or `configs` from the container config and wrap it into a consumable container via `inlineWithConfigs(...)` (`getContextConfigs(...)` returns a single-element list).
+**Main fields**:
 
-**Format**:
+- `## context_key` (required): Context key (e.g. `scripted_trigger@some_trigger`); before `@` is the containing definition type (or `inline_script`), after `@` is the definition name or inline script path. The context key itself also supports pattern matching.
+- `## context_configs_type`: `single` (default) or `multiple`, with the same meaning as in inline script extended configs.
+- `## inherit`: Boolean option; when marked, inherits context (configs and scope) from the parameter's "usage site" rather than using static declarations.
+
+**Format description**:
 
 ```cwt
 parameters = {
-    # 'x' or 'x = xxx'
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-
-    # for value of option 'context_key',
-    # before '@' is the containing definition type (e.g., 'scripted_trigger'), or 'inline_script' for inline script parameters
-    # after '@' is the containing definition name, or the containing inline script path
-    # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
 
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
     x
 
-    # more detailed examples for declaring context config(s)
-
     ## context_key = scripted_trigger@some_trigger
-    x = localistion
+    x = localisation
 
     ## context_key = scripted_trigger@some_trigger
     ## context_configs_type = multiple
@@ -1105,81 +1058,39 @@ parameters = {
         scalar
     }
 
-    # since 1.3.5, scope context related options are also available here
-
+    # scope context options are also available
     ## context_key = scripted_trigger@some_trigger
     ## replace_scopes = { this = country root = country }
     x
 
-    # since 1.3.6, using single alias at root level is also available here
-
-    ## context_key = scripted_trigger@some_trigger
-    ## context_configs_type = multiple
-    x = single_alias_right[trigger_clause]
-
-    # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
-    # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
-
+    # inherit context from usage site
     ## context_key = scripted_trigger@some_trigger
     ## inherit
     x
 }
 ```
 
-**Example**:
-
-```cwt
-parameters = {
-    ### Some documentation
-    ## replace_scopes = { this = country root = country }
-    ## context_key = some_trigger
-    PARAM
-
-    ### Some documentation
-    ## context_configs_type = multiple
-    ## context_key = some_trigger
-    PARAM = { ... }
-
-    ### Some documentation
-    ## context_configs_type = multiple
-    ## context_key = some_trigger
-    PARAM = single_alias_right[trigger_clause]
-}
-```
-
 ![](../assets/config/parameters_1.png)
 
-**Notes**:
-- `context_key` is required; missing it makes the item ineffective.
-- When `inherit = yes`, the context is taken from the use site; note it can be empty or vary by position. The plugin enables "dynamic context" mode on this path.
-- Root-level `single_alias_right[...]` will be inlined before being used as context configs.
+**Considerations**:
 
-#### Extended Complex Enum Value Configs {#config-extended-complex-enum-value}
+- `## context_key` is required; if missing, the entry will be skipped.
+- When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
+- Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
+
+#### Extended Config for Complex Enum Values {#config-extended-complex-enum-value}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
 
-- **Purpose**: provide docs/hints (quick docs, inlay hints, etc.) for concrete entries of complex enums.
-- **Path location**: `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the entry name or a matching pattern.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides documentation / hint enhancement (quick documentation, inlay hints, etc.) for specific entries of complex enums.
 
-- **Fields and semantics**:
-  - `type: string`: complex enum name (from the path segment `{type}`).
-  - `name`: entry name or its matching pattern (from key or value).
-  - `hint: string?`: optional hint text.
+**Path location**: `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the entry name or matching pattern. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedComplexEnumValueConfigResolverImpl`).
-  - Type source: provided by upper traversal (`resolve(config, type)`), corresponding to the `{type}` path segment.
-  - Option extraction: read hint text from `hint`.
-
-**Format**:
+**Format description**:
 
 ```cwt
 complex_enum_values = {
     component_tag = {
-        # 'x' or 'x = xxx'
-        # 'x' can also be a pattern expression (template expression, ant expression or regex)
-
         ### Some documentation
         ## hint = §RSome inlay hint text§!
         x
@@ -1187,357 +1098,312 @@ complex_enum_values = {
 }
 ```
 
-**Example**:
+**Considerations**:
 
-```cwt
-complex_enum_values = {
-    component_tag = {
-        ### Some documentation
-        ## hint = §GUseful note§!
-        x # or write `x = ...`
-    }
-}
-```
+- This extension does not change the collection logic for complex enum "value sources"; it only provides hint information.
+- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
-**Notes**:
-- This extension does not change how values are collected for complex enums; it only provides hints.
-- Name can use template/ANT/regex patterns; avoid overly broad patterns.
-
-#### Extended Dynamic Value Configs {#config-extended-dynamic-value}
+#### Extended Config for Dynamic Values {#config-extended-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
 
-- **Purpose**: provide docs/hints for specific dynamic values under a dynamic value type.
-- **Path location**: `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the entry name or a matching pattern.
-- **Name matching**: supports constant, template expression, ANT expression, and regex (pattern-aware; see `CwtDataTypeGroups.PatternAware`).
+Provides documentation / hint enhancement for specific "dynamic value" entries under a dynamic value type.
 
-- **Fields and semantics**:
-  - `type: string`: dynamic value type (from the path segment `{type}`).
-  - `name`: entry name or its matching pattern (from key or value).
-  - `hint: string?`: optional hint text.
+**Path location**: `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the entry name or matching pattern. The name supports constants, template expressions, ANT path patterns, and regular expressions.
 
-- **Parsing flow (implementation summary)**:
-  - Name source: use key if it is a property; otherwise use the value (`CwtExtendedDynamicValueConfigResolverImpl`).
-  - Type source: provided by upper traversal (`resolve(config, type)`), corresponding to the `{type}` path segment.
-  - Option extraction: read hint text from `hint`.
-
-**Format**:
+**Format description**:
 
 ```cwt
 dynamic_values = {
     event_target = {
-        # 'x' or 'x = xxx'
-        # 'x' can also be a pattern expression (template expression, ant expression or regex)
-
         ### Some documentation
         ## hint = §RSome inlay hint text§!
         x
 
-        # since 1.3.9, scope context related options are also available here
-        # only receive push scope (this scope), ignore others (like root scope, etc.)
-
+        # scope context options: only receive push scope (this scope)
         ## push_scope = country
         x
     }
 }
 ```
 
-**Example**:
+**Considerations**:
 
-```cwt
-dynamic_values = {
-    event_target = {
-        ### Some documentation
-        ## hint = §RSome hint text§!
-        owner # or write `owner = ...`
-    }
-}
-```
-
-**Notes**:
-- This extension does not change the definition of dynamic value types or their base value sets; it only provides hints.
-- Name can use template/ANT/regex patterns; avoid overly broad patterns.
+- This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
+- The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 
 ### Internal Configs {#configs-internal}
 
-> These configs are used internally by the plugin and do not support customization (or are not currently supported).
+> These configs are used internally by the plugin and do not support customization (or do not yet support it).
 
 #### Schema Config {#config-internal-schema}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 <!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
-<!-- @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager -->
 <!-- @see cwt/core/internal/schema.cwt -->
 
-- **Purpose**: declare the RHS value shapes for ".cwt" config files themselves for basic completion and (limited) structural checks.
-  - Currently focuses on initial completion; strict schema validation is not provided yet.
+Schema configs provide declarations for the right-side value forms of "config files themselves", used for basic-level completion and (limited) structural validation. Currently focused on "preliminary completion" and does not yet provide strict schema validation.
 
-- **Source and loading**:
-  - Only from built-in file: `internal/schema.cwt` (cannot be overridden by external files).
-  - Collected and injected into `configGroup.schemas` via `FileBasedCwtConfigGroupDataProvider.processInternalFile()` calling `CwtSchemaConfig.resolveInFile(...)`.
+Schema configs originate only from the built-in file `internal/schema.cwt` and cannot be overridden by external files. Their structure contains three types of entries:
 
-- **Structure (`CwtSchemaConfig`)**:
-  - `file: CwtFileConfig`: the corresponding config file.
-  - `properties: CwtPropertyConfig[]`: normal keys (keys parsed as Constant/Type/Template forms).
-  - `enums: Map<String, CwtPropertyConfig>`: keys parsed as enum expressions (`$enum:NAME$`).
-  - `constraints: Map<String, CwtPropertyConfig>`: keys parsed as constraint expressions (`$$NAME`).
+- **Properties** (`properties`): Keys parsed as constant, type, or template forms.
+- **Enums** (`enums`): Keys parsed as enum expressions (e.g. `$enum:NAME$`).
+- **Constraints** (`constraints`): Keys parsed as constraint expressions (e.g. `$$NAME`).
 
-**Example (in `internal/schema.cwt`)**:
-
-```cwt
-$enum:my_enum$ = { ... }     # goes into enums
-$$is_valid_key = { ... }     # goes into constraints
-some_key = $any              # goes into properties
-```
-
-**Notes**:
-- Works together with "Config Expressions → Schema Expression"; mainly for editor-side hints and lightweight checking.
-
-#### Folding Settings Configs {#config-internal-folding}
+#### Folding Settings Config {#config-internal-folding}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
 <!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
 <!-- @see cwt/core/internal/folding_settings.cwt -->
 
-- **Purpose**: provide additional code folding rules for the editor (internal; not customizable for now).
+Folding settings configs provide additional code folding configs for the editor (internal use, customization not yet supported).
 
-- **Source and loading**:
-  - Only from built-in file: `internal/folding_settings.cwt`.
-  - Collected and injected into `configGroup.foldingSettings[group]` by `FileBasedCwtConfigGroupDataProvider.processInternalFile()` calling `CwtFoldingSettingsConfig.resolveInFile(...)`.
+Originating only from the built-in file `internal/folding_settings.cwt`. Each entry is read per group and contains:
 
-- **Structure (`CwtFoldingSettingsConfig`)**:
-  - `id: string`: folding item ID (unique within group).
-  - `key: string?`: target key (optional).
-  - `keys: string[]?`: target key set (optional).
-  - `placeholder: string`: placeholder text after folding (required).
+- `id`: Folding item ID (corresponding to config file path or expression).
+- `key`: Folding item key.
+- `keys`: Alternative key set.
+- `folding_key`: Display key used for folding.
+- `placeholder` (option comment `## placeholder`): Placeholder text after folding.
 
-- **Parsing flow (summary)**:
-  - Read per group: `group -> id -> { key/keys/placeholder }`.
-  - Skip and warn when missing `placeholder` or no child properties.
-  - Build a case-insensitive map for each group: `configGroup.foldingSettings[group][id]`.
-
-**Example (in `internal/folding_settings.cwt`)**:
-
-```cwt
-folds = {
-    expression = {
-        fold_modifier = {
-            key = "modifier"
-            placeholder = "<modifier> ..."
-        }
-        fold_triggers = {
-            keys = { "AND" "OR" }
-            placeholder = "<triggers> ..."
-        }
-    }
-}
-```
-
-**Notes**:
-- `key` and `keys` are alternatives; `keys` is for multiple keys. When both exist, the consumer decides (current implementation reads both).
-- Final behavior is controlled by the folding builder, see `ParadoxExpressionFoldingBuilder`.
-
-#### Postfix Template Settings Configs {#config-internal-postfix}
+#### Postfix Template Settings {#config-internal-postfix-template}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
-<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate -->
-<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate -->
+<!-- @see icu.windea.pls.lang.codeInsight.postfix.ParadoxPostfixTemplateProvider -->
 <!-- @see cwt/core/internal/postfix_template_settings.cwt -->
 
-- **Purpose**: provide additional postfix template abilities for the editor (internal; not customizable for now).
+Postfix template settings configs provide postfix completion templates for the editor (internal use, customization not yet supported).
 
-- **Source and loading**:
-  - Only from built-in file: `internal/postfix_template_settings.cwt`.
-  - Collected and injected into `configGroup.postfixTemplateSettings[group]` by `FileBasedCwtConfigGroupDataProvider.processInternalFile()` calling `CwtPostfixTemplateSettingsConfig.resolveInFile(...)`.
+Originating only from the built-in file `internal/postfix_template_settings.cwt`. Each entry contains:
 
-- **Structure (`CwtPostfixTemplateSettingsConfig`)**:
-  - `id: string`: template ID (unique within group).
-  - `key: string`: trigger key (required), the keyword where postfix can be applied.
-  - `example: string?`: example text (optional) to help understand the template.
-  - `variables: Map<string, string>`: variable name → default value (for editable template variables).
-  - `expression: string`: template expression (required), parsed and applied by postfix template implementations.
+- `id`: Template ID.
+- `key`: Keyword that triggers the postfix.
+- `example`: Example text for display.
+- `expression`: Template expression (using `$EXPR$` as placeholder).
+- `context_expression` (option comment `## context_expression`): Expression constraining the template's available context.
 
-- **Parsing flow (summary)**:
-  - Read per group: `group -> id -> { key/example/variables/expression }`.
-  - Skip and warn when missing `key` or `expression`.
-  - Read `variables` as a child property map: `name = defaultValue`.
-  - Build a case-insensitive map: `configGroup.postfixTemplateSettings[group][id]`.
+## Data Types {#data-types}
 
-**Example (in `internal/postfix_template_settings.cwt`)**:
+<!-- @see icu.windea.pls.config.CwtDataType -->
+<!-- @see icu.windea.pls.config.CwtDataTypes -->
+<!-- @see icu.windea.pls.config.CwtDataTypeSets -->
+<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver -->
+<!-- @see icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher -->
 
-```cwt
-postfix = {
-    variable_ops = {
-        decr = {
-            key = "variable"
-            example = "$x.decr"
-            variables = { amount = 1 }
-            expression = "${x} = ${x} - ${amount}"
-        }
-    }
-}
-```
+> This chapter introduces the concepts, classification, and usage of data types, helping readers understand how data expressions in config files match actual content in script files.
 
-**Notes**:
-- The semantics of `expression` are controlled by the postfix template implementation, e.g., `ParadoxExpressionEditablePostfixTemplate`.
-- `variables` only provide defaults; actual editing behavior is decided by the template implementation.
+### Summary {#data-types-summary}
+
+Data types are the bridge connecting "config expressions" to "script content". Each data expression, once parsed, yields a specific data type that determines which keys or values in script files that expression can match.
+
+For example, the data expression `<event.country>` has a data type of `Definition` with metadata `event.country`, indicating it matches definitions whose type is `event` and whose subtypes include `country`. Similarly, `enum[weight_or_base]` has a data type of `Enum` with metadata `weight_or_base`, indicating it matches all possible values declared in that enum.
+
+Data type resolution is driven by the `CwtDataExpressionResolver` extension point, and matching logic is driven by the `ParadoxScriptExpressionMatcher` extension point. These two cooperate to allow the config system to flexibly support various complex value forms. The plugin iterates through all registered matchers until one returns a non-null match result.
+
+### Base Data Types {#data-types-base}
+
+The following data types represent basic value forms in scripts:
+
+- **`Block`**: Matches blocks (`{ ... }`). Only effective in value context, requiring the script expression to be a block.
+- **`Bool`**: Matches boolean values (`yes` / `no`). Requires the script expression's type to be boolean.
+- **`Int`**: Matches integers, with optional range constraints (e.g. `int[-5..100]`). Accepts integer types and also tolerates quoted integer strings. Tolerates values outside the range when a range constraint exists (this issue is reported via code inspection).
+- **`Float`**: Matches floating-point numbers, with optional range constraints (e.g. `float[0.0..1.0]`). Accepts float types and also tolerates quoted float strings. Tolerates values outside the range when a range constraint exists (this issue is reported via code inspection).
+- **`Scalar`**: Matches any scalar value. Accepts keys, booleans, integers, floats, and strings (including quoted ones) — a lenient matching type.
+- **`String`**: Matches any string. Typically appears in quoted form in scripts.
+- **`ColorField`**: Matches color fields (e.g. `color[rgb]`, `color[hsv]`, etc.). Requires the script expression's type to be a color type, with the prefix matching the color type specified in the config.
+- **`PercentageField`**: Matches percentage fields (e.g. `percentage_field`).
+- **`DateField`**: Matches date fields (e.g. `date_field`).
+
+### Reference Data Types {#data-types-reference}
+
+The following data types perform matching by referencing content from other configs or indices:
+
+- **`Constant`**: Matches a fixed constant string (case-insensitive). As a value, `yes` / `no` must be in unquoted form to match. Also attempts to accommodate empty strings and expressions containing parameters.
+- **`Definition`**: Matches definitions of a specific type. Syntax is `<type>` or `<type.subtype>`. Accepts string, integer, and float types (e.g. `<technology_tier>` can be represented by a number). Queries the index for the existence of a definition with the corresponding name and type.
+- **`Enum`**: Matches enum values. Syntax is `enum[name]`. For simple enums, checks whether the value is in the enum's value set (case-insensitive); for complex enums, queries the index for whether the value has been collected as an enum value.
+- **`DynamicValue`**: Matches dynamic values. Syntax is `value[name]`. Requires the value to be a valid identifier (allowing `.` separators); uses a lenient matching strategy (since dynamic values can be declared by scripts themselves).
+- **`Modifier`**: Matches modifier names. Syntax is `modifier`. Requires the value to be a valid identifier; queries the index for the existence of a modifier with the corresponding name.
+- **`Parameter`**: Matches parameter references. Syntax is `parameter`. Requires the value to be a valid identifier.
+- **`ShorthandParameter`**: Matches shorthand parameter references. Syntax is `shorthand_parameter`.
+- **`LocalisationCommand`**: Matches localisation command fields. Syntax is `localisation_command`.
+- **`DatabaseObject`**: Matches database objects. Syntax is `database_object[type]`.
+
+### Complex Data Types {#data-types-complex}
+
+The following data types correspond to more complex expression structures; matched script expressions are typically further parsed into "complex expressions":
+
+- **`ScopeField`**: Matches scope field expressions (e.g. `root.owner`). Syntax is `scope_field`. Requires the value to be a string type, which is parsed into a complex chained scope expression and then validated.
+- **`Scope`**: Matches a specific scope. Syntax is `scope[name]` or `scope[group_name]`.
+- **`ScopeGroup`**: Matches a scope group. Syntax is `scope_group[name]`.
+- **`ValueField`**: Matches value field expressions. Syntax is `value_field`. In addition to accepting string-type complex expressions, also directly accepts floats.
+- **`VariableField`**: Matches variable field expressions. Syntax is `variable_field`. In addition to accepting string-type complex expressions, also directly accepts floats.
+- **`IntVariableField`**: Matches integer variable field expressions. Syntax is `int_variable_field`. In addition to accepting string-type complex expressions, also directly accepts integers.
+
+### Special Data Types {#data-types-special}
+
+- **`AnyType`**: Matches any type (including blocks), used for lenient validation scenarios. Syntax is `any`. Always returns a fallback match result.
+- **`Other`**: Fallback type, used when the expression cannot be parsed into any of the above known types.
+
+### Data Type Groups {#data-type-groups}
+
+The plugin internally groups data types by behavioral characteristics (`CwtDataTypeSets`), used to quickly determine an expression's available behavior in specific contexts. For example:
+
+- Which data types can appear on the key side or value side of complex expressions.
+- Which data types can participate as "dynamic values" or "scopes" in chained access.
+- Which data types need to participate in completion or validation, etc.
+
+These groups primarily serve the plugin's internal logic; config file writers typically do not need to be concerned with them directly.
 
 ## Config Expressions {#config-expressions}
 
-> This chapter introduces the purposes, formats, defaults, and edge behaviors of various config expressions.
-
 <!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
 
-### Basic Concepts and Scope
+> This chapter introduces the purpose, format, and default / boundary behaviors of various config expressions, helping readers correctly understand and write these special expressions.
 
-Config expressions are structured syntax used inside string fields of configs to describe value shapes or matching patterns.
+### Summary {#config-expressions-summary}
 
-Include:
-- Data Expression: parse data types or dynamic snippets.
-- Template Expression: patterns concatenating constants and dynamic snippets for flexible matching.
-- Cardinality Expression: declare occurrence ranges and strict/lenient checks.
-- Location Expression: locate resources like images/localisations.
-- Schema Expression: declare RHS value shapes in config files.
+Config expressions are structured syntax used in the "string fields" of configs, describing value forms or matching patterns. A parsed config expression yields a specific [data type](#data-types), which determines what keys or values in script files the expression can match.
+
+In the semantic matching flow, the plugin matches expressions in script files against config expressions one by one. During matching, the data type of the config expression is first used to dispatch to the corresponding matcher (`ParadoxScriptExpressionMatcher`), which then determines whether the script expression satisfies the requirements of that data type. The specific matching behavior of each data type is detailed in the [Data Types](#data-types) chapter.
+
+This chapter covers the following config expressions:
+
+- **[Data Expression](#config-expression-data)**: Describes the value form of keys or values, yielding a specific data type after parsing.
+- **[Template Expression](#config-expression-template)**: A pattern composed of constants and dynamic fragments concatenated, used for more flexible matching.
+- **[Cardinality Expression](#config-expression-cardinality)**: Constrains the number of occurrences of definition members.
+- **[Location Expression](#config-expression-location)**: Locates the source of resources such as images and localisation.
+- **[Schema Expression](#config-expression-schema)**: Provides declarations for the value forms of config files themselves.
 
 ### Data Expression {#config-expression-data}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-Describe value shapes for keys/values in script files: constants, basic data types, references, and expressions that resolve to dynamic content.
+Data expressions describe the value form of keys or values in script files, which can be constants, base data types, references, dynamic content, etc. After parsing, they yield a specific [data type](#data-types) (such as `Int`, `Float`, `Scalar`, `Enum`, `Scope`, `Definition`, etc.) and may carry extended metadata (such as numeric ranges `int[-5..100]`, case sensitivity strategy, etc.).
 
-Key points:
+During parsing, key context (isKey=true) and value context (isKey=false) are distinguished; some data types are only valid in specific contexts.
 
-- **Key/Value context**: parse differently for keys (`isKey=true`) vs values (`isKey=false`).
-- **Type**: the resolved concrete data type (e.g., `int`, `float`, `scalar`, `enum[...]`, `scope[...]`, `<type_key>`, etc.).
-- **Extended metadata**: number ranges, case strategy, etc., depending on type (e.g., `int[-5..100]`, `float[-inf..inf]`, `ignoreCase`).
+**Default and boundary behaviors**:
 
-Defaults and edge behavior:
+- Blocks (`{ ... }`) correspond to the data type `Block`.
+- Empty strings (`""`) correspond to the data type `Constant`, using themselves as the constant value.
+- When no known data type can be matched, falls back to `Constant`, using the original string as the constant value.
+- Definition references should use the angle-bracket form (e.g. `<event>`), not the bracket form with prefix (e.g. `definiton[event]`, which is an incorrect notation).
 
-- **Fallback**: when nothing matches, fall back to `Constant` and store the original string in extension property `value`.
-- **Empty string/block**: empty string as `Constant("")`; parsing a block returns `Block` type as a placeholder.
-- **Definition `<...>` shorthand**: prefer `<country>` over `definition[country]`.
-- **Mixing multiple data sources**: allowed in templates/combinations, e.g., `<country>/<planet>`, `dynamic_value[test_flag]`.
-- **Single-quoted literals in dynamic links**: for `relations('...')`, a single-quoted argument is treated as a literal: no completion, and return early in completion entry.
-
-Examples:
+**Example**:
 
 ```cwt
-int
-float
-enum[shipsize_class]
-scope[country]
-<ship_size>
-pre_<opinion_modifier>_suf
+int                         # integer
+float[0.0..1.0]             # float with range constraint
+enum[shipsize_class]        # enum reference
+scope[country]              # scope reference
+<ship_size>                 # definition reference
+value[event_target]         # dynamic value reference
+pre_<opinion_modifier>_suf  # template expression (with definition reference fragment)
 ```
 
 ### Template Expression {#config-expression-template}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
-Describe more complex value shapes (as a combination of multiple data expressions).
-Built from segments: constant fields + dynamic snippets (restricted data expressions).
+Template expressions are composed of multiple fragments concatenated — constant fragments and dynamic fragments alternating — used to describe value forms more complex than a single data expression. Each dynamic fragment is itself a restricted data expression (such as definition reference, enum reference, dynamic value reference, etc.).
 
-Defaults and constraints:
+**Parsing constraints**:
 
-- **No whitespace**: any whitespace makes it invalid (empty expression returned).
-- **Segment decision**: a single segment (pure constant or single dynamic) is not considered a template (empty expression returned).
-- **Matching strategy**: only scan dynamic configs with both prefix and suffix; use "leftmost earliest" splitting.
-- **Segment types**: each segment delegates to data expression parsing; unmatched segments degrade to Constant.
-- **Reference counting**: only non-Constant segments are counted as "reference segments" for subsequent reference/navigation.
+- Text containing whitespace characters is treated as an invalid template.
+- When only one fragment exists (purely constant or purely a single dynamic), it is not treated as a template but as a regular data expression.
+- Multiple fragments use a "leftmost earliest match" splitting strategy.
+- Each fragment ultimately delegates to data expression parsing; when no known type is matched, it degrades to a constant fragment.
 
-Examples:
+**Example**:
+
+The following examples demonstrate typical usage of template expressions, with `#` comments annotating the splitting of fragments:
 
 ```cwt
-job_<job>_add # "job" + <job> + "_add"
-xxx_value[anything]_xxx # "xxx_" + value[anything] + "_xxx"
-a_enum[weight_or_base]_b # "a_" + enum[weight_or_base] + "_b"
-value[gui_element_name]:<sprite> # value[gui_element_name] + ":" + sprite
-value[gui_element_name]:localisation # value[gui_element_name] + ":" + localisation
+job_<job>_add             # "job_" + <job> + "_add"
+xxx_value[anything]_xxx   # "xxx_" + value[anything] + "_xxx"
+a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 ```
 
-**Notes**:
-- When constants are adjacent to segments that look like config names, prefer correct recognition of dynamic configs to avoid treating "symbol + config name" as a single constant.
-- If whitespace is needed, use a more appropriate matching method (e.g., ANT/regex).
+For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, etc. — where the `<job>` part matches any definition name of type `job`.
+
+**Considerations**:
+
+- When constant fragments and dynamic config names are adjacent, the parser prioritizes correct identification of dynamic configs.
+- Template expressions do not support whitespace characters; if whitespace matching is needed, use [ANT path patterns](#faq-ant) or [regular expressions](#faq-regex) instead.
 
 ### Cardinality Expression {#config-expression-cardinality}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
-Constrain occurrences of definition members, driving inspections/completions.
-Supports lenient checks and infinite upper bounds.
+Cardinality expressions constrain the number of occurrences of definition members, driving code inspection and code completion features. Declared via the option comment `## cardinality`.
 
-Use `min..max` for the range; `~` marks lenient; `inf` means infinity.
+The format is `min..max`, where `min` and `max` are non-negative integers or `inf` (case-insensitive, meaning unlimited). Adding a `~` prefix before `min` or `max` indicates lenient validation (when not satisfied, only a warning is produced instead of an error).
 
-Defaults and edge behavior:
+**Default and boundary behaviors**:
 
-- **Min < 0**: clamped to 0.
-- **max = `inf` (case-insensitive)**: infinite.
-- **No `..`**: invalid, no constraint.
-- **min > max**: invalid, no constraint.
+- A minimum value that is negative is clamped to 0.
+- Missing the `..` separator is treated as invalid, producing no constraint.
+- When `min > max`, treated as invalid, producing no constraint.
 
-Examples:
+**Example**:
 
 ```cwt
-## cardinality = 0..1
-## cardinality = 0..inf
-## cardinality = ~1..10
+## cardinality = 0..1     # optional, at most 1 occurrence
+## cardinality = 0..inf   # optional, unlimited occurrences
+## cardinality = 1..5     # must occur 1 to 5 times
+## cardinality = ~1..10   # lenient: expected 1 to 10 times, but produces only a warning if not met
 ```
 
 ### Location Expression {#config-expression-location}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
-Locate resource sources (images/localisations, etc.).
-If the expression contains `$`, it is treated as a placeholder to be substituted later with dynamic content such as definition names or property values.
+Location expressions are used to locate the source of target resources (images, localisation, etc.). The `$` in expressions is a placeholder that is replaced at runtime with dynamic content such as "definition name" or "property value".
+
+Location expressions use `|` to separate arguments, with the format `<location>|<args...>`. Different types of location expressions interpret arguments differently; see below for details.
 
 #### Image Location Expression {#config-expression-location-image}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
-Locate images related to a definition.
+Used to locate images related to definitions. The location part can be a file path (e.g. `gfx/.../mod_$.dds`), a sprite name (e.g. `GFX_$`), or a property key name (e.g. `icon`). If it is a property key name, the image pointed to by that property value is further resolved.
 
-Syntax and conventions:
+Argument conventions:
 
-- Use `|` to separate args: `<location>|<args...>`.
-- Args starting with `$` are name text source paths (comma-separated allowed): substitute placeholders, write into namePaths.
-- Other args are frame source paths (comma-separated allowed): used for image splitting, write into framePaths.
-- When repeated args of the same kind appear (all starting with `$`, or all non-`$`), the latter wins.
+- Arguments starting with `$` represent "name text source paths" (supporting comma-separated multiple paths), used to replace the `$` placeholder in the location.
+- Other arguments represent "frame source paths" (supporting comma-separated multiple paths), used for image frame slicing.
+- When arguments of the same type appear repeatedly, the later one takes precedence.
 
-Examples:
+**Example**:
 
 ```cwt
 gfx/interface/icons/modifiers/mod_$.dds
 gfx/interface/icons/modifiers/mod_$.dds|$name
-gfx/interface/icons/modifiers/mod_$_by_$.dds|$name
 GFX_$
 icon
 icon|p1,p2
 ```
 
-Note: `icon` can be parsed as a file path, a sprite name, or a definition name; for a definition name, parse its most relevant image next.
-
-#### Localisation Location Expression {#config-expression-localisation}
+#### Localisation Location Expression {#config-expression-location-localisation}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
-Locate localisations related to a definition.
+Used to locate localisation related to definitions. The location part can be a localisation key pattern containing a `$` placeholder (e.g. `$_desc`), or a property key name (e.g. `title`).
 
-Syntax and conventions:
+Argument conventions:
 
-- Use `|` to separate args: `<location>|<args...>`.
-- Args starting with `$` are name text source paths (comma-separated allowed), written to namePaths.
-- Arg `u` forces the final name to UPPER case. Only effective when placeholders are used.
-- When `$` args repeat, the latter wins.
+- Arguments starting with `$` represent "name text source paths" (supporting comma-separated multiple paths), used to replace the `$` placeholder in the location.
+- The argument `u` forces the final name to uppercase (only effective when using placeholders).
+- When `$` arguments appear repeatedly, the later one takes precedence.
 
-Examples:
+**Example**:
 
 ```cwt
 $_desc
 $_desc|$name
 $_desc|$name|u
-$_desc|$name,$alt_name # multiple name paths, comma-separated
-$_desc|$name|$alt_name # when `$` repeats, the latter wins
+$_desc|$name,$alt_name
 title
 ```
 
@@ -1545,83 +1411,104 @@ title
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
-Describe value shapes for keys and values in config files themselves, enabling completion and inspections for config files.
-Currently used for basic completion, and only in `cwt/core/schema.cwt`.
+Schema expressions describe the value forms of keys and values in config files, thereby providing features such as code completion for config files themselves. Currently used only for providing basic code completion, and only in the built-in file `internal/schema.cwt`. Works in conjunction with [Internal Configs → Schema Config](#config-internal-schema).
 
-Supported forms:
+Schema expressions support the following four forms:
 
-- **Constant**: a plain string without `$`.
-- **Template**: contains one or more params (`$...$`), e.g., `$type$`, `type[$type$]`.
-- **Type**: starts with a single `$`, e.g., `$any`, `$int`.
-- **Constraint**: starts with `$$`, e.g., `$$declaration`.
+- **Constant**: A literal string not containing `$`, such as `types`, `enums`.
+- **Template**: A pattern containing one or more `$...$` parameters, such as `$type$`, `type[$type$]`.
+- **Type**: Starting with a single `$` (unclosed), such as `$any`, `$int`.
+- **Constraint**: Starting with `$$`, such as `$$declaration`.
 
 ## FAQ {#faq}
 
 #### About Template Expressions {#faq-template}
 
-Template expressions are composed of multiple data expressions (e.g., definition/localisation/string literal related data expressions) for more flexible matching.
+Template expressions are composed of multiple [data expression](#config-expression-data) fragments (such as definition references, enum references, dynamic value references, etc.) combined with constant fragments, used for more flexible matching. See the [Template Expression](#config-expression-template) chapter for details.
+
+The following examples demonstrate the progression from simple literals to complex templates:
+
+- `x`: String literal, exactly matches `x`.
+- `a_<job>_b`: Template containing the definition reference `<job>`, can match `a_researcher_b`, `a_farmer_b`, etc.
+- `a_enum[weight_or_base]_b`: Template containing the enum reference `enum[weight_or_base]`, can match `a_weight_b` and `a_base_b`.
+- `a_value[anything]_b`: Template containing the dynamic value reference `value[anything]`. Since `value[anything]` typically has no value restrictions, the effect is similar to the regex `a_.*_b`.
+
+**Example**:
 
 ```cwt
-# a string literal, exactly matches 'x'
 x
-# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
 a_<job>_b
-# a template expression which contains a references to enum values of 'weight_or_base', matches 'a_weight_b' and 'a_base_b'
 a_enum[weight_or_base]_b
-# a template expression which contains a references to dynamic values of 'anything'
-# generally, there is no limit for 'value[anything]', so this expression is equivalent to regex 'a_.*_b'
 a_value[anything]_b
 ```
 
-#### How to use ANT path patterns in config files {#faq-ant}
+#### How to Use ANT Path Patterns in Config Files {#faq-ant}
 
-The plugin extends config expressions. Since plugin version 1.3.6, you can use ANT path patterns for more flexible matching.
+Starting from plugin version 1.3.6, ANT path patterns can be used in config expressions for more flexible matching. ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
+
+ANT path patterns support the following wildcards:
+
+- `?`: Matches any single character.
+- `*`: Matches any characters (excluding `/`).
+- `**`: Matches any characters (including `/`).
+
+**Example**:
 
 ```cwt
-# a ant expression use prefix 'ant:'
 ant:/foo/bar?/*
-# a ant expression use prefix 'ant.i:' (ignore case)
 ant.i:/foo/bar?/*
-
-# wildcards in ant expression:
-# '?' - used to match any single character
-# '*' - used to match any characters (exclude '/')
-# '**' - used to match any characters
 ```
 
-#### How to use regex in config files {#faq-regex}
+#### How to Use Regular Expressions in Config Files {#faq-regex}
 
-The plugin extends config expressions. Since plugin veresion 1.3.6, you can use regex for more flexible matching.
+Starting from plugin version 1.3.6, regular expressions can be used in config expressions for more flexible matching. Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive. The part after the prefix is a standard regular expression.
+
+**Example**:
 
 ```cwt
-# a regex use prefix 're:'
 re:foo.*
-# a regex use prefix 're.i:' (ignore case)
 re.i:foo.*
 ```
 
-#### How to specify scope context in config files {#faq-scope}
+#### How to Specify Scope Context in Config Files {#faq-scope-context}
 
-Scope context is specified via options `push_scope` and `replace_scopes`.
+In config files, scope context is specified via the options `## push_scope` and `## replace_scopes` (or `## replace_scope`).
+
+`## push_scope = x` pushes the specified scope type onto the current scope stack.
+
+`## replace_scopes = { this = x root = y}` replaces the specified system scope to scope type mappings into the current scope context.
+Only `this`, `root`, and `from`-based system scopes are supported; `prev`-based system scopes are not supported.
+
+**Example**:
 
 ```cwt
-# push 'country' scope to scope stack
-# for this example, the next this scope will be 'country'
+# for this example, the next this scope will be `country`
 ## push_scope = country
-some_config
+some_config = single_alias_right[trigger_clause]
 
-# replace scopes of specific system scopes into scope context
-# not supported for 'prev' system scope (and 'prevprev', etc.)
-# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
-## replace_scopes = { this = country root = country from = country }
-some_config
+# for this example, the next this scope will be `country`
+# so do the next root scope, the next from scope, and the next fromfrom scope
+## replace_scopes = { this = country root = country from = country fromfrom = country }
+some_config = single_alias_right[trigger_clause]
 ```
 
-#### 如何在规则文件中进行规则注入 {#faq-config-injection}
+#### How to Specify Supported Scopes in Config Files {#faq-supported-scopes}
 
-Since plugin version 2.1.0, config injection can be performed during the resolving phase of config by using the `## inject` option.
+In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
-If there is an existing config snippet
+**Example**:
+
+```cwt
+# for this example, the supported scope type of trigger `has_country_flag` is `country`
+## scopes = { country }
+alias[trigger:has_country_flag] = value[country_flag]
+```
+
+#### How to Perform Config Injection in Config Files {#faq-config-injection}
+
+Starting from plugin version 2.1.0, config injection can be performed during the config parsing phase by using the option `## inject`.
+
+If there is an existing config fragment
 
 ```cwt
 # some/file.cwt
@@ -1631,7 +1518,7 @@ some = {
 }
 ```
 
-Then the config snippet
+then the config fragment
 
 ```cwt
 # some/other/file.cwt
@@ -1645,7 +1532,7 @@ k3 = {
 }
 ```
 
-After processing, is equivalent to
+after processing is equivalent to
 
 ```cwt
 # some/other/file.cwt
@@ -1662,8 +1549,8 @@ k3 = {
 ```
 
 Notes:
-- The part before `@` is the path of the config file relative to the config group directory (e.g., the `config/stellaris` directory in the plugin's jar package) and must match exactly (wildcards are not supported, and case sensitivity is not ignored).
-- The part after `@` is the config path. The subpath `-` matches all individual values, while in other cases, it acts as a wildcard (case-insensitive, using `any` or `*` to match any character, and `?` to match a single character) to match all attributes of the corresponding key.
-- This only applies to configs where the value is a clause (i.e., `k = {...}` or `{...}`). The matched configs are injected at the end of the clause as sub-configs of the target config.
-- Config injection is processed only once during the parsing phase of the config file, so injection can be performed anywhere in any config file.
-- If injection fails (e.g., the matched config does not exist, recursion occurs, etc.), it is simply ignored, and a warning log is printed.
+- The part before `@` is the config file path relative to the config group directory (e.g. the `config/stellaris` directory inside the plugin's JAR), and must match exactly (no wildcards, case-sensitive).
+- The part after `@` is the config path; the sub-path `-` matches all standalone values, while other cases serve as wildcards (case-insensitive, using `any` or `*` to match any character, `?` to match a single character) matching all properties with the corresponding key.
+- Only applicable to configs with clause values (i.e. `k = {...}` or `{...}`); matched configs are injected at the end of the clause as sub-configs of the target config.
+- Config injection is processed only once during the config file parsing phase, so injection can be performed at any location in any config file.
+- If the injection fails (the matching config does not exist, there is recursion, etc.), it will be ignored directly and a warning log will be printed.

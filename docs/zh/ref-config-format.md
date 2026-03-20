@@ -118,8 +118,8 @@ priorities = {
 #### 声明规则 {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
 <!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
 
 声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
@@ -206,8 +206,8 @@ system_scopes = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-<!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
-<!-- @see cwt/cwtools-eu5-config/config/common/definition_injections.cwt -->
+<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
 指令规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
 
