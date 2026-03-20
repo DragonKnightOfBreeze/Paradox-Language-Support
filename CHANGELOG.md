@@ -10,7 +10,7 @@
 - [ ] 完善参考文档 / Improve reference documentation 
 - [ ] 补充集成测试 / Supplementary integration tests
 
-## 2.1.6-dev
+## 2.1.6 - 2026-3.21
 
 - [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
