@@ -37,6 +37,20 @@
 
 ### 概述
 
+#### 规则字段的表示约定
+
+每条规则由若干**字段**（field）组成。字段在规则文件中有多种来源，本文档采用以下格式统一描述：
+
+- **属性字段**：以 `key = value` 形式出现在规则体中的普通属性。文档中直接使用字段名，如 `path`、`name_field`。
+- **选项字段**：以选项注释 `## key = value` 形式出现的字段。文档中以 `## ` 为前缀，如 `## cardinality`、`## push_scope`。
+- **布尔选项**：以选项注释 `## key` 形式出现的无值标记。文档中同样以 `## ` 为前缀，如 `## primary`、`## inherit`。注意这与 `## key = yes` 不同——布尔选项仅需标记名即可生效。
+- **文档注释**：以 `### text` 形式出现的文档注释，通常用于提供快速文档文本。
+- **值字段**：直接以值形式出现在规则体中（而非作为属性的值侧），如枚举的值列表。
+
+字段名在规则文件中使用 `snake_case` 形式。
+
+#### 处理流程
+
 规则的整体处理流程可以简化为三个阶段：
 
 1. 读取规则分组中的各个规则文件，构建其语法树（PSI）。
@@ -119,21 +133,30 @@ priorities = {
 **示例**：
 
 ```cwt
-event = {
-    id = scalar
+# from `common/buildings.cwt` of stellaris config group
 
-    # Refine the structure by subtype; only takes effect under the matching subtype
-    subtype[triggered] = {
-        ## cardinality = 0..1
-        weight_multiplier = {
-            factor = float
-            alias_name[modifier_rule] = alias_match_left[modifier_rule]
-        }
-    }
+## push_scope = planet
+building = {
+    ## cardinality = 0..inf
+    ## replace_scopes = { this = planet root = planet }
+    desc = single_alias_right[triggered_desc_clause]
 
     ## cardinality = 0..1
-    # The root-level single alias will be inlined before parsing
-    trigger = single_alias_right[trigger_clause]
+    owner_type = corporate
+
+    ## cardinality = 0..1
+    ruined_icon = icon[gfx/interface/icons/buildings]
+
+    ## cardinality = 0..1
+    ruined_icon = <sprite>
+
+    ## cardinality = 0..1
+    building_sets = {
+        ## cardinality = 0..inf
+        enum[building_set]
+    }
+
+    # ...
 }
 ```
 
@@ -160,15 +183,22 @@ event = {
 
 系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。在部分[扩展规则](#configs-extended)中，可使用选项 `replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`replace_scopes` 不支持替换 `prev` 系列系统作用域，详见 [config.md](config.md) 中的相关说明。
 
-**示例（内置）**：
+**示例**：
 
 ```cwt
+# from `system_scopes.core.cwt` of core config group
+
 system_scopes = {
     This = {}
     Root = {}
     Prev = { base_id = Prev }
+    PrevPrev = { base_id = Prev }
+    PrevPrevPrev = { base_id = Prev }
+    PrevPrevPrevPrev = { base_id = Prev }
     From = { base_id = From }
-    # Chain members like PrevPrev/FromFrom are omitted
+    FromFrom = { base_id = From }
+    FromFromFrom = { base_id = From }
+    FromFromFromFrom = { base_id = From }
 }
 ```
 
@@ -208,53 +238,107 @@ directive[inline_script] = {
 - 类型：`types/type[{type}]`，`{type}` 为定义类型名。
 - 子类型：`types/type[{type}]/subtype[{subtype}]`。
 
-**文件匹配**：`path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` 的组合决定了参与扫描的文件集合。其中 `path` 和 `path_extension` 会在解析时进行规范化处理（例如移除 `game/` 前缀）。`type_per_file` 表示"一文件一类型实例"。
+**类型字段**：
 
-**类型键约束**：`type_key_prefix` 指定键前缀；`type_key_filter` / `type_key_regex` / `starts_with` 用于约束类型键的取值；`skip_root_key` 允许跳过若干顶级键后继续匹配（忽略大小写，支持多组）。
+- `path`：参与扫描的文件目录路径（解析时会自动移除 `game/` 前缀）。
+- `path_file`：限定文件名（不含扩展名）。
+- `path_extension`：限定文件扩展名（解析时会自动规范化，如补齐 `.`）。
+- `path_pattern`：使用 ANT 路径模式匹配文件路径（可与 `path` 并用）。
+- `path_strict`：设为 `yes` 时强制精确匹配目录，不匹配子目录。
+- `type_per_file`：设为 `yes` 时表示"一文件一类型实例"，以文件名作为定义名。
+- `name_field`：从定义体中指定的属性键读取展示名称。
+- `name_from_file`：设为 `yes` 时从文件名推导定义名（用于 `type_per_file` 场景）。
+- `unique`：设为 `yes` 时启用重名冲突检查。
+- `severity`：重名冲突的报告级别（如 `warning`、`error`）。
+- `skip_root_key`：允许跳过若干顶级键后继续匹配类型键。值为花括号集合，支持多组（忽略大小写）。例如 `skip_root_key = { scripted_trigger }` 表示文件中 `scripted_trigger = { ... }` 下的子属性也参与类型匹配。
+- `type_key_prefix`：类型键的必需前缀。
+- `## type_key_filter`：类型键的过滤条件（选项注释）。
+- `## type_key_regex`：类型键的正则过滤（选项注释）。
+- `## starts_with`：类型键的前缀过滤（选项注释）。
+- `## graph_related_types`：声明图相关类型（选项注释），用于定义间依赖关系图。
+- `localisation`：本地化展示小节，详见[类型展示规则](#config-type-presentation)。
+- `images`：图片展示小节，详见[类型展示规则](#config-type-presentation)。
+- `modifiers`：修正小节，派生出与类型绑定的[修正规则](#config-modifier)。
 
-**名称与唯一性**：`name_field` 指定展示名称来源字段；`name_from_file` 表示从文件名推导名称；`unique` 用于冲突检查与导航提示；`severity` 标注展示严重级别。
+**子类型字段**：
 
-**子类型**：子类型通过 `type_key_filter`、`type_key_regex`、`starts_with`、`only_if_not`、`group` 等选项进行匹配，按声明顺序裁剪。通常与[声明规则](#config-declaration)中的 `subtype[...]` 一起使用，以细化结构与校验。
+子类型通过内容匹配确定：解析器检查定义体中是否存在与子类型规则匹配的属性，从而决定该定义是否具有该子类型。子类型按声明顺序裁剪，通常与[声明规则](#config-declaration)中的 `subtype[...]` 一起使用，以细化结构与校验。
 
-**展示**：`localisation` 和 `images` 小节分别用于类型的本地化展示与图片展示设置。
+- `## type_key_filter`：按类型键过滤（选项注释）。
+- `## push_scope`：匹配时推入的作用域类型（选项注释）。
+- `## display_name`：子类型的展示名称（选项注释）。
+- `only_if_not`：与指定子类型互斥——仅在目标子类型未匹配时生效。
+- `## group`：子类型分组名（选项注释）。同一分组内的子类型互斥（最多匹配一个）。
 
-类型规则与[声明规则](#config-declaration)协作，为具体定义的声明提供上下文与结构约束。类型规则中还可以声明 `modifiers` 小节，派生出与类型绑定的[修正规则](#config-modifier)。
+类型规则与[声明规则](#config-declaration)协作，为具体定义的声明提供上下文与结构约束。
 
 **示例**：
 
 ```cwt
+# from `events/events.cwt` of stellaris config group
+
 types = {
-    type[civic_or_origin] = {
-        # File sources
-        path = "game/common/governments/civics"   # the prefix `game/` will be removed automatically
+    ## graph_related_types = { special_project anomaly_category }
+    type[event] = {
+        name_field = id
+        path = "game/events"
         path_extension = .txt
 
-        # Key constraints and prefix
-        type_key_prefix = civic_
-        ## type_key_filter = { civic_ }  # include sets
-        ## type_key_filter <> { origin_ }  # exclude sets
-        ## starts_with = civic_
-        ## skip_root_key = { potential }
-
-        # Subtype
-        subtype[origin] = {
-            ## type_key_filter = +origin_
-            ## group = lifecycle
+        subtype[inherited] = {
+            base = <event>
         }
 
-        # Presentation
-        localisation = { name_field = name }
-        images = { main = icon }
+        ## group = event_attribute
+        subtype[triggered] = {
+            is_triggered_only = yes
+        }
+
+        ## group = event_type
+        ## type_key_filter = country_event
+        ## push_scope = country
+        ## display_name = Country Event
+        subtype[country] = {}
+
+        ## group = event_type
+        ## type_key_filter = planet_event
+        ## push_scope = planet
+        ## display_name = Planet Event
+        subtype[planet] = {}
+
+        # ... more event type subtypes (ship, fleet, system, etc.)
+    }
+}
+```
+
+```cwt
+# from `common/buildings.cwt` of stellaris config group
+# which represents `localisation` and `images` sections
+
+types = {
+    type[building] = {
+        path = "game/common/buildings"
+        path_extension = .txt
+        subtype[capital] = {
+            capital = yes
+        }
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            icon = icon
+            icon = "gfx/interface/icons/buildings/$.dds"
+        }
     }
 }
 ```
 
 **注意事项**：
 
-- 缺少必需属性会导致类型被跳过（日志中会有提示）。
-- `path` 与 `path_pattern` 可并用；`path_strict` 会强制严格匹配。
+- `path` 为必需字段；缺失将导致类型被跳过。
 - `skip_root_key` 为多组设置：若存在任意一组与文件顶级键序列匹配，则允许跳过后继续匹配类型键。
 - 子类型匹配"顺序敏感"，请将更具体的规则放在更前面。
+- 同一 `## group` 内的子类型互斥（如 `event_type` 分组中的 `country`、`planet`、`ship` 等）。
 
 #### 别名规则与单别名规则 {#config-alias}
 
@@ -277,7 +361,7 @@ types = {
 - 声明单别名：`single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
 - 使用单别名：`potential = single_alias_right[trigger_clause]`
 
-别名支持通过选项指定作用域约束：`scope` / `scopes` 声明允许的输入作用域集合，`push_scope` 声明输出作用域。别名的 `subName` 支持受限的数据表达式，用于匹配与提示。
+别名支持通过选项指定作用域约束：`## scope` / `## scopes` 声明允许的输入作用域集合，`## push_scope` 声明输出作用域。别名的 `subName` 支持受限的数据表达式，用于匹配与提示。
 
 在使用处，别名体会被复制为普通属性规则（键名 = 子名，值和子规则深拷贝，保留选项）。如果展开结果的值侧仍为 `single_alias_right[...]`，会继续触发级联展开。别名常与[声明规则](#config-declaration)结合使用，在定义声明中复用 trigger / effect 等片段。
 
@@ -347,7 +431,7 @@ enums = {
 
 `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` 组合决定参与扫描的文件集合，`path` 和 `path_extension` 会在解析时规范化。`start_from_root` 指定是否从文件顶部（而非顶级属性）开始查询锚点。`name` 小节描述如何在匹配文件中定位值锚点——实现会收集其中所有名为 `enum_name` 的属性或值作为锚点。
 
-插件扩展选项：`## case_insensitive` 将复杂枚举值标记为忽略大小写；`## per_definition` 将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
+插件扩展选项：布尔选项 `## case_insensitive` 将复杂枚举值标记为忽略大小写；布尔选项 `## per_definition` 将同名同类型复杂枚举值的等效性限制在定义级别（而非文件级别）。
 
 ```cwt
 enums = {
@@ -413,29 +497,41 @@ values = {
 **示例**：
 
 ```cwt
+# from `links.cwt` of stellaris config group
+
 links = {
     # Static scope link
-    owner = {
-        input_scopes = { any }
-        output_scope = any
+    planet = {
+        input_scopes = { megastructure planet pop_group leader army starbase deposit archaeological_site }
+        output_scope = planet
     }
-
-    # Dynamic value link (with prefix)
-    modifier = {
+    
+    # Dynamic value link (without prefix)
+    variable = {
         type = value
         from_data = yes
-        prefix = modifier
-        data_source = dynamic_value[test_flag]
-        input_scopes = { any }
+        data_source = value[variable]
     }
+    
+    # Dynamic value link (with prefix)
+    script_value = {
+        from_data = yes
+        type = value
+        prefix = value:
+        data_source = <script_value>
+    }
+}
+```
 
-    # Dynamic scope link (function-like)
-    relations = {
-        from_argument = yes
-        data_source = <country>           # multiple data sources can be mixed
-        data_source = dynamic_value[test_flag]
-        input_scopes = { country }
-        # empty output_scope -> derived based on data source and implementation
+```cwt
+# from `links.core.cwt` of core config group
+
+links = {
+    event_target = {
+        from_data = yes
+        type = scope
+        prefix = event_target:
+        data_source = value[event_target]
     }
 }
 ```
@@ -467,8 +563,15 @@ links = {
 **示例**：
 
 ```cwt
+# from `scopes.cwt` of stellaris config group
+
 scopes = {
     Country = { aliases = { country } }
+    Leader = { aliases = { leader } }
+    System = { aliases = { galacticobject system galactic_object } }
+    Planet = { aliases = { planet } }
+    "Pop Group" = { aliases = { pop_group } }
+    "Pop Job" = { aliases = { job pop_job } }
 }
 
 scope_groups = {
@@ -502,12 +605,23 @@ scope_groups = {
 **示例**：
 
 ```cwt
+# from `modifiers.cwt` and `modifiers.categories.cwt` of stellaris config group
+
 # Standalone modifier declarations
 modifiers = {
     pop_happiness = { Pops }
     job_<job>_add = { Planets }
 }
 
+# Modifier categories
+modifier_categories = {
+    Pops = {
+        supported_scopes = { species pop_group planet sector galacticobject country }
+    }
+}
+```
+
+```cwt
 # Modifiers declared in type configs (will derive templated names)
 types = {
     type[job] = {
@@ -515,11 +629,6 @@ types = {
             job_$_add = { Planets }   # -> job_<job>_add
         }
     }
-}
-
-# Modifier categories
-modifier_categories = {
-    Pops = { supported_scopes = { species pop_group planet } }
 }
 ```
 
@@ -546,6 +655,8 @@ modifier_categories = {
 **示例**：
 
 ```cwt
+# from `localisation.cwt` of stellaris config group
+
 localisation_commands = {
     GetCountryType = { country }
 }
@@ -613,10 +724,19 @@ types = {
 **示例**：
 
 ```cwt
+# from `database_object_types.cwt` of stellaris config group
+
 database_object_types = {
     civic = {
         type = civic_or_origin
         swap_type = swapped_civic
+    }
+    technology = {
+        type = technology
+        swap_type = swapped_technology
+    }
+    job = {
+        localisation = job_
     }
 }
 ```
@@ -768,6 +888,20 @@ game_rules = {
 }
 ```
 
+**示例**：
+
+```cwt
+# from `game_rules.cwt` of stellaris config group
+
+game_rules = {
+    ### This rule is a condition for declaring war
+    ### Root = country, attacker
+    ### This = country, target
+    ## replace_scopes = { this = country root = country }
+    can_declare_war
+}
+```
+
 **注意事项**：
 
 - 若值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
@@ -781,7 +915,7 @@ game_rules = {
 
 **路径定位**：`on_actions/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
 
-`event_type`（必填）声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
+`## event_type`（必填）声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
 
 **格式说明**：
 
@@ -794,10 +928,27 @@ on_actions = {
 }
 ```
 
+**示例**：
+
+```cwt
+# from `on_actions.cwt` of stellaris config group
+
+on_actions = {
+    ### Triggers when the game starts
+    ## replace_scopes = { this = no_scope root = no_scope }
+    ## event_type = scopeless
+    on_game_start
+
+    ## replace_scopes = { this = country root = country }
+    ## event_type = country
+    on_game_start_country
+}
+```
+
 **注意事项**：
 
-- `event_type` 为必填；缺失将导致该条目被跳过。
-- 如需作用域替换，可结合 `replace_scopes` 使用。
+- `## event_type` 为必填；缺失将导致该条目被跳过。
+- 如需作用域替换，可结合 `## replace_scopes` 使用。
 
 #### 内联脚本的扩展规则 {#config-extended-inline-script}
 
@@ -807,7 +958,7 @@ on_actions = {
 
 **路径定位**：`inline_scripts/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。其中 `name` 为 `x/y` 时，对应文件为 `common/inline_scripts/x/y.txt`。
 
-`context_configs_type` 控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
+`## context_configs_type` 控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
 
 **格式说明**：
 
@@ -855,9 +1006,9 @@ inline_scripts = {
 
 **主要字段**：
 
-- `context_key`（必填）：上下文键（如 `scripted_trigger@some_trigger`），`@` 之前为包含的定义类型（或 `inline_script`），`@` 之后为定义名或内联脚本路径。上下文键自身也支持模式匹配。
-- `context_configs_type`：`single`（默认）或 `multiple`，含义同内联脚本扩展规则。
-- `inherit`：设为 `yes` 时，从参数的"使用处"继承上下文（规则与作用域），而非使用静态声明。
+- `## context_key`（必填）：上下文键（如 `scripted_trigger@some_trigger`），`@` 之前为包含的定义类型（或 `inline_script`），`@` 之后为定义名或内联脚本路径。上下文键自身也支持模式匹配。
+- `## context_configs_type`：`single`（默认）或 `multiple`，含义同内联脚本扩展规则。
+- `## inherit`：布尔选项，标记后从参数的"使用处"继承上下文（规则与作用域），而非使用静态声明。
 
 **格式说明**：
 
@@ -896,8 +1047,8 @@ parameters = {
 
 **注意事项**：
 
-- `context_key` 为必填；缺失将导致该条目被跳过。
-- `inherit = yes` 时，上下文取自"使用处"，可能为空或因位置不同而变化。
+- `## context_key` 为必填；缺失将导致该条目被跳过。
+- 标记 `## inherit` 时，上下文取自"使用处"，可能为空或因位置不同而变化。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
 #### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}

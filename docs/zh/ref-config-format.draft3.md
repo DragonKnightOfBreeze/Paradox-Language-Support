@@ -132,9 +132,9 @@ priorities = {
 
 **示例**：
 
-以下是 `building` 类型的声明规则（节选自 `common/buildings.cwt`）：
-
 ```cwt
+# from `common/buildings.cwt` of stellaris config group
+
 ## push_scope = planet
 building = {
     ## cardinality = 0..inf
@@ -185,20 +185,16 @@ building = {
 
 **示例**：
 
-以下是完整的内置系统作用域规则（来自 `system_scopes.core.cwt`）：
-
 ```cwt
+# from `system_scopes.core.cwt` of core config group
+
 system_scopes = {
-    ### Scopes to the current scope.
     This = {}
-    ### Scopes to the original scope of this context.
     Root = {}
-    ### Scopes to the previous scope.
     Prev = { base_id = Prev }
     PrevPrev = { base_id = Prev }
     PrevPrevPrev = { base_id = Prev }
     PrevPrevPrevPrev = { base_id = Prev }
-    ### Scopes to the ROOT of the previous event, or the preset hardcoded FROM scope.
     From = { base_id = From }
     FromFrom = { base_id = From }
     FromFromFrom = { base_id = From }
@@ -278,9 +274,9 @@ directive[inline_script] = {
 
 **示例**：
 
-以下是 Stellaris 中 `event` 类型的定义（节选自 `events/events.cwt`）：
-
 ```cwt
+# from `events/events.cwt` of stellaris config group
+
 types = {
     ## graph_related_types = { special_project anomaly_category }
     type[event] = {
@@ -314,9 +310,10 @@ types = {
 }
 ```
 
-以下是 `building` 类型的定义（节选自 `common/buildings.cwt`），展示了 `localisation` 和 `images` 小节：
-
 ```cwt
+# from `common/buildings.cwt` of stellaris config group
+# which represents `localisation` and `images` sections
+
 types = {
     type[building] = {
         path = "game/common/buildings"
@@ -329,9 +326,7 @@ types = {
             desc = "$_desc"
         }
         images = {
-            ## optional
             icon = icon
-            ## optional
             icon = "gfx/interface/icons/buildings/$.dds"
         }
     }
@@ -501,49 +496,42 @@ values = {
 
 **示例**：
 
-以下是 Stellaris 中的静态链接示例（节选自 `links.cwt`）：
-
 ```cwt
-links = {
-    ### Scopes to the owner of the current object.
-    owner = {
-        input_scopes = {
-            megastructure planet country ship pop_group fleet galactic_object
-            leader army bypass pop_faction starbase deposit sector
-            archaeological_site first_contact spy_network espionage_operation
-            agreement situation debris astral_rift
-        }
-        output_scope = country
-    }
+# from `links.cwt` of stellaris config group
 
-    ### Scopes from a country to its overlord.
-    overlord = {
-        input_scopes = { country }
-        output_scope = country
+links = {
+    # Static scope link
+    planet = {
+        input_scopes = { megastructure planet pop_group leader army starbase deposit archaeological_site }
+        output_scope = planet
+    }
+    
+    # Dynamic value link (without prefix)
+    variable = {
+        type = value
+        from_data = yes
+        data_source = value[variable]
+    }
+    
+    # Dynamic value link (with prefix)
+    script_value = {
+        from_data = yes
+        type = value
+        prefix = value:
+        data_source = <script_value>
     }
 }
 ```
 
-以下是核心规则文件中的动态链接示例（节选自 `links.core.cwt`）：
-
 ```cwt
-links = {
-    # Dynamic value link (with prefix, e.g. `modifier:pop_happiness`)
-    modifier = {
-        type = value
-        from_data = yes
-        prefix = modifier
-        data_source = modifier
-        input_scopes = { any }
-    }
+# from `links.core.cwt` of core config group
 
-    # Dynamic value link (with prefix, e.g. `var:some_variable`)
-    var = {
-        type = value
+links = {
+    event_target = {
         from_data = yes
-        prefix = var
-        data_source = value[variable]
-        input_scopes = { any }
+        type = scope
+        prefix = event_target:
+        data_source = value[event_target]
     }
 }
 ```
@@ -574,16 +562,14 @@ links = {
 
 **示例**：
 
-以下是 Stellaris 中的作用域与作用域分组示例（节选自 `scopes.cwt`）：
-
 ```cwt
+# from `scopes.cwt` of stellaris config group
+
 scopes = {
     Country = { aliases = { country } }
     Leader = { aliases = { leader } }
     System = { aliases = { galacticobject system galactic_object } }
     Planet = { aliases = { planet } }
-    Ship = { aliases = { ship } }
-    Fleet = { aliases = { fleet } }
     "Pop Group" = { aliases = { pop_group } }
     "Pop Job" = { aliases = { job pop_job } }
 }
@@ -618,28 +604,30 @@ scope_groups = {
 
 **示例**：
 
-以下是 Stellaris 中的修正与修正分类示例（节选自 `modifiers.cwt` 和 `modifier_categories.cwt`）：
-
 ```cwt
-# Standalone modifier declarations (from modifiers.cwt)
+# from `modifiers.cwt` and `modifiers.categories.cwt` of stellaris config group
+
+# Standalone modifier declarations
 modifiers = {
     pop_happiness = { Pops }
-    pop_housing_usage_base = { Pops }
-    pop_housing_usage_add = { Pops }
-    pop_housing_usage_mult = { Pops }
-    logistic_growth_mult = { Planets }
+    job_<job>_add = { Planets }
 }
 
-# Modifier categories (from modifier_categories.cwt)
+# Modifier categories
 modifier_categories = {
     Pops = {
         supported_scopes = { species pop_group planet sector galacticobject country }
     }
-    Planets = {
-        supported_scopes = { planet sector galacticobject country }
-    }
-    Countries = {
-        supported_scopes = { country federation }
+}
+```
+
+```cwt
+# Modifiers declared in type configs (will derive templated names)
+types = {
+    type[job] = {
+        modifiers = {
+            job_$_add = { Planets }   # -> job_<job>_add
+        }
     }
 }
 ```
@@ -666,22 +654,19 @@ modifier_categories = {
 
 **示例**：
 
-以下是 Stellaris 中的本地化命令与本地化提升示例（节选自 `localisation.cwt`）：
-
 ```cwt
+# from `localisation.cwt` of stellaris config group
+
 localisation_commands = {
-    GetYear = { any }
     GetCountryType = { country }
-    GetSpeciesName = { species pop_group leader }
 }
 
 localisation_promotions = {
-    Capital = { country sector }
     Ruler = { country }
-    Owner = { planet ship starbase system fleet leader army pop_faction first_contact espionage_operation spy_network megastructure sector agreement situation }
-    System = { planet fleet first_contact megastructure astral_rift bypass }
-    Planet = { pop_group army archaeological_site deposit megastructure }
 }
+
+# In localisation text:
+# [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
 ```
 
 **注意事项**：
@@ -738,9 +723,9 @@ types = {
 
 **示例**：
 
-以下是 Stellaris 中的数据库对象类型示例（节选自 `database_object_types.cwt`）：
-
 ```cwt
+# from `database_object_types.cwt` of stellaris config group
+
 database_object_types = {
     civic = {
         type = civic_or_origin
@@ -889,26 +874,31 @@ definitions = {
 
 当条目为属性节点时（如 `x = { ... }` 或 `x = single_alias_right[...]`），其值或子块会作为"声明规则重载"在使用处生效。仅当为属性节点时才会产生重载效果；纯值节点仅提供提示。
 
-**示例**：
-
-以下是 Stellaris 中的游戏规则扩展示例（节选自 `game_rules.cwt`）：
+**格式说明**：
 
 ```cwt
 game_rules = {
-    ### Root = target country
-    ### This = country
+    ### Some documentation
+    ## hint = §RSome hint text§!
+    x # provide hint only
+
+    ### Some documentation
     ## replace_scopes = { this = country root = country }
-    is_valid_rival
+    y = single_alias_right[trigger_clause] # override declaration via single alias
+}
+```
 
-    ### Root = claimer
-    ### This = system
-    ## replace_scopes = { this = system root = country }
-    can_add_claim
+**示例**：
 
-    ### Root = country
-    ### This = species
-    ## replace_scopes = { this = species root = country }
-    species_has_citizenship
+```cwt
+# from `game_rules.cwt` of stellaris config group
+
+game_rules = {
+    ### This rule is a condition for declaring war
+    ### Root = country, attacker
+    ### This = country, target
+    ## replace_scopes = { this = country root = country }
+    can_declare_war
 }
 ```
 
@@ -927,11 +917,22 @@ game_rules = {
 
 `## event_type`（必填）声明事件类型，用于在声明上下文中将与事件相关的数据表达式替换为该事件类型对应的表达式。
 
-**示例**：
-
-以下是 Stellaris 中的动作触发扩展示例（节选自 `on_actions.cwt`）：
+**格式说明**：
 
 ```cwt
+on_actions = {
+    ### Some documentation
+    ## replace_scopes = { this = country root = country }
+    ## event_type = country
+    x
+}
+```
+
+**示例**：
+
+```cwt
+# from `on_actions.cwt` of stellaris config group
+
 on_actions = {
     ### Triggers when the game starts
     ## replace_scopes = { this = no_scope root = no_scope }
@@ -941,11 +942,6 @@ on_actions = {
     ## replace_scopes = { this = country root = country }
     ## event_type = country
     on_game_start_country
-
-    ### No scope, like on_game_start
-    ## replace_scopes = { this = no_scope root = no_scope }
-    ## event_type = scopeless
-    on_monthly_pulse
 }
 ```
 
