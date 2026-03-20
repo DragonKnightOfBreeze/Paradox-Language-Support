@@ -765,7 +765,7 @@ locales = {
 
 #### Extended Scripted Variable Configs {#config-extended-scripted-variable}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig -->
 
 - **Purpose**: provide extra hints (quick doc, inlay hints, etc.) for scripted variables.
 - **Path location**: `scripted_variables/{name}`.
@@ -809,7 +809,7 @@ scripted_variables = {
 
 #### Extended Definition Configs {#config-extended-definition}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
 - **Purpose**: provide extra context and hint information for concrete definitions.
   - Use cases: docs/hints (`hint`), bind definition type (`type` required), and optionally specify scope context via `replace_scopes`/`push_scope`.
@@ -866,7 +866,7 @@ definitions = {
 
 #### Extended Game Rule Configs {#config-extended-game-rule}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
 - **Purpose**: provide docs/hints for game rules (aka definitions of type `game_rule`), and optionally override declaration configs.
 - **Path location**: `game_rules/{name}`.
@@ -915,7 +915,7 @@ game_rules = {
 
 #### Extended On Action Configs {#config-extended-on-action}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
 
 - **Purpose**: provide docs/hints for on actions (aka definitions of type `on_action`), and specify `event_type` to influence event-related references in the declaration context.
 - **Path location**: `on_actions/{name}`.
@@ -963,7 +963,7 @@ on_actions = {
 
 #### Extended Inline Script Configs {#config-extended-inline-script}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
 
 - **Purpose**: declare context config(s) and scope context for specific inline scripts so that completion/validation at call sites is correct.
 - **Path location**: `inline_scripts/{name}`.
@@ -1047,7 +1047,7 @@ inline_scripts = {
 
 #### Extended Parameter Configs {#config-extended-parameter}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
 
 - **Purpose**: provide docs/context enhancements for parameters (`$PARAM$` or `$PARAM|DEFAULT$`) in triggers/effects/inline scripts:
   - Bind a context key (pointing to a concrete trigger/effect/inline script context).
@@ -1156,7 +1156,7 @@ parameters = {
 
 #### Extended Complex Enum Value Configs {#config-extended-complex-enum-value}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
 
 - **Purpose**: provide docs/hints (quick docs, inlay hints, etc.) for concrete entries of complex enums.
 - **Path location**: `complex_enum_values/{type}/{name}`, where `{type}` is the complex enum name and `{name}` is the entry name or a matching pattern.
@@ -1205,7 +1205,7 @@ complex_enum_values = {
 
 #### Extended Dynamic Value Configs {#config-extended-dynamic-value}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
 
 - **Purpose**: provide docs/hints for specific dynamic values under a dynamic value type.
 - **Path location**: `dynamic_values/{type}/{name}`, where `{type}` is the dynamic value type and `{name}` is the entry name or a matching pattern.

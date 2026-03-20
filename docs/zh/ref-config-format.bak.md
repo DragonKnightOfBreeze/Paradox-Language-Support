@@ -766,7 +766,7 @@ locales = {
 
 #### 封装变量的扩展规则 {#config-extended-scripted-variable}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig -->
 
 - **用途**：为脚本中的“封装变量（scripted variable）”提供额外提示（快速文档、内嵌提示等）。
 - **路径定位**：`scripted_variables/{name}`。
@@ -810,7 +810,7 @@ scripted_variables = {
 
 #### 定义的扩展规则 {#config-extended-definition}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
 - **用途**：为具体“定义”提供额外上下文与提示信息。
   - 用途包括：文档/提示（`hint`）、绑定定义类型（`type` 必填）、按需要指定作用域上下文（通过选项 `replace_scopes`/`push_scope`）。
@@ -867,7 +867,7 @@ definitions = {
 
 #### 游戏规则（game rule）的扩展规则 {#config-extended-game-rule}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
 - **用途**：为游戏规则（game rule，即类型为 `game_rule` 的定义）提供文档/提示增强，并可“重载声明规则”。
 - **路径定位**：`game_rules/{name}`。
@@ -916,7 +916,7 @@ game_rules = {
 
 #### 动作触发（on action）的扩展规则 {#config-extended-on-action}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig -->
 
 - **用途**：为动作触发（on action，即类型为 `on_action` 的定义）提供文档/提示增强，并指定“事件类型”以影响声明上下文中与事件有关的引用。
 - **路径定位**：`on_actions/{name}`。
@@ -964,7 +964,7 @@ on_actions = {
 
 #### 内联脚本的扩展规则 {#config-extended-inline-script}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
 
 - **用途**：为具体“内联脚本（inline script）”声明“上下文规则”和“作用域上下文”，用于在被调用处提供正确的补全/校验。
 - **路径定位**：`inline_scripts/{name}`。
@@ -1048,7 +1048,7 @@ inline_scripts = {
 
 #### 参数的扩展规则 {#config-extended-parameter}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
 
 - **用途**：为触发器/效果/内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：
   - 绑定“上下文键”（指向具体触发器/效果/内联脚本的上下文）。
@@ -1157,7 +1157,7 @@ parameters = {
 
 #### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
 
 - **用途**：为“复杂枚举（complex enum）”的具体条目提供文档/提示增强（快速文档、内嵌提示等）。
 - **路径定位**：`complex_enum_values/{type}/{name}`，其中 `{type}` 为复杂枚举名，`{name}` 为条目名或匹配模式。
@@ -1206,7 +1206,7 @@ complex_enum_values = {
 
 #### 动态值的扩展规则 {#config-extended-dynamic-value}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
 
 - **用途**：为某种动态值类型下的具体“动态值”条目提供文档/提示增强。
 - **路径定位**：`dynamic_values/{type}/{name}`，其中 `{type}` 为动态值类型，`{name}` 为条目名或匹配模式。
