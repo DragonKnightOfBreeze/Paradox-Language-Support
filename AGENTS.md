@@ -4,16 +4,16 @@ This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ 
 
 It's written in Kotlin and PSI-based (not LSP-based).
 Many language features are powered by the **config system** based on **CWT config files**.
-CWT is a DSL similar to Paradox script, the relationship is roughly like **JSON vs JSON Schema**.
+The relationship between Paradox script files and CWT config files is roughly like **JSON vs JSON Schema**.
 
 ## Project quick orientation
 
 ### What the plugin supports
 
-- **Paradox Script** (`PARADOX_SCRIPT`)
-- **Paradox Localisation** (`PARADOX_LOCALISATION`)
-- **Paradox CSV** (`PARADOX_CSV`)
-- **CWT** configs (`CWT`, `*.cwt`) used to drive semantics (completion, inspections, navigation, docs, etc.)
+- **Paradox Script** (`PARADOX_SCRIPT`) - used for providing game data and writing game logic.
+- **Paradox Localisation** (`PARADOX_LOCALISATION`) - used for providing i18n text.
+- **Paradox CSV** (`PARADOX_CSV`) - used for describing table data.
+- **CWT** (`CWT`, `*.cwt`) - used for writing CWT config files which drive semantics (completion, inspections, navigation, docs, etc.).
 
 In addition to language features, the plugin also includes:
 
@@ -93,7 +93,7 @@ Minimal setup example (typical for index/resolve tests):
 
 ```kotlin
 @Before
-fun setup() {
+fun doSetUp() {
     markIntegrationTest()
     markRootDirectory("features/index")
     markConfigDirectory("features/index/.config")
@@ -101,7 +101,7 @@ fun setup() {
 }
 
 @After
-fun tearDown() = clearIntegrationTest()
+fun doTearDown() = clearIntegrationTest()
 ```
 
 Typical per-test file arrangement pattern:
@@ -113,7 +113,7 @@ myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 
 Notes:
 - The intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
-- The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id, see `ParadoxGameType`) subdirectory.
+- The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
 - The marked file path DO NOT start with `game/` (see `ParadoxEntryInfo` for details about root directory VS entry directory).
 - Alignment between real file path and marked file path is not required.
 
@@ -179,8 +179,10 @@ Here are some common code patterns:
 
 - How to get the coroutine scope: Use `PlsFacade.getCoroutineScope(project)` (or `PlsFacade.getCoroutineScope()` for application level).
 - How to get the config group: Use `PlsFacade.getConfigGroup(project, gameType)` (or `PlsFacade.getConfigGroup(gameType)` for application level).
-- How to search definitions (e.g., an event with specific event id): See usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific methods (e.g., definition, scope, recursion): Search declarations for `...Service`, `...Manager`, `...Util` and so on.
+- How to get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
+- How to get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
+- How to search definitions (e.g., an event with specific event id): Search usages of `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
+- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of `...Service`, `...Manager`, `...Util` and so on.
 
 ## Domain terminology and guidance
 
@@ -243,7 +245,7 @@ For the config system and the config format, see:
 - Write documentation comments in Chinese by default, unless explicitly requested, or need to be consistent with the context or relevant location.
 - Write normal comments in Chinese or English, based on the context or relevant location.
 - Prefer KDoc style for Kotlin.
-- When referencing types like `PsiElement` in KDoc, prefer KDoc links: `[PsiElement]`.
+- When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
 - Avoid overly long parameter-by-parameter docs unless truly necessary; prefer describing the method as a whole.
 
 ### IntelliJ plugin specifics

@@ -8,7 +8,6 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.core.annotations.Optimized
@@ -100,14 +99,6 @@ object ParadoxConfigManager {
     private fun doGetChildOccurrencesCache(): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
         return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
-    }
-
-    fun getMaxRootKeyDepth(config: CwtTypeConfig): Int {
-        return when {
-            config.typePerFile -> 0
-            config.skipRootKey.isEmpty() -> 0
-            else -> config.skipRootKey.maxOf { it.size }
-        }
     }
 
     @Optimized
