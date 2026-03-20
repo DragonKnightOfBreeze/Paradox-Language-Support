@@ -11,6 +11,7 @@ export const sidebarZh: SidebarOptions = [
   { text: "扩展", link: "/zh/extensions.md" },
   { text: "附录：语法参考", link: "/zh/ref-syntax.md" },
   { text: "附录：规则格式参考", link: "/zh/ref-config-format.md" },
+  { text: "附录：附加资源参考", link: "/zh/ref-resources.md" },
 ]
 
 export const sidebarEn: SidebarOptions = [
@@ -25,4 +26,5 @@ export const sidebarEn: SidebarOptions = [
   { text: "Extensions", link: "/en/extensions.md" },
   { text: "Appendix: Syntax Reference", link: "/en/ref-syntax.md" },
   { text: "Appendix: Config Format Reference", link: "/en/ref-config-format.md" },
+  { text: "Appendix: Additional Resources", link: "/en/ref-resources.md" },
 ]
