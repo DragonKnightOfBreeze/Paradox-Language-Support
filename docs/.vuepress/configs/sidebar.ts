@@ -23,6 +23,6 @@ export const sidebarEn: SidebarOptions = [
   { text: "Integrations", link: "/en/integrations.md" },
   { text: "AI", link: "/en/ai.md" },
   { text: "Extensions", link: "/en/extensions.md" },
-  { text: "Appendix: Syntax Reference", link: "/en/ref-config-formats.md" },
+  { text: "Appendix: Syntax Reference", link: "/en/ref-syntax.md" },
   { text: "Appendix: Config Format Reference", link: "/en/ref-config-format.md" },
 ]
