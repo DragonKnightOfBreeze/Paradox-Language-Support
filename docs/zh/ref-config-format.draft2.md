@@ -33,6 +33,8 @@
 
 <!-- @see icu.windea.pls.config.config.CwtConfig -->
 
+> 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
+
 ### 概述
 
 规则的整体处理流程可以简化为三个阶段：
@@ -443,7 +445,6 @@ links = {
 - `prefix` 不应带引号或括号；`input_scopes` 使用花括号集合语法（如 `{ country }`）。
 - 可混合多个 `data_source`。
 - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
-- 建议在 `data_source` 中使用尖括号简写（如 `<country>`），而非完整形式。
 
 #### 作用域规则与作用域分组规则 {#config-scope}
 
@@ -682,8 +683,9 @@ locales = {
 >
 > 扩展规则中有一些常见的共通特征：
 > - 大部分扩展规则支持多种**名称匹配**方式：常量、[模板表达式](#config-expression-template)、[ANT 路径模式](#faq-ant)和[正则表达式](#faq-regex)。
-> - 大部分扩展规则支持通过选项注释提供 `hint`（提示文本，用于快速文档和内嵌提示）。
-> - 部分扩展规则支持通过选项注释指定**作用域上下文**（`replace_scopes` / `push_scope`）。
+> - 大部分扩展规则支持通过文档注释提供快速文档文本。
+> - 大部分扩展规则支持通过选项注释提供内嵌提示文本（`## hint`）。
+> - 部分扩展规则支持通过选项注释指定**作用域上下文**（`## replace_scopes` / `## push_scope`）。
 
 #### 封装变量的扩展规则 {#config-extended-scripted-variable}
 
@@ -715,7 +717,7 @@ scripted_variables = {
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
-为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`hint`）、绑定定义类型（`type`，必填）、以及按需指定的作用域上下文（`replace_scopes` / `push_scope`）。
+为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`## hint`）、绑定定义类型（`## type`，必填）、以及按需指定的作用域上下文（`## replace_scopes` / `## push_scope`）。
 
 **路径定位**：`definitions/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
 
@@ -842,60 +844,6 @@ inline_scripts = {
 
 - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
-
-#### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
-
-为复杂枚举的具体条目提供文档 / 提示增强（快速文档、内嵌提示等）。
-
-**路径定位**：`complex_enum_values/{type}/{name}`，其中 `{type}` 为复杂枚举名，`{name}` 为条目名或匹配模式。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
-
-**格式说明**：
-
-```cwt
-complex_enum_values = {
-    component_tag = {
-        ### Some documentation
-        ## hint = §RSome inlay hint text§!
-        x
-    }
-}
-```
-
-**注意事项**：
-
-- 本扩展不改变复杂枚举"值来源"的收集逻辑，仅提供提示信息。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
-
-#### 动态值的扩展规则 {#config-extended-dynamic-value}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
-
-为某种动态值类型下的具体"动态值"条目提供文档 / 提示增强。
-
-**路径定位**：`dynamic_values/{type}/{name}`，其中 `{type}` 为动态值类型，`{name}` 为条目名或匹配模式。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
-
-**格式说明**：
-
-```cwt
-dynamic_values = {
-    event_target = {
-        ### Some documentation
-        ## hint = §RSome inlay hint text§!
-        x
-
-        # scope context options: only receive push scope (this scope)
-        ## push_scope = country
-        x
-    }
-}
-```
-
-**注意事项**：
-
-- 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
 
 #### 参数的扩展规则 {#config-extended-parameter}
 
@@ -1158,11 +1106,10 @@ dynamic_values = {
 
 **默认与边界行为**：
 
-- 无法匹配任何已知类型时，回退为 `Constant`，并把原始字符串作为常量值。
-- 空串按 `Constant("")` 处理；块（`{ ... }`）返回专用类型 `Block`。
-- 定义引用应使用尖括号简写（如 `<country>`），而非完整形式。
-- 可混用不同来源的动态片段，例如 `<country>/<planet>`、`dynamic_value[test_flag]`。
-- 对于 `relations('...')` 等带参动态链接，若参数为单引号字面量，视为字面量，不提供代码补全。
+- 块（`{ ... }`）对应的数据类型是 `Block`。
+- 空字符串（`""`）对应的数据类型是 `Constant`，并把自身作为常量值。
+- 无法匹配任何已知数据类型时，回退为 `Constant`，并把原始字符串作为常量值。
+- 定义引用应使用尖括号形式（如 `<event>`），而非带前缀的方括号形式（如 `definiton[event]`，这是错误的写法）。
 
 **示例**：
 
@@ -1171,7 +1118,7 @@ int                         # 整数
 float[0.0..1.0]             # 带范围约束的浮点数
 enum[shipsize_class]        # 枚举引用
 scope[country]              # 作用域引用
-<ship_size>                 # 定义引用（尖括号简写）
+<ship_size>                 # 定义引用
 value[event_target]         # 动态值引用
 pre_<opinion_modifier>_suf  # 模板表达式（含定义引用片段）
 ```
@@ -1212,11 +1159,11 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 
 基数表达式用于约束定义成员的出现次数，驱动代码检查与代码补全等功能。通过选项注释 `## cardinality` 声明。
 
-格式为 `min..max`，其中 `min` 和 `max` 为非负整数或 `inf`（不区分大小写，表示无限）。在 `min` 前添加 `~` 前缀表示宽松校验（仅产生警告而非错误）。
+格式为 `min..max`，其中 `min` 和 `max` 为非负整数或 `inf`（不区分大小写，表示无限）。在 `min` 或 `max` 前添加 `~` 前缀表示宽松校验（未满足时，仅产生警告而非错误）。
 
 **默认与边界行为**：
 
-- 最小值为负数时会被钳制为 0。
+- 最小值为负数时会被限制为 0。
 - 缺少 `..` 分隔符时视为无效，不产生约束。
 - `min > max` 时视为无效，不产生约束。
 
@@ -1226,7 +1173,7 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 ## cardinality = 0..1     # 可选，最多出现 1 次
 ## cardinality = 0..inf   # 可选，出现次数不限
 ## cardinality = 1..5     # 必须出现 1 到 5 次
-## cardinality = ~1..10   # 宽松校验：期望 1 到 10 次，但不满足时仅产生警告
+## cardinality = ~1..10   # 宽松校验：期望出现 1 到 10 次，但未出现时仅产生警告
 ```
 
 ### 位置表达式 {#config-expression-location}
@@ -1304,8 +1251,10 @@ title
 
 - `x`：字符串字面量，精确匹配 `x`。
 - `a_<job>_b`：包含定义引用 `<job>` 的模板，可匹配 `a_researcher_b`、`a_farmer_b` 等。
-- `a_enum[weight_or_base]_b`：包含枚举引用的模板，可匹配 `a_weight_b` 和 `a_base_b`。
-- `a_value[anything]_b`：包含动态值引用的模板。由于 `value[anything]` 通常没有取值限制，效果近似于正则表达式 `a_.*_b`。
+- `a_enum[weight_or_base]_b`：包含枚举引用 `enum[weight_or_base]` 的模板，可匹配 `a_weight_b` 和 `a_base_b`。
+- `a_value[anything]_b`：包含动态值引用 `value[anything]` 的模板。由于 `value[anything]` 通常没有取值限制，效果近似于正则表达式 `a_.*_b`。
+
+**示例**：
 
 ```cwt
 x
@@ -1324,6 +1273,8 @@ ANT 路径模式支持以下通配符：
 - `*`：匹配任意字符（不含 `/`）。
 - `**`：匹配任意字符（含 `/`）。
 
+**示例**：
+
 ```cwt
 ant:/foo/bar?/*
 ant.i:/foo/bar?/*
@@ -1333,26 +1284,45 @@ ant.i:/foo/bar?/*
 
 从插件版本 1.3.6 开始，可以在规则表达式中使用正则表达式进行更灵活的匹配。正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。前缀之后的部分即为标准的正则表达式。
 
+**示例**：
+
 ```cwt
 re:foo.*
 re.i:foo.*
 ```
 
-#### 如何在规则文件中指定作用域上下文 {#faq-scope}
+#### 如何在规则文件中指定作用域上下文 {#faq-scope-context}
 
-在规则文件中，作用域上下文是通过选项 `push_scope` 与 `replace_scopes` 来指定的。
+在规则文件中，作用域上下文是通过选项 `## push_scope` 与 `## replace_scopes`（或 `## replace_scope`）来指定的。
+
+`## push_scope = x` 用于将指定的作用域类型压入当前的作用域堆栈。
+
+`## replace_scopes = { this = x root = y}` 用于将指定的系统作用域到作用域类型的映射替换到当前的作用域上下文。
+仅支持 `this`、`root` 和基于 `from` 的系统作用域，不支持基于 `prev` 的系统作用域。
+
+**示例**：
 
 ```cwt
-# push 'country' scope to scope stack
-# for this example, the next this scope will be 'country'
+# for this example, the next this scope will be `country`
 ## push_scope = country
-some_config
+some_config = single_alias_right[trigger_clause]
 
-# replace scopes of specific system scopes into scope context
-# not supported for 'prev' system scope (and 'prevprev', etc.)
-# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
-## replace_scopes = { this = country root = country from = country }
-some_config
+# for this example, the next this scope will be `country`
+# so do the next root scope, the next from scope, and the next fromfrom scope
+## replace_scopes = { this = country root = country from = country fromfrom = country }
+some_config = single_alias_right[trigger_clause]
+```
+
+#### 如何在规则文件中指定支持的作用域 {#faq-supported-scopes}
+
+在规则文件中，触发器（trigger）与效果（effect）的支持的作用域是通过选项 `## scopes`（或 `## scope`）来指定的。
+
+**示例**：
+
+```cwt
+# for this example, the supported scope type of trigger `has_country_flag` is `country`
+## scopes = { country }
+alias[trigger:has_country_flag] = value[country_flag]
 ```
 
 #### 如何在规则文件中进行规则注入 {#faq-config-injection}

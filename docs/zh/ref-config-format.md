@@ -10,7 +10,7 @@
 @see icu.windea.pls.config.configExpression.*
 -->
 
-## 定位与愿景 {#vision}
+## 总览 {#overview}
 
 本文档是 CWT 规则格式的参考手册，面向希望理解、编写或扩展 CWT 规则文件的所有读者——包括模组作者、规则文件的协助维护者、插件维护者以及 AI 编程助手。
 
@@ -20,16 +20,22 @@
 - **建立从文档到实现的映射**：在必要时标注对应的接口与解析器，便于回溯源码与验证行为。
 - **指导实践**：概述各类规则的用途、格式与注意事项，为正确编写和维护规则文件打好基础。
 
-关于规则系统的整体介绍（如规则分组、规则覆盖、自定义规则等），请参阅 `docs/zh/config.md`。
+插件通过读取 `.cwt` 规则文件，构建"规则分组（config group）"，并将其中的规则解析为结构化的"规则对象（config object）"。这些规则对象在代码高亮、补全、导航、检查、快速文档等语言功能中被广泛使用。规则系统由两大要素构成：
 
-## 总览 {#overview}
+- **规则（config）**：每条规则定义了键、值或块的允许形态与上下文约束，如类型、枚举、别名、链接等。详见[规则](#configs)章节。
+- **规则表达式（config expression）**：嵌入在规则的字符串字段中，用于描述取值形态或匹配模式的结构化语法，如 `<type>`、`enum[...]`、`value[...]`，以及基数表达式、模板表达式、位置表达式等。详见[规则表达式](#config-expressions)章节。
 
-插件通过读取 `.cwt` 规则文件，构建"规则分组（config group）"，并将其中的规则解析为结构化的"规则对象（config object）"。这些规则对象在代码高亮、补全、导航、检查、快速文档等语言功能中被广泛使用。
+此外，规则表达式解析后会得到具体的**数据类型（data type）**，数据类型决定了表达式能够匹配脚本文件中的哪些键或值。详见[数据类型](#data-types)章节。
 
-规则系统由两大要素构成：
+关于规则系统的整体介绍（如规则分组、规则覆盖、自定义规则等），请参阅 [config.md](config.md)。
 
-- **规则（config）**：每条规则定义了键、值或块的允许形态与上下文约束，如类型、枚举、别名、链接等。
-- **规则表达式（config expression）**：嵌入在规则的字符串字段中，用于描述取值形态或匹配模式的结构化语法，如 `<type>`、`enum[...]`、`value[...]`，以及基数表达式、模板表达式、位置表达式等。
+## 规则 {#configs}
+
+<!-- @see icu.windea.pls.config.config.CwtConfig -->
+
+> 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
+
+### 概述
 
 规则的整体处理流程可以简化为三个阶段：
 
@@ -37,20 +43,14 @@
 2. 按规则类别，使用对应的解析器（Resolver）将语法树节点转化为结构化的规则对象。
 3. 在各语言功能中，根据当前上下文（作用域、类型名、声明上下文等）查询并应用这些规则对象。
 
-规则的来源与覆盖机制详见 `docs/zh/config.md` 中"规则分组"与"覆盖方式"相关章节。
+规则的来源与覆盖机制详见 [config.md](config.md) 中"规则分组"与"覆盖方式"相关章节。
 
-**术语约定**：本文档中的"规则"按层级分为以下几类：
+本文档中的"规则"按层级分为以下几类：
 
 - **基础规则**：如 `CwtPropertyConfig`，是语法树级别的通用节点，用于承载规则文件中的属性和值。本文档不逐一介绍基础规则。
-- **普通规则**：驱动各种语言功能的核心规则，包括类型、别名、枚举、链接、作用域等。
-- **扩展规则**：用于增强插件功能的附加规则，如为特定定义或内联脚本提供额外的上下文与提示。
-- **内部规则**：由插件内部使用的规则，目前不支持（或尚不支持）自定义。
-
-## 规则 {#configs}
-
-<!-- @see icu.windea.pls.config.config.CwtConfig -->
-
-> 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
+- **[普通规则](#configs-normal)**：驱动各种语言功能的核心规则，包括类型、别名、枚举、链接、作用域等。
+- **[扩展规则](#configs-extended)**：用于增强插件功能的附加规则，如为特定定义或内联脚本提供额外的上下文与提示。
+- **[内部规则](#configs-internal)**：由插件内部使用的规则，目前不支持（或尚不支持）自定义。
 
 ### 普通规则 {#configs-normal}
 
@@ -114,7 +114,7 @@ priorities = {
 
 声明规则的处理流程大致如下：首先，只有键为合法标识符的顶级属性才会被视为声明规则。如果声明的根级值为 `single_alias_right[...]`，会先进行内联展开。随后，插件会按子类型裁剪和扁平化规则树——匹配当前上下文子类型的 `subtype[...]` 块会被展开为平级子规则，不匹配的则跳过。最终生成的规则树用于驱动补全、检查等功能。
 
-声明规则可以与其他规则协作：在声明内可引用别名与单别名（`alias_name[...]` / `alias_match_left[...]`、`single_alias_right[...]`）。切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。游戏规则（game rule）和动作触发（on action）还可以通过扩展规则改写声明上下文。
+声明规则可以与其他规则协作：在声明内可引用[别名与单别名](#config-alias)（`alias_name[...]` / `alias_match_left[...]`、`single_alias_right[...]`）。切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。游戏规则（game rule）和动作触发（on action）还可以通过[扩展规则](#configs-extended)改写声明上下文。
 
 **示例**：
 
@@ -158,7 +158,7 @@ event = {
 - `base_id`：基底作用域 ID，未指定时默认为 `id`。用于将同族系统作用域（如 `Prev` / `PrevPrev`、`From` / `FromFrom`）归类。
 - `: string`（值）：可读名称，未指定时默认为 `id`。
 
-系统作用域规则与"作用域与作用域分组"规则一起决定作用域检查与提示。在部分扩展规则中，可使用选项 `replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`replace_scopes` 不支持替换 `prev` 系列系统作用域，详见 `docs/zh/config.md` 中的相关说明。
+系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。在部分[扩展规则](#configs-extended)中，可使用选项 `replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`replace_scopes` 不支持替换 `prev` 系列系统作用域，详见 [config.md](config.md) 中的相关说明。
 
 **示例（内置）**：
 
@@ -214,11 +214,11 @@ directive[inline_script] = {
 
 **名称与唯一性**：`name_field` 指定展示名称来源字段；`name_from_file` 表示从文件名推导名称；`unique` 用于冲突检查与导航提示；`severity` 标注展示严重级别。
 
-**子类型**：子类型通过 `type_key_filter`、`type_key_regex`、`starts_with`、`only_if_not`、`group` 等选项进行匹配，按声明顺序裁剪。通常与声明规则中的 `subtype[...]` 一起使用，以细化结构与校验。
+**子类型**：子类型通过 `type_key_filter`、`type_key_regex`、`starts_with`、`only_if_not`、`group` 等选项进行匹配，按声明顺序裁剪。通常与[声明规则](#config-declaration)中的 `subtype[...]` 一起使用，以细化结构与校验。
 
 **展示**：`localisation` 和 `images` 小节分别用于类型的本地化展示与图片展示设置。
 
-类型规则与声明规则协作，为具体定义的声明提供上下文与结构约束。类型规则中还可以声明 `modifiers` 小节，派生出与类型绑定的修正规则。
+类型规则与[声明规则](#config-declaration)协作，为具体定义的声明提供上下文与结构约束。类型规则中还可以声明 `modifiers` 小节，派生出与类型绑定的[修正规则](#config-modifier)。
 
 **示例**：
 
@@ -279,7 +279,7 @@ types = {
 
 别名支持通过选项指定作用域约束：`scope` / `scopes` 声明允许的输入作用域集合，`push_scope` 声明输出作用域。别名的 `subName` 支持受限的数据表达式，用于匹配与提示。
 
-在使用处，别名体会被复制为普通属性规则（键名 = 子名，值和子规则深拷贝，保留选项）。如果展开结果的值侧仍为 `single_alias_right[...]`，会继续触发级联展开。别名常与声明规则结合使用，在定义声明中复用 trigger / effect 等片段。
+在使用处，别名体会被复制为普通属性规则（键名 = 子名，值和子规则深拷贝，保留选项）。如果展开结果的值侧仍为 `single_alias_right[...]`，会继续触发级联展开。别名常与[声明规则](#config-declaration)结合使用，在定义声明中复用 trigger / effect 等片段。
 
 **示例**：
 
@@ -375,7 +375,7 @@ enums = {
 
 **路径定位**：`values/value[{name}]`，`{name}` 为动态值类型名。
 
-若需为动态值声明"作用域上下文"或按上下文动态生成值，请参考扩展规则中的"动态值的扩展规则"。
+若需为动态值声明"作用域上下文"或按上下文动态生成值，请参考[动态值的扩展规则](#config-extended-dynamic-value)。
 
 **示例**：
 
@@ -445,7 +445,6 @@ links = {
 - `prefix` 不应带引号或括号；`input_scopes` 使用花括号集合语法（如 `{ country }`）。
 - 可混合多个 `data_source`。
 - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
-- 建议在 `data_source` 中使用 `<type>` 简写（如 `<country>`），而非 `definition[country]`。
 
 #### 作用域规则与作用域分组规则 {#config-scope}
 
@@ -498,7 +497,7 @@ scope_groups = {
 
 **修正分类字段**：`name` 为分类名（如 `Pops`），`supported_scopes` 为该分类允许的作用域集合。
 
-修正规则与类型规则的 `modifiers` 小节联动：在类型规则中声明的修正名称使用 `$` 占位，解析时会被替换为 `<{type}>` 或 `<{type}.{subtype}>`，从而派生出与类型绑定的修正规则。
+修正规则与[类型规则](#config-type)的 `modifiers` 小节联动：在类型规则中声明的修正名称使用 `$` 占位，解析时会被替换为 `<{type}>` 或 `<{type}.{subtype}>`，从而派生出与类型绑定的修正规则。
 
 **示例**：
 
@@ -577,7 +576,7 @@ localisation_promotions = {
 - 本地化：`types/type[{type}]/localisation`
 - 图片：`types/type[{type}]/images`
 
-二者结构一致：由若干"子类型表达式 + 位置规则"的配对组成。在运行时根据实际"定义的子类型集合"过滤并合并得到最终的规则列表。位置规则的常用选项包括 `required`（是否必需项）和 `primary`（是否主要项，用于主展示图标 / 主名称）。位置表达式的详细语法参见"规则表达式 → 位置表达式"。
+二者结构一致：由若干"子类型表达式 + 位置规则"的配对组成。在运行时根据实际"定义的子类型集合"过滤并合并得到最终的规则列表。位置规则的常用选项包括 `required`（是否必需项）和 `primary`（是否主要项，用于主展示图标 / 主名称）。位置表达式的详细语法参见[位置表达式](#config-expression-location)。
 
 **示例**：
 
@@ -683,9 +682,10 @@ locales = {
 > 这些规则用于增强插件的功能，例如指定规则上下文、提供额外的快速文档与内嵌提示文本等。
 >
 > 扩展规则中有一些常见的共通特征：
-> - 大部分扩展规则支持多种**名称匹配**方式：常量、模板表达式、ANT 路径模式和正则表达式（详见 FAQ）。
-> - 大部分扩展规则支持通过选项注释提供 `hint`（提示文本，用于快速文档和内嵌提示）。
-> - 部分扩展规则支持通过选项注释指定**作用域上下文**（`replace_scopes` / `push_scope`）。
+> - 大部分扩展规则支持多种**名称匹配**方式：常量、[模板表达式](#config-expression-template)、[ANT 路径模式](#faq-ant)和[正则表达式](#faq-regex)。
+> - 大部分扩展规则支持通过文档注释提供快速文档文本。
+> - 大部分扩展规则支持通过选项注释提供内嵌提示文本（`## hint`）。
+> - 部分扩展规则支持通过选项注释指定**作用域上下文**（`## replace_scopes` / `## push_scope`）。
 
 #### 封装变量的扩展规则 {#config-extended-scripted-variable}
 
@@ -717,7 +717,7 @@ scripted_variables = {
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig -->
 
-为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`hint`）、绑定定义类型（`type`，必填）、以及按需指定的作用域上下文（`replace_scopes` / `push_scope`）。
+为具体"定义（definition）"提供额外上下文与提示信息，包括文档 / 提示（`## hint`）、绑定定义类型（`## type`，必填）、以及按需指定的作用域上下文（`## replace_scopes` / `## push_scope`）。
 
 **路径定位**：`definitions/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
 
@@ -742,13 +742,13 @@ definitions = {
 **注意事项**：
 
 - `type` 为必填；缺失将导致该条目被跳过。
-- 此扩展用于"提示与上下文增强"，并不直接改变声明规则的结构。
+- 此扩展用于"提示与上下文增强"，并不直接改变[声明规则](#config-declaration)的结构。
 
 #### 游戏规则的扩展规则 {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig -->
 
-为游戏规则（即类型为 `game_rule` 的定义）提供文档 / 提示增强，并支持"重载声明规则"。
+为游戏规则（即类型为 `game_rule` 的定义）提供文档 / 提示增强，并支持"重载[声明规则](#config-declaration)"。
 
 **路径定位**：`game_rules/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
 
@@ -771,7 +771,7 @@ game_rules = {
 **注意事项**：
 
 - 若值为 `single_alias_right[...]`，会先被内联展开，再作为重载规则生效。
-- 该扩展仅影响"声明规则的来源 / 结构"与"提示信息"，不改变整体优先级与覆盖方式。
+- 该扩展仅影响"[声明规则](#config-declaration)的来源 / 结构"与"提示信息"，不改变整体优先级与覆盖方式。
 
 #### 动作触发的扩展规则 {#config-extended-on-action}
 
@@ -844,60 +844,6 @@ inline_scripts = {
 
 - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
-
-#### 复杂枚举值的扩展规则 {#config-extended-complex-enum-value}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig -->
-
-为复杂枚举的具体条目提供文档 / 提示增强（快速文档、内嵌提示等）。
-
-**路径定位**：`complex_enum_values/{type}/{name}`，其中 `{type}` 为复杂枚举名，`{name}` 为条目名或匹配模式。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
-
-**格式说明**：
-
-```cwt
-complex_enum_values = {
-    component_tag = {
-        ### Some documentation
-        ## hint = §RSome inlay hint text§!
-        x
-    }
-}
-```
-
-**注意事项**：
-
-- 本扩展不改变复杂枚举"值来源"的收集逻辑，仅提供提示信息。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
-
-#### 动态值的扩展规则 {#config-extended-dynamic-value}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig -->
-
-为某种动态值类型下的具体"动态值"条目提供文档 / 提示增强。
-
-**路径定位**：`dynamic_values/{type}/{name}`，其中 `{type}` 为动态值类型，`{name}` 为条目名或匹配模式。名称支持常量、模板表达式、ANT 路径模式与正则表达式。
-
-**格式说明**：
-
-```cwt
-dynamic_values = {
-    event_target = {
-        ### Some documentation
-        ## hint = §RSome inlay hint text§!
-        x
-
-        # scope context options: only receive push scope (this scope)
-        ## push_scope = country
-        x
-    }
-}
-```
-
-**注意事项**：
-
-- 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
-- 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
 
 #### 参数的扩展规则 {#config-extended-parameter}
 
@@ -1138,116 +1084,119 @@ dynamic_values = {
 
 > 本章节介绍各种规则表达式的用途、格式与默认 / 边界行为，帮助读者正确理解与编写这类特殊的表达式。
 
-### 基础概念与适用范围
+### 概述
 
-规则表达式是在规则的"字符串字段"中使用的结构化语法，用于描述值的形态或匹配模式。主要包括：
+规则表达式是在规则的"字符串字段"中使用的结构化语法，用于描述值的形态或匹配模式。规则表达式解析后会得到具体的[数据类型](#data-types)，数据类型决定了表达式能够匹配脚本文件中的哪些键或值。
 
-- **数据表达式**（Data Expression）：解析数据类型或动态片段。
-- **模板表达式**（Template Expression）：由常量与动态片段拼接的模式，用于更灵活的匹配。
-- **基数表达式**（Cardinality Expression）：用于声明出现次数范围及宽松校验。
-- **位置表达式**（Location Expression）：用于定位图片、本地化等资源。
-- **模式表达式**（Schema Expression）：用于规则文件本身的 RHS 取值形态声明。
+本章节涵盖以下几种规则表达式：
+
+- **[数据表达式](#config-expression-data)**（Data Expression）：描述键或值的取值形态，解析后得到具体的数据类型。
+- **[模板表达式](#config-expression-template)**（Template Expression）：由常量与动态片段拼接的模式，用于更灵活的匹配。
+- **[基数表达式](#config-expression-cardinality)**（Cardinality Expression）：约束定义成员的出现次数。
+- **[位置表达式](#config-expression-location)**（Location Expression）：定位图片、本地化等资源的来源。
+- **[模式表达式](#config-expression-schema)**（Schema Expression）：为规则文件本身的取值形态提供声明。
 
 ### 数据表达式 {#config-expression-data}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-数据表达式用于描述脚本文件中键或值的取值形态，可为常量、基本数据类型、引用或动态内容等。
+数据表达式用于描述脚本文件中键或值的取值形态，可为常量、基本数据类型、引用或动态内容等。解析后会得到具体的[数据类型](#data-types)（如 `Int`、`Float`、`Scalar`、`Enum`、`Scope`、`Definition` 等），并可附带扩展元数据（如数值范围 `int[-5..100]`、大小写策略等）。
 
-要点：
+解析时会区分键上下文（isKey=true）与值上下文（isKey=false），部分数据类型仅在特定上下文中有效。
 
-- **键 / 值上下文**：解析会区分键（isKey=true）与值（isKey=false）。
-- **类型**：解析后会得到具体的数据类型（如 `int`、`float`、`scalar`、`enum[...]`、`scope[...]`、`<type_key>` 等），详见"数据类型"章节。
-- **扩展元数据**：按数据类型可附带数值范围、大小写策略等（例如 `int[-5..100]`、`float[-inf..inf]`）。
+**默认与边界行为**：
 
-默认与边界行为：
+- 块（`{ ... }`）对应的数据类型是 `Block`。
+- 空字符串（`""`）对应的数据类型是 `Constant`，并把自身作为常量值。
+- 无法匹配任何已知数据类型时，回退为 `Constant`，并把原始字符串作为常量值。
+- 定义引用应使用尖括号形式（如 `<event>`），而非带前缀的方括号形式（如 `definiton[event]`，这是错误的写法）。
 
-- 无法匹配任何规则时，类型回退为 `Constant`，并把原始字符串写入扩展属性 `value`。
-- 空串按 `Constant("")` 处理；解析"块"时返回专用类型 `Block`。
-- 定义类型优先使用 `<country>` 这类尖括号简写，而非 `definition[country]`。
-- 可混用不同来源的动态片段，例如 `<country>/<planet>`、`dynamic_value[test_flag]`。
-- 对于 `relations('...')` 等带参动态链接，若参数为单引号字面量，视为字面量，不提供代码补全。
-
-示例（节选）：
+**示例**：
 
 ```cwt
-int
-float
-enum[shipsize_class]
-scope[country]
-<ship_size>
-pre_<opinion_modifier>_suf
+int                         # 整数
+float[0.0..1.0]             # 带范围约束的浮点数
+enum[shipsize_class]        # 枚举引用
+scope[country]              # 作用域引用
+<ship_size>                 # 定义引用
+value[event_target]         # 动态值引用
+pre_<opinion_modifier>_suf  # 模板表达式（含定义引用片段）
 ```
 
 ### 模板表达式 {#config-expression-template}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
-模板表达式由多个片段拼接而成（常量片段 + 动态片段），用于描述更复杂的取值形态。可视为多个数据表达式的组合。
+模板表达式由多个片段拼接而成——常量片段与动态片段交替组合——用于描述比单一数据表达式更复杂的取值形态。每个动态片段本身是一个受限的数据表达式（如定义引用、枚举引用、动态值引用等）。
 
-默认与约束：
+**解析约束**：
 
-- 包含空白字符视为无效模板（直接返回空表达式）。
-- 仅存在一个片段（纯常量或纯一个动态）时不视为模板。
-- 匹配采用"最左最早匹配"拆分策略。
-- 每段最终委托数据表达式解析；未匹配到规则时降级为 Constant。
+- 包含空白字符的文本视为无效模板。
+- 仅存在一个片段（纯常量或纯一个动态）时不视为模板，而是作为普通的数据表达式处理。
+- 多个片段之间采用"最左最早匹配"的拆分策略。
+- 每个片段最终委托数据表达式解析；未匹配到已知类型时降级为常量片段。
 
-示例：
+**示例**：
+
+以下示例展示了模板表达式的典型用法，`#` 后的注释标注了各片段的拆分方式：
 
 ```cwt
-job_<job>_add           # "job_" + <job> + "_add"
-xxx_value[anything]_xxx # "xxx_" + value[anything] + "_xxx"
-a_enum[weight_or_base]_b # "a_" + enum[weight_or_base] + "_b"
+job_<job>_add             # "job_" + <job> + "_add"
+xxx_value[anything]_xxx   # "xxx_" + value[anything] + "_xxx"
+a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 ```
+
+例如，`job_<job>_add` 能匹配 `job_researcher_add`、`job_farmer_add` 等——其中 `<job>` 部分匹配类型为 `job` 的任意定义名。
 
 **注意事项**：
 
-- 常量片段与"看起来像规则名"的组合紧邻时，优先保证动态规则的正确识别。
-- 若需要空白，请改用更合适的匹配方式（如 ANT / 正则）。
+- 常量片段与动态规则名紧邻时，解析器会优先保证动态规则的正确识别。
+- 模板表达式不支持空白字符；若需要空白匹配，请改用 [ANT 路径模式](#faq-ant)或[正则表达式](#faq-regex)。
 
 ### 基数表达式 {#config-expression-cardinality}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
-基数表达式用于约束定义成员的出现次数，驱动代码检查与代码补全等功能。
+基数表达式用于约束定义成员的出现次数，驱动代码检查与代码补全等功能。通过选项注释 `## cardinality` 声明。
 
-用 `min..max` 表示允许的出现次数范围，`~` 为宽松标记，`inf` 表示无限。
+格式为 `min..max`，其中 `min` 和 `max` 为非负整数或 `inf`（不区分大小写，表示无限）。在 `min` 或 `max` 前添加 `~` 前缀表示宽松校验（未满足时，仅产生警告而非错误）。
 
-默认与边界行为：
+**默认与边界行为**：
 
-- 最小值为负数时会被钳制为 0。
-- `max` 为 `inf`（不区分大小写）时表示无限。
-- 无 `..` 分隔时视为无效，不产生约束。
+- 最小值为负数时会被限制为 0。
+- 缺少 `..` 分隔符时视为无效，不产生约束。
 - `min > max` 时视为无效，不产生约束。
 
-示例：
+**示例**：
 
 ```cwt
-## cardinality = 0..1
-## cardinality = 0..inf
-## cardinality = ~1..10
+## cardinality = 0..1     # 可选，最多出现 1 次
+## cardinality = 0..inf   # 可选，出现次数不限
+## cardinality = 1..5     # 必须出现 1 到 5 次
+## cardinality = ~1..10   # 宽松校验：期望出现 1 到 10 次，但未出现时仅产生警告
 ```
 
 ### 位置表达式 {#config-expression-location}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
-位置表达式用于定位目标资源（图片、本地化等）的来源。如果表达式中包含 `$`，视为占位符，需要在后续步骤以"定义名或属性值"等动态内容替换。
+位置表达式用于定位目标资源（图片、本地化等）的来源。表达式中的 `$` 为占位符，运行时会被"定义名"或"属性值"等动态内容替换。
+
+位置表达式使用 `|` 分隔参数，格式为 `<location>|<args...>`。不同类型的位置表达式对参数的解读方式有所不同，详见下文。
 
 #### 图片位置表达式 {#config-expression-location-image}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
-用于定位定义的相关图片。
+用于定位定义的相关图片。位置部分可以是文件路径（如 `gfx/.../mod_$.dds`）、sprite 名（如 `GFX_$`）或属性键名（如 `icon`）。若为属性键名，则会继续解析该属性值所指向的图片。
 
-语法与约定：
+参数约定：
 
-- 使用 `|` 分隔参数：`<location>|<args...>`。
-- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径）。
+- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径），用于替换位置中的 `$` 占位符。
 - 其他参数表示"帧数来源路径"（支持逗号分隔多路径），用于图片切分。
 - 同类参数重复出现时，以后者为准。
 
-示例：
+**示例**：
 
 ```cwt
 gfx/interface/icons/modifiers/mod_$.dds
@@ -1257,28 +1206,25 @@ icon
 icon|p1,p2
 ```
 
-说明：`icon` 可被解析为文件路径、sprite 名或定义名；若为定义名则继续解析其最相关图片。
-
 #### 本地化位置表达式 {#config-expression-localisation}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
-用于定位定义的相关本地化。
+用于定位定义的相关本地化。位置部分可以是包含 `$` 占位符的本地化键模式（如 `$_desc`），也可以是属性键名（如 `title`）。
 
-语法与约定：
+参数约定：
 
-- 使用 `|` 分隔参数：`<location>|<args...>`。
-- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径）。
+- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径），用于替换位置中的 `$` 占位符。
 - 参数 `u` 表示将最终名称强制转为大写（仅限使用占位符时有效）。
 - `$` 参数重复出现时，以后者为准。
 
-示例：
+**示例**：
 
 ```cwt
 $_desc
 $_desc|$name
 $_desc|$name|u
-$_desc|$name,$alt_name  # multiple name paths, comma-separated
+$_desc|$name,$alt_name
 title
 ```
 
@@ -1286,75 +1232,97 @@ title
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
-模式表达式用于描述规则文件中键与值的取值形态，从而为规则文件本身提供代码补全等功能。目前仅用于提供基础的代码补全，且仅在 `cwt/core/schema.cwt` 中有用到。
+模式表达式用于描述规则文件中键与值的取值形态，从而为规则文件本身提供代码补全等功能。目前仅用于提供基础的代码补全，且仅在内置文件 `internal/schema.cwt` 中使用。与[内部规则 → 模式规则](#config-internal-schema)协同工作。
 
-支持的形态：
+模式表达式支持以下四种形态：
 
-- **常量（Constant）**：不包含 `$` 的原样字符串。
-- **模板（Template）**：包含一个或多个参数（`$...$`），如 `$type$`、`type[$type$]`。
-- **类型（Type）**：以单个 `$` 起始，如 `$any`、`$int`。
+- **常量（Constant）**：不包含 `$` 的原样字符串，如 `types`、`enums`。
+- **模板（Template）**：包含一个或多个 `$...$` 参数的模式，如 `$type$`、`type[$type$]`。
+- **类型（Type）**：以单个 `$` 起始（不闭合），如 `$any`、`$int`。
 - **约束（Constraint）**：以 `$$` 起始，如 `$$declaration`。
 
 ## FAQ {#faq}
 
 #### 关于模板表达式 {#faq-template}
 
-模板表达式由多个数据表达式（如定义、本地化、字符串字面量对应的数据表达式）组合而成，用来进行更加灵活的匹配。
+模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。详见[模板表达式](#config-expression-template)章节。
+
+以下示例展示了从简单字面量到复杂模板的演进：
+
+- `x`：字符串字面量，精确匹配 `x`。
+- `a_<job>_b`：包含定义引用 `<job>` 的模板，可匹配 `a_researcher_b`、`a_farmer_b` 等。
+- `a_enum[weight_or_base]_b`：包含枚举引用 `enum[weight_or_base]` 的模板，可匹配 `a_weight_b` 和 `a_base_b`。
+- `a_value[anything]_b`：包含动态值引用 `value[anything]` 的模板。由于 `value[anything]` 通常没有取值限制，效果近似于正则表达式 `a_.*_b`。
+
+**示例**：
 
 ```cwt
-# a string literal, exactly matches 'x'
 x
-# a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
 a_<job>_b
-# a template expression which contains a references to enum values of 'weight_or_base', matches 'a_weight_b' and 'a_base_b'
 a_enum[weight_or_base]_b
-# a template expression which contains a references to dynamic values of 'anything'
-# generally, there is no limit for 'value[anything]', so this expression is equivalent to regex 'a_.*_b'
 a_value[anything]_b
 ```
 
 #### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
-插件对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过 ANT 路径模式进行更加灵活的匹配。
+从插件版本 1.3.6 开始，可以在规则表达式中使用 ANT 路径模式进行更灵活的匹配。ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
+
+ANT 路径模式支持以下通配符：
+
+- `?`：匹配任意单个字符。
+- `*`：匹配任意字符（不含 `/`）。
+- `**`：匹配任意字符（含 `/`）。
+
+**示例**：
 
 ```cwt
-# a ant expression use prefix 'ant:'
 ant:/foo/bar?/*
-# a ant expression use prefix 'ant.i:' (ignore case)
 ant.i:/foo/bar?/*
-
-# wildcards in ant expression:
-# '?' - used to match any single character
-# '*' - used to match any characters (exclude '/')
-# '**' - used to match any characters
 ```
 
 #### 如何在规则文件中使用正则表达式 {#faq-regex}
 
-插件对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过正则表达式进行更加灵活的匹配。
+从插件版本 1.3.6 开始，可以在规则表达式中使用正则表达式进行更灵活的匹配。正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。前缀之后的部分即为标准的正则表达式。
+
+**示例**：
 
 ```cwt
-# a regex use prefix 're:'
 re:foo.*
-# a regex use prefix 're.i:' (ignore case)
 re.i:foo.*
 ```
 
-#### 如何在规则文件中指定作用域上下文 {#faq-scope}
+#### 如何在规则文件中指定作用域上下文 {#faq-scope-context}
 
-在规则文件中，作用域上下文是通过选项 `push_scope` 与 `replace_scopes` 来指定的。
+在规则文件中，作用域上下文是通过选项 `## push_scope` 与 `## replace_scopes`（或 `## replace_scope`）来指定的。
+
+`## push_scope = x` 用于将指定的作用域类型压入当前的作用域堆栈。
+
+`## replace_scopes = { this = x root = y}` 用于将指定的系统作用域到作用域类型的映射替换到当前的作用域上下文。
+仅支持 `this`、`root` 和基于 `from` 的系统作用域，不支持基于 `prev` 的系统作用域。
+
+**示例**：
 
 ```cwt
-# push 'country' scope to scope stack
-# for this example, the next this scope will be 'country'
+# for this example, the next this scope will be `country`
 ## push_scope = country
-some_config
+some_config = single_alias_right[trigger_clause]
 
-# replace scopes of specific system scopes into scope context
-# not supported for 'prev' system scope (and 'prevprev', etc.)
-# for this example, the next this scope will be 'country', so do the next root scope and the next from scope
-## replace_scopes = { this = country root = country from = country }
-some_config
+# for this example, the next this scope will be `country`
+# so do the next root scope, the next from scope, and the next fromfrom scope
+## replace_scopes = { this = country root = country from = country fromfrom = country }
+some_config = single_alias_right[trigger_clause]
+```
+
+#### 如何在规则文件中指定支持的作用域 {#faq-supported-scopes}
+
+在规则文件中，触发器（trigger）与效果（effect）的支持的作用域是通过选项 `## scopes`（或 `## scope`）来指定的。
+
+**示例**：
+
+```cwt
+# for this example, the supported scope type of trigger `has_country_flag` is `country`
+## scopes = { country }
+alias[trigger:has_country_flag] = value[country_flag]
 ```
 
 #### 如何在规则文件中进行规则注入 {#faq-config-injection}
