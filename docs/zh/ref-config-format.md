@@ -6,9 +6,8 @@
 文档内容基于 Paradox Language Support 插件的实现编写，与 CWTools 的规则格式在多数情况下兼容，但在细节和扩展点上存在差异。
 
 @see docs/zh/config.md
-@see icu.windea.pls.config.configGroup.CwtConfigGroup
-@see icu.windea.pls.config.config.CwtPropertyConfig
-@see icu.windea.pls.config.config.delegated.*
+@see icu.windea.pls.config.config.*
+@see icu.windea.pls.config.configExpression.*
 -->
 
 ## 定位与愿景 {#vision}
@@ -49,7 +48,7 @@
 
 ## 规则 {#configs}
 
-<!-- @see icu.windea.pls.config.config -->
+<!-- @see icu.windea.pls.config.config.CwtConfig -->
 
 > 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
 
@@ -105,9 +104,9 @@ priorities = {
 #### 声明规则 {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
 <!-- @see icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider -->
 <!-- @see icu.windea.pls.ep.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
 
 声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
 
@@ -870,6 +869,7 @@ complex_enum_values = {
 
 - 本扩展不改变复杂枚举"值来源"的收集逻辑，仅提供提示信息。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
+
 #### 动态值的扩展规则 {#config-extended-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
@@ -898,294 +898,6 @@ dynamic_values = {
 
 - 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
-
-### 内部规则 {#configs-internal}
-
-> 这些规则由插件内部使用，不支持自定义（或是目前尚不支持）。
-
-#### 模式规则 {#config-internal-schema}
-
-<!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
-<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
-<!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
-<!-- @see cwt/core/internal/schema.cwt -->
-
-模式规则为"规则文件本身"的右侧取值形态提供声明，用于基础级别的补全与（有限的）结构校验。目前以"初步补全"为主，暂不提供严格的 Schema 校验。
-
-模式规则仅来源于内置文件 `internal/schema.cwt`，不可被外部文件覆盖。其结构包含三类条目：
-
-- **普通属性**（`properties`）：键解析为常量、类型或模板形态。
-- **枚举**（`enums`）：键解析为枚举表达式（如 `$enum:NAME$`）。
-- **约束**（`constraints`）：键解析为约束表达式（如 `$$NAME`）。
-
-#### 折叠设置规则 {#config-internal-folding}
-
-<!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
-<!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
-<!-- @see cwt/core/internal/folding_settings.cwt -->
-
-折叠设置规则为编辑器提供额外的代码折叠规则（内部使用，目前尚不支持自定义）。
-
-仅来源于内置文件 `internal/folding_settings.cwt`。以组为单位读取每个条目，每个条目包含：
-
-- `id`：折叠项 ID（对应规则文件路径或表达式）。
-- `key`：折叠项键。
-- `keys`：备选键集合。
-- `folding_key`：用于折叠的显示键。
-- `placeholder`（选项注释 `## placeholder`）：折叠后的占位文本。
-
-#### 后缀模板设置 {#config-internal-postfix-template}
-
-<!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
-<!-- @see icu.windea.pls.lang.codeInsight.postfix.ParadoxPostfixTemplateProvider -->
-<!-- @see cwt/core/internal/postfix_template_settings.cwt -->
-
-后缀模板设置规则为编辑器提供后缀补全模板（内部使用，目前尚不支持自定义）。
-
-仅来源于内置文件 `internal/postfix_template_settings.cwt`。每个条目包含：
-
-- `id`：模板 ID。
-- `key`：触发后缀的关键字。
-- `example`：展示用示例文本。
-- `expression`：模板表达式（使用 `$EXPR$` 作为占位符）。
-- `context_expression`（选项注释 `## context_expression`）：约束模板可用上下文的表达式。
-
-## 数据类型 {#data-types}
-
-<!-- @see icu.windea.pls.config.CwtDataType -->
-<!-- @see icu.windea.pls.config.CwtDataTypes -->
-<!-- @see icu.windea.pls.config.CwtDataTypeSets -->
-<!-- @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver -->
-<!-- @see icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher -->
-
-> 本章节介绍数据类型的概念、分类与用途，帮助读者理解规则文件中的数据表达式如何与脚本文件中的实际内容进行匹配。
-
-### 概述
-
-数据类型（Data Type）是连接"规则表达式"与"脚本内容"的桥梁。每条数据表达式在解析后都会得到一个具体的数据类型，该数据类型决定了这条表达式能够匹配脚本文件中的哪些键或值。
-
-例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。又如，`enum[weight_or_base]` 的数据类型为 `Enum`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
-
-数据类型的解析由 `CwtDataExpressionResolver` 扩展点驱动，匹配逻辑由 `ParadoxScriptExpressionMatcher` 扩展点驱动。二者协作，使规则系统能够灵活地支持各种复杂的取值形态。
-
-### 基本数据类型
-
-以下数据类型表示脚本中的基本取值形态：
-
-- **`Block`**：匹配块（`{ ... }`）。当数据表达式为块时使用。
-- **`Bool`**：匹配布尔值（`yes` / `no`）。
-- **`Int`**：匹配整数，可附带范围约束（如 `int[-5..100]`）。
-- **`Float`**：匹配浮点数，可附带范围约束（如 `float[0.0..1.0]`）。
-- **`Scalar`**：匹配任意标量值（字符串、数字、布尔等均可）。
-- **`String`**：匹配任意字符串。通常以加引号的形式出现在脚本中。
-- **`ColorField`**：匹配颜色字段（如 `color[rgb]`、`color[hsv]` 等）。
-- **`PercentageField`**：匹配百分比字段（如 `percentage_field`）。
-- **`DateField`**：匹配日期字段（如 `date_field`）。
-
-### 引用数据类型
-
-以下数据类型通过引用其他规则或索引中的内容来进行匹配：
-
-- **`Constant`**：匹配固定的常量字符串。当数据表达式为字面量时使用。
-- **`Definition`**：匹配特定类型的定义。语法为 `<type>` 或 `<type.subtype>`。
-- **`Enum`**：匹配枚举值（简单枚举或复杂枚举）。语法为 `enum[name]`。
-- **`DynamicValue`**：匹配动态值。语法为 `value[name]`。
-- **`Modifier`**：匹配修正名。语法为 `modifier`。
-- **`Parameter`**：匹配参数引用。语法为 `parameter`。
-- **`ShorthandParameter`**：匹配简写参数引用。语法为 `shorthand_parameter`。
-- **`LocalisationCommand`**：匹配本地化命令字段。语法为 `localisation_command`。
-- **`DatabaseObject`**：匹配数据库对象。语法为 `database_object[type]`。
-
-### 复杂数据类型
-
-以下数据类型对应更复杂的表达式结构，匹配的脚本表达式通常会被进一步解析为"复杂表达式"：
-
-- **`ScopeField`**：匹配作用域字段表达式（如 `root.owner`）。语法为 `scope_field`。
-- **`Scope`**：匹配特定的作用域。语法为 `scope[name]` 或 `scope[group_name]`。
-- **`ScopeGroup`**：匹配作用域分组。语法为 `scope_group[name]`。
-- **`ValueField`**：匹配值字段表达式。语法为 `value_field`。
-- **`VariableField`**：匹配变量字段表达式。语法为 `variable_field`。
-- **`IntVariableField`**：匹配整数变量字段表达式。语法为 `int_variable_field`。
-- **`InlineScript`**：匹配内联脚本表达式。语法为 `single_alias_right[inline_script_usage]`（特殊处理）。
-
-### 特殊数据类型
-
-- **`AnyType`**：匹配任意类型（包括块），用于宽松校验场景。语法为 `any`。
-- **`Other`**：兜底类型，当无法解析为上述任何已知类型时使用。
-
-### 数据类型分组
-
-插件内部将数据类型按行为特征分组（`CwtDataTypeSets`），用于在特定上下文中快速判断表达式的可用行为。例如：
-
-- 哪些数据类型可以出现在复杂表达式的键侧或值侧。
-- 哪些数据类型支持作为"动态值"或"作用域"参与链式访问。
-- 哪些数据类型需要参与补全或校验等。
-
-这些分组主要服务于插件内部逻辑，规则文件的编写者通常不需要直接关注。
-
-## 规则表达式 {#config-expressions}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
-
-> 本章节介绍各种规则表达式的用途、格式与默认 / 边界行为，帮助读者正确理解与编写这类特殊的表达式。
-
-### 基础概念与适用范围
-
-规则表达式是在规则的"字符串字段"中使用的结构化语法，用于描述值的形态或匹配模式。主要包括：
-
-- **数据表达式**（Data Expression）：解析数据类型或动态片段。
-- **模板表达式**（Template Expression）：由常量与动态片段拼接的模式，用于更灵活的匹配。
-- **基数表达式**（Cardinality Expression）：用于声明出现次数范围及宽松校验。
-- **位置表达式**（Location Expression）：用于定位图片、本地化等资源。
-- **模式表达式**（Schema Expression）：用于规则文件本身的 RHS 取值形态声明。
-
-### 数据表达式 {#config-expression-data}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
-
-数据表达式用于描述脚本文件中键或值的取值形态，可为常量、基本数据类型、引用或动态内容等。
-
-要点：
-
-- **键 / 值上下文**：解析会区分键（isKey=true）与值（isKey=false）。
-- **类型**：解析后会得到具体的数据类型（如 `int`、`float`、`scalar`、`enum[...]`、`scope[...]`、`<type_key>` 等），详见"数据类型"章节。
-- **扩展元数据**：按数据类型可附带数值范围、大小写策略等（例如 `int[-5..100]`、`float[-inf..inf]`）。
-
-默认与边界行为：
-
-- 无法匹配任何规则时，类型回退为 `Constant`，并把原始字符串写入扩展属性 `value`。
-- 空串按 `Constant("")` 处理；解析"块"时返回专用类型 `Block`。
-- 定义类型优先使用 `<country>` 这类尖括号简写，而非 `definition[country]`。
-- 可混用不同来源的动态片段，例如 `<country>/<planet>`、`dynamic_value[test_flag]`。
-- 对于 `relations('...')` 等带参动态链接，若参数为单引号字面量，视为字面量，不提供代码补全。
-
-示例（节选）：
-
-```cwt
-int
-float
-enum[shipsize_class]
-scope[country]
-<ship_size>
-pre_<opinion_modifier>_suf
-```
-
-### 模板表达式 {#config-expression-template}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
-
-模板表达式由多个片段拼接而成（常量片段 + 动态片段），用于描述更复杂的取值形态。可视为多个数据表达式的组合。
-
-默认与约束：
-
-- 包含空白字符视为无效模板（直接返回空表达式）。
-- 仅存在一个片段（纯常量或纯一个动态）时不视为模板。
-- 匹配采用"最左最早匹配"拆分策略。
-- 每段最终委托数据表达式解析；未匹配到规则时降级为 Constant。
-
-示例：
-
-```cwt
-job_<job>_add           # "job_" + <job> + "_add"
-xxx_value[anything]_xxx # "xxx_" + value[anything] + "_xxx"
-a_enum[weight_or_base]_b # "a_" + enum[weight_or_base] + "_b"
-```
-
-**注意事项**：
-
-- 常量片段与"看起来像规则名"的组合紧邻时，优先保证动态规则的正确识别。
-- 若需要空白，请改用更合适的匹配方式（如 ANT / 正则）。
-
-### 基数表达式 {#config-expression-cardinality}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
-
-基数表达式用于约束定义成员的出现次数，驱动代码检查与代码补全等功能。
-
-用 `min..max` 表示允许的出现次数范围，`~` 为宽松标记，`inf` 表示无限。
-
-默认与边界行为：
-
-- 最小值为负数时会被钳制为 0。
-- `max` 为 `inf`（不区分大小写）时表示无限。
-- 无 `..` 分隔时视为无效，不产生约束。
-- `min > max` 时视为无效，不产生约束。
-
-示例：
-
-```cwt
-## cardinality = 0..1
-## cardinality = 0..inf
-## cardinality = ~1..10
-```
-
-### 位置表达式 {#config-expression-location}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
-
-位置表达式用于定位目标资源（图片、本地化等）的来源。如果表达式中包含 `$`，视为占位符，需要在后续步骤以"定义名或属性值"等动态内容替换。
-
-#### 图片位置表达式 {#config-expression-location-image}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
-
-用于定位定义的相关图片。
-
-语法与约定：
-
-- 使用 `|` 分隔参数：`<location>|<args...>`。
-- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径）。
-- 其他参数表示"帧数来源路径"（支持逗号分隔多路径），用于图片切分。
-- 同类参数重复出现时，以后者为准。
-
-示例：
-
-```cwt
-gfx/interface/icons/modifiers/mod_$.dds
-gfx/interface/icons/modifiers/mod_$.dds|$name
-GFX_$
-icon
-icon|p1,p2
-```
-
-说明：`icon` 可被解析为文件路径、sprite 名或定义名；若为定义名则继续解析其最相关图片。
-
-#### 本地化位置表达式 {#config-expression-localisation}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
-
-用于定位定义的相关本地化。
-
-语法与约定：
-
-- 使用 `|` 分隔参数：`<location>|<args...>`。
-- 以 `$` 开头的参数表示"名称文本来源路径"（支持逗号分隔多路径）。
-- 参数 `u` 表示将最终名称强制转为大写（仅限使用占位符时有效）。
-- `$` 参数重复出现时，以后者为准。
-
-示例：
-
-```cwt
-$_desc
-$_desc|$name
-$_desc|$name|u
-$_desc|$name,$alt_name  # multiple name paths, comma-separated
-title
-```
-
-### 模式表达式 {#config-expression-schema}
-
-<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
-
-模式表达式用于描述规则文件中键与值的取值形态，从而为规则文件本身提供代码补全等功能。目前仅用于提供基础的代码补全，且仅在 `cwt/core/schema.cwt` 中有用到。
-
-支持的形态：
-
-- **常量（Constant）**：不包含 `$` 的原样字符串。
-- **模板（Template）**：包含一个或多个参数（`$...$`），如 `$type$`、`type[$type$]`。
-- **类型（Type）**：以单个 `$` 起始，如 `$any`、`$int`。
-- **约束（Constraint）**：以 `$$` 起始，如 `$$declaration`。
-- 本扩展仅提供上下文与作用域信息，不直接约束内联脚本的调用位置与次数。
 
 #### 参数的扩展规则 {#config-extended-parameter}
 
