@@ -155,7 +155,7 @@ object ParadoxConfigMatchService {
             // 如果选项 starts_with 存在，则要求 type_key 匹配这个前缀
             val startsWith = typeConfig.startsWith
             if (!startsWith.isNullOrEmpty()) {
-                val result = context.typeKey.startsWith(startsWith)
+                val result = context.typeKey.startsWith(startsWith, false)
                 if (!result) return false
             }
 

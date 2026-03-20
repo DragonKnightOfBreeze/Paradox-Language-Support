@@ -35,7 +35,7 @@
 
 > 本章节介绍各种规则的用途、格式要点与注意事项，帮助读者正确理解与编写这些规则。
 
-### 概述
+### 概述 {#configs-summary}
 
 #### 规则字段的表示约定
 
@@ -181,7 +181,7 @@ building = {
 - `base_id`：基底作用域 ID，未指定时默认为 `id`。用于将同族系统作用域（如 `Prev` / `PrevPrev`、`From` / `FromFrom`）归类。
 - `: string`（值）：可读名称，未指定时默认为 `id`。
 
-系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。在部分[扩展规则](#configs-extended)中，可使用选项 `replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`replace_scopes` 不支持替换 `prev` 系列系统作用域，详见 [config.md](config.md) 中的相关说明。
+系统作用域规则与[作用域规则与作用域分组规则](#config-scope)一起决定作用域检查与提示。在部分[扩展规则](#configs-extended)中，可使用选项 `## replace_scopes` 指定系统作用域在当前上下文下对应的具体作用域类型（如将 `this` / `root` / `from` 映射为 `country`）。需要注意的是，`## replace_scopes` 不支持替换 `prev` 系列系统作用域。
 
 **示例**：
 
@@ -230,6 +230,10 @@ directive[inline_script] = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesType -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesTypeFast -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtype -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtypeFast -->
 
 类型规则按"文件路径 / 键名"等条件定位并命名"定义（definition）"，并可声明子类型、展示信息与图片。
 
@@ -253,17 +257,14 @@ directive[inline_script] = {
 - `skip_root_key`：允许跳过若干顶级键后继续匹配类型键。值为花括号集合，支持多组（忽略大小写，支持通配符 `any`/`*`/`?`）。若 `skip_root_key` 非空但文件中无根键则不匹配；若为空但文件中有根键同样不匹配。
 - `type_key_prefix`：类型键的必需前缀（忽略大小写）。
 - `## type_key_filter`：类型键的过滤条件（选项注释，忽略大小写）。支持包含集合 `{ a b }` 和排除集合 `<> { x y }`。
-- `## type_key_regex`：类型键的正则过滤（选项注释）。
-- `## starts_with`：类型键的前缀过滤（选项注释）。
+- `## type_key_regex`：类型键的正则过滤（选项注释，忽略大小写）。
+- `## starts_with`：类型键的前缀过滤（选项注释，忽略大小写）。
 - `## graph_related_types`：声明图相关类型（选项注释），用于定义间依赖关系图。
 - `localisation`：本地化展示小节，详见[类型展示规则](#config-type-presentation)。
 - `images`：图片展示小节，详见[类型展示规则](#config-type-presentation)。
 - `modifiers`：修正小节，派生出与类型绑定的[修正规则](#config-modifier)。
 
 **类型匹配流程**：
-
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesType -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesTypeFast -->
 
 对于一个脚本文件中的属性（或整个文件），类型匹配按以下步骤依次进行：
 
@@ -276,10 +277,10 @@ directive[inline_script] = {
 
 **子类型字段**：
 
-子类型通过内容匹配确定。子类型按声明顺序逐个检查，通常与[声明规则](#config-declaration)中的 `subtype[...]` 一起使用，以细化结构与校验。
+子类型通过内容匹配确定。子类型按声明顺序逐个检查，通常与[声明规则](#config-declaration)中的 `subtype[...] = {...}` 一起使用，以细化结构与校验。
 
 - `## type_key_filter`：按类型键过滤（选项注释，忽略大小写）。
-- `## type_key_regex`：按类型键正则过滤（选项注释）。
+- `## type_key_regex`：按类型键正则过滤（选项注释，忽略大小写）。
 - `## starts_with`：按类型键前缀过滤（选项注释，不忽略大小写）。
 - `## push_scope`：匹配时推入的作用域类型（选项注释）。
 - `## display_name`：子类型的展示名称（选项注释）。
@@ -287,9 +288,6 @@ directive[inline_script] = {
 - `## group`：子类型分组名（选项注释）。同一分组内的子类型互斥（最多匹配一个）。
 
 **子类型匹配流程**：
-
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtype -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesSubtypeFast -->
 
 1. **互斥检查**：若 `only_if_not` 中指定的任一子类型已匹配，则跳过。
 2. **类型键检查**：依次检查 `## starts_with`（不忽略大小写）→ `## type_key_regex` → `## type_key_filter`（忽略大小写）。
@@ -428,6 +426,7 @@ some_definition = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
 枚举规则为数据表达式 `enum[...]` 提供取值集合。根据值的来源不同，分为简单枚举和复杂枚举。
 
@@ -455,8 +454,6 @@ enums = {
 复杂枚举从脚本文件中按路径和锚点动态收集枚举值。
 
 `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` 组合决定参与扫描的文件集合（路径匹配逻辑与[类型规则](#config-type)相同）。`start_from_root` 指定是否从文件顶部（而非顶级属性的下一级）开始查询锚点。`name` 小节描述如何在匹配文件中定位值锚点——实现会收集其中所有名为 `enum_name` 的属性键或属性值或块成员值作为锚点。
-
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesComplexEnum -->
 
 **复杂枚举匹配流程**：对于匹配文件中的每个字符串表达式，插件会检查它是否可以作为某个复杂枚举值的锚点。具体步骤为：首先在 `name` 小节中查找包含 `enum_name` 的规则条目；然后根据 `enum_name` 出现的位置（作为属性键、属性值或块成员值），确定当前表达式的角色——若为属性键侧的 `enum_name`，则当前属性键即为枚举值锚点；若为属性值侧的 `enum_name`，则当前属性的值即为枚举值锚点；若为块成员值的 `enum_name`，则该值本身即为枚举值锚点。最后，从锚点向上逐层匹配父级结构，直至到达 `name` 小节的根（`start_from_root` 为 `yes` 时必须到达文件根级，否则到达顶级属性的下一级即可）。
 
@@ -587,7 +584,7 @@ links = {
   - `name`：分组名。
   - `: string[]`（值列表）：分组内作用域 ID 集合（忽略大小写）。
 
-作用域规则与系统作用域共同决定作用域栈与含义；与链接规则共同约束链式访问的输入 / 输出作用域。在扩展规则中可通过 `replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
+作用域规则与系统作用域共同决定作用域栈与含义；与链接规则共同约束链式访问的输入 / 输出作用域。在扩展规则中可通过 `## replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
 
 **示例**：
 
@@ -781,6 +778,7 @@ database_object_types = {
 #### 行规则 {#config-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
 
 行规则为 CSV 行声明列名与取值形态，用于补全与检查。
 
@@ -1195,7 +1193,7 @@ dynamic_values = {
 
 > 本章节介绍数据类型的概念、分类与用途，帮助读者理解规则文件中的数据表达式如何与脚本文件中的实际内容进行匹配。
 
-### 概述
+### 概述 {#data-types-summary}
 
 数据类型（Data Type）是连接"规则表达式"与"脚本内容"的桥梁。每条数据表达式在解析后都会得到一个具体的数据类型，该数据类型决定了这条表达式能够匹配脚本文件中的哪些键或值。
 
@@ -1203,25 +1201,25 @@ dynamic_values = {
 
 数据类型的解析由 `CwtDataExpressionResolver` 扩展点驱动，匹配逻辑由 `ParadoxScriptExpressionMatcher` 扩展点驱动。二者协作，使规则系统能够灵活地支持各种复杂的取值形态。插件会遍历所有已注册的匹配器，直到某个匹配器返回非空的匹配结果。
 
-### 基本数据类型
+### 基本数据类型 {#data-types-base}
 
 以下数据类型表示脚本中的基本取值形态：
 
 - **`Block`**：匹配块（`{ ... }`）。仅在值上下文中生效，且要求脚本表达式为块。
 - **`Bool`**：匹配布尔值（`yes` / `no`）。要求脚本表达式的类型为布尔类型。
-- **`Int`**：匹配整数，可附带范围约束（如 `int[-5..100]`）。接受整数类型，也接受加引号的整数字符串。若有范围约束，还会检查值是否在范围内。
-- **`Float`**：匹配浮点数，可附带范围约束（如 `float[0.0..1.0]`）。接受浮点数类型，也接受加引号的浮点数字符串。若有范围约束，还会检查值是否在范围内。
+- **`Int`**：匹配整数，可附带范围约束（如 `int[-5..100]`）。接受整数类型，也兼容加引号的整数字符串。容忍存在范围约束但值超出范围的情况（通过代码检查报告此问题）。
+- **`Float`**：匹配浮点数，可附带范围约束（如 `float[0.0..1.0]`）。接受浮点数类型，也兼容加引号的浮点数字符串。容忍存在范围约束但值超出范围的情况（通过代码检查报告此问题）。
 - **`Scalar`**：匹配任意标量值。接受键、布尔值、整数、浮点数和字符串（含加引号的），是一种宽松的匹配类型。
 - **`String`**：匹配任意字符串。通常以加引号的形式出现在脚本中。
 - **`ColorField`**：匹配颜色字段（如 `color[rgb]`、`color[hsv]` 等）。要求脚本表达式的类型为颜色类型，且前缀与规则中指定的颜色类型一致。
 - **`PercentageField`**：匹配百分比字段（如 `percentage_field`）。
 - **`DateField`**：匹配日期字段（如 `date_field`）。
 
-### 引用数据类型
+### 引用数据类型 {#data-types-reference}
 
 以下数据类型通过引用其他规则或索引中的内容来进行匹配：
 
-- **`Constant`**：匹配固定的常量字符串（忽略大小写）。作为值时，`yes` / `no` 需为非引号形式才能匹配。空字符串和含参数的表达式也会尝试兼容。
+- **`Constant`**：匹配固定的常量字符串（忽略大小写）。作为值时，`yes` / `no` 需为非引号形式才能匹配。也尝试兼容空字符串和含参数的表达式。
 - **`Definition`**：匹配特定类型的定义。语法为 `<type>` 或 `<type.subtype>`。接受字符串、整数和浮点数类型（如 `<technology_tier>` 可用数字表示）。通过索引查询是否存在对应名称和类型的定义。
 - **`Enum`**：匹配枚举值。语法为 `enum[name]`。对于简单枚举，检查值是否在枚举的值集合中（忽略大小写）；对于复杂枚举，通过索引查询该值是否被收集为枚举值。
 - **`DynamicValue`**：匹配动态值。语法为 `value[name]`。要求值为合法标识符（允许 `.` 分隔符），匹配时采用宽松策略（因为动态值可以被脚本自行声明）。
@@ -1231,7 +1229,7 @@ dynamic_values = {
 - **`LocalisationCommand`**：匹配本地化命令字段。语法为 `localisation_command`。
 - **`DatabaseObject`**：匹配数据库对象。语法为 `database_object[type]`。
 
-### 复杂数据类型
+### 复杂数据类型 {#data-types-complex}
 
 以下数据类型对应更复杂的表达式结构，匹配的脚本表达式通常会被进一步解析为"复杂表达式"：
 
@@ -1241,14 +1239,13 @@ dynamic_values = {
 - **`ValueField`**：匹配值字段表达式。语法为 `value_field`。除了接受字符串类型的复杂表达式外，也直接接受浮点数。
 - **`VariableField`**：匹配变量字段表达式。语法为 `variable_field`。除了接受字符串类型的复杂表达式外，也直接接受浮点数。
 - **`IntVariableField`**：匹配整数变量字段表达式。语法为 `int_variable_field`。除了接受字符串类型的复杂表达式外，也直接接受整数。
-- **`InlineScript`**：匹配内联脚本表达式。语法为 `single_alias_right[inline_script_usage]`（特殊处理）。
 
-### 特殊数据类型
+### 特殊数据类型 {#data-types-special}
 
 - **`AnyType`**：匹配任意类型（包括块），用于宽松校验场景。语法为 `any`。总是返回兜底匹配结果。
 - **`Other`**：兜底类型，当无法解析为上述任何已知类型时使用。
 
-### 数据类型分组
+### 数据类型分组 {#data-type-groups}
 
 插件内部将数据类型按行为特征分组（`CwtDataTypeSets`），用于在特定上下文中快速判断表达式的可用行为。例如：
 
@@ -1264,7 +1261,7 @@ dynamic_values = {
 
 > 本章节介绍各种规则表达式的用途、格式与默认 / 边界行为，帮助读者正确理解与编写这类特殊的表达式。
 
-### 概述
+### 概述 {#config-expressions-summary}
 
 规则表达式是在规则的"字符串字段"中使用的结构化语法，用于描述值的形态或匹配模式。规则表达式解析后会得到具体的[数据类型](#data-types)，数据类型决定了表达式能够匹配脚本文件中的哪些键或值。
 
@@ -1388,7 +1385,7 @@ icon
 icon|p1,p2
 ```
 
-#### 本地化位置表达式 {#config-expression-localisation}
+#### 本地化位置表达式 {#config-expression-location-localisation}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
