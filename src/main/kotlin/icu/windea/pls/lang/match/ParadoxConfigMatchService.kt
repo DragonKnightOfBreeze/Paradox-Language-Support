@@ -18,6 +18,7 @@ import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
@@ -204,6 +205,13 @@ object ParadoxConfigMatchService {
         return null // 需要进一步匹配
     }
 
+    fun canApplyForInjection(typeConfig: CwtTypeConfig): Boolean {
+        if (typeConfig.skipRootKey.isNotEmpty()) return false
+        if (typeConfig.nameField != null) return false
+        if (typeConfig.typeKeyPrefix.isNotNullOrEmpty()) return false
+        return true
+    }
+
     // endregion
 
     // region Subtype Config
@@ -302,11 +310,11 @@ object ParadoxConfigMatchService {
                 return ParadoxMatchService.matchScriptExpression(context).get(options)
             }
             // 匹配 single_alias
-            isSingleAliasEntryConfig(propertyConfig) -> {
+            CwtConfigMatchService.isSingleAliasEntry(propertyConfig) -> {
                 return matchesSingleAliasForSubtype(definition, property, propertyConfig, options)
             }
             // 匹配 alias
-            isAliasEntryConfig(propertyConfig) -> {
+            CwtConfigMatchService.isAliasEntry(propertyConfig) -> {
                 return matchesAliasForSubtype(definition, property, propertyConfig, options)
             }
             propertyConfig.configs.orEmpty().isNotEmpty() -> {
@@ -587,25 +595,6 @@ object ParadoxConfigMatchService {
         if (context.matchPath && context.path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(rowConfig, context.path)) return false
         }
-        return true
-    }
-
-    // endregion
-
-    // region Misc Methods
-
-    fun isAliasEntryConfig(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataTypes.AliasName && config.valueExpression.type == CwtDataTypes.AliasMatchLeft
-    }
-
-    fun isSingleAliasEntryConfig(config: CwtPropertyConfig): Boolean {
-        return config.valueExpression.type == CwtDataTypes.SingleAliasRight
-    }
-
-    fun canApplyForInjection(typeConfig: CwtTypeConfig): Boolean {
-        if (typeConfig.skipRootKey.isNotEmpty()) return false
-        if (typeConfig.nameField != null) return false
-        if (typeConfig.typeKeyPrefix.isNotNullOrEmpty()) return false
         return true
     }
 

@@ -1,8 +1,10 @@
 package icu.windea.pls.config.match
 
 import com.intellij.util.Processor
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
@@ -41,6 +43,14 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 
 object CwtConfigMatchService {
+    fun isAliasEntry(config: CwtPropertyConfig): Boolean {
+        return config.keyExpression.type == CwtDataTypes.AliasName && config.valueExpression.type == CwtDataTypes.AliasMatchLeft
+    }
+
+    fun isSingleAliasEntry(config: CwtPropertyConfig): Boolean {
+        return config.valueExpression.type == CwtDataTypes.SingleAliasRight
+    }
+
     inline fun <reified T : CwtIdMatchableConfig<*>> processMatchedConfigsById(id: String?, configGroup: CwtConfigGroup, processor: Processor<T>): Boolean {
         return processMatchedConfigsById(id, configGroup, T::class.java, processor)
     }
@@ -193,7 +203,6 @@ object CwtConfigMatchService {
             else -> throw UnsupportedOperationException()
         }
     }
-
 
     inline fun <reified T : CwtFilePathMatchableConfig<*>> processMatchedConfigsByFilePath(filePath: String?, configGroup: CwtConfigGroup, processor: Processor<T>): Boolean {
         return processMatchedConfigsByFilePath(filePath, configGroup, T::class.java, processor)
