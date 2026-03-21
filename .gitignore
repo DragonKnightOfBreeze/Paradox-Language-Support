@@ -8,6 +8,7 @@ cwt/cwtools-*-config
 
 # excluded ai rules
 .windsurf
+opencode.json
 documents/ai-rules/chro*.md
 
 # misc
