@@ -28,7 +28,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.util.PlsFileManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
@@ -46,7 +46,7 @@ abstract class ConvertImageFormatAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected open fun isAvailableForFile(file: VirtualFile): Boolean {
-        return ImageManager.isImageFileType(file.fileType)
+        return ImageService.getInstance().isImageFileType(file.fileType)
     }
 
     protected open fun getNewFileName(fileName: String): String {
@@ -274,7 +274,7 @@ abstract class ConvertImageFormatAction(
         val targetPath = td.toNioPath().resolve(targetFileName)
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
-        ImageManager.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+        ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         val t = targetPath.toVirtualFile(refreshIfNeed = true)
         return t?.toPsiFile(file.project)
     }

@@ -3,13 +3,15 @@ package icu.windea.pls.inject.injectors
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
 import javassist.CtClass
 import javassist.CtNewConstructor
 import javassist.CtNewMethod
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -31,23 +33,20 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
         const val TARGET_ARRAY_OBJECT = "icu.windea.pls.inject.injectors.CodeInjectorParameterBindingTest\$TargetArrayObject"
     }
 
-    override fun setUp() {
-        super.setUp()
-        CodeInjectorScope.classPool = CodeInjectorScope.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
-        CodeInjectorScope.codeInjectors.clear()
+    @Before
+    fun doSetUp() {
+        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
-    override fun tearDown() {
-        try {
-            CodeInjectorScope.classPool = null
-            CodeInjectorScope.codeInjectors.clear()
-        } finally {
-            super.tearDown()
-        }
+    @After
+    fun doTearDown() {
+        CodeInjectorUtil.classPool = null
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
     private fun makeTargetClass(className: String, methods: List<String>): CtClass {
-        val pool = CodeInjectorScope.classPool ?: error("ClassPool is not initialized")
+        val pool = CodeInjectorUtil.classPool ?: error("ClassPool is not initialized")
         val ctClass = pool.makeClass(className)
         ctClass.addConstructor(CtNewConstructor.defaultConstructor(ctClass))
         methods.forEach { ctClass.addMethod(CtNewMethod.make(it, ctClass)) }
@@ -56,7 +55,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
     }
 
     private fun registerInjector(codeInjector: CodeInjector) {
-        CodeInjectorScope.codeInjectors[codeInjector.id] = codeInjector
+        CodeInjectorUtil.codeInjectors[codeInjector.id] = codeInjector
     }
 
     private fun newNoopContinuation(): Continuation<Any?> {

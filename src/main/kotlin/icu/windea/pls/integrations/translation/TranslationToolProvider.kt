@@ -1,8 +1,7 @@
-package icu.windea.pls.integrations.translation.tools
+package icu.windea.pls.integrations.translation
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.integrations.translation.TranslateCallback
 
 /**
  * 提供翻译工具。用于翻译本地化文本。
@@ -10,9 +9,9 @@ import icu.windea.pls.integrations.translation.TranslateCallback
 interface TranslationToolProvider {
     fun isAvailable(): Boolean
 
-    suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback)
+    suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslationCallback)
 
-    suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback)
+    suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslationCallback)
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<TranslationToolProvider>("icu.windea.pls.integrations.translationToolProvider")

@@ -14,8 +14,7 @@ import icu.windea.pls.core.collections.filterIsInstanceTo
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.integrations.lints.tools.LintToolProvider
-import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
+import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 
 @Optimized
 class TigerConfFileChangeCollector {
@@ -66,6 +65,6 @@ class TigerConfFileChangeCollector {
     fun afterVfsChange() {
         val gameType2ConfFileName = enabledTools.associateBy({ it.forGameType }, { getConfFileName(it) })
         val gameTypeChanged = gameType2ConfFileName.filterValues { it in changedConfFileNames }.keys
-        gameTypeChanged.forEach { TigerLintIntegrationManager.modificationTrackers.getValue(it).incModificationCount() }
+        gameTypeChanged.forEach { TigerLintToolService.getInstance().getModificationTracker(it).incModificationCount() }
     }
 }

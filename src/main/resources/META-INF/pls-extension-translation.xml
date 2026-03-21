@@ -1,5 +1,5 @@
 <idea-plugin>
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
-    <translationToolProvider implementation="icu.windea.pls.integrations.translation.tools.TranslationPluginToolProvider"/>
+    <translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.TranslationPluginToolProvider"/>
   </extensions>
 </idea-plugin>

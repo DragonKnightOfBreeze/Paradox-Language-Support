@@ -14,7 +14,7 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.EnvironmentUtil
-import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.ImageService
 import org.intellij.images.ImagesBundle
 import org.intellij.images.fileTypes.ImageFileTypeManager
 import org.intellij.images.options.impl.ImagesConfigurable
@@ -66,14 +66,14 @@ class EditExternallyAction : DumbAwareAction() {
         } else {
             try {
                 Desktop.getDesktop().open(imageFile.toNioPath().toFile())
-            } catch (ignore: IOException) {
+            } catch (_: IOException) {
             }
         }
     }
 
     override fun update(e: AnActionEvent) {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val enabled = file != null && ImageManager.isExtendedImageFileType(file.fileType)
+        val enabled = file != null && ImageService.getInstance().isExtendedImageFileType(file.fileType)
         if (e.isFromContextMenu) {
             e.presentation.isVisible = enabled
         }

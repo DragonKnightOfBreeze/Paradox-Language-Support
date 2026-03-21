@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
@@ -27,18 +27,18 @@ import kotlin.reflect.jvm.javaMethod
 class BaseCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
-    private val applyInjectionMethodId get() = CodeInjectorScope.applyInjectionMethodKey.toString()
-    private val continueInvocationExceptionId get() = CodeInjectorScope.continueInvocationException.message
+    private val applyInjectionMethodId get() = CodeInjectorUtil.applyInjectionMethodKey.toString()
+    private val continueInvocationExceptionId get() = CodeInjectorUtil.continueInvocationException.message
 
     override fun apply(codeInjector: CodeInjector) {
-        val classPool = CodeInjectorScope.classPool ?: return
+        val classPool = CodeInjectorUtil.classPool ?: return
         classPool.importPackage("java.util")
         classPool.importPackage("java.lang.reflect")
         classPool.importPackage("com.intellij.openapi.application")
         classPool.importPackage("com.intellij.openapi.util")
         classPool.importPackage("icu.windea.pls.inject")
 
-        val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
+        val targetClass = codeInjector.getUserData(CodeInjectorUtil.targetClassKey) ?: return
 
         val functions = codeInjector::class.declaredFunctions
         if (functions.isEmpty()) return
@@ -59,7 +59,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             index++
         }
         if (injectMethodInfos.isEmpty()) return
-        codeInjector.putUserData(CodeInjectorScope.injectMethodInfosKey, injectMethodInfos)
+        codeInjector.putUserData(CodeInjectorUtil.injectMethodInfosKey, injectMethodInfos)
 
         if (!PlsFacade.isUnitTestMode()) {
             val code = "private static volatile Method __applyInjectionMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName(\"$applyInjectionMethodId\"));"
@@ -86,7 +86,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
 
             val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
             val expr = when {
-                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorScope.applyInjection($exprArgs)"
+                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorUtil.applyInjection($exprArgs)"
                 else -> "(\$r) __applyInjectionMethod__.invoke(null, new Object[] { $exprArgs })"
             }
             val throwExpr = when (injectMethodInfo.pointer) {

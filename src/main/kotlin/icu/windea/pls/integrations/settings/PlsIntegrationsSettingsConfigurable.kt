@@ -8,8 +8,10 @@ import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.integrations.PlsIntegrationConstants
 import icu.windea.pls.integrations.PlsIntegrationsBundle
+import icu.windea.pls.integrations.images.ImageToolConstants
+import icu.windea.pls.integrations.lints.LintToolConstants
+import icu.windea.pls.integrations.translation.TranslationToolConstants
 import icu.windea.pls.model.constants.PlsHelpTopics
 
 @Suppress("UnstableApiUsage")
@@ -38,14 +40,14 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                     checkBox(PlsIntegrationsBundle.message("settings.integrations.image.from.texconv"))
                         .comment(PlsIntegrationsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(imageSettings::enableTexconv)
-                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Texconv.url)
+                    browserLink(PlsBundle.message("link.website"), ImageToolConstants.Texconv.url)
                 }
                 // enableMagick
                 row {
                     checkBox(PlsIntegrationsBundle.message("settings.integrations.image.from.magick"))
                         .comment(PlsIntegrationsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(imageSettings::enableMagick)
-                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Magick.url)
+                    browserLink(PlsBundle.message("link.website"), ImageToolConstants.Magick.url)
                 }
                 // magickPath
                 row {
@@ -54,7 +56,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                         .withTitle(PlsIntegrationsBundle.message("settings.integrations.image.magickPath.title"))
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(imageSettings::magickPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsIntegrationConstants.Magick.pathTip()) }
+                        .applyToComponent { setEmptyState(ImageToolConstants.Magick.pathTip()) }
                         .align(Align.FILL)
                         .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
                 }
@@ -67,7 +69,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                 row {
                     checkBox(PlsIntegrationsBundle.message("settings.integrations.translation.from.tp")).selected(true).enabled(false)
                         .comment(PlsIntegrationsBundle.message("settings.integrations.translation.from.tp.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.TranslationPlugin.url)
+                    browserLink(PlsBundle.message("link.website"), TranslationToolConstants.TranslationPlugin.url)
                     link(PlsBundle.message("link.install")) { PlsIntegrationsSettingsManager.installTranslationPlugin() }
                 }
                 row {
@@ -87,7 +89,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                     checkBox(PlsIntegrationsBundle.message("settings.integrations.lint.tiger"))
                         .bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Tiger.url)
+                    browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
 
                 val map = PlsIntegrationsSettingsManager.getTigerSettingsMap(settings)
@@ -100,7 +102,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                             .withTitle(PlsIntegrationsBundle.message("settings.integrations.lint.tigerPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(pathProp.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.pathTip(gameType)) }
+                            .applyToComponent { setEmptyState(LintToolConstants.Tiger.pathTip(gameType)) }
                             .align(Align.FILL)
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
@@ -112,7 +114,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                             .withTitle(PlsIntegrationsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(confPathProp.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.confPathTip(gameType)) }
+                            .applyToComponent { setEmptyState(LintToolConstants.Tiger.confPathTip(gameType)) }
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
                             .align(Align.FILL)
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }

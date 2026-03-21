@@ -10,17 +10,17 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
 import icu.windea.pls.integrations.lints.TigerLintResult
-import icu.windea.pls.integrations.lints.tools.TigerLintToolProvider
+import icu.windea.pls.integrations.lints.TigerLintToolService
+import icu.windea.pls.integrations.lints.TigerLintToolUtil
+import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import java.util.concurrent.Callable
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
 /**
- * @see TigerLintIntegrationManager
- * @see TigerLintToolProvider
  * @see TigerLintResult
+ * @see TigerLintToolProvider
  */
 class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>() {
     data class Info(val file: PsiFile)
@@ -28,7 +28,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
     override fun getPairedBatchInspectionShortName() = PlsTigerLintInspection.SHORT_NAME
 
     override fun collectInformation(file: PsiFile): Info? {
-        if (!TigerLintIntegrationManager.checkAvailableFor(file)) return null
+        if (!TigerLintToolService.getInstance().checkAvailableFor(file)) return null
         return Info(file)
     }
 
@@ -38,7 +38,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
 
     override fun doAnnotate(collectedInfo: Info?): TigerLintResult? {
         val file = collectedInfo?.file ?: return null
-        val task = Callable { TigerLintIntegrationManager.getTigerLintResultForFile(file) }
+        val task = Callable { TigerLintToolService.getInstance().getTigerLintResultForFile(file) }
         return ReadAction.nonBlocking(task).withDocumentsCommitted(file.project).executeSynchronously()
     }
 
@@ -76,7 +76,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
     }
 
     private fun getHighlightSeverity(item: TigerLintResult.Item): HighlightSeverity {
-        val tigerHighlightSeverity = TigerLintIntegrationManager.getHighlightSeverity(item.confidence, item.severity)
+        val tigerHighlightSeverity = TigerLintToolUtil.getHighlightSeverity(item.confidence, item.severity)
         return tigerHighlightSeverity.value ?: HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING
     }
 

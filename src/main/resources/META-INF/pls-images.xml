@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.images.support" interface="icu.windea.pls.images.support.ImageSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.images.support" interface="icu.windea.pls.images.ImageSupport" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls.images">
@@ -23,6 +23,11 @@
     <documentationProvider implementation="icu.windea.pls.images.tga.TgaDocumentationProvider"/>
     <fileEditorProvider implementation="icu.windea.pls.images.tga.TgaFileEditorProvider"/>
   </extensions>
+
+  <applicationListeners>
+    <listener class="icu.windea.pls.images.ImageService" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.images.ImageService" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+  </applicationListeners>
 
   <actions>
     <group id="Pls.ImagesRootGroup">

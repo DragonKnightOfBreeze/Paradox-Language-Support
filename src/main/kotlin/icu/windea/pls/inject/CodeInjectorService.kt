@@ -13,9 +13,6 @@ import javassist.ClassPool
 
 @Service
 class CodeInjectorService : Disposable {
-    /**
-     * 用于在 IDE 启动时应用代码注入器。
-     */
     class Listener : AppLifecycleListener {
         override fun appFrameCreated(commandLineArgs: MutableList<String>) {
             service<CodeInjectorService>().init()
@@ -24,12 +21,12 @@ class CodeInjectorService : Disposable {
 
     fun init() {
         if (!PlsFacade.isUnitTestMode()) {
-            application.putUserData(CodeInjectorScope.applyInjectionMethodKey, CodeInjectorScope.javaClass.methods.first { it.name == "applyInjection" })
+            application.putUserData(CodeInjectorUtil.applyInjectionMethodKey, CodeInjectorUtil.javaClass.methods.first { it.name == "applyInjection" })
         }
 
-        CodeInjectorScope.classPool = CodeInjectorScope.getClassPool()
+        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool()
 
-        val codeInjectors = CodeInjectorScope.codeInjectors
+        val codeInjectors = CodeInjectorUtil.codeInjectors
         val logger = thisLogger()
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
             val codeInjectorId = codeInjector.id
@@ -46,20 +43,20 @@ class CodeInjectorService : Disposable {
         }
 
         // clean up class pool
-        CodeInjectorScope.classPool = null
+        CodeInjectorUtil.classPool = null
         // tricky but somehow necessary (~20M)
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
     override fun dispose() {
         if (!PlsFacade.isUnitTestMode()) {
-            application.putUserData(CodeInjectorScope.applyInjectionMethodKey, null)
+            application.putUserData(CodeInjectorUtil.applyInjectionMethodKey, null)
         }
 
         // 避免内存泄露
-        CodeInjectorScope.classPool = null
-        CodeInjectorScope.codeInjectors.clear()
-        CodeInjectorScope.runSafelyFlags.cleanUp()
+        CodeInjectorUtil.classPool = null
+        CodeInjectorUtil.codeInjectors.clear()
+        CodeInjectorUtil.runSafelyFlags.cleanUp()
     }
 }
 

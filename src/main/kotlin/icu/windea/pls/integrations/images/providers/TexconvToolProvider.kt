@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.images.tools
+package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.system.OS
@@ -34,7 +34,7 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         return true
     }
 
-    override fun validatePath(path: String): Boolean {
+    override fun isValidExePath(path: String): Boolean {
         return true
     }
 

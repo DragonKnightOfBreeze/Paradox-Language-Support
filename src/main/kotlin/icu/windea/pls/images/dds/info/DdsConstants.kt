@@ -91,6 +91,7 @@ object DdsConstants {
     // const val DDS_ALPHA_MODE_CUSTOM: Int = 0x4
     // const val DDS_MISC_FLAGS2_ALPHA_MODE_MASK: Int = 0x7
 
+    @Suppress("unused")
     fun getStringFrom4CC(v: Int): String {
         val a = (v and 0xFF).toChar()
         val b = (v shr 8 and 0xFF).toChar()

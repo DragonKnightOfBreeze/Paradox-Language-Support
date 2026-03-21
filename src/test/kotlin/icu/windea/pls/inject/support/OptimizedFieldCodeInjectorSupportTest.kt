@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.support
 
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.OptimizedField
 import javassist.ClassClassPath
@@ -53,12 +53,12 @@ class OptimizedFieldCodeInjectorSupportTest {
         // We defrost it explicitly because we are going to mutate bytecode.
         ctClass.defrost()
 
-        // OptimizedFieldCodeInjectorSupport reads CodeInjectorScope.classPool during transformations.
+        // OptimizedFieldCodeInjectorSupport reads CodeInjectorUtil.classPool during transformations.
         // In production this is set by CodeInjectorService; in tests we set/reset it explicitly.
-        CodeInjectorScope.classPool = pool
+        CodeInjectorUtil.classPool = pool
         try {
             val injector = Injector()
-            injector.putUserData(CodeInjectorScope.targetClassKey, ctClass)
+            injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
 
             OptimizedFieldCodeInjectorSupport().apply(injector)
 
@@ -76,7 +76,7 @@ class OptimizedFieldCodeInjectorSupportTest {
             assertEquals(2, compute.invoke(instance, 1))
             assertEquals(NewType::class.java.name, getFieldClassName.invoke(instance))
         } finally {
-            CodeInjectorScope.classPool = null
+            CodeInjectorUtil.classPool = null
         }
     }
 }

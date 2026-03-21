@@ -1,6 +1,7 @@
-package icu.windea.pls.integrations.images.tools
+package icu.windea.pls.integrations.images.providers
 
 import icu.windea.pls.images.ImageInputStreamAdapter
+import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.model.constants.PlsPaths
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
@@ -29,7 +30,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
 
     abstract fun isValid(): Boolean
 
-    abstract fun validatePath(path: String): Boolean
+    abstract fun isValidExePath(path: String): Boolean
 
     override fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
         val inputStream = ImageInputStreamAdapter(stream)

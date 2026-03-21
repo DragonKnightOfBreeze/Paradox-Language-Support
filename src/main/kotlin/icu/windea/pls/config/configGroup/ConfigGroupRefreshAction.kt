@@ -37,6 +37,6 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed }
         configGroups.forEach { configGroup -> configGroup.changed = false }
-        configGroupService.refreshConfigGroups(configGroups)
+        configGroupService.refreshConfigGroupsAsync(configGroups)
     }
 }

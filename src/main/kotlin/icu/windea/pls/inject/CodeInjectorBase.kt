@@ -26,10 +26,10 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         // skip if plugin of specified plugin id is not enabled
         if (pluginId.isNotEmpty() && enabledPlugin == null) return
 
-        val classPool = CodeInjectorScope.classPool ?: return
+        val classPool = CodeInjectorUtil.classPool ?: return
         val injectTargetName = injectionTargetInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
-        putUserData(CodeInjectorScope.targetClassKey, targetClass)
+        putUserData(CodeInjectorUtil.targetClassKey, targetClass)
 
         applyCodeInjectorSupports()
 
@@ -43,7 +43,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         targetClass.detach()
 
         // clean up
-        putUserData(CodeInjectorScope.targetClassKey, null)
+        putUserData(CodeInjectorUtil.targetClassKey, null)
     }
 
     private fun getInjectionTargetInfo(): InjectionTargetInfo? {
@@ -71,7 +71,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
             if (e is ProcessCanceledException) throw e
             val codeInjectorId = this.id
             val flagId = "$codeInjectorId.$id"
-            val flag = CodeInjectorScope.runSafelyFlags.get(flagId)
+            val flag = CodeInjectorUtil.runSafelyFlags.get(flagId)
             runOnce(flag) {
                 val logger = thisLogger()
                 logger.warn("ERROR when executing injected code from code injector: $codeInjectorId (suppressed now)")
@@ -83,5 +83,5 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     /**
      * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
      */
-    protected fun continueInvocation(): Nothing = throw CodeInjectorScope.continueInvocationException
+    protected fun continueInvocation(): Nothing = throw CodeInjectorUtil.continueInvocationException
 }

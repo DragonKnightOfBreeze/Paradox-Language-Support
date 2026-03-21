@@ -13,7 +13,7 @@ import java.lang.reflect.Parameter
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("unused")
-object CodeInjectorScope {
+object CodeInjectorUtil {
     // keys for `Application`
     @JvmField val applyInjectionMethodKey = createKey<Method>("APPLY_INJECTION_METHOD_BY_WINDEA")
 

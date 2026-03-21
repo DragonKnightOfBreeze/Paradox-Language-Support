@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
@@ -75,7 +75,7 @@ class ParadoxGameSettingsDialog(
                 row { // 尽管目前仅适用于模组目录……
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
-                    browserLink(PlsBundle.message("link.website"), PlsIntegrationConstants.Tiger.url)
+                    browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
             }
 

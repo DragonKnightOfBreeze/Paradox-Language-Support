@@ -4,7 +4,7 @@ import icu.windea.pls.core.memberProperty
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
-import icu.windea.pls.integrations.images.ImageIntegrationManager
+import icu.windea.pls.integrations.images.ImageToolService
 import java.awt.image.BufferedImage
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
@@ -22,7 +22,7 @@ class TGAImageReaderCodeInjector : CodeInjectorBase() {
     fun Any.read(imageIndex: Int, param: ImageReadParam?): BufferedImage {
         runSafely r@{
             val stream = this.imageInput ?: return@r
-            val image = ImageIntegrationManager.read(imageIndex, param, stream, "tga", "png") ?: return@r
+            val image = ImageToolService.getInstance().read(imageIndex, param, stream, "tga", "png") ?: return@r
             return image
         }
         continueInvocation()

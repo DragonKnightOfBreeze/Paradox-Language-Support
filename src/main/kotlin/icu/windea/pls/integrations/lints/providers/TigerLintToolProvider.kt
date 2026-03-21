@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.lints.tools
+package icu.windea.pls.integrations.lints.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
@@ -39,17 +39,17 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         return gameType == forGameType
     }
 
-    final override fun isValid(): Boolean {
+    override fun isValid(): Boolean {
         val path = exePath?.trim()
         if (path.isNullOrEmpty()) return false
-        return validatePath(path)
+        return isValidExePath(path)
     }
 
-    fun validatePath(path: String): Boolean {
-        return runCatchingCancelable { doValidatePath(path) }.getOrDefault(false)
+    override fun isValidExePath(path: String): Boolean {
+        return runCatchingCancelable { checkExePath(path) }.getOrDefault(false)
     }
 
-    private fun doValidatePath(path: String): Boolean {
+    private fun checkExePath(path: String): Boolean {
         val fullExePath = path.toPath()
         if (fullExePath.nameWithoutExtension != name) return false
         val wd = fullExePath.parent?.toFile()

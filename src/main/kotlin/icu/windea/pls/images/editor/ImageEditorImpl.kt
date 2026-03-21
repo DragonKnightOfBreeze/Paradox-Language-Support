@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.VirtualFilePropertyEvent
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
-import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.ImageService
 import org.intellij.images.editor.ImageDocument
 import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.editor.ImageEditor
@@ -132,7 +132,7 @@ class ImageEditorImpl(
 
         // Change document
         file.refresh(true, false) {
-            if (ImageManager.isExtendedImageFileType(file.fileType)) {
+            if (ImageService.getInstance().isExtendedImageFileType(file.fileType)) {
                 setValue(file)
             } else {
                 setValue(null)

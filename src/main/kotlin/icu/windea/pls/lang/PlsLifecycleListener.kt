@@ -1,18 +1,14 @@
 package icu.windea.pls.lang
 
 import com.intellij.ide.AppLifecycleListener
-import com.intellij.ide.plugins.DynamicPluginListener
-import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
-import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.PlsDaemonManager
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.atomic.AtomicBoolean
@@ -20,30 +16,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * 用于在特定生命周期执行特定的代码，例如，在 IDE 启动时初始化一些缓存数据。
  */
-class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
+class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     private val runOncePerApplication = AtomicBoolean(false)
     private val mutex = Mutex()
 
     // for whole application
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
-        ImageManager.registerImageIOSpi()
         // 在启动应用后，异步地初始化缓存数据
         initCachesAsync()
         // 在启动应用后，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
         initDefaultConfigGroupsAsync()
-    }
-
-    override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
-        if (pluginDescriptor.pluginId == PlsConstants.pluginId) {
-            ImageManager.registerImageIOSpi()
-        }
-    }
-
-    override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
-        if (pluginDescriptor.pluginId == PlsConstants.pluginId) {
-            ImageManager.deregisterImageIOSpi()
-        }
     }
 
     // for each project
@@ -72,13 +55,13 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     private fun initDefaultConfigGroupsAsync() {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
-        CwtConfigGroupService.getInstance().initAsync()
+        CwtConfigGroupService.getInstance().initConfigGroupsAsync()
     }
 
     private fun initConfigGroupsAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         if (project.isDisposed) return
-        CwtConfigGroupService.getInstance(project).initAsync {
+        CwtConfigGroupService.getInstance(project).initConfigGroupsAsync {
             // 重新解析已打开的文件
             val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
             PlsDaemonManager.reparseFiles(openedFiles)

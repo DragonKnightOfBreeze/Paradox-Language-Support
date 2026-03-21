@@ -3,7 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
@@ -13,6 +13,8 @@ import javassist.ClassClassPath
 import javassist.CtClass
 import javassist.CtNewConstructor
 import javassist.CtNewMethod
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -67,26 +69,22 @@ class CodeInjectorsTest : BasePlatformTestCase() {
         fun getKind(): String = value.kind()
     }
 
-
-    override fun setUp() {
-        super.setUp()
-        // CodeInjectorBase uses CodeInjectorScope.classPool. We reset it per test to avoid cross-test pollution.
+    @Before
+    fun doSetUp() {
+        // CodeInjectorBase uses CodeInjectorUtil.classPool. We reset it per test to avoid cross-test pollution.
         // ClassClassPath(javaClass) ensures Javassist can resolve test classes created/used in this test.
-        CodeInjectorScope.classPool = CodeInjectorScope.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
-        CodeInjectorScope.codeInjectors.clear()
+        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
-    override fun tearDown() {
-        try {
-            CodeInjectorScope.classPool = null
-            CodeInjectorScope.codeInjectors.clear()
-        } finally {
-            super.tearDown()
-        }
+    @After
+    fun doTearDown() {
+        CodeInjectorUtil.classPool = null
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
     private fun makeTargetClass(className: String, methods: List<String>): CtClass {
-        val pool = CodeInjectorScope.classPool ?: error("ClassPool is not initialized")
+        val pool = CodeInjectorUtil.classPool ?: error("ClassPool is not initialized")
         val ctClass = pool.makeClass(className)
         ctClass.addConstructor(CtNewConstructor.defaultConstructor(ctClass))
         methods.forEach { ctClass.addMethod(CtNewMethod.make(it, ctClass)) }
@@ -104,7 +102,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     }
 
     private fun registerInjector(codeInjector: CodeInjector) {
-        CodeInjectorScope.codeInjectors[codeInjector.id] = codeInjector
+        CodeInjectorUtil.codeInjectors[codeInjector.id] = codeInjector
     }
 
     @Test

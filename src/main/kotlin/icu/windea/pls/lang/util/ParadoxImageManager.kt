@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.images.ImageFrameInfo
-import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.ImageService
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -148,7 +148,7 @@ object ParadoxImageManager {
 
     private fun doResolveUrlWithFrameInfo(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo?): String? {
         // accept various image file types (normal file types such as png, or extended file aka dds and tga)
-        if (!ImageManager.isImageFileType(file.fileType)) return null
+        if (!ImageService.getInstance().isImageFileType(file.fileType)) return null
 
         val filePath = file.toNioPath()
         if (frameInfo == null || !frameInfo.canApply()) return filePath.absolutePathString()
@@ -197,7 +197,7 @@ object ParadoxImageManager {
 
         imagePath.create()
         val image = ImageIO.read(filePath.toFile()) ?: return false
-        val slicedImage = ImageManager.sliceImage(image, frameInfo) ?: return false
+        val slicedImage = ImageService.getInstance().sliceImage(image, frameInfo) ?: return false
         ImageIO.write(slicedImage, "png", imagePath.toFile())
         return true
     }

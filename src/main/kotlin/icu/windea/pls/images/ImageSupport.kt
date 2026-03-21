@@ -1,4 +1,4 @@
-package icu.windea.pls.images.support
+package icu.windea.pls.images
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import java.io.InputStream

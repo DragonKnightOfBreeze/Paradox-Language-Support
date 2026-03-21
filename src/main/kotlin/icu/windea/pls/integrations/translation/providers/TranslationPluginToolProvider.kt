@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.translation.tools
+package icu.windea.pls.integrations.translation.providers
 
 import cn.yiiguxing.plugin.translate.trans.Lang
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
@@ -7,7 +7,8 @@ import cn.yiiguxing.plugin.translate.trans.TranslateService
 import cn.yiiguxing.plugin.translate.trans.Translation
 import com.intellij.openapi.application.UI
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.integrations.translation.TranslateCallback
+import icu.windea.pls.integrations.translation.TranslationCallback
+import icu.windea.pls.integrations.translation.TranslationToolProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +20,7 @@ class TranslationPluginToolProvider : TranslationToolProvider {
         return true // see: pls-extension-translation.xml
     }
 
-    override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback) {
+    override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslationCallback) {
         val sourceLang = if(sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
         val targetLang = Lang[targetLocale]
         val translateService = TranslateService.getInstance()
@@ -28,17 +29,17 @@ class TranslationPluginToolProvider : TranslationToolProvider {
         withContext(Dispatchers.UI) {
             translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {
-                    callback(translation.translation, null)
+                    callback.call(translation.translation, null)
                 }
 
                 override fun onError(throwable: Throwable) {
-                    callback(null, throwable)
+                    callback.call(null, throwable)
                 }
             })
         }
     }
 
-    override suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback) {
+    override suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslationCallback) {
         val translateService = TranslateService.getInstance()
         val supportedSourceLanguages = translateService.translator.supportedSourceLanguages
         val supportedTargetLanguages = translateService.translator.supportedTargetLanguages
@@ -49,11 +50,11 @@ class TranslationPluginToolProvider : TranslationToolProvider {
         withContext(Dispatchers.UI) {
             translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {
-                    callback(translation.translation, null)
+                    callback.call(translation.translation, null)
                 }
 
                 override fun onError(throwable: Throwable) {
-                    callback(null, throwable)
+                    callback.call(null, throwable)
                 }
             })
         }

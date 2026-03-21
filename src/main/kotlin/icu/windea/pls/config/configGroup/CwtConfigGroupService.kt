@@ -99,7 +99,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
-    fun initAsync(callback: () -> Unit = {}) {
+    fun initConfigGroupsAsync(callback: () -> Unit = {}) {
         val configGroups = getConfigGroups().values
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -160,7 +160,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     @Synchronized
-    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+    fun refreshConfigGroupsAsync(configGroups: Collection<CwtConfigGroup>) {
         if (project.isDefault) return
         if (configGroups.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)

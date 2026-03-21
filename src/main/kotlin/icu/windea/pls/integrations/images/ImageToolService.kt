@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images
 
-import icu.windea.pls.integrations.images.tools.ImageToolProvider
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -8,7 +9,8 @@ import java.nio.file.Path
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
-object ImageIntegrationManager {
+@Service
+class ImageToolService {
     /** @see ImageToolProvider */
     fun findTool(): ImageToolProvider? {
         return ImageToolProvider.EP_NAME.extensionList.findLast { it.isAvailable() }
@@ -33,5 +35,10 @@ object ImageIntegrationManager {
         val tool = findTool() ?: return false
         tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         return true
+    }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): ImageToolService = service()
     }
 }

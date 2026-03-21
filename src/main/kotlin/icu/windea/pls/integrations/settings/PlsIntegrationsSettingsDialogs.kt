@@ -9,8 +9,9 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.LintHighlightSeverity
-import icu.windea.pls.integrations.lints.TigerLintIntegrationManager
 import icu.windea.pls.integrations.lints.TigerLintResult.*
+import icu.windea.pls.integrations.lints.TigerLintToolService
+import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import javax.swing.JComponent
 import javax.swing.SwingUtilities
 
@@ -32,7 +33,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
     // severity -> confidence -> highlight severity option
     private val propertyGroup = Severity.entries.associateWith { severity ->
         Confidence.entries.associateWith { confidence ->
-            val p = TigerLintIntegrationManager.getConfiguredHighlightSeverity(confidence, severity)
+            val p = TigerLintToolUtil.getConfiguredHighlightSeverity(confidence, severity)
             propertyGraph.property(p.get())
         }
     }
@@ -62,7 +63,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
     //         if (m.mark()) separator()
     //         row {
     //             label(PlsBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
-    //             label(TigerLintIntegrationManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")
+    //             label(TigerLintToolManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")
     //             highlightSeverityComboBox(mergedOption).applyToComponent { mergedCb = this }
     //             button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
     //         }
@@ -71,7 +72,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
     //             label(PlsBundle.message("lint.tiger.confidence")).widthGroup("tiger.label.0")
     //             propertyGroup.getValue(severity).forEach { (confidence, option) ->
     //                 i++
-    //                 label(TigerLintIntegrationManager.getConfidenceDisplayName(confidence)).widthGroup("tiger.label.$i")
+    //                 label(TigerLintToolManager.getConfidenceDisplayName(confidence)).widthGroup("tiger.label.$i")
     //                 highlightSeverityComboBox(option)
     //                 forceRefreshMergedOption(option, mergedCb)
     //             }
@@ -87,13 +88,13 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
         row {
             label("").widthGroup("tiger.c0")
             label(confidencePrefix + PlsIntegrationsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
-            Confidence.entries.forEachIndexed { i, e -> label(confidencePrefix + TigerLintIntegrationManager.getConfidenceDisplayName(e)).widthGroup("tiger.c${i + 2}") }
+            Confidence.entries.forEachIndexed { i, e -> label(confidencePrefix + TigerLintToolUtil.getConfidenceDisplayName(e)).widthGroup("tiger.c${i + 2}") }
         }
         Severity.entries.forEach { severity ->
             row {
                 lateinit var mergedCb: ComboBox<LintHighlightSeverity>
 
-                label(severityPrefix + TigerLintIntegrationManager.getSeverityDisplayName(severity)).widthGroup("tiger.c0")
+                label(severityPrefix + TigerLintToolUtil.getSeverityDisplayName(severity)).widthGroup("tiger.c0")
                 val mergedOption = mergedProperties.getValue(severity)
                 highlightSeverityComboBox(mergedOption).widthGroup("tiger.c1").applyToComponent { mergedCb = this }
                 var i = 0
@@ -146,7 +147,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
 
     private fun resetOptionsToDefaults(severity: Severity) {
         propertyGroup.getValue(severity).forEach { (confidence, option) ->
-            val dv = TigerLintIntegrationManager.getDefaultHighlightSeverity(confidence, severity)
+            val dv = TigerLintToolUtil.getDefaultHighlightSeverity(confidence, severity)
             option.set(dv) // 这会导致 mp.fireChangeEvent() 被调用多次，但是问题不大
         }
     }
@@ -155,7 +156,7 @@ class TigerHighlightDialog : DialogWrapper(null, true) {
         // 同步属性更改到插件设置
         propertyGroup.forEach { (severity, options) ->
             options.forEach { (confidence, option) ->
-                TigerLintIntegrationManager.getConfiguredHighlightSeverity(confidence, severity).set(option.get())
+                TigerLintToolUtil.getConfiguredHighlightSeverity(confidence, severity).set(option.get())
             }
         }
         super.doOKAction()

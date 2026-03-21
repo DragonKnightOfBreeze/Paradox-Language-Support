@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.tools
 
 import com.intellij.ide.actions.RevealFileAction
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.util.system.OS
 import icu.windea.pls.PlsFacade
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
 
-class PlsPathServiceImpl : PlsPathService {
+class PlsPathServiceImpl : PlsPathService, Disposable {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
     private val emptyPath = Path.of("")
 
@@ -190,5 +191,10 @@ class PlsPathServiceImpl : PlsPathService {
 
     override fun copyPath(path: Path) {
         CopyPasteManager.getInstance().setContents(StringSelection(path.toString()))
+    }
+
+    override fun dispose() {
+        // 避免内存泄露
+        steamPathCache.clear()
     }
 }

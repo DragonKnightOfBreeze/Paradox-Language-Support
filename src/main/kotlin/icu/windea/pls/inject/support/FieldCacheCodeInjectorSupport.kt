@@ -2,7 +2,7 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.FieldCache
 import javassist.CtClass
@@ -19,7 +19,7 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
+        val targetClass = codeInjector.getUserData(CodeInjectorUtil.targetClassKey) ?: return
         val infos = codeInjector::class.findAnnotations<FieldCache>()
         if (infos.isEmpty()) return
 

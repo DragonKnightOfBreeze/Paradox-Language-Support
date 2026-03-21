@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.lang.fileInfo
 
 object PlsIndexUtil {
@@ -38,6 +37,4 @@ object PlsIndexUtil {
         if (fileName in excludedDirectoryNames) return false // 排除一些特定的目录
         return true
     }
-
-    val indexInfoMarkerKey = createKey<Boolean>("paradox.index.info.marker")
 }

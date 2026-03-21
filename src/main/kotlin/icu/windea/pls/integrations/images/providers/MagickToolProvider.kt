@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.images.tools
+package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.executeCommand
@@ -29,10 +29,10 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     override fun isValid(): Boolean {
         val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) return false
-        return validatePath(toolPath)
+        return isValidExePath(toolPath)
     }
 
-    override fun validatePath(path: String): Boolean {
+    override fun isValidExePath(path: String): Boolean {
         return runCatchingCancelable { doValidatePath(path) }.getOrDefault(false)
     }
 

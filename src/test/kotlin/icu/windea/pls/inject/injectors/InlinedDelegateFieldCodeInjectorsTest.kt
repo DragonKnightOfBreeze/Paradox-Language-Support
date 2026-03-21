@@ -4,11 +4,13 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorScope
 import icu.windea.pls.inject.CodeInjectorSupport
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
 import javassist.CtNewConstructor
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -22,21 +24,16 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
     @Suppress("unused")
     private class ConfigGroupDataModel : CwtConfigGroupDataHolderBase()
 
-    override fun setUp() {
-        super.setUp()
-        // The injector framework relies on a shared ClassPool. In tests, we explicitly initialize/reset it.
-        // to avoid leaking modified CtClass instances across different test classes.
-        CodeInjectorScope.classPool = CodeInjectorScope.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
-        CodeInjectorScope.codeInjectors.clear()
+    @Before
+    fun doSetUp() {
+        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
-    override fun tearDown() {
-        try {
-            CodeInjectorScope.classPool = null
-            CodeInjectorScope.codeInjectors.clear()
-        } finally {
-            super.tearDown()
-        }
+    @After
+    fun doTearDown() {
+        CodeInjectorUtil.classPool = null
+        CodeInjectorUtil.codeInjectors.clear()
     }
 
     @Test
@@ -54,7 +51,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             injectors.isNotEmpty()
         )
 
-        val pool = CodeInjectorScope.classPool ?: error("ClassPool is not initialized")
+        val pool = CodeInjectorUtil.classPool ?: error("ClassPool is not initialized")
         val injectedBytecode = mutableMapOf<String, ByteArray>()
 
         // NOTE: We must NOT call `CtClass.toClass()` here.
@@ -68,14 +65,14 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             val ctClass = pool.get(targetClassName)
             ctClass.defrost()
 
-            injector.putUserData(CodeInjectorScope.targetClassKey, ctClass)
+            injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
             CodeInjectorSupport.EP_NAME.extensionList.forEach { ep -> ep.apply(injector) }
 
             injectedBytecode[targetClassName] = ctClass.toBytecode()
             ctClass.detach()
 
             // clean up
-            injector.putUserData(CodeInjectorScope.targetClassKey, null)
+            injector.putUserData(CodeInjectorUtil.targetClassKey, null)
         }
 
         // Isolated loader for injected bytecode (no global side effects).

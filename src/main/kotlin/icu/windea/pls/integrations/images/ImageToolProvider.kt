@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.images.tools
+package icu.windea.pls.integrations.images
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import java.awt.image.BufferedImage
@@ -6,7 +6,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
 import javax.imageio.ImageReadParam
-import javax.imageio.ImageReader
 import javax.imageio.stream.ImageInputStream
 
 /**
@@ -15,9 +14,7 @@ import javax.imageio.stream.ImageInputStream
 interface ImageToolProvider {
     fun isAvailable(): Boolean
 
-    /**
-     * @see ImageReader.read
-     */
+    /** @see javax.imageio.ImageReader.read */
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage
 
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)

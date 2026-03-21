@@ -2,6 +2,7 @@ package icu.windea.pls.images.support
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
+import icu.windea.pls.images.ImageSupport
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path

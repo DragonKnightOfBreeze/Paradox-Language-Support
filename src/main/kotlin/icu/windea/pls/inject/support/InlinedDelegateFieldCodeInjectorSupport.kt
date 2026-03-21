@@ -3,7 +3,7 @@ package icu.windea.pls.inject.support
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.orNull
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorScope
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InlinedDelegateField
 import icu.windea.pls.inject.annotations.InlinedDelegateFields
@@ -28,7 +28,7 @@ class InlinedDelegateFieldCodeInjectorSupport : CodeInjectorSupport {
     private data class Instruction(val index: Int, val opcode: Int, val operand: Int?)
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorScope.targetClassKey) ?: return
+        val targetClass = codeInjector.getUserData(CodeInjectorUtil.targetClassKey) ?: return
         val infos = codeInjector::class.findAnnotations<InlinedDelegateField>()
 
         val inlineAll = codeInjector::class.findAnnotation<InlinedDelegateFields>() != null
