@@ -19,7 +19,6 @@ export const sidebarEn: SidebarOptions = [
   { text: "Quick Start", link: "/en/quick-start.md" },
   { text: "Core Features", link: "/en/core-features.md" },
   { text: "Advance Features", link: "/en/advanced-features.md" },
-  { text: "Plugin Settings", link: "/en/plugin-settings.md" },
   { text: "Config", link: "/en/config.md" },
   { text: "Integrations", link: "/en/integrations.md" },
   { text: "AI", link: "/en/ai.md" },
