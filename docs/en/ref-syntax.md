@@ -40,7 +40,7 @@ Language id: `CWT`; default extension: `.cwt`
 
 CWT is a domain-specific language used for writing CWT config files. The file extension is `.cwt`.
 
-CWT config files provide the plugin with a declarative specification, based on which the plugin offers advanced language features — such as syntax highlighting, code completion, and code inspections — for game and mod files (script files, localisation files, and CSV files). CWT is to Paradox Script roughly what JSON Schema is to JSON.
+CWT config files provide the plugin with a declarative specification, based on which the plugin offers advanced language features — such as code highlighting, code completion, and code inspections — for game and mod files (script files, localisation files, and CSV files). CWT is to Paradox Script roughly what JSON Schema is to JSON.
 
 CWT's syntax is similar to Paradox Script, but additionally supports option comments and documentation comments.
 

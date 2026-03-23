@@ -1,6 +1,6 @@
 # Paradox Language Support
 
-### -— The Paradox Chronicle Project
+### -- The Paradox Chronicle Project
 
 <!-- Here we inscribe the revelations from the old era, the truths and realities of this land. -->
 

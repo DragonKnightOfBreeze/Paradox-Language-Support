@@ -20,7 +20,7 @@ This document aims to:
 - **Establish a mapping from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
 - **Guide practice**: Outline the purpose, format, and considerations of each config type, laying the foundation for correctly writing and maintaining config files.
 
-The plugin reads `.cwt` config files, builds "config groups", and parses the configs within into structured "config objects". These config objects are widely used in language features such as syntax highlighting, completion, navigation, inspections, and quick documentation. The config system is composed of two major elements:
+The plugin reads `.cwt` config files, builds "config groups", and parses the configs within into structured "config objects". These config objects are widely used in language features such as highlighting, completion, navigation, inspections, and quick documentation. The config system is composed of two major elements:
 
 - **Configs**: Each config defines the allowed forms and contextual constraints for keys, values, or blocks, such as types, enums, aliases, links, etc. See the [Configs](#configs) chapter for details.
 - **Config expressions**: Structured syntax embedded in string fields of configs, used to describe value forms or matching patterns, such as `<type>`, `enum[...]`, `value[...]`, as well as cardinality expressions, template expressions, location expressions, etc. See the [Config Expressions](#config-expressions) chapter for details.
