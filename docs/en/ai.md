@@ -5,8 +5,6 @@ These features primarily focus on translating and polishing localisation text, a
 
 > [!note]
 > The plugin’s positioning is as infrastructure: language support and general toolchains. It does not, and is not planned to, provide more advanced or customized AI features.
->
-> Nonetheless, given that existing users have incorporated these basic AI features into their workflows, the currently provided functionality will remain and be maintained.
 
 ## Settings Page {#settings-page}
 
