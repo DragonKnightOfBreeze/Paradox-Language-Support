@@ -49,7 +49,7 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 - Build the plugin ZIP: `./gradlew buildPlugin`
 - Run tests: `./gradlew test`
 
-### CWT config repositories (important)
+### CWT config repositories
 
 The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
@@ -231,10 +231,10 @@ For the config system and the config format, see:
 
 ### Communication
 
-- Prefer Chinese when talking to the main maintainer.
-- Conversation notes may exist in opened files, you can use them to guide the work and suggest next steps, but do not execute unrequested tasks.
+- IMPORTANT: Use Chinese when talking to the main maintainer (unless otherwise specified). / 重要：使用中文与主要维护者交流（除非特别说明）。
+- TIP: Conversation notes may exist in opened files. You can use them to guide the work and suggest next steps, but do not execute unrequested tasks.
 
-### Markdown output conventions (when you generate or edit Markdown)
+### Markdown output conventions
 
 - Prefer `-` for unordered lists.
 - Prefer `**bold**` for emphasis.
@@ -285,11 +285,12 @@ When you need to **drive IDE actions** (not just code intelligence), prefer the 
 When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available:
 
 - **Finding references**: use `ide_find_references`
+- **Finding implementations**: use `ide_find_implementations`
 - **Go to definition**: use `ide_find_definition`
 - **Renaming symbols**: use `ide_refactor_rename` (safe, project-wide)
 - **Type hierarchy**: use `ide_type_hierarchy`
-- **Finding implementations**: use `ide_find_implementations`
 - **Diagnostics**: use `ide_diagnostics`
+- **Getting Opened Files**: use `ide_get_active_file`
 - Etc.
 
 Notes:
