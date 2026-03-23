@@ -6,6 +6,9 @@ Although the plugin itself is fully functional, enabling these integrations in s
 
 ## Settings Page {#settings-page}
 
+<!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable -->
+<!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings -->
+
 In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Integrations` to open the integrations settings page.
 
 Here you can configure which tool integrations to enable and specify their options.
@@ -13,6 +16,8 @@ Here you can configure which tool integrations to enable and specify their optio
 ![](../assets/integrations/integrations_settings_1.png)
 
 ## Image Tools {#image-tools}
+
+<!-- @see icu.windea.pls.integrations.images.ImageToolProvider -->
 
 The plugin integrates the following image tools to provide better support for DDS and TGA images.
 
@@ -38,7 +43,7 @@ The plugin also allows selecting multiple images in the project view and perform
 
 ![](../assets/integrations/convert_image_format_1.png)
 
-![](../assets/integrations/convert_image_format_2.png)<!--batch-->
+![](../assets/integrations/convert_image_format_2.png)<!-- batch -->
 
 > [!warning]
 > Note that [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) has some limitations in supporting DDS images, such as not supporting DX11 formats.
@@ -68,6 +73,8 @@ The plugin also allows selecting multiple images in the project view and perform
 
 ## Translation Tools {#translation-tools}
 
+<!-- @see icu.windea.pls.integrations.translation.TranslationToolProvider -->
+
 The plugin integrates the following translation tools for batch translation of localization texts.
 
 - Based on [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)
@@ -85,7 +92,7 @@ You can access these features from multiple entry points (tools menu, editor rig
 
 ![](../assets/integrations/translation_entry_actions_1.png)
 
-![](../assets/integrations/translation_entry_actions_2.png)<!--batch-->
+![](../assets/integrations/translation_entry_actions_2.png)<!-- batch -->
 
 Here is a demonstration of using AI to batch translate localization texts:
 
@@ -98,6 +105,8 @@ Here is a demonstration of using AI to batch translate localization texts:
 > - You can cancel the currently executing task at any time.
 
 ## Linting Tools {#linting-tools}
+
+<!-- @see icu.windea.pls.integrations.lints.LintToolProvider -->
 
 The plugin integrates the following linting tools to provide additional code inspections.
 
@@ -115,7 +124,7 @@ You can view the inspection results directly in the Problems view, or perform a 
 
 ![](../assets/integrations/lint_results_1.png)
 
-![](../assets/integrations/lint_results_2.png)<!--batch-->
+![](../assets/integrations/lint_results_2.png)<!-- batch -->
 
 > [!tip]
 > You can selectively disable linting tools at the project level or mod level in the following ways:

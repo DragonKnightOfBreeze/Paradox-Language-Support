@@ -1,8 +1,9 @@
 # Extensions
 
-<!-- TODO Manual improvement and polish -->
-
 ## Settings Page {#settings-page}
+
+<!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettingsConfigurable -->
+<!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettings -->
 
 In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Extensions` to open the extensions settings page.
 
@@ -170,6 +171,9 @@ Notes:
 
 ## Diagrams {#diagrams}
 
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider -->
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxDefinitionDiagramProvider -->
+
 > [!note]
 > This feature requires installation and activation of the official Diagrams plugin.
 
@@ -191,6 +195,9 @@ Currently, only event trees and technology trees are provided.
 
 ### Settings Page {#diagram-settings-page}
 
+<!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings -->
+<!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettingsConfigurable -->
+
 In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
 
 Here you can configure which nodes to display for various diagram types based on multiple conditions.
@@ -198,6 +205,8 @@ Here you can configure which nodes to display for various diagram types based on
 ![](../assets/extensions/diagram_settings_1.png)
 
 ### Event Tree {#diagram-event-tree}
+
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxEventTreeDiagramProvider -->
 
 You can open event tree diagrams in several ways:
 
@@ -217,6 +226,8 @@ Event tree diagrams display key information about events and their invocation re
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
 
 ### Technology Tree {#diagram-tech-tree}
+
+<!-- icu.windea.pls.extensions.diagram.provider.ParadoxTechTreeDiagramProvider -->
 
 If the current game type is *Stellaris*, you can open technology tree diagrams in several ways:
 

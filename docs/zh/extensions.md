@@ -1,8 +1,9 @@
 # 扩展
 
-<!-- TODO 继续改进与润色 -->
-
 ## 设置页面 {#settings-page}
+
+<!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettingsConfigurable -->
+<!-- @see icu.windea.pls.extensions.settings.PlsExtensionsSettings -->
 
 在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 扩展`，可以打开扩展的设置页面。
 
@@ -170,6 +171,9 @@ defense_army = {
 
 ## 图表 {#diagrams}
 
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider -->
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxDefinitionDiagramProvider -->
+
 > [!note]
 > 本章节的功能需要安装并启用官方的 Diagrams 插件。
 
@@ -191,6 +195,9 @@ defense_army = {
 
 ### 设置页面 {#diagram-settings-page}
 
+<!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings -->
+<!-- icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettingsConfigurable -->
+
 在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 图表`，可以打开图表的设置页面。
 
 可以在此根据多种条件，配置各类图表需要显示的节点。
@@ -198,6 +205,8 @@ defense_army = {
 ![](../assets/extensions/diagram_settings_1.png)
 
 ### 事件树 {#diagram-event-tree}
+
+<!-- @see icu.windea.pls.extensions.diagram.provider.ParadoxEventTreeDiagramProvider -->
 
 可以通过以下几种方式打开事件树的图表：
 
@@ -217,6 +226,8 @@ defense_army = {
 > IDE 需要花费一定时间来完成数据加载与图形渲染。如果需要渲染的节点与节点元素过多，这个耗时可能相当长。
 
 ### 科技树 {#diagram-tech-tree}
+
+<!-- icu.windea.pls.extensions.diagram.provider.ParadoxTechTreeDiagramProvider -->
 
 如果当前游戏类型为 *Stellaris*，可以通过以下几种方式打开科技树的图表：
 

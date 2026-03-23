@@ -1,7 +1,5 @@
 # Config
 
-<!-- TODO Manual improvement and polish -->
-
 ## Settings Page {#settings-page}
 
 In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Config` to open the config settings page.

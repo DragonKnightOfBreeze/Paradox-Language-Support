@@ -1,7 +1,5 @@
 # 规则
 
-<!-- TODO 继续改进与润色 -->
-
 ## 设置页面 {#settings-page}
 
 在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 规则`，可以打开规则的设置页面。

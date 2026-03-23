@@ -6,6 +6,9 @@
 
 ## 设置页面 {#settings-page}
 
+<!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable -->
+<!-- @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings -->
+
 在 IDE 的设置页面中，点击 `语言与框架 > Paradox Language Support > 集成`，可以打开集成的设置页面。
 
 可以在这里配置要启用的工具集成，以及具体的工具集成选项。
@@ -13,6 +16,8 @@
 ![](../assets/integrations/integrations_settings_1.png)
 
 ## 图片工具 {#image-tools}
+
+<!-- @see icu.windea.pls.integrations.images.ImageToolProvider -->
 
 插件集成了以下图片工具，可用于提供更好的对 DDS 和 TGA 图片的支持。
 
@@ -38,7 +43,7 @@
 
 ![](../assets/integrations/convert_image_format_1.png)
 
-![](../assets/integrations/convert_image_format_2.png)<!--batch-->
+![](../assets/integrations/convert_image_format_2.png)<!-- batch -->
 
 > [!warning]
 > 请注意， [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 对 DDS 图片的支持存在一些限制，例如，它不支持 DX11 格式。
@@ -68,6 +73,8 @@
 
 ## 翻译工具 {#translation-tools}
 
+<!-- @see icu.windea.pls.integrations.translation.TranslationToolProvider -->
+
 插件集成了以下翻译工具，可用于批量翻译本地化文本。
 
 - 基于 [Translation 插件](https://github.com/yiiguxing/TranslationPlugin)
@@ -85,7 +92,7 @@
 
 ![](../assets/integrations/translation_entry_actions_1.png)
 
-![](../assets/integrations/translation_entry_actions_2.png)<!--batch-->
+![](../assets/integrations/translation_entry_actions_2.png)<!-- batch -->
 
 以下是一个使用 AI 批量翻译本地化文本的演示：
 
@@ -98,6 +105,8 @@
 > - 随时可以取消当前正在执行的任务。
 
 ## 检查工具 {#linting-tools}
+
+<!-- @see icu.windea.pls.integrations.lints.LintToolProvider -->
 
 插件集成了以下检查工具，可用于提供额外的代码检查。
 
@@ -115,7 +124,7 @@
 
 ![](../assets/integrations/lint_results_1.png)
 
-![](../assets/integrations/lint_results_2.png)<!--batch-->
+![](../assets/integrations/lint_results_2.png)<!-- batch -->
 
 > [!tip]
 > 你可以通过以下几种方式，在项目级别或者模组级别选择性禁用检查工具。
