@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 class ParadoxLibraryService(private val project: Project) {
     val library = ParadoxLibrary(project)
 
-    fun refreshRootsAsync() {
+    fun refreshRootsAsync(force: Boolean = false) {
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            val oldRoots = library.roots
+            val oldRoots = if (force) emptySet() else library.roots
             val newRoots = readAction { computeRoots() }
             if (oldRoots == newRoots) return@launch
             library.roots = newRoots

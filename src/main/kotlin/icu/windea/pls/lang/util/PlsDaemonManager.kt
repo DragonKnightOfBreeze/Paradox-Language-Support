@@ -108,6 +108,7 @@ object PlsDaemonManager {
     private var reparseLock = false // 防止抖动（否则可能出现SOF）
 
     fun reparseFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
+        if (files.isEmpty()) return
         if (reparseLock) return
         try {
             reparseLock = true
@@ -117,7 +118,7 @@ object PlsDaemonManager {
         }
     }
 
-    fun doReparseFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
+    private fun doReparseFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
         if (files.isEmpty()) return
         val editors = getEditors(files)
         if (editors.isEmpty()) return

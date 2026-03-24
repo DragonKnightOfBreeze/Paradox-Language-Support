@@ -20,6 +20,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsDaemonManager
@@ -81,7 +82,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         } else {
             val toProcess = buildSet {
                 addAll(configGroups)
-                // 之后也要初始化默认项目的规则数据
+                // 之后也要初始化应用级别的规则数据
                 configGroups.mapTo(this) { configGroup -> PlsFacade.getConfigGroup(configGroup.gameType) }
             }
             reportProgress(toProcess.size) { reporter ->
@@ -99,7 +100,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
-    fun initConfigGroupsAsync(callback: () -> Unit = {}) {
+    fun initConfigGroupsAsync() {
         val configGroups = getConfigGroups().values
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -112,7 +113,10 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
                     init(configGroups, project)
                 }
-                callback()
+                // 规则数据加载完毕后，重新解析已打开的文件
+                reparseOpenedFiles()
+                // 规则数据加载完毕后，异步刷新外部库
+                refreshRootsForLibraries(project)
             }
         }
     }
@@ -134,7 +138,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
      */
     fun getConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         // #184
-        // 不能将规则数据缓存到默认项目的服务中，否则会被不定期清空，因为需要改为缓存到应用的服务中
+        // 不能将规则数据缓存到应用级别的服务中，否则会被不定期清空，因为需要改为缓存到应用的服务中
         if (project.isDefault) return getInstance().cache
         return cache
     }
@@ -161,7 +165,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     @Synchronized
     fun refreshConfigGroupsAsync(configGroups: Collection<CwtConfigGroup>) {
-        if (project.isDefault) return
+        if (project.isDefault || project.isDisposed) return
         if (configGroups.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -170,9 +174,10 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
                 refresh(configGroups, project)
             }
-            // 重新解析已打开的文件
-            val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsDaemonManager.reparseFiles(openedFiles)
+            // 规则数据刷新完毕后，重新解析已打开的文件
+            reparseOpenedFiles()
+            // 规则数据加载完毕后，异步刷新外部库
+            refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
                 PlsFacade.createNotification(
@@ -184,6 +189,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
+                    refreshRootsForLibraries(project, force = true)
                 }
                 PlsFacade.createNotification(
                     NotificationType.INFORMATION,
@@ -194,16 +200,17 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
-    private fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
-        // 重新解析并刷新（IDE之后会自动请求重新索引）
-        // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
-        reparseFilesInRootFilePaths(configGroups)
-        val rootFilePaths = getRootFilePaths(configGroups)
-        val files = PlsDaemonManager.findFilesByRootFilePaths(rootFilePaths)
-        PlsDaemonManager.reparseFiles(files)
+    fun reparseOpenedFiles() {
+        if (project.isDefault || project.isDisposed) return
+        // 重新解析并刷新已打开的文件（IDE之后会自动请求重新索引）
+        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.reparseFiles(openedFiles)
     }
 
-    private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
+    fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
+        if (project.isDefault || project.isDisposed) return
+        // 重新解析并刷新（IDE之后会自动请求重新索引）
+        // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         PlsProfilesSettings.getInstance().state.gameDescriptorSettings.values
@@ -212,16 +219,25 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
-        return rootFilePaths
+        val files = PlsDaemonManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsDaemonManager.reparseFiles(files)
+    }
+
+    fun refreshRootsForLibraries(project: Project, force: Boolean = false) {
+        if (project.isDefault || project.isDisposed) return
+        // 异步刷新外部库
+        CwtConfigGroupLibraryService.getInstance(project).refreshRootsAsync(force)
+        ParadoxLibraryService.getInstance(project).refreshRootsAsync(force)
     }
 
     fun updateRefreshStatus() {
-        if (project.isDefault) return
+        if (project.isDefault || project.isDisposed) return
+        // 通知规则分组的刷新状态发生更改
         application.messageBus.syncPublisher(CwtConfigGroupRefreshStatusListener.TOPIC).onChange(project)
     }
 
     override fun dispose() {
-        // 清理规则分组数据，避免内存泄露
+        // 清理规则分组缓存，避免内存泄露
         cache.values.forEach { it.clear() }
         cache = emptyMap()
     }

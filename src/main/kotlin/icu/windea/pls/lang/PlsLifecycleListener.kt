@@ -4,11 +4,9 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.atomic.AtomicBoolean
@@ -25,8 +23,8 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         // 在启动应用后，异步地初始化缓存数据
         initCachesAsync()
-        // 在启动应用后，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
-        initDefaultConfigGroupsAsync()
+        // 在启动应用后，异步地预加载应用级别的规则数据（诸如设置页面等地方会用到）
+        initApplicationConfigGroupsAsync()
     }
 
     // for each project
@@ -47,33 +45,21 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
         PlsPathService.getInstance().initAsync()
     }
 
+    private fun initApplicationConfigGroupsAsync() {
+        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
+        CwtConfigGroupService.getInstance().initConfigGroupsAsync()
+    }
+
     private suspend fun refreshBuiltInConfigFiles(project: Project) {
+        if (project.isDefault || project.isDisposed) return
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则目录
         if (!PlsFacade.Capacities.refreshBuiltIn()) return // 必须显式启用
         CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles(project)
     }
 
-    private fun initDefaultConfigGroupsAsync() {
-        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
-        CwtConfigGroupService.getInstance().initConfigGroupsAsync()
-    }
-
     private fun initConfigGroupsAsync(project: Project) {
+        if (project.isDefault || project.isDisposed) return
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
-        if (project.isDisposed) return
-        CwtConfigGroupService.getInstance(project).initConfigGroupsAsync {
-            // 重新解析已打开的文件
-            val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsDaemonManager.reparseFiles(openedFiles)
-            // 规则数据加载完毕后，异步地刷新外部库的根目录
-            refreshRootsForLibrariesAsync(project)
-        }
-    }
-
-    private fun refreshRootsForLibrariesAsync(project: Project) {
-        if (project.isDefault) return
-        if (project.isDisposed) return
-        CwtConfigGroupLibraryService.getInstance(project).refreshRootsAsync()
-        ParadoxLibraryService.getInstance(project).refreshRootsAsync()
+        CwtConfigGroupService.getInstance(project).initConfigGroupsAsync()
     }
 }
