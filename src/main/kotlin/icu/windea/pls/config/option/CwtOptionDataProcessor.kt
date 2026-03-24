@@ -22,7 +22,7 @@ import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 
-object CwtOptionDataProvider {
+object CwtOptionDataProcessor {
     // NOTE 2.1.1 目前不作为 EP
 
     @Optimized

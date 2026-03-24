@@ -13,14 +13,6 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
@@ -33,6 +25,14 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
@@ -61,7 +61,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始化规则分组中基于文件内容的那些数据。
  */
-class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
+class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
     private val logger = thisLogger()
 
     override suspend fun process(configGroup: CwtConfigGroup) {
@@ -379,13 +379,5 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
-    }
-
-    override suspend fun optimize(configGroup: CwtConfigGroup) {
-        // NOTE 2.1.5 为了优化内存，完成处理后，文件规则不会保留在规则分组数据中
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(configGroup)
-        fileConfigs.clear()
-        val postProcessActions = CwtConfigResolverManager.getPostProcessActions(configGroup)
-        postProcessActions.clear()
     }
 }

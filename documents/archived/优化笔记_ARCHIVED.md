@@ -648,15 +648,15 @@ icu.windea.pls.lang.util.ParadoxExpressionManager.getConfigs(PsiElement, boolean
 -icu.windea.pls.lang.util.ParadoxExpressionManager.doGetConfigsCacheFromCache(PsiElement) - 9.100s, 11.5%
 
 icu.windea.pls.config.configGroup.CwtConfigGroup.init(Continuation) - 12.365s
--icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.process(CwtConfigGroup, Continuation) - 12.311s
---icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.resolveAndProcessFile(VirtualFile, CwtConfigGroup, String) - 11.231s
---icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.resolveAndProcessInternalFile(String, VirtualFile, CwtConfigGroup) 
+-icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.process(CwtConfigGroup, Continuation) - 12.311s
+--icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.resolveAndProcessFile(VirtualFile, CwtConfigGroup, String) - 11.231s
+--icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.resolveAndProcessInternalFile(String, VirtualFile, CwtConfigGroup) 
 
-icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.lambda 'forEach' in process() - 37.951s
--icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.resolveAndProcessFile(VirtualFile, CwtConfigGroup, String) - 36.511s
+icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.lambda 'forEach' in process() - 37.951s
+-icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.resolveAndProcessFile(VirtualFile, CwtConfigGroup, String) - 36.511s
 --icu.windea.pls.config.util.CwtConfigResolverUtil.getOptionConfigs(CwtMember) - 6.831s
 ---icu.windea.pls.cwt.psi.impl.CwtOptionImpl.getOptionValue() - 0.981s - 反向遍历子节点可以降低耗时
--icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider.resolveAndProcessInternalFile(String, VirtualFile, CwtConfigGroup) - 1.422s
+-icu.windea.pls.ep.configGroup.CwtFileBasedconfigGroupProcessor.resolveAndProcessInternalFile(String, VirtualFile, CwtConfigGroup) - 1.422s
 
 icu.windea.pls.lang.match.ParadoxMatchResult$LazyMatch.get(int) - 34.195s
 -icu.windea.pls.lang.match.ParadoxMatchResultProvider.getComplexEnumValueMatchResult$lambda$18(Project, PsiElement, String, String) - 13.856s, 40.5%

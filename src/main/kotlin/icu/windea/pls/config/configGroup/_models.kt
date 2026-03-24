@@ -1,12 +1,12 @@
 package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupDataProvider
+import icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
 
 /**
  * 规则分组文件信息。
  *
- * @see CwtFileBasedConfigGroupDataProvider
+ * @see CwtFileBasedConfigGroupProcessor
  */
 data class CwtConfigGroupFileInfo(
     val filePath: String,
@@ -17,7 +17,7 @@ data class CwtConfigGroupFileInfo(
 /**
  * 规则文件当地来源。
  *
- * @see CwtFileBasedConfigGroupDataProvider
+ * @see CwtFileBasedConfigGroupProcessor
  */
 enum class CwtConfigGroupFileSource {
     BuiltIn,

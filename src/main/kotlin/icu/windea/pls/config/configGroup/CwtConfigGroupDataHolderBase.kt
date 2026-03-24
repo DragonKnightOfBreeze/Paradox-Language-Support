@@ -11,14 +11,6 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
-import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
@@ -31,6 +23,14 @@ import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDynamicValueConfig
+import icu.windea.pls.config.config.extended.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
@@ -164,6 +164,66 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override fun clear() {
         clearUserData()
     }
+
+    final override fun trim() {
+        schemas.trim()
+        foldingSettings.trim()
+        foldingSettings.values.forEach { it.trim() }
+        postfixTemplateSettings.trim()
+        postfixTemplateSettings.values.forEach { it.trim() }
+        priorities.trim()
+        systemScopes.trim()
+        localisationLocalesById.trim()
+        localisationLocalesByCode.trim()
+        types.trim()
+        swappedTypes.trim()
+        type2ModifiersMap.trim()
+        type2ModifiersMap.values.forEach { it.trim() }
+        declarations.trim()
+        rows.trim()
+        enums.trim()
+        complexEnums.trim()
+        dynamicValueTypes.trim()
+        links.trim()
+        localisationLinks.trim()
+        localisationCommands.trim()
+        localisationPromotions.trim()
+        scopes.trim()
+        scopeAliasMap.trim()
+        scopeGroups.trim()
+        singleAliases.trim()
+        aliasGroups.trim()
+        aliasGroups.values.forEach { it.trim() }
+        directives.trim()
+        modifierCategories.trim()
+        modifiers.trim()
+        databaseObjectTypes.trim()
+        extendedScriptedVariables.trim()
+        extendedDefinitions.trim()
+        extendedDefinitions.values.forEach { it.trim() }
+        extendedGameRules.trim()
+        extendedOnActions.trim()
+        extendedComplexEnumValues.trim()
+        extendedComplexEnumValues.values.forEach { it.trim() }
+        extendedDynamicValues.trim()
+        extendedDynamicValues.values.forEach { it.trim() }
+        extendedInlineScripts.trim()
+        extendedParameters.trim()
+        extendedParameters.values.forEach { it.trim() }
+        predefinedModifiers.trim()
+        generatedModifiers.trim()
+        aliasKeysGroupConst.trim()
+        aliasKeysGroupConst.values.forEach { it.trim() }
+        aliasKeysGroupNoConst.trim()
+        aliasNamesSupportScope.trim()
+        relatedLocalisationPatterns.trim()
+        linksModel.trim()
+        localisationLinksModel.trim()
+        directivesModel.trim()
+        definitionTypesModel.trim()
+        filePathExpressions.trim()
+        parameterConfigs.trim()
+    }
 }
 
 class CwtLinksModelBase : CwtLinksModel {
@@ -178,11 +238,31 @@ class CwtLinksModelBase : CwtLinksModel {
     override val forValueFromDataSorted: FastList<CwtLinkConfig> = FastList()
     override val forValueFromArgumentSorted: FastList<CwtLinkConfig> = FastList()
     override val forValueFromArgumentSortedByPrefix: FastMap<String, FastList<CwtLinkConfig>> = FastMap()
+
+    override fun trim() {
+        variable.trim()
+        forScopeStatic.trim()
+        forScopeNoPrefixSorted.trim()
+        forScopeFromDataSorted.trim()
+        forScopeFromArgumentSorted.trim()
+        forScopeFromArgumentSortedByPrefix.trim()
+        forScopeFromArgumentSortedByPrefix.values.forEach { it.trim() }
+        forValueStatic.trim()
+        forValueNoPrefixSorted.trim()
+        forValueFromDataSorted.trim()
+        forValueFromArgumentSorted.trim()
+        forValueFromArgumentSortedByPrefix.trim()
+        forValueFromArgumentSortedByPrefix.values.forEach { it.trim() }
+    }
 }
 
 class CwtDirectivesModelBase : CwtDirectivesModel {
     override val inlineScript: FastList<CwtDirectiveConfig> = FastList()
     override var definitionInjection: CwtDirectiveConfig? = null
+
+    override fun trim() {
+        inlineScript.trim()
+    }
 }
 
 class CwtDefinitionTypesModelBase : CwtDefinitionTypesModel {
@@ -192,4 +272,13 @@ class CwtDefinitionTypesModelBase : CwtDefinitionTypesModel {
     override val supportParameters: FastSet<String> = FastSet()
     override val supportScopeContextInference: FastSet<String> = FastSet()
     override val typeKeyPrefixAware: FastSet<String> = FastSet()
+
+    override fun trim() {
+        supportScope.trim()
+        indirectSupportScope.trim()
+        skipCheckSystemScope.trim()
+        supportParameters.trim()
+        supportScopeContextInference.trim()
+        typeKeyPrefixAware.trim()
+    }
 }

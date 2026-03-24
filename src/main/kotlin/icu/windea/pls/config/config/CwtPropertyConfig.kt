@@ -10,7 +10,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
-import icu.windea.pls.config.option.CwtOptionDataProvider
+import icu.windea.pls.config.option.CwtOptionDataProcessor
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.config.util.CwtConfigResolverScope
@@ -157,7 +157,7 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         val valueType = valueElement.type
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
-        CwtOptionDataProvider.process(config.optionData, optionConfigs) // initialize option data
+        CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
         logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
         return config
     }

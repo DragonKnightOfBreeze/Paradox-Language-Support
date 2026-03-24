@@ -14,8 +14,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * 另外还继承了 [UserDataHolder]，以便保存额外的用户数据。
  *
  * 参考：
- * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
- * - 插件的规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
  *
  * @property pointer 指向对应的 PSI 元素的智能指针。
  * @property configGroup 所属规则分组（按项目与游戏类型划分）。

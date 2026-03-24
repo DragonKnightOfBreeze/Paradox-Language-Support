@@ -92,6 +92,10 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
 
     // endregion
 
+    final override fun clear() {
+        clearUserData()
+    }
+
     final override fun copyTo(target: CwtOptionDataHolder) {
         // NOTE 2.1.2 `UserDataHolderBase.getUserMap()` 现在是内部 API，因此这里改为直接遍历注册表，应该不会对索引时的性能造成什么影响
         val keys = Keys.keys.values

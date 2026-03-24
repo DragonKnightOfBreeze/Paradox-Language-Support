@@ -8,15 +8,15 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.delegated.CwtLocationConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.extended.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.extended.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.delegated.CwtLocationConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.values.ReversibleValue
@@ -33,14 +33,12 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * - 仅保存有效的元数据，不支持或者无法识别的元数据会被直接舍弃。
  *
  * 参考：
- * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
- * - 插件的规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
  *
  * @see CwtMemberConfig
  */
 interface CwtOptionDataHolder : UserDataHolder {
-    fun copyTo(target: CwtOptionDataHolder)
-
     // region Internal
 
     // NOTE only reserved for internal configs
@@ -450,4 +448,8 @@ interface CwtOptionDataHolder : UserDataHolder {
     val perDefinition: Boolean
 
     // endregion
+
+    fun clear()
+
+    fun copyTo(target: CwtOptionDataHolder)
 }

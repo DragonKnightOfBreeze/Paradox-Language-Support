@@ -38,7 +38,11 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 /**
- * 用于访问规则数据。
+ * 用于访问规则分组数据。
+ *
+ * 参考：
+ * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
  *
  * @see CwtConfigGroup
  * @see CwtConfigGroupInitializer
@@ -167,6 +171,8 @@ interface CwtConfigGroupDataHolder {
     // endregion
 
     fun clear()
+
+    fun trim()
 }
 
 /** 用于获取符合特定条件的链接规则。 */
@@ -183,12 +189,16 @@ interface CwtLinksModel {
     val forValueFromDataSorted: List<CwtLinkConfig>
     val forValueFromArgumentSorted: List<CwtLinkConfig>
     val forValueFromArgumentSortedByPrefix: Map<String, List<CwtLinkConfig>>
+
+    fun trim()
 }
 
 /** 用于获取符合特定条件的指令规则。 */
 interface CwtDirectivesModel {
     val inlineScript: List<CwtDirectiveConfig>
     val definitionInjection: CwtDirectiveConfig?
+
+    fun trim()
 }
 
 /** 用于获取符合特定条件的定义类型。 */
@@ -205,4 +215,6 @@ interface CwtDefinitionTypesModel {
     val supportScopeContextInference: Set<String>
     /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
     val typeKeyPrefixAware: Set<String>
+
+    fun trim()
 }

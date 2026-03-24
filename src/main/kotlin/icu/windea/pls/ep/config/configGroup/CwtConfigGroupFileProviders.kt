@@ -215,7 +215,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{projectLocalConfigDirectoryName}` 位于项目根目录中，且可以配置。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
-class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val source get() = CwtConfigGroupFileSource.Local
 
     override val isEnabled get() = PlsConfigSettings.getInstance().state.enableProjectLocalConfigGroups

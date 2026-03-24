@@ -21,7 +21,7 @@ object PlsStates {
     /**
      * 用于标记是否正在解析内部规则。
      *
-     * @see icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupDataProvider
+     * @see icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
      */
     val resolveForInternalConfigs = ThreadLocal<Boolean>()
 

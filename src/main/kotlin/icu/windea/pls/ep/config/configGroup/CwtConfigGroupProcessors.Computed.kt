@@ -31,7 +31,7 @@ import icu.windea.pls.model.paths.CwtConfigPath
 /**
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
-class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
+class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
     override suspend fun process(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
 
@@ -265,7 +265,6 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
 
-            // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
             // based on file paths, in detail, based on file path patterns (has any same file path patterns)
             with(typeKeyPrefixAware) {
                 val types = initializer.types.values.filter { c -> c.typeKeyPrefix != null && !c.typePerFile }

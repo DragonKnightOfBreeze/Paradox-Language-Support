@@ -8,8 +8,9 @@
     <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configPostProcessor" interface="icu.windea.pls.ep.config.config.CwtConfigPostProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configGroupProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configGroupPostProcessor" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.mergedIndexOptimizer" interface="icu.windea.pls.ep.index.ParadoxMergedIndexOptimizer" dynamic="true"/>
@@ -98,16 +99,18 @@
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtInOnActionInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
 
-    <configGroupDataProvider id="predefined" implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupDataProvider" order="first"/>
-    <configGroupDataProvider id="fileBased" implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupDataProvider"/>
-    <configGroupDataProvider id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupDataProvider"/>
-    <configGroupDataProvider id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupDataProvider" order="last"/>
+    <configGroupFileProvider id="builtIn" implementation="icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
+    <configGroupFileProvider id="remote" implementation="icu.windea.pls.ep.config.configGroup.CwtRemoteConfigGroupFileProvider"/>
+    <configGroupFileProvider id="local" implementation="icu.windea.pls.ep.config.configGroup.CwtLocalConfigGroupFileProvider"/>
+    <configGroupFileProvider id="projectLocal" implementation="icu.windea.pls.ep.config.configGroup.CwtProjectLocalConfigGroupFileProvider"/>
+    <configGroupFileProvider id="injected" implementation="icu.windea.pls.ep.config.configGroup.CwtInjectedConfigGroupFileProvider"/>
 
-    <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtRemoteConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtLocalConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtProjectConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.config.configGroup.CwtInjectedConfigGroupFileProvider"/>
+    <configGroupProcessor id="predefined" implementation="icu.windea.pls.ep.config.configGroup.CwtPredefinedConfigGroupProcessor" order="first"/>
+    <configGroupProcessor id="fileBased" implementation="icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor"/>
+    <configGroupProcessor id="computed" implementation="icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor"/>
+    <configGroupProcessor id="post" implementation="icu.windea.pls.ep.config.configGroup.CwtPostConfigGroupProcessor" order="last"/>
+
+    <configGroupPostProcessor implementation="icu.windea.pls.ep.config.configGroup.CwtBaseDataConfigGroupPostProcessor"/>
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.config.configExpression.CwtBaseDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.config.configExpression.CwtCoreDataExpressionResolver"/>

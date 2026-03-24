@@ -125,7 +125,7 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
             }
         }
         // put xxx_<xxx>_xxx before xxx_<xxx>
-        // see: icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupDataProvider.process
+        // see: icu.windea.pls.ep.config.configGroup.CwtComputedConfigGroupProcessor.process
         val sortedTemplates = templates
             .sortedByDescending { it.snippetExpressions.size }
             .toSet()

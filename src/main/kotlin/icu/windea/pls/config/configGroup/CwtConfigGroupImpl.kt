@@ -7,7 +7,8 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.SimpleModificationTracker
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.ep.config.configGroup.CwtConfigGroupDataProvider
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor
+import icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
@@ -30,26 +31,37 @@ class CwtConfigGroupImpl(
     @Optimized
     override suspend fun init() {
         // 即使规则数据已全部加载完毕，也可能需要再次重新加载
-        mutex.withLock {
-            try {
-                val start = System.currentTimeMillis()
-                val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-                initializer.clear() // 清空以避免数据残留
-                dataProviders.forEachFast { dataProvider -> dataProvider.process(this) }
-                dataProviders.forEachFast { dataProvider -> dataProvider.optimize(this) }
-                initializer.copyUserDataTo(this) // 直接一次性替换规则数据
-                initializer.clear() // 清空以避免内存泄露
-                modificationTracker.incModificationCount() // 显式增加修改计数
-                initialized = true // 标记规则数据已全部加载完毕
-                val end = System.currentTimeMillis()
-                val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-                logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                if (e is CancellationException) throw e
-                logger.error(e) // 不期望在这里出现常规异常
-            }
+        mutex.withLock { doInit() }
+    }
+
+    private suspend fun doInit() {
+        try {
+            val start = System.currentTimeMillis()
+            initializer.clear() // 清空以避免数据残留
+            doApplyDataProviders() // 应用 dataProviders
+            initializer.copyUserDataTo(this) // 直接一次性替换规则数据
+            initializer.clear() // 清空以避免内存泄露
+            doApplyPostProcessors() // 应用 postProcessors
+            modificationTracker.incModificationCount() // 显式增加修改计数
+            initialized = true // 标记规则数据已全部加载完毕
+            val end = System.currentTimeMillis()
+            val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
+            if (e is CancellationException) throw e
+            logger.error(e) // 不期望在这里出现常规异常
         }
+    }
+
+    private suspend fun doApplyDataProviders() {
+        val dataProviders = CwtConfigGroupProcessor.EP_NAME.extensionList
+        dataProviders.forEachFast { it.process(this) }
+    }
+
+    private suspend fun doApplyPostProcessors() {
+        val postProcessors = CwtConfigGroupPostProcessor.EP_NAME.extensionList
+        postProcessors.forEachFast { it.postProcess(this) }
     }
 
     override fun <T> getUserData(key: Key<T?>): T? {
