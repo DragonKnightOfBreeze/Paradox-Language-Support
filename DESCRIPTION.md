@@ -1,5 +1,7 @@
 Paradox Language Support - The Paradox Chronicle Project
 
+<!-- Weary seekers who tread the path, these words are spoken unto you. -->
+
 <br/>
 
 Paradox Language Support is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
