@@ -183,7 +183,7 @@ object ParadoxParameterManager {
 
     fun isPresent(element: PsiElement, argumentInfo: ParadoxParameterContextReferenceInfo.Argument): Boolean {
         val argumentValue = argumentInfo.argumentValue ?: return true
-        val resolved = ParadoxExpressionManager.resolve(argumentValue, element, argumentInfo.project)
+        val resolved = ParadoxExpressionManager.resolveExpressionText(argumentValue, element, argumentInfo.project)
         return resolved != "no"
     }
 

@@ -504,6 +504,11 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
+    fun getReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
+        return ParadoxExpressionManager.getReferences(element)
+    }
+
+    @JvmStatic
     fun getResolveScope(element: PsiElement): GlobalSearchScope {
         return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
     }

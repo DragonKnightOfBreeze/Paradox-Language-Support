@@ -47,7 +47,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = ParadoxConfigService.getConfigContext(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
     }
 
@@ -65,7 +65,7 @@ object ParadoxConfigManager {
     private fun getConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
     }
 
@@ -91,7 +91,7 @@ object ParadoxConfigManager {
     private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             val value = doGetChildOccurrencesCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
     }
 

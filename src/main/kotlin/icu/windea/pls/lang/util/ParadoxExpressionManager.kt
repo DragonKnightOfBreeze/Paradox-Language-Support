@@ -13,8 +13,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceService
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.startOffset
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.config.CwtConfig
@@ -53,6 +56,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
+import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
@@ -74,11 +78,15 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.isResolvableExpression
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
         val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
+        val cachedReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedReferencesDumb by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesDumb by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
     }
@@ -201,6 +209,17 @@ object ParadoxExpressionManager {
         }
     }
 
+    fun resolveExpressionText(text: String, contextElement: PsiElement?, project: Project): String? {
+        // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
+        run {
+            val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
+            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
+            ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
+            ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
+        }
+        return text
+    }
+
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         return getParameterRangesInExpressionFromCache(element)
     }
@@ -230,17 +249,6 @@ object ParadoxExpressionManager {
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
-    }
-
-    fun resolve(text: String, contextElement: PsiElement?, project: Project): String? {
-        // 非常神秘，但这个方法在某些情况下是必要的（例如：`value:a|b|@c|`）
-        run {
-            val name = text.removePrefixOrNull("@")?.orNull() ?: return@run
-            val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
-            ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it.value }
-            ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it.value }
-        }
-        return text
     }
 
     // endregion
@@ -329,83 +337,6 @@ object ParadoxExpressionManager {
         }
 
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
-    }
-
-    // endregion
-
-    // region Reference Methods
-
-    fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
-        ProgressManager.checkCanceled()
-        // 尝试兼容可能包含参数的情况
-        // if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
-        return when (element) {
-            is ParadoxScriptExpressionElement -> {
-                if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-                getExpressionReferencesFromCache(element)
-            }
-            is ParadoxLocalisationExpressionElement -> {
-                if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
-                getExpressionReferencesFromCache(element)
-            }
-            is ParadoxCsvExpressionElement -> {
-                getExpressionReferencesFromCache(element)
-            }
-            else -> PsiReference.EMPTY_ARRAY
-        }
-    }
-
-    private fun getExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
-        val cacheKey = getExpressionReferencesCacheKey()
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
-    }
-
-    private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        return if (processMergedIndex) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
-    }
-
-    private fun doGetExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
-        return when (element) {
-            is ParadoxScriptExpressionElement -> doGetExpressionReferences(element)
-            is ParadoxLocalisationExpressionElement -> doGetExpressionReferences(element)
-            is ParadoxCsvExpressionElement -> doGetExpressionReferences(element)
-            else -> PsiReference.EMPTY_ARRAY
-        }
-    }
-
-    private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
-        // 尝试基于规则进行解析
-        val isKey = element is ParadoxScriptPropertyKey
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
-        val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
-        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxScriptExpressionPsiReference(element, textRange, configs, isKey)
-        return reference.collectReferences()
-    }
-
-    private fun doGetExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
-        // 尝试解析为复杂表达式
-        val value = element.value
-        val textRange = TextRange.create(0, value.length)
-        val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
-        return reference.collectReferences()
-    }
-
-    private fun doGetExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
-        val columnConfig = when (element) {
-            is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
-            else -> null
-        }
-        if (columnConfig == null) return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) // unquoted text
-        val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
-        return arrayOf(reference)
     }
 
     // endregion
@@ -533,6 +464,122 @@ object ParadoxExpressionManager {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.resolveElementWithConfig() ?: return null
         return resolved
+    }
+
+    // endregion
+
+    // region PSI Reference Methods
+
+    private val EXPRESSION_HINTS = PsiReferenceService.Hints()
+
+    fun getReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        // NOTE 2.1.7 DO NOT just call `ReferenceProvidersRegistry.getReferencesFromProviders()` directly to avoid non-idempotent computation problem
+        ProgressManager.checkCanceled()
+        val cacheKey = getReferencesCacheKey()
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
+            ProgressManager.checkCanceled()
+            val value = doGetReferences(element)
+            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, ParadoxModificationTrackers.expression(element))
+        }
+    }
+
+    private fun getReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
+        return if (processMergedIndex) Keys.cachedReferencesDumb else Keys.cachedReferences
+    }
+
+    private fun doGetReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        return ReferenceProvidersRegistry.getReferencesFromProviders(element, EXPRESSION_HINTS)
+    }
+
+    @Suppress("unused")
+    fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> getExpressionReferences(element)
+            is ParadoxLocalisationExpressionElement -> getExpressionReferences(element)
+            is ParadoxCsvExpressionElement -> getExpressionReferences(element)
+            else -> PsiReference.EMPTY_ARRAY
+        }
+    }
+
+    fun getExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
+        if (!element.isResolvableExpression() && element !is ParadoxScriptBlock) return PsiReference.EMPTY_ARRAY // #131
+        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+        val cacheKey = getExpressionReferencesCacheKey()
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
+            ProgressManager.checkCanceled()
+            val value = doGetExpressionReferences(element)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptExpressionResolution)
+        }
+    }
+
+    fun getExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
+        if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
+        val cacheKey = getExpressionReferencesCacheKey()
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
+            ProgressManager.checkCanceled()
+            val value = doGetExpressionReferences(element)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationExpressionResolution)
+        }
+    }
+
+    fun getExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
+        val cacheKey = getExpressionReferencesCacheKey()
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
+            ProgressManager.checkCanceled()
+            val value = doGetExpressionReferences(element)
+            value.withDependencyItems(element, ParadoxModificationTrackers.CsvExpressionResolution)
+        }
+    }
+
+    private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
+        return if (processMergedIndex) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
+        // 跳过 element 是定义的 typeKey 的情况
+        if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) return PsiReference.EMPTY_ARRAY
+
+        // 尝试解析为复杂枚举值声明
+        run {
+            if (element !is ParadoxScriptStringExpressionElement) return@run
+            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
+            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
+            val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo)
+            return arrayOf(reference)
+        }
+
+        // 尝试基于规则进行解析
+        val isKey = element is ParadoxScriptPropertyKey
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
+        val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
+        val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
+        if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val textRange = getExpressionTextRange(element) // unquoted text
+        val reference = ParadoxScriptExpressionPsiReference(element, textRange, configs, isKey)
+        return reference.collectReferences()
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
+        // 尝试解析为复杂表达式
+        val value = element.value
+        val textRange = TextRange.create(0, value.length)
+        val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
+        return reference.collectReferences()
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
+        // 尝试基于规则进行解析
+        if (element !is ParadoxCsvColumn) return PsiReference.EMPTY_ARRAY
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element)
+        if (columnConfig == null) return PsiReference.EMPTY_ARRAY
+        val textRange = getExpressionTextRange(element) // unquoted text
+        val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
+        return arrayOf(reference)
     }
 
     // endregion

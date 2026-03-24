@@ -82,7 +82,7 @@ object ParadoxScopeManager {
             ProgressManager.checkCanceled()
             runReadActionSmartly {
                 val value = ParadoxScopeService.evaluateScopeContextForMember(element)
-                value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.Scope)
+                value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.ScopeResolution)
             }
         }
     }

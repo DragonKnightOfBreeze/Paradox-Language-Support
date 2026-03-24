@@ -1,11 +1,16 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.SimpleModificationTracker
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.util.FilePathBasedModificationTracker
 import icu.windea.pls.core.util.MergedModificationTracker
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -31,7 +36,7 @@ object ParadoxModificationTrackers {
     val InlineScriptConfigInference = SimpleModificationTracker()
     val DefinitionScopeContextInference = SimpleModificationTracker()
 
-    val Resolve = MergedModificationTracker(
+    val ConfigResolution = MergedModificationTracker(
         ScriptFile,
         LocalisationFile,
         PreferredLocale,
@@ -39,7 +44,17 @@ object ParadoxModificationTrackers {
         ParameterConfigInference,
         InlineScriptConfigInference,
     )
-    val Scope = DefinitionScopeContextInference
+    val ScopeResolution = DefinitionScopeContextInference
+
+    val ScriptExpressionResolution = ConfigResolution
+    val LocalisationExpressionResolution = MergedModificationTracker(
+        ScriptFile,
+        LocalisationFile,
+        PreferredLocale,
+    )
+    val CsvExpressionResolution = MergedModificationTracker(
+        ScriptFile,
+    )
 
     fun scriptFileFromPatterns(vararg patterns: String): FilePathBasedModificationTracker {
         if (patterns.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
@@ -69,5 +84,14 @@ object ParadoxModificationTrackers {
         val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
         if (patterns.isEmpty()) return FilePathBasedModificationTracker.NEVER_CHANGED
         return scriptFileFrom(patterns)
+    }
+
+    fun expression(element: ParadoxExpressionElement): ModificationTracker {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> ScriptExpressionResolution
+            is ParadoxLocalisationExpressionElement -> LocalisationExpressionResolution
+            is ParadoxCsvExpressionElement -> CsvExpressionResolution
+            else -> ModificationTracker.EVER_CHANGED
+        }
     }
 }

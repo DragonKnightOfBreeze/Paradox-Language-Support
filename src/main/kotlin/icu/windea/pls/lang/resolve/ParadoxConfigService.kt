@@ -80,7 +80,7 @@ object ParadoxConfigService {
             // use soft values to optimize memory
             createNestedCache<VirtualFile, _, _, Cache<String, List<CwtMemberConfig<*>>>> {
                 CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
-            }.withDependencyItems(ParadoxModificationTrackers.Resolve)
+            }.withDependencyItems(ParadoxModificationTrackers.ConfigResolution)
         }
     }
 
