@@ -82,7 +82,7 @@ object ParadoxDefinitionInjectionService {
             val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
             if (matched) result += subtypeConfig
         }
-        // processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.1.3 commented out since it's uncessary for injections
+        // processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.1.3 commented out since it's unnecessary for injections
         return result
     }
 
@@ -100,22 +100,21 @@ object ParadoxDefinitionInjectionService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
-        // 由于不能有 rootKey 或 typeKeyPrefix，因此这里可以直接依赖 element，但为了与 definitionInfo 保持一致，仍然依赖 file
-        return listOf(file)
+        // 由于不能有 rootKey 或 typeKeyPrefix，这里可以直接依赖 element
+        return listOf(element)
     }
 
     fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): List<Any> {
         val subtypes = definitionInjectionInfo.typeConfig?.subtypes
-        val file = element.containingFile
 
         // 无子类型候选项
-        if (subtypes.isNullOrEmpty()) return listOf(file)
+        if (subtypes.isNullOrEmpty()) return listOf(element)
 
         // 所有子类型候选项都不依赖声明结构（快速匹配）
         val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
-        if (allFastMatch) return listOf(file)
+        if (allFastMatch) return listOf(element)
 
         // 需要依赖声明结构
-        return listOf(file, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element, ParadoxModificationTrackers.ScriptFile)
     }
 }

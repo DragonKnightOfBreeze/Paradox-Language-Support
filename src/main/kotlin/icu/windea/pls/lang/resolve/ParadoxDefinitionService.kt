@@ -287,7 +287,7 @@ object ParadoxDefinitionService {
 
     @Suppress("UNUSED_PARAMETER")
     fun getDependencies(element: ParadoxDefinitionElement, file: PsiFile): List<Any> {
-        // 由于可能有 rootKey 或 typeKeyPrefix，因此这里依赖 file
+        // 由于可能有 rootKey 或 typeKeyPrefix，这里需要依赖 file
         return listOf(file)
     }
 
