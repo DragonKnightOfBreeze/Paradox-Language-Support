@@ -1,32 +1,65 @@
-<!-- Context: project-intelligence/nav | Priority: critical | Version: 1.0 | Updated: 2026-03-23 -->
+<!-- Context: project-intelligence/nav | Priority: high | Version: 1.1 | Updated: 2026-03-24 -->
 
 # Project Intelligence
 
-> 本目录存放 Paradox Language Support 插件的项目专属智能上下文。
-> AI 代理应在执行任务前优先加载相关文件。
+> Start here for quick project understanding. These files bridge business and technical domains.
 
-## 结构
+## Structure
 
 ```
 .opencode/context/project-intelligence/
-├── navigation.md          # 本文件 - 快速导航
-└── technical-domain.md    # 技术栈、架构、核心开发模式
+├── navigation.md              # This file - quick overview
+├── business-domain.md         # Business context and problem statement
+├── technical-domain.md        # Stack, architecture, technical decisions
+├── business-tech-bridge.md    # How business needs map to solutions
+├── decisions-log.md           # Major decisions with rationale
+└── living-notes.md            # Active issues, debt, open questions
 ```
 
 ## Quick Routes
 
-| 需要了解 | 文件 | 说明 |
-|----------|------|------|
-| 技术栈与架构 | `technical-domain.md` | 主要技术、项目结构、核心 API |
-| 核心代码模式 | `technical-domain.md` | Manager/Service 模式、缓存、命名规范 |
-| 代码规范 | `technical-domain.md` | 索引策略、缓存策略、注释规范 |
-| 安全与稳定性 | `technical-domain.md` | 注入子系统、IDE 工具使用注意事项 |
+| What You Need | File | Description |
+|---------------|------|-------------|
+| Understand the "why" | `business-domain.md` | Problem, users, value proposition |
+| Understand the "how" | `technical-domain.md` | Stack, architecture, integrations |
+| See the connection | `business-tech-bridge.md` | Business → technical mapping |
+| Know the context | `decisions-log.md` | Why decisions were made |
+| Current state | `living-notes.md` | Active issues and open questions |
+| All of the above | Read all files in order | Full project intelligence |
 
-## 与全局上下文的关系
+## Usage
 
-本目录为**项目本地**上下文（`.opencode/`），优先级高于全局上下文（`~/.config/opencode/`）。
+**New Team Member / Agent**:
+1. Start with `navigation.md` (this file)
+2. Read all files in order for complete understanding
+3. Follow onboarding checklist in each file
 
-全局通用规范仍适用：
-- `~/.config/opencode/context/core/standards/code-quality.md`
-- `~/.config/opencode/context/core/standards/test-coverage.md`
-- `~/.config/opencode/context/core/workflows/code-review.md`
+**Quick Reference**:
+- Business focus → `business-domain.md`
+- Technical focus → `technical-domain.md`
+- Decision context → `decisions-log.md`
+
+## Integration
+
+This folder is referenced from:
+- `.opencode/context/core/standards/project-intelligence.md` (standards and patterns)
+- `.opencode/context/core/system/context-guide.md` (context loading)
+
+See `.opencode/context/core/context-system.md` for the broader context architecture.
+
+## Maintenance
+
+Keep this folder current:
+- Update when business direction changes
+- Document decisions as they're made
+- Review `living-notes.md` regularly
+- Archive resolved items from decisions-log.md
+
+**Management Guide**: See `.opencode/context/core/standards/project-intelligence-management.md` for complete lifecycle management including:
+- How to update, add, and remove files
+- How to create new subfolders
+- Version tracking and frontmatter standards
+- Quality checklists and anti-patterns
+- Governance and ownership
+
+See `.opencode/context/core/standards/project-intelligence.md` for the standard itself.

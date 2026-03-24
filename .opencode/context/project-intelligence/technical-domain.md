@@ -1,159 +1,163 @@
-<!-- Context: project-intelligence/technical | Priority: critical | Version: 1.0 | Updated: 2026-03-23 -->
+<!-- Context: project-intelligence/technical | Priority: critical | Version: 1.0 | Updated: 2026-03-24 -->
 
 # Technical Domain
 
-**用途**：Paradox Language Support 插件的技术栈、架构与核心开发模式。
-**更新时机**：技术栈变更 | 新增核心模式 | 架构决策
+**Purpose**: Tech stack, architecture, code patterns, and development conventions for Paradox Language Support (PLS).
+**Last Updated**: 2026-03-24
 
 ## Quick Reference
 
-**受众**：开发者、AI 代理
-**关联文件**：`business-domain.md` | `decisions-log.md`
+- **Update When**: Tech stack changes, new architectural patterns, new code conventions
+- **Audience**: Developers, AI agents working on PLS
 
----
+## Primary Stack
 
-## 主要技术栈
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Language | **Kotlin** (primary) | Java only for Grammar-Kit generated code and rare legacy cases |
+| Build | Gradle + IntelliJ Platform Gradle Plugin | `./gradlew` on Windows |
+| SDK | IntelliJ Platform SDK | PSI-based, NOT LSP |
+| Parser | Grammar-Kit | Generates Java lexer/parser; wrap in Kotlin |
+| AI | LangChain4j | Localisation translation/polishing workflows |
+| Testing | JUnit4 + IntelliJ Platform Test Framework | |
+| JDK | 21 | `kotlin.jvmToolchain(21)` |
 
-| 层次 | 技术 | 说明 |
-|------|------|------|
-| 语言 | Kotlin（主）/ Java | 插件主体；Java 用于部分平台兼容场景 |
-| 平台 | IntelliJ Platform（PSI-based） | 语言支持核心；非 LSP 架构 |
-| 构建 | Gradle + IntelliJ Platform Gradle Plugin | JDK 21（`kotlin.jvmToolchain(21)`）|
-| 配置驱动 | CWT Config System | 类 JSON Schema，驱动补全/检查/导航等语义功能 |
-| AI 集成 | LangChain4j | 本地化翻译/润色工作流 |
-| 工具集成 | ImageMagick / Tiger lint / Translation Plugin | 可选依赖，按需启用 |
+## Architecture Pattern
 
----
+PSI-based IntelliJ plugin. Language features are driven by a **CWT config system** (analogous to JSON Schema for game script files). Core layers:
 
-## 项目结构
+- `icu.windea.pls.core` — stdlib/platform extensions, shared utilities
+- `icu.windea.pls.config` — config/config group/expression models, resolvers
+- `icu.windea.pls.lang` — plugin-specific domain logic (match, resolve, util)
+- `icu.windea.pls.ep` — Extension Point implementations (organized by category)
+- `icu.windea.pls.tools` — tool-like APIs (launchers, generators)
+
+## Project Structure
 
 ```
-src/main/kotlin|java|resources   # 插件源码
-src/test/kotlin|java|resources   # 测试代码与资源
-src/test/testData                # 测试数据（CWT/脚本/本地化文件）
-cwt/                             # CWT 规则仓库（core + 各游戏类型）
-docs/                            # 语言语法与规则格式参考文档
-documents/                       # 维护者文档（含 AI 生成文档）
-META-INF/pls-*.xml               # 插件注册文件（由 plugin.xml 引入）
+src/main/kotlin/icu/windea/pls/
+├── core/            # Extensions, utilities, shared infrastructure
+├── config/          # CWT config models and services
+├── lang/            # Domain logic: match, resolve, util, actions, codeInsight
+│   ├── util/        # High-level Managers (e.g., ParadoxDefinitionManager)
+│   ├── resolve/     # Services (e.g., ParadoxDefinitionService)
+│   ├── match/       # Semantic matching
+│   └── actions/     # IDE actions (verb/adjective prefix, no domain prefix)
+├── ep/              # EP implementations by category
+│   ├── codeInsight/ # Hints, documentation, navigation EPs
+│   ├── resolve/     # Resolution EPs
+│   └── ...          # analysis, config, index, match, overrides, tools, util
+src/main/resources/META-INF/
+├── plugin.xml       # Entry point, includes pls-*.xml
+└── pls-*.xml        # Feature registrations (split by domain)
+cwt/                 # CWT config repositories (core + per-game)
 ```
 
----
+## Code Patterns
 
-## 核心代码模式
-
-### Manager 模式（典型结构）
+### Manager (high-level, cached domain methods)
 
 ```kotlin
-// icu.windea.pls.lang.util.ParadoxDefinitionManager
-object ParadoxDefinitionManager {
-    // 内嵌 Keys 对象统一管理缓存键
-    object Keys : KeyRegistry() {                        // icu.windea.pls.core.util.KeyRegistry
-        val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
-        val cachedDeclaration by registerKey<CachedValue<Any>>(Keys)
-    }
-
-    fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
-            ProgressManager.checkCanceled()
-            runReadActionSmartly {
-                val value = ParadoxDefinitionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionService.getDependencies(element, file)
-                value.withDependencyItems(dependencies)
-            }
+// ParadoxDefinitionManager.getInfo — cache-first pattern
+fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
+    return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
+        ProgressManager.checkCanceled()
+        runReadActionSmartly {
+            val file = element.containingFile
+            val value = ParadoxDefinitionService.resolveInfo(element, file)
+            val dependencies = ParadoxDefinitionService.getDependencies(element, file)
+            value.withDependencyItems(dependencies)
         }
     }
 }
 ```
 
-### Service 模式（EP 驱动，底层解析）
+### Service (lower-level, EP-driven resolve logic)
 
 ```kotlin
-// Manager 负责缓存，Service 负责实际解析逻辑
-// icu.windea.pls.lang.util.ParadoxConfigManager（委托给 ParadoxConfigService）
-private fun getConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
-    return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
-        val value = ParadoxConfigService.getConfigContext(element)
-        value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-    }
+// ParadoxDefinitionService.resolveInfo — resolve with config group
+fun resolveInfo(element: ParadoxDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+    val fileInfo = file.fileInfo ?: return null
+    val gameType = fileInfo.rootInfo.gameType
+    val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+    // ... match against config group
 }
 ```
 
-### 核心 API 调用模式
+## Naming Conventions
 
-```kotlin
-// 规则上下文 / 匹配规则
-// icu.windea.pls.lang.util.ParadoxConfigManager
-ParadoxConfigManager.getConfigContext(element)
-ParadoxConfigManager.getConfigs(element, options)
+| Type | Convention | Example |
+|------|-----------|---------|
+| Files (single class/object) | PascalCase | `ParadoxDefinitionManager.kt` |
+| Files (package-level helpers) | `_extensions.kt`, `_accessors.kt`, `_models.kt` | `_extensions.kt` |
+| Files (class-level helpers) | `XxxExtensions.kt`, `XxxAccessors.kt` | `ParadoxDefinitionExtensions.kt` |
+| Files (EP implementations, grouped) | `SomeProviders.kt`, `SomeProviders.Category.kt` | `ParadoxHintTextProviders.kt` |
+| Classes | PascalCase, domain prefix where needed | `ParadoxDefinitionInfo`, `CwtTypeConfig` |
+| Prefixes (domain) | `Cwt`, `CwtConfig`, `Paradox` | — |
+| Abstract class suffix | `Base` | `ParadoxScriptExpressionSupportBase` |
+| Actions/Intentions/Inspections | Verb/adjective first, NO domain prefix | `CopyPathFromRootProvider`, `GoToPathAction` |
+| Functions/variables | camelCase (standard) | `getInfo`, `resolveInfo` |
+| Constants | `UPPER_SNAKE_CASE` | `EMPTY_OBJECT` |
+| Factory methods | `PascalCase()` | `SomeFactoryMethod()` |
+| Enum values | PascalCase or UPPER_SNAKE_CASE (no strict rule) | `Stellaris`, `GAME_TYPE` |
 
-// 作用域匹配
-// icu.windea.pls.lang.util.ParadoxScopeManager
-ParadoxScopeManager.matchesScope(scopeContext, scopeToMatch, configGroup)
+### Co-located impl pattern
 
-// 定义检索
-// icu.windea.pls.lang.resolve.ParadoxDefinitionSearch
-ParadoxDefinitionSearch.search(name, gameType, project).findAll()
+If an implementation class does not need to be public, place it in the same file as the interface, wrapped in `// region ... // endregion`. See `icu.windea.pls.model.paths.ParadoxMemberPath` as a canonical example.
 
-// 协程作用域 / 规则组
-// icu.windea.pls.PlsFacade
-PlsFacade.getCoroutineScope(project)
-PlsFacade.getConfigGroup(project, gameType)
-```
+## Code Standards
 
----
+- **Caching**: Prefer `CacheBuilder` (from `icu.windea.pls.core.util.CachesKt`); use `ConcurrentHashMap` only when insufficient
+- **String interning**: Use `com.github.benmanes.caffeine.cache.Interner`
+- **Cache strength**: Global caches → strong refs + size+TTL; large/config caches → soft refs
+- **Indexing**: File-level analysis → `FileBasedIndex`; PSI-structure-dependent → `StubIndex`; ref-resolve-dependent → `FileBasedIndex`
+- **Extension**: Extend via EP and config-driven mechanisms; avoid hardcoding game-specific behavior
+- **Change scope**: Keep changes minimal and localized; prefer existing EPs over new ones
+- **Config access**: `PlsFacade.getConfigGroup(project, gameType)` / `PlsFacade.getConfigGroup(gameType)`
+- **Coroutine scope**: `PlsFacade.getCoroutineScope(project)` / `PlsFacade.getCoroutineScope()`
+- **Config context**: `ParadoxConfigManager.getConfigContext(element)`
+- **Matched configs**: `ParadoxConfigManager.getConfigs(element, options)`
 
-## 命名规范
+## Documentation Standards
 
-| 类型 | 规范 | 示例 |
-|------|------|------|
-| 类名前缀 | 领域名作前缀 | `CwtConfig`、`ParadoxScriptXxx`、`PlsXxx` |
-| 抽象类后缀 | `Base` | `ParadoxScriptExpressionSupportBase` |
-| 缩写原则 | 避免非前缀缩写 | 用 `context`/`sc`，**不用** `ctx` |
-| 测试数据文件 | `snake_case.test.{ext}` | `usage_direct_stellaris.test.txt` |
+- **KDoc**: Default to Chinese; KDoc style
+- **Inline comments**: Chinese or English based on context
+- **KDoc type refs**: Use `[PsiElement]` link style
+- **Method docs**: Prefer describing the method as a whole; avoid per-parameter docs unless truly necessary
 
-### 包结构
+## Testing Conventions
 
-| 包 | 职责 |
-|----|------|
-| `icu.windea.pls.core` | 标准库/平台/三方扩展 + 共用工具 |
-| `icu.windea.pls.config` | CWT 规则模型 + 服务/解析器/操作器 |
-| `icu.windea.pls.lang` | 插件专属、跨语言代码（组件/扩展/工具等）|
-| `icu.windea.pls.lang.match` | 语义级匹配（基于索引、引用解析、规则）|
-| `icu.windea.pls.lang.resolve` | 语义级解析（同上）|
-| `icu.windea.pls.lang.util` | 高层 Manager + 特殊组件（如渲染器）|
-| `icu.windea.pls.tools` | 工具类 API（启动器、生成器、日志读取器）|
-
----
-
-## 代码规范
-
-- 优先用 Kotlin 编写测试和新代码
-- 索引策略：文件级数据 → `FileBasedIndex`；PSI 结构数据（不依赖动态数据）→ `StubIndex`；依赖引用解析的数据 → `FileBasedIndex`
-- 缓存策略：全局缓存用 strong value + size/TTL；大型规则对象缓存用 soft value；IDE 生命周期绑定缓存用 soft value
-- 优先通过已有 EP 和 config 驱动机制扩展，**不硬编码**游戏专属行为
-- 修改保持最小化、局部化；新增 EP 实现时遵循命名规范
-- 行为变更时添加或更新测试；区分单元测试与集成测试
-- KDoc 注释默认用中文；普通注释根据上下文选用；引用类型用 `[PsiElement]` 形式
-
----
-
-## 安全与稳定性
-
-- **代码注入子系统**：不要轻易修改，除非完全理解影响范围
-- 多项目场景下 IDE 工具调用必须传 `project_path` 参数
-- IDE 处于 dumb mode 时，先通过 `ide_index_status` 确认就绪
-- 可选依赖（Markdown、Diagrams、Translation Plugin）仅在存在时启用
-
----
+- **Unit tests**: Pure components/tools/extensions; no IntelliJ API
+- **Integration tests**: PSI/index/semantic match/resolve; uses IntelliJ test framework
+- **Parsing tests**: `ParsingTestCase` — PSI snapshot comparison
+- **Fixture tests**: `BasePlatformTestCase` + `myFixture.configureByFile(...)`
+- **Config-driven test setup**:
+  ```kotlin
+  @Before fun doSetUp() {
+      markIntegrationTest()
+      markRootDirectory("features/index")
+      markConfigDirectory("features/index/.config")
+      initConfigGroups(project, ParadoxGameType.Stellaris)
+  }
+  @After fun doTearDown() = clearIntegrationTest()
+  ```
+- **Test file naming**: `snake_case.test.txt` / `.test.yml` / `.test.cwt`
+- **Config directory**: Place configs under `core/` or `<gameTypeId>/` subdir (e.g., `stellaris/`)
+- **Targeted runs**: `./gradlew test --tests "*SomeKeyword*"`
 
 ## 📂 Codebase References
 
-| 位置 | 说明 |
-|------|------|
-| `src/main/kotlin/icu/windea/pls/lang/util/` | Manager 层（`ParadoxDefinitionManager` 等）|
-| `src/main/kotlin/icu/windea/pls/lang/resolve/` | Service 层（解析逻辑）|
-| `src/main/kotlin/icu/windea/pls/config/` | CWT 规则模型与规则组 |
-| `src/main/kotlin/icu/windea/pls/core/util/` | 基础工具（`KeyRegistry`、`CacheBuilder` 等）|
-| `src/main/resources/META-INF/pls-*.xml` | 插件注册文件 |
-| `cwt/` | CWT 规则仓库 |
-| `build.gradle.kts` | 构建配置 |
+- **Manager pattern**: `src/main/kotlin/icu/windea/pls/lang/util/ParadoxDefinitionManager.kt:58`
+- **Service pattern**: `src/main/kotlin/icu/windea/pls/lang/resolve/ParadoxDefinitionService.kt:82`
+- **EP implementations**: `src/main/kotlin/icu/windea/pls/ep/`
+- **Plugin registrations**: `src/main/resources/META-INF/pls-*.xml`
+- **CWT configs**: `cwt/` (core + per-game repos)
+- **Test data**: `src/test/testData/`
+- **Build**: `build.gradle.kts`, `settings.gradle.kts`
+
+## Related Files
+
+- `business-domain.md` — Project purpose and domain context
+- `business-tech-bridge.md` — Business needs → technical solutions mapping
+- `decisions-log.md` — Major decisions with rationale
+- `living-notes.md` — Active issues, open questions
