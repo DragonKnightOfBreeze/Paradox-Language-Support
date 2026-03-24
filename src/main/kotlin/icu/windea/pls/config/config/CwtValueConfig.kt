@@ -116,7 +116,11 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val config = create(pointer, configGroup, valueExpression, valueType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
-        logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
+        when {
+            configs == null -> logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
+            configs.isEmpty() -> logger.trace { "Resolved value config (empty member configs).".withLocationPrefix(element) }
+            else -> logger.trace { "Resolved value config (${configs.size} member configs).".withLocationPrefix(element) }
+        }
         return config
     }
 

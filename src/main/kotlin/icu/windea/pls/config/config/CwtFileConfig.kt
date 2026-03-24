@@ -89,9 +89,9 @@ private class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResol
         val rootBlock = file.block
         val configs = CwtConfigResolverManager.getConfigs(rootBlock, file, configGroup).orEmpty()
         val config = create(pointer, configGroup, fileName, filePath, configs)
-        when (configs.isEmpty()) {
-            true -> logger.debug { "Resolved empty file config.".withLocationPrefix() }
-            else -> logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
+        when {
+            configs.isEmpty() -> logger.debug { "Resolved file config (path: ${config.path}, empty member configs).".withLocationPrefix() }
+            else -> logger.debug { "Resolved file config (path: ${config.path}, ${configs.size} member configs).".withLocationPrefix() }
         }
         return config
     }

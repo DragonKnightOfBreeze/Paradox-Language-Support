@@ -145,7 +145,7 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
             logger.warn("Missing property value, skipped.".withLocationPrefix(element))
             return null
         }
-        if(separatorType == null) {
+        if (separatorType == null) {
             logger.warn("Missing property separator, skipped.".withLocationPrefix(element))
             return null
         }
@@ -158,7 +158,11 @@ private class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtCon
         val config = create(pointer, configGroup, keyExpression, valueExpression, valueType, separatorType, configs, injectable = true)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         CwtOptionDataProcessor.process(config.optionData, optionConfigs) // initialize option data
-        logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
+        when {
+            configs == null -> logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
+            configs.isEmpty() -> logger.trace { "Resolved property config (key: ${config.key}, empty member configs).".withLocationPrefix(element) }
+            else -> logger.trace { "Resolved property config (key: ${config.key}, ${configs.size} member configs).".withLocationPrefix(element) }
+        }
         return config
     }
 
