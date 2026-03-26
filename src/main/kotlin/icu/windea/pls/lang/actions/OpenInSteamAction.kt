@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.actions
 
-import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -22,7 +21,7 @@ class OpenInSteamAction : DumbAwareAction() {
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = false
-        if (!RevealFileAction.isSupported()) return
+        // if (!RevealFileAction.isSupported()) return
         val virtualFile = getFile(e) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         e.presentation.isVisible = true
