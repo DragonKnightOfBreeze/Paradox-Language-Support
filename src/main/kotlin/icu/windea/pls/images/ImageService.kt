@@ -15,6 +15,7 @@ import org.intellij.images.fileTypes.impl.ImageFileType
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
+import java.net.URLConnection
 import java.nio.file.Path
 import javax.imageio.spi.IIORegistry
 
@@ -24,9 +25,12 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
     // for DDS and TGA images, use image reader SPIs from TwelveMonkeys
     // see: https://github.com/haraldk/TwelveMonkeys
 
-    // NOTE 2.1.7 MUST be lazy loaded here (avoiding eager class loading of ImageReaders and make ImageReaderCodeInjectors works as expected)
+    // NOTE 2.1.7 MUST be lazy loaded here (avoiding eager class loading of ImageReaders and make ImageReaderCodeInjectors work as expected)
     private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }
     private val tgaImageReaderSpi by lazy { TgaImageReaderSpi() }
+
+    // NOTE 2.1.7 since IDEA 2026.1, it's necessary to set fileNameMap (or cannot render DDS / TGA images without splitting in quick doc as expected)
+    private val originalFileNameMap by lazy { URLConnection.getFileNameMap() }
 
     private fun registerImageIOSpi() {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
@@ -38,18 +42,39 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
         IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageReaderSpi)
     }
 
+    private fun setFileNameMap() {
+        val originalFileNameMap = originalFileNameMap // lift out or will cause SOF
+        URLConnection.setFileNameMap {
+            val extension = it.substringAfterLast('.').lowercase()
+            when (extension) {
+                "dds" -> DdsFileType.contentTypeString
+                "tga" -> TgaFileType.contentTypeString
+                else -> {
+                    originalFileNameMap.getContentTypeFor(it)
+                }
+            }
+        }
+    }
+
+    private fun resetFileNameMap() {
+        URLConnection.setFileNameMap(originalFileNameMap)
+    }
+
     override fun appFrameCreated(commandLineArgs: List<String?>) {
         registerImageIOSpi()
+        setFileNameMap()
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
         if (pluginDescriptor.pluginId != PlsConstants.pluginId) return
         registerImageIOSpi()
+        setFileNameMap()
     }
 
     override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
         if (pluginDescriptor.pluginId != PlsConstants.pluginId) return
         deregisterImageIOSpi()
+        resetFileNameMap()
     }
 
     fun isImageFileType(fileType: FileType): Boolean {
