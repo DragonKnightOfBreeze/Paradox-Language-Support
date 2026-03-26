@@ -36,18 +36,16 @@ class CommandExecutor(
      * 以命令行字符串 [command] 执行。
      *
      * - [commandType] 未指定时按当前 OS 选择合适的 Shell；
-     * - 输出编码由 [CommandOutputCharsetDetector] 判定。
+     * - 输出编码由 [CommandService] 判定。
      */
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
-    fun execute(command: String, commandType: CommandType?): String {
+    fun execute(command: String, commandType: CommandType = CommandType.AUTO): String {
         logger.info("Executing command: $command")
-        val commandTypeToUse = getCommandTypeToUse(commandType)
-        val commands = getCommands(command, commandTypeToUse)
-        val outputCharset = CommandOutputCharsetDetector.detect(commandTypeToUse)
+        val commands = CommandService.getCommands(command, commandType)
+        val outputCharset = CommandService.getOutputCharset(commandType)
         return doExecute(commands, outputCharset)
     }
 
-    /** 实际执行 [commands] 并按 [outputCharset] 读取输出，处理超时与错误流。 */
     private fun doExecute(commands: List<String>, outputCharset: Charset): String {
         val processBuilder = ProcessBuilder(commands)
         val env = processBuilder.environment()
@@ -73,26 +71,5 @@ class CommandExecutor(
         val errorResult = process.errorStream.bufferedReader(outputCharset).readText().trim()
         logger.info("Command error result: $errorResult")
         throw CommandExecutionException(errorResult)
-    }
-
-    /** 根据 OS 与入参确定实际使用的命令类型。Windows 下仅允许 CMD/PowerShell。 */
-    private fun getCommandTypeToUse(commandType: CommandType?): CommandType {
-        if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
-            if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException()
-        }
-        if (commandType != null) return commandType
-        return when (OS.CURRENT) {
-            OS.Windows -> CommandType.POWER_SHELL
-            else -> CommandType.SHELL
-        }
-    }
-
-    /** 将命令行字符串转换为实际的可执行命令数组。 */
-    private fun getCommands(command: String, commandType: CommandType): List<String> {
-        return when (commandType) {
-            CommandType.SHELL -> listOf("/bin/sh", "-c", command)
-            CommandType.CMD -> listOf("cmd", "/c", command)
-            CommandType.POWER_SHELL -> listOf("powershell", "-Command", "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $command")
-        }
     }
 }

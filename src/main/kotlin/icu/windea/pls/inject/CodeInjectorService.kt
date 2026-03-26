@@ -13,6 +13,8 @@ import javassist.ClassPool
 
 @Service
 class CodeInjectorService : Disposable {
+    private val logger = thisLogger()
+
     class Listener : AppLifecycleListener {
         override fun appFrameCreated(commandLineArgs: MutableList<String>) {
             service<CodeInjectorService>().init()
@@ -27,7 +29,6 @@ class CodeInjectorService : Disposable {
         CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool()
 
         val codeInjectors = CodeInjectorUtil.codeInjectors
-        val logger = thisLogger()
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
             val codeInjectorId = codeInjector.id
             try {

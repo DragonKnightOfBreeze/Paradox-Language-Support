@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.actions
 
-import com.intellij.ide.BrowserUtil
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -34,7 +33,7 @@ class OpenInSteamWebsiteAction : DumbAwareAction() {
         val virtualFile = getFile(e) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
         val targetUrl = getTargetUrl(fileInfo) ?: return // ignore
-        BrowserUtil.open(targetUrl)
+        PlsUrlService.getInstance().openUrl(targetUrl)
     }
 
     private fun getFile(e: AnActionEvent): VirtualFile? {

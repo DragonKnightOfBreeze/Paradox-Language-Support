@@ -10,7 +10,7 @@ import java.io.IOException
  * 执行外部命令行字符串。
  *
  * @param command 命令行，如 "git status"。
- * @param commandType 命令类型，未指定时按当前 OS 选择（Windows 默认 PowerShell）。
+ * @param commandType 命令类型。
  * @param environment 额外环境变量。
  * @param workDirectory 工作目录。
  * @param timeout 超时（毫秒）。
@@ -22,7 +22,7 @@ import java.io.IOException
 @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
 fun executeCommand(
     command: String,
-    commandType: CommandType? = null,
+    commandType: CommandType = CommandType.AUTO,
     environment: Map<String, String> = emptyMap(),
     workDirectory: File? = null,
     timeout: Long? = null
@@ -33,7 +33,7 @@ fun executeCommand(
 /**
  * 执行外部命令数组（已拆分的命令与参数）。
  *
- * @param commands 命令数组，如 ["git", "status" ]。
+ * @param commands 命令数组，如 ["git", "status"]。
  * @param environment 额外环境变量。
  * @param workDirectory 工作目录。
  * @param timeout 超时（毫秒）。
