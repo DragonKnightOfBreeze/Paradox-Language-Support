@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.lints.providers
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.runCatchingCancelable
@@ -57,7 +57,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
 
         ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
         val command = "./$exe --version"
-        executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
+        executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
         return true
     }
 
@@ -100,7 +100,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
             append(" ").append(argPath)
             append(" > ").append(argOutputPath)
         }
-        executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
+        executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
 
         return TigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
     }

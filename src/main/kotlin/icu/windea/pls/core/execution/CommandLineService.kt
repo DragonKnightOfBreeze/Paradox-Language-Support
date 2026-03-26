@@ -1,9 +1,9 @@
-package icu.windea.pls.core.console
+package icu.windea.pls.core.execution
 
 import com.intellij.util.system.OS
 import java.nio.charset.Charset
 
-object CommandService {
+object CommandLineService {
     private val outputCharsetCandidates = listOf(Charsets.UTF_8, Charset.forName("GBK"))
 
     private val outputCharsetForCmd by lazy {
@@ -17,7 +17,7 @@ object CommandService {
      */
     fun getCommandTypeForOs(commandType: CommandType = CommandType.AUTO): CommandType {
         return when (commandType) {
-            CommandType.AUTO -> if (OS.CURRENT == OS.Windows) CommandType.POWER_SHELL else CommandType.SHELL
+            CommandType.AUTO -> if (OS.CURRENT != OS.Windows) CommandType.SHELL else CommandType.POWER_SHELL
             CommandType.CMD -> commandType.also { if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException() }
             CommandType.POWER_SHELL -> commandType.also { if (OS.CURRENT != OS.Windows) throw UnsupportedOperationException() }
             CommandType.SHELL -> commandType // this is allowed and maybe available

@@ -1,18 +1,18 @@
-package icu.windea.pls.core.console
+package icu.windea.pls.core.execution
 
 import org.jdesktop.swingx.util.OS
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
 
-class CommandExecutorTest {
+class CommandLineExecutorTest {
     @Test
     fun testUtf8OutputForCmd() {
         Assume.assumeTrue("Windows only", OS.isWindows())
 
         val command = "echo 中文测试"
         val expect = "中文测试"
-        Assert.assertEquals(expect, CommandExecutor().execute(command, CommandType.CMD))
+        Assert.assertEquals(expect, CommandLineExecutor().execute(command, CommandType.CMD))
     }
 
     @Test
@@ -21,6 +21,6 @@ class CommandExecutorTest {
 
         val command = "echo 中文测试"
         val expect = "中文测试"
-        Assert.assertEquals(expect, CommandExecutor().execute(command, CommandType.POWER_SHELL))
+        Assert.assertEquals(expect, CommandLineExecutor().execute(command, CommandType.POWER_SHELL))
     }
 }

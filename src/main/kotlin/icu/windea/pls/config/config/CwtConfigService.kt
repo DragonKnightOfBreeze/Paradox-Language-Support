@@ -17,7 +17,7 @@ import icu.windea.pls.config.util.CwtConfigManager.isInternalFile
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -95,7 +95,7 @@ object CwtConfigService {
             runCatching {
                 val command = "git remote -v"
                 val workDirectory = root.toNioPath().toFile()
-                val commandResult = executeCommand(command, workDirectory = workDirectory)
+                val commandResult = executeCommandLine(command, workDirectory = workDirectory)
                 val gameTypeId = commandResult.lines()
                     .mapNotNull { it.splitByBlank(3).getOrNull(1) }
                     .firstNotNullOfOrNull t@{

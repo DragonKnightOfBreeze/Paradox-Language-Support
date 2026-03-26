@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.tools
 
-import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -30,16 +30,16 @@ class PlsGitServiceImpl : PlsGitService {
     }
 
     override fun lsRemote(url: String): String {
-        return executeCommand("git ls-remote $url")
+        return executeCommandLine("git ls-remote $url")
     }
 
     override fun clone(url: String, workDirectory: Path): String {
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommand("git clone $url", workDirectory = wd)
+        return executeCommandLine("git clone $url", workDirectory = wd)
     }
 
     override fun pull(url: String, workDirectory: Path): String {
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommand("git pull $url", workDirectory = wd)
+        return executeCommandLine("git pull $url", workDirectory = wd)
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.console
+package icu.windea.pls.core.execution
 
 /**
  * 命令类型。

@@ -5,8 +5,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.util.system.OS
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.console.CommandType
-import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.execution.CommandType
+import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -52,12 +52,12 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
     private fun resolveSteamPathFromRegistry(): Path? {
         // 64位系统：查找 WOW6432Node 重定向键
         val command64 = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam' -ErrorAction SilentlyContinue).InstallPath"
-        val result64 = runCatchingCancelable { executeCommand(command64, CommandType.POWER_SHELL) }.getOrNull()
+        val result64 = runCatchingCancelable { executeCommandLine(command64, CommandType.POWER_SHELL) }.getOrNull()
         result64?.orNull()?.toPathOrNull()?.formatted()?.let { return it }
 
         // 32位系统回退：查找非重定向键
         val command32 = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Valve/Steam' -ErrorAction SilentlyContinue).InstallPath"
-        val result32 = runCatchingCancelable { executeCommand(command32, CommandType.POWER_SHELL) }.getOrNull()
+        val result32 = runCatchingCancelable { executeCommandLine(command32, CommandType.POWER_SHELL) }.getOrNull()
         result32?.orNull()?.toPathOrNull()?.formatted()?.let { return it }
 
         return null
@@ -101,12 +101,12 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
     private fun resolveSteamGamePathFromRegistry(steamId: String): Path? {
         // 64位系统：查找 WOW6432Node 重定向键
         val command64 = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}' -ErrorAction SilentlyContinue).InstallLocation"
-        val result64 = runCatchingCancelable { executeCommand(command64, CommandType.POWER_SHELL) }.getOrNull()
+        val result64 = runCatchingCancelable { executeCommandLine(command64, CommandType.POWER_SHELL) }.getOrNull()
         result64?.orNull()?.toPathOrNull()?.formatted()?.let { return it }
 
         // 32位系统回退：查找非重定向键
         val command32 = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}' -ErrorAction SilentlyContinue).InstallLocation"
-        val result32 = runCatchingCancelable { executeCommand(command32, CommandType.POWER_SHELL) }.getOrNull()
+        val result32 = runCatchingCancelable { executeCommandLine(command32, CommandType.POWER_SHELL) }.getOrNull()
         result32?.orNull()?.toPathOrNull()?.formatted()?.let { return it }
 
         return null

@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
@@ -42,7 +42,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val exe = fullExePath.name
 
         val command = "./$exe -version"
-        val result = executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
+        val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
         return result.contains("ImageMagick") || result.contains("Version")
     }
 
@@ -83,7 +83,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val output = outputPath.toString().quote('\'')
 
         val command = "./$exe $input $output"
-        val result = executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
+        val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
 
         if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
