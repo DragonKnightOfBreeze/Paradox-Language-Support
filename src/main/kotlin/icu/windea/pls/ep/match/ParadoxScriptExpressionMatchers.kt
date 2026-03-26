@@ -246,7 +246,8 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val (element, expression, configExpression, _, configGroup, options) = context
         val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
+        val aliasExpression = expression
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, aliasExpression, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
         val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
         return ParadoxExpressionMatchService.matchScriptExpression(nextContext)
     }

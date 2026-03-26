@@ -25,7 +25,6 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isIncomplete
-import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
@@ -396,9 +395,9 @@ object ParadoxConfigMatchService {
         // aliasName 和 aliasSubName 需要匹配
         val configGroup = propertyConfig.configGroup
         val aliasName = propertyConfig.keyExpression.value ?: return false
-        val key = property.name
-        val quoted = property.propertyKey.text.isLeftQuoted()
-        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, configGroup, aliasName, key, quoted, options) ?: return false
+        val propertyKey = property.propertyKey
+        val aliasExpression = ParadoxScriptExpression.resolve(propertyKey, options)
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, aliasExpression, aliasName, configGroup, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->

@@ -58,9 +58,7 @@ import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
-import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
-import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
@@ -257,18 +255,18 @@ object ParadoxExpressionManager {
 
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>) {
         val expressionText = getExpressionText(element, rangeInElement)
-        ParadoxScriptExpressionService.annotate(element, rangeInElement, expressionText, holder, config)
+        ParadoxExpressionService.annotateScriptExpression(element, rangeInElement, expressionText, holder, config)
     }
 
     fun annotateLocalisationExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
-        ParadoxLocalisationExpressionService.annotate(element, rangeInElement, expressionText, holder)
+        ParadoxExpressionService.annotateLocalisationExpression(element, rangeInElement, expressionText, holder)
     }
 
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtValueConfig) {
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) return
         val expressionText = getExpressionText(element, rangeInElement)
-        ParadoxCsvExpressionService.annotate(element, rangeInElement, expressionText, holder, config)
+        ParadoxExpressionService.annotateCsvExpression(element, rangeInElement, expressionText, holder, config)
     }
 
     fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
@@ -349,7 +347,7 @@ object ParadoxExpressionManager {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
-        val result = ParadoxScriptExpressionService.resolve(element, rangeInElement, expressionText, config, isKey, exact)
+        val result = ParadoxExpressionService.resolveScriptExpression(element, rangeInElement, expressionText, config, isKey, exact)
         if (result != null) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
@@ -363,7 +361,7 @@ object ParadoxExpressionManager {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
 
-        val result = ParadoxScriptExpressionService.multiResolve(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxExpressionService.multiResolveScriptExpression(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotNullOrEmpty()) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).to.singletonSetOrEmpty()
@@ -388,7 +386,7 @@ object ParadoxExpressionManager {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
-        val result = ParadoxLocalisationExpressionService.resolve(element, rangeInElement, expressionText)
+        val result = ParadoxExpressionService.resolveLocalisationExpression(element, rangeInElement, expressionText)
         return result
     }
 
@@ -397,7 +395,7 @@ object ParadoxExpressionManager {
         val expressionText = getExpressionText(element, rangeInElement)
         if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
 
-        val result = ParadoxLocalisationExpressionService.multiResolve(element, rangeInElement, expressionText)
+        val result = ParadoxExpressionService.multiResolveLocalisationExpression(element, rangeInElement, expressionText)
         return result
     }
 
@@ -406,7 +404,7 @@ object ParadoxExpressionManager {
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
-        val result = ParadoxCsvExpressionService.resolve(element, rangeInElement, expressionText, config)
+        val result = ParadoxExpressionService.resolveCsvExpression(element, rangeInElement, expressionText, config)
         return result
     }
 
@@ -415,7 +413,7 @@ object ParadoxExpressionManager {
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) return emptySet()
         val expressionText = getExpressionText(element, rangeInElement)
 
-        val result = ParadoxCsvExpressionService.multiResolve(element, rangeInElement, expressionText, config)
+        val result = ParadoxExpressionService.multiResolveCsvExpression(element, rangeInElement, expressionText, config)
         return result
     }
 

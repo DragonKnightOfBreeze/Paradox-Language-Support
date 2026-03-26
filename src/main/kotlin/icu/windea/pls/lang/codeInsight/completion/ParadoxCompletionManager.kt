@@ -50,12 +50,10 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -417,7 +415,7 @@ object ParadoxCompletionManager {
             context.scopeMatched = scopeMatched1
         }
 
-        ParadoxScriptExpressionService.complete(context, result)
+        ParadoxExpressionService.completeScriptExpression(context, result)
 
         context.scopeMatched = scopeMatched
         context.scopeContext = scopeContext
@@ -425,12 +423,12 @@ object ParadoxCompletionManager {
 
     fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        ParadoxLocalisationExpressionService.complete(context, result)
+        ParadoxExpressionService.completeLocalisationExpression(context, result)
     }
 
     fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        ParadoxCsvExpressionService.complete(context, result)
+        ParadoxExpressionService.completeCsvExpression(context, result)
     }
 
     fun completeLocalisation(context: ProcessingContext, result: CompletionResultSet) {
@@ -861,7 +859,7 @@ object ParadoxCompletionManager {
                 result.addElement(lookupElement, context)
             }
         } else {
-            // commplete definition reference
+            // complete definition reference
             val keywordToUse = keyword.substring(index + 1)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val type = typeConfig.name

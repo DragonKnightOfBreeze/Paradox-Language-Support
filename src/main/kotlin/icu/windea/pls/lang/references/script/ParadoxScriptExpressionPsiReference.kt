@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -58,7 +58,7 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun getReferences(): Array<out PsiReference>? {
         val expressionText = getExpressionText(element, rangeInElement)
-        val result = ParadoxScriptExpressionService.getReferences(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxExpressionService.getScriptExpressionReferences(element, rangeInElement, expressionText, config, isKey)
         return result.orNull()
     }
 

@@ -5,7 +5,7 @@ import icu.windea.pls.lang.PlsStates
 object ParadoxMatchService {
     fun isDumb(options: ParadoxMatchOptions? = null): Boolean {
         if (PlsStates.processMergedIndex.get() == true) return true
-        return options.normalized().skipIndex/*  || options.normalized().skipScope */
+        return options.normalized().skipIndex || options.normalized().skipScope
     }
 
     fun fallback(options: ParadoxMatchOptions? = null): Boolean {

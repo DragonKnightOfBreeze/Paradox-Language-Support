@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.match
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -11,26 +12,15 @@ import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxExpressionMatchService {
+    // region Script Expression Related
+
     /**
      * @see ParadoxScriptExpressionMatcher.match
      */
     @Optimized
     fun matchScriptExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
-        val eps = ParadoxScriptExpressionMatcher.EP_NAME.extensionList
-        eps.forEachFast { ep ->
-            val r = ep.match(context)
-            if (r != null) return r
-        }
-        return ParadoxMatchResult.NotMatch
-    }
-
-    /**
-     * @see ParadoxCsvExpressionMatcher.match
-     */
-    @Optimized
-    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
-        val eps = ParadoxCsvExpressionMatcher.EP_NAME.extensionList
-        eps.forEachFast { ep ->
+        ParadoxScriptExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
+            ProgressManager.checkCanceled()
             val r = ep.match(context)
             if (r != null) return r
         }
@@ -38,7 +28,7 @@ object ParadoxExpressionMatchService {
     }
 
     fun isConstantMatch(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
-        // 注意这里可能需要在同一循环中同时检查 `keyExpression` 和 `valueExpression`，因此这里需要特殊处理
+        // 注意这里可能需要在同一循环中同时检查 keyExpression 和 valueExpression，因此这里需要特殊处理
         if (configExpression.isKey && expression.isKey == false) return false
         if (!configExpression.isKey && expression.isKey == true) return false
 
@@ -50,15 +40,34 @@ object ParadoxExpressionMatchService {
         }
     }
 
-    fun getMatchedAliasKey(element: PsiElement, configGroup: CwtConfigGroup, aliasName: String, key: String, quoted: Boolean, options: ParadoxMatchOptions? = null): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
+    fun getMatchedAliasKey(element: PsiElement, expression: ParadoxScriptExpression, aliasName: String, configGroup: CwtConfigGroup, options: ParadoxMatchOptions? = null): String? {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(expression.value) // 不区分大小写
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
         return keys.find { key ->
+            ProgressManager.checkCanceled()
             val configExpression = CwtDataExpression.resolve(key, true)
             val context = ParadoxScriptExpressionMatchContext(element, expression, configExpression, null, configGroup, options)
             matchScriptExpression(context).get(options)
         }
     }
+
+    // endregion
+
+    // region Csv Expression Related
+
+    /**
+     * @see ParadoxCsvExpressionMatcher.match
+     */
+    @Optimized
+    fun matchCsvExpression(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
+        ParadoxCsvExpressionMatcher.EP_NAME.extensionList.forEachFast { ep ->
+            ProgressManager.checkCanceled()
+            val r = ep.match(context)
+            if (r != null) return r
+        }
+        return ParadoxMatchResult.NotMatch
+    }
+
+    // endregion
 }
