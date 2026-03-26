@@ -7,11 +7,8 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiFile
-import com.intellij.util.PathUtil
 import com.intellij.util.io.fileSizeSafe
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
@@ -39,8 +36,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPaths
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -162,9 +157,7 @@ object ParadoxImageManager {
         val imageAbsPath = filePath.absolutePathString().normalizePath()
         val imageRelPath = file.fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }?.normalizePath()
         val imagePath = doResolveImagePath(imageAbsPath, imageRelPath, frameInfo)
-        val created = runWithModalProgressBlocking(project, PlsBundle.message("create.image.file.progress.title", PathUtil.toPresentableUrl(imageAbsPath))) {
-            doCreateImageFile(file, filePath, imagePath, frameInfo)
-        }
+        val created = doCreateImageFile(file, filePath, imagePath, frameInfo)
         if (created) return imagePath.absolutePathString()
 
         return filePath.absolutePathString()
@@ -195,7 +188,7 @@ object ParadoxImageManager {
         }
     }
 
-    private suspend fun doCreateImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
+    private fun doCreateImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
         if (imagePath.exists()) {
             if (PlsFileManager.isStubFile(file)) return true
             val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
@@ -206,10 +199,10 @@ object ParadoxImageManager {
 
         imagePath.create()
         ProgressManager.checkCanceled()
-        val image = withContext(Dispatchers.IO) { ImageIO.read(filePath.toFile()) } ?: return false
+        val image = ImageIO.read(filePath.toFile()) ?: return false
         val slicedImage = ImageService.getInstance().sliceImage(image, frameInfo) ?: return false
         ProgressManager.checkCanceled()
-        withContext(Dispatchers.IO) { ImageIO.write(slicedImage, "png", imagePath.toFile()) }
+        ImageIO.write(slicedImage, "png", imagePath.toFile())
         return true
     }
 
