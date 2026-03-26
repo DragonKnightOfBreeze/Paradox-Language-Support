@@ -20,8 +20,11 @@ import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
+import jdk.internal.joptsimple.internal.Strings.*
 import java.io.DataInput
 import java.io.DataOutput
+import java.util.Collections.*
+import javax.swing.UIManager.*
 
 /**
  * 各种索引信息的文件索引的基类。
@@ -113,7 +116,7 @@ sealed class IndexInfoAwareFileBasedIndex<V, out T : IndexInfo> : FileBasedIndex
 
     fun getFileData(file: VirtualFile, project: Project): Map<String, V> {
         if (useLazyIndex(file)) {
-            return gist.getFileData(project, file)
+            return gist.getFileData(project, file).orEmpty()
         }
         return FileBasedIndex.getInstance().getFileData(name, file, project)
     }
