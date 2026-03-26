@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
@@ -31,7 +31,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
         val root = directory?.orNull()?.toVirtualFile() ?: return
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
-            val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
+            val isInProject = runSmartReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
             if (!isInProject) continue
             ParadoxLibraryService.getInstance(project).refreshRootsAsync()
         }

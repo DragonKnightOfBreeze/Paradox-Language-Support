@@ -15,7 +15,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
@@ -28,6 +27,7 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
@@ -107,7 +107,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
         var index = 0
         var currentIndex = 0
-        val producers = runReadAction {
+        val producers = runSmartReadAction {
             virtualFiles.mapNotNull { otherFile ->
                 if (file.fileType != otherFile.fileType) return@mapNotNull null
 
@@ -154,7 +154,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent {
         // 创建临时文件作为只读副本
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, file, project) }
-        val document = runReadAction { FileDocumentManager.getInstance().getDocument(tempFile) }!!
+        val document = runSmartReadAction { FileDocumentManager.getInstance().getDocument(tempFile) }!!
         return FileDocumentReadonlyContent(project, document, tempFile, file)
     }
 

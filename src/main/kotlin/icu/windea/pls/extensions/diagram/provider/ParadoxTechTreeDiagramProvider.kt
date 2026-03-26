@@ -6,7 +6,6 @@ import com.intellij.diagram.DiagramPresentationModel
 import com.intellij.diagram.DiagramRelationshipInfoAdapter
 import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -19,6 +18,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -124,7 +124,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         override fun getElementTitle(element: PsiElement): String? {
             ProgressManager.checkCanceled()
             return when (element) {
-                is ParadoxScriptProperty -> runReadAction { ParadoxTechnologyManager.getName(element) }
+                is ParadoxScriptProperty -> runSmartReadAction { ParadoxTechnologyManager.getName(element) }
                 else -> super.getElementTitle(element)
             }
         }
@@ -136,7 +136,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
                     nodeElement.getUserData(Keys.typeText)?.let { result += Items.Type(it) }
-                    runReadAction {
+                    runSmartReadAction {
                         val properties = ParadoxPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
@@ -154,7 +154,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 is Items.LocalizedName -> {
                     ParadoxPresentationUtil.getLabel(nodeItem.text.or.anonymous())
                 }
-                is Items.Presentation -> runReadAction r@{
+                is Items.Presentation -> runSmartReadAction {
                     val presentationData = nodeItem.definition.getDefinitionPresentation<StellarisTechnologyCardPresentation>()
                     presentationData?.createComponent()
                 }
@@ -168,7 +168,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 is Items.Type -> {
                     SimpleColoredText(nodeItem.text, DEFAULT_TEXT_ATTR)
                 }
-                is Items.Property -> runReadAction {
+                is Items.Property -> runSmartReadAction {
                     val propertyText = ParadoxPresentationUtil.getPropertyText(nodeItem.property, nodeItem.detail)
                     propertyText
                 }

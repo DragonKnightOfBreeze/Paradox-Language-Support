@@ -18,7 +18,7 @@ import com.intellij.util.application
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
@@ -244,7 +244,7 @@ object ParadoxAnalysisManager {
             from is PsiDirectory -> selectFile(from.virtualFile)
             from is PsiFile -> selectFile(from.originalFile.virtualFile)
             from is PsiElement -> {
-                val nextFrom = runReadActionSmartly { from.containingFile }
+                val nextFrom = runSmartReadAction { from.containingFile }
                 selectFile(nextFrom)
             }
             else -> null
@@ -267,11 +267,11 @@ object ParadoxAnalysisManager {
             from is ParadoxLightElementBase -> from.gameType
             from is ParadoxStub<*> -> from.gameType
             from is StubBasedPsiElementBase<*> -> {
-                val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }
+                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }
                 selectGameType(nextFrom)
             }
             from is PsiElement -> {
-                val nextFrom = runReadActionSmartly { from.parent }
+                val nextFrom = runSmartReadAction { from.parent }
                 selectGameType(nextFrom)
             }
             else -> null
@@ -292,16 +292,16 @@ object ParadoxAnalysisManager {
                 ParadoxAnalysisService.resolveLocaleConfigById(id, project)
             }
             from is ParadoxLocalisationLocale -> {
-                val id = runReadActionSmartly { from.name }
+                val id = runSmartReadAction { from.name }
                 val project = from.project
                 ParadoxAnalysisService.resolveLocaleConfigById(id, project)
             }
             from is StubBasedPsiElementBase<*> -> {
-                val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
+                val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
                 selectLocale(nextFrom)
             }
             from is PsiElement && from.language is ParadoxLocalisationLanguage -> {
-                val nextFrom = runReadActionSmartly { from.parent }
+                val nextFrom = runSmartReadAction { from.parent }
                 selectLocale(nextFrom)
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()

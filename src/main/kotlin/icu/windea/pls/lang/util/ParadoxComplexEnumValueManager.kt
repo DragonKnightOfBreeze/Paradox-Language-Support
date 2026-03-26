@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -26,7 +26,7 @@ object ParadoxComplexEnumValueManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
                 val dependencies = ParadoxComplexEnumValueService.getDependencies(element, file)

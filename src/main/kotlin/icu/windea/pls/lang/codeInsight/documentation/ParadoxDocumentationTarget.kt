@@ -4,13 +4,13 @@ package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.model.Pointer
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.runSmartReadAction
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
@@ -35,7 +35,7 @@ class ParadoxDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
+        return runSmartReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
     }
 
     override fun computeDocumentation(): DocumentationResult {

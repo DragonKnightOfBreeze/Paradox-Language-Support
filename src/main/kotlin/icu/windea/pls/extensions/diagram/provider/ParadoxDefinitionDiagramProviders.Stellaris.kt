@@ -4,12 +4,12 @@ import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramColorManagerBase
 import com.intellij.diagram.DiagramNode
 import com.intellij.diagram.DiagramPresentationModel
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
@@ -91,7 +91,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             // 这里使用的颜色是来自灰机wiki的特殊字体颜色
             // https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
             val data = node.getUserData(Keys.nodeData) ?: return null
-            val definitionInfo = runReadAction { node.definitionInfo } ?: return null
+            val definitionInfo = runSmartReadAction { node.definitionInfo } ?: return null
             val types = definitionInfo.subtypes
             return when {
                 types.contains("dangerous") && types.contains("rare") -> ColorUtil.fromHex("#e8514f")

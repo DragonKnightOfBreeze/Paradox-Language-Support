@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.system.OS
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
@@ -57,6 +58,8 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         val exe = texconvExe.name.quoteIfNecessary('\'')
         val input = path.toString().quote('\'')
         val output = outputDirectoryPath.toString().quote('\'')
+
+        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
 
         val command = "./$exe $input -o $output -ft $targetFormat -y" // -y: overwrite existing files
         val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件

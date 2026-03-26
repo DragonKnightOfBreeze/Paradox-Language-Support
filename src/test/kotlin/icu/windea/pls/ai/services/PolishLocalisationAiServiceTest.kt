@@ -41,7 +41,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
         myFixture.configureByFile("ai/wilderness_l_simp_chinese_stellaris.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxPsiSequenceBuilder.localisations(file)
-        val contexts = runReadAction { elements.map { ParadoxLocalisationManipulationContext.from(it) } }.toList()
+        val contexts = runSmartReadAction { elements.map { ParadoxLocalisationManipulationContext.from(it) } }.toList()
         val description = "用华丽而夸张的文字，强调生体荒野（即共生智能）是完美的"
         val request = PolishLocalisationAiRequest(file.project, file, contexts, description)
         val aiService = PolishLocalisationAiService.getInstance()

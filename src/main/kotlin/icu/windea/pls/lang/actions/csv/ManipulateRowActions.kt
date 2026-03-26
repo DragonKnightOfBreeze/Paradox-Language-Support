@@ -4,7 +4,6 @@ package icu.windea.pls.lang.actions.csv
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.siblings
@@ -15,6 +14,7 @@ import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
@@ -91,7 +91,7 @@ class MoveRowUpAction : MoveRowActionBase(above = true) {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
+                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
                 else -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.textBatch")
             }
         }
@@ -102,7 +102,7 @@ class MoveRowDownAction : MoveRowActionBase(above = false) {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
+                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
                 else -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.textBatch")
             }
         }
@@ -113,7 +113,7 @@ class SelectRowAction : ManipulateRowActionBase() {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
+                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
                 else -> PlsBundle.message("action.Pls.Manipulation.SelectRow.textBatch")
             }
         }
@@ -138,7 +138,7 @@ class RemoveRowAction : ManipulateRowActionBase() {
     override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
-                runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")
+                runSmartReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")
                 else -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.textBatch")
             }
         }

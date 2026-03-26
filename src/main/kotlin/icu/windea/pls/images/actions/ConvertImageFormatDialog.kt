@@ -4,7 +4,6 @@ import com.intellij.ide.util.DirectoryUtil
 import com.intellij.openapi.actionSystem.ActionManager.*
 import com.intellij.openapi.actionSystem.IdeActions.*
 import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.fileChooser.impl.FileChooserUtil
 import com.intellij.openapi.keymap.KeymapUtil.*
@@ -26,6 +25,7 @@ import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.executeCommand
 
 // com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 

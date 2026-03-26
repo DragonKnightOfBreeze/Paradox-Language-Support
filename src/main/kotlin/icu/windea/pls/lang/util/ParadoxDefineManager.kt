@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -57,7 +57,7 @@ object ParadoxDefineManager {
     }
 
     fun getExpression(element: ParadoxScriptProperty): String? {
-        val stub = runReadActionSmartly { getStub(element) }
+        val stub = runSmartReadAction { getStub(element) }
         stub?.let { return getExpression(stub.namespace, stub.variable) }
         return getInfo(element)?.expression
     }
@@ -66,7 +66,7 @@ object ParadoxDefineManager {
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = element.containingFile
                 val value = resolveInfo(element, file)
                 value.withDependencyItems(file)

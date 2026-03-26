@@ -16,7 +16,6 @@ import org.intellij.images.editor.ImageDocument
 import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.editor.ImageEditor
 import org.intellij.images.editor.ImageZoomModel
-import org.intellij.images.thumbnail.actionSystem.ThumbnailViewActions
 import java.awt.Color
 import javax.swing.JComponent
 
@@ -95,7 +94,7 @@ class ImageEditorImpl(
 
     override fun isEnabledForActionPlace(place: String): Boolean {
         // Disable for thumbnails action
-        return ThumbnailViewActions.ACTION_PLACE != place
+        return place != "Images.Thumbnails"
     }
 
     override fun setGridVisible(visible: Boolean) {

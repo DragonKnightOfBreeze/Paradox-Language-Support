@@ -1,6 +1,5 @@
 package icu.windea.pls.extensions.diagram.settings
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
@@ -8,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -88,11 +88,11 @@ class StellarisTechTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getAllTiers(project, null) }
+        val tiers = runSmartReadAction { ParadoxTechnologyManager.Stellaris.getAllTiers(project, null) }
         settings.tier.retainSettings(tiers) { it.name }
         val areas = ParadoxTechnologyManager.Stellaris.getAllResearchAreas()
         settings.area.retainSettings(areas)
-        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getAllCategories(project, null) }
+        val categories = runSmartReadAction { ParadoxTechnologyManager.Stellaris.getAllCategories(project, null) }
         settings.category.retainSettings(categories) { it.name }
         val attributes = ParadoxTechnologyManager.Stellaris.getAllAttributes(gameType)
         settings.area.retainSettings(attributes)

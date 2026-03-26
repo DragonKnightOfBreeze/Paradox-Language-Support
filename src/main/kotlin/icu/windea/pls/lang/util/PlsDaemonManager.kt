@@ -14,7 +14,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
@@ -35,7 +35,7 @@ object PlsDaemonManager {
         val projects = ProjectManager.getInstance().openProjects.filter { it.isInitialized && !it.isDisposed }
         val scopes = projects.map { GlobalSearchScope.allScope(it) }
         val scope = scopes.reduceOrNull { a, b -> a.union(b) } ?: return emptySet()
-        runReadActionSmartly {
+        runSmartReadAction {
             FilenameIndex.processFilesByNames(fileNames, false, scope, null) { file ->
                 if (file.isFile) files.add(file)
                 true
@@ -47,7 +47,7 @@ object PlsDaemonManager {
     fun findFilesByRootFilePaths(rootFilePaths: Set<String>): Set<VirtualFile> {
         if (rootFilePaths.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
-        runReadActionSmartly {
+        runSmartReadAction {
             rootFilePaths.forEach f@{ rootFilePath ->
                 if (isExcludedRootFilePath(rootFilePath)) return@f
                 val rootFile = rootFilePath.toVirtualFile() ?: return@f
@@ -66,7 +66,7 @@ object PlsDaemonManager {
         val allEditors = EditorFactory.getInstance().allEditors
         if (allEditors.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
-        runReadActionSmartly {
+        runSmartReadAction {
             for (editor in allEditors) {
                 val file = editor.virtualFile ?: continue
                 if (onlyParadoxFiles && file.fileType !is ParadoxFileType) continue
@@ -145,14 +145,14 @@ object PlsDaemonManager {
 
     private fun getEditorPsiFiles(editors: List<Editor>): List<PsiFile> {
         if (editors.isEmpty()) return emptyList()
-        return runReadActionSmartly {
+        return runSmartReadAction {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
     }
 
     private fun restartAnalyze(psiFiles: List<PsiFile>) {
         if (psiFiles.isEmpty()) return
-        psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
+        psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile, "PLS: restart analyze") }
     }
 
     private fun refreshInlayHints(editors: List<Editor>) {

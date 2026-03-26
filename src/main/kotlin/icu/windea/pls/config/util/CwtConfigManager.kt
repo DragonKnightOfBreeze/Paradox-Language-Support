@@ -31,7 +31,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -65,7 +65,7 @@ object CwtConfigManager {
     }
 
     fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
-        val file = runReadActionSmartly { element.containingFile } ?: return null
+        val file = runSmartReadAction { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null
         return getContainingConfigGroup(vFile, file.project)
     }
@@ -123,7 +123,7 @@ object CwtConfigManager {
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = element.containingFile
                 val value = CwtConfigService.resolveConfigPath(memberElement)?.normalize()
                 value.withDependencyItems(file)
@@ -137,7 +137,7 @@ object CwtConfigManager {
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedConfigType) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = memberElement.containingFile
                 val value = CwtConfigService.resolveConfigType(memberElement, file)
                 value.withDependencyItems(file)
@@ -154,7 +154,7 @@ object CwtConfigManager {
         // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedDocumentation) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = memberElement.containingFile
                 val value = CwtConfigService.getDocumentation(memberElement)
                 value.withDependencyItems(file)

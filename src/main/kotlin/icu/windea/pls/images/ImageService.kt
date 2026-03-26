@@ -20,11 +20,13 @@ import javax.imageio.spi.IIORegistry
 
 @Service
 class ImageService : AppLifecycleListener, DynamicPluginListener {
-    // 对于 DDS 和 TGA 图片，统一使用 TwelveMonkeys 提供的 SPI
-    // 参见：https://github.com/haraldk/TwelveMonkeys
+    // TODO 2.1.7+ refactoring: builtin image reader SPIs for DDS and TGA images
+    // for DDS and TGA images, use image reader SPIs from TwelveMonkeys
+    // see: https://github.com/haraldk/TwelveMonkeys
 
-    private val ddsImageReaderSpi = DdsImageReaderSpi()
-    private val tgaImageReaderSpi = TgaImageReaderSpi()
+    // NOTE 2.1.7 MUST be lazy loaded here (avoiding eager class loading of ImageReaders and make ImageReaderCodeInjectors works as expected)
+    private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }
+    private val tgaImageReaderSpi by lazy { TgaImageReaderSpi() }
 
     private fun registerImageIOSpi() {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)

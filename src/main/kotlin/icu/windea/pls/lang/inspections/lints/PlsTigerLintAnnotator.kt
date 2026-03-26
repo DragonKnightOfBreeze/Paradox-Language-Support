@@ -3,18 +3,18 @@ package icu.windea.pls.lang.inspections.lints
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import java.util.concurrent.Callable
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
@@ -22,7 +22,7 @@ import java.util.concurrent.Callable
  * @see TigerLintResult
  * @see TigerLintToolProvider
  */
-class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>() {
+class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
     data class Info(val file: PsiFile)
 
     override fun getPairedBatchInspectionShortName() = PlsTigerLintInspection.SHORT_NAME
@@ -38,8 +38,9 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
 
     override fun doAnnotate(collectedInfo: Info?): TigerLintResult? {
         val file = collectedInfo?.file ?: return null
-        val task = Callable { TigerLintToolService.getInstance().getTigerLintResultForFile(file) }
-        return ReadAction.nonBlocking(task).withDocumentsCommitted(file.project).executeSynchronously()
+        return runSmartReadAction(file.project, withDocumentsCommitted = true) {
+            TigerLintToolService.getInstance().getTigerLintResultForFile(file)
+        }
     }
 
     override fun apply(file: PsiFile, annotationResult: TigerLintResult?, holder: AnnotationHolder) {

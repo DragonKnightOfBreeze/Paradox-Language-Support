@@ -14,7 +14,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
@@ -31,6 +30,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
@@ -143,7 +143,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
 
         var index = 0
         var currentIndex = 0
-        val producers = runReadAction {
+        val producers = runSmartReadAction {
             localisations.mapNotNull { otherLocalisation ->
                 val otherPsiFile = otherLocalisation.containingFile ?: return@mapNotNull null
                 val locale = selectLocale(otherPsiFile) ?: return@mapNotNull null

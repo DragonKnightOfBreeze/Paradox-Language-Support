@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -122,7 +122,7 @@ object ParadoxDefinitionInjectionManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
                 val dependencies = ParadoxDefinitionInjectionService.getDependencies(element, file)
@@ -141,7 +141,7 @@ object ParadoxDefinitionInjectionManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, finalOptions).optimized()
                 val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
                 value.withDependencyItems(dependencies)
@@ -157,7 +157,7 @@ object ParadoxDefinitionInjectionManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, finalOptions) ?: EMPTY_OBJECT
                 val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
                 value.withDependencyItems(dependencies)

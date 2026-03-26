@@ -42,7 +42,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
         myFixture.configureByFile("ai/wilderness_l_simp_chinese_stellaris.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxPsiSequenceBuilder.localisations(file)
-        val contexts = runReadAction { elements.map { ParadoxLocalisationManipulationContext.from(it) } }.toList()
+        val contexts = runSmartReadAction { elements.map { ParadoxLocalisationManipulationContext.from(it) } }.toList()
         val request = TranslateLocalisationAiRequest(file.project, file, contexts, CwtLocaleConfig.resolveFallback(), null)
         val aiService = TranslateLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)

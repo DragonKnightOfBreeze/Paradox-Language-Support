@@ -3,14 +3,13 @@ package icu.windea.pls.extensions.diagram
 import com.intellij.diagram.DiagramDataKeys
 import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.util.application
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
@@ -48,14 +47,8 @@ abstract class ParadoxDiagramDataModel(
         ProgressManager.checkCanceled()
         synchronized(lock) {
             cleanAllNodeAndEdges()
-            if (application.isReadAccessAllowed) {
+            runSmartReadAction(project, this, inSmartMode = true, withDocumentsCommitted = true) {
                 updateDataModel()
-            } else {
-                ReadAction.nonBlocking<Unit> { updateDataModel() }
-                    .inSmartMode(project)
-                    .withDocumentsCommitted(project)
-                    .expireWith(this)
-                    .executeSynchronously()
             }
         }
     }
