@@ -128,6 +128,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
+                ProgressManager.checkCanceled()
                 synchronized(descriptors) {
                     descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                 }
@@ -140,6 +141,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
+                ProgressManager.checkCanceled()
                 synchronized(descriptors) {
                     descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                 }
@@ -152,6 +154,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
+                ProgressManager.checkCanceled()
                 synchronized(descriptors) {
                     descriptors.put(key, ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, resolved, false, false))
                 }

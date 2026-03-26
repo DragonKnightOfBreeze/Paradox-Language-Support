@@ -9,7 +9,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.process
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -48,7 +48,7 @@ object ParadoxEconomicCategoryManager {
     private fun getInfoFromCache(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = resolveInfo(definition)
                 value.withDependencyItems(definition)
             }

@@ -12,7 +12,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
@@ -39,12 +38,12 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        // compute once per file
-        val searchScope = runReadActionSmartly { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-        // it's unnecessary to make it synced
-        val statusMap = mutableMapOf<PsiElement, Boolean>()
-
         return object : PsiElementVisitor() {
+            // it's unnecessary to make it synced
+            private val statusMap = mutableMapOf<PsiElement, Boolean>()
+            // compute once per file
+            private val searchScope by lazy { ParadoxSearchScope.fromFile(project, file.virtualFile) }
+
             private fun shouldVisit(element: PsiElement): Boolean {
                 return when {
                     element is ParadoxScriptStringExpressionElement -> !element.text.isParameterized()

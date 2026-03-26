@@ -31,6 +31,7 @@ import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processAsync
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.values.singletonListOrEmpty
@@ -51,9 +52,9 @@ import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
-import icu.windea.pls.lang.resolve.ParadoxExpressionService
 import icu.windea.pls.lang.resolve.inRoot
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -463,10 +464,9 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        val task = Callable {
+        runSmartReadAction(project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
         }
-        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 
     fun completeSyncedLocalisation(context: ProcessingContext, result: CompletionResultSet) {
@@ -501,10 +501,9 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        val task = Callable {
+        runSmartReadAction(project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariantsSynced(result.prefixMatcher, selector, processor)
         }
-        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 
     fun completeDefinition(context: ProcessingContext, result: CompletionResultSet) {

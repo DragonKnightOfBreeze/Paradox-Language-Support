@@ -1,12 +1,12 @@
 package icu.windea.pls.images.dds
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.lang.settings.PlsInternalSettings
 
@@ -18,7 +18,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
         val project = element.project
         if (DumbService.isDumb(project)) return null
         val file = element.virtualFile
-        val metadata = runReadAction { service<DdsMetadataIndex>().getMetadata(file, project) }
+        val metadata = runSmartReadAction { service<DdsMetadataIndex>().getMetadata(file, project) }
         if (metadata == null) return null
 
         return buildDocumentation {

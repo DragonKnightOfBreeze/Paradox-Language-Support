@@ -12,7 +12,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -80,7 +80,7 @@ object ParadoxScopeManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxScopeService.evaluateScopeContextForMember(element)
                 value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.ScopeResolution)
             }
@@ -91,7 +91,7 @@ object ParadoxScopeManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxScopeService.evaluateScopeContextForDynamicValue(element)
                 value.withDependencyItems(element)
             }

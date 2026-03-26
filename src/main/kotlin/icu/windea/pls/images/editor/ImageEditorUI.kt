@@ -15,7 +15,6 @@ import com.intellij.openapi.actionSystem.DataSink
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.UiDataProvider
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.colors.EditorColorsManager
@@ -35,6 +34,7 @@ import com.intellij.ui.components.panels.NonOpaquePanel
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.dds.DdsMetadataIndex
 import icu.windea.pls.images.tga.TgaFileType
@@ -46,7 +46,6 @@ import org.intellij.images.editor.ImageZoomModel
 import org.intellij.images.options.Options
 import org.intellij.images.options.OptionsManager
 import org.intellij.images.options.ZoomOptions
-import org.intellij.images.thumbnail.actionSystem.ThumbnailViewActions
 import org.intellij.images.thumbnail.actions.ShowBorderAction
 import org.intellij.images.ui.ImageComponent
 import org.intellij.images.ui.ImageComponentDecorator
@@ -217,7 +216,7 @@ class ImageEditorUI(
         run {
             if (file == null || project == null) return@run
             if (fileType != DdsFileType) return@run
-            val metadata = runReadAction { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return@run
+            val metadata = runSmartReadAction(this) { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)
@@ -229,7 +228,7 @@ class ImageEditorUI(
         run {
             if (file == null || project == null) return@run
             if (fileType != TgaFileType) return@run
-            val metadata = runReadAction { service<TgaMetadataIndex>().getMetadata(file, project) } ?: return@run
+            val metadata = runSmartReadAction(this) { service<TgaMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
                 append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)
@@ -266,7 +265,7 @@ class ImageEditorUI(
 
     override fun isEnabledForActionPlace(place: String): Boolean {
         // Disable for thumbnails action
-        return ThumbnailViewActions.ACTION_PLACE != place
+        return place != "Images.Thumbnails"
     }
 
     override fun setGridVisible(visible: Boolean) {

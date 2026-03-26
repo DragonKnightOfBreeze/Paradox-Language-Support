@@ -37,7 +37,8 @@ class ParadoxSubstringTextBasedTargetSearcher : ParadoxTextBasedTargetSearcher()
     override fun processText(text: String, context: Context, consumer: Processor<in NavigatablePsiElement>): Boolean {
         // 使用 PsiSearchHelper.processElementsWithWord 搜索出现了文本片段的节点 PSI
         // 查询上下文设置为 UsageSearchContext.IN_STRINGS
-        // 参见：icu.windea.pls.localisation.editor.ParadoxLocalisationWordScanner
+
+        // see: icu.windea.pls.localisation.editor.ParadoxLocalisationWordScanner
 
         val processor = TextOccurenceProcessor { element, _ ->
             ProgressManager.checkCanceled()

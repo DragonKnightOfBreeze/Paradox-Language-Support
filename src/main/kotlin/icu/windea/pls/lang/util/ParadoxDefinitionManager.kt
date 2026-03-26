@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -59,7 +59,7 @@ object ParadoxDefinitionManager {
         // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxDefinitionService.resolveInfo(element, file)
                 val dependencies = ParadoxDefinitionService.getDependencies(element, file)
@@ -78,7 +78,7 @@ object ParadoxDefinitionManager {
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, finalOptions).optimized()
                 val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
                 value.withDependencyItems(dependencies)
@@ -94,7 +94,7 @@ object ParadoxDefinitionManager {
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, finalOptions) ?: EMPTY_OBJECT
                 val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
                 value.withDependencyItems(dependencies)
@@ -141,7 +141,7 @@ object ParadoxDefinitionManager {
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationKeyAwareDependencies(element)
                 value.withDependencyItems(dependencies)
@@ -152,7 +152,7 @@ object ParadoxDefinitionManager {
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
                 value.withDependencyItems(dependencies)
@@ -163,7 +163,7 @@ object ParadoxDefinitionManager {
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
                 value.withDependencyItems(dependencies)
@@ -174,7 +174,7 @@ object ParadoxDefinitionManager {
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
                 value.withDependencyItems(dependencies)
@@ -185,7 +185,7 @@ object ParadoxDefinitionManager {
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
                 value.withDependencyItems(dependencies)

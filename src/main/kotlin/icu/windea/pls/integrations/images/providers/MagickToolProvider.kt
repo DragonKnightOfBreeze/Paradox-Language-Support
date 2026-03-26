@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images.providers
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
@@ -40,6 +41,8 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val fullExePath = path.toPath()
         val wd = fullExePath.parent?.toFile()
         val exe = fullExePath.name
+
+        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
 
         val command = "./$exe -version"
         val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
@@ -81,6 +84,8 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val exe = fullExePath.name.quoteIfNecessary('\'')
         val input = path.toString().quote('\'')
         val output = outputPath.toString().quote('\'')
+
+        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
 
         val command = "./$exe $input $output"
         val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件

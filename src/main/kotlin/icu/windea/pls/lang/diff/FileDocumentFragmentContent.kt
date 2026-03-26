@@ -6,7 +6,6 @@ import com.intellij.diff.contents.FileContent
 import com.intellij.diff.util.DiffUserDataKeysEx
 import com.intellij.diff.util.DiffUtil
 import com.intellij.diff.util.LineCol
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.command.undo.UndoManager
 import com.intellij.openapi.diff.DiffBundle
 import com.intellij.openapi.editor.Document
@@ -21,6 +20,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.util.LineSeparator
 import com.intellij.util.ObjectUtils
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.diff.actions.DocumentsSynchronizer
 import java.nio.charset.Charset
 import java.util.function.IntUnaryOperator
@@ -35,7 +35,7 @@ class FileDocumentFragmentContent(
     private val file: VirtualFile,
     private val highlightFile: VirtualFile? = null
 ) : DocumentContentBase(project, original.document), FileContent {
-    private val document = runReadAction { FileDocumentManager.getInstance().getDocument(file) }!!
+    private val document = runSmartReadAction { FileDocumentManager.getInstance().getDocument(file) }!!
 
     private val original = original
     private val rangeMarker: RangeMarker

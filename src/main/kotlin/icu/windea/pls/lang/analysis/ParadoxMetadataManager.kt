@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.lang.rootInfo
@@ -25,34 +25,34 @@ object ParadoxMetadataManager {
     // region Get Methods
 
     fun getLauncherSettingsJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly { ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile) }
+        return runSmartReadAction { ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile) }
     }
 
     fun getLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo? {
         return runCatchingCancelable {
-            runReadActionSmartly { ParadoxMetadataService.resolveLauncherSettingsJsonInfo(file) }
+            runSmartReadAction { ParadoxMetadataService.resolveLauncherSettingsJsonInfo(file) }
         }.onFailure { logger.warn(it) }.getOrNull()
     }
 
     fun getDescriptorModFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly {
+        return runSmartReadAction {
             ParadoxMetadataService.getDescriptorModFile(rootFile)
         }
     }
 
     fun getDescriptorModInfo(file: VirtualFile): ParadoxDescriptorModInfo? {
         return runCatchingCancelable {
-            runReadActionSmartly { ParadoxMetadataService.resolveDescriptorModInfo(file) }
+            runSmartReadAction { ParadoxMetadataService.resolveDescriptorModInfo(file) }
         }.onFailure { logger.warn(it) }.getOrNull()
     }
 
     fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly { ParadoxMetadataService.getMetadataJsonFile(rootFile) }
+        return runSmartReadAction { ParadoxMetadataService.getMetadataJsonFile(rootFile) }
     }
 
     fun getMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo? {
         return runCatchingCancelable {
-            runReadActionSmartly { ParadoxMetadataService.resolveMetadataJsonInfo(file) }
+            runSmartReadAction { ParadoxMetadataService.resolveMetadataJsonInfo(file) }
         }.onFailure { logger.warn(it) }.getOrNull()
     }
 

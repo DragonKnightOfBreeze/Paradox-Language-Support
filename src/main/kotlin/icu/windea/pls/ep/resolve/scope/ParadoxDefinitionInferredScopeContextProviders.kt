@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.resolve.scope
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
@@ -9,7 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
@@ -58,7 +57,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = resolveScopeContext(definition)
                 val dependencies = getDependencies(definition)
                 value.withDependencyItems(dependencies)
@@ -162,7 +161,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = resolveScopeContext(definition)
                 val dependencies = getDependencies(definition)
                 value.withDependencyItems(dependencies)
@@ -275,7 +274,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = resolveScopeContext(definition)
                 val dependencies = getDependencies(definition)
                 value.withDependencyItems(dependencies)
@@ -425,7 +424,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
             ProgressManager.checkCanceled()
-            runReadActionSmartly {
+            runSmartReadAction {
                 val value = resolveScopeContext(definition)
                 val dependencies = getDependencies(definition)
                 value.withDependencyItems(dependencies)
@@ -442,7 +441,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         if (config != null) return null
         val thisOnActionName = definitionInfo.name
         // optimize search scope
-        val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) } ?: return null
+        val searchScope = runSmartReadAction { ParadoxSearchScope.fromElement(definition) } ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
         scopeContextMap.put("this", ParadoxScopeId.anyScopeId)
         scopeContextMap.put("root", ParadoxScopeId.anyScopeId)

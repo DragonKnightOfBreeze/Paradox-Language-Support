@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -20,7 +20,6 @@ import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import java.util.concurrent.Callable
 
 /**
  * 提供参数名字的代码补全。
@@ -56,9 +55,8 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
             true
         }
         // 保证索引在此 readAction 中可用
-        val task = Callable {
+        runSmartReadAction(project, inSmartMode = true) {
             ParadoxLocalisationSearch.processVariants(type, result.prefixMatcher, selector, processor)
         }
-        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 }

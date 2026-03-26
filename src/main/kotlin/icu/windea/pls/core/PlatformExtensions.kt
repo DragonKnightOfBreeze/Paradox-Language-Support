@@ -16,14 +16,17 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.tree.util.siblings
 import com.intellij.model.Symbol
 import com.intellij.model.psi.PsiSymbolService
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.NlsContexts
@@ -71,8 +74,12 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
+import org.jetbrains.concurrency.CancellablePromise
+import org.jetbrains.concurrency.resolvedCancellablePromise
 import java.io.IOException
 import java.nio.file.Path
+import java.util.concurrent.Callable
+import java.util.concurrent.Executor
 import kotlin.reflect.KProperty
 
 // region Common Extensions
@@ -168,14 +175,6 @@ fun getCurrentProject(): Project? {
     val recentFocusedWindow = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
     if (recentFocusedWindow is IdeFrame) return recentFocusedWindow.project
     return ProjectManager.getInstance().openProjects.firstOrNull { o -> o.isInitialized && !o.isDisposed }
-}
-
-fun <T> runReadActionSmartly(runnable: () -> T): T {
-    return if (application.isReadAccessAllowed) {
-        runnable()
-    } else {
-        runReadAction(runnable)
-    }
 }
 
 // endregion
@@ -806,41 +805,118 @@ inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProp
 
 // endregion
 
+// region RWA Extensions
+
+fun <T> runSmartReadAction(
+    parentDisposable: Disposable? = null,
+    task: Callable<T>,
+): T {
+    if (application.isReadAccessAllowed) {
+        return task.call()
+    }
+
+    var action = ReadAction.nonBlocking(task)
+    if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    return action.executeSynchronously()
+}
+
+fun <T> runSmartReadActionAsync(
+    executor: Executor,
+    parentDisposable: Disposable? = null,
+    task: Callable<T>,
+): CancellablePromise<T> {
+    if (application.isReadAccessAllowed) {
+        return resolvedCancellablePromise(task.call())
+    }
+
+    var action = ReadAction.nonBlocking(task)
+    if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    return action.submit(executor)
+}
+
+fun <T> runSmartReadAction(
+    project: Project,
+    parentDisposable: Disposable? = null,
+    inSmartMode: Boolean = false,
+    withDocumentsCommitted: Boolean = false,
+    task: Callable<T>,
+): T {
+    if (application.isReadAccessAllowed && (!inSmartMode || !DumbService.isDumb(project)) && !withDocumentsCommitted) {
+        return task.call()
+    }
+
+    var action = ReadAction.nonBlocking(task)
+    if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    if (inSmartMode) action = action.inSmartMode(project)
+    if (withDocumentsCommitted) action = action.withDocumentsCommitted(project)
+    return action.executeSynchronously()
+}
+
+fun <T> runSmartReadActionAsync(
+    executor: Executor,
+    project: Project,
+    parentDisposable: Disposable? = null,
+    inSmartMode: Boolean = true,
+    withDocumentsCommitted: Boolean = false,
+    task: Callable<T>,
+): CancellablePromise<T> {
+    if (application.isReadAccessAllowed && (!inSmartMode || !DumbService.isDumb(project)) && !withDocumentsCommitted) {
+        return resolvedCancellablePromise(task.call())
+    }
+
+    var action = ReadAction.nonBlocking(task)
+    if (parentDisposable != null) action = action.expireWith(parentDisposable)
+    if (inSmartMode) action = action.inSmartMode(project)
+    if (withDocumentsCommitted) action = action.withDocumentsCommitted(project)
+    return action.submit(executor)
+}
+
+// endregion
+
 // region Command Extensions
 
-inline fun executeWriteCommand(
+fun executeCommand(
     project: Project? = null,
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
-    crossinline command: () -> Unit
+    action: Runnable,
+) {
+    CommandProcessor.getInstance().executeCommand(project, action, name, groupId)
+}
+
+fun executeWriteCommand(
+    project: Project? = null,
+    @NlsContexts.Command name: String? = null,
+    groupId: String? = null,
+    action: ThrowableRunnable<Throwable>
 ) {
     WriteCommandAction.writeCommandAction(project)
         .withName(name).withGroupId(groupId)
-        .run(ThrowableRunnable { command() })
+        .run(action)
 }
 
-inline fun executeWriteCommand(
+fun executeWriteCommand(
     project: Project? = null,
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
     makeWritable: PsiElement? = null,
-    crossinline command: () -> Unit
+    action: ThrowableRunnable<Throwable>,
 ) {
     WriteCommandAction.writeCommandAction(project, makeWritable.to.singletonSetOrEmpty())
         .withName(name).withGroupId(groupId)
-        .run(ThrowableRunnable { command() })
+        .run(action)
 }
 
-inline fun executeWriteCommand(
+fun executeWriteCommand(
     project: Project? = null,
     @NlsContexts.Command name: String? = null,
     groupId: String? = null,
     makeWritable: Collection<PsiElement> = emptyList(),
-    crossinline command: () -> Unit
+    action: ThrowableRunnable<Throwable>,
 ) {
     WriteCommandAction.writeCommandAction(project, makeWritable)
         .withName(name).withGroupId(groupId)
-        .run(ThrowableRunnable { command() })
+        .run(action)
 }
 
 // endregion

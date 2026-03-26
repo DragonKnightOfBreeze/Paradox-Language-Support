@@ -14,7 +14,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
@@ -31,6 +30,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
@@ -146,7 +146,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
 
         var index = 0
         var currentIndex = 0
-        val producers = runReadAction {
+        val producers = runSmartReadAction {
             definitions.mapNotNull { otherDefinition ->
                 val otherDefinitionInfo = otherDefinition.definitionInfo ?: return@mapNotNull null
                 val otherPsiFile = otherDefinition.containingFile ?: return@mapNotNull null

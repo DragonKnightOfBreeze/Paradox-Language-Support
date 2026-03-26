@@ -11,7 +11,7 @@ import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.runReadActionSmartly
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
@@ -128,7 +128,7 @@ object ParadoxImageManager {
 
     private fun doResolveUrlByDefinition(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
         // 兼容 `definition` 不是 `sprite` 的情况
-        val resolved = runReadActionSmartly {
+        val resolved = runSmartReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 ParadoxConfigExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }

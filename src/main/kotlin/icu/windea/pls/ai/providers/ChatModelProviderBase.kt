@@ -1,5 +1,6 @@
 package icu.windea.pls.ai.providers
 
+import com.intellij.openapi.progress.ProgressManager
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.StreamingChatModel
 import icu.windea.pls.PlsBundle

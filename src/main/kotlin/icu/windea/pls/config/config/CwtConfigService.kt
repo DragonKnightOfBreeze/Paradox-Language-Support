@@ -91,7 +91,7 @@ object CwtConfigService {
         val root = parents.find { it.findChild(".git") != null } ?: return null
         val rootPsi = root.toPsiDirectory(project) ?: return null
         val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
-            ProgressManager.checkCanceled()
+            ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
             runCatching {
                 val command = "git remote -v"
                 val workDirectory = root.toNioPath().toFile()

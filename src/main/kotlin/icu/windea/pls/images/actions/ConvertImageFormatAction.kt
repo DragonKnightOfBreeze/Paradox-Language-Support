@@ -5,7 +5,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ex.ApplicationManagerEx
-import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.DumbAwareAction
@@ -23,6 +22,7 @@ import com.intellij.util.containers.MultiMap
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable

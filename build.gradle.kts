@@ -157,6 +157,7 @@ kotlin {
                 "-Xjvm-default=all",
                 "-Xinline-classes",
                 "-Xcontext-parameters",
+                "-Xannotation-default-target=param-property",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlin.ExperimentalStdlibApi",
             )

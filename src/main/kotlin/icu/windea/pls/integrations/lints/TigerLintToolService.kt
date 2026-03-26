@@ -4,6 +4,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
@@ -79,6 +80,7 @@ class TigerLintToolService : Disposable {
 
         val gameType = selectGameType(file) ?: return null
         return CachedValuesManager.getCachedValue(file, cachedTigerLintResultKey) {
+            ProgressManager.checkCanceled()
             val value = resolveTigerLintResultForFile(file)
             val trackers = buildList {
                 this += file
@@ -93,6 +95,7 @@ class TigerLintToolService : Disposable {
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile ?: return null
         val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
+        ProgressManager.checkCanceled()
         val lock = getLintResultLock(rootDirectory.virtualFile)
         val allResult = synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
             getTigerLintResultForRootDirectoryFromCache(rootDirectory)
@@ -104,6 +107,7 @@ class TigerLintToolService : Disposable {
     @Suppress("unused")
     fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): TigerLintResult? {
         if (!isEnabled()) return null
+        ProgressManager.checkCanceled()
         val lock = getLintResultLock(rootDirectory.virtualFile)
         return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
             getTigerLintResultForRootDirectoryFromCache(rootDirectory)
@@ -115,6 +119,7 @@ class TigerLintToolService : Disposable {
 
         val gameType = selectGameType(rootDirectory) ?: return null
         return CachedValuesManager.getCachedValue(rootDirectory, cachedTigerLintResultKey) {
+            ProgressManager.checkCanceled()
             val value = resolveTigerLintResultForRootDirectory(rootDirectory)
             val trackers = buildList {
                 this += rootDirectory
