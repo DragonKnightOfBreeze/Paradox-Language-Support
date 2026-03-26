@@ -49,9 +49,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -484,8 +484,8 @@ object ParadoxExpressionManager {
     }
 
     private fun getReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        return if (processMergedIndex) Keys.cachedReferencesDumb else Keys.cachedReferences
+        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        return if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
     }
 
     private fun doGetReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
@@ -536,8 +536,8 @@ object ParadoxExpressionManager {
     }
 
     private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        return if (processMergedIndex) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
+        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        return if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
     }
 
     private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
@@ -555,8 +555,8 @@ object ParadoxExpressionManager {
 
         // 尝试基于规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val options = if (processMergedIndex) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
+        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
         if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) // unquoted text

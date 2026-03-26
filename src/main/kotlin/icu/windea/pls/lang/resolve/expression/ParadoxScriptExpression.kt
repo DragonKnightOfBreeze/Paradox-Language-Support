@@ -113,7 +113,7 @@ private class ParadoxScriptExpressionLazyImpl(
 ) : ParadoxScriptExpressionBase() {
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
-        if (ParadoxMatchOptionsUtil.skipIndex(options)) return@lazy null
+        if (ParadoxMatchOptionsUtil.isDumb(options)) return@lazy null
         element.resolved()
     }
 

@@ -155,7 +155,7 @@ object ParadoxDefinitionService {
             if (matched) result += subtypeConfig
         }
         // avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
-        if (!ParadoxMatchOptionsUtil.skipIndex(options)) {
+        if (!ParadoxMatchOptionsUtil.isDumb(options)) {
             processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
         }
         return result.distinctBy { it.name } // it's necessary to distinct by name here since inherit subtypes may be duplicate
