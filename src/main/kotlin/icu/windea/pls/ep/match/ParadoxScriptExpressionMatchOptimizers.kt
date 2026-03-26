@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
@@ -25,7 +25,7 @@ class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMat
     override fun <T : CwtMemberConfig<*>> optimize(configs: List<T>, context: ParadoxScriptExpressionMatchOptimizerContext): List<T>? {
         if (configs.size <= 1) return null
         if (context.expression.type != ParadoxType.String) return null
-        val filtered = configs.filterFast { ParadoxMatchService.isConstantMatch(context.expression, it.configExpression, context.configGroup) }
+        val filtered = configs.filterFast { ParadoxExpressionMatchService.isConstantMatch(context.expression, it.configExpression, context.configGroup) }
         if (filtered.isEmpty()) return null
         return filtered
     }
@@ -50,7 +50,7 @@ class ParadoxScriptExpressionBlockMatchOptimizer : ParadoxScriptExpressionMatchO
             filteredConfigs.forEachFast f2@{ filteredConfig ->
                 val valueConfig = filteredConfig.valueConfig ?: return@f2
                 val matchContext = ParadoxScriptExpressionMatchContext(blockElement, blockExpression, valueConfig.configExpression, valueConfig, context.configGroup, context.options)
-                val matchResult = ParadoxMatchService.matchScriptExpression(matchContext)
+                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(matchContext)
                 if (!matchResult.get(matchContext.options)) {
                     configsToRemove += filteredConfig
                 }
@@ -80,7 +80,7 @@ class ParadoxScriptExpressionOverriddenMatchOptimizer : ParadoxScriptExpressionM
             hasOverride = true
             overriddenConfigs.forEachFast f2@{ overriddenConfig ->
                 val matchContext = ParadoxScriptExpressionMatchContext(context.element, context.expression, overriddenConfig.configExpression, overriddenConfig, context.configGroup, context.options)
-                val matchResult = ParadoxMatchService.matchScriptExpression(matchContext)
+                val matchResult = ParadoxExpressionMatchService.matchScriptExpression(matchContext)
                 if (matchResult.get(matchContext.options)) {
                     result += overriddenConfig
                 }

@@ -51,7 +51,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -484,7 +484,7 @@ object ParadoxExpressionManager {
     }
 
     private fun getReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
-        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        val isDumb = ParadoxMatchService.isDumb()
         return if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
     }
 
@@ -536,7 +536,7 @@ object ParadoxExpressionManager {
     }
 
     private fun getExpressionReferencesCacheKey(): RegistedKey<CachedValue<Array<out PsiReference>>> {
-        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        val isDumb = ParadoxMatchService.isDumb()
         return if (isDumb) Keys.cachedExpressionReferencesDumb else Keys.cachedExpressionReferences
     }
 
@@ -555,7 +555,7 @@ object ParadoxExpressionManager {
 
         // 尝试基于规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
-        val isDumb = ParadoxMatchOptionsUtil.isDumb()
+        val isDumb = ParadoxMatchService.isDumb()
         val options = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val configs = ParadoxConfigManager.getConfigs(element, options.copy(fallback = isKey))
         if (configs.isEmpty()) return PsiReference.EMPTY_ARRAY

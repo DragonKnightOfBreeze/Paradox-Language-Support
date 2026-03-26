@@ -33,7 +33,7 @@ object ParadoxMatchPipeline {
      */
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
-        val matched = ParadoxMatchCandidateService.process(candidates, options)
+        val matched = ParadoxMatchProcessor.process(candidates, options)
         return matched.mapFast { it.value }
     }
 

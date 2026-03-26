@@ -23,7 +23,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtRowConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
@@ -88,7 +88,7 @@ object ParadoxCsvManager {
         val configExpression = columnConfig.valueConfig?.configExpression ?: return false
         val configGroup = columnConfig.configGroup
         val context = ParadoxCsvExpressionMatchContext(column, column.text, configExpression, configGroup)
-        return ParadoxMatchService.matchCsvExpression(context).get()
+        return ParadoxExpressionMatchService.matchCsvExpression(context).get()
     }
 
     fun computeHeaderColumnSize(element: ParadoxCsvHeader): Int {

@@ -49,10 +49,10 @@ import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
-import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
@@ -325,7 +325,7 @@ object ParadoxConfigService {
         ProgressManager.checkCanceled()
         val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
             val context = ParadoxScriptExpressionMatchContext(element, expression, config.configExpression, config, configGroup, options)
-            ParadoxMatchService.matchScriptExpression(context)
+            ParadoxExpressionMatchService.matchScriptExpression(context)
         }
         val result = ParadoxMatchPipeline.process(candidates, options)
             .let { ParadoxMatchPipeline.optimize(it, element, expression, options) }
@@ -386,11 +386,11 @@ object ParadoxConfigService {
 
         // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
         if (element is ParadoxDefinitionElement && configContext.isRootForDefinition()) {
-            if (ParadoxMatchOptionsUtil.acceptDefinition(options)) return contextConfigs
+            if (ParadoxMatchService.acceptDefinition(options)) return contextConfigs
         }
 
         val configGroup = configContext.configGroup
-        val fallback = ParadoxMatchOptionsUtil.fallback(options)
+        val fallback = ParadoxMatchService.fallback(options)
         when (element) {
             is ParadoxScriptProperty -> {
                 // 匹配属性
@@ -401,7 +401,7 @@ object ParadoxConfigService {
                 val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, options) }
                 val candidatesForKey = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, keyExpression, config.keyExpression, config, configGroup, options)
-                    ParadoxMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
                 val resultForKey = ParadoxMatchPipeline.process(candidatesForKey, options)
                     .let { ParadoxMatchPipeline.optimize(it, element, keyExpression, options) }
@@ -412,7 +412,7 @@ object ParadoxConfigService {
                 if (valueExpression == null) return resultForKey // 如果无法得到值表达式，则返回所有匹配键的规则
                 val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
-                    ParadoxMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
                 if (candidates.isEmpty() && fallback) return resultForKey // 如果无结果，则需要考虑回退
                 val result = ParadoxMatchPipeline.process(candidates, options)
@@ -433,7 +433,7 @@ object ParadoxConfigService {
                 if (valueExpression == null) return configs // 如果无法得到值表达式，则返回所有上下文值规则
                 val candidates = ParadoxMatchPipeline.collectCandidates(configs) { config ->
                     val context = ParadoxScriptExpressionMatchContext(element, valueExpression, config.valueExpression, config, configGroup, options)
-                    ParadoxMatchService.matchScriptExpression(context)
+                    ParadoxExpressionMatchService.matchScriptExpression(context)
                 }
                 if (candidates.isEmpty() && fallback) return configs // 如果无结果，则需要考虑回退
                 val result = ParadoxMatchPipeline.process(candidates, options)

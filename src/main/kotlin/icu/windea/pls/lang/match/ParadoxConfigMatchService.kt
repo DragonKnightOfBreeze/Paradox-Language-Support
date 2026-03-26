@@ -307,7 +307,7 @@ object ParadoxConfigMatchService {
                 val expression = ParadoxScriptExpression.resolve(propValue, options)
                 val configExpression = propertyConfig.valueExpression
                 val context = ParadoxScriptExpressionMatchContext(propValue, expression, configExpression, propertyConfig, configGroup, options)
-                return ParadoxMatchService.matchScriptExpression(context).get(options)
+                return ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
             // 匹配 single_alias
             CwtConfigMatchService.isSingleAliasEntry(propertyConfig) -> {
@@ -342,7 +342,7 @@ object ParadoxConfigMatchService {
             val expression = ParadoxScriptExpression.resolve(keyElement, options)
             val propConfigs = propertyConfigs.filter { config ->
                 val context = ParadoxScriptExpressionMatchContext(keyElement, expression, config.keyExpression, config, configGroup, options)
-                ParadoxMatchService.matchScriptExpression(context).get(options)
+                ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
             }
 
             // 如果没有匹配的规则则忽略
@@ -374,7 +374,7 @@ object ParadoxConfigMatchService {
             val matched = valueConfigs.any { config ->
                 val configExpression = config.valueExpression
                 val context = ParadoxScriptExpressionMatchContext(valueElement, expression, configExpression, config, configGroup, options)
-                val matched = ParadoxMatchService.matchScriptExpression(context).get(options)
+                val matched = ParadoxExpressionMatchService.matchScriptExpression(context).get(options)
                 if (matched) occurrences.get(config.value)?.let { it.actual++ }
                 matched
             }
@@ -398,7 +398,7 @@ object ParadoxConfigMatchService {
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = property.name
         val quoted = property.propertyKey.text.isLeftQuoted()
-        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(property, configGroup, aliasName, key, quoted, options) ?: return false
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(property, configGroup, aliasName, key, quoted, options) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->

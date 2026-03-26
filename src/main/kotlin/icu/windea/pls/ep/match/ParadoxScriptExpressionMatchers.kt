@@ -11,10 +11,10 @@ import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
-import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxType
@@ -246,9 +246,9 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         val (element, expression, configExpression, _, configGroup, options) = context
         val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
-        val aliasSubName = ParadoxMatchService.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
+        val aliasSubName = ParadoxExpressionMatchService.getMatchedAliasKey(element, configGroup, aliasName, expression.value, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
         val nextContext = ParadoxScriptExpressionMatchContext(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
-        return ParadoxMatchService.matchScriptExpression(nextContext)
+        return ParadoxExpressionMatchService.matchScriptExpression(nextContext)
     }
 
     private fun matchParameter(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

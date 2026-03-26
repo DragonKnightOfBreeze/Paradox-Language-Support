@@ -6,7 +6,7 @@ import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchOptionsUtil
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
@@ -113,7 +113,7 @@ private class ParadoxScriptExpressionLazyImpl(
 ) : ParadoxScriptExpressionBase() {
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
-        if (ParadoxMatchOptionsUtil.isDumb(options)) return@lazy null
+        if (ParadoxMatchService.isDumb(options)) return@lazy null
         element.resolved()
     }
 

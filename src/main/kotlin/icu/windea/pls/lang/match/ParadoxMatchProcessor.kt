@@ -4,7 +4,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
 
-object ParadoxMatchCandidateService {
+object ParadoxMatchProcessor {
     @Optimized
     fun process(candidates: List<ParadoxMatchCandidate>, options: ParadoxMatchOptions?): List<ParadoxMatchCandidate> {
         // 步骤：
