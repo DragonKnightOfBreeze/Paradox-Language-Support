@@ -9,7 +9,7 @@
 - [ ] 完善参考文档 / Improve reference documentation
 - [ ] 补充集成测试 / Supplementary integration tests
 
-## 2.1.7
+## 2.1.7-dev
 
 - [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions separated by comma
 - [ ] [#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289) Refactoring via inlining doesn't substitute parameters
