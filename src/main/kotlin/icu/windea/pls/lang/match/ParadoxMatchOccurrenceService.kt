@@ -4,14 +4,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.isProperty
-import icu.windea.pls.config.isValue
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
@@ -78,8 +77,8 @@ object ParadoxMatchOccurrenceService {
                 return@f
             }
             val matched = childConfigs.find { childConfig ->
-                if (childConfig.isProperty() && data !is ParadoxScriptProperty) return@find false
-                if (childConfig.isValue() && data !is ParadoxScriptValue) return@find false
+                if (childConfig.memberType == CwtMemberType.PROPERTY && data !is ParadoxScriptProperty) return@find false
+                if (childConfig.memberType == CwtMemberType.VALUE && data !is ParadoxScriptValue) return@find false
                 val configExpression = childConfig.configExpression
                 val context = ParadoxScriptExpressionMatchContext(data, expression, configExpression, childConfig, configGroup)
                 ParadoxExpressionMatchService.matchScriptExpression(context).get()

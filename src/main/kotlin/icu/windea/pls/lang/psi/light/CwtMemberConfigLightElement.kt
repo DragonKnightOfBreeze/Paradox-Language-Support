@@ -4,7 +4,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.model.CwtMemberType
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
@@ -16,9 +17,9 @@ class CwtMemberConfigLightElement(
     private val project: Project
 ) : CwtConfigLightElementBase(parent) {
     override fun getIcon(flags: Int): Icon {
-        return when (config.memberType) {
-            CwtMemberType.PROPERTY -> PlsIcons.Nodes.CwtProperty
-            CwtMemberType.VALUE -> PlsIcons.Nodes.CwtValue
+        return when (config) {
+            is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
+            is CwtValueConfig -> PlsIcons.Nodes.CwtValue
         }
     }
 

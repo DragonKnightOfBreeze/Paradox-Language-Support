@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.isProperty
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
@@ -65,6 +64,7 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
 import icu.windea.pls.lang.util.manipulators.ParadoxScopeManipulator
+import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
@@ -313,7 +313,7 @@ object ParadoxScopeService {
         val overriddenScopeContext = getOverriddenScopeContext(element, config, parentScopeContext)
         if (overriddenScopeContext != null) return overriddenScopeContext
 
-        if (config.isProperty() && config.configExpression.type == CwtDataTypes.ScopeField) {
+        if (config.memberType == CwtMemberType.PROPERTY && config.configExpression.type == CwtDataTypes.ScopeField) {
             if (parentScopeContext == null) return null
             val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
             val expressionString = expressionElement.value

@@ -19,8 +19,8 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.filterIsProperty
-import icu.windea.pls.config.filterIsValue
+import icu.windea.pls.config.filterProperties
+import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.Optimized
@@ -215,7 +215,7 @@ object ParadoxConfigService {
     @Optimized
     fun getTopConfigsForConfigContext(context: CwtConfigContext, rootConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (rootConfigs.isEmpty()) return emptyList()
-        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
+        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
             return rootConfigs.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
         return rootConfigs
@@ -230,7 +230,7 @@ object ParadoxConfigService {
     private fun flattenConfigsForConfigContext(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
 
-        if (context.memberRole == ParadoxMemberRole.Other) return emptyList() // 忽略
+        if (context.memberRole == ParadoxMemberRole.OTHER) return emptyList() // 忽略
         val memberPath = context.memberPath ?: return emptyList() // 忽略
         if (memberPath.isEmpty()) return emptyList() // 忽略
         val subPath = memberPath.subPaths.last()
@@ -313,7 +313,7 @@ object ParadoxConfigService {
         }
 
         // 如果 `element` 是属性值，则需要再次进行匹配，并接着转换为属性值对应的规则
-        if (context.memberRole == ParadoxMemberRole.PropertyValue) {
+        if (context.memberRole == ParadoxMemberRole.PROPERTY_VALUE) {
             result = matchConfigsForConfigContext(element, expression, result, configGroup, options)
             result = result.mapNotNullFast { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
@@ -394,7 +394,7 @@ object ParadoxConfigService {
         when (element) {
             is ParadoxScriptProperty -> {
                 // 匹配属性
-                val configs = contextConfigs.filterIsProperty()
+                val configs = contextConfigs.filterProperties()
                 if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
@@ -421,7 +421,7 @@ object ParadoxConfigService {
             }
             else -> {
                 // 匹配文件或单独的值
-                val configs = contextConfigs.filterIsValue()
+                val configs = contextConfigs.filterValues()
                 if (configs.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()

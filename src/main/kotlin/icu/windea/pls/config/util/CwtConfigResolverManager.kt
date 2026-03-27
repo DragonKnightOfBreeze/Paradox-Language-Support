@@ -15,8 +15,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.filterIsProperty
-import icu.windea.pls.config.filterIsValue
+import icu.windea.pls.config.filterProperties
+import icu.windea.pls.config.filterValues
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.FastList
@@ -120,7 +120,7 @@ object CwtConfigResolverManager {
         }
         return optionConfigs.optimized() // optimized to optimize memory
     }
-    
+
     @Optimized
     fun getMembersType(configs: List<CwtMemberConfig<*>>): CwtMembersType {
         if (configs.isEmpty()) return CwtMembersType.NONE
@@ -142,7 +142,7 @@ object CwtConfigResolverManager {
         if (configs.isEmpty()) return emptyList()
         return when (membersType) {
             CwtMembersType.PROPERTY -> configs.cast()
-            CwtMembersType.MIXED -> configs.filterIsProperty()
+            CwtMembersType.MIXED -> configs.filterProperties()
             else -> emptyList()
         }
     }
@@ -151,7 +151,7 @@ object CwtConfigResolverManager {
         if (configs.isEmpty()) return emptyList()
         return when (membersType) {
             CwtMembersType.VALUE -> configs.cast()
-            CwtMembersType.MIXED -> configs.filterIsValue()
+            CwtMembersType.MIXED -> configs.filterValues()
             else -> emptyList()
         }
     }

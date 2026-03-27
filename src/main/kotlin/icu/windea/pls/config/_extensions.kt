@@ -6,15 +6,20 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.model.CwtMemberType
 
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
@@ -22,6 +27,7 @@ val CwtFilePathMatchableConfig<*>.filePathPatterns: Set<String> get() = CwtConfi
 
 val CwtFilePathMatchableConfig<*>.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
 
+@Optimized
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if (size <= 1) return toListOrThis()
     return sortedByDescending s@{
@@ -29,6 +35,18 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
         val configGroup = configGroupProvider(it)
         CwtConfigExpressionManager.getPriority(expression, configGroup)
     }
+}
+
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@Optimized
+inline fun List<CwtMemberConfig<*>>.filterProperties(): List<CwtPropertyConfig> {
+    return filterFast { it.memberType == CwtMemberType.PROPERTY } as List<CwtPropertyConfig>
+}
+
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@Optimized
+inline fun List<CwtMemberConfig<*>>.filterValues(): List<CwtValueConfig> {
+    return filterFast { it.memberType == CwtMemberType.VALUE } as List<CwtValueConfig>
 }
 
 /**
