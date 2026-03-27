@@ -21,6 +21,7 @@ import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
@@ -182,6 +183,7 @@ object ParadoxMemberService {
             is ParadoxScriptFloat -> true
             is ParadoxScriptInlineMath -> true
             is ParadoxScriptString -> true
+            is ParadoxScriptBlock -> true // #291 [VIC3/EU5] we can do comparisons between numbers and formula blocks
             else -> false
         }
     }
@@ -197,7 +199,10 @@ object ParadoxMemberService {
         return configs.any { config -> isComparisonOperatorAllowed(config) }
     }
 
-    private fun isComparisonOperatorAllowed(config: CwtMemberConfig<*>): Boolean {
+    /**
+     * 判断 [config] 对应的脚本属性是否允许使用比较运算符作为属性分隔符。要求显式使用 `==` 作为属性分隔符（而非常规的 `=`）。
+     */
+    fun isComparisonOperatorAllowed(config: CwtMemberConfig<*>): Boolean {
         return config is CwtPropertyConfig && config.separatorType == CwtSeparatorType.DOUBLE_EQUAL
     }
 }

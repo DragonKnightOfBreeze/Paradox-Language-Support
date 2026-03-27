@@ -19,17 +19,17 @@ import java.nio.file.Path
 context(_: UsefulTestCase)
 fun addAdditionalAllowedRoots(vararg roots: String?) {
     val additionalAllowedRoots = roots.mapNotNull { it?.toPath()?.toAbsolutePath()?.normalize()?.toString() }
-    doAddAddtionalAllowedRoots(additionalAllowedRoots)
+    doAddAdditionalAllowedRoots(additionalAllowedRoots)
 }
 
 /** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
 context(_: UsefulTestCase)
 fun addAdditionalAllowedRoots(vararg roots: Path?) {
     val additionalAllowedRoots = roots.mapNotNull { it?.toAbsolutePath()?.normalize()?.toString() }
-    doAddAddtionalAllowedRoots(additionalAllowedRoots)
+    doAddAdditionalAllowedRoots(additionalAllowedRoots)
 }
 
-private fun doAddAddtionalAllowedRoots(additionalAllowedRoots: List<String>) {
+private fun doAddAdditionalAllowedRoots(additionalAllowedRoots: List<String>) {
     val oldValue = System.getProperty("vfs.additional-allowed-roots").orEmpty()
     val newList = listOf(oldValue).filter { it.isNotBlank() } + additionalAllowedRoots
     val newValue = newList.distinct().joinToString(File.pathSeparator)
