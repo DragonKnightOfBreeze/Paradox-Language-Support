@@ -6,7 +6,7 @@
 - [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)
 - [ ] 性能分析与优化 / Performance analysis and optimization
-- [ ] 完善参考文档 / Improve reference documentation 
+- [ ] 完善参考文档 / Improve reference documentation
 - [ ] 补充集成测试 / Supplementary integration tests
 
 ## 2.1.7

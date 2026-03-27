@@ -152,7 +152,7 @@ object PlsDaemonManager {
 
     private fun restartAnalyze(psiFiles: List<PsiFile>) {
         if (psiFiles.isEmpty()) return
-        psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile, "PLS: restart analyze") }
+        psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
     }
 
     private fun refreshInlayHints(editors: List<Editor>) {
