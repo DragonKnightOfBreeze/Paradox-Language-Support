@@ -10,7 +10,6 @@ import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.LintHighlightSeverity
 import icu.windea.pls.integrations.lints.TigerLintResult.*
-import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import javax.swing.JComponent
 import javax.swing.SwingUtilities

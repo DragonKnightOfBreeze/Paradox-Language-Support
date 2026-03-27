@@ -13,7 +13,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parents
 import com.intellij.psi.util.startOffset
 import com.intellij.util.DocumentUtil.*
-import fleet.util.takeWhileInclusive
+import com.intellij.util.takeWhileInclusive
 import icu.windea.pls.core.children
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf

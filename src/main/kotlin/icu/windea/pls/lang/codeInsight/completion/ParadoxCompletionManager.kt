@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.patterns.StandardPatterns
 import com.intellij.util.ProcessingContext
@@ -84,7 +83,6 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import java.util.concurrent.Callable
 
 object ParadoxCompletionManager {
     // region Core Methods

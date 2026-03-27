@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util.values
 
-import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.EMPTY_OBJECT
 
 /**

@@ -4,8 +4,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.CodeInjectorSupport
+import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.model.InjectMethodInfo

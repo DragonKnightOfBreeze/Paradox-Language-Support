@@ -9,7 +9,6 @@ import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.integrations.lints.TigerLintResult.*
-import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import icu.windea.pls.model.constants.PlsConstants
 

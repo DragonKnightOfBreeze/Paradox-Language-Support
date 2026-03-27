@@ -5,8 +5,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.util.system.OS
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.execution.CommandType
 import icu.windea.pls.core.executeCommandLine
+import icu.windea.pls.core.execution.CommandType
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
