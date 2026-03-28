@@ -2,7 +2,7 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
@@ -27,7 +27,7 @@ object PlsSettingsManager {
     fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String, newPreferredLocale: String) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 
-        ParadoxModificationTrackers.PreferredLocale.incModificationCount()
+        PlsModificationTrackers.PreferredLocale.incModificationCount()
 
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
@@ -45,7 +45,7 @@ object PlsSettingsManager {
     fun refreshForParameterInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForParameterInference")) return
 
-        ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
+        PlsModificationTrackers.ParameterConfigInference.incModificationCount()
 
         refreshForOpenedFiles(callbackLock)
     }
@@ -53,9 +53,9 @@ object PlsSettingsManager {
     fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForInlineScriptInference")) return
 
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.InlineScripts.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
+        PlsModificationTrackers.ScriptFile.incModificationCount()
+        PlsModificationTrackers.InlineScripts.incModificationCount()
+        PlsModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
         val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
@@ -65,7 +65,7 @@ object PlsSettingsManager {
     fun refreshForScopeContextInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForScopeContextInference")) return
 
-        ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
+        PlsModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
         refreshForOpenedFiles(callbackLock)
     }

@@ -26,7 +26,7 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.core.util.withSync
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -208,7 +208,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         // TODO 可以进一步缩小范围
-        return ParadoxModificationTrackers.scriptFileFromPatterns("**/*.txt")
+        return PlsModificationTrackers.scriptFileFromPatterns("**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {
@@ -415,7 +415,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        return ParadoxModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
+        return PlsModificationTrackers.scriptFileFromPatterns("common/economic_categories/**/*.txt")
     }
 
     override fun getModifierCategories(modifierElement: ParadoxModifierLightElement): Map<String, CwtModifierCategoryConfig>? {

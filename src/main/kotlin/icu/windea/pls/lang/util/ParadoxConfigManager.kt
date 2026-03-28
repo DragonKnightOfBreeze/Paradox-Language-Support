@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -47,7 +47,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = ParadoxConfigService.getConfigContext(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
         }
     }
 
@@ -65,7 +65,7 @@ object ParadoxConfigManager {
     private fun getConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
         }
     }
 
@@ -91,7 +91,7 @@ object ParadoxConfigManager {
     private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             val value = doGetChildOccurrencesCache()
-            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
         }
     }
 

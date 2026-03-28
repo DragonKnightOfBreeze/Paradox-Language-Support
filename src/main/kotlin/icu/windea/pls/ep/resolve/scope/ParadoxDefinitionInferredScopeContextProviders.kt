@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.match.findByPattern
@@ -81,8 +81,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
         val configGroup = definition.definitionInfo?.configGroup
-        val scriptTracker = configGroup?.definitionScopeContextModificationTracker ?: ParadoxModificationTrackers.ScriptFile
-        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = configGroup?.definitionScopeContextModificationTracker ?: PlsModificationTrackers.ScriptFile
+        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -187,8 +187,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
-        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
+        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -301,8 +301,8 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
-        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -454,8 +454,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
-        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(

@@ -20,7 +20,7 @@ import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -126,8 +126,8 @@ class TigerLintToolService : Disposable {
                 this += getModificationTracker(gameType)
                 // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
                 if (value == null || value.error != null) {
-                    this += ParadoxModificationTrackers.ScriptFile
-                    this += ParadoxModificationTrackers.LocalisationFile
+                    this += PlsModificationTrackers.ScriptFile
+                    this += PlsModificationTrackers.LocalisationFile
                 }
             }
             value.withDependencyItems(trackers)

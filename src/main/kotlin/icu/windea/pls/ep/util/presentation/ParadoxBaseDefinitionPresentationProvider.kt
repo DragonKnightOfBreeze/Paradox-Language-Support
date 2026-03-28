@@ -9,7 +9,7 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithDefinitionType
 import icu.windea.pls.lang.annotations.WithGameType
@@ -43,7 +43,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         val key = getKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
             val value = getPresentation(element, type)
-            val trackers = with(ParadoxModificationTrackers) {
+            val trackers = with(PlsModificationTrackers) {
                 listOf(element, ScriptFile, LocalisationFile)
             }
             value.withDependencyItems(trackers)

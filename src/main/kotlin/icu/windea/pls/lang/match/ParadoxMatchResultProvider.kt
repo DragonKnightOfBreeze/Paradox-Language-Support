@@ -30,7 +30,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -55,13 +55,13 @@ private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNe
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
-        val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
-        val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FilePath)
-        val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
-        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        val cacheForDefinitions by createKeyForCache(PlsModificationTrackers.ScriptFile)
+        val cacheForLocalisations by createKeyForCache(PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
+        val cacheForSyncedLocalisations by createKeyForCache(PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
+        val cacheForPathReferences by createKeyForCache(PlsModificationTrackers.FilePath)
+        val cacheForComplexEnumValues by createKeyForCache(PlsModificationTrackers.ScriptFile)
+        val cacheForModifiers by createKeyForCache(PlsModificationTrackers.ScriptFile)
+        val cacheForTemplates by createKeyForCache(PlsModificationTrackers.ScriptFile, PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
 
         private fun createKeyForCache(vararg dependencies: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult

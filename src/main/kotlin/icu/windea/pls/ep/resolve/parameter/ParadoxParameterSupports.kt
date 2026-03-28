@@ -31,7 +31,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
@@ -607,7 +607,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        return ParadoxModificationTrackers.InlineScripts
+        return PlsModificationTrackers.InlineScripts
     }
 
     override fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {

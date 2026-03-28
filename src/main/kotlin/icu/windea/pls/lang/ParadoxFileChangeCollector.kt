@@ -186,11 +186,11 @@ class ParadoxFileChangeCollector {
 
         // 通知更改 & 重新解析和索引相关文件
         if (refreshFilePaths) {
-            ParadoxModificationTrackers.FilePath.incModificationCount()
+            PlsModificationTrackers.FilePath.incModificationCount()
         }
         if (refreshInlineScripts) {
-            ParadoxModificationTrackers.ScriptFile.incModificationCount()
-            ParadoxModificationTrackers.InlineScripts.incModificationCount()
+            PlsModificationTrackers.ScriptFile.incModificationCount()
+            PlsModificationTrackers.InlineScripts.incModificationCount()
         }
         if (reparseOpenedFiles) {
             // 重新解析所有项目的所有已打开的文件

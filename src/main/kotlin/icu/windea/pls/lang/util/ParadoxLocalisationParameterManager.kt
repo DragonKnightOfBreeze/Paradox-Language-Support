@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
@@ -47,7 +47,7 @@ object ParadoxLocalisationParameterManager {
     private fun getParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             val value = resolveParameters(element)
-            val dependencies = with(ParadoxModificationTrackers) { listOf(element, ScriptFile) }
+            val dependencies = with(PlsModificationTrackers) { listOf(element, ScriptFile) }
             value.withDependencyItems(dependencies)
         }
     }

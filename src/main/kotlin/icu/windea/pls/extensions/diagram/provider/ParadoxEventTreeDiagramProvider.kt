@@ -28,7 +28,7 @@ import icu.windea.pls.core.util.values.or
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
@@ -268,7 +268,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
+            return PlsModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }
 }

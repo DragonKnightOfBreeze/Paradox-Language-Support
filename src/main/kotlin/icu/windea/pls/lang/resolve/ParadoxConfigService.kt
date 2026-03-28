@@ -46,7 +46,7 @@ import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -80,7 +80,7 @@ object ParadoxConfigService {
             // use soft values to optimize memory
             createNestedCache<VirtualFile, _, _, Cache<String, List<CwtMemberConfig<*>>>> {
                 CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
-            }.withDependencyItems(ParadoxModificationTrackers.ConfigResolution)
+            }.withDependencyItems(PlsModificationTrackers.ConfigResolution)
         }
     }
 

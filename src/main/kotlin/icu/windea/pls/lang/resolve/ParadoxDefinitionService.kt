@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -303,18 +303,18 @@ object ParadoxDefinitionService {
         if (allFastMatch) return listOf(file)
 
         // 需要依赖声明结构
-        return listOf(file, ParadoxModificationTrackers.ScriptFile)
+        return listOf(file, PlsModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile)
+        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile)
     }
 
     fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
     }
 
     fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element.containingFile, PlsModificationTrackers.ScriptFile)
     }
 }

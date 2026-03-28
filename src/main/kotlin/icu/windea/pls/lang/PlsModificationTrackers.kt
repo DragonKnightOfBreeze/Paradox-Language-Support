@@ -14,7 +14,13 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-object ParadoxModificationTrackers {
+object PlsModificationTrackers {
+    val PreferredLocale = SimpleModificationTracker()
+    val FilePath = SimpleModificationTracker()
+    val ParameterConfigInference = SimpleModificationTracker()
+    val InlineScriptConfigInference = SimpleModificationTracker()
+    val DefinitionScopeContextInference = SimpleModificationTracker()
+
     /** 追踪任意游戏或模组目录中的脚本文件的更改。 */
     val ScriptFile = SimpleModificationTracker()
     /** 追踪任意游戏或模组目录中的本地化文件的更改。 */
@@ -26,12 +32,6 @@ object ParadoxModificationTrackers {
 
     val ScriptedVariables = scriptFileFromPatterns("common/scripted_variables/**/*.txt")
     val InlineScripts = scriptFileFromPatterns("common/inline_scripts/**/*.txt")
-
-    val PreferredLocale = SimpleModificationTracker()
-    val FilePath = SimpleModificationTracker()
-    val ParameterConfigInference = SimpleModificationTracker()
-    val InlineScriptConfigInference = SimpleModificationTracker()
-    val DefinitionScopeContextInference = SimpleModificationTracker()
 
     val ConfigResolution = MergedModificationTracker(
         ScriptFile,

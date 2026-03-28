@@ -18,7 +18,7 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 object PlsDaemonManager {
@@ -83,10 +83,10 @@ object PlsDaemonManager {
     // region Refresh Methods
 
     fun refreshAllFileTrackers() {
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.LocalisationFile.incModificationCount()
-        ParadoxModificationTrackers.CsvFile.incModificationCount()
-        ParadoxModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
+        PlsModificationTrackers.ScriptFile.incModificationCount()
+        PlsModificationTrackers.LocalisationFile.incModificationCount()
+        PlsModificationTrackers.CsvFile.incModificationCount()
+        PlsModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
     }
 
     fun refreshFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {

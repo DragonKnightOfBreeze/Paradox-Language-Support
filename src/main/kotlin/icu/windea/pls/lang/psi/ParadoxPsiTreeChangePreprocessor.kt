@@ -6,7 +6,7 @@ import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -35,8 +35,8 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val fileInfo = file.fileInfo ?: return
         when (file) {
             is ParadoxScriptFile -> {
-                ParadoxModificationTrackers.ScriptFile.incModificationCount()
-                val trackers = ParadoxModificationTrackers.ScriptFileMap.values
+                PlsModificationTrackers.ScriptFile.incModificationCount()
+                val trackers = PlsModificationTrackers.ScriptFileMap.values
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
@@ -48,10 +48,10 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 }
             }
             is ParadoxLocalisationFile -> {
-                ParadoxModificationTrackers.LocalisationFile.incModificationCount()
+                PlsModificationTrackers.LocalisationFile.incModificationCount()
             }
             is ParadoxCsvFile -> {
-                ParadoxModificationTrackers.CsvFile.incModificationCount()
+                PlsModificationTrackers.CsvFile.incModificationCount()
             }
         }
     }

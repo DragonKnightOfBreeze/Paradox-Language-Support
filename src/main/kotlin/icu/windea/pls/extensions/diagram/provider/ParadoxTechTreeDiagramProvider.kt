@@ -30,7 +30,7 @@ import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.settings.ParadoxTechTreeDiagramSettings
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.getDefinitionPresentation
@@ -301,7 +301,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         override fun getModificationTracker(): ModificationTracker {
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            return ParadoxModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
+            return PlsModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
     }
 }

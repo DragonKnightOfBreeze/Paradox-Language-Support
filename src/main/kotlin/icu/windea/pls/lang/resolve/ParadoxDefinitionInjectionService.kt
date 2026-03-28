@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -115,6 +115,6 @@ object ParadoxDefinitionInjectionService {
         if (allFastMatch) return listOf(element)
 
         // 需要依赖声明结构
-        return listOf(element, ParadoxModificationTrackers.ScriptFile)
+        return listOf(element, PlsModificationTrackers.ScriptFile)
     }
 }
