@@ -1,3 +1,5 @@
 <caret>neuro_sama = {
-    is_evil = no
+    tooltip = neuro_sama_tooltip
+    tags = { tag_ai tag_lovely tag_easygoing tag_natural }
+    items = { item_turtle item_cookie item_lava_lamp }
 }

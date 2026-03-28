@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
+class ParadoxComplexEnumValueRenameTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
@@ -49,9 +49,9 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testRename_ScriptedVariable_Overrides() {
-        val mainPath = "common/scripted_variables/neuro_vars_1.test.txt"
-        val otherPath = "common/scripted_variables/neuro_vars_2.test.txt"
+    fun testRename_ComplexEnumValue() {
+        val mainPath = "common/vtubers/1_1_vtubers.test.txt"
+        val otherPath = "common/vtuber_tags/1_1_vtuber_tags.test.txt"
 
         // Arrange
         configureFile(mainPath)
@@ -61,23 +61,47 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        val newName = "evil_neuro"
+        val newName = "tag_not_ai"
         myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/scripted_variables/neuro_vars_1.after.test.txt", true)
-        myFixture.checkResultByFile(otherPath, "features/refactoring/common/scripted_variables/neuro_vars_2.after.test.txt", true)
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/1_1_vtubers.after.test.txt", true)
+        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtuber_tags/1_1_vtuber_tags.after.test.txt", true)
     }
 
     @Test
-    fun testRename_ScriptedVariable_RelatedLocalisations() {
-        val mainPath = "common/scripted_variables/neuro_vars_1.test.txt"
-        val localisationEnglishPath = "localisation/scripted_variables_l_english.test.yml"
-        val localisationChinesePath = "localisation/scripted_variables_l_simp_chinese.test.yml"
+    fun testRename_ComplexEnumValue_FromDeclaration() {
+        val mainPath = "common/vtuber_tags/1_2_vtuber_tags.test.txt"
+        val otherPath = "common/vtubers/1_2_vtubers.test.txt"
 
         // Arrange
         configureFile(mainPath)
+        configureFile(otherPath)
+
+        // Ensure indexed
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        // Act
+        val newName = "tag_not_ai"
+        myFixture.configureFromTempProjectFile(mainPath)
+        myFixture.renameElementAtCaretUsingHandler(newName)
+
+        // Assert
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtuber_tags/1_2_vtuber_tags.after.test.txt", true)
+        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtubers/1_2_vtubers.after.test.txt", true)
+    }
+
+    @Test
+    fun testRename_ComplexEnumValue_RelatedLocalisations() {
+        val mainPath = "common/vtubers/1_3_vtubers.test.txt"
+        val otherPath = "common/vtuber_tags/1_3_vtuber_tags.test.txt"
+        val localisationEnglishPath = "localisation/1_3_main_l_english.test.yml"
+        val localisationChinesePath = "localisation/1_3_main_l_simp_chinese.test.yml"
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(otherPath) // necessary
         configureFile(localisationEnglishPath)
         configureFile(localisationChinesePath)
 
@@ -85,13 +109,14 @@ class ParadoxScriptedVariableRenameTest : BasePlatformTestCase() {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        val newName = "evil_neuro"
+        val newName = "tag_not_ai"
         myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(mainPath, "features/refactoring/common/scripted_variables/neuro_vars_1.after.test.txt", true)
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/scripted_variables_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/scripted_variables_l_simp_chinese.after.test.yml", true)
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/1_3_vtubers.after.test.txt", true)
+        myFixture.checkResultByFile(otherPath, "features/refactoring/common/vtuber_tags/1_3_vtuber_tags.after.test.txt", true)
+        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/1_3_main_l_english.after.test.yml", true)
+        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/1_3_main_l_simp_chinese.after.test.yml", true)
     }
 }

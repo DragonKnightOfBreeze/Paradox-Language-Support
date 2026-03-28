@@ -42,23 +42,28 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
         FileDocumentManager.getInstance().saveAllDocuments()
     }
 
+    private fun configureFile(path: String): String {
+        markFileInfo(gameType, path)
+        myFixture.copyFileToProject("features/refactoring/$path", path)
+        return path
+    }
+
+
     @Test
     fun testRename_Definition_Overrides() {
-        // Arrange
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        markFileInfo(gameType, mainPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
-
         val otherPath = "common/vtubers/vtuber_2.test.txt"
-        markFileInfo(gameType, otherPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_2.test.txt", otherPath)
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(otherPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        myFixture.configureFromTempProjectFile(mainPath)
         val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
@@ -68,25 +73,21 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
 
     @Test
     fun testRename_Definition_RelatedLocalisations() {
-        // Arrange
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        markFileInfo(gameType, mainPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
-
         val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
-        markFileInfo(gameType, localisationEnglishPath)
-        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_english.test.yml", localisationEnglishPath)
-
         val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
-        markFileInfo(gameType, localisationChinesePath)
-        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_simp_chinese.test.yml", localisationChinesePath)
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(localisationEnglishPath)
+        configureFile(localisationChinesePath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        myFixture.configureFromTempProjectFile(mainPath)
         val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
@@ -97,25 +98,21 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
 
     @Test
     fun testRename_Definition_References() {
-        // Arrange
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        markFileInfo(gameType, mainPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
-
         val otherPath = "common/vtubers/vtuber_2.test.txt"
-        markFileInfo(gameType, otherPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_2.test.txt", otherPath)
-
         val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
-        markFileInfo(gameType, fanPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(otherPath)
+        configureFile(fanPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        myFixture.configureFromTempProjectFile(mainPath)
         val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
@@ -126,33 +123,25 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
 
     @Test
     fun testRename_Definition_Combined() {
-        // Arrange
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        markFileInfo(gameType, mainPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
-
-        val otherPath = "common/vtubers/vtuber_2.test.txt"
-        markFileInfo(gameType, otherPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_2.test.txt", otherPath)
-
+        val otherPath =  "common/vtubers/vtuber_2.test.txt"
         val localisationEnglishPath = "localisation/definitions_l_english.test.yml"
-        markFileInfo(gameType, localisationEnglishPath)
-        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_english.test.yml", localisationEnglishPath)
-
         val localisationChinesePath = "localisation/definitions_l_simp_chinese.test.yml"
-        markFileInfo(gameType, localisationChinesePath)
-        myFixture.copyFileToProject("features/refactoring/localisation/definitions_l_simp_chinese.test.yml", localisationChinesePath)
-
         val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
-        markFileInfo(gameType, fanPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_1.test.txt", fanPath)
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(otherPath)
+        configureFile(localisationEnglishPath)
+        configureFile(localisationChinesePath)
+        configureFile(fanPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        myFixture.configureFromTempProjectFile(mainPath)
         val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
@@ -165,21 +154,19 @@ class ParadoxDefinitionRenameTest : BasePlatformTestCase() {
 
     @Test
     fun testRename_Definition_ReferencesInScript_Multiple() {
-        // Arrange
         val mainPath = "common/vtubers/vtuber_1.test.txt"
-        markFileInfo(gameType, mainPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtubers/vtuber_1.test.txt", mainPath)
-
         val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
-        markFileInfo(gameType, fanPath)
-        myFixture.copyFileToProject("features/refactoring/common/vtuber_fans/vtuber_fan_2.test.txt", fanPath)
+
+        // Arrange
+        configureFile(mainPath)
+        configureFile(fanPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        myFixture.configureFromTempProjectFile(mainPath)
         val newName = "evil_neuro"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert

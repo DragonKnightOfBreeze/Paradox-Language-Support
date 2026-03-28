@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
+class ParadoxDynamicValueRenameTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
@@ -49,52 +49,46 @@ class ParadoxLocalisationRenameTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testRename_Localisation_OverridesAndReferences() {
-        val localisationEnglishPath = "localisation/localisations_l_english.test.yml"
-        val localisationChinesePath = "localisation/localisations_l_simp_chinese.test.yml"
-        val fanPath = "common/vtuber_fans/vtuber_fan_1.test.txt"
+    fun testRename_ComplexEnumValue() {
+        val mainPath = "common/vtubers/2_1_vtubers.test.txt"
 
         // Arrange
-        configureFile(localisationEnglishPath)
-        configureFile(localisationChinesePath)
-        configureFile(fanPath)
+        configureFile(mainPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        val newName = "evil_neuro"
-        myFixture.configureFromTempProjectFile(localisationEnglishPath)
+        val newName = "item_vedal"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/localisations_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/localisations_l_simp_chinese.after.test.yml", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_1.after_localisation.test.txt", true)
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/2_1_vtubers.after.test.txt", true)
     }
 
     @Test
-    fun testRename_Localisation_ReferencesInScript_Multiple() {
-        val localisationEnglishPath = "localisation/localisations_l_english.test.yml"
-        val localisationChinesePath = "localisation/localisations_l_simp_chinese.test.yml"
-        val fanPath = "common/vtuber_fans/vtuber_fan_2.test.txt"
+    fun testRename_ComplexEnumValue_RelatedLocalisations() {
+        val mainPath = "common/vtubers/2_2_vtubers.test.txt"
+        val localisationEnglishPath = "localisation/2_2_main_l_english.test.yml"
+        val localisationChinesePath = "localisation/2_2_main_l_simp_chinese.test.yml"
 
         // Arrange
+        configureFile(mainPath)
         configureFile(localisationEnglishPath)
         configureFile(localisationChinesePath)
-        configureFile(fanPath)
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // Act
-        val newName = "evil_neuro"
-        myFixture.configureFromTempProjectFile(localisationEnglishPath)
+        val newName = "item_vedal"
+        myFixture.configureFromTempProjectFile(mainPath)
         myFixture.renameElementAtCaretUsingHandler(newName)
 
         // Assert
-        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/localisations_l_english.after.test.yml", true)
-        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/localisations_l_simp_chinese.after.test.yml", true)
-        myFixture.checkResultByFile(fanPath, "features/refactoring/common/vtuber_fans/vtuber_fan_2.after_localisation.test.txt", true)
+        myFixture.checkResultByFile(mainPath, "features/refactoring/common/vtubers/2_2_vtubers.after.test.txt", true)
+        myFixture.checkResultByFile(localisationEnglishPath, "features/refactoring/localisation/2_2_main_l_english.after.test.yml", true)
+        myFixture.checkResultByFile(localisationChinesePath, "features/refactoring/localisation/2_2_main_l_simp_chinese.after.test.yml", true)
     }
 }

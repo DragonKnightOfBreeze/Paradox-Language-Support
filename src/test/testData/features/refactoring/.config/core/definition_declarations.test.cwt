@@ -1,9 +1,0 @@
-vtuber = {
-    is_evil = bool
-}
-
-vtuber_fan = {
-    idol = <vtuber>
-    nickname = localisation
-    power = int
-}

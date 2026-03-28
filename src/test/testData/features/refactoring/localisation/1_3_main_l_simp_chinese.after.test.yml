@@ -1,0 +1,27 @@
+l_simp_chinese:
+ neuro_sama:0 "小牛"
+ neuro_sama_desc:0 "名为 $neuro_sama$ 的虚拟主播。"
+ neuro_sama_flavor:0 "我就是 $evil_neuro$."
+ neuro_sama_tooltip:0 "牛非AI。"
+
+ evil_neuro:0 "小邪"
+ evil_neuro_desc:0 "名为 $evil_neuro$ 的虚拟主播。"
+ evil_neuro_flavor:0 "我就是 $evil_neuro$."
+ evil_neuro_tooltip:0 "小邪非邪。"
+
+ vedal:0 "Vedal987"
+ vedal_desc:0 "$item_turtle$"
+
+ tag_not_ai:0 "AI"
+ tag_lovely:0 "可爱"
+ tag_easygoing:0 "随和"
+ tag_natural:0 "天然"
+ tag_pure:0 "单纯"
+ tag_tsundere:0 "傲娇"
+
+ item_turtle:0 "王八"
+ item_cookie:0 "曲奇"
+ item_lava_lamp:0 "熔岩灯"
+ item_tungsten_cube:0 "钨立方"
+ item_harpoon:0 "鱼叉"
+ item_steel_pipe:0 "钢管"

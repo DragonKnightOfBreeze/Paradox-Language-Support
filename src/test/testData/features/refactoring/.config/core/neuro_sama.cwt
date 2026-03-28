@@ -1,0 +1,48 @@
+types = {
+    type[vtuber] = {
+        path = "common/vtubers"
+        path_extension = .txt
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+            tooltip = "tooltip"
+        }
+    }
+
+    type[vtuber_fan] = {
+        path = "common/vtuber_fans"
+        path_extension = .txt
+    }
+}
+
+vtuber = {
+    ## cardinality = 0..1
+    tooltip = localisation
+    ## cardinality = 0..1
+    tags = {
+        ## cardinality = 0..inf
+        enum[vtuber_tag]
+    }
+    ## cardinality = 0..1
+    items = {
+        ## cardinality = 0..inf
+        value_set[vtuber_item]
+    }
+}
+
+vtuber_fan = {
+    idol = <vtuber>
+    nickname = localisation
+    power = int
+}
+
+enums = {
+    complex_enum[vtuber_tag] = {
+        path = "game/common/vtuber_tags"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+}

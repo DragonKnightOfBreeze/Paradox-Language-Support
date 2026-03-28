@@ -1,3 +1,5 @@
 evil_neuro = {
-    is_evil = yes
+    tooltip = evil_neuro_tooltip
+    tags = { tag_ai tag_lovely tag_pure tag_tsundere }
+    items = { item_turtle item_cookie item_tungsten_cube item_harpoon item_steel_pipe }
 }

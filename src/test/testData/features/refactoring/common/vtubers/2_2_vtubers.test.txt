@@ -1,4 +1,10 @@
 neuro_sama = {
+    tooltip = neuro_sama_tooltip
+    tags = { tag_ai tag_lovely tag_easygoing tag_natural }
+    items = { <caret>item_turtle item_cookie item_lava_lamp }
+}
+
+evil_neuro = {
     tooltip = evil_neuro_tooltip
     tags = { tag_ai tag_lovely tag_pure tag_tsundere }
     items = { item_turtle item_cookie item_tungsten_cube item_harpoon item_steel_pipe }

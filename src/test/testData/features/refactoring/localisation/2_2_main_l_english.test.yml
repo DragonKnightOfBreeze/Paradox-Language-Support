@@ -1,0 +1,27 @@
+﻿l_english:
+ neuro_sama:0 "Neuro-sama"
+ neuro_sama_desc:0 "A VTuber named $neuro_sama$."
+ neuro_sama_flavor:0 "I am $neuro_sama$."
+ neuro_sama_tooltip:0 "Neuro is NOT an AI."
+
+ evil_neuro:0 "Evil Neuro"
+ evil_neuro_desc:0 "A VTuber named $evil_neuro$."
+ evil_neuro_flavor:0 "I am $evil_neuro$."
+ evil_neuro_tooltip:0 "Evil is NOT evil."
+
+ vedal:0 "Vedal987"
+ vedal_desc:0 "$item_turtle$"
+
+ tag_ai:0 "AI"
+ tag_lovely:0 "Lovely"
+ tag_easygoing:0 "Easygoing"
+ tag_natural:0 "Natural"
+ tag_pure:0 "Pure"
+ tag_tsundere:0 "Tsundere"
+
+ item_turtle:0 "Turtle"
+ item_cookie:0 "Cookie"
+ item_lava_lamp:0 "Lave Lamp"
+ item_tungsten_cube:0 "Tungsten Cube"
+ item_harpoon:0 "Harpoon"
+ item_steel_pipe:0 "Steel_Pipe"
