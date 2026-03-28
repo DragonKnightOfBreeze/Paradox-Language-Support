@@ -19,11 +19,11 @@ object PlsStates {
     val resolveForMergedIndex = ThreadLocal<Boolean>()
 
     /**
-     * 用于标记是否正在解析内部规则。
+     * 用于标记是否要跳过对选项数据的处理，直接保留所有选项规则列表。
      *
-     * @see icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor
+     * @see icu.windea.pls.config.util.CwtConfigResolverManager.skipProcessingOptionData
      */
-    val resolveForInternalConfigs = ThreadLocal<Boolean>()
+    val skipProcessingOptionData = ThreadLocal<Boolean>()
 
     /**
      * 用于标记是否允许不完整的复杂脚本表达式（用于兼容代码补全）。

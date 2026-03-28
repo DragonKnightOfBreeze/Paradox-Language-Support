@@ -50,9 +50,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.withState
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.currentCoroutineContext
@@ -109,14 +107,12 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         val fileConfigs = mutableMapOf<String, CwtFileConfig>()
         try {
             // 允许覆盖先加入的同路径的规则文件
-            withState(PlsStates.resolveForInternalConfigs) {
-                for ((filePath, file, source) in internalFileInfos) {
-                    checkCanceled()
-                    if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
-                    CwtConfigResolverManager.setLocation(filePath, configGroup)
-                    val fileConfig = readAction { resolveFileConfig(configGroup, file, filePath) } ?: continue
-                    internalFileConfigs[filePath] = fileConfig
-                }
+            for ((filePath, file, source) in internalFileInfos) {
+                checkCanceled()
+                if (source != CwtConfigGroupFileSource.BuiltIn) return // 不允许覆盖内部规则文件，除非是内置规则文件
+                CwtConfigResolverManager.setLocation(filePath, configGroup)
+                val fileConfig = readAction { resolveInternalFileConfig(configGroup, file, filePath) } ?: continue
+                internalFileConfigs[filePath] = fileConfig
             }
             for ((filePath, file) in fileInfos) {
                 checkCanceled()
@@ -139,6 +135,10 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
             checkCanceled()
             readAction { processFile(fileConfig) }
         }
+    }
+
+    private fun resolveInternalFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {
+        return CwtConfigResolverManager.skipProcessingOptionData { resolveFileConfig(configGroup, file, filePath) }
     }
 
     private fun resolveFileConfig(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String): CwtFileConfig? {

@@ -30,6 +30,7 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.withState
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtFile
@@ -38,6 +39,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtMembersType
 
@@ -177,6 +179,10 @@ object CwtConfigResolverManager {
             }
             else -> pass()
         }
+    }
+
+    inline fun <T> skipProcessingOptionData(action: () -> T): T {
+        return withState(PlsStates.skipProcessingOptionData, action)
     }
 
     fun getFileConfigs(configGroup: CwtConfigGroup): MutableMap<String, CwtFileConfig> {

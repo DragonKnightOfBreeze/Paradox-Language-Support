@@ -29,7 +29,7 @@ object CwtOptionDataProcessor {
     fun process(optionData: CwtOptionDataHolder, optionConfigs: List<CwtOptionMemberConfig<*>>) {
         if (optionData !is CwtOptionDataHolderBase) return
         if (optionConfigs.isEmpty()) return
-        if (PlsStates.resolveForInternalConfigs.get() == true) {
+        if (PlsStates.skipProcessingOptionData.get() == true) {
             optionData.optionConfigs = optionConfigs // 始终保留选项规则到成员规则的用户数据中
             return
         }

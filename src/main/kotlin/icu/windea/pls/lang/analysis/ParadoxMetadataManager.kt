@@ -38,7 +38,6 @@ object ParadoxMetadataManager {
         return gameType in gameTypesUseDescriptorMod
     }
 
-    @Suppress("unused")
     fun isLauncherSettingsJsonFile(file: VirtualFile): Boolean {
         return ParadoxMetadataService.isLauncherSettingsJsonFile(file)
     }
@@ -67,6 +66,7 @@ object ParadoxMetadataManager {
         }.onFailure { logger.warn(it) }.getOrNull()
     }
 
+    @Suppress("unused")
     fun isDescriptorModFile(file: VirtualFile): Boolean {
         return ParadoxMetadataService.isDescriptorModFile(file)
     }
