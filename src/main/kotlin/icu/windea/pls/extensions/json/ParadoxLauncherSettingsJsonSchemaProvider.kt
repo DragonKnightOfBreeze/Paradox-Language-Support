@@ -12,7 +12,7 @@ class ParadoxLauncherSettingsJsonSchemaProvider : JsonSchemaFileProvider {
 
     override fun isAvailable(file: VirtualFile) = ParadoxMetadataManager.isLauncherSettingsJsonFile(file)
 
-    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "jsonSchema/launcher-settings.json")
+    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/jsonSchema/launcher-settings.json")
 
     override fun getSchemaType() = SchemaType.schema
 }
