@@ -20,7 +20,7 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 如果游戏类型未在 `.metadata/metadata.json` 中声明，则为模组文件提供通知，以便快速配置（VIC3 / EU5）。
+ * 如果游戏类型未在 `.metadata/metadata.json` 中声明，则为模组文件提供编辑器通知，以便快速配置（VIC3 / EU5）。
  * 仅适用于项目中的文本文件。
  */
 @Suppress("UnstableApiUsage")

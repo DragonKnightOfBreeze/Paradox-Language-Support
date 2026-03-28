@@ -25,7 +25,7 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 如果游戏目录未配置，则为模组文件提供通知，以便快速配置。
+ * 如果游戏目录未配置，则为模组文件提供编辑器通知，以便快速配置。
  * 仅适用于项目中的文本文件。
  */
 class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotificationProvider {

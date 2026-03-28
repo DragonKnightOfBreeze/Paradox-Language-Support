@@ -26,5 +26,8 @@ sealed interface ParadoxRootMetadata {
         val tags: Set<String>
         val remoteId: String?
         val source: ParadoxModSource
+        val presentablePath: String?
+
+        fun isValid(): Boolean = true
     }
 }

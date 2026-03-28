@@ -38,6 +38,7 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxRootMetadataProvider 
         override val tags: Set<String> get() = info.tags
         override val remoteId: String? get() = null
         override val source: ParadoxModSource get() = ParadoxModSource.Local
+        override val presentablePath: String get() = ".metadata/metadata.json"
 
         private fun computeInferredGameType(): ParadoxGameType? {
             return when (info.gameId) {
@@ -52,6 +53,8 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxRootMetadataProvider 
                 ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
                 ?: ParadoxGameType.getDefault()
         }
+
+        override fun isValid(): Boolean = ParadoxMetadataManager.useMetadataJson(gameType)
     }
 }
 
@@ -79,6 +82,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxRootMetadataProvider
         override val tags: Set<String> get() = info.tags
         override val remoteId: String? get() = info.remoteFileId
         override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
+        override val presentablePath: String get() = "descriptor.mod"
 
         private fun computeInferredGameType(): ParadoxGameType? {
             return ParadoxAnalysisService.getInferredGameType(rootFile)
@@ -89,5 +93,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxRootMetadataProvider
                 ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
                 ?: ParadoxGameType.getDefault()
         }
+
+        override fun isValid(): Boolean = ParadoxMetadataManager.useDescriptorMod(gameType)
     }
 }
