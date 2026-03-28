@@ -12,7 +12,7 @@ class ParadoxMetadataJsonSchemaProvider : JsonSchemaFileProvider {
 
     override fun isAvailable(file: VirtualFile) = ParadoxMetadataManager.isMetadataJsonFile(file)
 
-    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/jsonSchema/metadata.json")
+    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/jsonSchema/metadata.schema.json")
 
     override fun getSchemaType() = SchemaType.schema
 }
