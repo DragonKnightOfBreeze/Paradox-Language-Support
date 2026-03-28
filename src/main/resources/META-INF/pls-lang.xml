@@ -351,8 +351,6 @@
 
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" key="notificationGroup.pls"/>
 
-    <postStartupActivity implementation="icu.windea.pls.PlsLifecycleListener"/>
-
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
 

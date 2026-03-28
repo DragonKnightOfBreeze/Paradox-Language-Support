@@ -16,8 +16,10 @@
     <webHelpProvider implementation="icu.windea.pls.ide.help.PlsHelpProvider"/>
   </extensions>
 
-  <xi:include href="/META-INF/pls-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <!-- Needs to be placed at the very front -->
   <xi:include href="/META-INF/pls-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+  <xi:include href="/META-INF/pls-ide.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-localisation.xml" xpointer="xpointer(/idea-plugin/*)"/>

@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <webHelpProvider implementation="icu.windea.pls.ide.help.PlsHelpProvider"/>
-
+    <postStartupActivity implementation="icu.windea.pls.ide.PlsLifecycleListener"/>
     <iconMapper mappingFile="PlsIconMappings.json"/>
   </extensions>
 
