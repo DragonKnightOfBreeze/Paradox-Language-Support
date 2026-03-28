@@ -40,7 +40,7 @@ Paradox Language Support 是专为 Paradox 游戏模组开发者设计的 Intell
 其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循基本一致的语法与格式，并进行了一定的改进与扩展。
 插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#write-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#import-config-files)规则文件，满足个性化开发需求。
 
-![](docs/images/preview_1_zh.png)
+![](docs/assets/preview_1_zh.png)
 
 ## 安装
 

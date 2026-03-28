@@ -39,7 +39,7 @@ The plugin implements its core language features based on its own [config system
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
 The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-config-files) config files to meet personalized development needs.
 
-![](docs/images/preview_1_en.png)
+![](docs/assets/preview_1_en.png)
 
 ## Installation
 

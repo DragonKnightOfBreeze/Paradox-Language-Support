@@ -10,7 +10,7 @@
 - [ ] 完善参考文档 / Improve reference documentation
 - [ ] 补充集成测试 / Supplementary integration tests
 
-## 2.1.7-dev
+## 2.1.7 - 2026-03-28
 
 - [x] 同步规则文件 / Synchronize config files
 - [x] [#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289) Refactoring via inlining doesn't substitute parameters
@@ -19,7 +19,7 @@
 - [x] 优化：为 `launcher-settings.json` 和 `metadata.json` 提供内置的 JSON Schema / OP: Provide built-in JSON Schema for `lanucher-settings.json` and `metadata.json`
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 2.1.6 - 2026-3.21
+## 2.1.6 - 2026-3-21
 
 - [x] [#288](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/288) [EU5] Validating Required Fields for INJECT Statements
 - [x] 新功能：新增意向 `ChangeDefinitionInjectionModeIntention` / NEW: New intention `ChangeDefinitionInjectionModeIntention`
