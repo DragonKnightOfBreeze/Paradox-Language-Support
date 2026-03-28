@@ -2,57 +2,57 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "launcher-settings.json",
   "title": "Paradox Launcher Settings",
-  "description": "Paradox 游戏启动器配置文件（launcher-settings.json），位于游戏根目录或其 launcher/ 子目录下。",
+  "description": "Paradox game launcher configuration file (launcher-settings.json), located in the game root directory or its launcher/ subdirectory.",
   "type": "object",
   "properties": {
     "gameId": {
       "type": "string",
-      "description": "游戏唯一标识符（如 \"stellaris\"、\"ck3\"、\"eu4\" 等）。"
+      "description": "Unique identifier for the game (e.g. \"stellaris\", \"ck3\", \"eu4\")."
     },
     "version": {
       "type": "string",
-      "description": "游戏版本的完整显示字符串，通常包含版本名称、版本号和构建编号（如 \"Cetus v4.3.2 (171a)\"）。"
+      "description": "Full display version string for the game, typically including a version name, version number, and build identifier (e.g. \"Cetus v4.3.2 (171a)\")."
     },
     "rawVersion": {
       "type": "string",
-      "description": "游戏版本的原始版本号（如 \"v4.3.2\"）。"
+      "description": "Raw version number of the game (e.g. \"v4.3.2\")."
     },
     "distPlatform": {
       "type": "string",
-      "description": "游戏的发行平台（如 \"steam\"、\"gog\"、\"microsoft\" 等）。"
+      "description": "Distribution platform for the game (e.g. \"steam\", \"gog\", \"microsoft\")."
     },
     "gameDataPath": {
       "type": "string",
-      "description": "游戏数据目录路径，可包含形如 %USER_DOCUMENTS% 的占位符（如 \"%USER_DOCUMENTS%/Paradox Interactive/Stellaris\"）。"
+      "description": "Path to the game data directory. May contain placeholders such as %USER_DOCUMENTS% (e.g. \"%USER_DOCUMENTS%/Paradox Interactive/Stellaris\")."
     },
     "themeFile": {
       "type": "string",
-      "description": "启动器主题配置文件的相对路径（如 \"./assets/theme-settings.json\"）。"
+      "description": "Relative path to the launcher theme configuration file (e.g. \"./assets/theme-settings.json\")."
     },
     "browserDlcUrl": {
       "type": "string",
       "format": "uri",
-      "description": "在浏览器中打开 DLC 商店页面的 URL。"
+      "description": "URL to open the DLC store page in the browser."
     },
     "exePath": {
       "type": "string",
-      "description": "游戏可执行文件的相对路径（如 \"./stellaris.exe\"）。"
+      "description": "Relative path to the game executable (e.g. \"./stellaris.exe\")."
     },
     "exeArgs": {
       "type": "array",
-      "description": "启动游戏时传递给可执行文件的命令行参数列表。",
+      "description": "Command-line arguments passed to the game executable on launch.",
       "items": {
         "type": "string",
-        "description": "单个命令行参数（如 \"-gdpr-compliant\"）。"
+        "description": "A single command-line argument (e.g. \"-gdpr-compliant\")."
       }
     },
     "ingameSettingsLayoutPath": {
       "type": "string",
-      "description": "游戏内设置界面布局文件的相对路径（如 \"./settings-layout.json\"）。"
+      "description": "Relative path to the in-game settings layout file (e.g. \"./settings-layout.json\")."
     },
     "alternativeExecutables": {
       "type": "array",
-      "description": "备用启动模式列表，每项定义一种可供用户选择的启动方式（如跨平台多人模式）。",
+      "description": "List of alternative launch modes available to the user (e.g. cross-store multiplayer).",
       "items": {
         "$ref": "#/definitions/alternativeExecutable"
       }
@@ -62,33 +62,33 @@
   "definitions": {
     "alternativeExecutable": {
       "type": "object",
-      "description": "备用可执行文件配置，定义一种额外的游戏启动方式。",
+      "description": "Configuration for an alternative executable entry, defining an additional way to launch the game.",
       "properties": {
         "exePath": {
           "type": "string",
-          "description": "该备用模式下游戏可执行文件的相对路径。"
+          "description": "Relative path to the game executable for this alternative launch mode."
         },
         "exeArgs": {
           "type": "array",
-          "description": "该备用模式下传递给可执行文件的命令行参数列表。",
+          "description": "Command-line arguments passed to the executable for this alternative launch mode.",
           "items": {
             "type": "string"
           }
         },
         "label": {
           "type": "object",
-          "description": "该备用模式的多语言显示名称，键为 IETF 语言标签（如 \"en\"、\"zh-hans\"），值为对应语言的显示文本。",
+          "description": "Localized display name for this alternative launch mode. Keys are IETF language tags (e.g. \"en\", \"zh-hans\"); values are the corresponding display strings.",
           "additionalProperties": {
             "type": "string",
-            "description": "该语言对应的显示名称。"
+            "description": "Display name in the corresponding language."
           }
         },
         "visibleIn": {
           "type": "array",
-          "description": "该备用模式在启动器界面中显示的位置列表（如 \"GAME_SETTINGS\"、\"HOME_PAGE\"）。",
+          "description": "List of launcher UI locations where this alternative launch mode is shown (e.g. \"GAME_SETTINGS\", \"HOME_PAGE\").",
           "items": {
             "type": "string",
-            "description": "界面位置标识符。"
+            "description": "UI location identifier."
           }
         }
       },

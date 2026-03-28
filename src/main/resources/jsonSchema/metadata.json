@@ -2,59 +2,59 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "metadata.json",
   "title": "Paradox Mod Metadata",
-  "description": "VIC3/EU5 模组描述符（模组元数据）文件（.metadata/metadata.json），位于模组根目录的 .metadata/ 子目录下。",
+  "description": "Mod descriptor (metadata) file for VIC3/EU5 (.metadata/metadata.json), located in the .metadata/ subdirectory of the mod root directory.",
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "模组的显示名称。"
+      "description": "Display name of the mod."
     },
     "id": {
       "type": "string",
-      "description": "模组的唯一标识符（如 \"mod.id\"）。"
+      "description": "Unique identifier for the mod (e.g. \"mod.id\")."
     },
     "version": {
       "type": "string",
-      "description": "模组的版本号（如 \"1.0\"）。"
+      "description": "Version string of the mod (e.g. \"1.0\")."
     },
     "game_id": {
       "type": "string",
-      "description": "该模组适用的游戏标识符（如 \"victoria3\"、\"eu5\"）。"
+      "description": "Identifier of the game this mod targets (e.g. \"victoria3\", \"eu5\")."
     },
     "picture": {
       "type": "string",
-      "description": "模组缩略图的文件路径（如 \"thumbnail.png\"），相对于模组根目录。"
+      "description": "Path to the mod thumbnail image (e.g. \"thumbnail.png\"), relative to the mod root directory."
     },
     "supported_game_version": {
       "type": "string",
-      "description": "该模组支持的游戏版本，可使用通配符（如 \"*\" 表示任意版本，\"1.8.*\" 表示 1.8.x 系列）。"
+      "description": "Game version(s) supported by this mod. Wildcards are allowed (e.g. \"*\" for any version, \"1.8.*\" for the 1.8.x series)."
     },
     "short_description": {
       "type": "string",
-      "description": "模组的简短描述文本。"
+      "description": "Short description text for the mod."
     },
     "tags": {
       "type": "array",
-      "description": "模组的分类标签列表（如 \"Gameplay\"、\"Technologies\" 等）。",
+      "description": "List of category tags for the mod (e.g. \"Gameplay\", \"Technologies\").",
       "items": {
         "type": "string",
-        "description": "单个分类标签。"
+        "description": "A single category tag."
       }
     },
     "relationships": {
       "type": "array",
-      "description": "该模组与其他模组的依赖或兼容关系列表。",
+      "description": "List of relationships between this mod and other mods (e.g. dependencies or conflicts).",
       "items": {
         "$ref": "#/definitions/modRelationship"
       }
     },
     "game_custom_data": {
       "type": "object",
-      "description": "特定游戏的自定义元数据，内容因游戏而异。",
+      "description": "Game-specific custom metadata. Content varies by game.",
       "properties": {
         "multiplayer_synchronized": {
           "type": "boolean",
-          "description": "该模组是否需要在多人游戏中同步到所有玩家。"
+          "description": "Whether this mod must be synchronized to all players in multiplayer."
         }
       },
       "additionalProperties": true
@@ -64,15 +64,15 @@
   "definitions": {
     "modRelationship": {
       "type": "object",
-      "description": "该模组与另一个模组之间的关系（如依赖、冲突等）。",
+      "description": "A relationship between this mod and another mod (e.g. dependency or conflict).",
       "properties": {
         "id": {
           "type": "string",
-          "description": "相关模组的唯一标识符。"
+          "description": "Unique identifier of the related mod."
         },
         "type": {
           "type": "string",
-          "description": "关系类型（如 \"dependency\"、\"conflict\" 等）。"
+          "description": "Type of relationship (e.g. \"dependency\", \"conflict\")."
         }
       },
       "additionalProperties": true
