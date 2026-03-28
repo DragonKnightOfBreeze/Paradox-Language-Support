@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.ide.util
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
@@ -19,6 +19,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 object PlsDaemonManager {
     // region VFS Methods

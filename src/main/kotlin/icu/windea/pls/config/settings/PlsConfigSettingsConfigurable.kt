@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.constants.PlsHelpTopics
+import icu.windea.pls.ide.help.PlsHelpTopics
 import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")

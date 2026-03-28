@@ -11,7 +11,7 @@ import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 
 /**
  * 当添加或更改模组配置后，刷新库信息。

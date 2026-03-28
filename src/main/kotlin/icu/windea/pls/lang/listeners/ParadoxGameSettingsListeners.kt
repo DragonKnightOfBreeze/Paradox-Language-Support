@@ -9,7 +9,7 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 
 /**
  * 当添加或更改游戏配置后，刷新库信息。

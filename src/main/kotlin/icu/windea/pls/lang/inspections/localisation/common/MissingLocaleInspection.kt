@@ -14,7 +14,7 @@ import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 

@@ -23,7 +23,7 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

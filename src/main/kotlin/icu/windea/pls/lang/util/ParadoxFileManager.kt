@@ -15,6 +15,7 @@ import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.settings.PlsSettings

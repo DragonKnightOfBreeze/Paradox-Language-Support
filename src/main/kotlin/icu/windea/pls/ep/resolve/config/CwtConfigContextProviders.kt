@@ -29,7 +29,7 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.paths.relativeTo

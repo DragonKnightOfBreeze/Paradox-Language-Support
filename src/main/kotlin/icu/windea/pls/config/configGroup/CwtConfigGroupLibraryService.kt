@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)

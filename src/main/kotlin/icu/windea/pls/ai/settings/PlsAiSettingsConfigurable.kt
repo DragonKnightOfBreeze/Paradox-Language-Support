@@ -18,7 +18,7 @@ import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
-import icu.windea.pls.model.constants.PlsHelpTopics
+import icu.windea.pls.ide.help.PlsHelpTopics
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"

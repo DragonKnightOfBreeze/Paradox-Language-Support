@@ -22,7 +22,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList

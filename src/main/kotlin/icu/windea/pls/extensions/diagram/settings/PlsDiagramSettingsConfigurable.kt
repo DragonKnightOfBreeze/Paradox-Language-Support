@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.model.constants.PlsHelpTopics
+import icu.windea.pls.ide.help.PlsHelpTopics
 
 class PlsDiagramSettingsConfigurable(
     private val project: Project

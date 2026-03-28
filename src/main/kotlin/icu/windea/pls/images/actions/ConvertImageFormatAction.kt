@@ -29,7 +29,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.images.ImageService
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer

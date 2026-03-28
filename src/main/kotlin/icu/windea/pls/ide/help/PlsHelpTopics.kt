@@ -1,4 +1,4 @@
-package icu.windea.pls.model.constants
+package icu.windea.pls.ide.help
 
 object PlsHelpTopics {
     const val configSettings = "icu.windea.pls.config.settings"

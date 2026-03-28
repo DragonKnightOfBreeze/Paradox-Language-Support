@@ -1,0 +1,12 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <webHelpProvider implementation="icu.windea.pls.ide.help.PlsHelpProvider"/>
+
+    <iconMapper mappingFile="PlsIconMappings.json"/>
+  </extensions>
+
+  <applicationListeners>
+    <listener class="icu.windea.pls.ide.PlsLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.ide.settings.PlsSettingsMigrator" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
+</idea-plugin>

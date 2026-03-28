@@ -13,8 +13,8 @@ import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.lints.LintToolProvider
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.lang.util.PlsDaemonManager
-import icu.windea.pls.lang.util.PlsOptionsManager
+import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsOptionsManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")

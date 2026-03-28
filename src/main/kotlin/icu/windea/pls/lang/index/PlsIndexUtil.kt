@@ -6,12 +6,13 @@ import icu.windea.pls.lang.fileInfo
 object PlsIndexUtil {
     const val nameKeyPrefix = "name:"
     const val typeKeyPrefix = "type:"
+    const val idKeyPrefix = "id:"
 
     fun createLazyKey() = "__lazy__"
     fun createAllKey() = "__all__"
     fun createNameKey(name: String) = "$nameKeyPrefix$name"
     fun createTypeKey(type: String) = "$typeKeyPrefix$type"
-    fun createNameTypeKey(name: String, type: String) = "id:$name\u0000$type"
+    fun createNameTypeKey(name: String, type: String) = "$idKeyPrefix$name\u0000$type"
 
     private val excludedDirectoryNames = listOf(
         "_CommonRedist",

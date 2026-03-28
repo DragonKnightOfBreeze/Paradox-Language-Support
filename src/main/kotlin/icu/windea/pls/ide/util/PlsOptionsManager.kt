@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.ide.util
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.options.Configurable

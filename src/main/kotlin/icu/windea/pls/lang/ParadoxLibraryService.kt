@@ -12,7 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)

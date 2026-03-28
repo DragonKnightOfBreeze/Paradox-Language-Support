@@ -1,8 +1,7 @@
-package icu.windea.pls
+package icu.windea.pls.ide.help
 
 import com.intellij.openapi.help.WebHelpProvider
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.constants.PlsHelpTopics
 
 /**
  * 转到插件的参考文档。

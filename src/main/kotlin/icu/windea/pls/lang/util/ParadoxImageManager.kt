@@ -21,6 +21,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.images.dds.DdsFileType

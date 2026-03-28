@@ -13,7 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.quickfix.ReplaceStringFix
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 /**

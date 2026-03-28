@@ -14,9 +14,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * 用于追踪更改 - 具有更高的精确度，提高缓存命中率。
- */
 object ParadoxModificationTrackers {
     /** 追踪任意游戏或模组目录中的脚本文件的更改。 */
     val ScriptFile = SimpleModificationTracker()

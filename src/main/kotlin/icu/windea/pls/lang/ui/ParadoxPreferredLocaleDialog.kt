@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     init {

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.ide
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project

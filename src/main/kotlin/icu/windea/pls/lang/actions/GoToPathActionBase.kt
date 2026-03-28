@@ -9,7 +9,7 @@ import com.intellij.openapi.fileChooser.actions.FileChooserAction
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path

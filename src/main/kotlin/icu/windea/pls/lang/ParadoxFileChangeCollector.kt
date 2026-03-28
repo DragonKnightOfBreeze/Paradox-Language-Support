@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.analysis.ParadoxMetadataService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsDaemonManager
 
 @Optimized
 class ParadoxFileChangeCollector {

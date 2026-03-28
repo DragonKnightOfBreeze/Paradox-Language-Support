@@ -159,19 +159,20 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 
 Package organization:
 
-- `icu.windea.pls.core`: stdlib/platform/third-party extensions + shared utilities
-- `icu.windea.pls.config`: config/config group/config expression models + services/resolvers/manipulators
-- `icu.windea.pls.tools`: tool-like APIs (launchers, generators, log readers) that are not necessarily “language features”
-- `icu.windea.pls.lang` - plugin-specific, domain-specific or cross-language codes (components, extensions, utils, etc.)
-  - `icu.windea.pls.lang.match`: semantic-level matching (mainly based on indices, reference resolution and configs)
-  - `icu.windea.pls.lang.resolve`: semantic-level resolution (mainly based on indices, reference resolution and configs)
-  - `icu.windea.pls.lang.util`: high-level managers (e.g., `ParadoxDefinitionManager`) and special components (e.g., renderers)
+- `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.ide` - Global codes to handle IDE platform integration. Usually language-free and domain-free.
+- `icu.windea.pls.config`: Codes related to config, config expression and config group. Including models, services, resolvers, manipulators, etc.
+- `icu.windea.pls.tools`: Codes provided as tool APIs. Including launchers, config generators, log readers, etc. Not necessarily "language features".
+- `icu.windea.pls.lang` - Codes which are domain specific, or related to semantic match and resolution.
+  - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
+  - `icu.windea.pls.lang.util`: High-level managers and special components.
 
 Service vs Manager vs Util:
 
-- `Service`: lower-level, may involve EP-driven analysis/match/resolve logic
-- `Manager`: higher-level, convenient domain methods; typically hosts caching
-- `Util`: narrow-purpose helpers
+- `Service`: Lower-level, may involve EP-driven analysis/match/resolve logic.
+- `Manager`: Higher-level, convenient domain methods, typically hosts caching.
+- `Util`: Narrow-purpose helpers.
 
 ### Code Guidance
 

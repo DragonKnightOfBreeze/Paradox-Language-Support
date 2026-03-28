@@ -28,7 +28,7 @@ import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.model.ParadoxFileInfo

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.settings
+package icu.windea.pls.ide.settings
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.util.PropertiesComponent

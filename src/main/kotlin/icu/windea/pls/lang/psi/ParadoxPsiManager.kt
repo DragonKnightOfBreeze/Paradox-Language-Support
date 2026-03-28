@@ -33,8 +33,8 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.select.nameFieldElement
