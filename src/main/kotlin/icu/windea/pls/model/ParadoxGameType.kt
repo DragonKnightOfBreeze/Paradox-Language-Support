@@ -44,6 +44,14 @@ enum class ParadoxGameType(
     Vic3("vic3", "Victoria 3", "victoria3", "529340", EntryInfos.ofGameAndJomini),
     ;
 
+    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
+        return this != Core && this !in getAllUseMetadataJson()
+    }
+
+    fun useMetadataJson(gameType: ParadoxGameType): Boolean {
+        return this != Core && this in getAllUseMetadataJson()
+    }
+
     private object Entries {
         val ofGame = setOf("game")
         val ofCommonExtra = setOf("clausewitz", "jomini")
@@ -74,6 +82,8 @@ enum class ParadoxGameType(
         private val values = entries.toList()
         @JvmStatic
         private val valuesNoCore = values - Core
+        @JvmStatic
+        private val valuesForDescriptorMod = listOf(Vic3, Eu5)
         @JvmStatic
         private val valuesForMetadataJson = listOf(Vic3, Eu5)
 

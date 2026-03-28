@@ -10,7 +10,7 @@ import icu.windea.pls.ep.tools.model.Mods
 import icu.windea.pls.ep.tools.model.PlaysetEntity
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -66,7 +66,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
             .filter { it.playsetId eq activePlayset.id }
             .toList()
             // 统一按数值顺序：V2 字符串左零 -> 去零转 Int；V4+ INTEGER -> 转字符串再转 Int
-            .sortedBy { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
+            .sortedBy { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }
 
         val newModInfos = mutableListOf<ParadoxModInfo>()
         val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
@@ -77,7 +77,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
             // 仅支持通过 Steam workshop 路径解析（与 Irony 行为一致）；
             // pdxId 对应 Paradox Mods（目录结构不同），此处暂不处理。
             val remoteId = mod.steamId
-            val modDirectory = ParadoxMetadataManager.getModDirectoryFromSteamId(remoteId, workshopDirPath) ?: continue
+            val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(remoteId, workshopDirPath) ?: continue
             if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
             newModInfos.add(ParadoxModInfo(modDirectory, true))
         }

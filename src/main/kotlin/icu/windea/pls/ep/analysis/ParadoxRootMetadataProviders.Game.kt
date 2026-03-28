@@ -34,16 +34,19 @@ class ParadoxLauncherSettingsJsonBasedGameMetadataProvider : ParadoxRootMetadata
 }
 
 class Eu5GameMetadataProvider : ParadoxRootMetadataProvider {
+    private val gameType = ParadoxGameType.Eu5
+
     override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
         // Europa Universalis V has no launcher metadata file.
         // So we detect the binary directly and read the version from the game branch file.
+
         rootFile.findFileByRelativePath("binaries/eu5.exe")?.exists() ?: return null
         val branch = rootFile.findFileByRelativePath("caesar_branch.txt")?.readBytes()?.toString(Charsets.UTF_8) ?: return null
         return Metadata(
             rootFile = rootFile,
-            name = ParadoxGameType.Eu5.name,
+            name = gameType.name,
             version = branch,
-            gameType = ParadoxGameType.Eu5,
+            gameType = gameType,
         )
     }
 
@@ -58,16 +61,19 @@ class Eu5GameMetadataProvider : ParadoxRootMetadataProvider {
 }
 
 class Vic3GameMetadataProvider : ParadoxRootMetadataProvider {
+    private val gameType = ParadoxGameType.Vic3
+
     override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
         // In some rare cases the Victoria 3 launcher file does not match the expected values.
         // So we detect the binary directly and read the version from the game branch file.
+
         rootFile.findFileByRelativePath("binaries/victoria3.exe")?.exists() ?: return null
         val branch = rootFile.findFileByRelativePath("caligula_branch.txt")?.readBytes()?.toString(Charsets.UTF_8) ?: return null
         return Metadata(
             rootFile = rootFile,
-            name = ParadoxGameType.Vic3.name,
+            name = gameType.name,
             version = branch,
-            gameType = ParadoxGameType.Vic3,
+            gameType = gameType,
         )
     }
 

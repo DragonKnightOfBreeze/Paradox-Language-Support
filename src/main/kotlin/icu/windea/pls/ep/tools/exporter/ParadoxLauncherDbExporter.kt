@@ -11,7 +11,7 @@ import icu.windea.pls.ep.tools.model.PlaysetEntity
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsModEntity
 import icu.windea.pls.ep.tools.model.PlaysetsMods
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
@@ -76,7 +76,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
         val mappings = db.sequenceOf(PlaysetsMods)
         var count = 0
         mods.forEachIndexed f@{ index, m ->
-            val modInfo = ParadoxMetadataManager.getModInfoFromModDirectory(m.modDirectory) ?: return@f
+            val modInfo = ParadoxMetadataUtil.getModInfoFromModDirectory(m.modDirectory) ?: return@f
             val displayName = m.name?.orNull() ?: modInfo.name
             val remoteId = m.remoteId?.orNull() ?: modInfo.remoteId?.orNull()
             val source = m.source ?: modInfo.source
@@ -106,7 +106,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
                 mapping = PlaysetsModEntity {
                     this.playsetId = playset.id
                     this.modId = mod.id
-                    this.position = ParadoxMetadataManager.formatLauncherPosition(index, isV4Plus)
+                    this.position = ParadoxMetadataUtil.formatLauncherPosition(index, isV4Plus)
                 }
                 mappings.add(mapping)
             }

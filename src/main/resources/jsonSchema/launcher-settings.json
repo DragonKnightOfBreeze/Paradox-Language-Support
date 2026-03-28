@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "launcher-settings.json",
+  "title": "Paradox Launcher Settings",
+  "description": "Paradox 游戏启动器配置文件（launcher-settings.json），位于游戏根目录或其 launcher/ 子目录下。",
+  "type": "object",
+  "properties": {
+    "gameId": {
+      "type": "string",
+      "description": "游戏唯一标识符（如 \"stellaris\"、\"ck3\"、\"eu4\" 等）。"
+    },
+    "version": {
+      "type": "string",
+      "description": "游戏版本的完整显示字符串，通常包含版本名称、版本号和构建编号（如 \"Cetus v4.3.2 (171a)\"）。"
+    },
+    "rawVersion": {
+      "type": "string",
+      "description": "游戏版本的原始版本号（如 \"v4.3.2\"）。"
+    },
+    "distPlatform": {
+      "type": "string",
+      "description": "游戏的发行平台（如 \"steam\"、\"gog\"、\"microsoft\" 等）。"
+    },
+    "gameDataPath": {
+      "type": "string",
+      "description": "游戏数据目录路径，可包含形如 %USER_DOCUMENTS% 的占位符（如 \"%USER_DOCUMENTS%/Paradox Interactive/Stellaris\"）。"
+    },
+    "themeFile": {
+      "type": "string",
+      "description": "启动器主题配置文件的相对路径（如 \"./assets/theme-settings.json\"）。"
+    },
+    "browserDlcUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "在浏览器中打开 DLC 商店页面的 URL。"
+    },
+    "exePath": {
+      "type": "string",
+      "description": "游戏可执行文件的相对路径（如 \"./stellaris.exe\"）。"
+    },
+    "exeArgs": {
+      "type": "array",
+      "description": "启动游戏时传递给可执行文件的命令行参数列表。",
+      "items": {
+        "type": "string",
+        "description": "单个命令行参数（如 \"-gdpr-compliant\"）。"
+      }
+    },
+    "ingameSettingsLayoutPath": {
+      "type": "string",
+      "description": "游戏内设置界面布局文件的相对路径（如 \"./settings-layout.json\"）。"
+    },
+    "alternativeExecutables": {
+      "type": "array",
+      "description": "备用启动模式列表，每项定义一种可供用户选择的启动方式（如跨平台多人模式）。",
+      "items": {
+        "$ref": "#/definitions/alternativeExecutable"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "alternativeExecutable": {
+      "type": "object",
+      "description": "备用可执行文件配置，定义一种额外的游戏启动方式。",
+      "properties": {
+        "exePath": {
+          "type": "string",
+          "description": "该备用模式下游戏可执行文件的相对路径。"
+        },
+        "exeArgs": {
+          "type": "array",
+          "description": "该备用模式下传递给可执行文件的命令行参数列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "label": {
+          "type": "object",
+          "description": "该备用模式的多语言显示名称，键为 IETF 语言标签（如 \"en\"、\"zh-hans\"），值为对应语言的显示文本。",
+          "additionalProperties": {
+            "type": "string",
+            "description": "该语言对应的显示名称。"
+          }
+        },
+        "visibleIn": {
+          "type": "array",
+          "description": "该备用模式在启动器界面中显示的位置列表（如 \"GAME_SETTINGS\"、\"HOME_PAGE\"）。",
+          "items": {
+            "type": "string",
+            "description": "界面位置标识符。"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

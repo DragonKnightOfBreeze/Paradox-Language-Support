@@ -7,7 +7,7 @@ import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.model.ParadoxGameType
@@ -55,7 +55,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         val workshop = PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId)
             ?: throw AssertionError("Steam workshop path not found for ${gameType.title}")
         val mods = remoteIds.mapNotNull f@{ id ->
-            val dir = ParadoxMetadataManager.getModDirectoryFromSteamId(id, workshop) ?: return@f null
+            val dir = ParadoxMetadataUtil.getModDirectoryFromSteamId(id, workshop) ?: return@f null
             ParadoxModInfo(modDirectory = dir, enabled = true, remoteId = id, source = ParadoxModSource.Steam)
         }
         assertTrue("None of the 3 sample mods are installed in workshop.", mods.isNotEmpty())

@@ -7,7 +7,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -44,7 +44,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
         val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
 
         // 自动探测：V2 (position:String) / V3 (position:Int)
-        val isV3: Boolean? = ParadoxMetadataManager.detectLauncherPlaylistPositionIsInt(filePath)
+        val isV3: Boolean? = ParadoxMetadataUtil.detectLauncherPlaylistPositionIsInt(filePath)
 
         if (isV3 == true) {
             // 按 V3 解析：position 为 Int，排序按数值
@@ -53,7 +53,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
                 throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
             }
             for (mod in data.mods.sortedBy { it.position }) {
-                val modDirectory = ParadoxMetadataManager.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
+                val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
                 if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                 val newModInfo = ParadoxModInfo(modDirectory, mod.enabled)
                 newModInfos.add(newModInfo)
@@ -66,8 +66,8 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             if (data.game != gameType.gameId) {
                 throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
             }
-            for (mod in data.mods.sortedBy { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }) {
-                val modDirectory = ParadoxMetadataManager.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
+            for (mod in data.mods.sortedBy { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }) {
+                val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
                 if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                 val newModInfo = ParadoxModInfo(modDirectory = modDirectory, enabled = mod.enabled)
                 newModInfos.add(newModInfo)
@@ -81,8 +81,8 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
                 if (data.game != gameType.gameId) {
                     throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
                 }
-                for (mod in data.mods.sortedBy { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
+                for (mod in data.mods.sortedBy { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }) {
+                    val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     val newModInfo = ParadoxModInfo(modDirectory = modDirectory, enabled = mod.enabled)
                     newModInfos.add(newModInfo)
@@ -95,7 +95,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
                 throw IllegalStateException(PlsBundle.message("mod.importer.error.gameType"))
             }
             for (mod in data.mods.sortedBy { it.position }) {
-                val modDirectory = ParadoxMetadataManager.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
+                val modDirectory = ParadoxMetadataUtil.getModDirectoryFromSteamId(mod.steamId, workshopDirPath) ?: continue
                 if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                 val newModInfo = ParadoxModInfo(modDirectory, mod.enabled)
                 newModInfos.add(newModInfo)

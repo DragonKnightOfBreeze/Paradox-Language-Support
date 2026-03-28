@@ -3,31 +3,34 @@
   <component name="JsonSchemaMappingsProjectConfiguration">
     <state>
       <map>
-        <entry key="locations">
+        <entry key="Paradox Launcher Settings">
           <value>
             <SchemaInfo>
-              <option name="name" value="locations" />
-              <option name="relativePathToSchema" value="src/main/resources/schemas/locations.yml" />
-              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="Paradox Launcher Settings" />
+              <option name="relativePathToSchema" value="src/main/resources/jsonSchema/launcher-settings.json" />
+              <option name="schemaVersion" value="JSON Schema 7" />
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="src/main/resources/rules/stellaris/locations.yml" />
+                    <option name="path" value="references/examples/pdx/launcher-settings.json" />
                   </Item>
                 </list>
               </option>
             </SchemaInfo>
           </value>
         </entry>
-        <entry key="types">
+        <entry key="Paradox Mod Metadata">
           <value>
             <SchemaInfo>
-              <option name="name" value="types" />
-              <option name="relativePathToSchema" value="src/main/resources/schemas/types.yml" />
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="Paradox Mod Metadata" />
+              <option name="relativePathToSchema" value="src/main/resources/jsonSchema/metadata.json" />
+              <option name="schemaVersion" value="JSON Schema 7" />
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="src/main/resources/rules/stellaris/types.yml" />
+                    <option name="path" value="references/examples/pdx/metadata.json" />
                   </Item>
                 </list>
               </option>

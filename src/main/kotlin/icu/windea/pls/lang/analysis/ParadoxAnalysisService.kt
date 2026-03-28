@@ -41,6 +41,7 @@ object ParadoxAnalysisService {
 
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val metadata = getRootMetadata(rootFile) ?: return null
+        // if (!metadata.isValid()) return null // NOTE 2.1.7 do not check now
         val rootInfo = when (metadata) {
             is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(metadata)
             is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(metadata)

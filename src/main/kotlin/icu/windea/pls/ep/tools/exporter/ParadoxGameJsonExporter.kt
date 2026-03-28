@@ -7,6 +7,7 @@ import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
 import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -33,7 +34,7 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
         val enabledMods = modSetInfo.mods.filter { it.enabled }
 
         // 基于当前游戏数据目录构建一次映射
-        val descriptorMapping = ParadoxMetadataManager.buildDescriptorMapping(gameDataDirPath)
+        val descriptorMapping = ParadoxMetadataUtil.buildDescriptorMapping(gameDataDirPath)
 
         // 依据游戏类型选择不同的 JSON 结构
         return if (ParadoxMetadataManager.useDescriptorMod(gameType)) {

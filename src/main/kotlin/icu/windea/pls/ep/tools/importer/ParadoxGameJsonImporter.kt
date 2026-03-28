@@ -8,6 +8,7 @@ import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
 import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -45,7 +46,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
             ParadoxMetadataManager.useDescriptorMod(gameType) -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
+                    val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     newModInfos.add(ParadoxModInfo(modDirectory))
                 }
@@ -55,7 +56,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
             else -> {
                 val data = readData(filePath, ContentLoadJson::class.java)
                 for (item in data.enabledMods) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath) ?: continue
+                    val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     newModInfos.add(ParadoxModInfo(modDirectory))
                 }

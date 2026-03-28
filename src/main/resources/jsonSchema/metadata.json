@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "metadata.json",
+  "title": "Paradox Mod Metadata",
+  "description": "VIC3/EU5 模组描述符（模组元数据）文件（.metadata/metadata.json），位于模组根目录的 .metadata/ 子目录下。",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "模组的显示名称。"
+    },
+    "id": {
+      "type": "string",
+      "description": "模组的唯一标识符（如 \"mod.id\"）。"
+    },
+    "version": {
+      "type": "string",
+      "description": "模组的版本号（如 \"1.0\"）。"
+    },
+    "game_id": {
+      "type": "string",
+      "description": "该模组适用的游戏标识符（如 \"victoria3\"、\"eu5\"）。"
+    },
+    "picture": {
+      "type": "string",
+      "description": "模组缩略图的文件路径（如 \"thumbnail.png\"），相对于模组根目录。"
+    },
+    "supported_game_version": {
+      "type": "string",
+      "description": "该模组支持的游戏版本，可使用通配符（如 \"*\" 表示任意版本，\"1.8.*\" 表示 1.8.x 系列）。"
+    },
+    "short_description": {
+      "type": "string",
+      "description": "模组的简短描述文本。"
+    },
+    "tags": {
+      "type": "array",
+      "description": "模组的分类标签列表（如 \"Gameplay\"、\"Technologies\" 等）。",
+      "items": {
+        "type": "string",
+        "description": "单个分类标签。"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "该模组与其他模组的依赖或兼容关系列表。",
+      "items": {
+        "$ref": "#/definitions/modRelationship"
+      }
+    },
+    "game_custom_data": {
+      "type": "object",
+      "description": "特定游戏的自定义元数据，内容因游戏而异。",
+      "properties": {
+        "multiplayer_synchronized": {
+          "type": "boolean",
+          "description": "该模组是否需要在多人游戏中同步到所有玩家。"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "modRelationship": {
+      "type": "object",
+      "description": "该模组与另一个模组之间的关系（如依赖、冲突等）。",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "相关模组的唯一标识符。"
+        },
+        "type": {
+          "type": "string",
+          "description": "关系类型（如 \"dependency\"、\"conflict\" 等）。"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

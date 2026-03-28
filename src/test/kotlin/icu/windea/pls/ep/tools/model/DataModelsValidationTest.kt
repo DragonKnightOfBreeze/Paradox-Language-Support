@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsSqliteService
 import org.junit.Test
 import org.ktorm.database.Database
@@ -35,7 +35,7 @@ class DataModelsValidationTest {
         // V2: position 为左侧补零的十六进制字符串（小写），长度通常为 10
         assert(model.mods.all { it.position.length == 10 && it.position.all { ch -> ch.isDigit() || ch in 'a'..'f' } })
         // 解析为数值后应为连续 4097, 4098, 4099
-        val positions = model.mods.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
+        val positions = model.mods.map { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }
         assert(positions == listOf(4097, 4098, 4099))
     }
 
@@ -73,7 +73,7 @@ class DataModelsValidationTest {
         assert(mappings.size == 3)
 
         // position 为左侧补零的字符串，V2 常见为十六进制 10 位；此处统一解析为数值
-        val parsed = mappings.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }.sorted()
+        val parsed = mappings.map { ParadoxMetadataUtil.parseLauncherV2PositionToInt(it.position) }.sorted()
         assert(parsed.size == 3)
         assert(parsed.first() >= 1001) // 1001 (0x1001) or 4097
         assert(parsed.zipWithNext().all { (a, b) -> b - a == 1 })

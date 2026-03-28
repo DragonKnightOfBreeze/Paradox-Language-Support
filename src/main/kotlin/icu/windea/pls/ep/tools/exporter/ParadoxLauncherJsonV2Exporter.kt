@@ -6,7 +6,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
@@ -37,7 +37,7 @@ class ParadoxLauncherJsonV2Exporter : ParadoxJsonBasedModExporter() {
 
         // 解析远端ID与显示名（优先结构字段，否则读取 descriptor.mod）
         val valid = mods.mapNotNull f@{ m ->
-            val modInfo = ParadoxMetadataManager.getModInfoFromModDirectory(m.modDirectory) ?: return@f null
+            val modInfo = ParadoxMetadataUtil.getModInfoFromModDirectory(m.modDirectory) ?: return@f null
             val displayName = m.name?.orNull() ?: modInfo.name
             val remoteId = m.remoteId?.orNull() ?: modInfo.remoteId?.orNull()
             val source = m.source ?: modInfo.source
@@ -60,7 +60,7 @@ class ParadoxLauncherJsonV2Exporter : ParadoxJsonBasedModExporter() {
                 LauncherJsonV2.Mod(
                     displayName = displayName,
                     enabled = true,
-                    position = ParadoxMetadataManager.formatLauncherPosition(index, isV4Plus = false),
+                    position = ParadoxMetadataUtil.formatLauncherPosition(index, isV4Plus = false),
                     steamId = steamId,
                     pdxId = pdxId,
                 )

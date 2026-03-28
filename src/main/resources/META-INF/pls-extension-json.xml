@@ -1,0 +1,5 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="JavaScript">
+    <JsonSchema.ProviderFactory implementation="icu.windea.pls.extensions.json.ParadoxJsonSchemaProviderFactory"/>
+  </extensions>
+</idea-plugin>
