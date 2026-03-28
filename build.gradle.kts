@@ -124,15 +124,15 @@ dependencies {
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.4")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.4")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.7")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.7")
 
     // jte - https://github.com/casid/jte
-    testImplementation("gg.jte:jte:3.2.2")
-    testCompileOnly("gg.jte:jte-kotlin:3.2.2")
+    testImplementation("gg.jte:jte:3.2.3")
+    testCompileOnly("gg.jte:jte-kotlin:3.2.3")
 
     // pebble - https://github.com/PebbleTemplates/pebble
-    testImplementation("io.pebbletemplates:pebble:4.1.0") {
+    testImplementation("io.pebbletemplates:pebble:4.1.1") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 }
