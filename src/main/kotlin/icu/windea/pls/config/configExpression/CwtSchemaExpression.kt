@@ -4,19 +4,19 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.config.config.internal.CwtSchemaConfig
 
 /**
  * 模式表达式。
  *
  * 用于描述规则文件中的键与值的取值形态，从而为规则文件本身提供代码补全、代码检查等功能。
- * 目前仅用于提供基础的代码补全，且仅在 `cwt/core/schema.cwt` 中有用到。
+ * 目前仅用于提供基础的代码补全，且仅在 `cwt/core/internal/schema.cwt` 中有用到。
  *
  * 支持的形态：
  * - 常量（[Constant]）：不包含 `$` 的原样字符串。

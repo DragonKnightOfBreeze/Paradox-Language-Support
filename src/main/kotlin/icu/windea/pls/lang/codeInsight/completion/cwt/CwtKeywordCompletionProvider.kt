@@ -9,7 +9,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
-import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.addElements
 
 /**
  * 提供关键字的代码补全（要求不在规则文件中提供）。
@@ -23,8 +23,6 @@ class CwtKeywordCompletionProvider : CompletionProvider<CompletionParameters>() 
         val r = CwtConfigCompletionManager.initializeContext(contextElement, parameters, context)
         if (r) return
 
-        PlsLookupElements.keywordLookupElements.forEach { lookupElement ->
-            result.addElement(lookupElement, context)
-        }
+        result.addElements(PlsLookupElements.keywordLookupElements, context)
     }
 }

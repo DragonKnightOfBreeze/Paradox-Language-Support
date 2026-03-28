@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
-import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.addElements
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -34,8 +34,6 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         val isDefinitionAwareFile = path != null && configGroup.types.values.any { CwtConfigManager.matchesFilePathPattern(it, path) }
         if (isDefinitionAwareFile) return
 
-        PlsLookupElements.keywordLookupElements.forEach { lookupElement ->
-            result.addElement(lookupElement, context)
-        }
+        result.addElements(PlsLookupElements.keywordLookupElements, context)
     }
 }

@@ -40,6 +40,10 @@ fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: Proce
     }
 }
 
+fun CompletionResultSet.addElements(lookupElements: Collection<LookupElement>, context: ProcessingContext) {
+    for (lookupElement in lookupElements) addElement(lookupElement, context)
+}
+
 private fun getFinalElement(lookupElement: LookupElement, context: ProcessingContext): LookupElement? {
     val completionIds = context.completionIds
     if (completionIds?.let { ids -> lookupElement.completionId?.let { id -> ids.add(id) } } == false) return null

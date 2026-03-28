@@ -327,7 +327,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    fun completeBySchemaExpression(
+    private fun completeBySchemaExpression(
         schemaExpression: CwtSchemaExpression,
         schema: CwtSchemaConfig,
         config: CwtConfig<*>,
@@ -341,7 +341,7 @@ object CwtConfigCompletionManager {
         }
     }
 
-    fun completeBySchemaExpression(
+    private fun completeBySchemaExpression(
         schemaExpression: CwtSchemaExpression,
         schema: CwtSchemaConfig,
         config: CwtConfig<*>,
@@ -393,14 +393,18 @@ object CwtConfigCompletionManager {
             }
             is CwtSchemaExpression.Type -> {
                 val typeName = schemaExpression.name
-                if (typeName == "bool" || typeName == "any") {
-                    processor.process(PlsLookupElements.yesLookupElement)
-                    processor.process(PlsLookupElements.noLookupElement)
+                when (typeName) {
+                    "any" -> {
+                        PlsLookupElements.keywordLookupElements.forEach { processor.process(it) }
+                    }
+                    "bool" -> {
+                        processor.process(PlsLookupElements.yesLookupElement)
+                        processor.process(PlsLookupElements.noLookupElement)
+                    }
+                    "cardinality" -> {
+                        PlsLookupElements.cardinalityElements.forEach { processor.process(it) }
+                    }
                 }
-                if (typeName == "any") {
-                    processor.process(PlsLookupElements.blockLookupElement)
-                }
-                // TODO 1.3.19+
                 true
             }
             is CwtSchemaExpression.Constraint -> true
