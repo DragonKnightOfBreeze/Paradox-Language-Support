@@ -27,7 +27,7 @@ import icu.windea.pls.model.CwtType
  *
  * @see CwtMember
  */
-sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T> {
+sealed interface CwtMemberConfig<out T : CwtMember> : CwtMemberContainerConfig<T>, CwtOptionDataHolder {
     val value: String
     val valueType: CwtType
     override val configs: List<CwtMemberConfig<*>>?
