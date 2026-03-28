@@ -1,8 +1,8 @@
-# Folding Settings
+# Global Folding Settings
 # Used to provide additional code folding rules for script files.
 #
-# See: icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider
-# See: icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder
+# see: icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
+# see: icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder
 #
 # Format:
 # <folding group name> = {

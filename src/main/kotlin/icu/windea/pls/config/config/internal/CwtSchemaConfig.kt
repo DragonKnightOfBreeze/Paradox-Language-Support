@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtConfigSchemaManager
-import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
 
 /**
  * 作为规则自身的模式（schema）的内部规则。不支持自定义。
@@ -17,7 +16,6 @@ import icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
  *
  * @see CwtSchemaExpression
  * @see CwtConfigSchemaManager
- * @see CwtConfigCompletionManager
  */
 data class CwtSchemaConfig(
     val file: CwtFileConfig,

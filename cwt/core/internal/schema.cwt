@@ -1,3 +1,10 @@
+# Global Config Schema
+# Used to provide schema for config files. Specification, validation and completion.
+#
+# see: icu.windea.pls.config.config.internal.CwtSchemaConfig
+# see: icu.windea.pls.config.configExpression.CwtSchemaExpression
+# see: icu.windea.pls.config.util.CwtConfigSchemaManager
+
 priorities = {
     $path = $enum:override_strategy$
 }
