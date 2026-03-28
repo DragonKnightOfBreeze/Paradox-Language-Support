@@ -31,12 +31,15 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, Dum
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
-            panel.createActionLabel(PlsBundle.message("configGroup.config.file.guidance")) {
-                val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/documents/guidance.md)"
-                // val url = "https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance"
+            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.documentation")) {
+                val url = "https://windea.icu/Paradox-Language-Support/config.html"
                 BrowserUtil.browse(url)
             }
-            panel.createActionLabel(PlsBundle.message("configGroup.config.file.repositories")) {
+            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.manual")) {
+                val url = "https://windea.icu/Paradox-Language-Support/ref-config-format.html"
+                BrowserUtil.browse(url)
+            }
+            panel.createActionLabel(PlsBundle.message("configGroup.notification.action.repositories")) {
                 val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md#repositories"
                 BrowserUtil.browse(url)
             }
