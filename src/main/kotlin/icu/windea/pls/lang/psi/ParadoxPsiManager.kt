@@ -169,12 +169,8 @@ object ParadoxPsiManager {
         return when {
             element is ParadoxLocalisationPropertyValue -> {
                 val element0 = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
-                val e1 = element0?.firstChild?.siblings(forward = true, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.LEFT_QUOTE }?.drop(1)
-                    ?.firstOrNull()
-                val e2 = element0?.lastChild?.siblings(forward = false, withSelf = true)
-                    ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.RIGHT_QUOTE }?.drop(1)
-                    ?.firstOrNull()
+                val e1 = element0?.firstChild
+                val e2 = element0?.lastChild
                 e1 to e2
             }
             else -> null to null
