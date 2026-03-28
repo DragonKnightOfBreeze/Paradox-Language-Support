@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions separated by comma
 - [ ] [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263) [Vic3/EU5] Parser Breaks in CoA
 - [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
 - [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)
@@ -12,7 +13,6 @@
 ## 2.1.7-dev
 
 - [x] 同步规则文件 / Synchronize config files
-- [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions separated by comma
 - [x] [#289](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/289) Refactoring via inlining doesn't substitute parameters
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地从 Steam 超链接跳转到客户端或启动游戏的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot jump to the client or launch the game from Steam hyperlinks as expected
 - [x] 修复：修复自 IDEA 2026.1 开始，无法预期地在快速文档中渲染无需切分的 DDS/TGA 图片的问题 / FIX: Fixed an issue where starting from IDEA 2026.1, cannot render DDS / TGA images without splitting in quick doc as expected

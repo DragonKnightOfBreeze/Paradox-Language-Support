@@ -1,5 +1,6 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.ignoredFileProvider" interface="icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider" dynamic="true"/>
@@ -52,6 +53,9 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
+    <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxSettingsBasedIgnoredFileProvider"/>
+    <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxForcedIgnoredFileProvider"/>
+
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
 

@@ -38,7 +38,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var defaultGameType by enum(ParadoxGameType.Stellaris)
         var defaultGameDirectories by map<String, String>()
         var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
-        var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
+        var ignoredFileNames by string("")
 
         val ignoredFileNameSet by ::ignoredFileNames.fromCommandDelimitedString(true)
 

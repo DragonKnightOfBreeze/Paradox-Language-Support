@@ -1,10 +1,9 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiComment
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -26,6 +25,8 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
 
     @After
     fun doTearDown() = clearIntegrationTest()
+
+    private val PsiComment.commentText get() = text.trimStart('#').trim()
 
     @Test
     fun getAttachedComments() {
@@ -73,6 +74,4 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
         val comment3 = block.findChild<PsiComment> { it.commentText == "detached comment" }!!
         Assert.assertNull(PlsPsiManager.getAttachingElement(comment3))
     }
-
-    private val PsiComment.commentText get() = text.trimStart('#').trim()
 }

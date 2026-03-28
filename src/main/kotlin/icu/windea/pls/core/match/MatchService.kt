@@ -1,5 +1,7 @@
 package icu.windea.pls.core.match
 
+import org.intellij.lang.annotations.Language
+
 object MatchService {
     /**
      * 判断输入的字符串（input）是否匹配指定的 GLOB 模式（pattern）。
@@ -31,7 +33,7 @@ object MatchService {
      *
      * @see RegexMatcher
      */
-    fun matchesRegexPattern(input: String, pattern: String, ignoreCase: Boolean = false): Boolean {
+    fun matchesRegexPattern(input: String, @Language("RegExp") pattern: String, ignoreCase: Boolean = false): Boolean {
         return RegexMatcher.matches(input, pattern, ignoreCase)
     }
 }

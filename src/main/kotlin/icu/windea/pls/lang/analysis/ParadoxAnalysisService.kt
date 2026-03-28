@@ -9,10 +9,10 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
 import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -22,10 +22,28 @@ import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxAnalysisService {
     /**
+     * @see ParadoxIgnoredFileProvider.isIgnoredFile
+     */
+    fun isIgnoredFile(file: VirtualFile): Boolean {
+        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
+            ep.isIgnoredFile(file)
+        }
+    }
+
+    /**
+     * @see ParadoxIgnoredFileProvider.isIgnoredFile
+     */
+    fun isIgnoredFile(filePath: FilePath): Boolean {
+        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
+            ep.isIgnoredFile(filePath)
+        }
+    }
+
+    /**
      * @see ParadoxRootMetadataProvider.get
      */
     fun getRootMetadata(rootFile: VirtualFile): ParadoxRootMetadata? {
-        return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+        return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
             ep.get(rootFile)
         }
     }
@@ -55,7 +73,7 @@ object ParadoxAnalysisService {
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
             path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileGroup.Other
+            isIgnoredFile(file) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
@@ -68,7 +86,7 @@ object ParadoxAnalysisService {
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
             path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileGroup.Other
+            isIgnoredFile(filePath) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)

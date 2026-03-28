@@ -18,7 +18,6 @@ import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxEntryInfo
@@ -101,10 +100,6 @@ object ParadoxFileManager {
         val otherFileInfo = otherFile.fileInfo ?: return false
         if (fileInfo != otherFileInfo) return false
         return true
-    }
-
-    fun isIgnoredFile(fileName: String): Boolean {
-        return PlsSettings.getInstance().state.ignoredFileNameSet.contains(fileName)
     }
 
     fun isTestDataFile(file: VirtualFile): Boolean {
