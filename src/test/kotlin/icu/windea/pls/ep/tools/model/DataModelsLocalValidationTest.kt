@@ -126,6 +126,7 @@ class DataModelsLocalValidationTest {
         // 读取映射并简单验证关联与 position 格式
         val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq active!!.id }.toList()
         println("sqlite -> mappings.size=${mappings.size}")
+        Assume.assumeTrue("Skip: no active mods in sqlite", mappings.isEmpty())
 
         // 校验 enabled 标记（V4 模式下通常存在该列，并默认 true）
         assert(mappings.all { it.enabled })

@@ -1,0 +1,28 @@
+some_scripted_trigger = {
+    PARAM_1 = foo
+    PARAM_2 = 123
+    PARAM_3 = 123.456
+}
+
+some_scripted_effect = {
+    VAR = @var
+    PARAM = $PARAM$
+    NUM = @[ 1 + 1 ]
+}
+
+inline_script = {
+    script = test/script
+    P1 = $PARAM$
+    P2 = "$OTHER_PARAM$"
+    P3 = bar
+    P4 = yes
+}
+
+inline_script = {
+    script = test/other_script
+    NOT.VALID = v
+    "INVALID PARAM" = v
+    SKIP-IT = v
+    VALID_IDENTIFIER = v
+    00_INVALID_IDENTIFIER = v
+}
