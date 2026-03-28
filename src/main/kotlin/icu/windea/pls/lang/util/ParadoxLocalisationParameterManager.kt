@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
@@ -46,6 +47,7 @@ object ParadoxLocalisationParameterManager {
 
     private fun getParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
+            ProgressManager.checkCanceled()
             val value = resolveParameters(element)
             val dependencies = with(PlsModificationTrackers) { listOf(element, ScriptFile) }
             value.withDependencyItems(dependencies)

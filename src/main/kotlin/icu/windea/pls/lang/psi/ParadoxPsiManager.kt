@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.psi
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
@@ -15,10 +16,11 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.quoteIfNecessary
@@ -33,8 +35,8 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.ParadoxLanguage
+import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.select.nameFieldElement
@@ -114,19 +116,20 @@ object ParadoxPsiManager {
 
     private fun getArgumentTupleListFromCache(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedArgumentTupleList) {
-            val value = doGetArgumentTupleList(element)
+            ProgressManager.checkCanceled()
+            val value = resolveArgumentTupleList(element).optimized()
             value.withDependencyItems(element)
         }
     }
 
-    private fun doGetArgumentTupleList(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
+    private fun resolveArgumentTupleList(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
         return buildList {
-            element.propertyList.mapNotNull f@{ p ->
+            for (p in element.properties()) {
                 // 对于传入参数的名字，要求不为空，且不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
-                val k = p.propertyKey.name.orNull() ?: return@f null
-                if (!PlsNameValidators.checkParameterName(k)) return@f null
-                val v = p.propertyValue?.text ?: return@f null
-                tupleOf(k, v)
+                val k = p.propertyKey.name.orNull() ?: continue
+                if (!PlsNameValidators.checkParameterName(k)) continue
+                val v = p.propertyValue?.text ?: continue
+                this += tupleOf(k, v)
             }
         }
     }
@@ -255,11 +258,6 @@ object ParadoxPsiManager {
         property.delete()
     }
 
-    fun handleInlinedScriptedTrigger(element: PsiElement) {
-        // 特殊处理
-        element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
-    }
-
     fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
         // 必须是一个调用而非任何引用
         if (element !is ParadoxScriptPropertyKey) return
@@ -292,11 +290,6 @@ object ParadoxPsiManager {
             property.parent.addRangeAfter(start, end, property)
         }
         property.delete()
-    }
-
-    fun handleInlinedScriptedEffect(element: PsiElement) {
-        // 特殊处理
-        element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -337,6 +330,22 @@ object ParadoxPsiManager {
             element.parent.addRangeAfter(start, end, element)
         }
         element.delete()
+    }
+
+    fun handleInlinedScriptedTrigger(element: PsiElement) {
+        deleteOptimizeMemoryTag(element)
+    }
+
+    fun handleInlinedScriptedEffect(element: PsiElement) {
+        deleteOptimizeMemoryTag(element)
+    }
+
+    private fun deleteOptimizeMemoryTag(element: PsiElement) {
+        for (it in element.children(forward = false)) {
+            if (it !is ParadoxScriptString) continue
+            if (!it.value.equals("optimize_memory", true)) continue
+            it.delete()
+        }
     }
 
     // endregion

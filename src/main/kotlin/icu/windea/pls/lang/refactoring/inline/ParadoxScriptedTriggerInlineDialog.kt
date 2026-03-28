@@ -65,14 +65,14 @@ class ParadoxScriptedTriggerInlineDialog(
     }
 
     override fun doAction() {
-        val processor = ParadoxScriptedTriggerInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxScriptedTriggerInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration)
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if (myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
             settings.inlineScriptedTriggerThis = isInlineThisOnly
         }
         if (myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
-            settings.inlineScriptedTriggerKeep = isKeepTheDeclaration()
+            settings.inlineScriptedTriggerKeep = isKeepTheDeclaration
         }
     }
 }

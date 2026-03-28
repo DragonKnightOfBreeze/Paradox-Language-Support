@@ -2,6 +2,7 @@ package icu.windea.pls.ep.util.presentation
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
@@ -42,6 +43,7 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
     private fun <T : ParadoxDefinitionPresentation> getFromCache(element: ParadoxDefinitionElement, type: Class<T>): T? {
         val key = getKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
+            ProgressManager.checkCanceled()
             val value = getPresentation(element, type)
             val trackers = with(PlsModificationTrackers) {
                 listOf(element, ScriptFile, LocalisationFile)

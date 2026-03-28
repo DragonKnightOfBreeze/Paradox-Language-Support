@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.CompositeElement
@@ -131,6 +132,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
 
     private fun getColorFromCache(element: ParadoxScriptBlock): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
+            ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)
         }
@@ -216,6 +218,7 @@ class ParadoxScriptColorColorProvider : ParadoxColorProvider {
 
     private fun getColorFromCache(element: ParadoxScriptColor): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
+            ProgressManager.checkCanceled()
             val value = doGetColor(element)
             value.withDependencyItems(element)
         }

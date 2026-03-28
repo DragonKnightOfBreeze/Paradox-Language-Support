@@ -15,8 +15,8 @@ class SetBackgroundImageAction : DumbAwareAction() {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         val image = file != null && ImageService.getInstance().isExtendedImageFileType(file.fileType)
         val visible = !e.isFromContextMenu || image
-        e.presentation.setEnabled(project != null)
-        e.presentation.setVisible(visible)
+        e.presentation.isEnabled = project != null
+        e.presentation.isVisible = visible
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread {

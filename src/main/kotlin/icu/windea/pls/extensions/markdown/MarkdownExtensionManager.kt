@@ -2,6 +2,7 @@ package icu.windea.pls.extensions.markdown
 
 import com.intellij.lang.Language
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -52,6 +53,7 @@ object MarkdownExtensionManager {
 
     private fun getPathInjectionInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPathInjectionInfo) {
+            ProgressManager.checkCanceled()
             val value = doGetPathInjectionInfo(element)
             value.withDependencyItems(element)
         }

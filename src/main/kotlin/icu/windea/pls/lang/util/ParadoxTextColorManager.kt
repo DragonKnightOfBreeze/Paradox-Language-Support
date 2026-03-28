@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
@@ -86,6 +87,7 @@ object ParadoxTextColorManager {
     private fun getInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
+            ProgressManager.checkCanceled()
             val value = doGetInfo(definition)
             value.withDependencyItems(definition)
         }

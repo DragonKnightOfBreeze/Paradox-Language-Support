@@ -64,14 +64,14 @@ class ParadoxLocalisationInlineDialog(
     }
 
     override fun doAction() {
-        val processor = ParadoxLocalisationInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxLocalisationInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration)
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if (myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
             settings.inlineLocalisationThis = isInlineThisOnly
         }
         if (myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
-            settings.inlineLocalisationKeep = isKeepTheDeclaration()
+            settings.inlineLocalisationKeep = isKeepTheDeclaration
         }
     }
 }

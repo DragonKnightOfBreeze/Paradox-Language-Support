@@ -31,7 +31,8 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun isEnabledForLanguage(language: Language) = language is ParadoxScriptLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
-        if (!ParadoxInlineScriptManager.isSupported(selectGameType(element))) return false // 忽略游戏类型不支持的情况
+        val gameType = selectGameType(element)
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return false // 忽略游戏类型不支持的情况
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (element.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@run
@@ -48,7 +49,8 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if (!ParadoxInlineScriptManager.isSupported(selectGameType(element))) return false // 忽略游戏类型不支持的情况
+        val gameType = selectGameType(reference?.element ?: element) // NOTE 2.1.7 `element` may be from config file
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return false // 忽略游戏类型不支持的情况
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run

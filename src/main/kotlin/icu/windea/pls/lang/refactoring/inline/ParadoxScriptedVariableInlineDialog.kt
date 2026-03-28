@@ -69,14 +69,14 @@ class ParadoxScriptedVariableInlineDialog(
     }
 
     override fun doAction() {
-        val processor = ParadoxScriptedVariableInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
+        val processor = ParadoxScriptedVariableInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration)
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
         if (myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
             settings.inlineScriptedVariableThis = isInlineThisOnly
         }
         if (myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
-            settings.inlineScriptedVariableKeep = isKeepTheDeclaration()
+            settings.inlineScriptedVariableKeep = isKeepTheDeclaration
         }
     }
 }
