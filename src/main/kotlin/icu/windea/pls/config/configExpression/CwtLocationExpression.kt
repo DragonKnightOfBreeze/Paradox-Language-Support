@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.configExpression
 
+import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.core.annotations.Optimized
 
 /**
@@ -13,7 +14,7 @@ import icu.windea.pls.core.annotations.Optimized
  * @property location 原始位置字符串。
  * @property isPlaceholder 是否包含占位符（检测 `$`）。
  *
- * @see icu.windea.pls.config.config.delegated.CwtLocationConfig
+ * @see CwtLocationConfig
  */
 interface CwtLocationExpression : CwtConfigExpression {
     val location: String

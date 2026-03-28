@@ -9,6 +9,7 @@ import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.text.TextPattern
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
 /**
@@ -40,7 +41,7 @@ import icu.windea.pls.lang.isIdentifierChar
  * @property referenceExpressions 过滤后的引用片段（即非 [CwtDataTypes.Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
- * @see icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
+ * @see CwtDataExpressionResolver
  */
 interface CwtTemplateExpression : CwtConfigExpression {
     val snippetExpressions: List<CwtDataExpression>

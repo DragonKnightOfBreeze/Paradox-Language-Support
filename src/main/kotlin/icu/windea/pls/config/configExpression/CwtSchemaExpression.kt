@@ -10,6 +10,7 @@ import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.config.config.internal.CwtSchemaConfig
 
 /**
  * 模式表达式。
@@ -33,9 +34,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
  * ## cardinality = ~1..10
  * ```
  *
- * @see icu.windea.pls.config.config.internal.CwtSchemaConfig
- * @see icu.windea.pls.config.util.CwtConfigManager
- * @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
+ * @see CwtSchemaConfig
  */
 interface CwtSchemaExpression : CwtConfigExpression {
     interface Constant : CwtSchemaExpression

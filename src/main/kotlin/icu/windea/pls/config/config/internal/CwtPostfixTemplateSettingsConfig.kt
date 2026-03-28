@@ -9,13 +9,14 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
+import icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate
 
 /**
  * 作为后缀模板设置的内部规则。目前尚不支持自定义。
  *
  * 用于提供额外的后缀补全，
  *
- * @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate
+ * @see ParadoxExpressionEditablePostfixTemplate
  */
 data class CwtPostfixTemplateSettingsConfig(
     val id: String,

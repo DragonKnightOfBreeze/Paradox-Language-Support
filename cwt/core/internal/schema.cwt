@@ -2,7 +2,7 @@ priorities = {
     $path = $enum:override_strategy$
 }
 
-sysstem_scopes = {
+system_scopes = {
     $system_scope$ = {
         base_id = $system_scope$
     }
@@ -240,7 +240,12 @@ alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 directive[$directive$] = $any
 
-# no `## inject = ...` completion now
+$enum:override_strategy$ = { fios lios dupl ordered }
+$enum:severity$ = { error warning info hint }
+$enum:link_type$ = { scope value both }
+$enum:link_argument_separator$ = { comma pipe }
+$enum:context_configs_type$ = { single multiple }
+$enum:api_status$ = { obsolete removed kept }
 
 ## replace_scopes = $scope_context
 ## push_scope = $scope
@@ -248,70 +253,4 @@ directive[$directive$] = $any
 ## predicate = $predicate
 $$declaration = $declaration
 
-$$data_expression = {
-    bool
-    int
-    int[$start$..$end$]
-    float
-    float[$start$..$end$]
-    scalar
-    color_field
-    color[$color_type$]
-
-    percentage_field
-    date_field
-    localisation
-    localisation_synced
-    localisation_inline
-    abs_filepath
-    filename
-    filename[$expression$]
-    filepath
-    filepath[$expression$]
-    icon[$expression$]
-    <modifier>
-    <technology_with_level>
-    <$definition_type_expression$>
-    value[$dynamic_value_type$]
-    value_set[$dynamic_value_type$]
-    dynamic_value[$dynamic_value_type$]
-    enum[$enum$]
-    enum[$complex_enum$]
-    scope_field
-    scope[any]
-    scope[$scope$]
-    scope_group[$scope_group$]
-    value_field
-    value_field[$scope$]
-    int_value_field
-    int_value_field[$scope$]
-    variable_field
-    variable_field_32
-    variable_field[$scope$]
-    int_variable_field
-    int_variable_field_32
-    int_variable_field[$scope$]
-    single_alias_right[$single_alias$]
-    alias_name[$alias_name$] = alias_match_left[$alias_name$]
-    alias_keys_field[$alias_name$]
-    $any
-    $parameter
-    $parameter_value
-    $localisation_parameter
-    $shader_effect
-    $database_object
-    stellaris_name_format[$format$]
-
-    ant:$ant_expression$
-    ant.i:$ant_expression$
-
-    re:$re$
-    re.i:$re$
-}
-
-$enum:override_strategy$ = { fios lios dupl ordered }
-$enum:severity$ = { error warning info hint }
-$enum:link_type$ = { scope value both }
-$enum:link_argument_separator$ = { comma pipe }
-$enum:context_configs_type$ = { single multiple }
-$enum:api_status$ = { obsolete removed kept }
+# no `## inject = ...` completion now

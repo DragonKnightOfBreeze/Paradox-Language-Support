@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
@@ -9,7 +8,6 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 /**
@@ -42,12 +40,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * @see CwtLocationExpression
  * @see CwtImageLocationExpression
  */
-interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
-
-    /** 按给定的 [subtypes] 合并与筛选后，返回生效的图片位置规则列表。 */
-    fun getConfigs(subtypes: List<String>): List<CwtLocationConfig>
-
+interface CwtTypeImagesConfig : CwtTypePresentationConfig {
     interface Resolver {
         /** 由属性规则解析为类型图片规则。 */
         fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig?

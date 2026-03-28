@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.configExpression
 
+import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.toCommaDelimitedStringSet
@@ -30,7 +31,7 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
  * @property namePaths 用于获取名字文本的一组成员路径。名字文本用于替换占位符。
  * @property forceUpperCase 本地化的名字是否需要强制大写。
  *
- * @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
+ * @see CwtTypeLocalisationConfig
  */
 interface CwtLocalisationLocationExpression : CwtLocationExpression {
     val namePaths: Set<String>

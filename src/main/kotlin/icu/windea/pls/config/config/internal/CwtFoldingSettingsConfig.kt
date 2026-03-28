@@ -9,13 +9,14 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
+import icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder
 
 /**
  * 作为折叠设置的内部规则。目前尚不支持自定义。
  *
  * 用于提供额外的代码折叠。
  *
- * @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder
+ * @see ParadoxExpressionFoldingBuilder
  */
 data class CwtFoldingSettingsConfig(
     val id: String,

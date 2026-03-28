@@ -703,6 +703,7 @@ localisation_promotions = {
 
 #### Type Presentation Config {#config-type-presentation}
 
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
 

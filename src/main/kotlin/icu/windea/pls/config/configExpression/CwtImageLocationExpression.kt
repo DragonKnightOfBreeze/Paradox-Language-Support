@@ -2,6 +2,7 @@
 
 package icu.windea.pls.config.configExpression
 
+import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.toCommaDelimitedStringSet
@@ -31,7 +32,7 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
  * @property namePaths 用于获取名字文本的一组成员路径。名字文本用于替换占位符。
  * @property framePaths 用于获取帧数的一组成员路径。帧数用于后续切分图片。
  *
- * @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
+ * @see CwtTypeImagesConfig
  */
 interface CwtImageLocationExpression : CwtLocationExpression {
     val namePaths: Set<String>
