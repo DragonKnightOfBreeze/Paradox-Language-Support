@@ -11,7 +11,7 @@ plugins {
     id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
-    id("de.undercouch.download") version "5.6.0" // https://github.com/michel-kraemer/gradle-download-task
+    id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
 fun properties(key: String) = providers.gradleProperty(key)
