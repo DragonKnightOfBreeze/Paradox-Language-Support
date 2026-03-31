@@ -1,4 +1,3 @@
-
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
@@ -166,6 +165,7 @@ kotlin {
     }
 }
 
+// Configure IntelliJ Platform Plugin - read more: https://github.com/JetBrains/intellij-platform-gradle-plugin
 intellijPlatform {
     pluginConfiguration {
         id = properties("pluginId")
@@ -209,6 +209,12 @@ intellijPlatform {
             sinceBuild = properties("sinceBuild")
             untilBuild = null
         }
+
+        vendor {
+            name = "DragonKnightOfBreeze"
+            url = "https://github.com/DragonKnightOfBreeze"
+            email = "dk_breeze@qq.com"
+        }
     }
 
     // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
@@ -220,6 +226,12 @@ intellijPlatform {
 
     publishing {
         token = envVars("IDEA_TOKEN")
+    }
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
     }
 }
 
