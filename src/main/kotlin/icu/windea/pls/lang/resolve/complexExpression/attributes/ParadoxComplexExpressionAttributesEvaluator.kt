@@ -14,33 +14,30 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * @see ParadoxComplexExpression
  * @see ParadoxComplexExpressionAttributes
  */
-object ParadoxComplexExpressionAttributesEvaluator {
-    private data class Context(
-        var dynamicDataAware: Boolean = false,
-        var relaxDynamicDataAware: Boolean = false,
-    )
-
+class ParadoxComplexExpressionAttributesEvaluator {
     /**
      * 递归向下遍历 [node]，评估复杂表达式在节点级别的综合属性。
      */
-    fun evaluate(node: ParadoxComplexExpressionNode): Int {
-        val context = Context()
+    fun evaluate(node: ParadoxComplexExpressionNode): ParadoxComplexExpressionAttributes {
+        var dynamicDataAware = false
+        var relaxDynamicDataAware = false
+
         node.accept(object : ParadoxComplexExpressionRecursiveVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
-                if (!context.dynamicDataAware && isDynamicDataInvolved(node)) {
-                    context.dynamicDataAware = true
+                if (!dynamicDataAware && isDynamicDataInvolved(node)) {
+                    dynamicDataAware = true
                 }
-                if (!context.relaxDynamicDataAware && isRelaxDynamicDataInvolved(node)) {
-                    context.relaxDynamicDataAware = true
+                if (!relaxDynamicDataAware && isRelaxDynamicDataInvolved(node)) {
+                    relaxDynamicDataAware = true
                 }
                 return super.visit(node)
             }
         })
 
-        var r = 0
-        if (context.dynamicDataAware) r = r or ParadoxComplexExpressionAttributes.DYNAMIC_DATA_INVOLVED
-        if (context.relaxDynamicDataAware) r = r or ParadoxComplexExpressionAttributes.RELAX_DYNAMIC_DATA_INVOLVED
-        return r
+        var value = 0
+        if (dynamicDataAware) value = value or ParadoxComplexExpressionAttributes.Flags.DYNAMIC_DATA_INVOLVED
+        if (relaxDynamicDataAware) value = value or ParadoxComplexExpressionAttributes.Flags.RELAX_DYNAMIC_DATA_INVOLVED
+        return ParadoxComplexExpressionAttributes(value)
     }
 
     private fun isDynamicDataInvolved(node: ParadoxComplexExpressionNode): Boolean {
@@ -60,5 +57,9 @@ object ParadoxComplexExpressionAttributesEvaluator {
         val parent2 = parent1.parent?.castOrNull<ParadoxLinkNode>() ?: return false
         if (parent2.nodes.last() != parent1) return false
         return true
+    }
+
+    companion object {
+        val DEFAULT = ParadoxComplexExpressionAttributesEvaluator()
     }
 }

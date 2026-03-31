@@ -198,7 +198,7 @@ private class CwtTypeConfigImpl(
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
     override val maxRootKeyDepth: Int = computeMaxRootKeyDepth()
-    override val attributes: CwtTypeConfigAttributes by lazy { CwtTypeConfigAttributesEvaluator.evaluate(this) }
+    override val attributes: CwtTypeConfigAttributes by lazy { CwtTypeConfigAttributesEvaluator().evaluate(this) }
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy { computeTypeKeyPrefixConfig() }
 
     private fun computeMaxRootKeyDepth(): Int {

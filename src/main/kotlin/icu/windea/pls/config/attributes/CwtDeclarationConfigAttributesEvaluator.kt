@@ -22,88 +22,89 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
  * @see CwtDeclarationConfigAttributes
  */
 @Optimized
-object CwtDeclarationConfigAttributesEvaluator {
-    private data class Context(
-        val involvedSubtypes: MutableSet<String> = sortedSetOf(),
-        var dynamicValueInvolved: Boolean = false,
-        var parameterInvolved: Boolean = false,
-        var localisationParameterInvolved: Boolean = false,
-        var inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
-    )
+class CwtDeclarationConfigAttributesEvaluator {
+    private val involvedSubtypes = sortedSetOf<String>()
+    private var dynamicValueInvolved = false
+    private var parameterInvolved = false
+    private var localisationParameterInvolved = false
+    private var inferredScopeContextAwareDefinitionReferenceInvolved = false
 
     fun evaluate(config: CwtDeclarationConfig): CwtDeclarationConfigAttributes {
-        val context = Context()
-        val visitor = buildVisitor(context, config.configGroup)
+        val visitor = buildVisitor(config.configGroup)
         config.config.accept(visitor)
-        return buildAttributes(context)
+        return buildAttributes()
     }
 
-    private fun buildVisitor(context: Context, configGroup: CwtConfigGroup): CwtMemberConfigInlinedRecursiveVisitor {
+    private fun buildVisitor(configGroup: CwtConfigGroup): CwtMemberConfigInlinedRecursiveVisitor {
         return object : CwtMemberConfigInlinedRecursiveVisitor() {
             override fun visitProperty(config: CwtPropertyConfig): Boolean {
-                if (!inlined) processSubtypeExpression(context, config)
-                processDataExpression(context, config.keyExpression, configGroup)
-                processDataExpression(context, config.valueExpression, configGroup)
+                if (!inlined) processSubtypeExpression(config)
+                processDataExpression(config.keyExpression, configGroup)
+                processDataExpression(config.valueExpression, configGroup)
                 return super.visitProperty(config)
             }
 
             override fun visitValue(config: CwtValueConfig): Boolean {
-                processDataExpression(context, config.valueExpression, configGroup)
+                processDataExpression(config.valueExpression, configGroup)
                 return super.visitValue(config)
             }
 
             override fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {
-                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) { CwtInlinedConfigAttributesEvaluator.evaluate(name, config, configGroup) }
-                return handleContext(context, inlinedAttributes)
+                val inlinedAttributes = configGroup.singleAliasAttributes.getOrPut(name) {
+                    CwtInlinedConfigAttributesEvaluator().evaluate(name, config, configGroup)
+                }
+                return handleContext(inlinedAttributes)
             }
 
             override fun visitAliasGroup(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>): Boolean {
-                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) { CwtInlinedConfigAttributesEvaluator.evaluate(name, aliasConfigGroup, configGroup) }
-                return handleContext(context, inlinedAttributes)
+                val inlinedAttributes = configGroup.aliasAttributes.getOrPut(name) {
+                    CwtInlinedConfigAttributesEvaluator().evaluate(name, aliasConfigGroup, configGroup)
+                }
+                return handleContext(inlinedAttributes)
             }
         }
     }
 
-    private fun processSubtypeExpression(context: Context, config: CwtPropertyConfig) {
+    private fun processSubtypeExpression(config: CwtPropertyConfig) {
         val subtypeExpression = config.key.removeSurroundingOrNull("subtype[", "]") ?: return
         val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-        resolved.subtypes.forEachFast { (subtype, _) -> context.involvedSubtypes.add(subtype) }
+        resolved.subtypes.forEachFast { (subtype, _) -> involvedSubtypes.add(subtype) }
     }
 
-    private fun processDataExpression(context: Context, dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
-        if (!context.dynamicValueInvolved) {
+    private fun processDataExpression(dataExpression: CwtDataExpression, configGroup: CwtConfigGroup) {
+        if (!dynamicValueInvolved) {
             val r = CwtConfigExpressionMatchService.matchesDynamicValue(dataExpression)
-            if (r) context.dynamicValueInvolved = true
+            if (r) dynamicValueInvolved = true
         }
-        if (!context.parameterInvolved) {
+        if (!parameterInvolved) {
             val r = CwtConfigExpressionMatchService.matchesParameter(dataExpression)
-            if (r) context.parameterInvolved = true
+            if (r) parameterInvolved = true
         }
-        if (!context.localisationParameterInvolved) {
+        if (!localisationParameterInvolved) {
             val r = CwtConfigExpressionMatchService.matchesLocalisationParameter(dataExpression)
-            if (r) context.localisationParameterInvolved = true
+            if (r) localisationParameterInvolved = true
         }
-        if (!context.inferredScopeContextAwareDefinitionReferenceInvolved) {
+        if (!inferredScopeContextAwareDefinitionReferenceInvolved) {
             val r = CwtConfigExpressionMatchService.matchesInferredScopeContextAwareDefinitionReference(dataExpression, configGroup)
-            if (r) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
+            if (r) inferredScopeContextAwareDefinitionReferenceInvolved = true
         }
     }
 
-    private fun handleContext(context: Context, inlinedAttributes: CwtInlinedConfigAttributes): Boolean {
-        if (inlinedAttributes.dynamicValueInvolved) context.dynamicValueInvolved = true
-        if (inlinedAttributes.parameterInvolved) context.parameterInvolved = true
-        if (inlinedAttributes.localisationParameterInvolved) context.localisationParameterInvolved = true
-        if (inlinedAttributes.inferredScopeContextAwareDefinitionReferenceInvolved) context.inferredScopeContextAwareDefinitionReferenceInvolved = true
+    private fun handleContext(attributes: CwtInlinedConfigAttributes): Boolean {
+        if (attributes.dynamicValueInvolved) dynamicValueInvolved = true
+        if (attributes.parameterInvolved) parameterInvolved = true
+        if (attributes.localisationParameterInvolved) localisationParameterInvolved = true
+        if (attributes.inferredScopeContextAwareDefinitionReferenceInvolved) inferredScopeContextAwareDefinitionReferenceInvolved = true
         return true
     }
 
-    private fun buildAttributes(context: Context): CwtDeclarationConfigAttributes {
+    private fun buildAttributes(): CwtDeclarationConfigAttributes {
         val result = CwtDeclarationConfigAttributes(
-            context.involvedSubtypes.optimized(),
-            context.dynamicValueInvolved,
-            context.parameterInvolved,
-            context.localisationParameterInvolved,
-            context.inferredScopeContextAwareDefinitionReferenceInvolved,
+            involvedSubtypes.optimized(),
+            dynamicValueInvolved,
+            parameterInvolved,
+            localisationParameterInvolved,
+            inferredScopeContextAwareDefinitionReferenceInvolved,
         )
         if (result == CwtDeclarationConfigAttributes.EMPTY) return CwtDeclarationConfigAttributes.EMPTY
         return result

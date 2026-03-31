@@ -40,7 +40,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
-import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributes
+import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
@@ -300,9 +300,9 @@ object ParadoxMatchResultProvider {
         } else {
             complexExpression
         }
-        val attributes = ParadoxComplexExpressionAttributes.get(nodeToCheck)
-        if (ParadoxComplexExpressionAttributes.check(attributes) { RELAX_DYNAMIC_DATA_INVOLVED }) return ParadoxMatchResult.RelaxWildcardMatch
-        if (ParadoxComplexExpressionAttributes.check(attributes) { DYNAMIC_DATA_INVOLVED }) return ParadoxMatchResult.WildcardMatch
+        val attributes = ParadoxComplexExpressionAttributesEvaluator.DEFAULT.evaluate(nodeToCheck)
+        if (attributes.relaxDynamicDataInvolved) return ParadoxMatchResult.RelaxWildcardMatch
+        if (attributes.dynamicDataInvolved) return ParadoxMatchResult.WildcardMatch
         return ParadoxMatchResult.ExactMatch
     }
 }

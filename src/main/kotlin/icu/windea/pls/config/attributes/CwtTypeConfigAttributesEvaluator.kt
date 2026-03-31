@@ -14,31 +14,28 @@ import icu.windea.pls.core.util.values.ReversibleValue
  * @see CwtTypeConfigAttributes
  */
 @Optimized
-object CwtTypeConfigAttributesEvaluator {
-    private data class Context(
-        val involvedTypeKeys: MutableSet<@CaseInsensitive String> = caseInsensitiveStringSet(),
-        val possibleTypeKeys: MutableSet<@CaseInsensitive String> = caseInsensitiveStringSet(),
-    )
+class CwtTypeConfigAttributesEvaluator {
+    private val involvedTypeKeys = caseInsensitiveStringSet()
+    private val possibleTypeKeys = caseInsensitiveStringSet()
 
     fun evaluate(config: CwtTypeConfig): CwtTypeConfigAttributes {
-        val context = Context()
-        processTypeKeyFilter(context, config.typeKeyFilter)
+        processTypeKeyFilter(config.typeKeyFilter)
         config.subtypes.values.forEach { subtypeConfig ->
-            processTypeKeyFilter(context, subtypeConfig.typeKeyFilter)
+            processTypeKeyFilter(subtypeConfig.typeKeyFilter)
         }
-        return buildAttributes(context)
+        return buildAttributes()
     }
 
-    private fun processTypeKeyFilter(context: Context, typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?) {
+    private fun processTypeKeyFilter(typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?) {
         val (v, o) = typeKeyFilter ?: return
-        context.involvedTypeKeys.addAll(v)
-        if (o) context.possibleTypeKeys.addAll(v)
+        involvedTypeKeys.addAll(v)
+        if (o) possibleTypeKeys.addAll(v)
     }
 
-    private fun buildAttributes(context: Context): CwtTypeConfigAttributes {
+    private fun buildAttributes(): CwtTypeConfigAttributes {
         val result = CwtTypeConfigAttributes(
-            context.involvedTypeKeys.optimized(),
-            context.possibleTypeKeys.optimized(),
+            involvedTypeKeys.optimized(),
+            possibleTypeKeys.optimized(),
         )
         if (result == CwtTypeConfigAttributes.EMPTY) return CwtTypeConfigAttributes.EMPTY
         return result

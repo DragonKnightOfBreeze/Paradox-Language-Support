@@ -19,13 +19,13 @@ class CwtBaseDataConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
     private suspend fun loadLazyData(configGroup: CwtConfigGroup) {
         checkCanceled()
         configGroup.singleAliases.forEach { (k, v) ->
-            configGroup.singleAliasAttributes[k] = CwtInlinedConfigAttributesEvaluator.evaluate(k, v, configGroup)
+            configGroup.singleAliasAttributes[k] = CwtInlinedConfigAttributesEvaluator().evaluate(k, v, configGroup)
         }
         if (configGroup is CwtConfigGroupDataHolderBase) configGroup.singleAliasAttributes.trim()
 
         checkCanceled()
         configGroup.aliasGroups.forEach { (k, v) ->
-            configGroup.aliasAttributes[k] = CwtInlinedConfigAttributesEvaluator.evaluate(k, v.values, configGroup)
+            configGroup.aliasAttributes[k] = CwtInlinedConfigAttributesEvaluator().evaluate(k, v.values, configGroup)
         }
         if (configGroup is CwtConfigGroupDataHolderBase) configGroup.aliasAttributes.trim()
 
