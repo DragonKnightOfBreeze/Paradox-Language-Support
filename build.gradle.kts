@@ -106,7 +106,7 @@ dependencies {
     // Persistence
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    runtimeOnly("org.xerial:sqlite-jdbc:3.51.1.0")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.51.3.0")
     // ktorm - https://www.ktorm.org/
     implementation("org.ktorm:ktorm-core:4.1.1") {
         exclude(group = "org.jetbrains.kotlin")
