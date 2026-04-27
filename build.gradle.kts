@@ -10,7 +10,7 @@ plugins {
     id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
-    id("de.undercouch.download") version "5.6.0" // https://github.com/michel-kraemer/gradle-download-task
+    id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -73,8 +73,8 @@ dependencies {
     }
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
-    implementation("com.twelvemonkeys.imageio:imageio-dds:3.13.0")
-    implementation("com.twelvemonkeys.imageio:imageio-tga:3.13.0")
+    implementation("com.twelvemonkeys.imageio:imageio-dds:3.13.1")
+    implementation("com.twelvemonkeys.imageio:imageio-tga:3.13.1")
 
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
@@ -82,22 +82,22 @@ dependencies {
     // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.10.0") {
+    implementation("dev.langchain4j:langchain4j:1.13.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.10.0") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.13.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.10.0") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.13.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.10.0") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.13.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
@@ -106,7 +106,7 @@ dependencies {
     // Persistence
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    runtimeOnly("org.xerial:sqlite-jdbc:3.51.1.0")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.51.3.0")
     // ktorm - https://www.ktorm.org/
     implementation("org.ktorm:ktorm-core:4.1.1") {
         exclude(group = "org.jetbrains.kotlin")
@@ -115,16 +115,16 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
     }
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.44.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.49.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
-    compileOnly("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations
+    compileOnly("org.jetbrains:annotations:26.1.0") // https://github.com/JetBrains/java-annotations
 
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.7")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.7")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.8")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.8")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.3")
