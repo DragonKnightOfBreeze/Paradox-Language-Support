@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ IDEA plugin designed specifically for Paradox game mod developers.
+This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
 It's written in Kotlin and PSI-based (not LSP-based).
 Many language features are powered by the **config system** based on **CWT config files**.
@@ -160,10 +160,10 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 Package organization:
 
 - `icu.windea.pls.core`: Common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.ide` - Global codes to handle IDE platform integration. Usually language-free and domain-free.
+- `icu.windea.pls.ide`: Global codes to handle IDE platform integration. Usually language-free and domain-free.
 - `icu.windea.pls.config`: Codes related to config, config expression and config group. Including models, services, resolvers, manipulators, etc.
 - `icu.windea.pls.tools`: Codes provided as tool APIs. Including launchers, config generators, log readers, etc. Not necessarily "language features".
-- `icu.windea.pls.lang` - Codes which are domain specific, or related to semantic match and resolution.
+- `icu.windea.pls.lang`: Codes which are domain specific, or related to semantic match and resolution.
   - `icu.windea.pls.lang.match`: Semantic-level matching (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.resolve`: Semantic-level resolution (mainly based on indices, reference resolution and configs).
   - `icu.windea.pls.lang.util`: High-level managers and special components.
@@ -218,6 +218,7 @@ For detailed language syntax and recommended examples, see:
 - `src/test/testData/cwt/example.test.cwt`
 - `src/test/testData/script/example.test.txt`
 - `src/test/testData/localisation/example.test.yml`
+- `src/test/testData/csv/example.test.csv`
 
 ### Config System Guidance
 
@@ -233,7 +234,6 @@ For the config system and the config format, see:
 ### Communication
 
 - IMPORTANT: Use Chinese when talking to the main maintainer (unless otherwise specified). / 重要：使用中文与主要维护者交流（除非特别说明）。
-- TIP: Conversation notes may exist in opened files. You can use them to guide the work and suggest next steps, but do not execute unrequested tasks.
 
 ### Markdown output conventions
 

@@ -21,7 +21,7 @@
 
 ## Overview
 
-Paradox Language Support is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
+Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 

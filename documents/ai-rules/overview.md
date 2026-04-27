@@ -56,6 +56,7 @@ globs:
 - `src/test/testData/cwt/example.test.cwt`
 - `src/test/testData/script/example.test.txt`
 - `src/test/testData/localisation/example.test.yml`
+- `src/test/testData/csv/example.test.csv`
 
 关于规则系统以及规则和规则表达式的格式，可参考：
 - `docs/zh/config.md`
