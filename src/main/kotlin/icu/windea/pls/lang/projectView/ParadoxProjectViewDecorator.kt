@@ -71,7 +71,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         val definitionInfo = file.definitionInfo ?: return false
 
         // 特殊图标
-        data.setIcon(PlsIcons.Nodes.Definition)
+        data.setIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
 
         // 定义名（通常等同于去掉扩展名后的文件名）
         data.presentableText = definitionInfo.name

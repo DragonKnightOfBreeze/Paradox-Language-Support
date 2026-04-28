@@ -20,6 +20,11 @@ object PlsConstants {
     val csvFileExtensions = arrayOf("csv")
     val imageFileExtensions = arrayOf("png", "dds", "tga")
 
+    const val descriptorModFileName = "descriptor.mod"
+    const val metadataJsonFileName = "metadata.json"
+    const val launcherSettingsJsonFileName = "launcher-settings.json"
+    val metadataFileNames = setOf(descriptorModFileName, metadataJsonFileName, launcherSettingsJsonFileName)
+
     const val dummyIdentifier = "windea"
 
     // val eraseMarker = TextAttributes()

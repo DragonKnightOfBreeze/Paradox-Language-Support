@@ -11,10 +11,10 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastSet
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
-import icu.windea.pls.lang.analysis.ParadoxMetadataService
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.constants.PlsConstants
 
 @Optimized
 class ParadoxFileChangeCollector {
@@ -132,7 +132,7 @@ class ParadoxFileChangeCollector {
     }
 
     private fun shouldRestartAnalysis(fileName: String): Boolean {
-        return ParadoxMetadataService.metadataFileNames.any { fileName.equals(it, true) }
+        return PlsConstants.metadataFileNames.any { fileName.equals(it, true) }
     }
 
     private fun shouldRefreshForFilePaths(file: VirtualFile?): Boolean {

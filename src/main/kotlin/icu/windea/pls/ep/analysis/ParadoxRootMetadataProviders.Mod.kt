@@ -8,6 +8,7 @@ import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootMetadata
+import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
 import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
 
@@ -82,7 +83,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxRootMetadataProvider
         override val tags: Set<String> get() = info.tags
         override val remoteId: String? get() = info.remoteFileId
         override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
-        override val presentablePath: String get() = "descriptor.mod"
+        override val presentablePath: String get() = PlsConstants.descriptorModFileName
 
         private fun computeInferredGameType(): ParadoxGameType? {
             return ParadoxAnalysisService.getInferredGameType(rootFile)

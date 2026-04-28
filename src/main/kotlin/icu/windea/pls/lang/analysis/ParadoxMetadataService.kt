@@ -16,8 +16,6 @@ import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 object ParadoxMetadataService {
-    val metadataFileNames = setOf("launcher-settings.json", "descriptor.mod", "metadata.json")
-
     // region launcher-settings.json
 
     // - launcher-settings.json
@@ -62,7 +60,6 @@ object ParadoxMetadataService {
     }
 
     fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
-
         rootFile.findFileByRelativePath(".metadata/metadata.json")?.takeIf { it.isFile }?.let { return it }
         return null
     }

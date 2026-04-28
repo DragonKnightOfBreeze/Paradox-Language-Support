@@ -21,6 +21,8 @@ enum class ParadoxFileGroup(val id: String) {
     companion object {
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxFileGroup {
+            if (ParadoxPathConstraint.ModDescriptorFile.test(path)) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
+
             return when {
                 ParadoxPathConstraint.ModDescriptorFile.test(path) -> ModDescriptor
                 ParadoxPathConstraint.ScriptFile.test(path) -> Script
@@ -32,9 +34,10 @@ enum class ParadoxFileGroup(val id: String) {
 
         @JvmStatic
         fun resolvePossible(fileName: String): ParadoxFileGroup {
+            if (fileName == PlsConstants.descriptorModFileName) return ModDescriptor // NOTE 2.1.8 file-name-sensitive
+
             val fileExtension = fileName.substringAfterLast('.').orNull()?.lowercase() ?: return Other
             return when {
-                fileExtension == "mod" -> ModDescriptor
                 fileExtension in PlsConstants.scriptFileExtensions -> Script
                 fileExtension in PlsConstants.localisationFileExtensions -> Localisation
                 fileExtension in PlsConstants.csvFileExtensions -> Csv

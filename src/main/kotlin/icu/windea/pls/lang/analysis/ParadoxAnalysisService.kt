@@ -24,20 +24,12 @@ object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
-    fun isIgnoredFile(file: VirtualFile): Boolean {
+    fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
         return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(file)
+            ep.isIgnoredFile(path, entry)
         }
     }
 
-    /**
-     * @see ParadoxIgnoredFileProvider.isIgnoredFile
-     */
-    fun isIgnoredFile(filePath: FilePath): Boolean {
-        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(filePath)
-        }
-    }
 
     /**
      * @see ParadoxRootMetadataProvider.get
@@ -72,8 +64,7 @@ object ParadoxAnalysisService {
         val (path, entry) = resolvePathAndEntry(file.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            isIgnoredFile(file) -> ParadoxFileGroup.Other
+            isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
@@ -85,8 +76,7 @@ object ParadoxAnalysisService {
         val (path, entry) = resolvePathAndEntry(filePath.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            isIgnoredFile(filePath) -> ParadoxFileGroup.Other
+            isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)

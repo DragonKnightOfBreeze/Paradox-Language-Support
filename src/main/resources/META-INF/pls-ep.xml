@@ -54,6 +54,7 @@
 
   <extensions defaultExtensionNs="icu.windea.pls">
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxSettingsBasedIgnoredFileProvider"/>
+    <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxTopLevelIgnoredFileProvider"/>
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxForcedIgnoredFileProvider"/>
 
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>

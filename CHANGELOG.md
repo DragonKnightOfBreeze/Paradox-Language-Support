@@ -2,17 +2,25 @@
 
 ## Unreleased
 
-- [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions separated by comma
-- [ ] [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194) 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions)
-- [ ] [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263) 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x`
-- [ ] [#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296) [Vic3] Generated Loc Keys for Events are Sorted Incorrectly
-- [ ] 性能分析与优化 / Performance analysis and optimization
-- [ ] 完善参考文档 / Improve reference documentation
-- [ ] 补充集成测试 / Supplementary integration tests
+- [ ] PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma
+- [ ] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
+- [ ] PLANNED 补充本地化文件中的快速复制文本的意向
+- [ ] PLANNED 重构渲染器组件
+- [ ] P2 消除或重构initializer组件 & `PlsDataPathService`
+- [ ] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
+- [ ] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
+- [ ] P2 color scheme - 优化/整理配色选项和预览文本
+- [ ] P3 检查设置页面，优化文字表述，修正错误
+- [ ] P3 为规则选项提供文档注释，基于schema规则文件。
+- [ ] P3 在schema规则文件中补充文档注释。
+- [ ] P3 清理和优化各个代码检查的检查项描述和报错描述。
+- [ ] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
+- [ ] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
 
 ## 2.1.8-dev - 2026-04-27
 
-
+- [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
 
