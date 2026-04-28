@@ -2,7 +2,7 @@
 
 This repository contains **Paradox Language Support**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
-In narrative level, the plugin name is **Paradox Chronicle**.
+In narrative level, the plugin's name is **Paradox Chronicle**.
 
 ## Project quick orientation
 
