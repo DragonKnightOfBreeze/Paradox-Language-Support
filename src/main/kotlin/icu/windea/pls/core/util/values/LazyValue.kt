@@ -21,7 +21,7 @@ class LazyValue<T> {
         }
 
     fun isInitialized(): Boolean {
-        return _value != EMPTY_OBJECT
+        return _value !== EMPTY_OBJECT
     }
 
     fun clear() {

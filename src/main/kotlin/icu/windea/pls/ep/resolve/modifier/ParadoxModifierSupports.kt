@@ -227,12 +227,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType
-            val categories = ReferenceLinkType.CwtConfig.Categories
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
             append(PlsBundle.message("fromTemplate")).append(" ")
-            val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, templateString, gameType)
+            val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
             // 加上生成源信息
@@ -253,12 +252,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(": ")
 
                             val type = definitionTypes.first()
-                            val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
+                            val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.types, type, gameType)
                             appendPsiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
                             for ((index, t) in definitionTypes.withIndex()) {
                                 if (index == 0) continue
                                 append(", ")
-                                val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
+                                val subtypeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.types, "$type/$t", gameType)
                                 appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
                             }
                         }
@@ -268,15 +267,15 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
-                                val link = ReferenceLinkType.CwtConfig.createLink(categories.enums, "$enumName/$enumValueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, "$enumName/$enumValueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), enumName.escapeXml(), context = modifierElement)
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.enums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, enumName, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = modifierElement)
                             } else if (configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.complexEnums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.complexEnums, enumName, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = modifierElement)
                             } else {
                                 // unexpected
@@ -290,10 +289,10 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
-                                val link = ReferenceLinkType.CwtConfig.createLink(categories.values, "$dynamicValueType/$valueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = modifierElement)
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.values, dynamicValueType, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, dynamicValueType, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), valueName.escapeXml(), context = modifierElement)
                             } else {
                                 append(valueName.escapeXml())
@@ -314,20 +313,20 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val modifiers = definitionInfo.modifiers
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
-        val categories = ReferenceLinkType.CwtConfig.Categories
         for (modifier in modifiers) {
             appendBr()
             append(PlsStrings.generatedModifierPrefix).append(" ")
             val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
-            append(" ")
-            grayed {
-                append(PlsBundle.message("fromTemplate"))
-                append(" ")
-                val key = modifier.config.name
-                val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, key, gameType)
-                appendPsiLinkOrUnresolved(templateLink.escapeXml(), key.escapeXml())
-            }
+            // 2.1.8 文本可能过长，因此目前改为不显示
+            // append(" ")
+            // grayed {
+            //     append(PlsBundle.message("fromTemplate"))
+            //     append(" ")
+            //     val key = modifier.config.name
+            //     val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, key, gameType)
+            //     appendPsiLinkOrUnresolved(templateLink.escapeXml(), key.escapeXml())
+            // }
         }
         return true
     }
