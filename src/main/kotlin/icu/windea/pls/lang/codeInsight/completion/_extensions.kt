@@ -7,7 +7,6 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.ui.JBColor
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
@@ -30,6 +29,7 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
 
 fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: ProcessingContext) {
@@ -103,7 +103,7 @@ fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: Parado
     return this
 }
 
-fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: PsiElement): LookupElementBuilder {
+fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)

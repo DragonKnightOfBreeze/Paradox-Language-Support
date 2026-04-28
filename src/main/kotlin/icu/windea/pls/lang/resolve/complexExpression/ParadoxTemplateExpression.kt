@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
@@ -36,12 +37,18 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * - 占位片段：[ParadoxTemplateSnippetNode]（与模板的引用/占位部分对应）。
  *
  * #### 解析要点
- * - 模板来源：若配置为修正（`CwtModifierConfig`），取其 `template`；否则取 `configExpression` 中的 [CwtDataTypes.TemplateExpression]。
  * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
+ * - 解析占位片段时，忽略匿名的定义。
  *
  * @see CwtTemplateExpression
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
+    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    fun isExactMatched(): Boolean
+
+    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    fun checkExactMatched(element: PsiElement): Boolean
+
     interface Resolver {
         fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression?
     }
@@ -117,6 +124,14 @@ private class ParadoxTemplateExpressionImpl(
     override val configGroup: CwtConfigGroup,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
+    override fun isExactMatched(): Boolean {
+        return nodes.none { it is ParadoxTemplateSnippetNode && !it.isExactMatched() }
+    }
+
+    override fun checkExactMatched(element: PsiElement): Boolean {
+        return nodes.none { it is ParadoxTemplateSnippetNode && !it.checkExactMatched(element) }
+    }
+
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text
     override fun hashCode(): Int = text.hashCode()
     override fun toString() = text

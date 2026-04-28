@@ -11,7 +11,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
@@ -151,21 +150,25 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
+        // NOTE 2.1.8 如果存在多个非精确匹配的候选项，需要检查是否精确匹配，或者回退为第一个
         val modifierName = name
         val gameType = configGroup.gameType
         val project = configGroup.project
-        var modifierConfig: CwtModifierConfig? = null
-        val templateExpression = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
+        val modifierInfoCandidates = mutableListOf<ParadoxModifierInfo>()
+        for (modifierConfig in configGroup.generatedModifiers.values) {
             ProgressManager.checkCanceled()
-            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, config)
-            if (templateExpression != null) modifierConfig = config
-            templateExpression
+
+            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, modifierConfig) ?: continue
+            val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
+            modifierInfo.modifierConfig = modifierConfig
+            modifierInfo.templateExpression = templateExpression
+            if (templateExpression.isExactMatched()) return modifierInfo
+            modifierInfoCandidates += modifierInfo
         }
-        if (modifierConfig == null) return null
-        val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
-        modifierInfo.modifierConfig = modifierConfig
-        modifierInfo.templateExpression = templateExpression
-        return modifierInfo
+        if (modifierInfoCandidates.isEmpty()) return null
+        return modifierInfoCandidates.singleOrNull()
+            ?: modifierInfoCandidates.find { it.templateExpression!!.checkExactMatched(element) }
+            ?: modifierInfoCandidates.firstOrNull()
     }
 
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {

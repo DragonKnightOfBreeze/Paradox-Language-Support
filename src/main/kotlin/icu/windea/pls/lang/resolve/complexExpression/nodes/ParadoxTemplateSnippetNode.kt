@@ -14,11 +14,14 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxExpressionMatchService
+import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -34,6 +37,32 @@ class ParadoxTemplateSnippetNode(
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     val config = CwtValueConfig.createMock(configGroup, configExpression.expressionString)
+
+    /** 是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    fun isExactMatched(): Boolean {
+        val dataType = config.configExpression.type
+        return when {
+            dataType == CwtDataTypes.AliasKeysField -> {
+                false // for simple code
+            }
+            dataType in CwtDataTypeSets.DefinitionAware -> {
+                val definitionType = config.configExpression.value ?: return true
+                definitionType !in configGroup.types.keys
+            }
+            dataType == CwtDataTypes.EnumValue -> {
+                val enumName = config.configExpression.value ?: return true
+                enumName !in configGroup.complexEnums.keys
+            }
+            else -> true
+        }
+    }
+
+    /** 检查是否可以被精确匹配（不存在可能有歧义的动态引用）。 */
+    fun checkExactMatched(element: PsiElement): Boolean {
+        val expression = ParadoxScriptExpression.resolve(text, null)
+        val matchContext = ParadoxScriptExpressionMatchContext(element, expression, configExpression, config, configGroup)
+        return ParadoxExpressionMatchService.matchScriptExpression(matchContext).get()
+    }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null

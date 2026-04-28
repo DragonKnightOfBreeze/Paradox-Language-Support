@@ -62,6 +62,7 @@ import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object CwtDocumentationManager {
@@ -214,6 +215,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
         val contextElement = referenceElement
+        if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -269,10 +271,11 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
         val contextElement = referenceElement
+        if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
-            val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
+            val paths = ParadoxModifierManager.getModifierIconPaths(name, contextElement)
             paths.firstNotNullOfOrNull { path ->
                 val iconSelector = selector(project, element).file().contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()

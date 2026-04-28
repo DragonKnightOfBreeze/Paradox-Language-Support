@@ -20,6 +20,7 @@
 ## 2.1.8-dev - 2026-04-27
 
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
+- [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, Compatible with situations where there are multiple non-exact matching candidates
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
