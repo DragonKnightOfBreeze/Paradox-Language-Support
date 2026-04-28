@@ -1,10 +1,8 @@
 # Paradox Language Support
 
-This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ IDEA plugin designed for Paradox game mod developers.
+This repository contains **Paradox Language Support**, the IntelliJ IDEA plugin designed for Paradox game mod developers.
 
-It's written in Kotlin and PSI-based (not LSP-based).
-Many language features are powered by the **config system** based on **CWT config files**.
-The relationship between Paradox script files and CWT config files is roughly like **JSON vs JSON Schema**.
+In narrative level, the plugin name is **Paradox Chronicle**.
 
 ## Project quick orientation
 
@@ -22,15 +20,23 @@ In addition to language features, the plugin also includes:
 - **AI integration** (LangChain4j-based) focused on localisation translation/polishing workflows.
 - A substantial internal **extension point (EP)** architecture and a **code injection** subsystem.
 
-### Repository structure (high level)
+### Key points
 
-- `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
-- `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
-- `src/test/testData`: test data files (such as test-specific cwt config files and script files).
-- `src/main/resources/META-INF/plugin.xml`: plugin entry, most registrations are split into `META-INF/pls-*.xml`.
-- `cwt/`: CWT config repositories (core + per-game downstream repos).
+- The plugin is written in Kotlin and PSI-based (not LSP-based).
+- Many language features are powered by the **config system** based on **CWT config files**.
+- The relationship between Paradox script files and CWT config files is roughly like **JSON vs JSON Schema**.
+
+### Project structure (high level)
+
+- `agents/`: agent workflow files (commands, context, rules, skills, etc.).
+- `cwt/`: CWT config directories (core + per-game repositories).
 - `docs/`: reference documentation (including language syntax guidance and config format guidance).
 - `documents/`: maintainer documentation (including ai-generated docs and maintainer-written docs).
+- `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
+- `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
+- `src/test/testData/`: test data files (e.g., test-specific cwt config files and script files).
+- `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
+- `src/main/resources/META-INF/*.xml`: plugin registrations.
 
 ## Setup and build commands (Windows)
 
@@ -112,7 +118,6 @@ myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 ```
 
 Notes:
-- The intent here is “inject enough context for the feature under test”, not to reproduce the full game/mod filesystem.
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
 - The marked file path DO NOT start with `game/` (see `ParadoxEntryInfo` for details about root directory VS entry directory).
 - Alignment between real file path and marked file path is not required.
@@ -137,9 +142,11 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 
 ### Naming
 
-- Prefix class names with the domain name if necessary (e.g., `Cwt` `CwtConfig` `Paradox`).
-- For abstract classes, `Base` may appear as a suffix (e.g., `ParadoxScriptExpressionSupportBase`).
-- Avoid non-word, non-prefix abbreviations (e.g., for `scopeContext`, prefer `context`, `sc` or just `c`, but never `ctx`).
+- Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
+- Consider using prefix `Pls` for plugin specific class names (e.g., `PlsStates`).
+- Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
+
+For more details, see: `agents/context/naming-conventions.md`
 
 ### Caching
 
@@ -189,7 +196,9 @@ Here are some common code patterns:
 
 ### Translation terms
 
-- CWT Config → CWT 规则 (prefer translate "config" to "规则", and vice versa, if it specifically means CWT configs)
+Here are some common terms:
+
+- CWT Config → CWT 规则 (prefer translate "config" to "规则", and vice versa, if it specifically means CWT config)
 - scope → 作用域
 - modifier → 修正
 - trigger → 触发器
@@ -205,7 +214,7 @@ Here are some common code patterns:
   - on action → 动作触发
   - event → 事件
   - event namespace → 事件命名空间
-  - sprite -> 精灵
+  - sprite → 精灵
 - directive → 指令
   - inline script → 内联脚本
   - definition injection → 定义注入
@@ -226,8 +235,8 @@ For the config system and the config format, see:
 
 - `docs/en/config.md`
 - `docs/en/ref-config-format.md`
-- `cwt/cwtools-stellaris-config/config` (the real-game config directory for Stellaris, other game types are also available)
 - `src/test/testData/chronicle` (the easter-egg config directory)
+- `cwt/cwtools-stellaris-config` (the real-game config directory for Stellaris, other game types are also available)
 
 ## Agent instructions
 
@@ -288,7 +297,7 @@ When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP 
 - **Finding references**: use `ide_find_references`
 - **Finding implementations**: use `ide_find_implementations`
 - **Go to definition**: use `ide_find_definition`
-- **Renaming symbols**: use `ide_refactor_rename` (safe, project-wide)
+- **Renaming symbols**: use `ide_refactor_rename`
 - **Type hierarchy**: use `ide_type_hierarchy`
 - **Diagnostics**: use `ide_diagnostics`
 - **Getting Opened Files**: use `ide_get_active_file`
