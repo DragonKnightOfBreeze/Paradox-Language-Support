@@ -6,15 +6,10 @@
 # excluded local cwt configs
 cwt/cwtools-*-config
 
-# excluded ai rules
-documents/ai-rules/chro*.md
-
 # excluded ai workflow files
+CHRO*.md
 opencode.json
-.opencode/*
-!.opencode/context/
-.opencode/context/*
-!.opencode/context/project-intelligence/
+.opencode
 
 # misc
 notebook

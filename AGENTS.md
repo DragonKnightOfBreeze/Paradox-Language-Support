@@ -1,4 +1,4 @@
-# AGENTS.md
+# Paradox Language Support
 
 This repository contains **Paradox Language Support** (abbr: PLS), the IntelliJ IDEA plugin designed for Paradox game mod developers.
 

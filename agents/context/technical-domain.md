@@ -1,5 +1,3 @@
-<!-- Context: project-intelligence/technical | Priority: critical | Version: 1.0 | Updated: 2026-03-24 -->
-
 # Technical Domain
 
 **Purpose**: Tech stack, architecture, code patterns, and development conventions for Paradox Language Support (PLS).
