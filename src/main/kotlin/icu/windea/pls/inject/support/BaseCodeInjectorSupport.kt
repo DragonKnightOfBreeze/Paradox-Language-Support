@@ -4,8 +4,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.CodeInjectorContext
+import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.model.InjectMethodInfo
@@ -86,7 +86,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
 
             val exprArgs = "\"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg"
             val expr = when {
-                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorUtil.applyInjection($exprArgs)"
+                PlsFacade.isUnitTestMode() -> "(\$r) CodeInjectorContext.applyInjection($exprArgs)"
                 else -> "(\$r) __applyInjectionMethod__.invoke(null, new Object[] { $exprArgs })"
             }
             val throwExpr = when (injectMethodInfo.pointer) {

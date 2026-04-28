@@ -17,10 +17,10 @@
 - [ ] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
 - [ ] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
 
-## 2.1.8-dev - 2026-04-27
+## 2.1.8-dev
 
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
-- [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, Compatible with situations where there are multiple non-exact matching candidates
+- [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

@@ -45,7 +45,7 @@ class FieldCacheCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = Injector()
-        // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorUtil.targetClassKey`.
+        // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorContext.targetClassKey`.
         injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         FieldCacheCodeInjectorSupport().apply(injector)

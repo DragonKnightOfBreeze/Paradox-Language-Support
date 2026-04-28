@@ -53,7 +53,7 @@ class OptimizedFieldCodeInjectorSupportTest {
         // We defrost it explicitly because we are going to mutate bytecode.
         ctClass.defrost()
 
-        // OptimizedFieldCodeInjectorSupport reads CodeInjectorUtil.classPool during transformations.
+        // OptimizedFieldCodeInjectorSupport reads CodeInjectorContext.classPool during transformations.
         // In production this is set by CodeInjectorService; in tests we set/reset it explicitly.
         CodeInjectorContext.classPool = pool
         try {
