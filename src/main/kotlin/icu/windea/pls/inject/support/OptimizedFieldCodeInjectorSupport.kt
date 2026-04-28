@@ -3,7 +3,7 @@ package icu.windea.pls.inject.support
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.OptimizedField
 import javassist.CtField
 import javassist.Modifier
@@ -21,11 +21,11 @@ class OptimizedFieldCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorUtil.targetClassKey) ?: return
+        val targetClass = codeInjector.getUserData(CodeInjectorContext.targetClassKey) ?: return
         val infos = codeInjector::class.findAnnotations<OptimizedField>()
         if (infos.isEmpty()) return
 
-        val classPool = CodeInjectorUtil.classPool ?: return
+        val classPool = CodeInjectorContext.classPool ?: return
 
         for (info in infos) {
             val fieldName = info.value

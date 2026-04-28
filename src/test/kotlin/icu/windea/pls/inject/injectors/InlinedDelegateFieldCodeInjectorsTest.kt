@@ -5,7 +5,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
 import javassist.CtNewConstructor
@@ -26,14 +26,14 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
-        CodeInjectorUtil.codeInjectors.clear()
+        CodeInjectorContext.classPool = CodeInjectorContext.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorContext.codeInjectors.clear()
     }
 
     @After
     fun doTearDown() {
-        CodeInjectorUtil.classPool = null
-        CodeInjectorUtil.codeInjectors.clear()
+        CodeInjectorContext.classPool = null
+        CodeInjectorContext.codeInjectors.clear()
     }
 
     @Test
@@ -51,7 +51,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             injectors.isNotEmpty()
         )
 
-        val pool = CodeInjectorUtil.classPool ?: error("ClassPool is not initialized")
+        val pool = CodeInjectorContext.classPool ?: error("ClassPool is not initialized")
         val injectedBytecode = mutableMapOf<String, ByteArray>()
 
         // NOTE: We must NOT call `CtClass.toClass()` here.
@@ -65,14 +65,14 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
             val ctClass = pool.get(targetClassName)
             ctClass.defrost()
 
-            injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+            injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
             CodeInjectorSupport.EP_NAME.extensionList.forEach { ep -> ep.apply(injector) }
 
             injectedBytecode[targetClassName] = ctClass.toBytecode()
             ctClass.detach()
 
             // clean up
-            injector.putUserData(CodeInjectorUtil.targetClassKey, null)
+            injector.putUserData(CodeInjectorContext.targetClassKey, null)
         }
 
         // Isolated loader for injected bytecode (no global side effects).

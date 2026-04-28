@@ -1,7 +1,11 @@
 package icu.windea.pls.inject
 
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.util.application
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
@@ -12,8 +16,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import java.util.concurrent.atomic.AtomicBoolean
 
-@Suppress("unused")
-object CodeInjectorUtil {
+object CodeInjectorContext {
     // keys for `Application`
     @JvmField val applyInjectionMethodKey = createKey<Method>("APPLY_INJECTION_METHOD_BY_WINDEA")
 
@@ -26,9 +29,22 @@ object CodeInjectorUtil {
     @PublishedApi @JvmField internal val runSafelyFlags = CacheBuilder().build<String, AtomicBoolean> { AtomicBoolean() }
     @PublishedApi @JvmField internal val continueInvocationException: ContinueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
 
-    @PublishedApi
-    @JvmStatic
-    internal fun getClassPool(): ClassPool {
+    fun init() {
+        if (!PlsFacade.isUnitTestMode()) {
+            application.putUserData(applyInjectionMethodKey, CodeInjectorContext.javaClass.methods.first { it.name == "applyInjection" })
+        }
+
+        // initialize class pool
+        classPool = initClassPool()
+        // apply code injectors
+        applyCodeInjectors()
+        // clean up class pool
+        classPool = null
+        // tricky but somehow necessary (~20M)
+        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
+    }
+
+    private fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         classPool.appendClassPath(ClassClassPath(javaClass))
         val classPathList = System.getProperty("java.class.path")
@@ -43,6 +59,36 @@ object CodeInjectorUtil {
         return classPool
     }
 
+    private fun applyCodeInjectors() {
+        val logger = thisLogger()
+        val codeInjectors = codeInjectors
+        CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
+            val codeInjectorId = codeInjector.id
+            try {
+                codeInjector.inject()
+                logger.info("Applied code injector: $codeInjectorId")
+            } catch (e: Exception) {
+                if (e is ProcessCanceledException) throw e
+                // NOTE IDE 更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
+                logger.warn("ERROR when applying code injector: $codeInjectorId")
+                logger.warn(e.message, e)
+            }
+            codeInjectors.put(codeInjectorId, codeInjector)
+        }
+    }
+
+    fun cleanUp() {
+        if (!PlsFacade.isUnitTestMode()) {
+            application.putUserData(applyInjectionMethodKey, null)
+        }
+
+        // 避免内存泄露
+        classPool = null
+        codeInjectors.clear()
+        runSafelyFlags.cleanUp()
+    }
+
+    @Suppress("unused")
     @Throws(InvocationTargetException::class)
     @PublishedApi
     @JvmStatic

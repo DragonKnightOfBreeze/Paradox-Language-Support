@@ -3,7 +3,7 @@ package icu.windea.pls.inject.injectors
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
@@ -29,18 +29,18 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        CodeInjectorUtil.classPool = CodeInjectorUtil.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
-        CodeInjectorUtil.codeInjectors.clear()
+        CodeInjectorContext.classPool = CodeInjectorContext.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorContext.codeInjectors.clear()
     }
 
     @After
     fun doTearDown() {
-        CodeInjectorUtil.classPool = null
-        CodeInjectorUtil.codeInjectors.clear()
+        CodeInjectorContext.classPool = null
+        CodeInjectorContext.codeInjectors.clear()
     }
 
     private fun makeTargetClass(className: String, methods: List<String>): CtClass {
-        val pool = CodeInjectorUtil.classPool ?: error("ClassPool is not initialized")
+        val pool = CodeInjectorContext.classPool ?: error("ClassPool is not initialized")
         val ctClass = pool.makeClass(className)
         ctClass.addConstructor(CtNewConstructor.defaultConstructor(ctClass))
         methods.forEach { ctClass.addMethod(CtNewMethod.make(it, ctClass)) }
@@ -49,7 +49,7 @@ class CodeInjectorReturnValueTest : BasePlatformTestCase() {
     }
 
     private fun registerInjector(codeInjector: CodeInjector) {
-        CodeInjectorUtil.codeInjectors[codeInjector.id] = codeInjector
+        CodeInjectorContext.codeInjectors[codeInjector.id] = codeInjector
     }
 
     @Test

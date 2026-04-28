@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.support
 
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
@@ -46,7 +46,7 @@ class FieldCacheCodeInjectorSupportTest {
 
         val injector = Injector()
         // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorUtil.targetClassKey`.
-        injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+        injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         FieldCacheCodeInjectorSupport().apply(injector)
 

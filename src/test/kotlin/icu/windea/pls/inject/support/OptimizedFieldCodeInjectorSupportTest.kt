@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.support
 
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.OptimizedField
 import javassist.ClassClassPath
@@ -55,10 +55,10 @@ class OptimizedFieldCodeInjectorSupportTest {
 
         // OptimizedFieldCodeInjectorSupport reads CodeInjectorUtil.classPool during transformations.
         // In production this is set by CodeInjectorService; in tests we set/reset it explicitly.
-        CodeInjectorUtil.classPool = pool
+        CodeInjectorContext.classPool = pool
         try {
             val injector = Injector()
-            injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+            injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
             OptimizedFieldCodeInjectorSupport().apply(injector)
 
@@ -76,7 +76,7 @@ class OptimizedFieldCodeInjectorSupportTest {
             assertEquals(2, compute.invoke(instance, 1))
             assertEquals(NewType::class.java.name, getFieldClassName.invoke(instance))
         } finally {
-            CodeInjectorUtil.classPool = null
+            CodeInjectorContext.classPool = null
         }
     }
 }

@@ -8,7 +8,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.InlinedDelegateField
 import icu.windea.pls.inject.annotations.InlinedDelegateFields
@@ -88,7 +88,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = Injector()
-        injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+        injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
@@ -123,7 +123,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = InjectorFail()
-        injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+        injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
@@ -158,7 +158,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = Injector2()
-        injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+        injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         InlinedDelegateFieldCodeInjectorSupport().apply(injector)
 
