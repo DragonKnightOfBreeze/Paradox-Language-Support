@@ -44,7 +44,7 @@ object CodeInjectorContext {
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
-    private fun initClassPool(): ClassPool {
+    fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         classPool.appendClassPath(ClassClassPath(javaClass))
         val classPathList = System.getProperty("java.class.path")
@@ -59,7 +59,7 @@ object CodeInjectorContext {
         return classPool
     }
 
-    private fun applyCodeInjectors() {
+    fun applyCodeInjectors() {
         val logger = thisLogger()
         val codeInjectors = codeInjectors
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->

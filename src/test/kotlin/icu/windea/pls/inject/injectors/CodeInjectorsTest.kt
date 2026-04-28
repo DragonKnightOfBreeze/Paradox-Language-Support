@@ -73,7 +73,7 @@ class CodeInjectorsTest : BasePlatformTestCase() {
     fun doSetUp() {
         // CodeInjectorBase uses CodeInjectorUtil.classPool. We reset it per test to avoid cross-test pollution.
         // ClassClassPath(javaClass) ensures Javassist can resolve test classes created/used in this test.
-        CodeInjectorContext.classPool = CodeInjectorContext.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorContext.classPool = CodeInjectorContext.initClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
         CodeInjectorContext.codeInjectors.clear()
     }
 

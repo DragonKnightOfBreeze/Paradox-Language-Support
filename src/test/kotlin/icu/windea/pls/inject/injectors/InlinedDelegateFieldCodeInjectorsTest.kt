@@ -4,8 +4,8 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroupDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.CodeInjectorContext
+import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
 import javassist.CtNewConstructor
@@ -26,7 +26,7 @@ class InlinedDelegateFieldCodeInjectorsTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        CodeInjectorContext.classPool = CodeInjectorContext.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorContext.classPool = CodeInjectorContext.initClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
         CodeInjectorContext.codeInjectors.clear()
     }
 

@@ -35,7 +35,7 @@ class CodeInjectorParameterBindingTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        CodeInjectorContext.classPool = CodeInjectorContext.getClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
+        CodeInjectorContext.classPool = CodeInjectorContext.initClassPool().also { it.appendClassPath(ClassClassPath(javaClass)) }
         CodeInjectorContext.codeInjectors.clear()
     }
 
