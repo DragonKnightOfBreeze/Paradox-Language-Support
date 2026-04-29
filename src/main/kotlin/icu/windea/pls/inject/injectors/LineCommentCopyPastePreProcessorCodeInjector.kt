@@ -50,6 +50,11 @@ class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
 
         run {
             if (language is CwtLanguage) {
+                if (matchesCommentPrefix(CwtCommenter.MD_DOC_COMMENT_PREFIX)) {
+                    commentPrefix = CwtCommenter.MD_DOC_COMMENT_PREFIX
+                    addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).DOC_COMMENT_ADD_SPACE
+                    return@run
+                }
                 if (matchesCommentPrefix(CwtCommenter.DOC_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.DOC_COMMENT_PREFIX
                     addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).DOC_COMMENT_ADD_SPACE
