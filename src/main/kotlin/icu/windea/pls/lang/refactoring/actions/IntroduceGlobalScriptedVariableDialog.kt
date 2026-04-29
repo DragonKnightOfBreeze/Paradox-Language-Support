@@ -21,7 +21,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.PlsNameValidators
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.fileInfo
 
 class IntroduceGlobalScriptedVariableDialog(
@@ -129,7 +129,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
         if (variableValue.isEmpty()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-        } else if (!ParadoxTypeResolver.resolve(variableValue).canBeScriptedVariableValue()) {
+        } else if (!ParadoxTypeService.isPossibleScriptedVariableValue(ParadoxTypeService.resolve(variableValue))) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
         }
         return null

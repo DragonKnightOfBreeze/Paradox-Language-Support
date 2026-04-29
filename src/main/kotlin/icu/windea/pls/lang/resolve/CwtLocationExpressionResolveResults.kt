@@ -6,6 +6,10 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
+interface CwtLocationResolveResult<T> {
+    val message: String?
+}
+
 /**
  * @see CwtLocalisationLocationExpression
  */

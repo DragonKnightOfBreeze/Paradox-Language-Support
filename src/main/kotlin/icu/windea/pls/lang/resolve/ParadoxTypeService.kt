@@ -1,6 +1,4 @@
-@file:Suppress("unused")
-
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.resolve
 
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.orNull
@@ -8,7 +6,8 @@ import icu.windea.pls.model.ParadoxType
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
 
-object ParadoxTypeResolver {
+@Suppress("unused")
+object ParadoxTypeService {
     private val percentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
     private val colorFieldRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
     private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
@@ -92,8 +91,40 @@ object ParadoxTypeResolver {
             val dateTimeFormatter = dateFieldFormatters.getOrPut(pattern) { DateTimeFormatter.ofPattern(pattern) }
             dateTimeFormatter.parse(expression)
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
+    }
+
+    fun isBoolean(type: ParadoxType): Boolean {
+        return type == ParadoxType.Boolean
+    }
+
+    fun isRelaxInt(type: ParadoxType): Boolean {
+        return type == ParadoxType.Unknown || type == ParadoxType.Int || type == ParadoxType.Parameter || type == ParadoxType.InlineMath
+    }
+
+    fun isRelaxFloat(type: ParadoxType): Boolean {
+        return type == ParadoxType.Unknown || type == ParadoxType.Int || type == ParadoxType.Float || type == ParadoxType.Parameter || type == ParadoxType.InlineMath
+    }
+
+    fun isRelaxString(type: ParadoxType): Boolean {
+        return type == ParadoxType.Unknown || type == ParadoxType.String || type == ParadoxType.Parameter
+    }
+
+    fun isNumberOrRelaxString(type: ParadoxType): Boolean {
+        return type == ParadoxType.Unknown || type == ParadoxType.Int || type == ParadoxType.Float || type == ParadoxType.String || type == ParadoxType.Parameter
+    }
+
+    fun isStringLike(type: ParadoxType): Boolean {
+        return type == ParadoxType.Unknown || type == ParadoxType.String || type == ParadoxType.Parameter || type == ParadoxType.Int || type == ParadoxType.Float
+    }
+
+    fun isBlockLike(type: ParadoxType): Boolean {
+        return type == ParadoxType.Block || type == ParadoxType.Color || type == ParadoxType.InlineMath
+    }
+
+    fun isPossibleScriptedVariableValue(type: ParadoxType): Boolean {
+        return type == ParadoxType.Boolean || type == ParadoxType.Int || type == ParadoxType.Float || type == ParadoxType.String
     }
 }

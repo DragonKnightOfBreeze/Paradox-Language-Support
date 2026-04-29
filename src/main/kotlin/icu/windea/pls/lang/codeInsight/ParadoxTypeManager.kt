@@ -21,6 +21,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolveLocalisation
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -117,7 +118,7 @@ object ParadoxTypeManager {
      */
     fun getType(element: PsiElement): ParadoxType? {
         return when (element) {
-            is ParadoxScriptPropertyKey -> ParadoxTypeResolver.resolve(element.value)
+            is ParadoxScriptPropertyKey -> ParadoxTypeService.resolve(element.value)
             is ParadoxScriptBoolean -> ParadoxType.Boolean
             is ParadoxScriptInt -> ParadoxType.Int
             is ParadoxScriptFloat -> ParadoxType.Float
@@ -135,7 +136,7 @@ object ParadoxTypeManager {
             }
             is ParadoxCsvColumn -> {
                 if (element.isHeaderColumn()) return ParadoxType.String
-                ParadoxTypeResolver.resolve(element.value)
+                ParadoxTypeService.resolve(element.value)
             }
             is ParadoxScriptedVariableReference -> {
                 element.reference?.resolve()?.let { getType(it) } ?: ParadoxType.Unknown
@@ -143,7 +144,7 @@ object ParadoxTypeManager {
             is ParadoxExpressionElement -> ParadoxType.Unknown
             is ParadoxParameter -> ParadoxType.Parameter
             is ParadoxConditionParameter -> ParadoxType.Parameter
-            is ParadoxScriptInlineMathNumber -> ParadoxTypeResolver.resolve(element.text)
+            is ParadoxScriptInlineMathNumber -> ParadoxTypeService.resolve(element.text)
             is ParadoxScriptScriptedVariable -> {
                 element.scriptedVariableValue?.let { getType(it) } ?: ParadoxType.Unknown
             }

@@ -2,7 +2,7 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
@@ -22,13 +22,13 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchBool(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = ParadoxTypeResolver.isBoolean(value)
+        val r = ParadoxTypeService.isBoolean(value)
         return ParadoxMatchResult.exactOrNot(r)
     }
 
     private fun matchInt(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) // empty value is allowed
+        val r = value.isEmpty() || ParadoxTypeService.isInt(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
         ParadoxMatchResultProvider.forRangedInt(value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch
@@ -36,7 +36,7 @@ class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
 
     private fun matchFloat(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         val value = context.expressionText
-        val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) // empty value is allowed
+        val r = value.isEmpty() || ParadoxTypeService.isFloat(value) // empty value is allowed
         if (!r) return ParadoxMatchResult.NotMatch
         ParadoxMatchResultProvider.forRangedFloat(value, context.configExpression)?.let { return it }
         return ParadoxMatchResult.ExactMatch
@@ -59,7 +59,7 @@ class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     private fun matchDefinition(context: ParadoxCsvExpressionMatchContext): ParadoxMatchResult {
         // can be an int or float here (e.g., for <technology_tier>)
         val value = context.expressionText.unquote()
-        val valueType = ParadoxTypeResolver.resolve(value)
+        val valueType = ParadoxTypeService.resolve(value)
         if (valueType != ParadoxType.String && valueType != ParadoxType.Int && valueType != ParadoxType.Float) return ParadoxMatchResult.NotMatch
         if (!value.isIdentifier(".-")) return ParadoxMatchResult.NotMatch
         return ParadoxMatchResultProvider.forDefinition(context.element, context.project, value, context.configExpression)

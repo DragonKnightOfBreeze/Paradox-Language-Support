@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.expression
 
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -59,11 +59,11 @@ private class ParadoxScriptExpressionResolverImpl : ParadoxScriptExpression.Reso
     }
 
     override fun resolve(value: String, quoted: Boolean, isKey: Boolean?): ParadoxScriptExpression {
-        return ParadoxScriptExpressionImpl(value, ParadoxTypeResolver.resolve(value), quoted, isKey)
+        return ParadoxScriptExpressionImpl(value, ParadoxTypeService.resolve(value), quoted, isKey)
     }
 
     override fun resolve(text: String, isKey: Boolean?): ParadoxScriptExpression {
-        return ParadoxScriptExpressionImpl(text.unquote(), ParadoxTypeResolver.resolve(text), text.isLeftQuoted(), isKey)
+        return ParadoxScriptExpressionImpl(text.unquote(), ParadoxTypeService.resolve(text), text.isLeftQuoted(), isKey)
     }
 
     override fun resolve(element: ParadoxScriptExpressionElement, options: ParadoxMatchOptions?): ParadoxScriptExpression {
