@@ -5,7 +5,7 @@
 - [ ] PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma
 - [ ] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
 - [x] PLANNED 补充本地化文件中的快速复制文本的意向
-- [ ] PLANNED 重构渲染器组件
+- [x] PLANNED 重构渲染器组件
 - [x] P2 消除或重构initializer组件 & `PlsDataPathService`
 - [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
 - [ ] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。

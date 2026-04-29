@@ -286,12 +286,12 @@ class ParadoxScriptTextPlainRendererTest : BasePlatformTestCase() {
         }
     }
 
-    private inline fun assertResult(expect: String, input: String, configure: ParadoxScriptTextPlainRenderer.() -> Unit = {}) {
+    private inline fun assertResult(expect: String, input: String, configure: ParadoxScriptTextPlainRenderSettings.() -> Unit = {}) {
         val id = counter.getAndIncrement()
         markFileInfo(gameType, "common/renderer_test_$id.txt")
         myFixture.configureByText("renderer_test_$id.txt", input)
         val file = myFixture.file as ParadoxScriptFile
-        val renderer = ParadoxScriptTextPlainRenderer().apply(configure)
+        val renderer = ParadoxScriptTextPlainRenderer().apply { settings.configure() }
         val result = renderer.render(file)
         Assert.assertEquals(expect, result)
     }

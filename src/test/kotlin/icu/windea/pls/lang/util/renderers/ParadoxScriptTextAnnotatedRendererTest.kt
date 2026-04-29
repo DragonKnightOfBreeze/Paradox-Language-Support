@@ -78,7 +78,7 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
     private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxScriptFile
-        val renderer = ParadoxScriptTextAnnotatedRenderer().also { it.level = level }
+        val renderer = ParadoxScriptTextAnnotatedRenderer().apply { settings.level = level }
         val result = renderer.render(file)
         val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
         val annotatedFile = myFixture.configureByFile("features/renderers/$annotatedPath")

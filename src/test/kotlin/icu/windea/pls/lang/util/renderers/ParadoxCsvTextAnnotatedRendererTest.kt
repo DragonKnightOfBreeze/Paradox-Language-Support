@@ -68,7 +68,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxCsvFile
-        val renderer = ParadoxCsvTextAnnotatedRenderer().also { it.level = level }
+        val renderer = ParadoxCsvTextAnnotatedRenderer().apply { settings.level = level }
         val result = renderer.render(file)
         val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
         val annotatedFile = myFixture.configureByFile("features/renderers/$annotatedPath")

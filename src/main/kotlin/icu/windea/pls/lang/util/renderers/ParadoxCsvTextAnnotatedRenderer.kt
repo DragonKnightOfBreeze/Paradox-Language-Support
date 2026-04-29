@@ -14,39 +14,44 @@ import icu.windea.pls.lang.codeInsight.annotated.ParadoxCsvAnnotatedManager
  * - 类型信息。参见 [ParadoxCsvAnnotatedManager.getType]。
  * - 规则表达式信息。参见 [ParadoxCsvAnnotatedManager.getConfigExpression]。
  */
-class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<ParadoxCsvTextAnnotatedRenderer.Scope, String>() {
+class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<String, ParadoxCsvTextAnnotatedRenderSettings, ParadoxCsvTextAnnotatedRenderContext>() {
+    override val settings = ParadoxCsvTextAnnotatedRenderSettings()
+
+    override fun createContext() = ParadoxCsvTextAnnotatedRenderContext(settings)
+}
+
+class ParadoxCsvTextAnnotatedRenderContext(
+    private val settings: ParadoxCsvTextAnnotatedRenderSettings,
+) : ParadoxCsvTextPlainRenderContext(settings.toPlainSettings()) {
+    override fun renderRowElement(element: ParadoxCsvRowElement) {
+        renderAnnotations(element)
+        super.renderRowElement(element)
+    }
+
+    fun renderAnnotations(element: ParadoxCsvRowElement) {
+        val annotations = getAnnotations(element)
+        if (annotations.isEmpty()) return
+        for (line in annotations) {
+            builder.append(line)
+            builder.append('\n')
+        }
+    }
+
+    fun getAnnotations(element: ParadoxCsvRowElement): List<String> {
+        return buildList {
+            if (settings.level.includeType) {
+                ParadoxCsvAnnotatedManager.getType(element)?.let { add(it) }
+            }
+            if (settings.level.includeConfigExpression) {
+                ParadoxCsvAnnotatedManager.getConfigExpression(element)?.let { add(it) }
+            }
+        }
+    }
+}
+
+data class ParadoxCsvTextAnnotatedRenderSettings(
+    var separator: String = ";",
     var level: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel.DEFAULT
-
-    override fun createScope(): Scope {
-        return Scope(level)
-    }
-
-    open class Scope(
-        var level: ParadoxAnnotatedLevel,
-    ) : ParadoxCsvTextPlainRenderer.Scope() {
-        override fun renderRowElement(element: ParadoxCsvRowElement) {
-            renderAnnotations(element)
-            super.renderRowElement(element)
-        }
-
-        fun renderAnnotations(element: ParadoxCsvRowElement) {
-            val annotations = getAnnotations(element)
-            if (annotations.isEmpty()) return
-            for (line in annotations) {
-                builder.append(line)
-                builder.append('\n')
-            }
-        }
-
-        fun getAnnotations(element: ParadoxCsvRowElement): List<String> {
-            return buildList {
-                if (level.includeType) {
-                    ParadoxCsvAnnotatedManager.getType(element)?.let { add(it) }
-                }
-                if (level.includeConfigExpression) {
-                    ParadoxCsvAnnotatedManager.getConfigExpression(element)?.let { add(it) }
-                }
-            }
-        }
-    }
+) : ParadoxCsvTextRenderSettings() {
+    fun toPlainSettings() = ParadoxCsvTextPlainRenderSettings(separator)
 }
