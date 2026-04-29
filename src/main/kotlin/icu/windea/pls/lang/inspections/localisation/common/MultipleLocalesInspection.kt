@@ -14,15 +14,15 @@ import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
 /**
  * 检查本地化文件中是否包含多个语言环境声明。
  *
- * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"。
+ * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     @JvmField
@@ -42,6 +42,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         ignoredFileNames.splitOptimized(';').forEach {
             if (fileName.matchesPattern(it, true)) return null // 忽略
         }
+
         if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.localisation.multipleLocales.desc")
