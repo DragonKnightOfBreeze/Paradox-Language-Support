@@ -6,7 +6,7 @@ import icu.windea.pls.ai.model.ErrorInfos
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.util.jsonMapper
+import icu.windea.pls.core.util.JsonService
 
 object PlsAiManager {
     fun getOptimizedDescription(description: String?): String? {
@@ -20,11 +20,11 @@ object PlsAiManager {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
                     runCatchingCancelable {
-                        val errorInfo = jsonMapper.readValue<ErrorInfos.OpenAiErrorInfo>(message)
+                        val errorInfo = JsonService.mapper.readValue<ErrorInfos.OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
                     runCatchingCancelable {
-                        val errorInfo = jsonMapper.readValue<ErrorInfos.AnthropicErrorInfo>(message)
+                        val errorInfo = JsonService.mapper.readValue<ErrorInfos.AnthropicErrorInfo>(message)
                         return "[${errorInfo.error.type}] ${errorInfo.error.message}"
                     }
                 }

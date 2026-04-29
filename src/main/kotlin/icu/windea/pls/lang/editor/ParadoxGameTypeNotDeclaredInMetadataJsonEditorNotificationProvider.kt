@@ -10,7 +10,7 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.util.jsonMapper
+import icu.windea.pls.core.util.JsonService
 import icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -59,7 +59,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             writeCommandAction(project, PlsBundle.message("editor.notification.2.action.command")) {
-                jsonMapper.writeValue(infoFile.getOutputStream(this), newInfo)
+                JsonService.mapper.writeValue(infoFile.getOutputStream(this), newInfo)
             }
         }
 

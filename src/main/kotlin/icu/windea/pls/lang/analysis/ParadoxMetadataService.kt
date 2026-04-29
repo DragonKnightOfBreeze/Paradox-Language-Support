@@ -5,7 +5,7 @@ import com.intellij.json.JsonFileType
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.util.jsonMapper
+import icu.windea.pls.core.util.JsonService
 import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -41,7 +41,7 @@ object ParadoxMetadataService {
     fun resolveLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo {
         // 直接解析 JSON
 
-        return file.inputStream.use { jsonMapper.readValue(it) }
+        return file.inputStream.use { JsonService.mapper.readValue(it) }
     }
 
     // endregion
@@ -67,7 +67,7 @@ object ParadoxMetadataService {
     fun resolveMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo {
         // 直接解析 JSON
 
-        return file.inputStream.use { jsonMapper.readValue(it) }
+        return file.inputStream.use { JsonService.mapper.readValue(it) }
     }
 
     // endregion

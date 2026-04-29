@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.jsonMapper
+import icu.windea.pls.core.util.JsonService
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Files
@@ -57,7 +57,7 @@ object ParadoxMetadataUtil {
      */
     fun detectLauncherPlaylistPositionIsInt(file: VirtualFile): Boolean? {
         return try {
-            val root = file.inputStream.use { jsonMapper.readTree(it) }
+            val root = file.inputStream.use { JsonService.mapper.readTree(it) }
             val modsNode = root.get("mods") ?: return null
             val first = modsNode.firstOrNull() ?: return null
             first.get("position")?.isInt

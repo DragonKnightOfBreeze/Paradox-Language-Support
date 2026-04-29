@@ -14,9 +14,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.escapeXml
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import icu.windea.pls.core.util.MarkdownService
 
 object PsiService {
     fun toPresentableString(element: PsiElement): String {
@@ -204,9 +202,7 @@ object PsiService {
         }.trimEnd().trimIndent()
         if (isMarkdown) {
             // 渲染为 Markdown（GFM）
-            val flavour = GFMFlavourDescriptor()
-            val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(result)
-            return HtmlGenerator(result, ast, flavour).generateHtml()
+            return MarkdownService.toHtml(result)
         }
         return result
     }
