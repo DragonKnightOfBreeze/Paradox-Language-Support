@@ -24,7 +24,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.PathReferenceManagerImplCodeInjector"/>
 
     <!-- Code injectors to provide additional features -->
-    <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
 
     <!-- Code injectors to optimize image readers (delegate to image tools) -->
