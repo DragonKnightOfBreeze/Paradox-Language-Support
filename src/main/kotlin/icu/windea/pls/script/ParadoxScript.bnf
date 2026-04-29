@@ -324,8 +324,9 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   ]
   methods=[getValue]
 }
-// without prefix "@", can be parameterized
-inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
+// leading `@` is permitted (on syntax level)
+// can be parameterized
+inline_math_scripted_variable_reference ::= AT ? inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"

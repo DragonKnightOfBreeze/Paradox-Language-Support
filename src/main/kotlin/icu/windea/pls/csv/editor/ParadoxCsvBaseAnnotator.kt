@@ -2,12 +2,12 @@ package icu.windea.pls.csv.editor
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.lang.annotation.HighlightSeverity.*
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.model.ParadoxType
 
 /**
@@ -24,16 +24,15 @@ class ParadoxCsvBaseAnnotator : Annotator {
     }
 
     private fun annotateColumn(element: ParadoxCsvColumn, holder: AnnotationHolder) {
-        val attributesKeys = getAttributesKey(element)
-        if (attributesKeys == null) return
-        holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(attributesKeys).create()
+        val attributesKeys = getAttributesKey(element) ?: return
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(attributesKeys).create()
     }
 
     private fun getAttributesKey(element: ParadoxCsvColumn): TextAttributesKey? {
         if (element.firstChild == null) return null
         if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER_KEY
 
-        val resolvedType = ParadoxTypeResolver.resolve(element.value)
+        val resolvedType = ParadoxTypeService.resolve(element.value)
         val attributesKeys = when (resolvedType) {
             ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD_KEY
             ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER_KEY

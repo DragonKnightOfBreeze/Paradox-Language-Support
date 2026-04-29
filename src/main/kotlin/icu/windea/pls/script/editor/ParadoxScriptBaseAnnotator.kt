@@ -2,17 +2,19 @@ package icu.windea.pls.script.editor
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.lang.annotation.HighlightSeverity.*
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.quickfix.InsertStringFix
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
@@ -26,15 +28,21 @@ class ParadoxScriptBaseAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
-        // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
+        checkNeighboringLiteral(element, holder)
+        checkMissingQuote(element, holder)
+        checkInlineMathScriptedVariableReference(element, holder)
+    }
+
+    private fun checkNeighboringLiteral(element: PsiElement, holder: AnnotationHolder) {
+        // TODO 2.0.2+ 由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
         // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
-            holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.literal.not.supported"))
                 .withFix(InsertStringFix(element, PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
 
-        // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
+        // TODO 2.0.2+ 由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
         // 针对字符串内的特殊情况：如 a"b 被解析为同一个字符串（多个 STRING_TOKEN 片段）
         // 需要在第一个以右引号结尾但缺失左引号的片段上标记“缺失开引号”，并在紧随其后的片段上标记“紧邻字面量”
         // if (element is ParadoxScriptString) {
@@ -58,16 +66,32 @@ class ParadoxScriptBaseAnnotator : Annotator {
         //         }
         //     }
         // }
+    }
 
+    private fun checkMissingQuote(element: PsiElement, holder: AnnotationHolder) {
         // 检测是否缺失一侧的双引号
         if (element.isQuoteAware()) {
             val text = element.text
             val isLeftQuoted = text.isLeftQuoted()
             val isRightQuoted = text.isRightQuoted()
             if (!isLeftQuoted && isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.opening.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.opening.quote")).create()
             } else if (isLeftQuoted && !isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.closing.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.closing.quote")).create()
+            }
+        }
+    }
+
+    private fun checkInlineMathScriptedVariableReference(element: PsiElement, holder: AnnotationHolder) {
+        // 2.1.8 对于内联数学表达式中的封装变量引用，不需要也不允许前导的 `@`
+        if (element is ParadoxScriptInlineMathScriptedVariableReference) {
+            val firstChild = element.firstChild
+            val leadingAt = firstChild.elementType == ParadoxScriptElementTypes.AT
+            if (leadingAt) {
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("leading.at.for.svr.in.ime"))
+                    .range(firstChild)
+                    .withFix(DeleteStringByElementTypeFix(firstChild, PlsBundle.message("leading.at.for.svr.in.ime.fix")))
+                    .create()
             }
         }
     }
@@ -82,14 +106,14 @@ class ParadoxScriptBaseAnnotator : Annotator {
         val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
         val templateElement = parameterElement.parent ?: return
         val attributesKey = when {
-            element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY
+            element.text.startsWith('@') -> Keys.SCRIPTED_VARIABLE_KEY
             templateElement is ParadoxScriptPropertyKey -> Keys.PROPERTY_KEY_KEY
             templateElement is ParadoxScriptString -> Keys.STRING_KEY
             templateElement is ParadoxScriptScriptedVariableName -> Keys.SCRIPTED_VARIABLE_KEY
             templateElement is ParadoxScriptScriptedVariableReference -> Keys.SCRIPTED_VARIABLE_KEY
             else -> return
         }
-        holder.newSilentAnnotation(INFORMATION).range(element)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
             .textAttributes(attributesKey)
             .create()
     }

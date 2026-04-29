@@ -15,11 +15,15 @@ class ParadoxLocalisationBaseAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
+        checkNeighboringIcon(element, holder)
+    }
+
+    private fun checkNeighboringIcon(element: PsiElement, holder: AnnotationHolder) {
         // by @雪丶我
         // 不允许紧邻的图标
         if (element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
-            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("localisation.annotator.neighboringIcon"))
-                .withFix(InsertStringFix(element, PlsBundle.message("localisation.annotator.neighboringIcon.fix"), " ", element.startOffset))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.icon.not.supported"))
+                .withFix(InsertStringFix(element, PlsBundle.message("neighboring.icon.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
     }

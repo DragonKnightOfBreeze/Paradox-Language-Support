@@ -2,7 +2,7 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.lang.annotation.HighlightSeverity.*
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
@@ -20,22 +20,29 @@ class CwtBaseAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
+        checkNeighboringLiteral(element, holder)
+        checkMissingQuote(element, holder)
+    }
+
+    private fun checkNeighboringLiteral(element: PsiElement, holder: AnnotationHolder) {
         // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
-            holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
+            holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("neighboring.literal.not.supported"))
                 .withFix(InsertStringFix(element, PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
+    }
 
+    private fun checkMissingQuote(element: PsiElement, holder: AnnotationHolder) {
         // 检测是否缺失一侧的双引号
         if (element.isQuoteAware()) {
             val text = element.text
             val isLeftQuoted = text.isLeftQuoted()
             val isRightQuoted = text.isRightQuoted()
             if (!isLeftQuoted && isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.opening.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.opening.quote")).create()
             } else if (isLeftQuoted && !isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.closing.quote")).create()
+                holder.newAnnotation(HighlightSeverity.ERROR, PlsBundle.message("missing.closing.quote")).create()
             }
         }
     }

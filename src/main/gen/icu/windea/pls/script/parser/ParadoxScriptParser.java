@@ -347,32 +347,40 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) *
+  // AT ? inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) *
   public static boolean inline_math_scripted_variable_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE, "<inline math scripted variable reference>");
-    r = inline_math_scripted_variable_reference_part(b, l + 1);
+    r = inline_math_scripted_variable_reference_0(b, l + 1);
+    r = r && inline_math_scripted_variable_reference_part(b, l + 1);
     r = r && postProcessFirstSnippet(b, l + 1);
-    r = r && inline_math_scripted_variable_reference_2(b, l + 1);
+    r = r && inline_math_scripted_variable_reference_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
+  // AT ?
+  private static boolean inline_math_scripted_variable_reference_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_0")) return false;
+    consumeToken(b, AT);
+    return true;
+  }
+
   // (<<processSnippet>> inline_math_scripted_variable_reference_part) *
-  private static boolean inline_math_scripted_variable_reference_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_2")) return false;
+  private static boolean inline_math_scripted_variable_reference_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!inline_math_scripted_variable_reference_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "inline_math_scripted_variable_reference_2", c)) break;
+      if (!inline_math_scripted_variable_reference_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_math_scripted_variable_reference_3", c)) break;
     }
     return true;
   }
 
   // <<processSnippet>> inline_math_scripted_variable_reference_part
-  private static boolean inline_math_scripted_variable_reference_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_2_0")) return false;
+  private static boolean inline_math_scripted_variable_reference_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = processSnippet(b, l + 1);

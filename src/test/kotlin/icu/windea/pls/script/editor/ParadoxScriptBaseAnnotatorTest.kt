@@ -22,7 +22,7 @@ class ParadoxScriptBaseAnnotatorTest : BasePlatformTestCase() {
     @After
     fun doTearDown() = clearIntegrationTest()
 
-    // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
+    // TODO 2.0.2+ 由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
     // fun testAdjacentLiterals_errorAndFix() {
     //     val errorMsg = PlsBundle.message("neighboring.literal.not.supported")
     //     val openingMsg = PlsBundle.message("missing.opening.quote")
@@ -53,6 +53,19 @@ class ParadoxScriptBaseAnnotatorTest : BasePlatformTestCase() {
             """
             <error descr="$openingMsg">value"</error>
             <error descr="$closingMsg">"value</error>
+            """.trimIndent()
+        )
+        myFixture.checkHighlighting(true, true, true)
+    }
+
+    @Test
+    fun testInlineMathScriptedVariableReference() {
+        val msg = PlsBundle.message("leading.at.for.svr.in.ime")
+        myFixture.configureByText(
+            "annotator_inline_math_scripted_variable_reference.test.txt",
+            """
+            key = @[ v + 1 ]
+            key = @[ <error descr="$msg">@</error>v + 1 ]
             """.trimIndent()
         )
         myFixture.checkHighlighting(true, true, true)

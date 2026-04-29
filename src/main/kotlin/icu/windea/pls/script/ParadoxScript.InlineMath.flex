@@ -64,6 +64,7 @@ ARGUMENT_TOKEN=[^#$=<>!?{}\[\]\s]+ // compatible with leading '@'
     "/" { return DIV_SIGN; }
     "%" { return MOD_SIGN; }
     "$" { yybegin(IN_PARAMETER); return PARAMETER_START; }
+    "@" { return AT; } // leading `@` is permitted (on syntax level)
     {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
     {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
     {SCRIPTED_VARIABLE_NAME_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }

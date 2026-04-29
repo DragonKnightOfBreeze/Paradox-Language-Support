@@ -24,7 +24,7 @@ class ParadoxLocalisationBaseAnnotatorTest : BasePlatformTestCase() {
 
     @Test
     fun testAdjacentIcons_errorAndFix() {
-        val errorMsg = PlsBundle.message("localisation.annotator.neighboringIcon")
+        val errorMsg = PlsBundle.message("neighboring.icon.not.supported")
         myFixture.configureByText(
             "annotator_adjacent_icons.test.yml",
             // 两个相邻图标：£a££b£，应在第二个图标上报错
@@ -36,7 +36,7 @@ class ParadoxLocalisationBaseAnnotatorTest : BasePlatformTestCase() {
         myFixture.checkHighlighting(true, true, true)
 
         // Quick Fix: 插入空格
-        val fixName = PlsBundle.message("localisation.annotator.neighboringIcon.fix")
+        val fixName = PlsBundle.message("neighboring.icon.not.supported.fix")
         myFixture.configureByText(
             "annotator_adjacent_icons_apply.test.yml",
             """

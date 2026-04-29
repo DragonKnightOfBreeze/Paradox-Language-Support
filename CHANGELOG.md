@@ -21,6 +21,7 @@
 
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
 - [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
+- [x] 在语法层面兼容内联数学表达式中的封装变量引用的前导的 `@` (如 `@[ @v + 1]`)，通过注解器检查 / Made compatible with leading `@` of scripted variable references in inline math expressions (e.g., `@[ @v + 1]`) on syntax level, checked by the annotator
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
