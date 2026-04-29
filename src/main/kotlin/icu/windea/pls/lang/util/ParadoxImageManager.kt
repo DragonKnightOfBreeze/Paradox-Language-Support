@@ -32,10 +32,10 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.tools.PlsDataPathService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.lang.tools.PlsDataPathService
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
@@ -43,7 +43,6 @@ import javax.imageio.ImageIO
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 
@@ -214,7 +213,7 @@ object ParadoxImageManager {
         if (iconUrl == null) return false
         val iconFilePath = iconUrl.toPathOrNull()
         if (iconFilePath == null) return false
-        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0L)) return false
+        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0)) return false
         return true
     }
 }

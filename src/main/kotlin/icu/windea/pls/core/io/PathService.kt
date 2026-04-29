@@ -2,6 +2,7 @@ package icu.windea.pls.core.io
 
 import com.intellij.util.io.createParentDirectories
 import com.intellij.util.io.delete
+import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.core.toClasspathUrl
 import org.apache.commons.io.file.PathUtils
 import java.nio.file.Files
@@ -22,7 +23,7 @@ object PathService {
     }
 
     fun ensureFileCreatedFromClasspath(path: Path, url: String) {
-        if (path.isRegularFile()) return
+        if (path.isRegularFile() && path.fileSizeSafe() > 0) return
         if (path.exists()) {
             if (path.isDirectory()) PathUtils.cleanDirectory(path)
             PathUtils.delete(path)
