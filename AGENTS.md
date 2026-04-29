@@ -276,11 +276,12 @@ For the config system and the config format, see:
 
 Prefer **tool-assisted** workflows over ad-hoc shell usage.
 
-### General file/text operations
+### General operations
 
-- Prefer built-in tools for common operations (find files by name/glob, search text/regex across the repo, read files before editing, apply well-scoped patches, etc.)
+- Prefer built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
+- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests), and operations that are more suitable to be done by commands.
+- Prefer using suitable mcp when structured search or semantic search is available.
 - Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
-- Avoid blind edits and avoid scanning via shell commands when structured search is available.
 
 ### JetBrains official MCP server (IDE actions)
 
@@ -300,7 +301,6 @@ When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP 
 - **Renaming symbols**: use `ide_refactor_rename`
 - **Type hierarchy**: use `ide_type_hierarchy`
 - **Diagnostics**: use `ide_diagnostics`
-- **Getting Opened Files**: use `ide_get_active_file`
 - Etc.
 
 Notes:
