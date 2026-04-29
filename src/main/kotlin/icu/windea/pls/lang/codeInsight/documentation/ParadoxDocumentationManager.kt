@@ -949,7 +949,7 @@ object ParadoxDocumentationManager {
         // 加上单行注释文本
         if (!PlsSettings.getInstance().state.documentation.renderLineComment) return
         val ownedComments = ParadoxPsiManager.getOwnedComments(element)
-        val commentText = ParadoxPsiManager.getLineCommentText(ownedComments, "<br>")
+        val commentText = ParadoxPsiManager.getLineCommentText(ownedComments)
         if (commentText.isNullOrEmpty()) return
         content { append(commentText) }
     }

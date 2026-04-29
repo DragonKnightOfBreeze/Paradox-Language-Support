@@ -13,6 +13,10 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.escapeXml
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
+import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.MarkdownParser
 
 object PsiService {
     fun toPresentableString(element: PsiElement): String {
@@ -148,6 +152,63 @@ object PsiService {
         // 这里使用“截断”而非“过滤”逻辑
         val attachedComments = getAttachedComments(element)
         return attachedComments.dropWhile { !predicate(it) }.takeWhile(predicate).toList().reversed()
+    }
+
+    fun getLineCommentText(comments: List<PsiComment>): String? {
+        if (comments.isEmpty()) return null
+        val result = buildString {
+            for (comment in comments) {
+                val text = comment.text
+                val line = text.trimStart('#').trimEnd().escapeXml()
+                if (line.isEmpty()) {
+                    append("<br>")
+                } else {
+                    // - 如果某行注释以 '\' 结束，则输出时不要在这里换行（并且，还会忽略所有末尾的 '\'）
+                    // - 如果某行注释以逗号（中文/英文）结束，则输出时不要在这里换行
+                    append(line.trimEnd('/'))
+                    if (line.last() !in "/,，") append("<br>")
+                }
+            }
+        }.trimEnd().trimIndent()
+        return result
+    }
+
+    fun getDocCommentText(comments: List<PsiComment>, markdownLinePredicate: (String) -> Boolean): String? {
+        if (comments.isEmpty()) return null
+        var isMarkdown = false
+        val result = buildString {
+            for (comment in comments) {
+                val text = comment.text
+                val isMarkdownLine = markdownLinePredicate(text)
+                isMarkdown = isMarkdown || isMarkdownLine
+                if (isMarkdownLine) {
+                    val line = text.trimStart('#')
+                    if (line.isEmpty()) {
+                        append("\n")
+                    } else {
+                        append(line)
+                        append("\n")
+                    }
+                } else {
+                    val line = text.trimStart('#').trimEnd().escapeXml()
+                    if (line.isEmpty()) {
+                        append("<br>")
+                    } else {
+                        // - 如果某行注释以 '\' 结束，则输出时不要在这里换行（并且，还会忽略所有末尾的 '\'）
+                        // - 如果某行注释以逗号（中文/英文）结束，则输出时不要在这里换行
+                        append(line.trimEnd('/'))
+                        if (line.last() !in "/,，") append("<br>")
+                    }
+                }
+            }
+        }.trimEnd().trimIndent()
+        if (isMarkdown) {
+            // 渲染为 Markdown（GFM）
+            val flavour = GFMFlavourDescriptor()
+            val ast = MarkdownParser(flavour).buildMarkdownTreeFromString(result)
+            return HtmlGenerator(result, ast, flavour).generateHtml()
+        }
+        return result
     }
 }
 

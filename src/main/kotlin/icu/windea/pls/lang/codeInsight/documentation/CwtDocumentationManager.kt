@@ -465,8 +465,8 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val ownedComments = CwtPsiManager.getOwnedComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
         if (documentation.isNullOrEmpty()) return
         content {
             append(documentation)

@@ -100,7 +100,7 @@ CWT features a three-level comment system, which is one of its main distinctions
 
 **Option comments** start with `##` and attach metadata to the immediately following member (property, value, or block). The content syntax is the same as a property, in the form `<optionKey> <sep> <optionValue>`. Common option comments include `## cardinality = 0..1` (declaring cardinality constraints), `## severity = warning` (declaring inspection severity level), `## push_scope = country` (declaring the pushed scope), etc.
 
-**Documentation comments** start with `###` and provide descriptive text for members. This text is displayed in code completion and quick documentation. In particular, documentation comments starting with `####` (or more `#` characters) will have their content rendered directly as HTML by the plugin.
+**Documentation comments** start with `###` and provide descriptive text for members. This text is displayed in code completion and quick documentation. In particular, for documentation comments starting with `####` (or more `#`), the comment text is treated as Markdown text by the plugin.
 
 ### Escaping {#cwt-escaping}
 

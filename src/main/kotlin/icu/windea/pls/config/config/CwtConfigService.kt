@@ -270,8 +270,8 @@ object CwtConfigService {
     }
 
     fun getDocumentation(element: CwtMember): String? {
-        val ownedComments = CwtPsiManager.getOwnedComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
         return documentation
     }
 
