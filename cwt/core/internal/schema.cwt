@@ -5,9 +5,9 @@
 # see: icu.windea.pls.config.configExpression.CwtSchemaExpression
 # see: icu.windea.pls.config.util.CwtConfigSchemaManager
 
-#### Container property to introduce <a href="https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority">Priority Configs</a>.
+#### Container property to introduce [Priority Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority).
 priorities = {
-    #### introduce a <a href="https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority">Priority Config</a>.
+    #### introduce a [Priority Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority).
     $path = $enum:override_strategy$
 }
 
