@@ -4,7 +4,7 @@
 
 - [ ] PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma
 - [ ] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
-- [ ] PLANNED 补充本地化文件中的快速复制文本的意向
+- [x] PLANNED 补充本地化文件中的快速复制文本的意向
 - [ ] PLANNED 重构渲染器组件
 - [x] P2 消除或重构initializer组件 & `PlsDataPathService`
 - [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
@@ -23,6 +23,7 @@
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
 - [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
 - [x] 在语法层面兼容内联数学表达式中的封装变量引用的前导的 `@` (如 `@[ @v + 1]`)，通过注解器检查 / Made compatible with leading `@` of scripted variable references in inline math expressions (e.g., `@[ @v + 1]`) on syntax level, checked by the annotator
+- [x] 补充意向，以复制当前语言环境下的本地化列表到剪贴板 / Added intentions to copy localization list of current locale to the clipboard 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

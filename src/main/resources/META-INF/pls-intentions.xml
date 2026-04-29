@@ -201,6 +201,16 @@
       <categoryKey>intention.localisation.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationFromLocaleIntention</className>
     </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithLocaleIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.CopyLocalisationListWithoutLocaleIntention</className>
+    </intentionAction>
     <!-- endregion -->
 
     <!-- region Paradox CSV -->
