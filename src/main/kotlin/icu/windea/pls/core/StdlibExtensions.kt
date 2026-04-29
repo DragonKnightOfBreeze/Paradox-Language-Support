@@ -387,10 +387,10 @@ fun String.toCommaDelimitedStringSet(destination: MutableSet<String> = mutableSe
     return this.split(',').mapNotNullTo(destination) { it.trim().orNull() }
 }
 
-/** 拆分后逐项 trim 并丢弃空串的轻量实现。 */
-fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
-    return this.split(*delimiters, ignoreCase = ignoreCase, limit = limit).mapNotNull { it.trim().orNull() }
-}
+// /** 拆分后逐项 trim 并丢弃空串的轻量实现。 */
+// fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
+//     return this.split(*delimiters, ignoreCase = ignoreCase, limit = limit).mapNotNull { it.trim().orNull() }
+// }
 
 /** 超出 [limit] 时截断并追加 [ellipsis]。 */
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {

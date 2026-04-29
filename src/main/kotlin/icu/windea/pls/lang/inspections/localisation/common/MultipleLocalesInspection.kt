@@ -9,8 +9,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
@@ -39,9 +38,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
         if (file !is ParadoxLocalisationFile) return null
 
         val fileName = file.name
-        ignoredFileNames.splitOptimized(';').forEach {
-            if (fileName.matchesPattern(it, true)) return null // 忽略
-        }
+        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
 
         if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)

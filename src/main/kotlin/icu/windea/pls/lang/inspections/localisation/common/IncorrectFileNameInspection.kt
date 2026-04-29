@@ -20,8 +20,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
@@ -60,9 +59,7 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         if (file !is ParadoxLocalisationFile) return null
 
         val fileName = file.name
-        ignoredFileNames.splitOptimized(';').forEach {
-            if (fileName.matchesPattern(it, true)) return null // 忽略
-        }
+        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
 
         // 仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null

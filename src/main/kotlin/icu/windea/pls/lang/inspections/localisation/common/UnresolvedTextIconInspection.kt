@@ -8,8 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
@@ -44,9 +43,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
             override fun visitTextIcon(element: ParadoxLocalisationTextIcon) {
                 ProgressManager.checkCanceled()
                 val name = element.name ?: return
-                ignoredNames.splitOptimized(';').forEach {
-                    if (name.matchesPattern(it, true)) return // 忽略
-                }
+                if (name.matchesPatterns(ignoredNames, ignoreCase = true)) return // 忽略
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return

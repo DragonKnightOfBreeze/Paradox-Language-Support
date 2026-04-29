@@ -9,8 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -41,9 +40,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             override fun visitIcon(element: ParadoxLocalisationIcon) {
                 ProgressManager.checkCanceled()
                 val name = element.name ?: return
-                ignoredNames.splitOptimized(';').forEach {
-                    if (name.matchesPattern(it, true)) return // 忽略
-                }
+                if (name.matchesPatterns(ignoredNames, ignoreCase = true)) return // 忽略
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
