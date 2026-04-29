@@ -18,6 +18,7 @@
     <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.CwtQuoteHandler"/>
     <statementUpDownMover implementation="icu.windea.pls.cwt.codeInsight.editorActions.CwtMover"/>
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.CwtSmartEnterProcessor"/>
+    <enterHandlerDelegate implementation="icu.windea.pls.cwt.codeInsight.editorActions.CwtEnterHandler"/>
     <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
     <liveTemplateContext contextId="CWT"

@@ -14,6 +14,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 
 /**
@@ -26,7 +27,7 @@ class CwtMover : ContainerBasedMover() {
 
     override fun isContainerElement(element: PsiElement) = element is CwtBlockElement
 
-    override fun isMemberElement(element: PsiElement) = element is CwtMember
+    override fun isMemberElement(element: PsiElement) = element is CwtMember || element is CwtOptionMember
 
     override fun canAttachComments(memberElement: PsiElement) = true
 
