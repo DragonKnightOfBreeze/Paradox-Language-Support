@@ -1,6 +1,7 @@
 some_effect = {
 	set_variable = { which = var value = <spot>v</spot> }
 	change_variable = { which = var value = <spot>v</spot> }
+	add_variable = { which = var value = <spot>v</spot> }
 	subtract_variable = { which = var value = <spot>v</spot> }
 	multiply_variable = { which = var value = <spot>v</spot> }
 	divide_variable = { which = var value = <spot>v</spot> }

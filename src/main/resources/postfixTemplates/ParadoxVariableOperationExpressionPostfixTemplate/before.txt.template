@@ -1,6 +1,7 @@
 some_effect = {
 	<spot>var</spot>.setv
 	<spot>var</spot>.chav
+	<spot>var</spot>.addv
 	<spot>var</spot>.subv
 	<spot>var</spot>.mulv
 	<spot>var</spot>.divv
