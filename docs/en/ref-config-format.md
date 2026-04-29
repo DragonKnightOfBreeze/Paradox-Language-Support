@@ -18,7 +18,7 @@ This document aims to:
 
 - **Unify terminology and boundaries**: Align the plugin's semantics with CWTools, clarifying the plugin's extension points and differences.
 - **Establish a mapping from documentation to implementation**: Annotate corresponding interfaces and resolvers where necessary, facilitating source code tracing and behavior verification.
-- **Guide practice**: Outline the purpose, format, and considerations of each config type, laying the foundation for correctly writing and maintaining config files.
+- **Guide to practice**: Outline the purpose, format, and considerations of each config type, laying the foundation for correctly writing and maintaining config files.
 
 The plugin reads `.cwt` config files, builds "config groups", and parses the configs within into structured "config objects". These config objects are widely used in language features such as highlighting, completion, navigation, inspections, and quick documentation. The config system is composed of two major elements:
 

@@ -24,6 +24,7 @@
 - [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
 - [x] 在语法层面兼容内联数学表达式中的封装变量引用的前导的 `@` (如 `@[ @v + 1]`)，通过注解器检查 / Made compatible with leading `@` of scripted variable references in inline math expressions (e.g., `@[ @v + 1]`) on syntax level, checked by the annotator
 - [x] 补充意向，以复制当前语言环境下的本地化列表到剪贴板 / Added intentions to copy localization list of current locale to the clipboard 
+- [x] 为规则选项提供文档注释，基于 schema 规则文件 / Provided doc comments for config options, from the schema config file
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

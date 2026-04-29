@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
@@ -20,6 +21,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.util.builders.DocumentationBuilder
@@ -27,14 +29,17 @@ import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -71,12 +76,65 @@ object CwtDocumentationManager {
     private const val SECTIONS_LOC = 2
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
+        if (element is CwtOptionMember) {
+            getOptionMemberDoc(element, originalElement, hint)?.let { return it }
+        }
         return when (element) {
             is CwtConfigSymbolLightElement -> getConfigSymbolDoc(element, originalElement, hint)
             is CwtMemberConfigLightElement -> getMemberConfigDoc(element, originalElement, hint)
             is CwtProperty -> getPropertyDoc(element, originalElement, hint)
             is CwtString -> getStringDoc(element, originalElement, hint)
             else -> null
+        }
+    }
+
+    private fun getOptionMemberDoc(element: CwtOptionMember, originalElement: PsiElement?, hint: Boolean): String? {
+        // 2.1.8 为规则选项提供文档注释，基于 schema 规则文件
+        return when (element) {
+            is CwtOption -> getOptionDoc(element, originalElement, hint)
+            is CwtValue if element.isOptionValue() -> getOptionFlagDoc(element, originalElement, hint)
+            else -> null
+        }
+    }
+
+    private fun getOptionDoc(element: CwtOption, originalElement: PsiElement?, hint: Boolean): String? {
+        val name = element.name.orNull() ?: return null
+        return buildDocumentation {
+            definition {
+                append(PlsStrings.optionPrefix).append(" ").append(name)
+            }
+            if (hint) return@buildDocumentation
+            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
+            buildDocumentationContentForOption(name, "options", configGroup)
+        }
+    }
+
+    private fun getOptionFlagDoc(element: CwtValue, originalElement: PsiElement?, hint: Boolean): String? {
+        val name = element.name.orNull() ?: return null
+        return buildDocumentation {
+            definition {
+                append(PlsStrings.optionFlagPrefix).append(" ").append(name)
+            }
+            if (hint) return@buildDocumentation
+            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
+            buildDocumentationContentForOption(name, "option_flags", configGroup)
+        }
+    }
+
+    private fun DocumentationBuilder.buildDocumentationContentForOption(name: String, constraint: String, configGroup: CwtConfigGroup) {
+        val schema = configGroup.schemas.firstOrNull() ?: return
+        val constraint = schema.constraints[constraint] ?: return
+        constraint.configs?.forEach { config ->
+            val r = when (config) {
+                is CwtPropertyConfig -> config.key == name
+                is CwtValueConfig -> config.value == name
+            }
+            if (!r) return@forEach
+            val documentation = config.documentation
+            if (documentation.isNullOrEmpty()) return@forEach
+            content {
+                append(documentation)
+            }
         }
     }
 

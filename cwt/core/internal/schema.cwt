@@ -5,7 +5,9 @@
 # see: icu.windea.pls.config.configExpression.CwtSchemaExpression
 # see: icu.windea.pls.config.util.CwtConfigSchemaManager
 
+#### Container property to introduce <a href="https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority">Priority Configs</a>.
 priorities = {
+    #### introduce a <a href="https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority">Priority Config</a>.
     $path = $enum:override_strategy$
 }
 
@@ -254,10 +256,278 @@ $enum:link_argument_separator$ = { comma pipe }
 $enum:context_configs_type$ = { single multiple }
 $enum:api_status$ = { obsolete removed kept }
 
+# no `## inject = ...` completion now
+
 ## replace_scopes = $scope_context
 ## push_scope = $scope
 ## cardinality = $cardinality
 ## predicate = $predicate
 $$declaration = $declaration
 
-# no `## inject = ...` completion now
+$$options = {
+    #### Specifies the API status of the config.
+    ####
+    #### Used to mark configs that require special handling (e.g., skip parsing).
+    ####
+    #### Applicable to: Configs that need special handling (currently supports `single_alias` and `alias`).
+    ####
+    #### Example: `## api_status = obsolete`
+    api_status
+
+    #### Specifies the allowed range of occurrences (cardinality expression).
+    ####
+    #### Specifies the upper and lower limits of the matching times for the subsequent config item, in the form of `min..max`, where `max` can be `inf` or `~1`, etc.
+    #### If not explicitly specified, and the definition member is a constant type, it defaults to `1..~1` (must occur once, exceeding only gives a weak warning).
+    ####
+    #### Applicable to: Configs corresponding to definition members.
+    ####
+    #### Example: `## cardinality = 0..1`
+    cardinality
+
+    #### Specifies the minimum cardinality, dynamically obtained from a define.
+    ####
+    #### Dynamically specifies the minimum occurrences via a string path (e.g., `NGameplay/ETHOS_MIN_POINTS`).
+    ####
+    #### Applicable to: Configs corresponding to definition members.
+    ####
+    #### Example: `## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
+    cardinality_min_define
+
+    #### Specifies the maximum cardinality, dynamically obtained from a define.
+    ####
+    #### Applicable to: Configs corresponding to definition members.
+    ####
+    #### Example: `## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
+    cardinality_max_define
+
+    #### Specifies a simple structural predicate (structured filtering).
+    ####
+    #### Uses the form `key = value` or `key != value` for simple filtering of matches.
+    ####
+    #### Applicable to: Configs corresponding to definition members, as supplementary filtering conditions.
+    ####
+    #### Example: `## predicate = { scope = fleet type != country }`
+    predicate
+
+    #### Replaces the scope context.
+    ####
+    #### Maps the `this/root/from/...` of the current context to the specified scope ID.
+    #### Supports keys `replace_scope` and `replace_scopes`, which are equivalent.
+    ####
+    #### Applicable to: Various configs that may have a scope context (e.g.,
+    #### [type configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type),
+    #### [declaration configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-declaration),
+    #### [alias configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias),
+    #### [extended configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#configs-extended), etc.).
+    ####
+    #### Example: `## replace_scopes = { this = country root = country }`
+    replace_scopes
+
+    #### Replaces the scope context.
+    ####
+    #### Maps the `this/root/from/...` of the current context to the specified scope ID.
+    #### Supports keys `replace_scope` and `replace_scopes`, which are equivalent.
+    ####
+    #### Applicable to: Various configs that may have a scope context (e.g.,
+    #### [type configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type),
+    #### [declaration configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-declaration),
+    #### [alias configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias),
+    #### [extended configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#configs-extended), etc.).
+    ####
+    #### Example: `## replace_scopes = { this = country root = country }`
+    replace_scope
+
+    #### Pushes a scope onto the scope stack.
+    ####
+    #### Pushes the specified scope (usually `this`) onto the scope stack, affecting the context of subsequent config matching.
+    ####
+    #### Applicable to: Various configs that may have a scope context (e.g.,
+    #### [type configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type),
+    #### [declaration configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-declaration),
+    #### [alias configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias),
+    #### [extended configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#configs-extended), etc.).
+    ####
+    #### Example: `## push_scope = country`
+    push_scope
+
+    #### Specifies the set of allowed scopes (types). Defaults to supporting any scope.
+    ####
+    #### Applicable to: [Alias configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias) corresponding to triggers and effects.
+    ####
+    #### Example:
+    #### ```cwt
+    #### ## scope = country
+    #### ## scope = { country planet }
+    #### ```
+    scope
+
+    #### Specifies the type identifier.
+    ####
+    #### Used to declare the type of the definition in the extended config for definitions.
+    ####
+    #### Applicable to: [Extended configs for definitions](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-definition).
+    ####
+    #### Example: `## type = scripted_trigger`
+    type
+
+    #### Specifies hint information.
+    ####
+    #### Used in some extended configs to provide additional inline hints.
+    ####
+    #### Applicable to: Some extended configs (e.g., [extended configs for scripted variables](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-scripted-variable)).
+    ####
+    #### Example: `## hint = "Some hint"`
+    hint
+
+    #### Specifies the event type.
+    ####
+    #### Used in the extended config for on actions to indicate the event type (e.g., `country`, `system`).
+    ####
+    #### Applicable to: [Extended configs for on actions](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-on-action).
+    ####
+    #### Example: `## event_type = country`
+    event_type
+
+    #### Specifies the context key.
+    ####
+    #### Specifies the context of a parameter, common forms: `definitionType@definitionName` or `inline_script@path`.
+    ####
+    #### Applicable to: [Extended configs for parameters](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-parameters).
+    context_key
+
+    #### Specifies the aggregation type of context configs.
+    ####
+    #### Specifies whether the "context configs" under the root of `x = {...}` is single (`single`) or multiple (`multiple`). Defaults to `single`.
+    ####
+    #### Applicable to: Extended configs that can specify config contexts (e.g., extended configs for inline scripts and parameters).
+    ####
+    #### Example: `## context_configs_type = multiple`
+    context_configs_type
+
+    #### Specifies the group name.
+    ####
+    #### Used to group subtypes.
+    ####
+    #### Applicable to: [Subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
+    ####
+    #### Example: `## group = ships`
+    group
+
+    #### Specifies the filter for the type key (inclusion/exclusion, case-insensitive).
+    ####
+    #### Requires the type key to match optional values, can be negated, and can specify multiple optional values.
+    ####
+    #### Applicable to: [Type configs and subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
+    ####
+    #### Example:
+    #### ```cwt
+    #### ## type_key_filter = country_event
+    #### ## type_key_filter <> { ship country }
+    #### ```
+    type_key_filter
+
+    #### Specifies the regex filter for the type key (case-insensitive).
+    ####
+    #### Applicable to: [Type configs and subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
+    ####
+    #### Example: `## type_key_regex = "^ship_.*$"`
+    type_key_regex
+
+    #### Specifies the prefix requirement for the type key (case-insensitive).
+    ####
+    #### Requires the type key to start with the specified prefix.
+    ####
+    #### Applicable to: [Type configs and subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
+    ####
+    #### Example: `## starts_with = ship_`
+    starts_with
+
+    #### Specifies the exclusion list (only_if_not).
+    ####
+    #### Specifies a set, matches as long as the "name is not in the set".
+    ####
+    #### Applicable to: [Subtype configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
+    ####
+    #### Example: `## only_if_not = { simple complex }`
+    only_if_not
+
+    #### Specifies the set of related types for graphs (graph_related_types).
+    ####
+    #### Example: `## graph_related_types = { special_project anomaly_category }`
+    graph_related_types
+
+    #### Specifies the severity (for config-based code inspections).
+    ####
+    #### Example: `## severity = warning`
+    severity
+
+    #### Specifies the set of allowed file extensions (file_extensions).
+    ####
+    #### Used to constrain path references, thereby providing code inspections and filtering code completion.
+    ####
+    #### Applicable to: Member configs whose value is a path reference.
+    ####
+    #### Example: `## file_extensions = { png dds tga }`
+    file_extensions
+
+    #### Specifies the set of modifier category keys (modifier_categories).
+    ####
+    #### The set of category keys used by scripted modifier categories, driving completion, grouping, and display.
+    ####
+    #### Example: `## modifier_categories = { economic_unit planet }`
+    modifier_categories
+
+    #### Specifies the color type (`hex` / `rgb` / `hsv` / `hsv360`).
+    ####
+    #### Specifies the parsing/rendering mode for color values.
+    ####
+    #### Applicable to: Configs corresponding to definition members that carry color information.
+    ####
+    #### Example: `## color_type = rgb`
+    color_type
+
+    #### Specifies the path of a group of member configs to be injected to become sub-configs of the current member config.
+    ####
+    #### Applicable to: Any member config whose value is a clause.
+    ####
+    #### Example: `## inject = some/file.cwt@some/property`
+    inject
+}
+
+$$option_flags = {
+    #### Marks the localization and image at the corresponding location as required.
+    ####
+    #### Applicable to: [Location configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-location).
+    required
+
+    #### Marks the localization and image at the corresponding location as primary.
+    ####
+    #### This means they will be displayed as the most relevant localization and image, prioritized in quick documentation and inline hints.
+    ####
+    #### Applicable to: [Location configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-location).
+    primary
+
+    #### Indicates that the config context and scope context will be inherited.
+    ####
+    #### That is, inherited from the corresponding usage site, keeping consistent with it.
+    ####
+    #### Applicable to: Some extended configs that can specify config contexts (e.g., extended configs for parameters).
+    inherit
+
+    #### Marks the matched single value as a predefined tag.
+    ####
+    #### The corresponding value in the script file will enable special semantic highlighting and documentation comments.
+    ####
+    #### Applicable to: Member configs that are single values.
+    tag
+
+    #### Marks the enum values of a complex enum as case-insensitive.
+    ####
+    #### Applicable to: [Complex enum configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum).
+    case_insensitive
+
+    #### Limits the equivalence of complex enum values with the same name and type to the definition level (rather than the file level).
+    ####
+    #### Applicable to: [Complex enum configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum).
+    per_definition
+}

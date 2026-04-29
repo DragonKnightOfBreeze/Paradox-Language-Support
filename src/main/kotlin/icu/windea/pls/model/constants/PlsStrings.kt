@@ -1,6 +1,8 @@
 package icu.windea.pls.model.constants
 
 object PlsStrings {
+    const val optionPrefix = "(option)"
+    const val optionFlagPrefix = "(option flag)"
     const val typePrefix = "(type)"
     const val subtypePrefix = "(subtype)"
     const val rowPrefix = "(row)"
