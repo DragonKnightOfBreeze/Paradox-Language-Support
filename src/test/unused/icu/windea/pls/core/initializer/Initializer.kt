@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.initializer
 
 import com.intellij.openapi.diagnostic.thisLogger

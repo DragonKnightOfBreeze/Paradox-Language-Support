@@ -7,7 +7,7 @@ import com.intellij.ide.util.treeView.smartTree.Sorter
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
@@ -22,7 +22,7 @@ class ParadoxLocalisationStructureViewModel(
     override fun getRoot() = ParadoxLocalisationFileTreeElement(psiFile as ParadoxLocalisationFile)
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
+        return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {

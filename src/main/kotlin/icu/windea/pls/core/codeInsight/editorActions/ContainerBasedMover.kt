@@ -17,7 +17,7 @@ import com.intellij.util.takeWhileInclusive
 import icu.windea.pls.core.children
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 
 /**
  * 基于“容器-成员”语义的行移动器。
@@ -146,14 +146,14 @@ abstract class ContainerBasedMover : LineMover() {
         val endMember1 = members0.findLast { isMemberElement(it) || (canFromAttachedComments && it is PsiComment) }
         val finalEndMember = when {
             endMember1 == null -> null
-            endMember1 is PsiComment && canFromAttachedComments -> PlsPsiManager.getAttachingElement(endMember1)
+            endMember1 is PsiComment && canFromAttachedComments -> PsiService.getAttachingElement(endMember1)
                 ?: endMember1.takeIf { isMemberElement(it) }
             else -> endMember1
         }
         if (finalEndMember == null) return null
         val startMember1 = members0.find { isMemberElement(it) } ?: finalEndMember
         val finalStartMember = when {
-            canAttachComments(startMember1) -> PlsPsiManager.getAttachedComments(startMember1).lastOrNull()
+            canAttachComments(startMember1) -> PsiService.getAttachedComments(startMember1).lastOrNull()
                 ?: startMember1
             else -> startMember1
         }

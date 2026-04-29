@@ -19,7 +19,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -113,6 +113,6 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PlsPsiManager.toPresentableString(element)
+        return PsiService.toPresentableString(element)
     }
 }

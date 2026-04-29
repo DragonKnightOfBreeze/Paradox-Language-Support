@@ -8,7 +8,7 @@ import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.model.constants.PlsPaths
+import icu.windea.pls.lang.tools.PlsDataPathService
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.name
@@ -73,7 +73,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) throw IllegalStateException()
 
-        val tempParentPath = PlsPaths.imagesTemp
+        val tempParentPath = PlsDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
         outputDirectoryPath.createDirectories()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)

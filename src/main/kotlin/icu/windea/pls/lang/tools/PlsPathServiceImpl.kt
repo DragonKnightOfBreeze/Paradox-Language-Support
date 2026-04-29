@@ -10,9 +10,9 @@ import icu.windea.pls.core.execution.CommandType
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
@@ -65,7 +65,7 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
 
     private fun resolveSteamPathForLinux(): Path {
         // 按优先级依次尝试已知的 Steam 安装路径
-        val home = PlsPaths.userHome
+        val home = System.getProperty("user.home").toPath()
         val candidates = listOf(
             home.resolve(Path(".local", "share", "Steam")),
             home.resolve(Path(".steam", "debian-installation")),
@@ -167,12 +167,13 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
     }
 
     private fun resolveGameDataPathForWindows(gameName: String): Path {
-        return PlsPaths.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
+        val home = System.getProperty("user.home").toPath()
+        return home.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
     }
 
     private fun resolveGameDataPathForLinux(gameName: String): Path {
         // 按优先级依次尝试已知的游戏数据目录路径
-        val home = PlsPaths.userHome
+        val home = System.getProperty("user.home").toPath()
         val candidates = listOf(
             home.resolve(Path(".local", "share", "Paradox Interactive", gameName)),
             home.resolve(Path("Documents", "Paradox Interactive", gameName)),

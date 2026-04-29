@@ -8,11 +8,12 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.model.constants.PlsPaths
+import icu.windea.pls.lang.tools.PlsDataPathService
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.createDirectories
+import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
 
@@ -20,9 +21,6 @@ import kotlin.io.path.notExists
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
 class TexconvToolProvider : CommandBasedImageToolProvider() {
-    private val texconvExe by lazy { PlsPaths.texconvExeFile }
-    private val texconvExeWd by lazy { PlsPaths.texconvExe.parent?.toFile() }
-
     override fun isEnabled(): Boolean {
         return PlsIntegrationsSettings.getInstance().state.image.enableTexconv
     }
@@ -48,14 +46,15 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val tempParentPath = PlsPaths.imagesTemp
+        val tempParentPath = PlsDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
         outputDirectoryPath.createDirectories()
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val wd = texconvExeWd
-        val exe = texconvExe.name.quoteIfNecessary('\'')
+        val exePath = PlsDataPathService.getInstance().texconvExePath
+        val wd = exePath.parent?.toFile()
+        val exe = exePath.name.quoteIfNecessary('\'')
         val input = path.toString().quote('\'')
         val output = outputDirectoryPath.toString().quote('\'')
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.core.psi
 
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.NavigatablePsiElement
@@ -14,7 +14,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 
-object PlsPsiManager {
+object PsiService {
     fun toPresentableString(element: PsiElement): String {
         return buildString {
             val type = element.javaClass.simpleName.removeSuffix("Impl")

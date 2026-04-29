@@ -7,7 +7,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -41,7 +40,6 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     }
 
     private fun initCachesAsync() {
-        PlsPaths.initAsync()
         PlsPathService.getInstance().initAsync()
     }
 

@@ -8,10 +8,10 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
-import icu.windea.pls.lang.ui.EntryListTableModel
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
 

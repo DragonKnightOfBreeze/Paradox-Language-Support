@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtPsiUtil
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 
 @Suppress("UnstableApiUsage")
 class CwtInlineDocumentationProvider : InlineDocumentationProvider {
@@ -21,7 +21,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
         file.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (CwtPsiUtil.canAttachComment(element)) {
-                    val ownedComments = PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
+                    val ownedComments = PsiService.getOwnedComments(element) { it is CwtDocComment }
                         .castOrNull<List<CwtDocComment>>().orEmpty()
                     val comments = ownedComments.optimized() // optimized to optimize memory
                     if (comments.isNotEmpty()) {
@@ -54,7 +54,7 @@ class CwtInlineDocumentationProvider : InlineDocumentationProvider {
             ?: return null
 
         // Collect contiguous CWT doc comments around the hit (ignore blank-line breaks)
-        val siblingComments = PlsPsiManager.findSiblingComments(comment) { it is CwtDocComment }
+        val siblingComments = PsiService.findSiblingComments(comment) { it is CwtDocComment }
         if (siblingComments.isEmpty()) return null
         val comments = siblingComments.filterIsInstance<CwtDocComment>().optimized() // optimized to optimize memory
         if (comments.isEmpty()) return null

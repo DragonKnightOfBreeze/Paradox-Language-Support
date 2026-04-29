@@ -12,13 +12,13 @@ class PlsPathServiceTest {
     fun doSetUp() = AssumePredicates.includeLocalEnv()
 
     @Test
-    fun testGetSteamPath() {
+    fun getSteamPath() {
         val path = service.getSteamPath()
         println("Steam path: $path")
     }
 
     @Test
-    fun testGetSteamGamePath() {
+    fun getSteamGamePath() {
         for (gameType in ParadoxGameType.getAll()) {
             val path = service.getSteamGamePath(gameType.steamId, gameType.title)
             println("Steam game path [${gameType.id}]: $path")
@@ -26,7 +26,7 @@ class PlsPathServiceTest {
     }
 
     @Test
-    fun testGetSteamGameWorkshopPath() {
+    fun getSteamGameWorkshopPath() {
         for (gameType in ParadoxGameType.getAll()) {
             val path = service.getSteamGameWorkshopPath(gameType.steamId)
             println("Steam workshop path [${gameType.id}]: $path")
@@ -34,7 +34,7 @@ class PlsPathServiceTest {
     }
 
     @Test
-    fun testGetGameDataPath() {
+    fun getGameDataPath() {
         for (gameType in ParadoxGameType.getAll()) {
             val path = service.getGameDataPath(gameType.title)
             println("Game data path [${gameType.id}]: $path")

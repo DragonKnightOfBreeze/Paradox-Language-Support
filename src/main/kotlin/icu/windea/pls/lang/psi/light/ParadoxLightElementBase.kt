@@ -8,7 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.Icon
@@ -43,6 +43,6 @@ abstract class ParadoxLightElementBase(parent: PsiElement) : LightElementBase(pa
     }
 
     override fun toString(): String {
-        return PlsPsiManager.toPresentableString(this)
+        return PsiService.toPresentableString(this)
     }
 }

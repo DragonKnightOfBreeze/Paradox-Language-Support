@@ -17,7 +17,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
@@ -705,6 +705,6 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PlsPsiManager.toPresentableString(element)
+        return PsiService.toPresentableString(element)
     }
 }

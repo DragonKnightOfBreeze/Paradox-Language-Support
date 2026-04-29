@@ -23,6 +23,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
@@ -88,7 +89,7 @@ object ParadoxPsiManager {
     }
 
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
-        return PlsPsiManager.getOwnedComments(element) { true }
+        return PsiService.getOwnedComments(element) { true }
     }
 
     @Inferred

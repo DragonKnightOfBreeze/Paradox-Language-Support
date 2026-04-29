@@ -34,7 +34,7 @@ import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -154,7 +154,7 @@ object CwtDocumentationManager {
 
             val config = element.getUserData(CwtConfigManager.Keys.config)
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
-            val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
+            val referenceElement = PsiService.getReferenceElement(originalElement)
 
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
             val byName = if (shortName == name) null else name.orNull()

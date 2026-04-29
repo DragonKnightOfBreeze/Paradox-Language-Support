@@ -6,7 +6,8 @@
 - [ ] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
 - [ ] PLANNED 补充本地化文件中的快速复制文本的意向
 - [ ] PLANNED 重构渲染器组件
-- [ ] P2 消除或重构initializer组件 & `PlsDataPathService`
+- [x] P2 消除或重构initializer组件 & `PlsDataPathService`
+- [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
 - [ ] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
 - [ ] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
 - [ ] P2 color scheme - 优化/整理配色选项和预览文本
@@ -14,7 +15,7 @@
 - [ ] P3 为规则选项提供文档注释，基于schema规则文件。
 - [ ] P3 在schema规则文件中补充文档注释。
 - [ ] P3 清理和优化各个代码检查的检查项描述和报错描述。
-- [ ] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
+- [x] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
 - [ ] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
 
 ## 2.1.8-dev

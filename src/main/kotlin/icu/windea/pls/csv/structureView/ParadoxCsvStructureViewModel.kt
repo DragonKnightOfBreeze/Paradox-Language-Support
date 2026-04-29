@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.csv.navigation.ParadoxCsvNavigationManager
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 
 class ParadoxCsvStructureViewModel(
     editor: Editor?,
@@ -22,7 +22,7 @@ class ParadoxCsvStructureViewModel(
     override fun getRoot() = ParadoxCsvFileTreeElement(psiFile as ParadoxCsvFile)
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
+        return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {

@@ -12,7 +12,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.PlsStrings
 
@@ -43,7 +43,7 @@ class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         if (!settings.comments) return
-        val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
+        val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
         allSiblingLineComments.forEach {
             val startOffset = it.first().startOffset

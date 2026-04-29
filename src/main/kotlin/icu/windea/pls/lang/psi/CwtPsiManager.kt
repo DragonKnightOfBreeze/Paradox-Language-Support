@@ -4,11 +4,12 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtDocComment
 
 object CwtPsiManager {
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
-        return PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
+        return PsiService.getOwnedComments(element) { it is CwtDocComment }
     }
 
     @Inferred

@@ -18,7 +18,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeId
@@ -50,9 +50,9 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
         val block = element.propertyValue as? ParadoxScriptBlock ?: return
         val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
         val atLineEnd = leftCurlyBrace.siblings(withSelf = false)
-            .dropWhile { (it is PsiWhiteSpace && !PlsPsiManager.containsLineBreak(it)) || it is PsiComment }
+            .dropWhile { (it is PsiWhiteSpace && !PsiService.containsLineBreak(it)) || it is PsiComment }
             .firstOrNull()
-        if (atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsLineBreak(atLineEnd)) return
+        if (atLineEnd !is PsiWhiteSpace || !PsiService.containsLineBreak(atLineEnd)) return
 
         val file = element.containingFile ?: return
         val gameType = selectGameType(file) ?: return

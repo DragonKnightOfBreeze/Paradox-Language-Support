@@ -59,7 +59,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.isAncestor
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ArrayUtil
@@ -69,6 +68,7 @@ import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
@@ -436,80 +436,19 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
 
 // region PSI Extensions
 
-/**
- * 查找位于指定偏移处的 PSI 元素，并尝试对其进行转换。
- *
- * @param forward 查找指定偏移之前还是之后的 PSI 元素。默认为 null，表示同时考虑。
- */
+/** @see PsiFileService.findElementAt */
 fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null, transform: (element: PsiElement) -> T?): T? {
-    if (offset < 0) return null
-    var current: PsiElement? = null
-    if (forward != false) {
-        val element = findElementAt(offset)
-        if (element != null) {
-            current = element
-            val result = transform(element)
-            if (result != null) {
-                return result
-            }
-        }
-    }
-    if (forward != true && offset > 0) {
-        val leftElement = findElementAt(offset - 1)
-        if (leftElement != null && leftElement !== current) {
-            val leftResult = transform(leftElement)
-            if (leftResult != null) {
-                return leftResult
-            }
-        }
-    }
-    return null
+    return PsiFileService.findElementAt(this, offset, forward, transform)
 }
 
-/**
- * 查找位于指定的开始偏移和结束偏移之间的 PSI 元素。
- *
- * 通过对开始偏移处和结束偏移处的 PSI 元素进行转换以得到各自的根元素，得到共同的祖先元素并作为最终的根元素，
- * 再从根元素的子元素中遍历所有位于开始偏移和结束偏移之间（涉及即可）的 PSI 元素。
- */
+/** @see PsiFileService.findElementsBetween */
 fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (rootElement: PsiElement) -> PsiElement?): Sequence<PsiElement> {
-    if (startOffset < 0 || endOffset < 0) return emptySequence()
-    if (startOffset >= endOffset) return emptySequence()
-    val startRootElement = findElementAt(startOffset, true, rootTransform) ?: return emptySequence()
-    val endRootElement = findElementAt(endOffset, true, rootTransform) ?: return emptySequence()
-    val root = if (startRootElement.isAncestor(endRootElement)) startRootElement else endRootElement
-    return sequence {
-        root.processChild { element ->
-            val textRange = element.textRange
-            if (textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
-                val isLast = textRange.endOffset >= endOffset
-                yield(element)
-                !isLast
-            } else {
-                true
-            }
-        }
-    }
+    return PsiFileService.findElementsBetween(this, startOffset, endOffset, rootTransform)
 }
 
-/**
- * @param forward 查找偏移之前还是之后的 PSI 引用。默认为 `null`，表示同时考虑。
- */
+/** @see PsiFileService.findReferenceAt */
 fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (reference: PsiReference) -> Boolean): PsiReference? {
-    if (offset < 0) return null
-    if (forward != false) {
-        val reference = findReferenceAt(offset)
-        if (reference != null && predicate(reference)) {
-            return reference
-        }
-    }
-    if (forward != true && offset > 0) {
-        val reference = findReferenceAt(offset - 1)
-        if (reference != null && predicate(reference)) {
-            return reference
-        }
-    }
-    return null
+    return PsiFileService.findReferenceAt(this, offset, forward, predicate)
 }
 
 /** 若为多解析引用，返回首个解析目标；否则调用 `resolve()`。 */
@@ -702,6 +641,17 @@ fun PsiElement.isIncomplete(): Boolean {
     return false
 }
 
+context(reference: PsiReference)
+fun PsiElement?.createResults(): Array<out ResolveResult> {
+    if (this == null) return ResolveResult.EMPTY_ARRAY
+    return arrayOf(PsiElementResolveResult(this))
+}
+
+context(reference: PsiReference)
+fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
+    return PsiElementResolveResult.createResults(this)
+}
+
 fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
     var offset = steps
     var token = rawLookup(offset)
@@ -712,17 +662,6 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
         }
     }
     return token to offset
-}
-
-context(reference: PsiReference)
-fun PsiElement?.createResults(): Array<out ResolveResult> {
-    if (this == null) return ResolveResult.EMPTY_ARRAY
-    return arrayOf(PsiElementResolveResult(this))
-}
-
-context(reference: PsiReference)
-fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
-    return PsiElementResolveResult.createResults(this)
 }
 
 // endregion

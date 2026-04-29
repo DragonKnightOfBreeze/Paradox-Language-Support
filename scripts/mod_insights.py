@@ -209,7 +209,7 @@ _GITIGNORE_VSCODE_PATTERNS = {".vscode", "_cwtools", ".cwtools", ".cursor", ".wi
 
 
 def _has_cwt_config_dir(mod_dir: str) -> bool:
-    """Return True if .config/ exists and contains at least one .cwt file (PLS custom config dir)."""
+    """Return True if .config/ exists and contains at least one .cwt file (custom config dir)."""
     config_dir = os.path.join(mod_dir, ".config")
     if not os.path.isdir(config_dir):
         return False

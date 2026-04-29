@@ -1,6 +1,8 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.initializer
 
-import com.intellij.openapi.application.UI
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.io.createDirectories
@@ -30,7 +32,7 @@ private suspend fun Path.createFileFromVirtualFile(virtualFile: VirtualFile): Vi
     withContext(Dispatchers.IO) {
         virtualFile.inputStream.use { Files.copy(it, path, StandardCopyOption.REPLACE_EXISTING) }
     }
-    val file = withContext(Dispatchers.UI) {
+    val file = withContext(Dispatchers.EDT) {
         path.toVirtualFile(true)
     }
     return file

@@ -33,7 +33,7 @@ import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
 
@@ -275,7 +275,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getOwner(element: CwtDocComment): PsiElement? {
-        val attachingElement = PlsPsiManager.getAttachingElement(element) ?: return null
+        val attachingElement = PsiService.getAttachingElement(element) ?: return null
         if (!CwtPsiUtil.canAttachComment(attachingElement)) return null
         return attachingElement
     }
@@ -327,6 +327,6 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PlsPsiManager.toPresentableString(element)
+        return PsiService.toPresentableString(element)
     }
 }

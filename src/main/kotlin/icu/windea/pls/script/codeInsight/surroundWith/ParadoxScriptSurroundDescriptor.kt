@@ -8,7 +8,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.lang.psi.PlsPsiFileManager
+import icu.windea.pls.core.psi.PsiFileService.findElementsBetween
 import icu.windea.pls.script.psi.ParadoxScriptBoundMemberContainer
 
 // com.intellij.json.surroundWith.JsonSurroundDescriptor
@@ -23,7 +23,7 @@ class ParadoxScriptSurroundDescriptor : SurroundDescriptor {
     )
 
     override fun getElementsToSurround(file: PsiFile, startOffset: Int, endOffset: Int): Array<out PsiElement> {
-        return PlsPsiFileManager.findElementsBetween(file, startOffset, endOffset) { getContainer(it, startOffset, endOffset) }
+        return findElementsBetween(file, startOffset, endOffset) { getContainer(it, startOffset, endOffset) }
             .filter { it !is PsiWhiteSpace }
             .toList()
             .toTypedArray<PsiElement>()

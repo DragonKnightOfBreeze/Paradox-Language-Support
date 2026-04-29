@@ -1,4 +1,8 @@
 <idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="icu.windea.pls.tools.game.launch.ParadoxLaunchGameService" serviceImplementation="icu.windea.pls.tools.game.launch.ParadoxLaunchGameServiceImpl"/>
+  </extensions>
+
   <actions resource-bundle="messages.PlsToolsBundle">
     <group id="Pls.ConfigGeneration">
       <action id="Pls.Generation.GenerateTriggerConfig" class="icu.windea.pls.tools.actions.GenerateConfigActions$Trigger"/>

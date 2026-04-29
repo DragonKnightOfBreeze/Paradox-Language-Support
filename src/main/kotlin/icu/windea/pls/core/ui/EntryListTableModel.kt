@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.core.ui
 
 import com.intellij.ui.TableViewSpeedSearch
 import com.intellij.ui.ToolbarDecorator

@@ -45,6 +45,6 @@ enum class ParadoxFileGroup(val id: String) {
             }
         }
 
-        // NOTE PLS use its own logic to resolve actual file type, so `folders.cwt` will be ignored
+        // NOTE the plugin use its own logic to resolve actual file type, so `folders.cwt` will be ignored
     }
 }
