@@ -31,6 +31,7 @@ import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -286,15 +287,14 @@ object ParadoxAnalysisManager {
             from is VirtualFile -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
-            from is ParadoxLocaleAwareStub<*> -> {
-                val id = from.locale ?: return null
-                val project = from.containingFileStub?.psi?.project ?: return null
-                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
-            }
             from is ParadoxLocalisationLocale -> {
                 val id = runSmartReadAction { from.name }
                 val project = from.project
                 ParadoxAnalysisService.resolveLocaleConfigById(id, project)
+            }
+            from is ParadoxLocalisationPropertyList -> {
+                val nextFrom = runSmartReadAction { from.locale } ?: return null
+                selectLocale(nextFrom)
             }
             from is StubBasedPsiElementBase<*> -> {
                 val nextFrom = runSmartReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
@@ -303,6 +303,11 @@ object ParadoxAnalysisManager {
             from is PsiElement && from.language is ParadoxLocalisationLanguage -> {
                 val nextFrom = runSmartReadAction { from.parent }
                 selectLocale(nextFrom)
+            }
+            from is ParadoxLocaleAwareStub<*> -> {
+                val id = from.locale ?: return null
+                val project = from.containingFileStub?.psi?.project ?: return null
+                ParadoxAnalysisService.resolveLocaleConfigById(id, project)
             }
             else -> ParadoxLocaleManager.getPreferredLocaleConfig()
         }
