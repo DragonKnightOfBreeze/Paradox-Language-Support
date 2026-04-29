@@ -477,7 +477,7 @@ enums = {
 - If a complex enum lacks a `name` section or no `enum_name` anchors are found in matching files, the enum will be empty.
 - Simple enum values are case-insensitive by default; complex enum values are case-sensitive by default.
 
-#### Dynamic Value Type Config {#config-dynamic-value}
+#### Dynamic Value Type Config {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 

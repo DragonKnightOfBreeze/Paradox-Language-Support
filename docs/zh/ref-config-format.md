@@ -477,7 +477,7 @@ enums = {
 - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
 - 简单枚举值默认忽略大小写，复杂枚举值默认不忽略大小写。
 
-#### 动态值类型规则 {#config-dynamic-value}
+#### 动态值类型规则 {#config-dynamic-value-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 

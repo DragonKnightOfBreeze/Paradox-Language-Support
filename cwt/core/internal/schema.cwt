@@ -5,25 +5,41 @@
 # see: icu.windea.pls.config.configExpression.CwtSchemaExpression
 # see: icu.windea.pls.config.util.CwtConfigSchemaManager
 
+# region Common Configs
+
 #### Container property to introduce [Priority Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority).
 priorities = {
-    #### introduce a [Priority Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority).
+    #### Introduce a [Priority Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority),
+    #### to configure override strategies per path.
     $path = $enum:override_strategy$
 }
 
+#### Container property to introduce [System Scope Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-system-scope).
 system_scopes = {
+    #### Introduce a [System Scope Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-system-scope),
+    #### to provide metadata for a built-in scope (e.g., `This`, `Root`, `Prev`, `From`).
+    ####
+    #### The scope ID is used as the key. The value can be empty or provide a readable name.
     $system_scope$ = {
+        #### The base scope ID; defaults to the scope's own ID. Used to classify scopes of the same family.
         base_id = $system_scope$
     }
 }
 
+#### Container property to introduce [Locale Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-locale).
 locales = {
+    #### Introduce a [Locale Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-locale),
+    #### to provide basic information about a locale, facilitating identification of the project/user's preferred locale.
     $locale$ = {
+        #### The language codes included in this locale (e.g., `en`, `zh-CN`).
         codes = { $scalar }
     }
 }
 
+#### Container property to introduce [Type Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
 types = {
+    #### Introduce a [Type Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type),
+    #### to locate and name definitions of a given type.
     ## replace_scopes = $scope_context
     ## push_scope = $scope
     ## type_key_filter = $any
@@ -31,19 +47,33 @@ types = {
     ## starts_with = $scalar
     ## graph_related_types = $any
     type[$type$] = {
+        #### The top-level keys to skip (supports multiple groups, case-insensitive, wildcards compatible). Used for rule matching.
         skip_root_key = { $scalar }
+        #### The base type name, if present, indicates inheriting part of the semantics of another type.
         base_type = $type$
+        #### The directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
         path = $scalar
+        #### Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
         path_file = $scalar
+        #### Restricts the file extension (automatically normalized during parsing, e.g., adding `.`). Only takes effect independently when `path_file` is not specified.
         path_extension = $scalar
+        #### When set to `yes`, forces exact directory matching without matching subdirectories.
         path_strict = $bool
+        #### Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
         path_pattern = $scalar
+        #### The name field key (used to parse the definition name). If empty string, forces anonymity; if `-`, parses from property value; otherwise parses from the sub-property value of the corresponding name (case-insensitive).
         name_field = $scalar
+        #### The type key prefix (a separate string before the type key, case-insensitive). Used for rule matching.
         type_key_prefix = $scalar
+        #### Whether to parse the definition name from the filename. Defaults to `no`.
         name_from_file = $bool
+        #### Whether one file corresponds to one type instance. Defaults to `no`.
         type_per_file = $bool
+        #### Whether it is unique (used for conflict checking/navigation, etc.). Currently unused.
         unique = $bool
+        #### The severity level tag (used to mark display dimensions like warnings/errors). Currently unused.
         severity = $enum:severity$
+        #### Subtype config. See [CwtSubtypeConfig](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-type).
         ## replace_scopes = $scope_context
         ## push_scope = $scope
         ## type_key_filter = $any
@@ -52,6 +82,7 @@ types = {
         ## only_if_not = $scalar
         ## group = $scalar
         subtype[$subtype$] = $any
+        #### The corresponding localization display rules.
         localisation = {
             subtype[$subtype$] = {
                 ## required
@@ -64,6 +95,7 @@ types = {
             ## primary
             $scalar = $scalar
         }
+        #### The corresponding image display rules.
         images = {
             subtype[$subtype$] = {
                 ## required
@@ -79,191 +111,326 @@ types = {
     }
 }
 
+#### Container property to introduce [Row Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-row).
 rows = {
+    #### Introduce a [Row Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-row),
+    #### to declare column names and value forms for CSV rows.
     row[$row$] = {
+        #### The directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
         path = $scalar
+        #### Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
         path_file = $scalar
+        #### Restricts the file extension (automatically normalized during parsing, e.g., adding `.`). Only takes effect independently when `path_file` is not specified.
         path_extension = $scalar
+        #### When set to `yes`, forces exact directory matching without matching subdirectories.
         path_strict = $bool
+        #### Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
         path_pattern = $scalar
+        #### The mapping from column names to corresponding column configs.
         columns = {
             $scalar = $data_expression
         }
+        #### If this column name is matched, it is considered the optional last column.
         end_column = $scalar
     }
 }
 
+#### Container property to introduce [Enum Configs and Complex Enum Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum).
 enums = {
+    #### Introduce an [Enum Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum),
+    #### to provide a fixed set of values. Values are case-insensitive.
     enum[$enum$] = {
         $scalar
     }
+    #### Introduce a [Complex Enum Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum),
+    #### to dynamically collect enum values from script files based on path and anchor points.
     ## case_insensitive
     ## per_definition
     complex_enum[$complex_enum$] = {
+        #### The directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
         path = $scalar
+        #### Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
         path_file = $scalar
+        #### Restricts the file extension (automatically normalized during parsing, e.g., adding `.`). Only takes effect independently when `path_file` is not specified.
         path_extension = $scalar
+        #### When set to `yes`, forces exact directory matching without matching subdirectories.
         path_strict = $bool
+        #### Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
         path_pattern = $scalar
+        #### Whether to start searching for anchor points from the file top (rather than the next level below top-level properties).
         start_from_root = $bool
+        #### Describes how to locate value anchors in matching files. The plugin collects all property keys, property values, or block member values named `enum_name` as anchors.
         name = $any
     }
 }
 
+#### Container property to introduce [Dynamic Value Type Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-dynamic-value-type).
 values = {
+    #### Introduce a [Dynamic Value Type Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-dynamic-value-type),
+    #### to provide a set of predetermined dynamic values. Values are case-insensitive.
     value[$dynamic_value_type$] = {
         $dynamic_value$
     }
 }
 
+#### Container property to introduce [Link Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-link).
 links = {
+    #### Introduce a [Link Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-link),
+    #### to provide semantic and type constraints for field/function-like nodes in complex expressions.
     $link$ = {
+        #### The link type (`scope`/`value`/`both`, defaults to `scope`).
         type = $enum:link_type$
+        #### When it is a dynamic link, whether to read dynamic data from the trailing data. The corresponding node format is like `prefix:data`.
         from_data = $bool
+        #### When it is a dynamic link, whether to read dynamic data from arguments. The corresponding node format is like `func(arg)`.
         from_argument = $bool
+        #### When it is a dynamic link and has multiple arguments, the argument separator to use (`comma`/`pipe`, defaults to `comma`).
         argument_separator = $enum:link_argument_separator$
+        #### When it is a dynamic link, the prefix it carries. If `null`, the entire text is treated as dynamic data.
         prefix = $scalar
+        #### The data source (data expression). If there are multiple arguments, there can be multiple. If empty, the link is treated as a static link.
         data_source = $data_expression
+        #### The set of input scopes (types).
         input_scopes = { $scope$ }
+        #### The output scope (type). If `null`, it means the scope needs to be passed based on the data source.
         output_scope = $scope$
+        #### Only used for the specified definition type.
         for_definition_type = $type$
     }
 }
 
+#### Container property to introduce [Localisation Link Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-link).
 localisation_links = {
+    #### Introduce a [Localisation Link Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-link),
+    #### to provide scope constraints for localisation command usage.
     $localisation_link$ = {
+        #### The link type (`scope`/`value`/`both`, defaults to `scope`).
         type = $enum:link_type$
+        #### When it is a dynamic link, whether to read dynamic data from the trailing data. The corresponding node format is like `prefix:data`.
         from_data = $bool
+        #### When it is a dynamic link, whether to read dynamic data from arguments. The corresponding node format is like `func(arg)`.
         from_argument = $bool
+        #### When it is a dynamic link and has multiple arguments, the argument separator to use (`comma`/`pipe`, defaults to `comma`).
         argument_separator = $enum:link_argument_separator$
+        #### When it is a dynamic link, the prefix it carries. If `null`, the entire text is treated as dynamic data.
         prefix = $scalar
+        #### The data source (data expression). If there are multiple arguments, there can be multiple. If empty, the link is treated as a static link.
         data_source = $data_expression
+        #### The set of input scopes (types).
         input_scopes = { $scope$ }
+        #### The output scope (type). If `null`, it means the scope needs to be passed based on the data source.
         output_scope = $scope$
     }
 }
 
+#### Container property to introduce [Localisation Promotion Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation).
 localisation_promotions = {
+    #### Introduce a [Localisation Promotion Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation),
+    #### to allow corresponding command fields to be used after switching scopes via this localisation link.
     $localisation_link$ = $scope$
+    #### Introduce a [Localisation Promotion Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation),
+    #### to allow corresponding command fields to be used after switching scopes via this localisation link.
     $localisation_link$ = { $scope$ }
 }
 
+#### Container property to introduce [Localisation Command Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation).
 localisation_commands = {
+    #### Introduce a [Localisation Command Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation),
+    #### to declare the availability and allowed scopes of a localisation command field (e.g., `GetCountryType`).
     $localisation_command$ = $scope$
+    #### Introduce a [Localisation Command Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-localisation),
+    #### to declare the availability and allowed scopes of a localisation command field (e.g., `GetCountryType`).
     $localisation_command$ = { $scope$ }
 }
 
+#### Container property to introduce [Modifier Category Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-modifier).
 modifier_categories = {
+    #### Introduce a [Modifier Category Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-modifier),
+    #### to group modifiers and declares the set of scopes allowed for that category.
     $modifier_category$ = {
         supported_scopes = $scope$
         supported_scopes = { $scope$ }
     }
 }
 
+#### Container property to introduce [Modifier Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-modifier).
 modifiers = {
+    #### Introduce a [Modifier Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-modifier),
+    #### to declare a modifier name (constant or template expression) and its category.
     $modifier$ = $scope$
 }
 
+#### Container property to introduce [Scope Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-scope).
 scopes = {
+    #### Introduce a [Scope Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-scope),
+    #### to define a scope type and its aliases.
     $scope_name$ = {
+        #### The alias set of this scope (case-insensitive).
         aliases = { $scope$ }
+        #### (TODO) Not supported yet.
         is_subscope_of = $scope$
     }
 }
 
+#### Container property to introduce [Scope Group Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-scope).
 scope_groups = {
+    #### Introduce a [Scope Group Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-scope),
+    #### to group scope types together for use in other configs.
     $scope_group$ = { $scope$ }
 }
 
+#### Container property to introduce [Database Object Type Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-db-type).
 database_object_types = {
+    #### Introduce a [Database Object Type Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-db-type),
+    #### to define the type and format of database object expressions (e.g., `['civic:some_civic', ...]`) in localisation.
     $database_object_type$ = {
+        #### If present, treats the object node (e.g., `some_civic` in `civic:some_civic`) as a definition reference of this type.
         type = $type$
+        #### If present, treats the subsequent object node (e.g., `some_swapped_civic` in `civic:some_civic:some_swapped_civic`) as a definition reference of this swapped type.
         swap_type = $type$ # $swapped_type$
+        #### If present, treats the object node (e.g., `job_soldier` in `job:job_soldier`) as a localization reference matching this prefix.
         localisation = $prefix$
     }
 }
 
-# extended
+#### Introduce a [Single Alias Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias),
+#### for one-to-one reuse on the value side.
+## api_status = $enum:api_status$
+single_alias[$single_alias$] = $declaration
+
+#### Introduce an [Alias Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-alias),
+#### for reusable config fragments. `{subName}` is a restricted data expression.
+## api_status = $enum:api_status$
+alias_name[$alias_name$:$alias_sub_name$] = $declaration
+
+#### Introduce a [Directive Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-directive)
+#### to describe special expressions that alter the game's runtime script parser behavior.
+directive[$directive$] = $any
+
+# endregion
+
+# region Extended Configs
+
+#### Container property to introduce [Extended Scripted Variable Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-scripted-variable).
 scripted_variables = {
+    #### Introduce an [Extended Scripted Variable Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-scripted-variable).
+    #### Provides additional hints (documentation, inline hints) for a scripted variable.
+    #### Name supports constants, template expressions, ANT patterns, and regex.
     $scripted_variable$
 }
 
-# extended
+#### Container property to introduce [Extended Definition Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-definition).
 definitions = {
+    #### Introduce an [Extended Definition Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-definition).
+    #### Provides additional context and hint information for a specific definition.
+    #### Name supports constants, template expressions, ANT patterns, and regex.
     ## type = $scalar
     $definition$
 }
 
-# extended
+#### Container property to introduce [Extended Game Rule Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-game-rule).
 game_rules = {
+    #### Introduce an [Extended Game Rule Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-game-rule).
+    #### Provides hint enhancement for a game rule. When the entry is a property node, its value acts as a declaration config override.
     $game_rule$
+    #### Provides hint enhancement for a game rule. When the entry is a property node, its value acts as a declaration config override.
+    ####
+    #### (Override declaration via single alias or sub-block)
     $game_rule$ = $declaration
 }
 
-# extended
+#### Container property to introduce [Extended On Action Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-on-action).
 on_actions = {
+    #### Introduce an [Extended On Action Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-on-action).
+    #### Provides hint enhancement for an on action and specifies the event type via `## event_type`.
     $on_action$
 }
 
-# extended
+#### Container property to introduce [Extended Inline Script Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-inline-script).
 inline_scripts = {
+    #### Introduce an [Extended Inline Script Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-inline-script).
+    #### Provides context configs and scope context for a specific inline script.
     ## context_configs_type = $enum:context_configs_type$
     $inline_script$
+    #### Introduce an [Extended Inline Script Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-inline-script).
+    #### Provides context configs and scope context for a specific inline script.
+    ####
+    #### (Declares context configs as a single config or a block of configs)
     ## context_configs_type = $enum:context_configs_type$
     $inline_script$ = $declaration
 }
 
-# extended
+#### Container property to introduce [Extended Parameter Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-parameter).
 parameters = {
+    #### Introduce an [Extended Parameter Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-parameter).
+    #### Provides documentation and context enhancement for a parameter (`$PARAM$` or `$PARAM|DEFAULT$`).
     ## context_key = $scalar
     ## context_configs_type = $enum:context_configs_type$
     ## inherit
     $parameter$
+    #### Introduce an [Extended Parameter Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-parameter).
+    #### Provides documentation and context enhancement for a parameter (`$PARAM$` or `$PARAM|DEFAULT$`).
+    ####
+    #### (Declares context configs for this parameter)
     ## context_key = $scalar
     ## context_configs_type = $enum:context_configs_type$
     ## inherit
     $parameter$ = $declaration
 }
 
-# extended
+#### Container property to introduce [Extended Complex Enum Value Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-complex-enum-value).
 complex_enum_values = {
+    #### Introduce an [Extended Complex Enum Value Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-complex-enum-value).
+    #### Provides documentation/inlay hint for a specific complex enum.
+    #### The key is the complex enum name.
     $complex_enum$ = {
         ## hint = $scalar
+        #### The complex enum value to provide hints for.
         $complex_enum_value$
     }
 }
 
-# extended
+#### Container property to introduce [Extended Dynamic Value Configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-dynamic-value).
 dynamic_values = {
+    #### Introduce an [Extended Dynamic Value Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-dynamic-value).
+    #### Provides documentation/inlay hint for a specific dynamic value.
+    #### The key is the dynamic value type name.
     $dynamic_value_type$ = {
         ## hint = $scalar
+        #### The dynamic value to provide hints for.
         $dynamic_value$
     }
 }
 
-## api_status = $enum:api_status$
-single_alias[$single_alias$] = $declaration
+# endregion
 
-## api_status = $enum:api_status$
-alias_name[$alias_name$:$alias_sub_name$] = $declaration
+# region Types
 
-directive[$directive$] = $any
-
+#### Possible values for the `override_strategy` enum.
 $enum:override_strategy$ = { fios lios dupl ordered }
+#### Possible values for the `severity` enum.
 $enum:severity$ = { error warning info hint }
+#### Possible values for the `link_type` enum.
 $enum:link_type$ = { scope value both }
+#### Possible values for the `link_argument_separator` enum.
 $enum:link_argument_separator$ = { comma pipe }
+#### Possible values for the `context_configs_type` enum.
 $enum:context_configs_type$ = { single multiple }
+#### Possible values for the `api_status` enum.
 $enum:api_status$ = { obsolete removed kept }
 
-# no `## inject = ...` completion now
+# endregion
 
+# region Constraints
+
+#### Constraint: represent a declaration config. Used as the root declaration context.
 ## replace_scopes = $scope_context
 ## push_scope = $scope
 ## cardinality = $cardinality
 ## predicate = $predicate
 $$declaration = $declaration
 
+#### Constraint: schema option names. Used to provide documentation for CWT option comments (`## key = value`).
 $$options = {
     #### Specifies the API status of the config.
     ####
@@ -363,7 +530,7 @@ $$options = {
 
     #### Specifies the type identifier.
     ####
-    #### Used to declare the type of the definition in the extended config for definitions.
+    #### Used to introduce the type of the definition in the extended config for definitions.
     ####
     #### Applicable to: [Extended configs for definitions](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-extended-definition).
     ####
@@ -494,6 +661,7 @@ $$options = {
     inject
 }
 
+#### Constraint: schema option flag names. Used to provide documentation for CWT boolean option flags (`## key`).
 $$option_flags = {
     #### Marks the localization and image at the corresponding location as required.
     ####
@@ -531,3 +699,5 @@ $$option_flags = {
     #### Applicable to: [Complex enum configs](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-enum).
     per_definition
 }
+
+# endregion

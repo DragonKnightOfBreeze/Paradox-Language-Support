@@ -12,8 +12,8 @@
 - [ ] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
 - [ ] P2 color scheme - 优化/整理配色选项和预览文本
 - [ ] P3 检查设置页面，优化文字表述，修正错误
-- [ ] P3 为规则选项提供文档注释，基于schema规则文件。
-- [ ] P3 在schema规则文件中补充文档注释。
+- [x] P3 为规则选项提供文档注释，基于schema规则文件。
+- [x] P3 在schema规则文件中补充文档注释。
 - [ ] P3 清理和优化各个代码检查的检查项描述和报错描述。
 - [x] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
 - [ ] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
