@@ -21,8 +21,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.PlsNameValidators
-import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 
 class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,

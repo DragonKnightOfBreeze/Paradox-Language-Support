@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
-import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.Icon
 

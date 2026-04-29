@@ -2,11 +2,11 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
-import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 
 object PlsSettingsManager {

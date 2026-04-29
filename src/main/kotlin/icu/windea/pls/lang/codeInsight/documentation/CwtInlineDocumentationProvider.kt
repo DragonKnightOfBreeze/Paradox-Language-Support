@@ -9,9 +9,9 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtPsiUtil
-import icu.windea.pls.core.psi.PsiService
 
 @Suppress("UnstableApiUsage")
 class CwtInlineDocumentationProvider : InlineDocumentationProvider {

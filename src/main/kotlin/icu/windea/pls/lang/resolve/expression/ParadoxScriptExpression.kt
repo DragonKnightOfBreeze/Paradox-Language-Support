@@ -2,12 +2,12 @@ package icu.windea.pls.lang.resolve.expression
 
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.resolved
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStrings

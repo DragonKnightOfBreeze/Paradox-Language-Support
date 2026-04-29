@@ -15,7 +15,6 @@ import java.util.*
 import javax.imageio.ImageIO
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
-import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.inputStream
 import kotlin.io.path.name

@@ -5,10 +5,10 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.tree.IFileElementType
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
-import icu.windea.pls.core.psi.PsiService
 
 class CwtFile(
     viewProvider: FileViewProvider

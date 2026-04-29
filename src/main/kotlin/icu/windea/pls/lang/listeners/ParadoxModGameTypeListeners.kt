@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.listeners
 
+import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 
 /**

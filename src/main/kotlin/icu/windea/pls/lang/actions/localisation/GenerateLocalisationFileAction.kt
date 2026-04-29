@@ -24,6 +24,7 @@ import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -33,7 +34,6 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale

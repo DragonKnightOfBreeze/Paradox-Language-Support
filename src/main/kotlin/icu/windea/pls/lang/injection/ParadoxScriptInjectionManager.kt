@@ -20,6 +20,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.PlsNameValidators
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -27,7 +28,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxSeparatorType
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo

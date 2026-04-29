@@ -2,11 +2,11 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.match.ParadoxCsvExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
+import icu.windea.pls.lang.resolve.ParadoxTypeService
 import icu.windea.pls.model.ParadoxType
 
 class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {

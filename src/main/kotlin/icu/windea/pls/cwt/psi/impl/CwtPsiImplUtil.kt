@@ -16,6 +16,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
@@ -33,7 +34,6 @@ import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.model.constants.PlsStrings
 import javax.swing.Icon
 

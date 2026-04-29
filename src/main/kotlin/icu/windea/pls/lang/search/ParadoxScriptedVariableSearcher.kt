@@ -14,6 +14,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
@@ -25,7 +26,6 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable

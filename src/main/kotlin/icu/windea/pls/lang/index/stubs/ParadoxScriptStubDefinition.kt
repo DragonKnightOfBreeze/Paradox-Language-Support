@@ -7,9 +7,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.stubs.LightLanguageStubDefinition
 import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexVersions
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
 import icu.windea.pls.script.parser.ParadoxScriptParser

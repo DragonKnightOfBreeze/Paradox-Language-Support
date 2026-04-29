@@ -6,8 +6,8 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.extensions.PlsExtensionsBundle
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.ide.help.PlsHelpTopics
+import icu.windea.pls.model.constants.PlsConstants
 
 class PlsExtensionsSettingsConfigurable : BoundConfigurable(PlsExtensionsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls.extensions"

@@ -8,11 +8,11 @@ import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.ide.help.PlsHelpTopics
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolConstants
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.translation.TranslationToolConstants
-import icu.windea.pls.ide.help.PlsHelpTopics
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBundle.message("settings.integrations")), SearchableConfigurable {

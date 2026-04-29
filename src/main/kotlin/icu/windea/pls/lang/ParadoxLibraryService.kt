@@ -11,8 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)

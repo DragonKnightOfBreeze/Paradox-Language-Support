@@ -22,12 +22,12 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo

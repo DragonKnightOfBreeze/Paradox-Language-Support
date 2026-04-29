@@ -3,8 +3,8 @@ package icu.windea.pls.lang.inspections.overrides
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**

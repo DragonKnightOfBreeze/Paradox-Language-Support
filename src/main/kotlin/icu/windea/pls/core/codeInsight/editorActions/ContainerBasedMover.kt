@@ -15,9 +15,9 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.DocumentUtil.*
 import com.intellij.util.takeWhileInclusive
 import icu.windea.pls.core.children
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.psi.PsiService
 
 /**
  * 基于“容器-成员”语义的行移动器。

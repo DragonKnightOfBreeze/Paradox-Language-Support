@@ -8,8 +8,8 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 import icu.windea.pls.core.psi.PsiFileService
+import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
 
 // com.intellij.json.surroundWith.JsonSurroundDescriptor
 // com.intellij.json.surroundWith.JsonSurrounderBase

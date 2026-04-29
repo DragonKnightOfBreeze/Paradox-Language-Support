@@ -8,8 +8,8 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
-import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction

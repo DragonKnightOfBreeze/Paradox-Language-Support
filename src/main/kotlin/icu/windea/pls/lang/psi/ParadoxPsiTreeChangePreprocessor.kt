@@ -6,9 +6,9 @@ import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.PlsModificationTrackers
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 

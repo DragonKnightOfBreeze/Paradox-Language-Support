@@ -12,13 +12,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeId

@@ -13,11 +13,11 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*

@@ -2,8 +2,8 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.psi.ParadoxScriptFile

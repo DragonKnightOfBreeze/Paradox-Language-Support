@@ -4,9 +4,9 @@ import com.intellij.ide.lightEdit.LightEditCompatible
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxFileInfo
 import java.nio.file.Path
 import javax.swing.Icon

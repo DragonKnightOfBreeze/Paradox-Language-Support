@@ -5,11 +5,11 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.ParadoxFile
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 

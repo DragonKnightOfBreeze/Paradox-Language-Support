@@ -11,6 +11,7 @@ import com.intellij.psi.search.SearchScope
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
@@ -19,7 +20,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager

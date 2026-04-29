@@ -7,14 +7,14 @@ import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.ide.util.PlsOptionsManager
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.lints.LintToolProvider
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.ide.util.PlsOptionsManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")

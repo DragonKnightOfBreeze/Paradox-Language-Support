@@ -2,8 +2,8 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
-import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.CodeInjectorContext
+import icu.windea.pls.inject.CodeInjectorSupport
 import icu.windea.pls.inject.annotations.FieldCache
 import javassist.CtClass
 import javassist.CtField

@@ -9,6 +9,7 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
@@ -29,7 +30,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.model.paths.relativeTo
