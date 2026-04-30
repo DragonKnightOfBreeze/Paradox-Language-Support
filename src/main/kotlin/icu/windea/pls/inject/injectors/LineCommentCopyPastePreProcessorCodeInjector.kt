@@ -13,7 +13,6 @@ import com.intellij.util.DocumentUtil
 import com.intellij.util.text.CharArrayUtil
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.editor.CwtCommenter
-import icu.windea.pls.cwt.formatter.CwtCodeStyleSettings
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
@@ -49,26 +48,27 @@ class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
         var addSpace = false
 
         run {
+            val commonSettings = CodeStyle.getSettings(file).getCommonSettings(language)
             if (language is CwtLanguage) {
                 if (matchesCommentPrefix(CwtCommenter.MD_DOC_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.MD_DOC_COMMENT_PREFIX
-                    addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).DOC_COMMENT_ADD_SPACE
+                    addSpace = commonSettings.LINE_COMMENT_ADD_SPACE // 2.1.8 delegate to LINE_COMMENT_ADD_SPACE
                     return@run
                 }
                 if (matchesCommentPrefix(CwtCommenter.DOC_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.DOC_COMMENT_PREFIX
-                    addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).DOC_COMMENT_ADD_SPACE
+                    addSpace = commonSettings.LINE_COMMENT_ADD_SPACE // 2.1.8 delegate to LINE_COMMENT_ADD_SPACE
                     return@run
                 }
                 if (matchesCommentPrefix(CwtCommenter.OPTION_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.OPTION_COMMENT_PREFIX
-                    addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).OPTION_COMMENT_ADD_SPACE
+                    addSpace = commonSettings.LINE_COMMENT_ADD_SPACE // 2.1.8 delegate to LINE_COMMENT_ADD_SPACE
                     return@run
                 }
             }
             if (matchesCommentPrefix(lineCommentPrefix)) {
                 commentPrefix = lineCommentPrefix
-                addSpace = CodeStyle.getSettings(file).getCommonSettings(language).LINE_COMMENT_ADD_SPACE
+                addSpace = commonSettings.LINE_COMMENT_ADD_SPACE
             }
         }
         val commentPrefix0 = commentPrefix ?: return text

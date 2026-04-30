@@ -17,6 +17,7 @@ class ParadoxScriptCodeStyleSettings(
     var SPACE_AROUND_PROPERTY_SEPARATOR = true
     @JvmField
     var SPACE_AROUND_INLINE_MATH_OPERATOR = true
+
     @JvmField
     var SPACE_WITHIN_BRACES = true
     @JvmField

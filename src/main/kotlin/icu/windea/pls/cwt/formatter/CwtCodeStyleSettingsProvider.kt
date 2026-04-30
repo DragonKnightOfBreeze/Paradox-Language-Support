@@ -86,11 +86,11 @@ class CwtCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     private fun customizeCommenterSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+            CommenterOption.LINE_COMMENT_ADD_SPACE_ON_REFORMAT.name,
             CommenterOption.LINE_COMMENT_ADD_SPACE.name,
         )
-        val commentsGroup = CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_COMMENTS
-        consumer.showCustomOption(CwtCodeStyleSettings::OPTION_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
-        consumer.showCustomOption(CwtCodeStyleSettings::DOC_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
+
+        // NOTE 2.1.8 这里不能通过 `consumer.showCustomOption(...)` 方便地自定义选项（如果要自定义也会破坏 `CommenterForm` 中的更改状态判断逻辑）
     }
 
     fun CodeStyleSettingsCustomizable.showCustomOption(property: KMutableProperty1<CwtCodeStyleSettings, Boolean>, title: @NlsContexts.Label String, groupName: @NlsContexts.Label String?) {
