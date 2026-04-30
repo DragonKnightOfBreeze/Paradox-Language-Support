@@ -61,7 +61,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportB
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if (config.configExpression?.type?.isSuffixAware == true) {
@@ -112,7 +112,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if (config.configExpression?.type?.isSuffixAware == true) {
@@ -159,7 +159,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if (config.configExpression?.type?.isSuffixAware == true) {
@@ -206,7 +206,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (expressionText.isLeftQuoted()) return
-        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         val range = rangeInElement?.shiftRight(element.startOffset) ?: element.textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
     }
@@ -244,7 +244,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.PATH_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -297,9 +297,9 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         val configGroup = config.configGroup
         val enumName = config.configExpression?.value ?: return
         val attributesKey = when {
-            configGroup.enums[enumName] != null -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
-            configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
-            else -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
+            configGroup.enums[enumName] != null -> ParadoxScriptAttributesKeys.ENUM_VALUE
+            configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE
+            else -> ParadoxScriptAttributesKeys.ENUM_VALUE
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -346,7 +346,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBas
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.MODIFIER_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.MODIFIER
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -430,8 +430,8 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
             if (element is ParadoxScriptString && !configExpression.isKey) return // unnecessary
         }
         val attributesKey = when {
-            configExpression.isKey -> ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY
-            else -> ParadoxScriptAttributesKeys.STRING_KEY
+            configExpression.isKey -> ParadoxScriptAttributesKeys.PROPERTY_KEY
+            else -> ParadoxScriptAttributesKeys.STRING
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -449,9 +449,9 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBas
         if (type !in CwtDataTypeSets.ConstantAware) return false
         val aliasName = aliasConfig.name
         val attributesKey = when {
-            aliasName == "modifier" -> ParadoxScriptAttributesKeys.MODIFIER_KEY
-            aliasName == "trigger" -> ParadoxScriptAttributesKeys.TRIGGER_KEY
-            aliasName == "effect" -> ParadoxScriptAttributesKeys.EFFECT_KEY
+            aliasName == "modifier" -> ParadoxScriptAttributesKeys.MODIFIER
+            aliasName == "trigger" -> ParadoxScriptAttributesKeys.TRIGGER
+            aliasName == "effect" -> ParadoxScriptAttributesKeys.EFFECT
             else -> return false
         }
         val textRange = element.textRange

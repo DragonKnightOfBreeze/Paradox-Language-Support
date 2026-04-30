@@ -21,7 +21,7 @@ class ParadoxPredefinedValueFieldNode(
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

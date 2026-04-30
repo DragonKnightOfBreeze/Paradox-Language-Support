@@ -31,7 +31,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -59,7 +59,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
-        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
+        val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)

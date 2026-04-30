@@ -45,8 +45,8 @@ class ParadoxDatabaseObjectDataNode(
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if (config == null) return null
-        if (config.type != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
-        if (config.localisation != null) return ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+        if (config.type != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
+        if (config.localisation != null) return ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         return null
     }
 

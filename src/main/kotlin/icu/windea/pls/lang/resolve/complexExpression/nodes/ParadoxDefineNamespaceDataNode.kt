@@ -28,7 +28,7 @@ class ParadoxDefineNamespaceDataNode(
     val expression: ParadoxDefineReferenceExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_NAMESPACE_KEY
+        return ParadoxScriptAttributesKeys.DEFINE_NAMESPACE
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

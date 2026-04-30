@@ -30,13 +30,13 @@ class ParadoxCsvAnnotator : Annotator {
 
     private fun getAttributesKey(element: ParadoxCsvColumn): TextAttributesKey? {
         if (element.firstChild == null) return null
-        if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER_KEY
+        if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER
 
         val resolvedType = ParadoxTypeService.resolve(element.value)
         val attributesKeys = when (resolvedType) {
-            ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD_KEY
-            ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER_KEY
-            ParadoxType.Float -> ParadoxCsvAttributesKeys.NUMBER_KEY
+            ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD
+            ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER
+            ParadoxType.Float -> ParadoxCsvAttributesKeys.NUMBER
             // ParadoxType.String -> ParadoxCsvAttributesKeys.STRING_KEY
             else -> null
         }

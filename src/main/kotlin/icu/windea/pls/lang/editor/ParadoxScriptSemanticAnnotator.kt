@@ -86,7 +86,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
 
     private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
         if (element is ParadoxScriptProperty) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY).create()
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION).create()
         }
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField.isNotNullOrEmpty()) {
@@ -97,7 +97,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
                 val typesString = definitionInfo.typeText
                 // 这里不能使用PSI链接
                 val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY).create()
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_NAME).create()
             }
         }
     }
@@ -110,7 +110,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         if (element !is ParadoxScriptStringExpressionElement) return false
         if (element.complexEnumValueInfo == null) return false
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
-            .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY)
+            .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE)
             .create()
         return true
     }
@@ -119,7 +119,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         // 目前不在这里显示标签类型，而是在快速文档中
         if (element !is ParadoxScriptString) return false
         if (element.tagType == null) return false
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG).create()
         return true
     }
 
@@ -128,7 +128,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         val name = element.name
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val r1 = TextRange.from(offset, name.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE).create()
         return true
     }
 
@@ -143,14 +143,14 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         if (mode.isNullOrEmpty()) return false
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val modeRange = TextRange.from(offset, mode.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE).create()
         val markerRange = TextRange.from(offset + mode.length, 1)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.MARKER_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.MARKER).create()
 
         val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
         if (target.isNullOrEmpty()) return true
         val targetRange = TextRange.from(offset + mode.length + 1, target.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(targetRange).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(targetRange).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE).create()
         return true
     }
 }

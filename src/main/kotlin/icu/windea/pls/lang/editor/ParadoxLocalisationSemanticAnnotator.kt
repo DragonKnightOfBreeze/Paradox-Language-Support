@@ -40,7 +40,7 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
             // 如果可以被解析为本地化，则高亮为本地化引用
             if (element.resolveLocalisation() == null) return@run
             val idElement = element.idElement ?: return@run
-            val attributesKey = ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
+            val attributesKey = ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(idElement).textAttributes(attributesKey).create()
         }
 

@@ -19,10 +19,10 @@ class ParadoxScriptValueArgumentValueNode(
         // 为参数值提供基础代码高亮
         val type = ParadoxTypeService.resolve(text)
         return when {
-            type == ParadoxType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD_KEY
-            ParadoxTypeService.isRelaxFloat(type) -> ParadoxScriptAttributesKeys.NUMBER_KEY
-            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE_KEY
-            else -> ParadoxScriptAttributesKeys.STRING_KEY
+            type == ParadoxType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
+            ParadoxTypeService.isRelaxFloat(type) -> ParadoxScriptAttributesKeys.NUMBER
+            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE
+            else -> ParadoxScriptAttributesKeys.STRING
         }
     }
 

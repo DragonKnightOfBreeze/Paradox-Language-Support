@@ -13,7 +13,7 @@ class ParadoxParameterizedScopeLinkNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SCOPE_KEY
+        return ParadoxScriptAttributesKeys.SCOPE
     }
 
     open class Resolver {

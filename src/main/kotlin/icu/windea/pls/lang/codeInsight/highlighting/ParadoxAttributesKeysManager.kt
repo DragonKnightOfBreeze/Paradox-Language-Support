@@ -3,7 +3,6 @@ package icu.windea.pls.lang.codeInsight.highlighting
 import com.intellij.lang.Language
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.core.cache.CacheBuilder
@@ -20,14 +19,14 @@ object ParadoxAttributesKeysManager {
     @Suppress("DEPRECATION")
     private val colorKeyCache = CacheBuilder().build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
-        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_$hex", IDENTIFIER.defaultAttributes.clone().apply {
+        TextAttributesKey.createTextAttributesKey("PARADOX_LOCALISATION.COLOR_$hex", IDENTIFIER.defaultAttributes.clone().apply {
             foregroundColor = color
         })
     }
     @Suppress("DEPRECATION")
     private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
         val hex = ColorUtil.toHex(color).uppercase()
-        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_$hex", TextAttributes().apply {
+        TextAttributesKey.createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_$hex", TextAttributes().apply {
             foregroundColor = color
         })
     }
@@ -46,79 +45,79 @@ object ParadoxAttributesKeysManager {
 
     fun getDefinitionReferenceKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE_KEY
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.DEFINITION_REFERENCE_KEY
-            else -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE
+            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.DEFINITION_REFERENCE
+            else -> ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
         }
     }
 
     fun getLocalisationReferenceKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
-            else -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE
+            else -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
         }
     }
 
     fun getEnumValueKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.ENUM_VALUE_KEY
-            else -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
+            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.ENUM_VALUE
+            else -> ParadoxScriptAttributesKeys.ENUM_VALUE
         }
     }
 
     fun getComplexEnumValueKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE_KEY
-            else -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
+            ParadoxCsvLanguage -> ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE
+            else -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE
         }
     }
 
     fun getDynamicValueKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY
-            else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE
+            else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE
         }
     }
 
     fun getVariableKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.VARIABLE_KEY
-            else -> ParadoxScriptAttributesKeys.VARIABLE_KEY
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.VARIABLE
+            else -> ParadoxScriptAttributesKeys.VARIABLE
         }
     }
 
     fun getSystemCommandScopeKey(): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY
+        return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE
     }
 
     fun getCommandScopeKey(): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE
     }
 
     fun getCommandFieldKey(): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_FIELD
     }
 
     fun getDatabaseObjectTypeKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE
+            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE
         }
     }
 
     fun getDatabaseObjectKey(language: Language? = null): TextAttributesKey {
         return when (language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT
+            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT
         }
     }
 
     fun getCommandScopeLinkPrefixKey(): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX
     }
 
     fun getCommandFieldPrefixKey(): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX_KEY
+        return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX
     }
 
     // endregion

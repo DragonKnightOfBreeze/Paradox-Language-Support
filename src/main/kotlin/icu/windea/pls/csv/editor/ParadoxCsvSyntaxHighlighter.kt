@@ -16,13 +16,13 @@ class ParadoxCsvSyntaxHighlighter(
 ) : SyntaxHighlighter {
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         return when (tokenType) {
-            SEPARATOR -> KA.SEPARATOR_KEYS
-            COMMENT -> KA.COMMENT_KEYS
-            COLUMN_TOKEN -> KA.STRING_KEYS
-            VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE_KEYS
-            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE_KEYS
-            BAD_CHARACTER -> KA.BAD_CHARACTER_KEYS
-            else -> KA.EMPTY_KEYS
+            SEPARATOR -> KA.SEPARATOR
+            COMMENT -> KA.COMMENT
+            COLUMN_TOKEN -> KA.STRING
+            VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE
+            INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE
+            BAD_CHARACTER -> KA.BAD_CHARACTER
+            else -> TextAttributesKey.EMPTY_ARRAY
         }
     }
 

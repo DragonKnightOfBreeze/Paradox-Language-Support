@@ -13,7 +13,7 @@ class ParadoxParameterizedValueFieldNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD
     }
 
     open class Resolver {

@@ -209,7 +209,7 @@ class ParadoxLocalisationTextHtmlRenderContext(
     }
 
     override fun renderConceptCommand(element: ParadoxLocalisationConceptCommand) {
-        val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+        val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT
         val editorColorsManager = EditorColorsManager.getInstance()
         val schema = editorColorsManager.schemeForCurrentUITheme
         val conceptColor = schema.getAttributes(conceptAttributesKey).foregroundColor

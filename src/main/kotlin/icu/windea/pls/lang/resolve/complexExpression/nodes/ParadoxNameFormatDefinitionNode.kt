@@ -32,7 +32,7 @@ class ParadoxNameFormatDefinitionNode(
     val definitionType: String?,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+        return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

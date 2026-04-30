@@ -35,7 +35,7 @@ class ParadoxScriptValueNode(
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if (text.isEmpty()) return null
-        return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+        return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

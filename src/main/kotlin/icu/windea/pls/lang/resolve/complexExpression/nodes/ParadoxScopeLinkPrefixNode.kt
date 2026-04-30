@@ -23,7 +23,7 @@ class ParadoxScopeLinkPrefixNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX_KEY
+        return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

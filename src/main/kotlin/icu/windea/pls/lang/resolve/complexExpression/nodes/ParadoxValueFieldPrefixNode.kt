@@ -23,7 +23,7 @@ class ParadoxValueFieldPrefixNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX_KEY
+        return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

@@ -49,13 +49,13 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         run {
             val offset = separatorIndex
             if (offset <= 0) return@run
-            val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+            val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
             val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
             ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range1, attributesKey, holder)
         }
         run {
             val offset = separatorIndex
-            val attributesKey = ParadoxScriptAttributesKeys.MARKER_KEY
+            val attributesKey = ParadoxScriptAttributesKeys.MARKER
             val range2 = range.let { TextRange.create(it.startOffset + offset, it.startOffset + offset + 1) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range2).textAttributes(attributesKey).create()
         }
@@ -64,7 +64,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
             if (offset <= 0) return@run
             // annotate only if snippet after '@' is number like
             if (!expressionText.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
-            val attributesKey = ParadoxScriptAttributesKeys.NUMBER_KEY
+            val attributesKey = ParadoxScriptAttributesKeys.NUMBER
             val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range3).textAttributes(attributesKey).create()
         }

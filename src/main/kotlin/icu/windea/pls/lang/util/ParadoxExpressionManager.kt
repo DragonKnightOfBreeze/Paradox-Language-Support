@@ -296,7 +296,7 @@ object ParadoxExpressionManager {
         val attributesKey = node.getAttributesKey(element)
 
         run {
-            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
+            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING
             if (attributesKey != null && mustUseAttributesKey) {
                 annotateNodeByAttributesKey(element, node, attributesKey, holder)
                 return@run

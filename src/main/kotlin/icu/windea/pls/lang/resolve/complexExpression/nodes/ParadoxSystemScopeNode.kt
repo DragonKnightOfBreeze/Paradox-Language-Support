@@ -27,7 +27,7 @@ class ParadoxSystemScopeNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY
+        return ParadoxScriptAttributesKeys.SYSTEM_SCOPE
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

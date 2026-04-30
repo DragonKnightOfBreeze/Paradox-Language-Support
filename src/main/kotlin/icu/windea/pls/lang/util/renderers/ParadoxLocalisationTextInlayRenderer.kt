@@ -118,7 +118,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         val newBuilder = builder
         builder = oldBuilder
         val presentation = newBuilder.mergePresentations() ?: return
-        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
+        val finalPresentation = WithAttributesPresentation(presentation, textAttributesKey, editor)
         builder.add(finalPresentation)
     }
 
@@ -297,7 +297,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         // NOTE 2.1.2 `WithAttributesPresentation` 需要作为 `psiSingleReference` 的子节点，从而正确提供配色
         val basePresentation = presentation
             .letIf(referenceElement != null) { factory.psiSingleReference(it) { referenceElement } }
-        val attributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+        val attributesKey = ParadoxLocalisationAttributesKeys.CONCEPT
         val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
         val finalPresentation = WithAttributesPresentation(basePresentation, attributesKey, editor, attributesFlags)
             .let { factory.withCursorOnHoverWhenControlDown(it, PlsHintsUtil.getHandCursor()) }

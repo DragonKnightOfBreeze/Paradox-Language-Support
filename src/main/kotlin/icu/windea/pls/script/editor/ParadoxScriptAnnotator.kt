@@ -111,11 +111,11 @@ class ParadoxScriptAnnotator : Annotator {
         val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
         val templateElement = parameterElement.parent ?: return
         when {
-            element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE_KEY)
-            templateElement is ParadoxScriptPropertyKey -> annotateRange(holder, element, Keys.PROPERTY_KEY_KEY)
-            templateElement is ParadoxScriptString -> annotateRange(holder, element, Keys.STRING_KEY)
-            templateElement is ParadoxScriptScriptedVariableName -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_NAME_KEY)
-            templateElement is ParadoxScriptScriptedVariableReference -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE_KEY)
+            element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE)
+            templateElement is ParadoxScriptPropertyKey -> annotateRange(holder, element, Keys.PROPERTY_KEY)
+            templateElement is ParadoxScriptString -> annotateRange(holder, element, Keys.STRING)
+            templateElement is ParadoxScriptScriptedVariableName -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_NAME)
+            templateElement is ParadoxScriptScriptedVariableReference -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE)
         }
     }
 
@@ -126,7 +126,7 @@ class ParadoxScriptAnnotator : Annotator {
     private fun annotateRangeWithAtSign(holder: AnnotationHolder, element: PsiElement, attributesKey: TextAttributesKey) {
         val range = element.textRange
         val rangeForAtSign = TextRange.from(range.startOffset, 1)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForAtSign).textAttributes(Keys.AT_SIGN_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForAtSign).textAttributes(Keys.AT_SIGN).create()
         val rangeForRemain = TextRange.create(range.startOffset + 1, range.endOffset)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForRemain).textAttributes(attributesKey).create()
     }

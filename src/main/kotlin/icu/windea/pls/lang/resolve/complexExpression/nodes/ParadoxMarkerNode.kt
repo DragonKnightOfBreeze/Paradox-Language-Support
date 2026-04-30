@@ -15,8 +15,8 @@ class ParadoxMarkerNode(
 ) : ParadoxComplexExpressionNodeBase(), ParadoxTokenNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER_KEY
-            else -> ParadoxScriptAttributesKeys.MARKER_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER
+            else -> ParadoxScriptAttributesKeys.MARKER
         }
     }
 }

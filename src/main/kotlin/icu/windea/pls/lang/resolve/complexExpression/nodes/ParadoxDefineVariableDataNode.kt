@@ -29,7 +29,7 @@ class ParadoxDefineVariableDataNode(
     val expression: ParadoxDefineReferenceExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_VARIABLE_KEY
+        return ParadoxScriptAttributesKeys.DEFINE_VARIABLE
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

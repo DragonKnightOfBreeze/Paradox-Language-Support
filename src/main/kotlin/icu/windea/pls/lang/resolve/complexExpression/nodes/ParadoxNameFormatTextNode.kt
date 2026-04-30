@@ -19,8 +19,8 @@ class ParadoxNameFormatTextNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.TEXT_KEY
-            else -> ParadoxScriptAttributesKeys.STRING_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.TEXT
+            else -> ParadoxScriptAttributesKeys.STRING
         }
     }
 
