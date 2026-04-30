@@ -3,7 +3,6 @@ package icu.windea.pls.config.util
 import com.intellij.ide.BrowserUtil
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.platform.ide.progress.ModalTaskOwner
@@ -18,6 +17,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -105,9 +105,8 @@ object CwtConfigRepositoryManager {
 
     @Synchronized
     fun syncFromUrls() {
-        // NOTE 这里需要先获取一个project，但是应当如何获取呢……
-        val openProjects = ProjectManager.getInstance().openProjects
-        val project = openProjects.firstOrNull() ?: return
+        // NOTE 2.1.8 尝试推断并获取当前项目
+        val project = getCurrentProject() ?: return
 
         // NOTE 这里需要先验证是否真的需要刷新
         if (!isValidToSync()) return
@@ -116,16 +115,19 @@ object CwtConfigRepositoryManager {
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 
+        val notificationTitle = PlsBundle.message("config.repo.sync.result.title")
+
         // 创建父目录，如果存在报错，发送通知并直接返回
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = PlsBundle.message("config.repo.sync.createDirectoryFailed")
-            val notification = PlsFacade.createNotification(NotificationType.ERROR, PlsBundle.message("config.repo.sync.result.title"), warningMessage)
+            val notification = PlsFacade.createNotification(NotificationType.ERROR, notificationTitle, warningMessage)
             notification.notify(project)
             return
         }
 
-        PlsFacade.getCoroutineScope().launch c@{
+        val coroutineScope = PlsFacade.getCoroutineScope()
+        coroutineScope.launch c@{
             val results = withBackgroundProgress(project, PlsBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
                 reportRawProgress { reporter ->
                     reporter.text(PlsBundle.message("config.repo.sync.progress.text"))
@@ -150,20 +152,19 @@ object CwtConfigRepositoryManager {
             // 如果存在报错，发送通知并直接返回
             if (results.any { it.isFailure }) {
                 val warningMessage = PlsBundle.message("config.repo.sync.result.2")
-                val notification = PlsFacade.createNotification(NotificationType.WARNING, PlsBundle.message("config.repo.sync.result.title"), warningMessage)
+                val notification = PlsFacade.createNotification(NotificationType.WARNING, notificationTitle, warningMessage)
                     .addAction(action)
-                openProjects.forEach { notification.notify(it) }
+                notification.notify(project)
                 return@c
             }
 
             val updated = results.any { result -> result.getOrNull().let { !PlsGitService.getInstance().isUpdateToDate(it) } }
 
             // 发送成功的通知
-            val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0")
-            else PlsBundle.message("config.repo.sync.result.1")
-            val notification = PlsFacade.createNotification(NotificationType.INFORMATION, PlsBundle.message("config.repo.sync.result.title"), successMessage)
+            val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0") else PlsBundle.message("config.repo.sync.result.1")
+            val notification = PlsFacade.createNotification(NotificationType.INFORMATION, notificationTitle, successMessage)
                 .addAction(action)
-            openProjects.forEach { notification.notify(it) }
+            notification.notify(project)
 
             // 如果需要刷新规则分组数据，则通知规则目录发生变更
             if (updated) {
