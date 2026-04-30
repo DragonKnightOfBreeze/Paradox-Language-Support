@@ -7,11 +7,11 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -75,7 +75,7 @@ import icu.windea.pls.model.ParadoxGameType
  * - [Command][CwtDataTypes.Command] - 命令表达式（如 `Root.GetName`）
  * - [DefineReference][CwtDataTypes.DefineReference] - 定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）
  * - [DatabaseObject][CwtDataTypes.DatabaseObject] - 数据库对象表达式（如 `civic:x:y`）
- * - [StellarisNameFormat][CwtDataTypes.StellarisNameFormat] - Stellaris 名称格式表达式
+ * - [NameFormat][CwtDataTypes.NameFormat] - 命名格式表达式
  * - [ShaderEffect][CwtDataTypes.ShaderEffect] - 着色器效果
  * - [TechnologyWithLevel][CwtDataTypes.TechnologyWithLevel] - 带等级的科技（如 `some_repeatable_tech@1`）
  *
@@ -481,14 +481,14 @@ object CwtDataTypes {
         .withPriority(60.0)
         .build()
     /**
-     * Stellaris 名称格式表达式类型。规则表达式：`stellaris_name_format[type]`。
+     * 命名格式表达式类型。规则表达式：`name_format[type]`。
      *
-     * 匹配脚本中的 Stellaris 名称格式表达式。仅限 Stellaris 游戏类型。
+     * 匹配脚本中的命名格式表达式。仅限 Stellaris 游戏类型。
      *
-     * @see StellarisNameFormatExpression
+     * @see ParadoxNameFormatExpression
      */
     @WithGameType(ParadoxGameType.Stellaris)
-    val StellarisNameFormat = CwtDataType.builder("StellarisNameFormat").reference()
+    val NameFormat = CwtDataType.builder("NameFormat").reference()
         .withPriority(60.0)
         .build()
 

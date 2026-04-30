@@ -12,19 +12,19 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatClosureNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatClosureNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatDefinitionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatLocalisationNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatTextNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNamePartNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 
 /**
- * Stellaris 命名格式表达式。
+ * 命名格式表达式。
  *
  * 说明：
  * - 用于解析 Stellaris 中以花括号包裹的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
- * - 对应的规则数据类型为 [CwtDataTypes.StellarisNameFormat]。
+ * - 对应的规则数据类型为 [CwtDataTypes.NameFormat]。
  *
  * 示例：
  * ```
@@ -50,39 +50,39 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * - 闭包段的内容由一系列节点顺序拼接而成，空白会被保留为空白节点。按优先级识别如下节点类型：
  *   1) 定义占位：形如`<name>`。
- *      - 解析为 `StellarisNamePartNode`，其内部包含`"<"`与`">"`标记节点，以及一个`StellarisNameFormatDefinitionNode`。
+ *      - 解析为 `ParadoxNamePartNode`，其内部包含`"<"`与`">"`标记节点，以及一个 `ParadoxNameFormatDefinitionNode`。
  *      - `name` 的类型由规则中的 `formatName` 推导为 `${formatName}_name_parts_list`，用于跨文件的定义名解析与跳转。
  *   2) 命令表达式：形如`[ ... ]`。
  *      - 解析为 `ParadoxCommandNode`，内部为`ParadoxCommandExpression`，并保留方括号标记节点。
  *   3) 本地化标识符：一段看起来是“标识符”的连续字符序列（字母/数字/`_`/`-`/`.`/`'`）。
- *      - 解析为 `StellarisNameFormatLocalisationNode`，按偏好语言或上下文语言进行引用解析。
+ *      - 解析为 `ParadoxNameFormatLocalisationNode`，按偏好语言或上下文语言进行引用解析。
  *   4) 文本：当不匹配上述任一结构时，根据空白进行拆分。
- *      - 非空白部分解析为 `StellarisNameFormatTextNode`，空白部分解析为 `ParadoxBlankNode`，以保留布局与渲染效果。
+ *      - 非空白部分解析为 `ParadoxNameFormatTextNode`，空白部分解析为 `ParadoxBlankNode`，以保留布局与渲染效果。
  *
  * - 嵌套与不完整输入：
- *   - 闭包可递归嵌套，即`{ ... { ... } ... }`，对应嵌套的`StellarisNameFormatClosureNode`结构。
+ *   - 闭包可递归嵌套，即`{ ... { ... } ... }`，对应嵌套的`ParadoxNameFormatClosureNode`结构。
  *   - 当任一成对标记未闭合（如缺失 `]`、`>`、`}`），解析器会在相应包装节点内部追加空的`ParadoxErrorTokenNode`以标记不完整输入，
  *     并在必要时于当前层末尾补充一个尾随错误节点，便于高亮与补全的容错处理。
  *
  * - 配置关联：
  *   - `formatName` 来自 CWT 规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
  */
-interface StellarisNameFormatExpression : ParadoxComplexExpression {
+interface ParadoxNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
     interface Resolver {
-        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): StellarisNameFormatExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression?
     }
 
-    companion object : Resolver by StellarisNameFormatExpressionResolverImpl()
+    companion object : Resolver by ParadoxNameFormatExpressionResolverImpl()
 }
 
 // region Implementations
 
-private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExpression.Resolver {
-    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): StellarisNameFormatExpression? {
+private class ParadoxNameFormatExpressionResolverImpl : ParadoxNameFormatExpression.Resolver {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxNameFormatExpression? {
         val configExpression = config.configExpression ?: return null
-        if (configExpression.type != CwtDataTypes.StellarisNameFormat) return null
+        if (configExpression.type != CwtDataTypes.NameFormat) return null
 
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
@@ -92,7 +92,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val range = range ?: TextRange.create(0, text.length)
-        val expression = StellarisNameFormatExpressionImpl(text, range, configGroup, config, nodes)
+        val expression = ParadoxNameFormatExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset
         val textLength = text.length
@@ -119,7 +119,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
                 if (k > tStart) {
                     val nodeText = text.substring(tStart, k)
                     val nodeRange = TextRange.create(tStart + offset, k + offset)
-                    targetNodes += StellarisNameFormatTextNode.resolve(nodeText, nodeRange, configGroup)
+                    targetNodes += ParadoxNameFormatTextNode.resolve(nodeText, nodeRange, configGroup)
                 }
             }
         }
@@ -128,7 +128,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
             if (nameEnd <= nameStart) return
             val nameText = text.substring(nameStart, nameEnd)
             val nameRange = TextRange.create(nameStart + offset, nameEnd + offset)
-            targetNodes += StellarisNameFormatLocalisationNode.resolve(nameText, nameRange, configGroup)
+            targetNodes += ParadoxNameFormatLocalisationNode.resolve(nameText, nameRange, configGroup)
         }
 
         fun buildDefinitionNode(nameStart: Int, nameEnd: Int): ParadoxComplexExpressionNode {
@@ -137,7 +137,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
             val nameRange = TextRange.create(nameStart + offset, nameEnd + offset)
             val defType = definitionType
             return if (defType.isNullOrEmpty()) ParadoxErrorTokenNode(nameText, nameRange, configGroup)
-            else StellarisNameFormatDefinitionNode.resolve(nameText, nameRange, configGroup, defType)
+            else ParadoxNameFormatDefinitionNode.resolve(nameText, nameRange, configGroup, defType)
         }
 
         fun findMatchingBracket(startIndex: Int, endExclusive: Int): Int {
@@ -213,7 +213,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
                             children += buildDefinitionNode(i + 1, innerEnd)
                             // add empty error token INSIDE the name part node to mark unmatched '<'
                             children += ParadoxErrorTokenNode("", TextRange.create(innerEnd + offset, innerEnd + offset), configGroup)
-                            val wrap = StellarisNamePartNode(text.substring(i, innerEnd), TextRange.create(i + offset, innerEnd + offset), configGroup, children)
+                            val wrap = ParadoxNamePartNode(text.substring(i, innerEnd), TextRange.create(i + offset, innerEnd + offset), configGroup, children)
                             targetNodes += wrap
                             // ensure trailing error token at current layer end when unmatched and reached end
                             if (innerEnd == end && !endsWithErrorToken(targetNodes.last(), end + offset)) {
@@ -226,7 +226,7 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
                         children += buildDefinitionNode(i + 1, close)
                         // add marker for '>'
                         children += ParadoxMarkerNode(">", TextRange.create(close + offset, close + 1 + offset), configGroup)
-                        val wrap = StellarisNamePartNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
+                        val wrap = ParadoxNamePartNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
                         targetNodes += wrap
                         i = close + 1
                         segStart = i
@@ -301,14 +301,14 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
                             if (children.isEmpty() || !endsWithErrorToken(children.last(), end + offset)) {
                                 children += ParadoxErrorTokenNode("", TextRange.create(end + offset, end + offset), configGroup)
                             }
-                            val wrap = StellarisNameFormatClosureNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
+                            val wrap = ParadoxNameFormatClosureNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
                             targetNodes += wrap
                             return
                         }
                         children += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
                         parseContent(i + 1, close, children)
                         children += ParadoxMarkerNode("}", TextRange.create(close + offset, close + 1 + offset), configGroup)
-                        val wrap = StellarisNameFormatClosureNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
+                        val wrap = ParadoxNameFormatClosureNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
                         targetNodes += wrap
                         i = close + 1
                         segStart = i
@@ -370,14 +370,14 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
                         if (children.isEmpty() || !endsWithErrorToken(children.last(), end + offset)) {
                             children += ParadoxErrorTokenNode("", TextRange.create(end + offset, end + offset), configGroup)
                         }
-                        val wrap = StellarisNameFormatClosureNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
+                        val wrap = ParadoxNameFormatClosureNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
                         nodes += wrap
                         return
                     }
                     children += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
                     parseContent(i + 1, close, children)
                     children += ParadoxMarkerNode("}", TextRange.create(close + offset, close + 1 + offset), configGroup)
-                    val wrap = StellarisNameFormatClosureNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
+                    val wrap = ParadoxNameFormatClosureNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
                     nodes += wrap
                     i = close + 1
                     continue
@@ -419,16 +419,16 @@ private class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExp
     }
 }
 
-private class StellarisNameFormatExpressionImpl(
+private class ParadoxNameFormatExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val config: CwtConfig<*>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-) : ParadoxComplexExpressionBase(), StellarisNameFormatExpression {
+) : ParadoxComplexExpressionBase(), ParadoxNameFormatExpression {
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxComplexExpressionValidator.validate(this, element)
 
-    override fun equals(other: Any?) = this === other || other is StellarisNameFormatExpression && text == other.text
+    override fun equals(other: Any?) = this === other || other is ParadoxNameFormatExpression && text == other.text
     override fun hashCode() = text.hashCode()
     override fun toString() = text
 }

@@ -558,7 +558,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.isKey = isKey
     }
 
-    fun completeStellarisNameFormatExpression(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeNameFormatExpression(context: ProcessingContext, result: CompletionResultSet) {
         // TODO 2.0.6+ 并没有基于节点进行代码补全……不过能用就行，暂时不做重构
 
         val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return

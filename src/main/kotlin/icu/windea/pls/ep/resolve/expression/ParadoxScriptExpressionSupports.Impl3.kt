@@ -13,11 +13,11 @@ import icu.windea.pls.lang.codeInsight.completion.scopeName
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 
 // Complex Expression
 
@@ -159,15 +159,15 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpress
 }
 
 /**
- * @see CwtDataTypes.StellarisNameFormat
- * @see StellarisNameFormatExpression
+ * @see CwtDataTypes.NameFormat
+ * @see ParadoxNameFormatExpression
  */
-class StellarisScriptNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+class ParadoxScriptNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
-        return dataType == CwtDataTypes.StellarisNameFormat
+        return dataType == CwtDataTypes.NameFormat
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxComplexExpressionCompletionManager.completeStellarisNameFormatExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeNameFormatExpression(context, result)
     }
 }

@@ -59,15 +59,15 @@ object ParadoxComplexExpressionErrorBuilder {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun unresolvedStellarisNamePartsList(rangeInExpression: TextRange, value: String, definitionType: String): ParadoxComplexExpressionError {
-        val code = Codes.UNRESOLVED_STELLARIS_NAME_PARTS_LIST
-        val description = PlsBundle.message("complexExpression.unresolvedStellarisNamePartsList", value, definitionType)
+    fun unresolvedNamePartsList(rangeInExpression: TextRange, value: String, definitionType: String): ParadoxComplexExpressionError {
+        val code = Codes.UNRESOLVED_NAME_PARTS_LIST
+        val description = PlsBundle.message("complexExpression.unresolvedNamePartsList", value, definitionType)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun unresolvedStellarisNameFormatLocalisation(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
-        val code = Codes.UNRESOLVED_STELLARIS_NAME_FORMAT_LOCALISATION
-        val description = PlsBundle.message("complexExpression.unresolvedStellarisNameFormatLocalisation", value)
+    fun unresolvedNameFormatLocalisation(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = Codes.UNRESOLVED_NAME_FORMAT_LOCALISATION
+        val description = PlsBundle.message("complexExpression.unresolvedNameFormatLocalisation", value)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
@@ -125,9 +125,9 @@ object ParadoxComplexExpressionErrorBuilder {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
-    fun malformedStellarisNameFormatExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = Codes.MALFORMED_STELLARIS_NAME_FORMAT_EXPRESSION
-        val description = PlsBundle.message("complexExpression.malformedStellarisNameFormatExpression", text)
+    fun malformedNameFormatExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = Codes.MALFORMED_NAME_FORMAT_EXPRESSION
+        val description = PlsBundle.message("complexExpression.malformedNameFormatExpression", text)
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 

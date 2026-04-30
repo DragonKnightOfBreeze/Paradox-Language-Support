@@ -111,7 +111,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.Command -> null // TODO 2.1.1+ 目前不支持用来匹配脚本表达式
             CwtDataTypes.DefineReference -> matchDefineReferenceExpression(context)
             CwtDataTypes.DatabaseObject -> matchDatabaseObjectExpression(context)
-            CwtDataTypes.StellarisNameFormat -> matchStellarisNameFormatExpression(context)
+            CwtDataTypes.NameFormat -> matchNameFormatExpression(context)
             CwtDataTypes.ShaderEffect -> matchShaderEffect(context)
             CwtDataTypes.TechnologyWithLevel -> matchTechnologyWithLevel(context)
             else -> null
@@ -286,11 +286,11 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return ParadoxMatchResultProvider.forDefineReferenceExpression(context.configGroup, context.expression.value)
     }
 
-    private fun matchStellarisNameFormatExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
+    private fun matchNameFormatExpression(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {
         if (!ParadoxTypeService.isRelaxString(context.expression.type)) return ParadoxMatchResult.NotMatch
         if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         if (context.config == null) return ParadoxMatchResult.NotMatch
-        return ParadoxMatchResultProvider.forStellarisNameFormatExpression(context.configGroup, context.expression.value, context.config)
+        return ParadoxMatchResultProvider.forNameFormatExpression(context.configGroup, context.expression.value, context.config)
     }
 
     private fun matchShaderEffect(context: ParadoxScriptExpressionMatchContext): ParadoxMatchResult {

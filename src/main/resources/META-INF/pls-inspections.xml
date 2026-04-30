@@ -161,10 +161,10 @@
                      key="inspection.script.incorrectDatabaseObjectExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDatabaseObjectExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="StellarisScriptIncorrectNameFormatExpression"
-                     key="inspection.script.incorrectStellarisNameFormatExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectNameFormatExpression"
+                     key="inspection.script.incorrectNameFormatExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectStellarisNameFormatExpressionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectNameFormatExpressionInspection"/>
     <!-- endregion -->
     <!-- region Paradox Script/Events -->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"

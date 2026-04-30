@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -21,11 +21,11 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
- * [StellarisNameFormatExpression] 中的定义节点。即 `{<x>}` 中的 `x`。
+ * 命名格式表达式（[ParadoxNameFormatExpression]）中的定义节点。即 `{<x>}` 中的 `x`。
  *
  * 其中 `x` 的定义类型为 `{format}_name_parts_list`，`{format}` 来自对应的规则表达式 `name_format[{format}]`。
  */
-class StellarisNameFormatDefinitionNode(
+class ParadoxNameFormatDefinitionNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -40,7 +40,7 @@ class StellarisNameFormatDefinitionNode(
         if (definitionType.isNullOrEmpty()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolve() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedStellarisNamePartsList(rangeInExpression, text, definitionType)
+        return ParadoxComplexExpressionErrorBuilder.unresolvedNamePartsList(rangeInExpression, text, definitionType)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -53,7 +53,7 @@ class StellarisNameFormatDefinitionNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: StellarisNameFormatDefinitionNode,
+        private val node: ParadoxNameFormatDefinitionNode,
         private val typeToSearch: String,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
@@ -100,8 +100,8 @@ class StellarisNameFormatDefinitionNode(
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, definitionType: String?): StellarisNameFormatDefinitionNode {
-            return StellarisNameFormatDefinitionNode(text, textRange, configGroup, definitionType)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, definitionType: String?): ParadoxNameFormatDefinitionNode {
+            return ParadoxNameFormatDefinitionNode(text, textRange, configGroup, definitionType)
         }
     }
 

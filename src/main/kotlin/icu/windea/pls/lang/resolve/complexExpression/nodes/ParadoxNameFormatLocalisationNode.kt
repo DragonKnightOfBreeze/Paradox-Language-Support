@@ -11,7 +11,7 @@ import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -24,9 +24,9 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 /**
- * [StellarisNameFormatExpression] 中的本地化节点。即 `{x}` 中的 `x`。
+ * 命名格式表达式（[ParadoxNameFormatExpression]）中的本地化节点。即 `{x}` 中的 `x`。
  */
-class StellarisNameFormatLocalisationNode(
+class ParadoxNameFormatLocalisationNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -39,7 +39,7 @@ class StellarisNameFormatLocalisationNode(
         if (text.isEmpty()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolve() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedStellarisNameFormatLocalisation(rangeInExpression, text)
+        return ParadoxComplexExpressionErrorBuilder.unresolvedNameFormatLocalisation(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -51,7 +51,7 @@ class StellarisNameFormatLocalisationNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: StellarisNameFormatLocalisationNode,
+        private val node: ParadoxNameFormatLocalisationNode,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
@@ -99,8 +99,8 @@ class StellarisNameFormatLocalisationNode(
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): StellarisNameFormatLocalisationNode {
-            return StellarisNameFormatLocalisationNode(text, textRange, configGroup)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxNameFormatLocalisationNode {
+            return ParadoxNameFormatLocalisationNode(text, textRange, configGroup)
         }
     }
 
