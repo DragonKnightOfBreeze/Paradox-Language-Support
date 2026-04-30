@@ -242,7 +242,8 @@ For the config system and the config format, see:
 
 ### Communication
 
-- IMPORTANT: Use Chinese when talking to the main maintainer (unless otherwise specified). / 重要：使用中文与主要维护者交流（除非特别说明）。
+- **IMPORTANT**: Communicate with the maintainer in **Chinese**.
+- **TIP**: Meanwhile, write documents, doc comments and normal comments in Chinese or/and English, depending on the specific scenario.
 
 ### Markdown output conventions
 
