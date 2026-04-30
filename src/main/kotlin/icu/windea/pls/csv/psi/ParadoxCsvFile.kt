@@ -18,8 +18,7 @@ class ParadoxCsvFile(
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxFile {
     companion object {
-        @JvmField
-        val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)
+        @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)
     }
 
     val header: ParadoxCsvHeader? get() = findChild<_>()

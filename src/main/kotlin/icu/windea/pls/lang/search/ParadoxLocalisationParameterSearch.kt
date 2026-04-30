@@ -22,10 +22,8 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
     ) : ParadoxSearchParameters<ParadoxLocalisationParameterIndexInfo>
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationParameterIndexInfo, SearchParameters>>("icu.windea.pls.search.localisationParameterSearch")
-        @JvmField
-        val INSTANCE = ParadoxLocalisationParameterSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationParameterIndexInfo, SearchParameters>>("icu.windea.pls.search.localisationParameterSearch")
+        @JvmField val INSTANCE = ParadoxLocalisationParameterSearch()
 
         /**
          * @see ParadoxLocalisationParameterSearch.SearchParameters

@@ -5,34 +5,21 @@ import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationTokenSets {
-    @JvmField
-    val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-    @JvmField
-    val COMMENTS = TokenSet.create(COMMENT)
-    @JvmField
-    val STRING_LITERALS = TokenSet.create(TEXT_TOKEN)
+    @JvmField val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
+    @JvmField val COMMENTS = TokenSet.create(COMMENT)
+    @JvmField val STRING_LITERALS = TokenSet.create(TEXT_TOKEN)
 
-    @JvmField
-    val IDENTIFIER_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, PARAMETER_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, ICON_TOKEN, COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
-    @JvmField
-    val COMMENT_TOKENS = TokenSet.create(COMMENT)
-    @JvmField
-    val LITERAL_TOKENS = TokenSet.create(TEXT_TOKEN)
+    @JvmField val IDENTIFIER_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, PARAMETER_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, ICON_TOKEN, COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
+    @JvmField val COMMENT_TOKENS = TokenSet.create(COMMENT)
+    @JvmField val LITERAL_TOKENS = TokenSet.create(TEXT_TOKEN)
 
-    @JvmField
-    val EXPRESSION_TOKENS = TokenSet.create(COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
-    @JvmField
-    val STRING_TOKEN_OR_QUOTE = TokenSet.create(TEXT_TOKEN, LEFT_QUOTE, RIGHT_QUOTE)
+    @JvmField val EXPRESSION_TOKENS = TokenSet.create(COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
+    @JvmField val STRING_TOKEN_OR_QUOTE = TokenSet.create(TEXT_TOKEN, LEFT_QUOTE, RIGHT_QUOTE)
 
-    @JvmField
-    val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, PROPERTY_VALUE_TOKEN)
-    @JvmField
-    val TEXT_TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, TEXT_TOKEN, COMMAND_TEXT_TOKEN)
+    @JvmField val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, PROPERTY_VALUE_TOKEN)
+    @JvmField val TEXT_TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, TEXT_TOKEN, COMMAND_TEXT_TOKEN)
 
-    @JvmField
-    val EXTRA_TEMPLATE_TYPES = TokenSet.create(PARAMETER, COMMAND)
-    @JvmField
-    val PROPERTY_CONTEXT = TokenSet.create(PROPERTY_LIST)
-    @JvmField
-    val RICH_TEXT_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY, PROPERTY_VALUE, PROPERTY_VALUE_TOKEN, TEXT_ROOT, COLORFUL_TEXT, PARAMETER, ICON, COMMAND, CONCEPT_COMMAND, CONCEPT_TEXT, TEXT_FORMAT, TEXT_FORMAT_TEXT)
+    @JvmField val EXTRA_TEMPLATE_TYPES = TokenSet.create(PARAMETER, COMMAND)
+    @JvmField val PROPERTY_CONTEXT = TokenSet.create(PROPERTY_LIST)
+    @JvmField val RICH_TEXT_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY, PROPERTY_VALUE, PROPERTY_VALUE_TOKEN, TEXT_ROOT, COLORFUL_TEXT, PARAMETER, ICON, COMMAND, CONCEPT_COMMAND, CONCEPT_TEXT, TEXT_FORMAT, TEXT_FORMAT_TEXT)
 }

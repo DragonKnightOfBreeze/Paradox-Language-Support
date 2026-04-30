@@ -20,10 +20,8 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
-        @JvmField
-        val INSTANCE = ParadoxInlineScriptUsageSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
+        @JvmField val INSTANCE = ParadoxInlineScriptUsageSearch()
 
         /**
          * @see ParadoxInlineScriptUsageSearch.SearchParameters

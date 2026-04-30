@@ -144,8 +144,7 @@ data class TigerLintResult(
     }
 
     companion object {
-        @JvmField
-        val EMPTY = TigerLintResult("")
+        @JvmField val EMPTY = TigerLintResult("")
 
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {

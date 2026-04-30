@@ -23,28 +23,24 @@ data class ParadoxAnnotatedLevel(
     val includeDetailedScopeContext: Boolean = false,
 ) {
     companion object {
-        @JvmField
-        val BASIC: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val BASIC: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
         )
 
-        @JvmField
-        val DEFAULT: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val DEFAULT: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
         )
 
-        @JvmField
-        val ADVANCED: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val ADVANCED: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
             includeScopeContext = true,
         )
 
-        @JvmField
-        val ALL: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val ALL: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
             includeDefinitionType = true,
             includeOverrideStrategy = true,

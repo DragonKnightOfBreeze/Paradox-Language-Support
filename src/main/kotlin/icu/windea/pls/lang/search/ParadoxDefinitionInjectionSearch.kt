@@ -25,10 +25,8 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxDefinitio
     ) : ParadoxSearchParameters<ParadoxDefinitionInjectionIndexInfo>
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionInjectionIndexInfo, SearchParameters>>("icu.windea.pls.search.definitionInjectionSearch")
-        @JvmField
-        val INSTANCE = ParadoxDefinitionInjectionSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionInjectionIndexInfo, SearchParameters>>("icu.windea.pls.search.definitionInjectionSearch")
+        @JvmField val INSTANCE = ParadoxDefinitionInjectionSearch()
 
         /**
          * @see ParadoxDefinitionInjectionSearch.SearchParameters

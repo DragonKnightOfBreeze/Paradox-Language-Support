@@ -18,8 +18,7 @@ class ParadoxLocalisationFile(
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage), ParadoxFile {
     companion object {
-        @JvmField
-        val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_LOCALISATION_FILE", ParadoxLocalisationLanguage)
+        @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_LOCALISATION_FILE", ParadoxLocalisationLanguage)
     }
 
     val propertyLists: List<ParadoxLocalisationPropertyList>

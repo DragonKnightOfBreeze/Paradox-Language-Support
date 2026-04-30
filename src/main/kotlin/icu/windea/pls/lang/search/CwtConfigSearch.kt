@@ -37,10 +37,8 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Sea
     }
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfig<*>, SearchParameters>>("icu.windea.pls.search.configSearch")
-        @JvmField
-        val INSTANCE = CwtConfigSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfig<*>, SearchParameters>>("icu.windea.pls.search.configSearch")
+        @JvmField val INSTANCE = CwtConfigSearch()
 
         /**
          * @see CwtConfigSearch.SearchParameters.ById

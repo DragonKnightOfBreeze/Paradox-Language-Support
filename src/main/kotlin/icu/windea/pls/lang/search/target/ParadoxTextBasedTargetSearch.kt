@@ -33,10 +33,8 @@ class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<NavigatablePsiElemen
     }
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<NavigatablePsiElement, SearchParameters>>("icu.windea.pls.search.textBasedTargetSearch")
-        @JvmField
-        val INSTANCE = ParadoxTextBasedTargetSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<NavigatablePsiElement, SearchParameters>>("icu.windea.pls.search.textBasedTargetSearch")
+        @JvmField val INSTANCE = ParadoxTextBasedTargetSearch()
 
         /**
          * @see ParadoxTextBasedTargetSearch.SearchParameters

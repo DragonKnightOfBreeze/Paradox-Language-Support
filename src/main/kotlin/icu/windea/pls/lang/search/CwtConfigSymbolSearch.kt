@@ -22,10 +22,8 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
     )
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfigSymbolIndexInfo, SearchParameters>>("icu.windea.pls.search.configSymbolSearch")
-        @JvmField
-        val INSTANCE = CwtConfigSymbolSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfigSymbolIndexInfo, SearchParameters>>("icu.windea.pls.search.configSymbolSearch")
+        @JvmField val INSTANCE = CwtConfigSymbolSearch()
 
         /**
          * @see CwtConfigSymbolSearch.SearchParameters

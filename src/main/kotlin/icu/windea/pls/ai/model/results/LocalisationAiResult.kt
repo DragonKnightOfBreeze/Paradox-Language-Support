@@ -7,8 +7,7 @@ data class LocalisationAiResult(
     val text: String,
 ) : AiResult {
     companion object {
-        @JvmField
-        val EMPTY = LocalisationAiResult("", "")
+        @JvmField val EMPTY = LocalisationAiResult("", "")
 
         @JvmStatic
         fun fromLine(line: String): LocalisationAiResult {
