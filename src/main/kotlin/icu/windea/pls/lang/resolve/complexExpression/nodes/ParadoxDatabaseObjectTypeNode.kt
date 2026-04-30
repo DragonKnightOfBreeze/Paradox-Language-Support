@@ -11,15 +11,13 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDatabaseObjectTypeNode(
     override val text: String,
@@ -32,10 +30,7 @@ class ParadoxDatabaseObjectTypeNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return when (element.language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY
-        }
+        return ParadoxAttributesKeysManager.getDatabaseObjectTypeKey(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

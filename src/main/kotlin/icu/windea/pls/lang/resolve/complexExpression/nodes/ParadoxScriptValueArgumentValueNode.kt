@@ -21,7 +21,7 @@ class ParadoxScriptValueArgumentValueNode(
         return when {
             type == ParadoxType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD_KEY
             ParadoxTypeService.isRelaxFloat(type) -> ParadoxScriptAttributesKeys.NUMBER_KEY
-            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY
+            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE_KEY
             else -> ParadoxScriptAttributesKeys.STRING_KEY
         }
     }

@@ -9,11 +9,9 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
-class ParadoxCsvAnnotator : Annotator {
+class ParadoxCsvSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element is ParadoxCsvExpressionElement) {
-            annotateExpression(element, holder)
-        }
+        if (element is ParadoxCsvExpressionElement) annotateExpression(element, holder)
     }
 
     private fun annotateExpression(element: ParadoxCsvExpressionElement, holder: AnnotationHolder) {

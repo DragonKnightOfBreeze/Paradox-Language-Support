@@ -34,7 +34,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
-class ParadoxDatabaseObjectDataDataNode(
+class ParadoxDatabaseObjectDataNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -125,7 +125,7 @@ class ParadoxDatabaseObjectDataDataNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDatabaseObjectDataDataNode
+        private val node: ParadoxDatabaseObjectDataNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
@@ -204,8 +204,8 @@ class ParadoxDatabaseObjectDataDataNode(
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectDataDataNode {
-            return ParadoxDatabaseObjectDataDataNode(text, textRange, configGroup, expression, isBase)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectDataNode {
+            return ParadoxDatabaseObjectDataNode(text, textRange, configGroup, expression, isBase)
         }
     }
 

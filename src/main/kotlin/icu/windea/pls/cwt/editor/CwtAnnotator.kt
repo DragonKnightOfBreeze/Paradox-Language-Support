@@ -14,7 +14,10 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.lang.quickfix.InsertStringFix
 
-class CwtBaseAnnotator : Annotator {
+/**
+ * 用于在 CWT 文件中提供额外的代码高亮。
+ */
+class CwtAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
     }

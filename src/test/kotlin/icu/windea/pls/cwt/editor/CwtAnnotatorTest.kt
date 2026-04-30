@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtBaseAnnotatorTest : BasePlatformTestCase() {
+class CwtAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test

@@ -14,6 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -21,7 +22,6 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 // 目前仅提供有限的支持
 
@@ -48,7 +48,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
-        val attributesKey = ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
+        val attributesKey = ParadoxAttributesKeysManager.getDefinitionReferenceKey(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -89,9 +89,8 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         val configGroup = config.configGroup
         val enumName = config.configExpression.value ?: return
         val attributesKey = when {
-            configGroup.enums[enumName] != null -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
-            configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
-            else -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
+            configGroup.complexEnums[enumName] != null -> ParadoxAttributesKeysManager.getComplexEnumValueKey(element.language)
+            else -> ParadoxAttributesKeysManager.getEnumValueKey(element.language)
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -113,7 +112,6 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
             val searchScopeType = complexEnumConfig.searchScopeType
             val selector = selector(project, element).complexEnumValue()
                 .withSearchScopeType(searchScopeType)
-            // .contextSensitive(exact) // unnecessary
             val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
             if (info != null) {
                 val readWriteAccess = ReadWriteAccessDetector.Access.Read // usage

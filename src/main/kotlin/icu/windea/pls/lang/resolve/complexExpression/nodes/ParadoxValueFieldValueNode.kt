@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtConfig
@@ -10,13 +9,11 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxValueFieldValueNode(
     override val text: String,
@@ -30,10 +27,6 @@ class ParadoxValueFieldValueNode(
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
-    }
-
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_VALUE_KEY
     }
 
     open class Resolver {

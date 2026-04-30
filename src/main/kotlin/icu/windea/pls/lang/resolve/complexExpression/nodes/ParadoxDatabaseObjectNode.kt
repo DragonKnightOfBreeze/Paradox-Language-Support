@@ -6,12 +6,10 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.typeNode
-import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDatabaseObjectNode(
     override val text: String,
@@ -27,17 +25,14 @@ class ParadoxDatabaseObjectNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return when (element.language) {
-            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY
-            else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY
-        }
+        return ParadoxAttributesKeysManager.getDatabaseObjectKey(element.language)
     }
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
-                val node = ParadoxDatabaseObjectDataDataNode.resolve(text, textRange, configGroup, expression, isBase)
+                val node = ParadoxDatabaseObjectDataNode.resolve(text, textRange, configGroup, expression, isBase)
                 nodes += node
             }
             return ParadoxDatabaseObjectNode(text, textRange, configGroup, expression, nodes)

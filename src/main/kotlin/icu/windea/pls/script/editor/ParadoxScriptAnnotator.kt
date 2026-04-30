@@ -3,6 +3,8 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
@@ -21,7 +23,10 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
-class ParadoxScriptBaseAnnotator : Annotator {
+/**
+ * 用于在脚本文件中提供额外的代码高亮。
+ */
+class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
         annotateParameterValue(element, holder)
@@ -105,16 +110,24 @@ class ParadoxScriptBaseAnnotator : Annotator {
         if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
         val parameterElement = element.parent?.parent as? ParadoxParameter ?: return
         val templateElement = parameterElement.parent ?: return
-        val attributesKey = when {
-            element.text.startsWith('@') -> Keys.SCRIPTED_VARIABLE_KEY
-            templateElement is ParadoxScriptPropertyKey -> Keys.PROPERTY_KEY_KEY
-            templateElement is ParadoxScriptString -> Keys.STRING_KEY
-            templateElement is ParadoxScriptScriptedVariableName -> Keys.SCRIPTED_VARIABLE_KEY
-            templateElement is ParadoxScriptScriptedVariableReference -> Keys.SCRIPTED_VARIABLE_KEY
-            else -> return
+        when {
+            element.text.startsWith('@') -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE_KEY)
+            templateElement is ParadoxScriptPropertyKey -> annotateRange(holder, element, Keys.PROPERTY_KEY_KEY)
+            templateElement is ParadoxScriptString -> annotateRange(holder, element, Keys.STRING_KEY)
+            templateElement is ParadoxScriptScriptedVariableName -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_NAME_KEY)
+            templateElement is ParadoxScriptScriptedVariableReference -> annotateRangeWithAtSign(holder, element, Keys.SCRIPTED_VARIABLE_REFERENCE_KEY)
         }
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
-            .textAttributes(attributesKey)
-            .create()
+    }
+
+    private fun annotateRange(holder: AnnotationHolder, element: PsiElement, attributesKey: TextAttributesKey) {
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(attributesKey).create()
+    }
+
+    private fun annotateRangeWithAtSign(holder: AnnotationHolder, element: PsiElement, attributesKey: TextAttributesKey) {
+        val range = element.textRange
+        val rangeForAtSign = TextRange.from(range.startOffset, 1)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForAtSign).textAttributes(Keys.AT_SIGN_KEY).create()
+        val rangeForRemain = TextRange.create(range.startOffset + 1, range.endOffset)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeForRemain).textAttributes(attributesKey).create()
     }
 }

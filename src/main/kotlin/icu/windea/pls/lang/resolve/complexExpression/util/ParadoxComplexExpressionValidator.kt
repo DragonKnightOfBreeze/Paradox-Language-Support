@@ -21,7 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpressi
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
@@ -122,7 +122,7 @@ object ParadoxComplexExpressionValidator {
         val config = expression.typeNode?.config
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDatabaseObjectDataDataNode -> {
+                it is ParadoxDatabaseObjectDataNode -> {
                     when {
                         config?.localisation != null -> it.text.isParameterAwareIdentifier(".-'")
                         else -> it.text.isParameterAwareIdentifier()

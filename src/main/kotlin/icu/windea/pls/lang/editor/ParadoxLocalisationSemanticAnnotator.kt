@@ -3,10 +3,13 @@ package icu.windea.pls.lang.editor
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.resolveLocalisation
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
@@ -16,8 +19,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
+import java.awt.Color
 
-class ParadoxLocalisationAnnotator : Annotator {
+class ParadoxLocalisationSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
@@ -57,11 +61,16 @@ class ParadoxLocalisationAnnotator : Annotator {
     private fun annotateTextColor(element: ParadoxLocalisationTextColorAwareElement, holder: AnnotationHolder) {
         // 颜色高亮
         val color = element.colorInfo?.color ?: return
-        val attributesKey = ParadoxLocalisationAttributesKeys.getColorKey(color) ?: return
+        val attributesKey = getTextColorKey(color) ?: return
         val (idElement, idOffset) = ParadoxTextColorManager.getIdElementAndOffset(element) ?: return
         if (idOffset == -1) return
         val range = TextRange.from(idOffset + idElement.startOffset, 1)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
+    }
+
+    private fun getTextColorKey(color: Color): TextAttributesKey? {
+        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
+        return ParadoxAttributesKeysManager.getColorKey(color)
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {

@@ -9,14 +9,12 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDynamicValueNode(
     override val text: String,
@@ -31,19 +29,9 @@ class ParadoxDynamicValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().configExpression ?: return null // first is ok
         val dynamicValueType = expression.value ?: return null
-        return when (element.language) {
-            is ParadoxLocalisationLanguage -> {
-                when (dynamicValueType) {
-                    "variable" -> ParadoxLocalisationAttributesKeys.VARIABLE_KEY
-                    else -> ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY
-                }
-            }
-            else -> {
-                when (dynamicValueType) {
-                    "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
-                    else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
-                }
-            }
+        return when (dynamicValueType) {
+            "variable" -> ParadoxAttributesKeysManager.getVariableKey(element.language)
+            else -> ParadoxAttributesKeysManager.getDynamicValueKey(element.language)
         }
     }
 

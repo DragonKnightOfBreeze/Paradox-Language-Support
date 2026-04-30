@@ -20,12 +20,19 @@ class ParadoxCsvColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("csv.displayName.validEscape"), ParadoxCsvAttributesKeys.VALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("csv.displayName.invalidEscape"), ParadoxCsvAttributesKeys.INVALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("csv.displayName.badCharacter"), ParadoxCsvAttributesKeys.BAD_CHARACTER_KEY),
+
+        AttributesDescriptor(PlsBundle.message("csv.displayName.definitionReference"), ParadoxCsvAttributesKeys.DEFINITION_REFERENCE_KEY),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.enumValue"), ParadoxCsvAttributesKeys.ENUM_VALUE_KEY),
+        AttributesDescriptor(PlsBundle.message("csv.displayName.complexEnumValue"), ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE_KEY),
     )
 
     private val _tagToDescriptorMap = mapOf(
-        "HEADER" to ParadoxCsvAttributesKeys.HEADER_KEY,
         "KEYWORD" to ParadoxCsvAttributesKeys.KEYWORD_KEY,
+        "HEADER" to ParadoxCsvAttributesKeys.HEADER_KEY,
         "NUMBER" to ParadoxCsvAttributesKeys.NUMBER_KEY,
+        "DR" to ParadoxCsvAttributesKeys.DEFINITION_REFERENCE_KEY,
+        "EV" to ParadoxCsvAttributesKeys.ENUM_VALUE_KEY,
+        "CEV" to ParadoxCsvAttributesKeys.COMPLEX_ENUM_VALUE_KEY,
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxCsvLanguage, null, null)

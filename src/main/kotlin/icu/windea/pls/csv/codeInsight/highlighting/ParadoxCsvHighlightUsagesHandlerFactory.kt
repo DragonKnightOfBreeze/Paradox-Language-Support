@@ -21,13 +21,13 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getHeaderColumn
 
 /**
- * 用于在 CSV 文件中提供基础的语义高亮。
+ * 用于在 CSV 文件中提供额外的代码高亮。
  *
  * - 当光标位置是列时，高亮对应的头列。
  * - 当光标位置是分隔符时，高亮同一行的所有分隔符。
  * - 当光标位置是列时，如果其中的表达式可以解析引用，高亮当前列。
  */
-class ParadoxCsvBaseHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
+class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
     // NOTE 注意：这个 EP 会覆盖读写引用的高亮
 
     override fun createHighlightUsagesHandler(editor: Editor, file: PsiFile): HighlightUsagesHandlerBase<*>? {

@@ -321,7 +321,6 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
             val searchScopeType = complexEnumConfig.searchScopeType
             val selector = selector(project, element).complexEnumValue()
                 .withSearchScopeType(searchScopeType)
-            // .contextSensitive(exact) // unnecessary
             val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
             if (info != null) {
                 val readWriteAccess = ReadWriteAccessDetector.Access.Read // usage

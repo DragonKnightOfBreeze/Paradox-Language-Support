@@ -8,6 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
@@ -20,9 +21,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
  * [StellarisNameFormatExpression] 中的本地化节点。即 `{x}` 中的 `x`。
@@ -33,10 +32,7 @@ class StellarisNameFormatLocalisationNode(
     override val configGroup: CwtConfigGroup,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return when (element.language) {
-            is icu.windea.pls.localisation.ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
-            else -> ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY
-        }
+        return ParadoxAttributesKeysManager.getLocalisationReferenceKey(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

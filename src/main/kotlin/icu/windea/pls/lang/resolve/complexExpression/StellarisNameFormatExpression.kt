@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * Stellaris 命名格式表达式。
  *
  * 说明：
- * - 用于解析 Stellaris 中以花括号包裹的“命名格式模板”，内部可混合“定义占位”“命令表达式”“本地化标识符”与嵌套参数块。
+ * - 用于解析 Stellaris 中以花括号包裹的命名格式模板，内部可混合定义占位、命令表达式、本地化标识符与嵌套参数块。
  * - 对应的规则数据类型为 [CwtDataTypes.StellarisNameFormat]。
  *
  * 示例：
@@ -50,14 +50,14 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * - 闭包段的内容由一系列节点顺序拼接而成，空白会被保留为空白节点。按优先级识别如下节点类型：
  *   1) 定义占位：形如`<name>`。
- *      - 解析为`StellarisNamePartNode`，其内部包含`"<"`与`">"`标记节点，以及一个`StellarisNameFormatDefinitionNode`。
+ *      - 解析为 `StellarisNamePartNode`，其内部包含`"<"`与`">"`标记节点，以及一个`StellarisNameFormatDefinitionNode`。
  *      - `name` 的类型由规则中的 `formatName` 推导为 `${formatName}_name_parts_list`，用于跨文件的定义名解析与跳转。
  *   2) 命令表达式：形如`[ ... ]`。
- *      - 解析为`ParadoxCommandNode`，内部为`ParadoxCommandExpression`，并保留方括号标记节点。
+ *      - 解析为 `ParadoxCommandNode`，内部为`ParadoxCommandExpression`，并保留方括号标记节点。
  *   3) 本地化标识符：一段看起来是“标识符”的连续字符序列（字母/数字/`_`/`-`/`.`/`'`）。
- *      - 解析为`StellarisNameFormatLocalisationNode`，按偏好语言或上下文语言进行引用解析。
+ *      - 解析为 `StellarisNameFormatLocalisationNode`，按偏好语言或上下文语言进行引用解析。
  *   4) 文本：当不匹配上述任一结构时，根据空白进行拆分。
- *      - 非空白部分解析为`StellarisNameFormatTextNode`，空白部分解析为`ParadoxBlankNode`，以保留布局与渲染效果。
+ *      - 非空白部分解析为 `StellarisNameFormatTextNode`，空白部分解析为 `ParadoxBlankNode`，以保留布局与渲染效果。
  *
  * - 嵌套与不完整输入：
  *   - 闭包可递归嵌套，即`{ ... { ... } ... }`，对应嵌套的`StellarisNameFormatClosureNode`结构。
@@ -66,11 +66,6 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  *
  * - 配置关联：
  *   - `formatName` 来自 CWT 规则，定义占位的类型固定为 `${formatName}_name_parts_list`；若无法推导类型，相关占位被标记为错误节点。
- *
- * - 典型节点列表（仅列出主要结构）：
- *   - `StellarisNameFormatClosureNode`、`StellarisNamePartNode`、`StellarisNameFormatDefinitionNode`、
- *     `ParadoxCommandNode`、`StellarisNameFormatLocalisationNode`、`StellarisNameFormatTextNode`、
- *     `ParadoxBlankNode`、`ParadoxErrorTokenNode`。
  */
 interface StellarisNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>

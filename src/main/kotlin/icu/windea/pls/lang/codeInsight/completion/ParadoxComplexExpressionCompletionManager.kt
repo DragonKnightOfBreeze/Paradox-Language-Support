@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
@@ -1161,7 +1161,7 @@ object ParadoxComplexExpressionCompletionManager {
     fun completeDatabaseObject(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val node = context.node?.castOrNull<ParadoxDatabaseObjectNode>()
-            ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataDataNode>()
+            ?.nodes?.findIsInstance<ParadoxDatabaseObjectDataNode>()
             ?: return
         val config = node.config ?: return
 
@@ -1192,7 +1192,7 @@ object ParadoxComplexExpressionCompletionManager {
         context.expressionTailText = oldTailText
     }
 
-    private fun completeForcedBaseDatabaseObject(context: ProcessingContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataDataNode) {
+    private fun completeForcedBaseDatabaseObject(context: ProcessingContext, result: CompletionResultSet, dsNode: ParadoxDatabaseObjectDataNode) {
         val configGroup = context.configGroup!!
         val config = dsNode.config ?: return
         if (!dsNode.isPossibleForcedBase()) return

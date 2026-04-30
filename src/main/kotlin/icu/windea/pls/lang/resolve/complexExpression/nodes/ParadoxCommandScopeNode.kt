@@ -11,11 +11,11 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxCommandScopeNode(
     override val text: String,
@@ -28,7 +28,7 @@ class ParadoxCommandScopeNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY
+        return ParadoxAttributesKeysManager.getCommandScopeKey()
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

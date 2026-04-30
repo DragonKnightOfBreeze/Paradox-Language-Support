@@ -1,15 +1,9 @@
-@file:Suppress("DEPRECATION")
-
 package icu.windea.pls.localisation.editor
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import com.intellij.openapi.editor.markup.TextAttributes
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.lang.settings.PlsSettings
-import java.awt.Color
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 object ParadoxLocalisationAttributesKeys {
     @JvmField
@@ -27,11 +21,13 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val ARGUMENT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.ARGUMENT_TOKEN", KEYWORD)
     @JvmField
+    val AT_SIGN_KEY = createTextAttributesKey("PARADOX_LOCALISATION.AT_SIGN", ParadoxScriptAttributesKeys.AT_SIGN_KEY)
+    @JvmField
+    val SCRIPTED_VARIABLE_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SCRIPTED_VARIABLE_REFERENCE", ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE_KEY)
+    @JvmField
     val COLOR_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COLOR", IDENTIFIER)
     @JvmField
     val PARAMETER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.PARAMETER", KEYWORD)
-    @JvmField
-    val SCRIPTED_VARIABLE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SCRIPTED_VARIABLE", STATIC_FIELD)
     @JvmField
     val ICON_KEY = createTextAttributesKey("PARADOX_LOCALISATION.ICON", IDENTIFIER) // #5C8AE6
     @JvmField
@@ -52,8 +48,13 @@ object ParadoxLocalisationAttributesKeys {
     val BAD_CHARACTER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.BAD_CHARACTER", BAD_CHARACTER)
 
     @JvmField
-    val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", PROPERTY_KEY_KEY)
-
+    val DEFINITION_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DEFINITION_REFERENCE", ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY)
+    @JvmField
+    val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE_KEY)
+    @JvmField
+    val DYNAMIC_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DYNAMIC_VALUE", ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY)
+    @JvmField
+    val VARIABLE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VARIABLE", ParadoxScriptAttributesKeys.VARIABLE_KEY)
     @JvmField
     val SYSTEM_COMMAND_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_COMMAND_SCOPE", STATIC_METHOD)
     @JvmField
@@ -61,44 +62,12 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val COMMAND_FIELD_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD", IDENTIFIER)
     @JvmField
+    val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY)
+    @JvmField
+    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT", ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY)
+
+    @JvmField
     val COMMAND_SCOPE_LINK_PREFIX_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_PREFIX", KEYWORD)
     @JvmField
-    val COMMAND_SCOPE_LINK_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_VALUE")
-    @JvmField
     val COMMAND_FIELD_PREFIX_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", KEYWORD)
-    @JvmField
-    val COMMAND_FIELD_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD_VALUE")
-    @JvmField
-    val DYNAMIC_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DYNAMIC_VALUE", GLOBAL_VARIABLE)
-    @JvmField
-    val VARIABLE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VARIABLE", GLOBAL_VARIABLE) // italic
-
-    @JvmField
-    val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", KEYWORD)
-    @JvmField
-    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT")
-
-    private val colorKeyCache = CacheBuilder().build { color: Color ->
-        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
-            foregroundColor = color
-        })
-    }
-
-    @JvmStatic
-    fun getColorKey(color: Color): TextAttributesKey? {
-        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
-        return colorKeyCache.get(color)
-    }
-
-    private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
-        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_${color.rgb}", TextAttributes().apply {
-            foregroundColor = color
-        })
-    }
-
-    @JvmStatic
-    fun getColorOnlyKey(color: Color): TextAttributesKey? {
-        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
-        return colorOnlyKeyCache.get(color)
-    }
 }

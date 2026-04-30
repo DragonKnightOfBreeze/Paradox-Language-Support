@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
 
-class ParadoxScriptAnnotator : Annotator {
+class ParadoxScriptSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is ParadoxScriptFile -> annotateFile(element, holder)

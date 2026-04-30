@@ -19,11 +19,15 @@ object ParadoxScriptAttributesKeySets {
     @JvmField
     val INLINE_MATH_OPERATOR_KEYS = arrayOf(K.INLINE_MATH_OPERATOR_KEY)
     @JvmField
-    val KEYWORD_KEYS = arrayOf(K.KEYWORD_KEY)
-    @JvmField
     val COMMENT_KEYS = arrayOf(K.COMMENT_KEY)
     @JvmField
-    val SCRIPTED_VARIABLE_KEYS = arrayOf(K.SCRIPTED_VARIABLE_KEY)
+    val KEYWORD_KEYS = arrayOf(K.KEYWORD_KEY)
+    @JvmField
+    val AT_SIGN_KEYS = arrayOf(K.AT_SIGN_KEY)
+    @JvmField
+    val SCRIPTED_VARIABLE_NAME_KEYS = arrayOf(K.SCRIPTED_VARIABLE_NAME_KEY)
+    @JvmField
+    val SCRIPTED_VARIABLE_REFERENCE_KEYS = arrayOf(K.SCRIPTED_VARIABLE_REFERENCE_KEY)
     @JvmField
     val PARAMETER_KEYS = arrayOf(K.PARAMETER_KEY)
     @JvmField

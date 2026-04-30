@@ -4,7 +4,7 @@ l_english:
  text:0 "Value"
  text_multiline:0 "Value\nNew line"
  text_with_colorful_text:0 "Colorful text: §RRed text§!"
- text_with_parameter:0 "Parameter: $KEY$ and $KEY|Y$"
+ text_with_parameter:0 "Parameter: $KEY$ and $WITH_COLOR|Y$"
  text_with_scripted_variable_reference:0 "Scripted variable: $@var$"
  text_with_command:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
  text_with_icon:0 "Icon: £unity£ and £leader_skill|3£"
