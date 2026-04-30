@@ -99,7 +99,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
     }
 
     companion object {
-        @JvmStatic val INSTANCE = LocalChatModelProvider()
+        @JvmField val INSTANCE = LocalChatModelProvider()
     }
 
     data class Options(

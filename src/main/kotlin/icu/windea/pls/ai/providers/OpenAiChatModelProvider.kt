@@ -88,7 +88,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
     }
 
     companion object {
-        @JvmStatic val INSTANCE = OpenAiChatModelProvider()
+        @JvmField val INSTANCE = OpenAiChatModelProvider()
     }
 
     data class Options(

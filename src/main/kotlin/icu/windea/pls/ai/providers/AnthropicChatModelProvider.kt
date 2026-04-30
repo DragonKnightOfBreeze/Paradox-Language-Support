@@ -67,7 +67,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
     }
 
     companion object {
-        @JvmStatic val INSTANCE = AnthropicChatModelProvider()
+        @JvmField val INSTANCE = AnthropicChatModelProvider()
     }
 
     data class Options(
