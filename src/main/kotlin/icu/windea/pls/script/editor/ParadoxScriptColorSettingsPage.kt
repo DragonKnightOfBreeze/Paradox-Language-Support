@@ -51,15 +51,25 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.systemScope"), ParadoxScriptAttributesKeys.SYSTEM_SCOPE),
         AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE),
         AttributesDescriptor(PlsBundle.message("script.displayName.valueField"), ParadoxScriptAttributesKeys.VALUE_FIELD),
+        AttributesDescriptor(PlsBundle.message("script.displayName.systemCommandScope"), ParadoxScriptAttributesKeys.SYSTEM_COMMAND_SCOPE),
+        AttributesDescriptor(PlsBundle.message("script.displayName.commandScope"), ParadoxScriptAttributesKeys.COMMAND_SCOPE),
+        AttributesDescriptor(PlsBundle.message("script.displayName.commandField"), ParadoxScriptAttributesKeys.COMMAND_FIELD),
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObjectType"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE),
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObject"), ParadoxScriptAttributesKeys.DATABASE_OBJECT),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.scopeLinkPrefix"), ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX),
         AttributesDescriptor(PlsBundle.message("script.displayName.valueFieldPrefix"), ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX),
+        AttributesDescriptor(PlsBundle.message("script.displayName.commandScopeLinkPrefix"), ParadoxScriptAttributesKeys.COMMAND_SCOPE_LINK_PREFIX),
+        AttributesDescriptor(PlsBundle.message("script.displayName.commandFieldPrefix"), ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX),
         AttributesDescriptor(PlsBundle.message("script.displayName.definePrefix"), ParadoxScriptAttributesKeys.DEFINE_PREFIX),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG),
+        AttributesDescriptor(PlsBundle.message("script.displayName.tag.typeKeyPrefix"), ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX),
+
         AttributesDescriptor(PlsBundle.message("script.displayName.directive"), ParadoxScriptAttributesKeys.DIRECTIVE),
+        AttributesDescriptor(PlsBundle.message("script.displayName.directive.inlineScript"), ParadoxScriptAttributesKeys.DIRECTIVE_INLINE_SCRIPT),
+        AttributesDescriptor(PlsBundle.message("script.displayName.directive.definitionInjection"), ParadoxScriptAttributesKeys.DIRECTIVE_DEFINITION_INJECTION),
+
         AttributesDescriptor(PlsBundle.message("script.displayName.pathReference"), ParadoxScriptAttributesKeys.PATH_REFERENCE),
     )
 
@@ -85,15 +95,25 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "SYSTEM_SCOPE" to ParadoxScriptAttributesKeys.SYSTEM_SCOPE,
         "SCOPE" to ParadoxScriptAttributesKeys.SCOPE,
         "VALUE_FIELD" to ParadoxScriptAttributesKeys.VALUE_FIELD,
+        "SYSTEM_COMMAND_SCOPE" to ParadoxScriptAttributesKeys.SYSTEM_COMMAND_SCOPE,
+        "COMMAND_SCOPE" to ParadoxScriptAttributesKeys.COMMAND_SCOPE,
+        "COMMAND_FIELD" to ParadoxScriptAttributesKeys.COMMAND_FIELD,
         "DATABASE_OBJECT_TYPE" to ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE,
         "DATABASE_OBJECT" to ParadoxScriptAttributesKeys.DATABASE_OBJECT,
 
         "SCOPE_LINK_PREFIX" to ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX,
         "VALUE_FIELD_PREFIX" to ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX,
+        "COMMAND_SCOPE_LINK_PREFIX" to ParadoxScriptAttributesKeys.COMMAND_SCOPE_LINK_PREFIX,
+        "COMMAND_FIELD_PREFIX" to ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX,
         "DEFINE_PREFIX" to ParadoxScriptAttributesKeys.DEFINE_PREFIX,
 
         "TAG" to ParadoxScriptAttributesKeys.TAG,
+        "TAG_TYPE_KEY_PREFIX" to ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX,
+
         "DIRECTIVE" to ParadoxScriptAttributesKeys.DIRECTIVE,
+        "DIRECTIVE_INLINE_SCRIPT" to ParadoxScriptAttributesKeys.DIRECTIVE_INLINE_SCRIPT,
+        "DIRECTIVE_DEFINITION_INJECTION" to ParadoxScriptAttributesKeys.DIRECTIVE_DEFINITION_INJECTION,
+
         "PATH_REFERENCE" to ParadoxScriptAttributesKeys.PATH_REFERENCE,
     )
 

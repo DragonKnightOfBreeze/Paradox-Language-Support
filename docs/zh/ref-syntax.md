@@ -228,20 +228,18 @@ Paradox Script 在 CWT 的基础值类型之上，增加了若干特有的值类
 @var = 1
 
 # Line comment
-settings = {
+examples = {
     boolean_value = yes
     number_value = 1.0
     number_value = @var
     string_value = Foo
     string_value = "Foo\n bar "
-    values = {
-        foo = bar
-    }
     values = { 1 2 3 }
+    values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM] parameter_condition = $PARAM$ ]
-    inline_math = @[ 2 + ( $MAX$ - 1 + var ) ]
+    inline_math = @[ var + ($NUM$ * 2) ]
 }
 ```
 

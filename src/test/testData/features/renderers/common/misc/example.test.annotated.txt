@@ -1,5 +1,5 @@
 ## @type string = block
-settings = {
+examples = {
     ## @type string = boolean
     boolean_value = yes
     ## @type string = float
@@ -29,5 +29,5 @@ settings = {
     ## @type string = string
     parameter = $PARAM$
     ## @type string = inline_math
-    inline_math = @[ 2 + ( $MAX$ - 1 + var ) ]
+    inline_math = @[ var + ($NUM$ * 2) ]
 }

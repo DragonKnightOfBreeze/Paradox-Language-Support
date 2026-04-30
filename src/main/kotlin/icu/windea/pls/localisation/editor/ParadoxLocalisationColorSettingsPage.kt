@@ -8,7 +8,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.model.constants.PlsPreviewTexts
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -18,11 +17,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationAttributesKeys.NUMBER),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.argument"), ParadoxLocalisationAttributesKeys.ARGUMENT),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.atSign"), ParadoxLocalisationAttributesKeys.AT_SIGN),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedVariableReference"), ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_REFERENCE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationAttributesKeys.PARAMETER),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.argument"), ParadoxLocalisationAttributesKeys.ARGUMENT),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.command"), ParadoxLocalisationAttributesKeys.COMMAND),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.concept"), ParadoxLocalisationAttributesKeys.CONCEPT), // #008080
@@ -51,7 +50,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "MARKER" to ParadoxLocalisationAttributesKeys.MARKER,
         "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR,
 
-        "DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE,
+        "DEFINITION_REFERENCE" to ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE,
         "LOCALISATION_REFERENCE" to ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE,
         "DYNAMIC_VALUE" to ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE,
         "VARIABLE" to ParadoxLocalisationAttributesKeys.VARIABLE,
