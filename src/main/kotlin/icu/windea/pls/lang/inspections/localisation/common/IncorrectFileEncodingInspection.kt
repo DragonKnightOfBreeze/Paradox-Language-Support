@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
 import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.model.constants.PlsConstants
 
@@ -29,7 +30,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile
         if (PlsFileManager.isLightFile(virtualFile)) return false
         if (PlsFileManager.isInjectedFile(virtualFile)) return false
-        return true
+        // 要求是可接受的本地化文件
+        return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
