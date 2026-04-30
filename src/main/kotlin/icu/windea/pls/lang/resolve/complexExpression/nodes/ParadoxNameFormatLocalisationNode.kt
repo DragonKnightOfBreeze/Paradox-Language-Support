@@ -8,7 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
@@ -32,7 +32,7 @@ class ParadoxNameFormatLocalisationNode(
     override val configGroup: CwtConfigGroup,
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode, ParadoxDynamicDataNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxAttributesKeysManager.getLocalisationReferenceKey(element.language)
+        return ParadoxSemanticAttributesKeys.localisationReference(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

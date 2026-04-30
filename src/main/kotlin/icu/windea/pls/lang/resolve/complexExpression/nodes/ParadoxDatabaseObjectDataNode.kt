@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -31,7 +32,6 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 
 class ParadoxDatabaseObjectDataNode(
@@ -44,10 +44,12 @@ class ParadoxDatabaseObjectDataNode(
     val config = expression.typeNode?.config
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        if (config == null) return null
-        if (config.type != null) return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
-        if (config.localisation != null) return ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
-        return null
+        return when {
+            config == null -> null
+            config.type != null -> ParadoxSemanticAttributesKeys.definitionReference(element.language)
+            config.localisation != null -> ParadoxSemanticAttributesKeys.localisationReference(element.language)
+            else -> null
+        }
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

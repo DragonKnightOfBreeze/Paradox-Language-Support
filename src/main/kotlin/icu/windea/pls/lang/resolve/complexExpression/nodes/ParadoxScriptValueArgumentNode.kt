@@ -23,7 +23,6 @@ class ParadoxScriptValueArgumentNode(
     val valueNode: ParadoxScriptValueNode?
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        if (text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.ARGUMENT
     }
 

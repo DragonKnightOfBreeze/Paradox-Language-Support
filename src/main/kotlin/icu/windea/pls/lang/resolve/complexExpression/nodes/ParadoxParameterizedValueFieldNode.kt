@@ -3,9 +3,9 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxParameterizedValueFieldNode(
     override val text: String,
@@ -13,7 +13,7 @@ class ParadoxParameterizedValueFieldNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD
+        return ParadoxSemanticAttributesKeys.valueField()
     }
 
     open class Resolver {

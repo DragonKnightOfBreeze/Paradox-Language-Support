@@ -4,9 +4,9 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.model.ParadoxGameType
@@ -53,9 +53,9 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxDefineReferenceExpression>(s, 0 to s.length) {
             node<ParadoxDefinePrefixNode>("define:", 0 to 7)
-            node<ParadoxDefineNamespaceDataNode>("NPortrait", 7 to 16)
+            node<ParadoxDefineNamespaceNode>("NPortrait", 7 to 16)
             node<ParadoxMarkerNode>("|", 16 to 17)
-            node<ParadoxDefineVariableDataNode>("GRACEFUL_AGING_START", 17 to 37)
+            node<ParadoxDefineVariableNode>("GRACEFUL_AGING_START", 17 to 37)
         }
         exp.check(dsl)
     }

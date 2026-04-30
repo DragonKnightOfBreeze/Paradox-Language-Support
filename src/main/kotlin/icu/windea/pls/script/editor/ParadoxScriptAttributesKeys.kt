@@ -48,10 +48,15 @@ object ParadoxScriptAttributesKeys {
     @JvmField val SCOPE = create("PARADOX_SCRIPT.SCOPE", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
     @JvmField val VALUE_FIELD = create("PARADOX_SCRIPT.VALUE_FIELD", DefaultLanguageHighlighterColors.IDENTIFIER) // HTML_ENTITY_REFERENCE
     @JvmField val DATABASE_OBJECT_TYPE = create("PARADOX_SCRIPT.DATABASE_OBJECT_TYPE", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val SYSTEM_COMMAND_SCOPE = create("PARADOX_SCRIPT.SYSTEM_COMMAND_SCOPE", DefaultLanguageHighlighterColors.STATIC_METHOD)
+    @JvmField val COMMAND_SCOPE = create("PARADOX_SCRIPT.COMMAND_SCOPE", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
+    @JvmField val COMMAND_FIELD = create("PARADOX_SCRIPT.COMMAND_FIELD", DefaultLanguageHighlighterColors.IDENTIFIER)
     @JvmField val DATABASE_OBJECT = create("PARADOX_SCRIPT.DATABASE_OBJECT")
 
     @JvmField val SCOPE_LINK_PREFIX = create("PARADOX_SCRIPT.SCOPE_LINK_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val VALUE_FIELD_PREFIX = create("PARADOX_SCRIPT.VALUE_FIELD_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val COMMAND_SCOPE_LINK_PREFIX = create("PARADOX_SCRIPT.COMMAND_SCOPE_LINK_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_SCRIPT.COMMAND_FIELD_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val DEFINE_PREFIX = create("PARADOX_SCRIPT.DEFINE_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
 
     @JvmField val TAG = create("PARADOX_SCRIPT.TAG", DefaultLanguageHighlighterColors.METADATA)

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.typeNode
@@ -25,7 +25,7 @@ class ParadoxDatabaseObjectNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxAttributesKeysManager.getDatabaseObjectKey(element.language)
+        return ParadoxSemanticAttributesKeys.databaseObject(element.language)
     }
 
     open class Resolver {

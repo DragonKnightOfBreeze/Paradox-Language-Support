@@ -11,7 +11,7 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
@@ -28,7 +28,7 @@ class ParadoxCommandScopeNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxAttributesKeysManager.getCommandScopeKey()
+        return ParadoxSemanticAttributesKeys.commandScope(element.language)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

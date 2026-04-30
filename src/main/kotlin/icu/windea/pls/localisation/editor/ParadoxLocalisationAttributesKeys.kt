@@ -2,7 +2,11 @@ package icu.windea.pls.localisation.editor
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.ui.ColorUtil
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import java.awt.Color
 
 object ParadoxLocalisationAttributesKeys {
     @JvmField val OPERATOR = create("PARADOX_LOCALISATION.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
@@ -30,17 +34,40 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField val LOCALISATION_REFERENCE = create("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE)
     @JvmField val DYNAMIC_VALUE = create("PARADOX_LOCALISATION.DYNAMIC_VALUE", ParadoxScriptAttributesKeys.DYNAMIC_VALUE)
     @JvmField val VARIABLE = create("PARADOX_LOCALISATION.VARIABLE", ParadoxScriptAttributesKeys.VARIABLE)
-    @JvmField val SYSTEM_COMMAND_SCOPE = create("PARADOX_SCRIPT.SYSTEM_COMMAND_SCOPE", DefaultLanguageHighlighterColors.STATIC_METHOD)
-    @JvmField val COMMAND_SCOPE = create("PARADOX_LOCALISATION.COMMAND_SCOPE", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
-    @JvmField val COMMAND_FIELD = create("PARADOX_LOCALISATION.COMMAND_FIELD", DefaultLanguageHighlighterColors.IDENTIFIER)
+    @JvmField val SYSTEM_COMMAND_SCOPE = create("PARADOX_SCRIPT.SYSTEM_COMMAND_SCOPE", ParadoxScriptAttributesKeys.SYSTEM_COMMAND_SCOPE)
+    @JvmField val COMMAND_SCOPE = create("PARADOX_LOCALISATION.COMMAND_SCOPE", ParadoxScriptAttributesKeys.COMMAND_SCOPE)
+    @JvmField val COMMAND_FIELD = create("PARADOX_LOCALISATION.COMMAND_FIELD", ParadoxScriptAttributesKeys.COMMAND_FIELD)
     @JvmField val DATABASE_OBJECT_TYPE = create("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE)
     @JvmField val DATABASE_OBJECT = create("PARADOX_LOCALISATION.DATABASE_OBJECT", ParadoxScriptAttributesKeys.DATABASE_OBJECT)
 
-    @JvmField val COMMAND_SCOPE_LINK_PREFIX = create("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
+    @JvmField val COMMAND_SCOPE_LINK_PREFIX = create("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_PREFIX", ParadoxScriptAttributesKeys.COMMAND_SCOPE_LINK_PREFIX)
+    @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX)
 
     private fun create(name: String, fallback: TextAttributesKey? = null): TextAttributesKey {
         if (fallback == null) return TextAttributesKey.createTextAttributesKey(name)
         return TextAttributesKey.createTextAttributesKey(name, fallback)
+    }
+
+    @Suppress("DEPRECATION")
+    private val colorKeyCache = CacheBuilder().build { color: Color ->
+        val hex = ColorUtil.toHex(color).uppercase()
+        val externalName = "PARADOX_LOCALISATION.COLOR_$hex"
+        val defaultAttributes = DefaultLanguageHighlighterColors.IDENTIFIER.defaultAttributes.clone().apply { foregroundColor = color }
+        TextAttributesKey.createTextAttributesKey(externalName, defaultAttributes)
+    }
+    @Suppress("DEPRECATION")
+    private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
+        val hex = ColorUtil.toHex(color).uppercase()
+        val externalName = "PARADOX_LOCALISATION.COLOR_ONLY_$hex"
+        val defaultAttributes = TextAttributes().apply { foregroundColor = color }
+        TextAttributesKey.createTextAttributesKey(externalName, defaultAttributes)
+    }
+
+    fun getColorKey(color: Color): TextAttributesKey {
+        return colorKeyCache.get(color)
+    }
+
+    fun getColorOnlyKey(color: Color): TextAttributesKey {
+        return colorOnlyKeyCache.get(color)
     }
 }

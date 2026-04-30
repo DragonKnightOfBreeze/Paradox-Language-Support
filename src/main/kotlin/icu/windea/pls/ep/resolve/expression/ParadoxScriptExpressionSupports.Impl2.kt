@@ -112,7 +112,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        val attributesKey = ParadoxScriptAttributesKeys.LOCALISATION_REFERENCE
+        val attributesKey = ParadoxScriptAttributesKeys.SYNCED_LOCALISATION_REFERENCE
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         if (config.configExpression?.type?.isSuffixAware == true) {
@@ -257,7 +257,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expressionText.toVirtualFile()?.toPsiFile(project)
         } else {
-            // if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
             val selector = selector(project, element).file().contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
@@ -271,7 +271,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expressionText.toVirtualFile()?.toPsiFile(project).to.singletonSetOrEmpty()
         } else {
-            // if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            // if (ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
             val selector = selector(project, element).file().contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }

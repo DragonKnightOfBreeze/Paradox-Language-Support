@@ -11,8 +11,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLi
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
@@ -32,9 +32,9 @@ val ParadoxDatabaseObjectExpression.typeNode: ParadoxDatabaseObjectTypeNode?
 val ParadoxDatabaseObjectExpression.valueNode: ParadoxDatabaseObjectNode?
     get() = nodes.getOrNull(2)?.castOrNull()
 
-val ParadoxDefineReferenceExpression.namespaceNode: ParadoxDefineNamespaceDataNode?
+val ParadoxDefineReferenceExpression.namespaceNode: ParadoxDefineNamespaceNode?
     get() = nodes.getOrNull(1)?.cast()
-val ParadoxDefineReferenceExpression.variableNode: ParadoxDefineVariableDataNode?
+val ParadoxDefineReferenceExpression.variableNode: ParadoxDefineVariableNode?
     get() = nodes.getOrNull(3)?.cast()
 
 val ParadoxDynamicValueExpression.dynamicValueNode: ParadoxDynamicValueNode

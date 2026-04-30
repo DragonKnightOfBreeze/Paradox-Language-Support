@@ -14,7 +14,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.PlsLookupElements
 import icu.windea.pls.lang.codeInsight.completion.addElement
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -48,7 +48,7 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() 
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
-        val attributesKey = ParadoxAttributesKeysManager.getDefinitionReferenceKey(element.language)
+        val attributesKey = ParadoxSemanticAttributesKeys.definitionReference(element.language)
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
@@ -89,8 +89,8 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
         val configGroup = config.configGroup
         val enumName = config.configExpression.value ?: return
         val attributesKey = when {
-            configGroup.complexEnums[enumName] != null -> ParadoxAttributesKeysManager.getComplexEnumValueKey(element.language)
-            else -> ParadoxAttributesKeysManager.getEnumValueKey(element.language)
+            configGroup.complexEnums[enumName] != null -> ParadoxSemanticAttributesKeys.complexEnumValue(element.language)
+            else -> ParadoxSemanticAttributesKeys.enumValue(element.language)
         }
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)

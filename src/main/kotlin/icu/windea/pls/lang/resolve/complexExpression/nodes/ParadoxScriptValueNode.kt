@@ -14,13 +14,13 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptValueNode(
@@ -34,8 +34,7 @@ class ParadoxScriptValueNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        if (text.isEmpty()) return null
-        return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE
+        return ParadoxSemanticAttributesKeys.definitionReference(element.language)
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {

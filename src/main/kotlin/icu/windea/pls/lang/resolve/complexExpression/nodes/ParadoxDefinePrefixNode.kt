@@ -3,8 +3,8 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDefinePrefixNode(
     override val text: String,
@@ -12,7 +12,7 @@ class ParadoxDefinePrefixNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_PREFIX
+        return ParadoxSemanticAttributesKeys.definePrefix()
     }
 
     open class Resolver {

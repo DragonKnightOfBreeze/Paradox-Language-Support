@@ -293,8 +293,9 @@ object ParadoxExpressionManager {
     }
 
     private fun annotateComplexExpressionNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        val attributesKey = node.getAttributesKey(element)
+        if (node.text.isEmpty()) return
 
+        val attributesKey = node.getAttributesKey(element)
         run {
             val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING
             if (attributesKey != null && mustUseAttributesKey) {
@@ -320,6 +321,8 @@ object ParadoxExpressionManager {
     }
 
     private fun annotateNodeByAttributesKey(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if (node.text.isEmpty()) return
+
         val offest = element.startOffset + getExpressionOffset(element)
         val rangeToAnnotate = node.rangeInExpression.shiftRight(offest)
 

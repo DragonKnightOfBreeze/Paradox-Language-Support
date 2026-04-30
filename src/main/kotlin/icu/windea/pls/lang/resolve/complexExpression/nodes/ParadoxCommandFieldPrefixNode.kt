@@ -8,11 +8,10 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiPolyVariantReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxCommandFieldPrefixNode(
     override val text: String,
@@ -25,7 +24,7 @@ class ParadoxCommandFieldPrefixNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxAttributesKeysManager.getCommandFieldPrefixKey()
+        return ParadoxSemanticAttributesKeys.commandFieldPrefix(element.language)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

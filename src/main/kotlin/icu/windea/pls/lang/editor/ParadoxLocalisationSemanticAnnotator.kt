@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.lang.codeInsight.highlighting.ParadoxAttributesKeysManager
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -70,7 +69,7 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
 
     private fun getTextColorKey(color: Color): TextAttributesKey? {
         if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
-        return ParadoxAttributesKeysManager.getColorKey(color)
+        return ParadoxLocalisationAttributesKeys.getColorKey(color)
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
