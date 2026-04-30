@@ -87,6 +87,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsIntegrationsBun
                 // enableTiger
                 row {
                     checkBox(PlsIntegrationsBundle.message("settings.integrations.lint.tiger"))
+                        .comment(PlsIntegrationsBundle.message("settings.integrations.lint.tiger.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("link.website"), LintToolConstants.Tiger.url)

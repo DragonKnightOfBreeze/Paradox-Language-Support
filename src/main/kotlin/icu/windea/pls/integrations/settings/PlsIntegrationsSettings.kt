@@ -57,17 +57,25 @@ class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSe
     /**
      * @property enableTiger 是否启用 [Tiger](https://github.com/amtep/tiger) 检查工具。
      * @property ck3TigerPath ck3-tiger 的可执行文件的路径。
-     * @property ck3TigerConfPath ck3-tiger 的.conf配置文件的路径。如果不指定，默认使用模组目录下的`ck3-tiger.conf`。
+     * @property ck3TigerConfPath ck3-tiger 的 .conf 配置文件的路径。如果不指定，默认使用模组目录下的 `ck3-tiger.conf`。
+     * @property eu5TigerPath eu5-tiger 的可执行文件的路径。
+     * @property eu5TigerConfPath eu5-tiger 的 .conf 配置文件的路径。如果不指定，默认使用模组目录下的 `eu5-tiger.conf`。
+     * @property hoi4TigerPath hoi4-tiger 的可执行文件的路径。
+     * @property hoi4TigerConfPath hoi4-tiger 的 .conf 配置文件的路径。如果不指定，默认使用模组目录下的 `hoi4-tiger.conf`。
      * @property irTigerPath imperator-tiger 的可执行文件的路径。
-     * @property irTigerConfPath imperator-tiger 的.conf配置文件的路径。如果不指定，则使用模组目录下的`imperator-tiger.conf`。
+     * @property irTigerConfPath imperator-tiger 的 .conf 配置文件的路径。如果不指定，则使用模组目录下的 `imperator-tiger.conf`。
      * @property vic3TigerPath vic3-tiger 的可执行文件的路径。
-     * @property vic3TigerConfPath vic3-tiger 的.conf配置文件的路径。如果不指定，则使用模组目录下的`vic3-tiger.conf`。
+     * @property vic3TigerConfPath vic3-tiger 的 .conf 配置文件的路径。如果不指定，则使用模组目录下的 `vic3-tiger.conf`。
      */
     @Tag("lint")
     class LintState : BaseState() {
         var enableTiger by property(false)
         var ck3TigerPath by string() // e.g., /path/to/ck3-tiger
         var ck3TigerConfPath by string() // absolute or relative to mod path
+        var eu5TigerPath by string() // e.g., /path/to/eu5-tiger
+        var eu5TigerConfPath by string() // absolute or relative to mod path
+        var hoi4TigerPath by string() // e.g., /path/to/hoi4-tiger
+        var hoi4TigerConfPath by string() // absolute or relative to mod path
         var irTigerPath by string() // e.g., /path/to/imperator-tiger
         var irTigerConfPath by string() // absolute or relative to mod path
         var vic3TigerPath by string() // e.g., /path/to/vic3-tiger

@@ -20,6 +20,8 @@
     <!-- <translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.TranslationPluginToolProvider"/> -->
 
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Ck3"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Eu5"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Hoi4"/>
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Ir"/>
     <lintToolProvider implementation="icu.windea.pls.integrations.lints.providers.TigerLintToolProvider$Vic3"/>
   </extensions>

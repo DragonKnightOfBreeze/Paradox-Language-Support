@@ -110,6 +110,20 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerConfPath
     }
 
+    class Eu5 : TigerLintToolProvider() {
+        override val name: String = "eu5-tiger"
+        override val forGameType: ParadoxGameType get() = ParadoxGameType.Eu5
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.eu5TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.eu5TigerConfPath
+    }
+
+    class Hoi4 : TigerLintToolProvider() {
+        override val name: String = "hoi4-tiger"
+        override val forGameType: ParadoxGameType get() = ParadoxGameType.Hoi4
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.hoi4TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.hoi4TigerConfPath
+    }
+
     class Ir : TigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir

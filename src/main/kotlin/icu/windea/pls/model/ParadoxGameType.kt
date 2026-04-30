@@ -5,8 +5,6 @@ import icu.windea.pls.lang.settings.PlsSettings
 /**
  * 游戏类型。
  *
- * 参见：[GameRegistration.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.Services/Registrations/GameRegistration.cs)
- *
  * @property id ID。
  * @property title 标题（通常作为游戏名）。
  * @property gameId 官方启动器使用的游戏 ID。
@@ -44,14 +42,6 @@ enum class ParadoxGameType(
     Vic3("vic3", "Victoria 3", "victoria3", "529340", EntryInfos.ofGameAndJomini),
     ;
 
-    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
-        return this != Core && this !in getAllUseMetadataJson()
-    }
-
-    fun useMetadataJson(gameType: ParadoxGameType): Boolean {
-        return this != Core && this in getAllUseMetadataJson()
-    }
-
     private object Entries {
         val ofGame = setOf("game")
         val ofCommonExtra = setOf("clausewitz", "jomini")
@@ -83,8 +73,6 @@ enum class ParadoxGameType(
         @JvmStatic
         private val valuesNoCore = values - Core
         @JvmStatic
-        private val valuesForDescriptorMod = listOf(Vic3, Eu5)
-        @JvmStatic
         private val valuesForMetadataJson = listOf(Vic3, Eu5)
 
         /**
@@ -105,14 +93,6 @@ enum class ParadoxGameType(
         @JvmStatic
         fun getAll(withCore: Boolean = false): List<ParadoxGameType> {
             return if (withCore) values else valuesNoCore
-        }
-
-        /**
-         * 得到（使用 `.metadata/metadata.json` 作为模组描述符的）所有游戏类型。
-         */
-        @JvmStatic
-        fun getAllUseMetadataJson(): List<ParadoxGameType> {
-            return valuesForMetadataJson
         }
 
         /**

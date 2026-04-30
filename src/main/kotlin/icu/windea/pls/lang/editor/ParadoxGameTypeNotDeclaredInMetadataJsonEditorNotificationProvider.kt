@@ -12,6 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.JsonService
 import icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider
+import icu.windea.pls.lang.analysis.ParadoxMetadataManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -43,7 +44,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
             if (fileEditor !is TextEditor) return@f null
             val message = PlsBundle.message("editor.notification.2.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
-            val gameTypes = ParadoxGameType.getAllUseMetadataJson()
+            val gameTypes = ParadoxMetadataManager.gameTypesUseMetadataJson
             for (gameType in gameTypes) {
                 panel.createActionLabel(PlsBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)

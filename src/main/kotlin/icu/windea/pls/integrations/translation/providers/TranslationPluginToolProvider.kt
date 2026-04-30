@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 /**
  * 参见：[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)
  */
+@Suppress("UnstableApiUsage")
 class TranslationPluginToolProvider : TranslationToolProvider {
     override fun isAvailable(): Boolean {
         return true // see: pls-extension-translation.xml
