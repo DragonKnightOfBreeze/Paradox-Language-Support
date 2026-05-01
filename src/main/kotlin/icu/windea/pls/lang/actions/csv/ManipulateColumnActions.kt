@@ -18,7 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
 import kotlinx.coroutines.launch
 
 class SelectColumnCellAction : ManipulateColumnActionBase() {

@@ -2,13 +2,13 @@ package icu.windea.pls.ai.services
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ai.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
-import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.test.AssumePredicates

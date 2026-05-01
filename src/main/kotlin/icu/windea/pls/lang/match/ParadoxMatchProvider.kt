@@ -7,8 +7,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue

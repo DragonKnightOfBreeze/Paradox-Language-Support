@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.util.manipulators
+package icu.windea.pls.ai.manipulators
 
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty

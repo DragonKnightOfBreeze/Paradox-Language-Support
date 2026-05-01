@@ -4,7 +4,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.select.asProperty

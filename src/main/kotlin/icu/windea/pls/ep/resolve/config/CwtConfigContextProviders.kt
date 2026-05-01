@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.manipulators
+package icu.windea.pls.lang.manipulators
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement

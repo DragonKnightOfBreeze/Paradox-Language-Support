@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util.manipulators
+package icu.windea.pls.config.manipulators
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtConfigInlineMode

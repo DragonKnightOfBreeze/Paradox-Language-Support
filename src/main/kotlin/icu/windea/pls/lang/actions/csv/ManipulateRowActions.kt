@@ -20,7 +20,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getColumnSize
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
 import kotlinx.coroutines.launch
 import java.util.function.Supplier
 

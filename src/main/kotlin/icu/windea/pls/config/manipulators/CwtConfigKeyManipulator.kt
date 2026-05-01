@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util.manipulators
+package icu.windea.pls.config.manipulators
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig

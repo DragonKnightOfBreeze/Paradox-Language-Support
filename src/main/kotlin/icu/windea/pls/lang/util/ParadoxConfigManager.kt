@@ -9,7 +9,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.forEachFast

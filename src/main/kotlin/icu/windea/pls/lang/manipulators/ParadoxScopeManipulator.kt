@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.manipulators
+package icu.windea.pls.lang.manipulators
 
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.model.scope.ParadoxScope
@@ -16,6 +16,7 @@ object ParadoxScopeManipulator {
         return null
     }
 
+    @Suppress("unused")
     fun mergeScope(scope: ParadoxScope?, otherScope: ParadoxScope?): ParadoxScope? {
         if (scope == otherScope) return scope ?: ParadoxScope.Unknown
         if (scope == ParadoxScope.Any || otherScope == ParadoxScope.Any) return ParadoxScope.Any

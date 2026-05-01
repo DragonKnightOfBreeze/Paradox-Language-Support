@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.select.all

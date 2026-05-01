@@ -47,7 +47,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property subNameExpression 子名对应的数据表达式。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [subNameExpression]）。
  *
- * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias
+ * @see icu.windea.pls.config.manipulators.CwtConfigManipulator.inlineAlias
  */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("alias[$:*]")
