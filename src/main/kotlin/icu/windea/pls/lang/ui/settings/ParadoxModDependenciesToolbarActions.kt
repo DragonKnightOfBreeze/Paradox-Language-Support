@@ -16,8 +16,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
@@ -57,12 +57,12 @@ interface ParadoxModDependenciesToolbarActions {
                     table.addModDependencies(newSettingsList)
 
                     val content = PlsBundle.message("mod.dependencies.add.info", count)
-                    PlsFacade.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
+                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
                     val content = PlsBundle.message("mod.dependencies.add.error") + e.message.errorDetails
-                    PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+                    PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
                 }
             }
         }

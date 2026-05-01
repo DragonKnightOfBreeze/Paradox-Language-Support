@@ -33,6 +33,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.PlsToolsBundle
@@ -105,7 +106,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             val content = PlsToolsBundle.message("config.generation.notification.failed") + e.message.errorDetails
-            PlsFacade.createNotification(NotificationType.WARNING, generator.getName(), content).notify(project)
+            PlsNotificationGroups.global().createNotification(generator.getName(), content, NotificationType.WARNING).notify(project)
             null
         }
     }

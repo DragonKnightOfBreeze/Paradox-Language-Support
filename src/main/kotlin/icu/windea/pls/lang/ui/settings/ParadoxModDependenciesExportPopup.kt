@@ -10,9 +10,9 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.errorDetails
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -66,22 +66,22 @@ class ParadoxModDependenciesExportPopup(
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             val content = PlsBundle.message("mod.dependencies.export.error") + e.message.errorDetails
-            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val from = modSetInfo.name
         if (result.actualTotal == 0) {
             val content = PlsBundle.message("mod.dependencies.export.empty", from)
-            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
 
         if (result.warning != null) {
             val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal) + result.warning.errorDetails
-            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.WARNING).notify(project)
             return
         }
         val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal)
-        PlsFacade.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
+        PlsNotificationGroups.settings().createNotification(qualifiedName, content, NotificationType.INFORMATION).notify(project)
     }
 }

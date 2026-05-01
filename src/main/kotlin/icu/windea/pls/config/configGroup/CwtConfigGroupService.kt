@@ -20,6 +20,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
@@ -180,22 +181,18 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
-                    ""
-                ).notify(project)
+                PlsNotificationGroups.global().createNotification(PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
+                    "",
+                    NotificationType.INFORMATION).notify(project)
             } else if (e == null) {
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                     refreshRootsForLibraries(project, force = true)
                 }
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("configGroup.refresh.notification.finished.title"),
-                    PlsBundle.message("configGroup.refresh.notification.finished.content")
-                ).addAction(action).notify(project)
+                PlsNotificationGroups.global().createNotification(PlsBundle.message("configGroup.refresh.notification.finished.title"),
+                    PlsBundle.message("configGroup.refresh.notification.finished.content"),
+                    NotificationType.INFORMATION).addAction(action).notify(project)
             }
         }
     }

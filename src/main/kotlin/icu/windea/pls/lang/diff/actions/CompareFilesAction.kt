@@ -26,8 +26,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
@@ -89,7 +89,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if (virtualFiles.size <= 1) {
             // unexpected
             val content = PlsBundle.message("diff.compare.files.content.title.info.1")
-            PlsFacade.createNotification(NotificationType.INFORMATION, content).notify(project)
+            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 

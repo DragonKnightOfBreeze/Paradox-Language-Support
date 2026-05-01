@@ -11,10 +11,10 @@ import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -72,12 +72,12 @@ class ReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisa
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("intention.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
-            return PlsFacade.createNotification(NotificationType.INFORMATION, content)
+            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
-        return PlsFacade.createNotification(NotificationType.WARNING, content)
+        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

@@ -13,13 +13,13 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.core.withErrorRef
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.model.ParadoxLocalisationManipulationContext
@@ -89,16 +89,16 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.success())
-                return PlsFacade.createNotification(NotificationType.INFORMATION, content)
+                return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
             val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess())
-            return PlsFacade.createNotification(NotificationType.WARNING, content)
+            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
-        return PlsFacade.createNotification(NotificationType.WARNING, content)
+        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

@@ -350,8 +350,6 @@
 
     <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector"/>
 
-    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" key="notificationGroup.pls"/>
-
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
 

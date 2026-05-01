@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.Notification
-import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -11,6 +10,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.isClassPresent
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
@@ -61,16 +61,6 @@ object PlsFacade {
      */
     fun checkConfigGroupInitialized(project: Project, context: Any?): Boolean {
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(context)
-    }
-
-    fun createNotification(notificationType: NotificationType, content: String): Notification {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-            .createNotification(content, notificationType)
-    }
-
-    fun createNotification(notificationType: NotificationType, title: String, content: String): Notification {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-            .createNotification(title, content, notificationType)
     }
 
     /** 是否正在进行单元测试。 */

@@ -20,7 +20,6 @@ import com.intellij.util.IncorrectOperationException
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.containers.MultiMap
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.executeWriteCommand
@@ -28,6 +27,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.images.ImageService
 import java.io.IOException
@@ -109,7 +109,7 @@ abstract class ConvertImageFormatAction(
                     files.size -> PlsBundle.message("convertImageFormat.error.1", targetFormatName)
                     else -> PlsBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                val notification = PlsFacade.createNotification(NotificationType.WARNING, content)
+                val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.WARNING)
                 notification.notify(targetDirectory.project)
             }
         } catch (e: Exception) {

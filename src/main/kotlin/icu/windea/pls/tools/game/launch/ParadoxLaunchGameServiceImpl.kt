@@ -5,6 +5,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.tools.PlsToolsBundle
@@ -28,7 +29,7 @@ class ParadoxLaunchGameServiceImpl : ParadoxLaunchGameService {
             gameVersion == null -> PlsToolsBundle.message("game.launcher.notification.content.1", gameType.title)
             else -> PlsToolsBundle.message("game.launcher.notification.content.2", gameType.title, gameVersion)
         }
-        val notification = PlsFacade.createNotification(NotificationType.INFORMATION, content)
+        val notification = PlsNotificationGroups.global().createNotification(content, NotificationType.INFORMATION)
         notification.notify(project)
     }
 

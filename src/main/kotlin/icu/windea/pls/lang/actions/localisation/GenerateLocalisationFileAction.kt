@@ -15,7 +15,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -24,6 +23,7 @@ import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -150,11 +150,10 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("notification.generateLocalisationFile.success.title"),
-                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total)
-                ).notify(project)
+                PlsNotificationGroups.global()
+                    .createNotification(PlsBundle.message("notification.generateLocalisationFile.success.title"),
+                        PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
+                        NotificationType.INFORMATION).notify(project)
             }
         }
         val commandName = PlsBundle.message("command.generateLocalisationFiles")

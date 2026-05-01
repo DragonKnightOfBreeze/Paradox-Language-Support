@@ -11,11 +11,11 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
@@ -149,7 +149,7 @@ class TigerLintToolService : Disposable {
         val title = PlsIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> PlsIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: PlsIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        PlsFacade.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
+        PlsNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
     }
 
     override fun dispose() {
