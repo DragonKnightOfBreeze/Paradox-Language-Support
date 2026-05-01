@@ -16,6 +16,8 @@ import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import kotlinx.coroutines.launch
 
 object ParadoxLocalisationGenerationManager {
+    val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()
+
     fun handleGeneration(file: PsiFile, editor: Editor, context: ParadoxLocalisationCodeInsightContext?, locale: CwtLocaleConfig) {
         if (context == null) {
             HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
@@ -35,14 +37,19 @@ object ParadoxLocalisationGenerationManager {
     }
 
     private fun showChooser(project: Project, context: ParadoxLocalisationCodeInsightContext, elements: List<ParadoxLocalisationGenerationElement.Item>): ParadoxLocalisationGenerationChooser? {
-        val chooser = ParadoxLocalisationGenerationChooser(context, elements.toTypedArray(), project)
-        chooser.title = getChooserTitle(context)
-        // by default, select all checked missing localisations
-        val missingMembers = elements.filter { it.info.check && it.info.missing }
-        chooser.selectElements(missingMembers.toTypedArray())
-        chooser.show()
-        if (chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null
-        return chooser
+        try {
+            currentContext.set(context)
+            val chooser = ParadoxLocalisationGenerationChooser(elements.toTypedArray(), project)
+            chooser.title = getChooserTitle(context)
+            // by default, select all checked missing localisations
+            val missingMembers = elements.filter { it.info.check && it.info.missing }
+            chooser.selectElements(missingMembers.toTypedArray())
+            chooser.show()
+            if (chooser.exitCode != DialogWrapper.OK_EXIT_CODE) return null
+            return chooser
+        } finally {
+            currentContext.remove()
+        }
     }
 
     private fun getChooserTitle(context: ParadoxLocalisationCodeInsightContext): String {

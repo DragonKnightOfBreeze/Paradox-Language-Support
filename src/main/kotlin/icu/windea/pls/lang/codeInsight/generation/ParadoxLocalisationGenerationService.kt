@@ -52,7 +52,7 @@ object ParadoxLocalisationGenerationService {
             appendLocaleLine(context)
             appendLocalisationLines(context, indent)
         }
-        return text.trimEnd()
+        return text.trim()
     }
 
     private fun StringBuilder.appendLocaleLine(context: ParadoxLocalisationGenerationContext) {
