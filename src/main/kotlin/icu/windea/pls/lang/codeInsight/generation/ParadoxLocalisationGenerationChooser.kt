@@ -40,51 +40,49 @@ class ParadoxLocalisationGenerationChooser(
         return ShowContainersAction(PlsBundle.lazyMessage("generation.localisation.showContainers"), AllIcons.Actions.GroupBy)
     }
 
-    override fun createCenterPanel(): JComponent {
-        return panel {
-            row {
-                cell(super.createCenterPanel()!!)
-            }
-            separator()
-            row {
-                panel { configureOptionsPanel() }
-            }
-        }
-    }
-
-    private fun Panel.configureOptionsPanel() {
-        val settings = PlsSettings.getInstance().state.generation
-
-        // moveIntoLocalisationGroups
-        row {
-            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
-                .bindSelected(settings::moveInfoLocalisationGroups.toAtomicProperty())
-        }
-        // newLineBetweenLocalisationGroups
-        row {
-            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
-                .bindSelected(settings::newLineBetweenLocalisationGroups.toAtomicProperty())
-        }
-        // localisationStrategy
-        row {
-            val property = AtomicProperty(settings.localisationStrategy)
-            label(PlsBundle.message("settings.generation.localisationStrategy"))
-            comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
-                .bindItem(settings::localisationStrategy.toAtomicProperty())
-                .bindItem(property)
-            textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
-                .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
-            localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
-                .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
-        }
-    }
-
     override fun createSouthPanel(): JComponent {
+        return panel {
+            row { createSouthOptionsPanel() }
+            separator()
+            row { createSouthButtonsPanel() }
+        }
+    }
+
+    private fun Row.createSouthOptionsPanel() {
+        panel {
+            val settings = PlsSettings.getInstance().state.generation
+
+            // moveIntoLocalisationGroups
+            row {
+                checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+                    .bindSelected(settings::moveInfoLocalisationGroups.toAtomicProperty())
+            }
+            // newLineBetweenLocalisationGroups
+            row {
+                checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
+                    .bindSelected(settings::newLineBetweenLocalisationGroups.toAtomicProperty())
+            }
+            // localisationStrategy
+            row {
+                val property = AtomicProperty(settings.localisationStrategy)
+                label(PlsBundle.message("settings.generation.localisationStrategy"))
+                comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
+                    .bindItem(settings::localisationStrategy.toAtomicProperty())
+                    .bindItem(property)
+                textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
+                    .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
+                localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
+                    .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+            }
+        }
+    }
+
+    private fun Row.createSouthButtonsPanel() {
         // 1. remove unnecessary ui components
         // 2. make left side actions actually at left side of chooser dialog
         val superPanel = super.createSouthPanel()
-        val finalPanel = superPanel.components.lastOrNull()?.castOrNull<JPanel>()
-        return finalPanel ?: superPanel
+        val finalPanel = superPanel.components.lastOrNull()?.castOrNull<JPanel>() ?: superPanel
+        cell(finalPanel)
     }
 
     override fun createLeftSideActions(): Array<Action> {

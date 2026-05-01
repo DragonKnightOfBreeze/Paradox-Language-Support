@@ -181,18 +181,17 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
-                PlsNotificationGroups.global().createNotification(PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
-                    "",
-                    NotificationType.INFORMATION).notify(project)
+                val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
+                PlsNotificationGroups.global().createNotification(title, "", NotificationType.INFORMATION).notify(project)
             } else if (e == null) {
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                     refreshRootsForLibraries(project, force = true)
                 }
-                PlsNotificationGroups.global().createNotification(PlsBundle.message("configGroup.refresh.notification.finished.title"),
-                    PlsBundle.message("configGroup.refresh.notification.finished.content"),
-                    NotificationType.INFORMATION).addAction(action).notify(project)
+                val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
+                val content = PlsBundle.message("configGroup.refresh.notification.finished.content")
+                PlsNotificationGroups.global().createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
             }
         }
     }

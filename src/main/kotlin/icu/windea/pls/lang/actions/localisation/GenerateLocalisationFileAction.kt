@@ -150,10 +150,11 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsNotificationGroups.global()
-                    .createNotification(PlsBundle.message("notification.generateLocalisationFile.success.title"),
-                        PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
-                        NotificationType.INFORMATION).notify(project)
+                PlsNotificationGroups.global().createNotification(
+                    PlsBundle.message("notification.generateLocalisationFile.success.title"),
+                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
+                    NotificationType.INFORMATION
+                ).notify(project)
             }
         }
         val commandName = PlsBundle.message("command.generateLocalisationFiles")
