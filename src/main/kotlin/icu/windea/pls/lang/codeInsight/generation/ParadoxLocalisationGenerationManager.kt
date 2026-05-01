@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.codeInsight.generation
 
 import com.intellij.codeInsight.hint.HintManager
+import com.intellij.ide.actions.OpenFileAction
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -12,7 +14,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object ParadoxLocalisationGenerationManager {
     val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()
@@ -89,13 +93,16 @@ object ParadoxLocalisationGenerationManager {
     private fun generateAndOpenFile(file: PsiFile, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig, elements: List<ParadoxLocalisationGenerationElement.Item>) {
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
-        coroutineScope.async {
+        coroutineScope.launch {
             val title = getProgressTitle(context)
-            withModalProgress(project, title) {
+            val generatedFile = withModalProgress(project, title) {
                 val tooltip = getFileTooltip(context)
                 ParadoxLocalisationGenerationService.generateFile(file, locale, tooltip, elements) // 生成本地化文件
             }
-        }.
+            withContext(Dispatchers.EDT) {
+                OpenFileAction.openFile(generatedFile, project) // 在编辑器中打开临时文件
+            }
+        }
     }
 
     private fun getProgressTitle(context: ParadoxLocalisationCodeInsightContext): String {
