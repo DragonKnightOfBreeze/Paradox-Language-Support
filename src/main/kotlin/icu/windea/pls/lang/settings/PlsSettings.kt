@@ -133,12 +133,14 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
+     * @property newLineBetweenLocalisationGroups 生成本地化时，是否在分组之间添加一个空行。
      * @property localisationStrategy 生成本地化时，生成本地化文本的策略。
      * @property localisationStrategyText 生成本地化时，如果本地化文本要用特定文本填充，这个特定文本是什么。
      * @property localisationStrategyLocale 生成本地化时，如果本地化文本要用来自特定语言环境的本地化文本填充，这个特定语言环境是什么。
      */
     @Tag("generation")
     class GenerationState : BaseState() {
+        var newLineBetweenLocalisationGroups by property(true)
         var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)

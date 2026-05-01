@@ -5,10 +5,20 @@ import com.intellij.codeInsight.generation.MemberChooserObject
 import com.intellij.codeInsight.generation.MemberChooserObjectBase
 import com.intellij.icons.AllIcons
 import com.intellij.ide.util.MemberChooser
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
+import icu.windea.pls.lang.ui.localeComboBox
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
@@ -50,6 +60,29 @@ class ParadoxGenerateLocalisationsChooser(
             this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectElements(myElements.filter { it.info.missing }.toTypedArray()) }
             if (context.fromInspection) this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray()) }
         }.toTypedArray()
+    }
+
+    override fun createSouthAdditionalPanel(): DialogPanel {
+        val generationSettings = PlsSettings.getInstance().state.generation
+        return panel {
+            // newLineBetweenLocalisationGroups
+            row {
+                checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
+                    .bindSelected(generationSettings::newLineBetweenLocalisationGroups)
+            }
+            // localisationStrategy
+            row {
+                val property = AtomicProperty(generationSettings.localisationStrategy)
+                label(PlsBundle.message("settings.generation.localisationStrategy"))
+                comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
+                    .bindItem(generationSettings::localisationStrategy.toAtomicProperty())
+                    .bindItem(property)
+                textField().bindText(generationSettings::localisationStrategyText.toAtomicProperty(""))
+                    .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
+                localeComboBox(withAuto = true).bindItem(generationSettings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
+                    .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+            }
+        }
     }
 
     private class SelectAction(

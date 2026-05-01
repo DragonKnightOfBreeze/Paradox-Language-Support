@@ -27,6 +27,7 @@
 - [x] 如果 CWT 文档注释至少存在4个前导的 `#`，则将注释文本视为 Markdown 文本 / If a CWT documentation comment has at least 4 leading `#`, the comment text is treated as Markdown text
 - [x] 为规则选项提供文档注释，基于 schema 规则文件 / Provided doc comments for config options, from the schema config file
 - [x] 优化配色方案 / Optimized color scheme
+- [ ] 优化本地化的生成逻辑，提供额外的配置项 / Optimized localisation generation logic, providing extra settings ([#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
