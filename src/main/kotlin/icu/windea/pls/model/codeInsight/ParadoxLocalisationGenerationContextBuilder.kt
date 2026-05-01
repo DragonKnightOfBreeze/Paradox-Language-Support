@@ -47,10 +47,9 @@ object ParadoxLocalisationGenerationContextBuilder {
     private fun handleGroup(group: MutableMap<String, MutableList<ParadoxLocalisationGenerationInfo>>) {
         val settings = PlsSettings.getInstance().state.generation
 
+        // #296 如果某个来自本地化引用的本地化的名字与某个分组名匹配（将分组名作为前缀，移除后是空字符串，或者以有效分隔符开始的字符串），则移入此分组
         run {
             if (!settings.moveIntoLocalisationGroups) return@run
-
-            // #296 如果某个来自本地化引用的本地化的名字与某个分组名匹配（将分组名作为前缀，移除后是空字符串，或者以有效分隔符开始的字符串），则移入此分组
             val infos = group["__"]
             if (infos.isNullOrEmpty()) return@run
             val infosToRemove = mutableSetOf<ParadoxLocalisationGenerationInfo>()

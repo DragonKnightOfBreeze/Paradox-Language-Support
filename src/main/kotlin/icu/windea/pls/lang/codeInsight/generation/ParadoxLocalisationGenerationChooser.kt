@@ -54,7 +54,7 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     private fun Panel.configureOptionsPanel() {
-        collapsibleGroup(PlsBundle.message("settings.generation")) { configureOptionsGroup() }
+        collapsibleGroup(PlsBundle.message("generation.localisation.options")) { configureOptionsGroup() }
     }
 
     private fun Panel.configureOptionsGroup() {
