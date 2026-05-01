@@ -2,7 +2,6 @@ package icu.windea.pls.model.codeInsight
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.codeInsight.generation.ParadoxLocalisationGenerationElement
 import icu.windea.pls.lang.settings.PlsSettings
@@ -23,8 +22,9 @@ object ParadoxLocalisationGenerationContextBuilder {
         val group = mutableMapOf<String, MutableList<ParadoxLocalisationGenerationInfo>>()
         for (element in elements) {
             if (!namesToDistinct.add(element.name)) continue
+            val info = ParadoxLocalisationGenerationInfo(element.name)
             val groupKey = getGroupKey(element)
-            group.getOrPut(groupKey) { mutableListOf() } += getInfo(element)
+            group.getOrPut(groupKey) { mutableListOf() } += info
         }
         handleGroup(group)
         group.values.mapTo(newChildren) {
@@ -44,27 +44,25 @@ object ParadoxLocalisationGenerationContextBuilder {
         return groupName
     }
 
-    private fun getInfo(element: ParadoxLocalisationGenerationElement.Item): ParadoxLocalisationGenerationInfo {
-        return ParadoxLocalisationGenerationInfo(element.name)
-    }
-
     private fun handleGroup(group: MutableMap<String, MutableList<ParadoxLocalisationGenerationInfo>>) {
         val settings = PlsSettings.getInstance().state.generation
 
-        // #296 如果某个来自本地化引用的本地化的名字与某个分组名匹配（将分组名作为前缀，移除后是空字符串，或者以有效分隔符开始的字符串），则移入此分组
         run {
-            if (!settings.moveInfoLocalisationGroups) return@run
+            if (!settings.moveIntoLocalisationGroups) return@run
+
+            // #296 如果某个来自本地化引用的本地化的名字与某个分组名匹配（将分组名作为前缀，移除后是空字符串，或者以有效分隔符开始的字符串），则移入此分组
             val infos = group["__"]
             if (infos.isNullOrEmpty()) return@run
             val infosToRemove = mutableSetOf<ParadoxLocalisationGenerationInfo>()
-            val groupNames = group.keys.mapNotNull { it.substringAfter(':', "").orNull() }
+            val groupKeys = group.keys.filter { it != "__" && it != "_" }.sortedDescending() // 更长的分组名要放在前面
             for (info in infos) {
-                val targetGroupName = groupNames.find { groupName ->
+                val targetGroupKey = groupKeys.find { groupKey ->
+                    val groupName = groupKey.substringAfter(':')
                     val remain = info.name.removePrefixOrNull(groupName)
                     remain != null && (remain.isEmpty() || remain.first() in "_.-")
                 }
-                if (targetGroupName == null) continue
-                group.getValue(targetGroupName) += info
+                if (targetGroupKey == null) continue
+                group.getValue(targetGroupKey) += info
                 infosToRemove += info
             }
             infos.removeAll(infosToRemove)

@@ -18,11 +18,11 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
     ) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Localisation), ClassMember {
         override fun getParentNodeDelegate(): MemberChooserObject? {
             return when (context.type) {
-                Type.Definition -> Definition(context.name, context)
-                Type.Modifier -> Modifier(context.name, context)
-                Type.LocalisationReference -> LocalisationReferences(context)
-                Type.SyncedLocalisationReference -> SyncedLocalisationReferences(context)
-                Type.Localisation -> Localisations(context)
+                Type.Definition -> Definition(context.name)
+                Type.Modifier -> Modifier(context.name)
+                Type.LocalisationReference -> LocalisationReferences()
+                Type.SyncedLocalisationReference -> SyncedLocalisationReferences()
+                Type.Localisation -> Localisations()
                 else -> null
             }
         }
@@ -34,10 +34,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "item: $name"
     }
 
-    data class Definition(
-        val name: String,
-        val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Definition) {
+    class Definition(val name: String) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Definition) {
         override fun equals(other: Any?) = this === other || (other is Definition && name == other.name)
 
         override fun hashCode() = name.hashCode()
@@ -45,10 +42,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "definition group: $name"
     }
 
-    data class Modifier(
-        val name: String,
-        val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Modifier) {
+    class Modifier(val name: String) : ParadoxLocalisationGenerationElement(name, PlsIcons.Nodes.Modifier) {
         override fun equals(other: Any?) = this === other || (other is Modifier && name == other.name)
 
         override fun hashCode() = name.hashCode()
@@ -56,9 +50,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "modifier group: $name"
     }
 
-    data class LocalisationReferences(
-        val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisationReferences")) {
+    class LocalisationReferences : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisationReferences")) {
         override fun equals(other: Any?) = this === other || (other is LocalisationReferences)
 
         override fun hashCode() = 0
@@ -66,9 +58,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "<localisation references>"
     }
 
-    data class SyncedLocalisationReferences(
-        val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.syncedLocalisationReferences")) {
+    class SyncedLocalisationReferences : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.syncedLocalisationReferences")) {
         override fun equals(other: Any?) = this === other || (other is SyncedLocalisationReferences)
 
         override fun hashCode() = 0
@@ -76,9 +66,7 @@ sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = nu
         override fun toString() = "<synced localisation references>"
     }
 
-    data class Localisations(
-        val context: ParadoxLocalisationCodeInsightContext
-    ) : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisations")) {
+    class Localisations : ParadoxLocalisationGenerationElement(PlsBundle.message("generation.localisation.localisations")) {
         override fun equals(other: Any?) = this === other || (other is Localisations)
 
         override fun hashCode() = 0

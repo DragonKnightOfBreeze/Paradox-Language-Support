@@ -13,6 +13,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.enabledTool
 import icu.windea.pls.core.getInspectionToolState
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
@@ -104,11 +105,19 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             }
         }
         if (children.isEmpty()) return null
-        // exclude duplicates and sort contexts
-        val finalChildren = children
-            .distinctBy { it.type.name + "@" + it.name }
-            .sortedWith(compareBy({ it.type }, { if (it.type.isLocalisationType()) it.name else 0 }))
+        val finalChildren = getFinalChildren(children)
         return ParadoxLocalisationCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, fromInspection)
+    }
+
+    private fun getFinalChildren(children: MutableList<ParadoxLocalisationCodeInsightContext>): List<ParadoxLocalisationCodeInsightContext> {
+        // 需要从本地化引用的上下文中排除同时作为相关本地化的信息
+        // 需要按上下文类型排序
+        val inGroupNames = children
+            .filter { it.type.isGroup() }
+            .flatMap { it.infos.mapNotNull { info -> info.name?.orNull() } }
+        return children
+            .map { if (it.type.isReference()) it.copy(infos = it.infos.filterNot { info -> info.name.isNullOrEmpty() || info.name in inGroupNames }, children = emptyList()) else it }
+            .sortedBy { it.type }
     }
 
     fun fromDefinition(

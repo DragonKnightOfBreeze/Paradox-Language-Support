@@ -73,7 +73,7 @@ object ParadoxLocalisationGenerationManager {
     private fun getElements(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig): List<ParadoxLocalisationGenerationElement.Item> {
         val elements = mutableListOf<ParadoxLocalisationGenerationElement.Item>()
         processElements(context, locale, elements)
-        return elements
+        return elements.distinctBy { it.name } // 去重
     }
 
     private fun processElements(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig, elements: MutableList<ParadoxLocalisationGenerationElement.Item>) {

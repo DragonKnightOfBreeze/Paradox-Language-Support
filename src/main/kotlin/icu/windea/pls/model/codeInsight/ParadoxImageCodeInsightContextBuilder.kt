@@ -30,7 +30,6 @@ object ParadoxImageCodeInsightContextBuilder {
     @Suppress("unused")
     fun fromFile(file: PsiFile, fromInspection: Boolean = false): ParadoxImageCodeInsightContext? {
         if (file !is ParadoxScriptFile) return null
-        val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
         val children = mutableListOf<ParadoxImageCodeInsightContext>()
         file.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -42,7 +41,14 @@ object ParadoxImageCodeInsightContextBuilder {
                 super.visitElement(element)
             }
         })
-        return ParadoxImageCodeInsightContext(Type.File, file.name, codeInsightInfos, children)
+        if (children.isEmpty()) return null
+        val finalChildren = getFinalChildren(children)
+        return ParadoxImageCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, fromInspection)
+    }
+
+    private fun getFinalChildren(children: MutableList<ParadoxImageCodeInsightContext>): List<ParadoxImageCodeInsightContext> {
+        // 需要按上下文类型排序
+        return children.sortedBy { it.type }
     }
 
     fun fromDefinition(

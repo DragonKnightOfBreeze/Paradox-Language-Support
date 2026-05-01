@@ -16,8 +16,12 @@ data class ParadoxLocalisationCodeInsightContext(
         Localisation,
         ;
 
-        fun isLocalisationType(): Boolean {
-            return this == LocalisationReference || this == SyncedLocalisationReference || this == Localisation
+        fun isGroup(): Boolean {
+            return this == Definition || this == Modifier
+        }
+
+        fun isReference(): Boolean {
+            return this == LocalisationReference || this == SyncedLocalisationReference
         }
     }
 }

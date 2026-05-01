@@ -404,16 +404,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun Panel.configureGroupForGeneration() {
         val settings = PlsSettings.getInstance().state.generation
 
-        // moveIntoLocalisationGroups
-        row {
-            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
-                .bindSelected(settings::moveInfoLocalisationGroups)
-        }
-        // newLineBetweenLocalisationGroups
-        row {
-            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
-                .bindSelected(settings::newLineBetweenLocalisationGroups)
-        }
         // localisationStrategy
         row {
             val property = AtomicProperty(settings.localisationStrategy)
@@ -425,6 +415,16 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
             localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toNullableProperty())
                 .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+        }
+        // newLineBetweenLocalisationGroups
+        row {
+            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
+                .bindSelected(settings::newLineBetweenLocalisationGroups)
+        }
+        // moveIntoLocalisationGroups
+        row {
+            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+                .bindSelected(settings::moveIntoLocalisationGroups)
         }
     }
 
