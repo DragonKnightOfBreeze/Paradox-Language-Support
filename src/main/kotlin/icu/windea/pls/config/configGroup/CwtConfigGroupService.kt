@@ -50,7 +50,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         // 必须先切换到 EDT
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
-            val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
+            val title = PlsBundle.message("configGroup.refresh.builtin.progress.title")
             runWithModalProgressBlocking(project, title) {
                 files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
             }
@@ -109,7 +109,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 init(configGroups, project)
             } else {
                 // 显示不可取消的后台进度条
-                val title = PlsBundle.message("configGroup.init.progressTitle")
+                val title = PlsBundle.message("configGroup.init.progress.title")
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
                     init(configGroups, project)
                 }
@@ -170,7 +170,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // 显示可以取消的后台进度条
-            val title = PlsBundle.message("configGroup.refresh.progressTitle")
+            val title = PlsBundle.message("configGroup.refresh.progress.title")
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
                 refresh(configGroups, project)
             }

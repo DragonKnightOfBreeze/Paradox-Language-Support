@@ -20,9 +20,7 @@ import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 class GotoDefinitionsAction : BaseCodeInsightAction() {
     private val handler = GotoDefinitionsHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

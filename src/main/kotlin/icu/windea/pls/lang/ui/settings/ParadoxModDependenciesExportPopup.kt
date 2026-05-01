@@ -36,7 +36,9 @@ class ParadoxModDependenciesExportPopup(
 
     override fun isSpeedSearchEnabled() = true
 
-    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep { execute(selectedValue) }
+    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep {
+        execute(selectedValue)
+    }
 
     private fun execute(modExporter: ParadoxModExporter) {
         val settings = table.model.settings

@@ -38,7 +38,9 @@ class ParadoxModDependenciesImportPopup(
 
     override fun isSpeedSearchEnabled() = true
 
-    override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean) = doFinalStep { execute(selectedValue) }
+    override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean) = doFinalStep {
+        execute(selectedValue)
+    }
 
     private fun execute(modImporter: ParadoxModImporter) {
         val settings = table.model.settings

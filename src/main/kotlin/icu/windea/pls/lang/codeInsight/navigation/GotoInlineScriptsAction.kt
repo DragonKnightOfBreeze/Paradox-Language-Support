@@ -20,9 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class GotoInlineScriptsAction : BaseCodeInsightAction() {
     private val handler = GotoInlineScriptsHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

@@ -1,5 +1,6 @@
 package icu.windea.pls.model.codeInsight
 
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -15,11 +16,14 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.select.parentDefinition
+import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -32,9 +36,43 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.script.psi.isExpression
 
 object ParadoxLocalisationCodeInsightContextBuilder {
+    fun fromContextElement(
+        file: PsiFile,
+        editor: Editor,
+        locales: Collection<CwtLocaleConfig>,
+        fromInspection: Boolean = false,
+    ): ParadoxLocalisationCodeInsightContext? {
+        when (file) {
+            is ParadoxScriptFile -> {
+                val element = ParadoxPsiFileManager.findScriptExpression(file, editor.caretModel.offset)
+                val contextElement = when {
+                    element == null -> null
+                    element.isDefinitionTypeKeyOrName() -> selectScope { element.parentDefinition() }
+                    else -> element
+                }
+                if (contextElement == null) return null
+                val context = when (contextElement) {
+                    is ParadoxDefinitionElement -> fromDefinition(contextElement, locales, fromInspection)
+                    is ParadoxScriptStringExpressionElement -> fromExpression(contextElement, locales, fromInspection)
+                    else -> null
+                }
+                return context
+            }
+            is ParadoxLocalisationFile -> {
+                val element = ParadoxPsiFileManager.findLocalisation(file, editor.caretModel.offset)?.takeIf { it.type != null }
+                val contextElement = element
+                if (contextElement == null) return null
+                val context = fromLocalisation(contextElement, locales, fromInspection)
+                return context
+            }
+            else -> return null
+        }
+    }
+
     fun fromFile(
         file: PsiFile,
         locales: Collection<CwtLocaleConfig>,
@@ -69,12 +107,8 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         // exclude duplicates and sort contexts
         val finalChildren = children
             .distinctBy { it.type.name + "@" + it.name }
-            .sortedWith(compareBy({ it.type }, { if (isLocalisationType(it.type)) it.name else 0 }))
+            .sortedWith(compareBy({ it.type }, { if (it.type.isLocalisationType()) it.name else 0 }))
         return ParadoxLocalisationCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, fromInspection)
-    }
-
-    fun isLocalisationType(type: Type): Boolean {
-        return type == Type.LocalisationReference || type == Type.SyncedLocalisationReference || type == Type.Localisation
     }
 
     fun fromDefinition(
@@ -94,7 +128,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val expression = info.locationExpression
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val resolveResult = ParadoxConfigExpressionService.resolve(expression, element, definitionInfo) { locale(locale)}
+                val resolveResult = ParadoxConfigExpressionService.resolve(expression, element, definitionInfo) { locale(locale) }
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary
@@ -268,27 +302,27 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         return getInspectionToolState("ParadoxScriptMissingLocalisation", context, context.project)?.enabledTool?.castOrNull()
     }
 
-    private fun checkPrimaryForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkPrimaryForDefinitions(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || inspection.checkForDefinitions
     }
 
-    private fun checkOptionalForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkOptionalForDefinitions(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || inspection.checkOptionalForDefinitions
     }
 
-    private fun checkGeneratedModifierNamesForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkGeneratedModifierNamesForDefinitions(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || (inspection.checkGeneratedModifiersForDefinitions && inspection.checkGeneratedModifierNamesForDefinitions)
     }
 
-    private fun checkGeneratedModifierDescriptionsForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkGeneratedModifierDescriptionsForDefinitions(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || (inspection.checkGeneratedModifiersForDefinitions && inspection.checkGeneratedModifierDescriptionsForDefinitions)
     }
 
-    private fun checkModifierNames(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkModifierNames(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || (inspection.checkForModifiers && inspection.checkModifierNames)
     }
 
-    private fun checkModifierDescriptions(inspection: MissingLocalisationInspection?) : Boolean {
+    private fun checkModifierDescriptions(inspection: MissingLocalisationInspection?): Boolean {
         return inspection == null || (inspection.checkForModifiers && inspection.checkModifierDescriptions)
     }
 

@@ -80,10 +80,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
         final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: WalkingSequence<ParadoxLocalisationProperty>) {
             val localePopup = createLocalePopup(project, editor, file)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
-                doHandleAsync(project, file, Context(elements, selected))
-            }
+            localePopup.onSelected { selectedValue -> doHandleAsync(project, file, Context(elements, selectedValue)) }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
         }
 
@@ -123,15 +120,14 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
         final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: WalkingSequence<ParadoxLocalisationProperty>) {
             val localePopup = createLocalePopup(project, editor, file)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
+            localePopup.onSelected { selectedValue ->
                 val popup = createPopup(project, editor, file) {
-                    doHandleAsync(project, file, Context(elements, selected, it))
+                    doHandleAsync(project, file, Context(elements, selectedValue, it))
                 }
                 if (popup != null) {
                     popup.showInBestPositionFor(editor)
                 } else {
-                    doHandleAsync(project, file, Context(elements, selected, null))
+                    doHandleAsync(project, file, Context(elements, selectedValue, null))
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)

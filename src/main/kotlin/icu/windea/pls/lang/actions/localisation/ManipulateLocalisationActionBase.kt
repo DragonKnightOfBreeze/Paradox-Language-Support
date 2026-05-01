@@ -115,10 +115,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
             val localePopup = createLocalePopup(e, project)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
-                doHandleAllAsync(e, project, Context(files, selected))
-            }
+            localePopup.onSelected { selectedValue -> doHandleAllAsync(e, project, Context(files, selectedValue)) }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
         }
 
@@ -158,15 +155,14 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
             val localePopup = createLocalePopup(e, project)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
+            localePopup.onSelected { selectedValue ->
                 val popup = createPopup(e, project) {
-                    doHandleAllAsync(e, project, Context(files, selected, it))
+                    doHandleAllAsync(e, project, Context(files, selectedValue, it))
                 }
                 if (popup != null) {
                     popup.showInBestPositionFor(e.dataContext)
                 } else {
-                    doHandleAllAsync(e, project, Context(files, selected, null))
+                    doHandleAllAsync(e, project, Context(files, selectedValue, null))
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)

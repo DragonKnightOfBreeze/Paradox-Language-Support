@@ -13,9 +13,7 @@ import icu.windea.pls.lang.actions.editor
 class GotoRelatedConfigsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedConfigsHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

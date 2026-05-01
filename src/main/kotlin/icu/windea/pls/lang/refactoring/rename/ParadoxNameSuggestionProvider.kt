@@ -10,7 +10,7 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.parentDefinitionInjection
 import icu.windea.pls.lang.select.selectScope
-import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
+import icu.windea.pls.model.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 // org.jetbrains.kotlin.idea.base.codeInsight.KotlinNameSuggestionProvider

@@ -17,9 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class GotoRelatedDefinitionsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedDefinitionsHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

@@ -133,6 +133,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
+     * @property moveInfoLocalisationGroups 生成本地化时，将名字与分组名匹配的本地化移入对应的分组。
      * @property newLineBetweenLocalisationGroups 生成本地化时，是否在分组之间添加一个空行。
      * @property localisationStrategy 生成本地化时，生成本地化文本的策略。
      * @property localisationStrategyText 生成本地化时，如果本地化文本要用特定文本填充，这个特定文本是什么。
@@ -140,6 +141,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      */
     @Tag("generation")
     class GenerationState : BaseState() {
+        var moveInfoLocalisationGroups by property(true)
         var newLineBetweenLocalisationGroups by property(true)
         var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")

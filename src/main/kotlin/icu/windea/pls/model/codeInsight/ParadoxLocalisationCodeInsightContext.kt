@@ -3,7 +3,7 @@ package icu.windea.pls.model.codeInsight
 data class ParadoxLocalisationCodeInsightContext(
     val type: Type,
     val name: String,
-    val infos: List<ParadoxLocalisationCodeInsightInfo>,
+    val infos: List<ParadoxLocalisationCodeInsightInfo> = emptyList(),
     val children: List<ParadoxLocalisationCodeInsightContext> = emptyList(),
     val fromInspection: Boolean = false,
 ) {
@@ -14,5 +14,10 @@ data class ParadoxLocalisationCodeInsightContext(
         LocalisationReference, // 注意：可以与定义的相关本地化重复
         SyncedLocalisationReference,
         Localisation,
+        ;
+
+        fun isLocalisationType(): Boolean {
+            return this == LocalisationReference || this == SyncedLocalisationReference || this == Localisation
+        }
     }
 }

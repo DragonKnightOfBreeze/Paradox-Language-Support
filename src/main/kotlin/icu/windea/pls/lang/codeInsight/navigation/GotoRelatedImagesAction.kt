@@ -25,9 +25,7 @@ import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 class GotoRelatedImagesAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedImagesHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

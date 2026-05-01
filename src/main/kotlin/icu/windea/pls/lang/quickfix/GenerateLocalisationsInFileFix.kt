@@ -4,7 +4,7 @@ import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.codeInsight.generation.ParadoxGenerateLocalisationsHandler
+import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsInFileHandler
 
 class GenerateLocalisationsInFileFix(
     element: PsiElement,
@@ -28,8 +28,8 @@ class GenerateLocalisationsInFileFix(
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return
-        invokeLater {
-            val handler = ParadoxGenerateLocalisationsHandler(forFile = true, fromInspection = true)
+        runInEdt {
+            val handler = GenerateLocalisationsInFileHandler(fromInspection = true)
             handler.invoke(project, editor, file)
         }
     }

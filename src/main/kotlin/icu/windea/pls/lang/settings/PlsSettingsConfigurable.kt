@@ -382,6 +382,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             collapsibleGroup(PlsBundle.message("settings.generation")) {
                 val generationSettings = settings.generation
 
+                // moveIntoLocalisationGroups
+                row {
+                    checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+                        .bindSelected(generationSettings::moveInfoLocalisationGroups)
+                }
                 // newLineBetweenLocalisationGroups
                 row {
                     checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))

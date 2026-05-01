@@ -113,8 +113,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val descriptions = getDescriptions(context)
                 if (descriptions.isEmpty()) return
                 val fixes = getFixes(element, context)
-                for (descrption in descriptions) {
-                    holder.registerProblem(location, descrption, *fixes)
+                for (description in descriptions) {
+                    holder.registerProblem(location, description, *fixes)
                 }
             }
         }

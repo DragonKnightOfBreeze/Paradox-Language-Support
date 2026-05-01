@@ -25,13 +25,15 @@ class ParadoxInlineScriptEditorNotificationProvider : EditorNotificationProvider
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val psiFile = file.toPsiFile(project) ?: return@f null
             val message = PlsBundle.message("editor.notification.inlineScript.text", inlineScriptExpression)
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
-            panel.createActionLabel(PlsBundle.message("goto.usages")) {
-                GotoDeclarationAction.startFindUsages(fileEditor.editor, project, psiFile)
-            }
+            panel.createActionLabel(PlsBundle.message("goto.usages")) { gotoUsages(file, project, fileEditor) }
             panel
         }
+    }
+
+    private fun gotoUsages(file: VirtualFile, project: Project, fileEditor: TextEditor) {
+        val psiFile = file.toPsiFile(project) ?: return
+        GotoDeclarationAction.startFindUsages(fileEditor.editor, project, psiFile)
     }
 }

@@ -14,9 +14,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 class GotoFilesAction : BaseCodeInsightAction() {
     private val handler = GotoFilesHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation
