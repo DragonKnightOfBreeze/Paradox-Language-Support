@@ -6,7 +6,7 @@ import com.github.benmanes.caffeine.cache.Interner
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsCapacities
 import icu.windea.pls.core.cache.CacheBuilder
 import it.unimi.dsi.fastutil.Hash
 import java.util.*
@@ -74,7 +74,7 @@ private object ListOptimizer : Optimizer.Unary<List<Any>> {
 
     private inline fun ignore(input: List<Any>): Boolean {
         if (input is ImmutableList) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         return false
@@ -99,7 +99,7 @@ private object SetOptimizer : Optimizer.Unary<Set<Any>> {
 
     private inline fun ignore(input: Set<Any>): Boolean {
         if (input is ImmutableSet) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash
@@ -124,7 +124,7 @@ private object MapOptimizer : Optimizer.Unary<Map<Any, Any>> {
 
     private inline fun ignore(input: Map<*, Any>): Boolean {
         if (input is ImmutableMap) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash

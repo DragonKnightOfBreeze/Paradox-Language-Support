@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.index
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsCapacities
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 import java.util.concurrent.ConcurrentHashMap
@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 @Suppress("unused")
 object PlsIndexStatisticService {
-    var recordIndexStats = PlsFacade.Capacities.recordIndexStats()
+    var recordIndexStats = PlsCapacities.recordIndexStats()
 
     private val configSymbolCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val complexEnumValueCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
