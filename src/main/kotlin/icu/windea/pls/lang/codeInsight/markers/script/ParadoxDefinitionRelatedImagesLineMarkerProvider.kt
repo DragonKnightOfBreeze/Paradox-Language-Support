@@ -13,6 +13,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -45,13 +46,16 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue
-            if (resolveResult.elements.isNotEmpty()) {
-                targets0.addAll(resolveResult.elements)
-            }
-            if (resolveResult.message != null) {
-                tooltipLines.add("$prefix $key = ${resolveResult.message}")
-            } else if (resolveResult.elements.isNotEmpty() && keys0.add(key)) {
-                tooltipLines.add("$prefix $key = ${resolveResult.nameOrFilePath}")
+            targets0.addAll(resolveResult.elements)
+            if (!keys0.add(key)) return
+            when (resolveResult) {
+                is CwtImageLocationResolveResult.Static -> {
+                    if (resolveResult.elements.isEmpty()) continue
+                    tooltipLines.add("$prefix $key = ${resolveResult.name}")
+                }
+                is CwtImageLocationResolveResult.Dynamic -> {
+                    tooltipLines.add("$prefix $key = ${resolveResult.message}")
+                }
             }
         }
         if (keys0.isEmpty()) return
@@ -69,8 +73,8 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("script.gutterIcon.definitionRelatedImages.action"),
+            lineMarkerInfo,
+            PlsBundle.message("script.gutterIcon.definitionRelatedImages.action"),
             PlsActions.GotoRelatedImages
         )
     }

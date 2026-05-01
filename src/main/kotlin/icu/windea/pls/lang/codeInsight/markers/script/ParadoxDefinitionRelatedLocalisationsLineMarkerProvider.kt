@@ -13,6 +13,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -49,13 +50,16 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
-            if (resolveResult.elements.isNotEmpty()) {
-                targets0.addAll(resolveResult.elements)
-            }
-            if (resolveResult.message != null) {
-                tooltipLines.add("$prefix $key = ${resolveResult.message}")
-            } else if (resolveResult.elements.isNotEmpty() && keys0.add(key)) {
-                tooltipLines.add("$prefix $key = ${resolveResult.name}")
+            targets0.addAll(resolveResult.elements)
+            if (!keys0.add(key)) return
+            when (resolveResult) {
+                is CwtLocalisationLocationResolveResult.Static -> {
+                    if (resolveResult.elements.isEmpty()) continue
+                    tooltipLines.add("$prefix $key = ${resolveResult.name}")
+                }
+                is CwtLocalisationLocationResolveResult.Dynamic -> {
+                    tooltipLines.add("$prefix $key = ${resolveResult.message}")
+                }
             }
         }
         if (keys0.isEmpty()) return

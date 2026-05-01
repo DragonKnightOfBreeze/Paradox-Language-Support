@@ -14,6 +14,7 @@ import icu.windea.pls.core.getInspectionToolState
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
@@ -61,13 +62,13 @@ object ParadoxImageCodeInsightContextBuilder {
         for (info in definitionInfo.images) {
             ProgressManager.checkCanceled()
             val expression = info.locationExpression
-            val resolved = ParadoxConfigExpressionService.resolve(expression, definition, definitionInfo)
+            val resolveResult = ParadoxConfigExpressionService.resolve(expression, definition, definitionInfo)
             val type = when {
                 info.required -> ParadoxImageCodeInsightInfo.Type.Required
                 info.primary -> ParadoxImageCodeInsightInfo.Type.Primary
                 else -> ParadoxImageCodeInsightInfo.Type.Optional
             }
-            val name = resolved?.nameOrFilePath
+            val name = resolveResult?.name
             val gfxName = CwtConfigExpressionManager.resolvePlaceholder(expression, definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
             val check = when {
                 info.required -> true
@@ -75,8 +76,8 @@ object ParadoxImageCodeInsightContextBuilder {
                 (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                 else -> false
             }
-            val missing = resolved?.element == null && resolved?.message == null
-            val dynamic = resolved?.message != null
+            val missing = resolveResult is CwtImageLocationResolveResult.Static && resolveResult.element == null
+            val dynamic = resolveResult is CwtImageLocationResolveResult.Dynamic
             val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
             codeInsightInfos += codeInsightInfo
         }

@@ -84,7 +84,7 @@ object ParadoxLocalisationGenerator {
     }
 
     fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocaleConfig) {
-        val taskTitle = getProcessFileName(context)
+        val taskTitle = getProcessName(context)
         val task = object : Task.Modal(project, taskTitle, true) {
             var generatedFile: VirtualFile? = null
 
@@ -100,7 +100,7 @@ object ParadoxLocalisationGenerator {
         ProgressManager.getInstance().run(task)
     }
 
-    private fun getProcessFileName(context: ParadoxLocalisationCodeInsightContext): String {
+    private fun getProcessName(context: ParadoxLocalisationCodeInsightContext): String {
         val onlyMissing = context.fromInspection
         return if (onlyMissing) {
             when (context.type) {

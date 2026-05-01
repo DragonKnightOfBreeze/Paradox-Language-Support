@@ -29,6 +29,7 @@ import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
@@ -133,7 +134,8 @@ object ParadoxImageManager {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 ParadoxConfigExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
-        } ?: return null
+        }
+        if (resolved !is CwtImageLocationResolveResult.Static) return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
         return doResolveUrl(resolvedFile.virtualFile, resolvedFile.project, resolved.frameInfo)
     }

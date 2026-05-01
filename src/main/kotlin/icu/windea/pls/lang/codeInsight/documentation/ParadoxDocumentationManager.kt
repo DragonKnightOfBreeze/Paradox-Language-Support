@@ -2,6 +2,7 @@
 
 package icu.windea.pls.lang.codeInsight.documentation
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
@@ -26,6 +27,8 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
+import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
@@ -668,31 +671,34 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in localisationInfos) {
             if (sectionKeys.contains(key)) continue
+            ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
-            if (resolveResult.message != null) {
-                map[key] = resolveResult.message.escapeXml()
-            } else if (resolveResult.element != null) {
-                map[key] = buildDocumentation {
-                    val link = ReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
-                    appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
+            when (resolveResult) {
+                is CwtLocalisationLocationResolveResult.Static -> {
+                    val resolvedElement = resolveResult.element
+                    if (resolvedElement != null) {
+                        map[key] = buildDocumentation {
+                            val link = ReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
+                            appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
+                        }
+                        sectionKeys.add(key)
+                        if (sections != null && PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
+                            // 加上渲染后的相关本地化文本
+                            val richText = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
+                            sections[key] = richText
+                        }
+                    } else if (required) {
+                        map.putIfAbsent(key, resolveResult.name.escapeXml())
+                    }
                 }
-            } else if (required) {
-                map.putIfAbsent(key, resolveResult.name.escapeXml())
-            }
-            val resolvedElement = resolveResult.element
-            if (resolvedElement != null) {
-                sectionKeys.add(key)
-                if (sections != null && PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
-                    // 加上渲染后的相关本地化文本
-                    val richText = ParadoxLocalisationTextQuickDocRenderer().render(resolvedElement)
-                    sections[key] = richText
+                is CwtLocalisationLocationResolveResult.Dynamic -> {
+                    map[key] = resolveResult.message.escapeXml()
                 }
             }
         }
         for ((key, value) in map) {
             appendBr()
-            append(PlsStrings.relatedLocalisationPrefix).append(" ")
-            append(key).append(" = ").append(value)
+            append(PlsStrings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
 
@@ -705,50 +711,52 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in imagesInfos) {
             if (sectionKeys.contains(key)) continue
+            ProgressManager.checkCanceled()
             val resolveResult = ParadoxConfigExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
-            if (resolveResult.message != null) {
-                map[key] = resolveResult.message.escapeXml()
-            } else if (resolveResult.element != null) {
-                val nameOrFilePath = resolveResult.nameOrFilePath
-                val gameType = definitionInfo.gameType
-                val v = when {
-                    nameOrFilePath.startsWith("GFX") -> buildDocumentation {
-                        val link = ReferenceLinkType.Definition.createLink(nameOrFilePath, ParadoxDefinitionTypes.sprite, gameType)
-                        appendPsiLinkOrUnresolved(link.escapeXml(), nameOrFilePath.escapeXml(), context = element)
-                    }
-                    else -> buildDocumentation {
-                        val link = ReferenceLinkType.FilePath.createLink(nameOrFilePath, gameType)
-                        appendPsiLinkOrUnresolved(link.escapeXml(), nameOrFilePath.escapeXml(), context = element)
+            when (resolveResult) {
+                is CwtImageLocationResolveResult.Static -> {
+                    val resolvedElement = resolveResult.element
+                    if (resolvedElement != null) {
+                        val name = resolveResult.name
+                        val gameType = definitionInfo.gameType
+                        map[key] = when {
+                            name.startsWith("GFX") -> buildDocumentation {
+                                val link = ReferenceLinkType.Definition.createLink(name, ParadoxDefinitionTypes.sprite, gameType)
+                                appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
+                            }
+                            else -> buildDocumentation {
+                                val link = ReferenceLinkType.FilePath.createLink(name, gameType)
+                                appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml(), context = element)
+                            }
+                        }
+                        sectionKeys.add(key)
+                        if (render && sections != null) {
+                            // 渲染图片
+                            val url = when {
+                                resolvedElement is ParadoxDefinitionElement && resolvedElement.definitionInfo != null -> {
+                                    ParadoxImageManager.resolveUrlByDefinition(resolvedElement, resolveResult.frameInfo)
+                                }
+                                resolvedElement is PsiFile -> {
+                                    ParadoxImageManager.resolveUrlByFile(resolvedElement.virtualFile, resolvedElement.project, resolveResult.frameInfo)
+                                }
+                                else -> null
+                            }
+                            if (url != null) {
+                                sections[key] = buildDocumentation { appendImage(url) }
+                            }
+                        }
+                    } else if (required) {
+                        map.putIfAbsent(key, resolveResult.name.escapeXml())
                     }
                 }
-                map[key] = v
-            } else if (required) {
-                map.putIfAbsent(key, resolveResult.nameOrFilePath.escapeXml())
-            }
-            val resolveElement = resolveResult.element
-            if (resolveElement != null) {
-                sectionKeys.add(key)
-                if (render && sections != null) {
-                    // 渲染图片
-                    val url = when {
-                        resolveElement is ParadoxDefinitionElement && resolveElement.definitionInfo != null -> {
-                            ParadoxImageManager.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
-                        }
-                        resolveElement is PsiFile -> {
-                            ParadoxImageManager.resolveUrlByFile(resolveElement.virtualFile, resolveElement.project, resolveResult.frameInfo)
-                        }
-                        else -> null
-                    }
-                    if (url != null) {
-                        sections[key] = buildDocumentation { appendImage(url) }
-                    }
+                is CwtImageLocationResolveResult.Dynamic -> {
+                    map[key] = resolveResult.message.escapeXml()
                 }
             }
         }
         for ((key, value) in map) {
             appendBr()
-            append(PlsStrings.relatedImagePrefix).append(" ")
-            append(key).append(" = ").append(value)
+            append(PlsStrings.relatedImagePrefix).append(" ").append(key).append(" = ").append(value)
         }
     }
 

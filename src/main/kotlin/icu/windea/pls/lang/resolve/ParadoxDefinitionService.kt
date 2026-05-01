@@ -224,8 +224,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val key = resolveResult?.name ?: continue
-            return key
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            return resolveResult.name
         }
         return null
     }
@@ -237,8 +237,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val localisation = resolveResult?.element ?: continue
-            return localisation
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            return resolveResult.element
         }
         return null
     }
@@ -251,8 +251,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val localisations = resolveResult?.elements ?: continue
-            result.addAll(localisations)
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            result.addAll(resolveResult.elements)
         }
         return result
     }
@@ -262,10 +262,10 @@ object ParadoxDefinitionService {
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         for (primaryImage in primaryImages) {
-            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            val file = resolved?.element?.castOrNull<PsiFile>()
-            if (file == null) continue
-            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            if(resolveResult !is CwtImageLocationResolveResult.Static) continue
+            val file = resolveResult.element?.castOrNull<PsiFile>() ?: continue
+            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             return file
         }
         return null
@@ -277,9 +277,10 @@ object ParadoxDefinitionService {
         if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<PsiFile>()
         for (primaryImage in primaryImages) {
-            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            val files = resolved?.elements?.filterIsInstance<PsiFile>() ?: continue
-            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            if(resolveResult !is CwtImageLocationResolveResult.Static) continue
+            val files = resolveResult.elements.filterIsInstance<PsiFile>()
+            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(files)
         }
         return result

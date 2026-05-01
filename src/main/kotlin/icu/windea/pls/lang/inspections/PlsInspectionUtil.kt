@@ -30,6 +30,7 @@ object PlsInspectionUtil {
         }
     }
 
+    context(_: LocalInspectionTool)
     fun getSimilarityBasedFixesForUnresolvedExpression(
         element: ParadoxExpressionElement,
         expectedConfigs: List<CwtMemberConfig<*>>
@@ -63,6 +64,7 @@ object PlsInspectionUtil {
         return fixes
     }
 
+    context(_: LocalInspectionTool)
     fun getLocalisationReferenceFixesForUnresolvedExpression(
         element: ParadoxExpressionElement,
         expectedConfigs: List<CwtMemberConfig<*>>

@@ -15,6 +15,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.locale
@@ -106,8 +107,8 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                     checkOptionalForDefinitions(inspection) && !info.required -> true
                     else -> false
                 }
-                val missing = resolveResult?.element == null && resolveResult?.message == null
-                val dynamic = resolveResult?.message != null
+                val missing = resolveResult is CwtLocalisationLocationResolveResult.Static && resolveResult.element == null
+                val dynamic = resolveResult is CwtLocalisationLocationResolveResult.Dynamic
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
                 codeInsightInfos += codeInsightInfo
             }

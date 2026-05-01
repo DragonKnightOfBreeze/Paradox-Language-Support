@@ -74,11 +74,8 @@ object ParadoxConfigExpressionService {
             return createLocalisationResolveResult(PlsBundle.message("inlined"))
         }
         val name = valueElement.stringValue
+        if (name.isEmpty()) return null
         return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
-    }
-
-    private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationResolveResult {
-        return CwtLocalisationLocationResolveResult("", message)
     }
 
     private fun createLocalisationResolveResult(
@@ -87,8 +84,8 @@ object ParadoxConfigExpressionService {
         definitionInfo: ParadoxDefinitionInfo,
         project: Project,
         selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit
-    ): CwtLocalisationLocationResolveResult {
-        return CwtLocalisationLocationResolveResult(name, null, {
+    ): CwtLocalisationLocationResolveResult.Static {
+        return CwtLocalisationLocationResolveResult.Static(name, {
             val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
             val selector = selector(project, definition).localisation().contextSensitive()
                 .withConstraint(constraint)
@@ -99,6 +96,10 @@ object ParadoxConfigExpressionService {
                 .apply(selectorBuilder)
             ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
+    }
+
+    private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationResolveResult.Dynamic {
+        return CwtLocalisationLocationResolveResult.Dynamic(message)
     }
 
     private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationIndexConstraint? {
@@ -143,13 +144,13 @@ object ParadoxConfigExpressionService {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
                                 val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true)
-                                r?.takeIf { it.element != null || it.message != null }
+                                r as? CwtImageLocationResolveResult.Static // 仅限静态结果
                             }
                         }
                     }
                 }
 
-                return createImageResolveResult(spriteName, newFrameInfo, definition, project)
+                return createImageResolveResultBySpriteName(spriteName, newFrameInfo, definition, project)
             }
 
             val filePath = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
@@ -172,7 +173,8 @@ object ParadoxConfigExpressionService {
         when {
             // 由filePath解析为图片文件
             resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {
-                val filePath = resolved.fileInfo?.path?.path ?: return null
+                val filePath = resolved.fileInfo?.path?.path
+                if (filePath.isNullOrEmpty()) return null
                 return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
             }
             // 由name解析为定义（如果不是sprite，就继续向下解析）
@@ -181,7 +183,8 @@ object ParadoxConfigExpressionService {
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 if (!toFile && resolvedDefinitionInfo.type == ParadoxDefinitionTypes.sprite) {
                     val spriteName = resolvedDefinitionInfo.name
-                    return createImageResolveResult(spriteName, newFrameInfo, definition, project)
+                    if (spriteName.isEmpty()) return null
+                    return createImageResolveResultBySpriteName(spriteName, newFrameInfo, definition, project)
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
@@ -190,7 +193,7 @@ object ParadoxConfigExpressionService {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val primaryLocationExpression = primaryImageConfig.locationExpression
                             val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile)
-                            r?.takeIf { it.element != null || it.message != null }
+                            r as? CwtImageLocationResolveResult.Static // 仅限静态结果
                         }
                     }
                 }
@@ -199,13 +202,13 @@ object ParadoxConfigExpressionService {
         }
     }
 
-    private fun createImageResolveResult(
+    private fun createImageResolveResultBySpriteName(
         spriteName: String,
         frameInfo: ImageFrameInfo?,
         definition: ParadoxDefinitionElement,
         project: Project
-    ): CwtImageLocationResolveResult {
-        return CwtImageLocationResolveResult(spriteName, frameInfo, null, {
+    ): CwtImageLocationResolveResult.Static {
+        return CwtImageLocationResolveResult.Static(spriteName, frameInfo, {
             val selector = selector(project, definition).definition().contextSensitive()
             ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
         }, {
@@ -219,8 +222,8 @@ object ParadoxConfigExpressionService {
         frameInfo: ImageFrameInfo?,
         definition: ParadoxDefinitionElement,
         project: Project
-    ): CwtImageLocationResolveResult {
-        return CwtImageLocationResolveResult(filePath, frameInfo, null, {
+    ): CwtImageLocationResolveResult.Static {
+        return CwtImageLocationResolveResult.Static(filePath, frameInfo, {
             val selector = selector(project, definition).file().contextSensitive()
             ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
         }, {
@@ -229,8 +232,8 @@ object ParadoxConfigExpressionService {
         })
     }
 
-    private fun createImageResolveResult(message: String): CwtImageLocationResolveResult {
-        return CwtImageLocationResolveResult("", null, message)
+    private fun createImageResolveResult(message: String): CwtImageLocationResolveResult.Dynamic {
+        return CwtImageLocationResolveResult.Dynamic(message)
     }
 
     private fun findValueElementByPath(definition: ParadoxDefinitionElement, path: String): ParadoxScriptValue? {
