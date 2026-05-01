@@ -19,7 +19,8 @@ object ParadoxLocalisationListManager {
      */
     fun copyWithoutLocale(element: ParadoxLocalisationPropertyList) {
         // 2.1.8 不检查 localeId 是否合法
-        val text = element.text.drop(element.textLength).trimIndent().trim() // 去除前缀，去除最小缩进，去除首尾空白
+        val offset = element.locale?.textLength ?: 0
+        val text = element.text.drop(offset).trimIndent().trim() // 去除前缀，去除最小缩进，去除首尾空白
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 }

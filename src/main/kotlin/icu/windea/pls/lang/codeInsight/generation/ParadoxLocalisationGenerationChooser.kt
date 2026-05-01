@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
@@ -19,7 +18,6 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.Action
 import javax.swing.JComponent
-import javax.swing.JPanel
 
 class ParadoxLocalisationGenerationChooser(
     elements: Array<out ParadoxLocalisationGenerationElement.Item>,
@@ -41,70 +39,82 @@ class ParadoxLocalisationGenerationChooser(
     }
 
     override fun createSouthPanel(): JComponent {
+        // NOTE 2.1.8 hide unexpected bottom left UI components
+        myOptionControls = emptyArray()
+
         return panel {
-            row { createSouthOptionsPanel() }
+            row {
+                panel { configureSouthOptionsPanel() }
+            }
             separator()
-            row { createSouthButtonsPanel() }
-        }
-    }
-
-    private fun Row.createSouthOptionsPanel() {
-        panel {
-            val settings = PlsSettings.getInstance().state.generation
-
-            // moveIntoLocalisationGroups
             row {
-                checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
-                    .bindSelected(settings::moveInfoLocalisationGroups.toAtomicProperty())
-            }
-            // newLineBetweenLocalisationGroups
-            row {
-                checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
-                    .bindSelected(settings::newLineBetweenLocalisationGroups.toAtomicProperty())
-            }
-            // localisationStrategy
-            row {
-                val property = AtomicProperty(settings.localisationStrategy)
-                label(PlsBundle.message("settings.generation.localisationStrategy"))
-                comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
-                    .bindItem(settings::localisationStrategy.toAtomicProperty())
-                    .bindItem(property)
-                textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
-                    .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
-                localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
-                    .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+                cell(super.createSouthPanel())
             }
         }
     }
 
-    private fun Row.createSouthButtonsPanel() {
-        // 1. remove unnecessary ui components
-        // 2. make left side actions actually at left side of chooser dialog
-        val superPanel = super.createSouthPanel()
-        val finalPanel = superPanel.components.lastOrNull()?.castOrNull<JPanel>() ?: superPanel
-        cell(finalPanel)
+    private fun Panel.configureSouthOptionsPanel() {
+        val settings = PlsSettings.getInstance().state.generation
+
+        // moveIntoLocalisationGroups
+        row {
+            checkBox(PlsBundle.message("settings.generation.moveIntoLocalisationGroups"))
+                .bindSelected(settings::moveInfoLocalisationGroups.toAtomicProperty())
+        }
+        // newLineBetweenLocalisationGroups
+        row {
+            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
+                .bindSelected(settings::newLineBetweenLocalisationGroups.toAtomicProperty())
+        }
+        // localisationStrategy
+        row {
+            val property = AtomicProperty(settings.localisationStrategy)
+            label(PlsBundle.message("settings.generation.localisationStrategy"))
+            comboBox(LocalisationGeneration.entries, textListCellRenderer { it?.text })
+                .bindItem(settings::localisationStrategy.toAtomicProperty())
+                .bindItem(property)
+            textField().bindText(settings::localisationStrategyText.toAtomicProperty(""))
+                .visibleIf(property.transform { it == LocalisationGeneration.SpecificText })
+            localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
+                .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
+        }
     }
 
-    override fun createLeftSideActions(): Array<Action> {
-        return buildList<Action> {
-            this += SelectAction(PlsBundle.message("generation.localisation.select.all")) { selectAll() }
-            this += SelectAction(PlsBundle.message("generation.localisation.select.missing")) { selectMissing() }
-            if (context.fromInspection) {
-                this += SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) { selectMissingAndChecked() }
-            }
-        }.toTypedArray()
+    override fun createActions(): Array<out Action> {
+        val actions = mutableListOf<Action>()
+        actions += okAction
+        actions += createSelectAllAction()
+        actions += createSelectMissingAction()
+        if (context.fromInspection) actions += createSelectMissingAndCheckedAction()
+        if (myAllowEmptySelection) actions += createSelectNoneAction()
+        actions += cancelAction
+        if (helpId != null) actions += helpAction
+        return actions.toTypedArray()
     }
 
-    private fun selectAll() {
-        selectElements(myElements)
+    private fun createSelectAllAction(): SelectAction {
+        return SelectAction(PlsBundle.message("generation.localisation.select.all")) {
+            selectElements(myElements)
+        }
     }
 
-    private fun selectMissing() {
-        selectElements(myElements.filter { it.info.missing }.toTypedArray())
+    private fun createSelectMissingAction(): SelectAction {
+        return SelectAction(PlsBundle.message("generation.localisation.select.missing")) {
+            selectElements(myElements.filter { it.info.missing }.toTypedArray())
+        }
     }
 
-    private fun selectMissingAndChecked() {
-        selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray())
+    private fun createSelectMissingAndCheckedAction(): SelectAction {
+        return SelectAction(PlsBundle.message("generation.localisation.select.missingAndChecked")) {
+            selectElements(myElements.filter { it.info.missing && it.info.check }.toTypedArray())
+        }
+    }
+
+    private fun createSelectNoneAction(): SelectAction {
+        return SelectAction(PlsBundle.message("generation.localisation.select.none")) {
+            myTree.clearSelection()
+            doOKAction()
+        }
     }
 
     private class SelectAction(actionName: String, private val action: (ActionEvent) -> Unit) : AbstractAction(actionName) {
