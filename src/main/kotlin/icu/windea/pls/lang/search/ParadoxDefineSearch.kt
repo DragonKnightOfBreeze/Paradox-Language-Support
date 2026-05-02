@@ -6,37 +6,41 @@ import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.splitToPair
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 预定义的命名空间与变量的查询。
+ * 定值命名空间与变量的查询。
  */
-class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineSearch.Parameters>(EP_NAME) {
     /**
+     * 定值命名空间与变量的查询参数。
+     *
      * @property namespace 命名空间。
      * @property variable 变量名。如果为空字符串，则表示查询命名空间。
-     * @property selector 查询选择器。
      */
-    class SearchParameters(
+    class Parameters(
         val namespace: String?,
         val variable: String?,
         override val selector: ParadoxSearchSelector<ParadoxScriptProperty>
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, SearchParameters>>("icu.windea.pls.search.defineSearch")
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, Parameters>>("icu.windea.pls.search.defineSearch")
         @JvmField val INSTANCE = ParadoxDefineSearch()
 
         /**
-         *  @see ParadoxDefineSearch.SearchParameters
+         *  @see ParadoxDefineSearch.Parameters
          */
         @JvmStatic
         fun search(
             namespace: String?,
             variable: String?,
-            selector: ParadoxSearchSelector<ParadoxScriptProperty>
+            selector: ParadoxSearchSelector<ParadoxScriptProperty>,
         ): ParadoxUnaryQuery<ParadoxScriptProperty> {
-            return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
+            return INSTANCE.search(Parameters(namespace, variable, selector))
         }
 
         /**
@@ -44,10 +48,10 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxScriptProperty, Parado
          */
         fun search(
             expression: String,
-            selector: ParadoxSearchSelector<ParadoxScriptProperty>
+            selector: ParadoxSearchSelector<ParadoxScriptProperty>,
         ): ParadoxUnaryQuery<ParadoxScriptProperty> {
             val (namespace, variable) = expression.splitToPair('.') ?: tupleOf(expression, null)
-            return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
+            return INSTANCE.search(Parameters(namespace, variable, selector))
         }
     }
 }

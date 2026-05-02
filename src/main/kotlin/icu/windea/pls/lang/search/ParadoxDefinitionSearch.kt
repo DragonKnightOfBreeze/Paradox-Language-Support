@@ -5,6 +5,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
+import icu.windea.pls.lang.search.util.ParadoxQuery
+import icu.windea.pls.lang.search.util.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxUnaryQuery
+import icu.windea.pls.lang.search.util.search
+import icu.windea.pls.lang.search.util.withTransform
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -13,14 +18,14 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * 定义的查询。
  */
-@Suppress("unused")
-class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInfo, ParadoxDefinitionSearch.Parameters>(EP_NAME) {
     /**
+     * 定义的查询参数。
+     *
      * @property name 定义的名字。
      * @property typeExpression 定义的类型表达式。参见 [ParadoxDefinitionTypeExpression]。
-     * @property selector 查询选择器。
      */
-    class SearchParameters(
+    class Parameters(
         val name: String?,
         val typeExpression: String?,
         override val selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
@@ -31,11 +36,11 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
     }
 
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionIndexInfo, SearchParameters>>("icu.windea.pls.search.definitionSearch")
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxDefinitionIndexInfo, Parameters>>("icu.windea.pls.search.definitionSearch")
         @JvmField val INSTANCE = ParadoxDefinitionSearch()
 
         /**
-         * @see ParadoxDefinitionSearch.SearchParameters
+         * @see ParadoxDefinitionSearch.Parameters
          */
         @JvmStatic
         fun search(
@@ -43,11 +48,11 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
             typeExpression: String?,
             selector: ParadoxSearchSelector<ParadoxDefinitionIndexInfo>,
         ): ParadoxUnaryQuery<ParadoxDefinitionIndexInfo> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector))
+            return INSTANCE.search(Parameters(name, typeExpression, selector))
         }
 
         /**
-         * @see ParadoxDefinitionSearch.SearchParameters
+         * @see ParadoxDefinitionSearch.Parameters
          */
         @JvmStatic
         fun searchElement(
@@ -59,7 +64,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         }
 
         /**
-         * @see ParadoxDefinitionSearch.SearchParameters
+         * @see ParadoxDefinitionSearch.Parameters
          */
         @JvmStatic
         fun searchFile(
@@ -71,7 +76,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxDefinitionIndexInf
         }
 
         /**
-         * @see ParadoxDefinitionSearch.SearchParameters
+         * @see ParadoxDefinitionSearch.Parameters
          */
         @JvmStatic
         fun searchProperty(

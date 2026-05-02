@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 // com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
 
 /**
- * 提供调用层级视图。（封装变量/定义/本地化）
+ * 提供调用层级视图（封装变量/定义/本地化）。
  *
  * - 忽略直接位于游戏或模组入口目录下的文件。
  */

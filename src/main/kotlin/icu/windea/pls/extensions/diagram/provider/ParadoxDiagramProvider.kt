@@ -15,8 +15,8 @@ import icu.windea.pls.extensions.diagram.ParadoxRelationshipManager
 import icu.windea.pls.extensions.diagram.ParadoxRootVfsResolver
 import icu.windea.pls.extensions.diagram.extras.ParadoxDiagramExtras
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType
 
 abstract class ParadoxDiagramProvider(

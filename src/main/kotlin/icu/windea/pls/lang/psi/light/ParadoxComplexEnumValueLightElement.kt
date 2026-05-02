@@ -7,10 +7,10 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.core.ReadWriteAccess
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
-import java.util.*
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType
+import java.util.*
 
 class ParadoxComplexEnumValueLightElement(
     parent: PsiElement,

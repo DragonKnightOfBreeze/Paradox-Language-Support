@@ -11,8 +11,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import javax.swing.Icon
 
 // com.intellij.uml.core.actions.scopes.UmlChangeScopeAction

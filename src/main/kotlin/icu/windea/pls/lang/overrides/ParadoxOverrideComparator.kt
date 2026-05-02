@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.overrides
 
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.search.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings

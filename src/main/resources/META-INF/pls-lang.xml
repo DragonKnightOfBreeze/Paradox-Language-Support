@@ -260,7 +260,7 @@
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxLocalisationChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxSyncedLocalisationChooseByNameContributor"/>
 
-    <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTextBasedTargetSearchContributor$Factory"/>
+    <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTargetFromTextSearchContributor$Factory"/>
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>
@@ -296,9 +296,9 @@
     <languageStubDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxScriptStubDefinition"/>
     <languageStubDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubDefinition"/>
     <!--suppress PluginXmlValidity -->
-    <stubElementRegistryExtension  implementation="icu.windea.pls.lang.index.stubs.ParadoxScriptStubRegistry"/>
+    <stubElementRegistryExtension implementation="icu.windea.pls.lang.index.stubs.ParadoxScriptStubRegistry"/>
     <!--suppress PluginXmlValidity -->
-    <stubElementRegistryExtension  implementation="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubRegistry"/>
+    <stubElementRegistryExtension implementation="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubRegistry"/>
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
@@ -321,18 +321,19 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
 
     <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxDefinitionImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxLocalisationImplementationsSearch"/>
-    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxFileImplementationsSearch"/>
 
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.CwtConfigSymbolUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.CwtConfigUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxDefinitionUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxFileUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxParameterUsagesSearcher"/>
-    <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.searchers.implementations.ParadoxScriptedVariableImplementationsSearcher"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.searchers.implementations.ParadoxDefinitionImplementationsSearcher"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.searchers.implementations.ParadoxLocalisationImplementationsSearcher"/>
+    <definitionsScopedSearch implementation="icu.windea.pls.lang.search.searchers.implementations.ParadoxFileImplementationsSearcher"/>
+
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.CwtConfigSymbolUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.CwtConfigUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxDefinitionUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxLocalisationUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxFileUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxParameterUsagesSearcher"/>
+    <referencesSearch implementation="icu.windea.pls.lang.search.searchers.usages.ParadoxLocalisationParameterUsagesSearcher"/>
 
     <psi.referenceContributor language="CWT" implementation="icu.windea.pls.lang.references.cwt.CwtConfigPsiReferenceContributor"/>
     <!-- icu.windea.pls.lang.references.cwt.CwtConfigSymbolReferenceProvider -->
@@ -376,20 +377,20 @@
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.search">
-    <configSearch implementation="icu.windea.pls.lang.search.CwtConfigSearcher"/>
-    <configSymbolSearch implementation="icu.windea.pls.lang.search.CwtConfigSymbolSearcher"/>
-    <scriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxScriptedVariableSearcher"/>
-    <definitionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionSearcher"/>
-    <localisationSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationSearcher"/>
-    <filePathSearch implementation="icu.windea.pls.lang.search.ParadoxFilePathSearcher"/>
-    <complexEnumValueSearch implementation="icu.windea.pls.lang.search.ParadoxComplexEnumValueSearcher"/>
-    <dynamicValueSearch implementation="icu.windea.pls.lang.search.ParadoxDynamicValueSearcher"/>
-    <defineSearch implementation="icu.windea.pls.lang.search.ParadoxDefineSearcher"/>
-    <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearcher"/>
-    <definitionInjectionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearcher"/>
-    <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
-    <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
-    <textBasedTargetSearch implementation="icu.windea.pls.lang.search.target.ParadoxSubstringTextBasedTargetSearcher"/>
+    <configSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSearcher"/>
+    <configSymbolSearch implementation="icu.windea.pls.lang.search.searchers.CwtConfigSymbolSearcher"/>
+    <scriptedVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxScriptedVariableSearcher"/>
+    <definitionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionSearcher"/>
+    <localisationSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationSearcher"/>
+    <filePathSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher"/>
+    <complexEnumValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher"/>
+    <dynamicValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher"/>
+    <defineSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineSearcher"/>
+    <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher"/>
+    <definitionInjectionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher"/>
+    <parameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher"/>
+    <localisationParameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxLocalisationParameterSearcher"/>
+    <textBasedTargetSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxTargetFromSubstringTextSearcher"/>
   </extensions>
 
   <projectListeners>
@@ -580,7 +581,7 @@
       <reference ref="Pls.LocalisationManipulationContextMenuGroup"/>
       <reference ref="Pls.TableManipulationContextMenuGroup"/>
       <reference ref="Pls.LocalisationGenerationContextMenuGroup"/>
-      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode" />
+      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode"/>
     </group>
 
     <group id="Pls.ScriptManipulation">

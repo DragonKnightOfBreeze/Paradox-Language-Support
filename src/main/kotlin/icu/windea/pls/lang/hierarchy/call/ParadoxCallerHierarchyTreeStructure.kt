@@ -12,7 +12,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.PlsSettings

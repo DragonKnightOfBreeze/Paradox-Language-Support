@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.ParadoxSearchParameters
+import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 
 class ParadoxForcedFileOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
     override fun get(target: Any): ParadoxOverrideStrategy? {
@@ -13,7 +13,7 @@ class ParadoxForcedFileOverrideStrategyProvider : ParadoxOverrideStrategyProvide
     }
 
     override fun get(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
-        if (searchParameters !is ParadoxFilePathSearch.SearchParameters) return null
+        if (searchParameters !is ParadoxFilePathSearch.Parameters) return null
         return getOverrideStrategy()
     }
 

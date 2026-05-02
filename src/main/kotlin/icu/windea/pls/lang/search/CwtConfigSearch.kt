@@ -16,8 +16,11 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * 直接从规则分组中查询符合条件的规则对象。
  */
-class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.SearchParameters>(EP_NAME) {
-    sealed class SearchParameters(
+class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Parameters>(EP_NAME) {
+    /**
+     * 规则的查询参数。
+     */
+    sealed class Parameters(
         val gameType: ParadoxGameType?,
         val project: Project
     ) {
@@ -26,22 +29,22 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Sea
             val type: Class<T>,
             gameType: ParadoxGameType?,
             project: Project
-        ) : SearchParameters(gameType, project)
+        ) : Parameters(gameType, project)
 
         class ByFilePath<T : CwtFilePathMatchableConfig<*>>(
             val filePath: String?,
             val type: Class<T>,
             gameType: ParadoxGameType?,
             project: Project
-        ) : SearchParameters(gameType, project)
+        ) : Parameters(gameType, project)
     }
 
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfig<*>, SearchParameters>>("icu.windea.pls.search.configSearch")
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfig<*>, Parameters>>("icu.windea.pls.search.configSearch")
         @JvmField val INSTANCE = CwtConfigSearch()
 
         /**
-         * @see CwtConfigSearch.SearchParameters.ById
+         * @see CwtConfigSearch.Parameters.ById
          */
         @JvmStatic
         inline fun <reified T : CwtIdMatchableConfig<*>> searchById(id: String?, gameType: ParadoxGameType?, project: Project): Query<T> {
@@ -49,15 +52,15 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Sea
         }
 
         /**
-         * @see CwtConfigSearch.SearchParameters.ById
+         * @see CwtConfigSearch.Parameters.ById
          */
         @JvmStatic
         fun <T : CwtIdMatchableConfig<*>> searchById(id: String?, type: Class<T>, gameType: ParadoxGameType?, project: Project): Query<T> {
-            return INSTANCE.createQuery(SearchParameters.ById(id, type, gameType, project)).cast()
+            return INSTANCE.createQuery(Parameters.ById(id, type, gameType, project)).cast()
         }
 
         /**
-         * @see CwtConfigSearch.SearchParameters.ByFilePath
+         * @see CwtConfigSearch.Parameters.ByFilePath
          */
         @JvmStatic
         inline fun <reified T : CwtFilePathMatchableConfig<*>> searchByFilePath(filePath: String?, gameType: ParadoxGameType?, project: Project): Query<T> {
@@ -65,11 +68,11 @@ class CwtConfigSearch : ExtensibleQueryFactory<CwtConfig<*>, CwtConfigSearch.Sea
         }
 
         /**
-         * @see CwtConfigSearch.SearchParameters.ByFilePath
+         * @see CwtConfigSearch.Parameters.ByFilePath
          */
         @JvmStatic
         fun <T : CwtFilePathMatchableConfig<*>> searchByFilePath(filePath: String?, type: Class<T>, gameType: ParadoxGameType?, project: Project): Query<T> {
-            return INSTANCE.createQuery(SearchParameters.ByFilePath(filePath, type, gameType, project)).cast()
+            return INSTANCE.createQuery(Parameters.ByFilePath(filePath, type, gameType, project)).cast()
         }
     }
 }
