@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
@@ -12,6 +11,7 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.optimized
@@ -101,7 +101,7 @@ object CwtConfigSymbolManager {
             add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
         }
         tuples.forEach f@{ (symbolName, symbolOffset, symbolConfigType) ->
-            val readWriteAccess = ReadWriteAccessDetector.Access.Write
+            val readWriteAccess = ReadWriteAccess.Write
             val nextOffset = offset + symbolOffset
             val info = CwtConfigSymbolIndexInfo(symbolName, symbolConfigType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
             infos += info
@@ -136,7 +136,7 @@ object CwtConfigSymbolManager {
 
     private fun collectInfosFromSubtypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
         // 尝试从 typeExpression 中获取
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
         val expression = ParadoxDefinitionTypeExpression.resolve(text)
@@ -154,7 +154,7 @@ object CwtConfigSymbolManager {
 
     private fun collectInfosFromTypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
         // 尝试从 typeExpression 中获取
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
         val expression = ParadoxDefinitionTypeExpression.resolve(text)
@@ -171,7 +171,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromCommonDataExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         run {
             val (prefix, suffix) = CwtConfigTextPatterns.enum
             val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
@@ -202,7 +202,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromAliasDataExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         val patternSet = CwtConfigTextPatternSets.aliasReference
         patternSet.forEach f@{ pattern ->
             val (prefix, suffix) = pattern

@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.psi.light
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType
@@ -16,7 +16,7 @@ class ParadoxComplexEnumValueLightElement(
     parent: PsiElement,
     private val name: String,
     val enumName: String,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
+    val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {

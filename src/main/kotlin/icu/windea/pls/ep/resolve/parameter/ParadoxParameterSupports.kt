@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.resolve.parameter
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -22,6 +21,7 @@ import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
 import icu.windea.pls.config.configGroup.scriptValueModificationTracker
 import icu.windea.pls.config.select.asProperty
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
@@ -430,7 +430,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val readWriteAccess = ReadWriteAccess.Write
         val gameType = configGroup.gameType
         val project = configGroup.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
@@ -597,7 +597,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
         val contextIcon = PlsIcons.Nodes.Directive
         val contextKey = "inline_script@$inlineScriptExpression"
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val readWriteAccess = ReadWriteAccess.Write
         val gameType = config.configGroup.gameType
         val project = config.configGroup.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)

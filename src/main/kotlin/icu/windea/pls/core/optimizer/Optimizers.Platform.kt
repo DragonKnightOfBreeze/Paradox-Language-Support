@@ -1,21 +1,19 @@
-@file:Suppress("UnusedReceiverParameter")
-
 package icu.windea.pls.core.optimizer
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import icu.windea.pls.core.ReadWriteAccess
 
-fun OptimizerRegistry.forAccess() = register(ReadWriteAccessOptimizer)
+fun OptimizerRegistry.forReadWriteAccess() = register(ReadWriteAccessOptimizer)
 
-private object ReadWriteAccessOptimizer : Optimizer<ReadWriteAccessDetector.Access, Byte> {
-    override fun optimize(input: ReadWriteAccessDetector.Access): Byte {
+private object ReadWriteAccessOptimizer : Optimizer<ReadWriteAccess, Byte> {
+    override fun optimize(input: ReadWriteAccess): Byte {
         return input.ordinal.toByte()
     }
 
-    override fun deoptimize(input: Byte): ReadWriteAccessDetector.Access {
+    override fun deoptimize(input: Byte): ReadWriteAccess {
         return when (input) {
-            0.toByte() -> ReadWriteAccessDetector.Access.Read
-            1.toByte() -> ReadWriteAccessDetector.Access.Write
-            else -> ReadWriteAccessDetector.Access.ReadWrite
+            0.toByte() -> ReadWriteAccess.Read
+            1.toByte() -> ReadWriteAccess.Write
+            else -> ReadWriteAccess.ReadWrite
         }
     }
 }

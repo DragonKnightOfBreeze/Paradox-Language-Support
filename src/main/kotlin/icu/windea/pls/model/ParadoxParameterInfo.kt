@@ -1,9 +1,9 @@
 package icu.windea.pls.model
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.ep.resolve.parameter.support
@@ -39,7 +39,7 @@ data class ParadoxParameterInfo(
 }
 
 @Suppress("unused")
-fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterLightElement {
+fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccess): ParadoxParameterLightElement {
     return ParadoxParameterLightElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         .also { ParadoxParameterSupport.Keys.sync(this, it) }
 }

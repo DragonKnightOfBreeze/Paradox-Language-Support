@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.psi.light
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
@@ -14,13 +14,13 @@ class ParadoxDynamicValueLightElement(
     parent: PsiElement,
     private val name: String,
     val dynamicValueTypes: Set<String>,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
+    val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner {
     val dynamicValueType: String get() = ParadoxDynamicValueManager.getPresentableType(dynamicValueTypes)
 
-    constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
+    constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccess, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 
     override fun getIcon(flags: Int): Icon {

@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
-import icu.windea.pls.core.optimizer.forAccess
+import icu.windea.pls.core.optimizer.forReadWriteAccess
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
@@ -78,7 +78,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         storage.writeByte(firstInfo.gameType.optimized(OptimizerRegistry.forGameType()))
         value.forEachFast { info ->
             storage.writeUTFFast(info.name)
-            storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forAccess()))
+            storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forReadWriteAccess()))
             storage.writeIntFast(info.offset)
             storage.writeIntFast(info.elementOffset)
         }
@@ -92,7 +92,7 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         return MutableList(size) {
             val name = storage.readUTFFast()
-            val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forAccess())
+            val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forReadWriteAccess())
             val offset = storage.readIntFast()
             val elementOffset = storage.readIntFast()
             CwtConfigSymbolIndexInfo(name, type, readWriteAccess, offset, elementOffset, gameType)

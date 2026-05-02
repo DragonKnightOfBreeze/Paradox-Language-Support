@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
@@ -22,6 +21,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
@@ -255,11 +255,11 @@ object ParadoxParameterManager {
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
-    fun getReadWriteAccess(element: PsiElement): ReadWriteAccessDetector.Access {
+    fun getReadWriteAccess(element: PsiElement): ReadWriteAccess {
         return when {
-            element is ParadoxParameter -> ReadWriteAccessDetector.Access.Read
-            element is ParadoxConditionParameter -> ReadWriteAccessDetector.Access.Read
-            else -> ReadWriteAccessDetector.Access.Write
+            element is ParadoxParameter -> ReadWriteAccess.Read
+            element is ParadoxConditionParameter -> ReadWriteAccess.Read
+            else -> ReadWriteAccess.Write
         }
     }
 

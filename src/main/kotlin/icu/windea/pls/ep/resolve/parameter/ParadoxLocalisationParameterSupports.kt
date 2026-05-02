@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.resolve.parameter
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.builders.DocumentationBuilder
@@ -29,7 +29,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         val resolved = ParadoxLocalisationParameterLightElement(localisationElement, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
@@ -41,7 +41,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
-        val readWriteAccess = ReadWriteAccessDetector.Access.Read
+        val readWriteAccess = ReadWriteAccess.Read
         val resolved = ParadoxLocalisationParameterLightElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
@@ -51,7 +51,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val name = (rangeInElement?.substring(element.text) ?: element.name).orNull() ?: return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val localisationName = localisationReferenceElement.name.orNull() ?: return null
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val readWriteAccess = ReadWriteAccess.Write
         val configGroup = config.configGroup
         val gameType = configGroup.gameType
         val project = configGroup.project

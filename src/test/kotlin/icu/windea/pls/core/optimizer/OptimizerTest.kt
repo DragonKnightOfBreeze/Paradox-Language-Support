@@ -3,7 +3,7 @@ package icu.windea.pls.core.optimizer
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import icu.windea.pls.core.ReadWriteAccess
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -194,11 +194,11 @@ class OptimizerTest {
     // ========== Platform Access ==========
     @Test
     fun testAccessOptimizer_roundTrip_andValues() {
-        val optimizer = OptimizerRegistry.forAccess()
+        val optimizer = OptimizerRegistry.forReadWriteAccess()
 
-        val read = ReadWriteAccessDetector.Access.Read
-        val write = ReadWriteAccessDetector.Access.Write
-        val rw = ReadWriteAccessDetector.Access.ReadWrite
+        val read = ReadWriteAccess.Read
+        val write = ReadWriteAccess.Write
+        val rw = ReadWriteAccess.ReadWrite
 
         val br = optimizer.optimize(read)
         val bw = optimizer.optimize(write)
@@ -215,8 +215,8 @@ class OptimizerTest {
 
     @Test
     fun testAccessOptimizer_deoptimize_unknownByte_fallsBackToReadWrite() {
-        val optimizer = OptimizerRegistry.forAccess()
+        val optimizer = OptimizerRegistry.forReadWriteAccess()
         val result = optimizer.deoptimize(100.toByte())
-        assertEquals(ReadWriteAccessDetector.Access.ReadWrite, result)
+        assertEquals(ReadWriteAccess.ReadWrite, result)
     }
 }

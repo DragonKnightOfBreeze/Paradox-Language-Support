@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.template.TemplateBuilder
 import com.intellij.codeInsight.template.TemplateBuilderImpl
 import com.intellij.codeInspection.InspectionProfileEntry
@@ -692,11 +693,7 @@ fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationB
 
 // region Code Insight Extensions
 
-/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。 */
-fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
-
-/** 构建行内模板。 */
-fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
+typealias ReadWriteAccess = ReadWriteAccessDetector.Access
 
 /**
  * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
@@ -711,6 +708,12 @@ fun PsiElement.getKeyword(offsetInParent: Int): String {
 fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
     return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
 }
+
+/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。 */
+fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
+
+/** 构建行内模板。 */
+fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 // endregion
 
