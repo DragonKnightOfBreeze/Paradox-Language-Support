@@ -29,5 +29,5 @@ examples = {
     ## @type string = string
     parameter = $PARAM$
     ## @type string = inline_math
-    inline_math = @[ var + ($NUM$ * 2) ]
+    inline_math = @[    var + ($NUM$ * 2)   ]
 }

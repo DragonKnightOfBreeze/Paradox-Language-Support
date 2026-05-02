@@ -18,9 +18,6 @@ import java.awt.datatransfer.DataFlavor
  */
 @RunWith(JUnit4::class)
 class CopyLocalisationListIntentionsTest : BasePlatformTestCase() {
-    private val intentionName1 = PlsBundle.message("intention.copyLocalisationListWithLocale")
-    private val intentionName2 = PlsBundle.message("intention.copyLocalisationListWithoutLocale")
-
     @Before
     fun doSetUp() = markIntegrationTest()
 
@@ -42,7 +39,7 @@ class CopyLocalisationListIntentionsTest : BasePlatformTestCase() {
  OTHER_KEY:0 "Some other text."
         """.trimIndent())
 
-        myFixture.launchAction(intentionName1)
+        myFixture.launchAction(PlsBundle.message("intention.copyLocalisationListWithLocale"))
         checkClipboard("""
 l_english:
  # Comment
@@ -50,7 +47,7 @@ l_english:
  OTHER_KEY:0 "Some other text."
         """.trimIndent())
 
-        myFixture.launchAction(intentionName2)
+        myFixture.launchAction(PlsBundle.message("intention.copyLocalisationListWithoutLocale"))
         checkClipboard("""
 # Comment
 KEY:0 "Some text."

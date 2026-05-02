@@ -33,7 +33,7 @@ abstract class ManipulateLocalisationListIntentionBase : IntentionAction {
         val contextElement = file.findElementAt(editor.caretModel.offset) ?: return null
         val contextElementType = contextElement.elementType
         if (contextElementType != LOCALE_TOKEN && contextElementType != COLON) return null
-        return contextElement.parent as? ParadoxLocalisationPropertyList
+        return contextElement.parent?.parent as? ParadoxLocalisationPropertyList
     }
 
     protected abstract fun doInvoke(project: Project, editor: Editor, file: PsiFile, element: ParadoxLocalisationPropertyList)

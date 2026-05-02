@@ -12,17 +12,17 @@ examples = {
     string_value = "Foo\n bar "
     ## @type string = block
     values = {
-        ## @type string = string
-        foo = bar
-    }
-    ## @type string = block
-    values = {
         ## @type int
         1
         ## @type int
         2
         ## @type int
         3
+    }
+    ## @type string = block
+    values = {
+        ## @type string = string
+        foo = bar
     }
     ## @type string = color
     color = rgb { 142 188 241 }
