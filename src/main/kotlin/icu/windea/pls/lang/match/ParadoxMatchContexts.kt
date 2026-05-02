@@ -9,8 +9,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 /**
  * 脚本表达式的匹配上下文。

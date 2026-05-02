@@ -35,10 +35,10 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-import icu.windea.pls.model.CwtType
 
 object CwtConfigManipulator {
     // region Deep Copy Methods

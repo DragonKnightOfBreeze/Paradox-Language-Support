@@ -8,10 +8,10 @@ import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember

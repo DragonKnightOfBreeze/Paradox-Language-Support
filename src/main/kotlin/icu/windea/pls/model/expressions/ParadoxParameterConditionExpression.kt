@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.expression
+package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression

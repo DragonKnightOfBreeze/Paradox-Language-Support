@@ -2,9 +2,9 @@ package icu.windea.pls.lang.annotations
 
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object PlsAnnotationManager {
     private val definitionTypesCache = CacheBuilder().build<Class<*>, Set<String>> {

@@ -2,7 +2,7 @@ package icu.windea.pls.config.attributes
 
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.lang.index.ParadoxMergedIndex
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**
  * 声明规则的综合属性。

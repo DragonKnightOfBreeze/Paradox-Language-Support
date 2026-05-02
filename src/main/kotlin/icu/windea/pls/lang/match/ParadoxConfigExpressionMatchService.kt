@@ -7,7 +7,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.unquote
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 object ParadoxConfigExpressionMatchService {
     fun matchesTemplate(

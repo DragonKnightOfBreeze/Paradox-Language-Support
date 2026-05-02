@@ -13,11 +13,11 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import javax.swing.JComponent
 
 /**

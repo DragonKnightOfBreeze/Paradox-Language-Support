@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.resolve.expression
+package icu.windea.pls.model.expressions
 
 import icu.windea.pls.model.ParadoxDefinitionInfo
 

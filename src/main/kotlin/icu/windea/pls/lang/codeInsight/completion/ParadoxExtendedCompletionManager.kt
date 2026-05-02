@@ -11,9 +11,9 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.match.matchesByPattern
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 object ParadoxExtendedCompletionManager {
     fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {

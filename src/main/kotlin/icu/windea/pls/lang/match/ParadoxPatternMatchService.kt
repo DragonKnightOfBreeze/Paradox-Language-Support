@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 object ParadoxPatternMatchService {
     /**

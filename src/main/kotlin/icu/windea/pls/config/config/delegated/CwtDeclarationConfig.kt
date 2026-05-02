@@ -14,7 +14,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**
  * 声明规则。

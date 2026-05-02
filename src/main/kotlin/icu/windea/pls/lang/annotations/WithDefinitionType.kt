@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.annotations
 
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 /**
  * 注明此功能仅适用于特定的定义类型。

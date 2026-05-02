@@ -8,7 +8,7 @@ import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**
  * 类型本地化规则。

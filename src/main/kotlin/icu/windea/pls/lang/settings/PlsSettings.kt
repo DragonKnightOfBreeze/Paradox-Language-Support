@@ -10,12 +10,12 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 /**
  * 插件的全局设置。可以在插件的对应设置页面中进行配置。
