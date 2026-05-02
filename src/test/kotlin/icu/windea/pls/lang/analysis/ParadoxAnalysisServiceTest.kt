@@ -1,11 +1,16 @@
 package icu.windea.pls.lang.analysis
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxPath
 import org.junit.Assert
+import org.junit.Assume
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.junit.runners.Parameterized
+import kotlin.io.path.isDirectory
 
 @RunWith(JUnit4::class)
 class ParadoxAnalysisServiceTest : BasePlatformTestCase() {
@@ -41,5 +46,29 @@ class ParadoxAnalysisServiceTest : BasePlatformTestCase() {
 
     private fun checkIgnoredFile(path: String, entry: String = ""): Boolean {
         return ParadoxAnalysisService.isIgnoredFile(ParadoxPath.resolve(path), entry)
+    }
+
+    @RunWith(Parameterized::class)
+    class PerGameType(private val gameType: ParadoxGameType) {
+        companion object {
+            @JvmStatic
+            @Parameterized.Parameters(name = "{0}")
+            fun data() = ParadoxGameType.getAll()
+        }
+
+        @Test
+        fun getRootMetadata() {
+            val service = PlsPathService.getInstance()
+
+            val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
+            Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
+            rootPath!!
+            println("Root path for ${gameType.title}: ${rootPath}")
+
+            val rootMetadata = ParadoxAnalysisService.getRootMetadata(rootPath)
+            Assert.assertNotNull("Root metadata for ${gameType.title}: (unknown)", rootMetadata)
+            rootMetadata!!
+            println("Root metadata for ${gameType.title}: ${rootMetadata}")
+        }
     }
 }

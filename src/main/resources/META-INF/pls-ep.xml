@@ -60,10 +60,10 @@
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
 
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxExecutableFileBasedGameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider"/>
+    <rootMetadataProvider id="launcherSettingsJsonBased" implementation="icu.windea.pls.ep.analysis.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
+    <rootMetadataProvider id="executableFileBased" implementation="icu.windea.pls.ep.analysis.ParadoxExecutableFileBasedGameMetadataProvider"/>
+    <rootMetadataProvider id="metadataJsonBased" implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
+    <rootMetadataProvider id="descriptorModBased" implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider"/>
 
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTextColorQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>
