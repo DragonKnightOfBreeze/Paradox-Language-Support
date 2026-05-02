@@ -103,7 +103,7 @@ object ParadoxLocalisationGenerationService {
 
     private fun StringBuilder.appendNewLine() {
         val generationSettings = PlsSettings.getInstance().state.generation
-        val add = generationSettings.newLineBetweenLocalisationGroups
+        val add = generationSettings.blankLineBetweenLocalisationGroups
         if (add) appendLine()
     }
 }

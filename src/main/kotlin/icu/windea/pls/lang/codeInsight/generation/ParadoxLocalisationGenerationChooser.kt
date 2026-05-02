@@ -72,10 +72,10 @@ class ParadoxLocalisationGenerationChooser(
             localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toAtomicProperty(ParadoxLocaleManager.ID_AUTO))
                 .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
         }
-        // newLineBetweenLocalisationGroups
+        // blankLineBetweenLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
-                .bindSelected(settings::newLineBetweenLocalisationGroups.toAtomicProperty())
+            checkBox(PlsBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
+                .bindSelected(settings::blankLineBetweenLocalisationGroups.toAtomicProperty())
         }
         // moveIntoLocalisationGroups
         row {

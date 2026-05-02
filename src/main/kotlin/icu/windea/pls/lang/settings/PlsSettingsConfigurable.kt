@@ -416,10 +416,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             localeComboBox(withAuto = true).bindItem(settings::localisationStrategyLocale.toNullableProperty())
                 .visibleIf(property.transform { it == LocalisationGeneration.FromLocale })
         }
-        // newLineBetweenLocalisationGroups
+        // blankLineBetweenLocalisationGroups
         row {
-            checkBox(PlsBundle.message("settings.generation.newLineBetweenLocalisationGroups"))
-                .bindSelected(settings::newLineBetweenLocalisationGroups)
+            checkBox(PlsBundle.message("settings.generation.blankLineBetweenLocalisationGroups"))
+                .bindSelected(settings::blankLineBetweenLocalisationGroups)
         }
         // moveIntoLocalisationGroups
         row {
