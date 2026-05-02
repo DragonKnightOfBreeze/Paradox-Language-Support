@@ -1,21 +1,22 @@
 package icu.windea.pls.model.analysis
 
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisService
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxModSource
+import java.nio.file.Path
 
 data class ParadoxDescriptorModBasedModMetadata(
-    override val rootFile: VirtualFile,
+    override val rootPath: Path,
+    override val infoPath: Path,
     override val info: ParadoxDescriptorModInfo,
-    override val infoPath: String,
 ) : ParadoxRootMetadata.Mod {
     override val name: String get() = info.name
     override val version: String? get() = info.version
     override val inferredGameType: ParadoxGameType? = computeInferredGameType()
     override val gameType: ParadoxGameType = computeGameType()
+    override val infoPresentablePath: String = "descriptor.mod"
 
     override val supportedVersion: String? get() = info.supportedVersion
     override val picture: String? get() = info.picture?.orNull()
@@ -24,25 +25,26 @@ data class ParadoxDescriptorModBasedModMetadata(
     override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
 
     private fun computeInferredGameType(): ParadoxGameType? {
-        return ParadoxAnalysisService.getInferredGameType(rootFile)
+        return ParadoxAnalysisService.getInferredGameType(rootPath)
     }
 
     private fun computeGameType(): ParadoxGameType {
         return inferredGameType
-            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
+            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootPath.toString())?.gameType
             ?: ParadoxGameType.getDefault()
     }
 }
 
 data class ParadoxMetadataJsonBasedModMetadata(
-    override val rootFile: VirtualFile,
+    override val rootPath: Path,
+    override val infoPath: Path,
     override val info: ParadoxMetadataJsonInfo,
-    override val infoPath: String,
 ) : ParadoxRootMetadata.Mod {
     override val name: String get() = info.name
     override val version: String? get() = info.version
     override val inferredGameType: ParadoxGameType? = computeInferredGameType()
     override val gameType: ParadoxGameType = computeGameType()
+    override val infoPresentablePath: String = ".metadata/metadata.json"
 
     override val supportedVersion: String? get() = info.supportedGameVersion
     override val picture: String? get() = info.picture?.orNull()?.let { ".metadata/$it" }
@@ -54,13 +56,13 @@ data class ParadoxMetadataJsonBasedModMetadata(
         return when (info.gameId) {
             ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
             ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
-            else -> ParadoxAnalysisService.getInferredGameType(rootFile)
+            else -> ParadoxAnalysisService.getInferredGameType(rootPath)
         }
     }
 
     private fun computeGameType(): ParadoxGameType {
         return inferredGameType
-            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
+            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootPath.toString())?.gameType
             ?: ParadoxGameType.getDefault()
     }
 }

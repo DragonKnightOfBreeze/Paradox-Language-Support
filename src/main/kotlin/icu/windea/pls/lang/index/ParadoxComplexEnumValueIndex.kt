@@ -16,6 +16,7 @@ import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast

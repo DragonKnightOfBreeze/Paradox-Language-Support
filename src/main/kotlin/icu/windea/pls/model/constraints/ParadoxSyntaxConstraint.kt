@@ -6,8 +6,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.resolve.FileContextUtil
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
-import icu.windea.pls.model.forParadoxGameType.*
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameType.*
 
 enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType

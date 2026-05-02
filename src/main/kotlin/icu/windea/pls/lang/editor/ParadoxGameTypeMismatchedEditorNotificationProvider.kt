@@ -7,8 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.analysis.ParadoxDescriptorModBasedModMetadata
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonBasedModMetadata
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -25,13 +28,26 @@ class ParadoxGameTypeMismatchedEditorNotificationProvider : EditorNotificationPr
         if (!rootFile.isValid) return null
 
         val metadata = rootInfo.metadata
-        if (metadata.isValid()) return null
-        val presentablePath = metadata.infoPath ?: return null
         val gameType = metadata.gameType
+        val message = when (metadata) {
+            is ParadoxDescriptorModBasedModMetadata -> {
+                when {
+                    ParadoxGameTypeManager.useDescriptorMod(gameType) -> null
+                    else -> PlsBundle.message("editor.notification.3.text.1", gameType.title)
+                }
+            }
+            is ParadoxMetadataJsonBasedModMetadata -> {
+                when {
+                    ParadoxGameTypeManager.useMetadataJson(gameType) -> null
+                    else -> PlsBundle.message("editor.notification.3.text.2", gameType.title)
+                }
+            }
+            else -> null
+        }
+        if (message == null) return null
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val message = PlsBundle.message("editor.notification.3.text", presentablePath, gameType.title)
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             panel
         }

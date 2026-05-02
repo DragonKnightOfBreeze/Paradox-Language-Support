@@ -3,6 +3,7 @@ package icu.windea.pls.lang.analysis
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -15,10 +16,11 @@ import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.model.ParadoxGameType
+import java.nio.file.Path
 
 object ParadoxAnalysisService {
     /**
@@ -34,27 +36,28 @@ object ParadoxAnalysisService {
     /**
      * @see ParadoxRootMetadataProvider.get
      */
-    fun getRootMetadata(rootFile: VirtualFile): ParadoxRootMetadata? {
+    fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootFile)
+            ep.get(rootPath)
         }
     }
 
     /**
      * @see ParadoxInferredGameTypeProvider.get
      */
-    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
+    fun getInferredGameType(rootPath: Path): ParadoxGameType? {
         return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootFile)
+            ep.get(rootPath)
         }
     }
 
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         // NOTE 2.1.7 invalid metadata is allowed here
-        val metadata = getRootMetadata(rootFile) ?: return null
+        val rootPath = rootFile.toNioPathOrNull() ?: return null
+        val metadata = getRootMetadata(rootPath) ?: return null
         val rootInfo = when (metadata) {
-            is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(metadata)
-            is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
+            is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(rootFile, metadata)
+            is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(rootFile, metadata)
         }
         return rootInfo
     }
@@ -86,18 +89,18 @@ object ParadoxAnalysisService {
     private fun resolvePathAndEntry(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val entryInfo = rootInfo.gameType.entryInfo
-        val entryMap = when (rootInfo) {
-            is ParadoxRootInfo.Game -> entryInfo.gameEntryMap
-            is ParadoxRootInfo.Mod -> entryInfo.modEntryMap
+        val gameType = rootInfo.gameType
+        val entriesWithPaths = when (rootInfo) {
+            is ParadoxRootInfo.Game -> gameType.metadata.gameEntriesWithPaths
+            is ParadoxRootInfo.Mod -> gameType.metadata.modEntriesWithPaths
         }
-        if (entryMap.isEmpty()) return relPath to ""
-        for ((entry, entryPath) in entryMap) {
+        if (entriesWithPaths.isEmpty()) return relPath to ""
+        for ((entry, entryPath) in entriesWithPaths) {
             val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
             return ParadoxPath.resolve(resolved) to entry
         }
         if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
-        if (filePath == rootInfo.infoFile?.path) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
+        if (filePath == rootInfo.infoPresentablePath) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
         return null // 2.0.7 null now
     }
 

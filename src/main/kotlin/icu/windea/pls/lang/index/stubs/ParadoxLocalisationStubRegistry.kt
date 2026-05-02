@@ -16,6 +16,7 @@ import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -26,10 +27,10 @@ import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
-import icu.windea.pls.model.forParadoxLocalisationType
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.forParadoxGameType
-import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.forParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubRegistry : StubRegistryExtension {

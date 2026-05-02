@@ -3,7 +3,8 @@ package icu.windea.pls.model
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.analysis.ParadoxRootMetadataInfo
+import java.nio.file.Path
 
 /**
  * 游戏或模组信息。
@@ -14,35 +15,44 @@ import icu.windea.pls.model.ParadoxGameType
  * @see ParadoxRootMetadata
  */
 sealed interface ParadoxRootInfo {
-    val gameType: ParadoxGameType
     val rootFile: VirtualFile?
-
+    val gameType: ParadoxGameType
     val qualifiedName: String
     val steamId: String?
 
     val mainEntries: Set<String> get() = emptySet()
     val extraEntries: Set<String> get() = emptySet()
 
-    sealed class MetadataBased(open val metadata: ParadoxRootMetadata) : ParadoxRootInfo {
+    sealed class MetadataBased(
+        override val rootFile: VirtualFile,
+        open val metadata: ParadoxRootMetadata,
+    ) : ParadoxRootInfo {
         override val gameType: ParadoxGameType get() = metadata.gameType
-        override val rootFile: VirtualFile get() = metadata.rootFile
-
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
-        val infoFile: VirtualFile? get() = metadata.infoFile
+        val rootPath: Path get() = metadata.rootPath
+        val infoPath: Path? get() = metadata.infoPath
+        val info: ParadoxRootMetadataInfo? get() = metadata.info
+        val infoPresentablePath: String? get() = metadata.infoPresentablePath
     }
 
-    class Game(override val metadata: ParadoxRootMetadata.Game) : MetadataBased(metadata) {
+    class Game(
+        rootFile: VirtualFile,
+        override val metadata: ParadoxRootMetadata.Game
+    ) : MetadataBased(rootFile, metadata) {
         override val qualifiedName: String get() = metadata.qualifiedName
         override val steamId: String get() = metadata.steamId
 
-        override val mainEntries: Set<String> get() = gameType.entryInfo.gameMain
-        override val extraEntries: Set<String> get() = gameType.entryInfo.gameExtra
+        override val mainEntries: Set<String> get() = gameType.metadata.gameMainEntries
+        override val extraEntries: Set<String> get() = gameType.metadata.gameExtraEntries
 
         override fun toString() = qualifiedName
     }
 
-    class Mod(override val metadata: ParadoxRootMetadata.Mod) : MetadataBased(metadata) {
+    class Mod(
+        rootFile: VirtualFile,
+        override val metadata: ParadoxRootMetadata.Mod
+    ) : MetadataBased(rootFile, metadata) {
         val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
         val supportedVersion: String? get() = metadata.supportedVersion
         val picture: String? get() = metadata.picture // 相对于模组目录的路径
@@ -53,8 +63,8 @@ sealed interface ParadoxRootInfo {
         override val qualifiedName: String get() = metadata.qualifiedName
         override val steamId: String? get() = metadata.steamId
 
-        override val mainEntries: Set<String> get() = gameType.entryInfo.modMain
-        override val extraEntries: Set<String> get() = gameType.entryInfo.modExtra
+        override val mainEntries: Set<String> get() = gameType.metadata.modMainEntries
+        override val extraEntries: Set<String> get() = gameType.metadata.modExtraEntries
 
         override fun toString() = qualifiedName
     }

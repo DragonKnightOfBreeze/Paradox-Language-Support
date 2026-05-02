@@ -11,12 +11,12 @@ data class ParadoxJsonBasedGameTypeMetadata(
     override val modExtraEntries: Set<String> = emptySet(),
     override val executablePaths: Set<String> = emptySet(),
 ) : ParadoxGameTypeMetadata {
-    override val gameEntryMap: Map<String, Set<String>> = (gameMainEntries.ifEmpty { setOf("") } + gameExtraEntries).toEntryMap()
-    override val modEntryMap: Map<String, Set<String>> = (modMainEntries.ifEmpty { setOf("") } + modExtraEntries).toEntryMap()
+    override val gameEntriesWithPaths: Map<String, List<String>> = (gameMainEntries.ifEmpty { listOf("") } + gameExtraEntries).toEntryMap()
+    override val modEntriesWithPaths: Map<String, List<String>> = (modMainEntries.ifEmpty { listOf("") } + modExtraEntries).toEntryMap()
 
-    private fun Set<String>.toEntryMap() = sortedDescending().associateWith { it.splitEntry() }.toMap().optimized()
+    private fun List<String>.toEntryMap() = sortedDescending().associateWith { it.splitEntry() }.toMap().optimized()
 
-    private fun String.splitEntry() = if (isEmpty()) emptySet() else split('/').toSet()
+    private fun String.splitEntry() = if (isEmpty()) emptyList() else split('/')
 }
 
 data class ParadoxFallbackGameTypeMetadata(
@@ -24,9 +24,9 @@ data class ParadoxFallbackGameTypeMetadata(
 ) : ParadoxGameTypeMetadata {
     override val gameMainEntries: Set<String> get() = emptySet()
     override val gameExtraEntries: Set<String> get() = emptySet()
-    override val gameEntryMap: Map<String, Set<String>> get() = emptyMap()
     override val modMainEntries: Set<String> get() = emptySet()
     override val modExtraEntries: Set<String> get() = emptySet()
-    override val modEntryMap: Map<String, Set<String>> get() = emptyMap()
+    override val gameEntriesWithPaths: Map<String, List<String>> get() = emptyMap()
+    override val modEntriesWithPaths: Map<String, List<String>> get() = emptyMap()
     override val executablePaths: Set<String> get() = emptySet()
 }

@@ -26,10 +26,11 @@ interface ParadoxGameTypeMetadata {
 
     val gameMainEntries: Set<String>
     val gameExtraEntries: Set<String>
-    val gameEntryMap: Map<String, Set<String>>
     val modMainEntries: Set<String>
     val modExtraEntries: Set<String>
-    val modEntryMap: Map<String, Set<String>>
+
+    val gameEntriesWithPaths: Map<String, List<String>>
+    val modEntriesWithPaths: Map<String, List<String>>
 
     val executablePaths: Set<String>
 }

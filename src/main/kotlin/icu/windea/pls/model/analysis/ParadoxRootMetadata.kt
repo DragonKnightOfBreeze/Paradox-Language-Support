@@ -1,11 +1,11 @@
 package icu.windea.pls.model.analysis
 
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.ParadoxGameType
+import java.nio.file.Path
 
 /**
  * 游戏或模组的元数据。
@@ -19,7 +19,8 @@ import icu.windea.pls.model.ParadoxGameType
  * @property name 名字。
  * @property version 版本。可以为空。
  * @property info 元数据信息。可以为空。
- * @property infoPath 元数据的路径。相对于游戏或模组的根目录。可以为空。
+ * @property infoPath 元数据的路径。可以为空。
+ * @property infoPresentablePath 用于显示的元数据的路径。相对于根目录，并使用 `/` 作为路径分隔符。
  *
  * @see ParadoxRootInfo
  * @see ParadoxRootMetadataInfo
@@ -27,11 +28,12 @@ import icu.windea.pls.model.ParadoxGameType
  */
 sealed interface ParadoxRootMetadata {
     val gameType: ParadoxGameType
-    val rootFile: VirtualFile
     val name: String
     val version: String?
+    val rootPath: Path
+    val infoPath: Path?
     val info: ParadoxRootMetadataInfo?
-    val infoPath: String?
+    val infoPresentablePath: String?
 
     val qualifiedName: String
     val steamId: String?

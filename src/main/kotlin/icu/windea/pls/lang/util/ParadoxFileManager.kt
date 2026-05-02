@@ -20,15 +20,15 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object ParadoxFileManager {
@@ -50,8 +50,8 @@ object ParadoxFileManager {
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val gamePath = PlsPathService.getInstance().getSteamGamePath(gameType.id, gameType.title) ?: return null
-        val mainEntryName = gameType.entryInfo.gameMain.firstOrNull()
-        val mainEntryPath = if (mainEntryName != null) gamePath.resolve(mainEntryName) else gamePath
+        val mainEntry = gameType.metadata.gameMainEntries.firstOrNull()
+        val mainEntryPath = if (mainEntry != null) gamePath.resolve(mainEntry) else gamePath
         val resultPath = mainEntryPath.resolve(path)
         return resultPath.formatted()
     }
