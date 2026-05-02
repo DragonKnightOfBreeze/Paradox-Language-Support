@@ -19,9 +19,9 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 提供定义（definition）的装订线图标。

@@ -9,12 +9,12 @@ import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.util.concurrent.atomic.AtomicBoolean
+import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

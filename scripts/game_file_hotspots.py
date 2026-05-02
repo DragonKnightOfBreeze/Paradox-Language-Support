@@ -50,17 +50,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TextIO
 
-
 # ===========================================================================
-# Game metadata (synced from ParadoxGameType + ParadoxEntryInfo)
+# Game metadata (synced from ParadoxGameType + ParadoxGameTypeMetadata)
 # ===========================================================================
-
-@dataclass
-class EntryInfo:
-    """Mirrors ParadoxEntryInfo.  Only game-side entries are needed here."""
-    game_main: list[str] = field(default_factory=list)
-    game_extra: list[str] = field(default_factory=list)
-
 
 @dataclass
 class GameType:
@@ -69,7 +61,13 @@ class GameType:
     title: str
     game_id: str
     steam_id: str
-    entry_info: EntryInfo
+    entry_info: GameTypeMetadata
+
+@dataclass
+class GameTypeMetadata:
+    """Mirrors ParadoxGameTypeMetadata.  Only game-side entries are needed here."""
+    game_main: list[str] = field(default_factory=list)
+    game_extra: list[str] = field(default_factory=list)
 
 
 # Entries object mirrors ParadoxGameType.Entries / EntryInfos

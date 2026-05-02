@@ -119,7 +119,7 @@ myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
 
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
-- The marked file path DO NOT start with `game/` (see `ParadoxEntryInfo` for details about root directory VS entry directory).
+- The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directory VS entry directory).
 - Alignment between real file path and marked file path is not required.
 
 ### Optional / on-demand tests (assume-based)

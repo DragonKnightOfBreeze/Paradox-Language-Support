@@ -25,11 +25,11 @@ import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。

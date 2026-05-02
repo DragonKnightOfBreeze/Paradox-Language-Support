@@ -19,10 +19,10 @@ import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.settings.ParadoxModSettingsDialog
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 如果游戏目录未配置，则为模组文件提供编辑器通知，以便快速配置。

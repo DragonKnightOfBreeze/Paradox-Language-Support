@@ -25,9 +25,9 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.model.ParadoxGameType
 
 @Service
 class TigerLintToolService : Disposable {

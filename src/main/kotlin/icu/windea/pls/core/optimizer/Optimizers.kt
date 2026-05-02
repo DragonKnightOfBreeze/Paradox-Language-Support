@@ -11,18 +11,18 @@ import icu.windea.pls.core.cache.CacheBuilder
 import it.unimi.dsi.fastutil.Hash
 import java.util.*
 
-fun OptimizerRegistry.forString() = register(StringOptimizer)
-fun OptimizerRegistry.forStringList() = register(StringListOptimizer)
-fun OptimizerRegistry.forStringSet() = register(StringSetOptimizer)
-fun <E : Any> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
-fun <E : Any> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
-fun <K : Any, V : Any> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
+fun OptimizerFactory.forString() = get(StringOptimizer)
+fun OptimizerFactory.forStringList() = get(StringListOptimizer)
+fun OptimizerFactory.forStringSet() = get(StringSetOptimizer)
 
+fun <E : Any> OptimizerFactory.forList() = getTyped<List<E>, _>(ListOptimizer)
+fun <E : Any> OptimizerFactory.forSet() = getTyped<Set<E>, _>(SetOptimizer)
+fun <K : Any, V : Any> OptimizerFactory.forMap() = getTyped<Map<K, V>, _>(MapOptimizer)
 
 private const val SMALL_INTERN_THRESHOLD = 8
 
-private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
 private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
+private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
 private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     val className = c.name
     // Java immutable collections

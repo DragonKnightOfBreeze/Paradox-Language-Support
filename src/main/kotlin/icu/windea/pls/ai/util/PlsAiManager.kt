@@ -6,7 +6,7 @@ import icu.windea.pls.ai.model.ErrorInfos
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 
 object PlsAiManager {
     fun getOptimizedDescription(description: String?): String? {

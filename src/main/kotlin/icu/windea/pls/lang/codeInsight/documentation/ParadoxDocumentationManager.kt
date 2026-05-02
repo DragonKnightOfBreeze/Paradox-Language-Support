@@ -67,8 +67,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
@@ -81,6 +79,8 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.ParadoxLocalisationType
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0

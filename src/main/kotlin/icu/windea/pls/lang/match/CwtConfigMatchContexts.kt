@@ -2,8 +2,8 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.ParadoxGameType
 
 data class CwtTypeConfigMatchContext(
     val configGroup: CwtConfigGroup,

@@ -20,7 +20,7 @@ class ConflictingInlineScriptUsageInspection : InlineScriptInspectionBase() {
         if (configContext.inlineScriptHasConflict != true) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("script.annotator.inlineScript.conflict", inlineScriptExpression)
+        val description = PlsBundle.message("inspection.script.conflictingInlineScriptUsage.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
         return holder.resultsArray
     }

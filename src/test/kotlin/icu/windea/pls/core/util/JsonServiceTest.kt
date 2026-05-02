@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import icu.windea.pls.core.data.JsonService
 import org.junit.Test
 import kotlin.test.assertEquals
 

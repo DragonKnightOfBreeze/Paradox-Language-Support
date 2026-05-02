@@ -3,9 +3,9 @@ package icu.windea.pls.tools.config.generators
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.io.createParentDirectories
-import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 import kotlin.io.path.writeText
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
     val latestStellarisVersion = "v4.1.5"

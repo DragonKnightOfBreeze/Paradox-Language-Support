@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.ParadoxGameType
 
 sealed class ParadoxIndexInfoAwareFileBasedIndex<V, out T : ParadoxIndexInfo> : IndexInfoAwareFileBasedIndex<V, T>() {
     override fun checkFile(file: VirtualFile, project: Project, expectGameType: ParadoxGameType?): Boolean {

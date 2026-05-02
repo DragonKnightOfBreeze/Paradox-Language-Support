@@ -21,15 +21,15 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtMembersType
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.CwtType
 
 /**
  * 值规则（值型成员规则）。
@@ -169,7 +169,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24
 private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueConfig {
@@ -225,10 +225,10 @@ private open class CwtValueConfigImpl(
     valueType: CwtType,
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

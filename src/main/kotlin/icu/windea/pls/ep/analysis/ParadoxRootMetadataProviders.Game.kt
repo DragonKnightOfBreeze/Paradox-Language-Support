@@ -3,9 +3,8 @@ package icu.windea.pls.ep.analysis
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.readBytes
 import icu.windea.pls.lang.analysis.ParadoxMetadataManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
-import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLauncherSettingsJsonBasedGameMetadataProvider : ParadoxRootMetadataProvider {
     override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
@@ -16,20 +15,6 @@ class ParadoxLauncherSettingsJsonBasedGameMetadataProvider : ParadoxRootMetadata
         val infoFile = ParadoxMetadataManager.getLauncherSettingsJsonFile(rootFile) ?: return null
         val info = ParadoxMetadataManager.getLauncherSettingsJsonInfo(infoFile) ?: return null
         return Metadata(rootFile, infoFile, info)
-    }
-
-    class Metadata(
-        override val rootFile: VirtualFile,
-        override val infoFile: VirtualFile,
-        val info: ParadoxLauncherSettingsJsonInfo,
-    ) : ParadoxRootMetadata.Game {
-        override val name: String get() = gameType.title
-        override val version: String? get() = info.rawVersion ?: info.version
-        override val gameType: ParadoxGameType = doGetGameType()
-
-        private fun doGetGameType(): ParadoxGameType {
-            return ParadoxGameType.getAll().find { it.gameId == info.gameId } ?: throw IllegalStateException()
-        }
     }
 }
 

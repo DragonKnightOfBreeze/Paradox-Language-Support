@@ -8,8 +8,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.model.ParadoxGameType
 import javax.swing.Icon
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(parent), ItemPresentation {
     abstract val gameType: ParadoxGameType

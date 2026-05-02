@@ -37,6 +37,23 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="game_type_metadata_list.schema">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="game_type_metadata_list.schema" />
+              <option name="relativePathToSchema" value="src/main/resources/data/game_type_metadata_list.schema.json5" />
+              <option name="schemaVersion" value="JSON Schema 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="src/main/resources/data/game_type_metadata_list.json5" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
       </map>
     </state>
   </component>

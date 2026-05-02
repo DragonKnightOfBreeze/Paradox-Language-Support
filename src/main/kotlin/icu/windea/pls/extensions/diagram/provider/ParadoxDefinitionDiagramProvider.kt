@@ -23,9 +23,9 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.lang.search.selector.withSearchScopeType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
     open fun getItemPropertyKeys(): List<String> = emptyList()

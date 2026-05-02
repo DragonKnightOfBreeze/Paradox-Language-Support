@@ -9,6 +9,8 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 定义候选的解析信息。

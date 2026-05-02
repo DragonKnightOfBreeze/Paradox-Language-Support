@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.index
 
 import icu.windea.pls.PlsCapacities
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object PlsIndexStatisticService {

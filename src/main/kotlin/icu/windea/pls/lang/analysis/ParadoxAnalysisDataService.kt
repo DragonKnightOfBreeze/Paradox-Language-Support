@@ -17,10 +17,10 @@ import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
 import kotlin.reflect.KProperty
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused", "ktPropBy")
 @Service

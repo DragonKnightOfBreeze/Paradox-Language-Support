@@ -16,7 +16,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.PlsToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.config.generators.CwtConfigGeneratorUtil
@@ -24,6 +23,7 @@ import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.notExists
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于生成规则文件（的维护提示）的对话框。

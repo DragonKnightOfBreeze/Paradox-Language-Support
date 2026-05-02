@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.analysis
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.intellij.json.JsonFileType
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -20,16 +19,6 @@ object ParadoxMetadataService {
 
     // - launcher-settings.json
     // - launcher/launcher-settings.json
-
-    fun isLauncherSettingsJsonFile(file: VirtualFile): Boolean {
-        if (file.fileType !is JsonFileType) return false
-        if (file.name != "launcher-settings.json") return false
-        val parent1 = file.parent ?: return false
-        if (parent1.rootInfo?.takeIf { it is ParadoxRootInfo.Game } != null) return true
-        val parent2 = parent1.parent?.takeIf { it.name == "launcher" } ?: return false
-        if (parent2.rootInfo?.takeIf { it is ParadoxRootInfo.Game } != null) return true
-        return false
-    }
 
     fun getLauncherSettingsJsonFile(rootFile: VirtualFile): VirtualFile? {
         if (rootFile.name == "launcher") return null
@@ -49,15 +38,6 @@ object ParadoxMetadataService {
     // region metadata.json
 
     // - .metadata/metadata.json
-
-    fun isMetadataJsonFile(file: VirtualFile): Boolean {
-        if (file.fileType !is JsonFileType) return false
-        if (file.name != "metadata.json") return false
-        val parent1 = file.parent?.takeIf { it.name == ".metadata" } ?: return false
-        val parent2 = parent1.parent ?: return false
-        if (parent2.rootInfo?.takeIf { it is ParadoxRootInfo.Mod } != null) return true
-        return false
-    }
 
     fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
         rootFile.findFileByRelativePath(".metadata/metadata.json")?.takeIf { it.isFile }?.let { return it }

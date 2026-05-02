@@ -14,9 +14,8 @@ import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -27,10 +26,10 @@ import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
-import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.forParadoxLocalisationType
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
-import icu.windea.pls.model.forGameType
-import icu.windea.pls.model.forLocalisationType
+import icu.windea.pls.model.forParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubRegistry : StubRegistryExtension {
@@ -48,13 +47,13 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxLocalisationFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.localisationType.optimized(OptimizerRegistry.forLocalisationType()))
-            dataStream.writeByte(stub.gameType.optimized(OptimizerRegistry.forGameType()))
+            dataStream.writeByte(stub.localisationType.optimized(OptimizerFactory.forParadoxLocalisationType()))
+            dataStream.writeByte(stub.gameType.optimized(OptimizerFactory.forParadoxGameType()))
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxLocalisationFileStub {
-            val localisationType = dataStream.readByte().deoptimized(OptimizerRegistry.forLocalisationType())
-            val gameType = dataStream.readByte().deoptimized(OptimizerRegistry.forGameType())
+            val localisationType = dataStream.readByte().deoptimized(OptimizerFactory.forParadoxLocalisationType())
+            val gameType = dataStream.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
             return ParadoxLocalisationFileStub.create(null, localisationType, gameType)
         }
 

@@ -35,8 +35,6 @@ import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -44,6 +42,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {

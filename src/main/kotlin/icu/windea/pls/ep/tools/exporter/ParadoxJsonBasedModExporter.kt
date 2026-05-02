@@ -2,11 +2,11 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.icons.AllIcons
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.util.JsonService
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.core.data.JsonService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 使用 JSON 文件作为数据文件的模组导出器。

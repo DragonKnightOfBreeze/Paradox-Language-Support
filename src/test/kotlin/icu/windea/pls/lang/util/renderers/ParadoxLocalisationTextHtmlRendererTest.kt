@@ -8,7 +8,6 @@ import com.jetbrains.rd.util.AtomicInteger
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
@@ -21,6 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.awt.Color
+import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

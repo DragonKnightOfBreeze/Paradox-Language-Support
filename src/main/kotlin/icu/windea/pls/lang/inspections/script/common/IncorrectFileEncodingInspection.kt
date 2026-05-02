@@ -13,8 +13,8 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.ParadoxGameType
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction

@@ -14,7 +14,7 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
         val gameDataDir = modDir.parent ?: return null
         val gameName = gameDataDir.name
         val gameType = ParadoxGameType.getAll().find { it.title == gameName } ?: return null
-        if (PlsPathService.getInstance().getGameDataPath(gameName) != gameDataDir.toNioPath()) return null
+        if (PlsPathService.getInstance().getGameDataPath(gameType) != gameDataDir.toNioPath()) return null
         return gameType
     }
 }

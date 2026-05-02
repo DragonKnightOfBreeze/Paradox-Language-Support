@@ -14,7 +14,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.MarkdownService
+import icu.windea.pls.core.data.MarkdownService
 
 object PsiService {
     fun toPresentableString(element: PsiElement): String {

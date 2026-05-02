@@ -10,15 +10,15 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxRootMetadataUtil
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlinx.coroutines.launch
 import java.util.function.Function
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 如果游戏类型未在 `.metadata/metadata.json` 中声明，则为模组文件提供编辑器通知，以便快速配置（VIC3 / EU5）。
@@ -44,7 +44,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
             if (fileEditor !is TextEditor) return@f null
             val message = PlsBundle.message("editor.notification.2.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
-            val gameTypes = ParadoxMetadataManager.gameTypesUseMetadataJson
+            val gameTypes = ParadoxRootMetadataUtil.gameTypesUseMetadataJson
             for (gameType in gameTypes) {
                 panel.createActionLabel(PlsBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)

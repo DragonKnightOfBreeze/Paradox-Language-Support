@@ -10,7 +10,7 @@ import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.optimizer.forReadWriteAccess
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -20,7 +20,7 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import java.io.DataInput
 import java.io.DataOutput
@@ -75,10 +75,10 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
 
         val firstInfo = value.first()
         storage.writeUTFFast(firstInfo.type)
-        storage.writeByte(firstInfo.gameType.optimized(OptimizerRegistry.forGameType()))
+        storage.writeByte(firstInfo.gameType.optimized(OptimizerFactory.forParadoxGameType()))
         value.forEachFast { info ->
             storage.writeUTFFast(info.name)
-            storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forReadWriteAccess()))
+            storage.writeByte(info.readWriteAccess.optimized(OptimizerFactory.forReadWriteAccess()))
             storage.writeIntFast(info.offset)
             storage.writeIntFast(info.elementOffset)
         }
@@ -89,10 +89,10 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
         if (size == 0) return emptyList()
 
         val type = storage.readUTFFast()
-        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         return MutableList(size) {
             val name = storage.readUTFFast()
-            val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forReadWriteAccess())
+            val readWriteAccess = storage.readByte().deoptimized(OptimizerFactory.forReadWriteAccess())
             val offset = storage.readIntFast()
             val elementOffset = storage.readIntFast()
             CwtConfigSymbolIndexInfo(name, type, readWriteAccess, offset, elementOffset, gameType)

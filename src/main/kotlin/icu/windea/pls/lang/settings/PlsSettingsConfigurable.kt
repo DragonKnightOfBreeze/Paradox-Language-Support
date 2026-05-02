@@ -17,8 +17,8 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
-import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
+import icu.windea.pls.model.ParadoxGameType
 
 class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     private val callbackLock = CallbackLock()

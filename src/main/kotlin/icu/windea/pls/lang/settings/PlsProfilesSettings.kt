@@ -13,10 +13,10 @@ import com.intellij.util.xmlb.annotations.XCollection
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 插件的资料设置。

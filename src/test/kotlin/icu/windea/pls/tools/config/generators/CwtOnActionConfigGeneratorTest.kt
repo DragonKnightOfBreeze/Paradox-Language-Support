@@ -1,11 +1,11 @@
 package icu.windea.pls.tools.config.generators
 
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.AssumePredicates
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 class CwtOnActionConfigGeneratorTest : CwtConfigGeneratorTest() {

@@ -14,9 +14,9 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 无法解析的文本图标的代码检查。

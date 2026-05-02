@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.tools
 
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.AssumePredicates
 import org.junit.Before
 import org.junit.Test
+import icu.windea.pls.model.ParadoxGameType
 
 class PlsPathServiceTest {
     private val service = PlsPathServiceImpl()
@@ -36,7 +36,7 @@ class PlsPathServiceTest {
     @Test
     fun getGameDataPath() {
         for (gameType in ParadoxGameType.getAll()) {
-            val path = service.getGameDataPath(gameType.title)
+            val path = service.getGameDataPath(gameType)
             println("Game data path [${gameType.id}]: $path")
         }
     }

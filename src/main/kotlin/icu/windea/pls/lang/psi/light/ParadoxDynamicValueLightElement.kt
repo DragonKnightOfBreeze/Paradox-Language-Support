@@ -6,9 +6,9 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxDynamicValueLightElement(
     parent: PsiElement,

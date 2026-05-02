@@ -22,9 +22,9 @@ import icu.windea.pls.lang.select.ofKey
 import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.CwtType
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     // 重载 `switch = {...}` 中匹配 `scalar` 的属性的键对应的规则

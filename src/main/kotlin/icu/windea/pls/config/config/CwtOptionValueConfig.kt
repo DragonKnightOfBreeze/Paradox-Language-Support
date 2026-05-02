@@ -9,14 +9,14 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.constants.PlsStrings
 import java.util.*
+import icu.windea.pls.model.CwtType
 
 /**
  * 选项值规则。
@@ -70,7 +70,7 @@ private class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, 
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionValueConfig
@@ -88,10 +88,10 @@ private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtType,
 ) : CwtOptionValueConfigImplBase() {
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

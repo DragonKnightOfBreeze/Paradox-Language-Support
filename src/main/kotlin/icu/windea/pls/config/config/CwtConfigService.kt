@@ -36,8 +36,8 @@ import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.psi.CwtPsiManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
+import icu.windea.pls.model.ParadoxGameType
 
 object CwtConfigService {
     /**

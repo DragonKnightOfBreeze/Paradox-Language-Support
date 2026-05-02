@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 定值的解析信息。

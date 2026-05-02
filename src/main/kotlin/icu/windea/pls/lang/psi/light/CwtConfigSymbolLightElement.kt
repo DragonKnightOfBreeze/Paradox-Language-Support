@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 class CwtConfigSymbolLightElement(
     parent: CwtStringExpressionElement,

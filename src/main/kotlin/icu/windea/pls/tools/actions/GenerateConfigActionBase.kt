@@ -35,7 +35,6 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.PlsToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
 import icu.windea.pls.tools.ui.GenerateConfigDialog
@@ -45,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.awt.BorderLayout
 import javax.swing.JPanel
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于生成规则文件（的维护提示）的一类动作。

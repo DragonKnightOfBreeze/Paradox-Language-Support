@@ -11,8 +11,8 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于在文件选择页面中跳转到一个路径。

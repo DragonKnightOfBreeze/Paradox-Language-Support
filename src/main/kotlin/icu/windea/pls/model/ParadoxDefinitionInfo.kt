@@ -13,6 +13,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 定义的解析信息。

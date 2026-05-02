@@ -9,7 +9,7 @@ package icu.windea.pls.core.optimizer
  * - 可能会在处理后返回自身，或者仅修改自身的字段。
  * - 可能会在处理后返回同类型或不同类型的等价对象。
  *
- * @see OptimizerRegistry
+ * @see OptimizerFactory
  */
 interface Optimizer<T : Any, R : Any> {
     /**

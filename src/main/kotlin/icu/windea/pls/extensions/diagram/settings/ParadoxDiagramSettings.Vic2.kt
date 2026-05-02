@@ -10,8 +10,8 @@ import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Vic2)
 @Service(Service.Level.PROJECT)

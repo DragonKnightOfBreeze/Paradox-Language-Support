@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.cwt.psi.CwtElementTypes
+import icu.windea.pls.model.CwtSeparatorType
 
 enum class CwtSeparatorType(val text: String) {
     EQUAL("="), // logic equal

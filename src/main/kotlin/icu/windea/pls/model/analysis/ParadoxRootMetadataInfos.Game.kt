@@ -11,9 +11,9 @@ data class ParadoxLauncherSettingsJsonInfo(
     val version: String? = null,
     val rawVersion: String? = null,
     val distPlatform: String = "steam",
-    val gameDataPath: String = "", // %USER_DOCUMENTS%/Paradox Interactive/${ParadoxGameType.get(gameId)?.title}
+    val gameDataPath: String = "", // ~/Paradox Interactive/{gameTitle}
     val modPath: String = "mod",
     val dlcPath: String = "",
     val exePath: String,
-    val exeArgs: List<String> = emptyList()
-) : ParadoxMetadataInfo
+    val exeArgs: List<String> = emptyList(),
+) : ParadoxRootMetadataInfo

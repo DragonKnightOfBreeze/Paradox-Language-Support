@@ -14,10 +14,10 @@ import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.tools.PlsDataPathService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)

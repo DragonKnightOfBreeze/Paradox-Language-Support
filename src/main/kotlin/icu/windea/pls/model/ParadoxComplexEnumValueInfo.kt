@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 复杂枚举值的解析信息。

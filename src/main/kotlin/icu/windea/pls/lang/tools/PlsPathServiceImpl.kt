@@ -12,13 +12,13 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
+import icu.windea.pls.model.ParadoxGameType
 
 class PlsPathServiceImpl : PlsPathService, Disposable {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
@@ -153,31 +153,30 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
         return libraries
     }
 
-    override fun getGameDataPath(gameName: String): Path? {
-        if (gameName.isEmpty()) return null
-        return resolveGameDataPath(gameName)
+    override fun getGameDataPath(gameType: ParadoxGameType): Path? {
+        return resolveGameDataPath(gameType)
     }
 
-    private fun resolveGameDataPath(gameName: String): Path? {
+    private fun resolveGameDataPath(gameType: ParadoxGameType): Path? {
         // 实际上应基于 `launcher-settings.json` 中的 `gameDataPath`
         return when (OS.CURRENT) {
-            OS.Windows -> resolveGameDataPathForWindows(gameName)
-            else -> resolveGameDataPathForLinux(gameName)
+            OS.Windows -> resolveGameDataPathForWindows(gameType)
+            else -> resolveGameDataPathForLinux(gameType)
         }
     }
 
-    private fun resolveGameDataPathForWindows(gameName: String): Path {
+    private fun resolveGameDataPathForWindows(gameType: ParadoxGameType): Path {
         val home = System.getProperty("user.home").toPath()
-        return home.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
+        return home.resolve(Path("Documents", "Paradox Interactive", gameType.title)).formatted()
     }
 
-    private fun resolveGameDataPathForLinux(gameName: String): Path {
+    private fun resolveGameDataPathForLinux(gameType: ParadoxGameType): Path {
         // 按优先级依次尝试已知的游戏数据目录路径
         val home = System.getProperty("user.home").toPath()
         val candidates = listOf(
-            home.resolve(Path(".local", "share", "Paradox Interactive", gameName)),
-            home.resolve(Path("Documents", "Paradox Interactive", gameName)),
-            home.resolve(Path(".paradoxinteractive", gameName)),
+            home.resolve(Path(".local", "share", "Paradox Interactive", gameType.title)),
+            home.resolve(Path("Documents", "Paradox Interactive", gameType.title)),
+            home.resolve(Path(".paradoxinteractive", gameType.title)),
         )
         val result = candidates.firstOrNull { it.isDirectory() } ?: candidates.first()
         return result.formatted()

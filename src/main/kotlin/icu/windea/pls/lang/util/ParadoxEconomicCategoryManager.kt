@@ -24,9 +24,9 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {

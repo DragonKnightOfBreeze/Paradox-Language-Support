@@ -2,7 +2,7 @@ package icu.windea.pls.core.optimizer
 
 import icu.windea.pls.core.ReadWriteAccess
 
-fun OptimizerRegistry.forReadWriteAccess() = register(ReadWriteAccessOptimizer)
+fun OptimizerFactory.forReadWriteAccess() = get(ReadWriteAccessOptimizer)
 
 private object ReadWriteAccessOptimizer : Optimizer<ReadWriteAccess, Byte> {
     override fun optimize(input: ReadWriteAccess): Byte {

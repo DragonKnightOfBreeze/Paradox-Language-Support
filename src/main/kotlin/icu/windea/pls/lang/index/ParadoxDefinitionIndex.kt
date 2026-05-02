@@ -14,11 +14,10 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.ide.util.PlsFileManager
@@ -32,8 +31,8 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
-import icu.windea.pls.model.forDefinitionSource
-import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.forParadoxDefinitionSource
+import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -236,9 +235,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
+        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
         value.forEachFast { info ->
-            storage.writeByte(info.source.optimized(OptimizerRegistry.forDefinitionSource()))
+            storage.writeByte(info.source.optimized(OptimizerFactory.forParadoxDefinitionSource()))
             storage.writeUTFFast(info.name)
             storage.writeUTFFast(info.type)
             val fastSubtypes = info.fastSubtypes
@@ -253,9 +252,9 @@ class ParadoxDefinitionIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxD
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         return MutableList(size) {
-            val source = storage.readByte().deoptimized(OptimizerRegistry.forDefinitionSource())
+            val source = storage.readByte().deoptimized(OptimizerFactory.forParadoxDefinitionSource())
             val name = storage.readUTFFast()
             val type = storage.readUTFFast()
             val subtypesSize = storage.readIntFast()

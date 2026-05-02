@@ -67,9 +67,9 @@ import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isOptionBlockValue
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.cwt.psi.isPropertyValue
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.paths.CwtConfigPath
+import icu.windea.pls.model.CwtType
 
 object CwtConfigCompletionManager {
     object Keys : KeyRegistry()

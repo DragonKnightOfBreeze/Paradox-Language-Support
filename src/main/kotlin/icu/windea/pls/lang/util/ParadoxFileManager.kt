@@ -20,15 +20,15 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.model.ParadoxEntryInfo
+import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object ParadoxFileManager {
@@ -61,7 +61,7 @@ object ParadoxFileManager {
      *
      * 主要入口目录中的文件不能引用次要入口目录中的文件中的内容。
      *
-     * @see ParadoxEntryInfo
+     * @see ParadoxGameTypeMetadata
      */
     fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = file?.fileInfo ?: return true

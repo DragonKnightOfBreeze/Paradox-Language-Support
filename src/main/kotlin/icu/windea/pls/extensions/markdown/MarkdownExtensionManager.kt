@@ -23,7 +23,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.injection.ParadoxPathInjectionInfo
@@ -31,6 +30,7 @@ import icu.windea.pls.model.paths.ParadoxPath
 import org.intellij.plugins.markdown.lang.MarkdownElementTypes
 import org.intellij.plugins.markdown.lang.MarkdownTokenTypes
 import org.intellij.plugins.markdown.lang.psi.impl.MarkdownCodeFence
+import icu.windea.pls.model.ParadoxGameType
 
 object MarkdownExtensionManager {
     object Keys : KeyRegistry() {

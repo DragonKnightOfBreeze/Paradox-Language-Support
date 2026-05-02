@@ -20,7 +20,7 @@ class RecursiveInlineScriptUsageInspection : InlineScriptInspectionBase() {
         if (configContext.inlineScriptHasRecursion != true) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val description = PlsBundle.message("script.annotator.inlineScript.recursive", inlineScriptExpression)
+        val description = PlsBundle.message("inspection.script.recursiveInlineScriptUsage.desc", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
         return holder.resultsArray
     }

@@ -1,69 +1,52 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 游戏类型。
  *
- * @property id ID。
- * @property title 标题（通常作为游戏名）。
+ * @property id ID（用作插件代码中的游戏类型 ID）。
+ * @property title 标题（用作游戏的名字）。
  * @property gameId 官方启动器使用的游戏 ID。
  * @property steamId Steam 使用的游戏 ID。
- * @property entryInfo 入口信息。
+ * @property metadata 额外的元数据。
  *
- * @see ParadoxEntryInfo
+ * @see ParadoxGameTypeMetadata
+ * @see ParadoxInferredGameTypeProvider
  */
 enum class ParadoxGameType(
     val id: String,
     val title: String,
     val gameId: String,
-    val steamId: String,
-    val entryInfo: ParadoxEntryInfo,
+    val steamId: String
 ) {
     /** 通用游戏类型。用于对应共享的规则分组。 */
-    Core("core", "Core", "", "", EntryInfos.empty),
+    Core("core", "Core", "", ""),
     /** [Stellaris](https://store.steampowered.com/app/281990) */
-    Stellaris("stellaris", "Stellaris", "stellaris", "281990", EntryInfos.stellaris),
+    Stellaris("stellaris", "Stellaris", "stellaris", "281990"),
     /** [Crusader Kings II](https://store.steampowered.com/app/203770) */
-    Ck2("ck2", "Crusader Kings II", "ck2", "203770", EntryInfos.ofGameAndJomini),
+    Ck2("ck2", "Crusader Kings II", "ck2", "203770"),
     /** [Crusader Kings III](https://store.steampowered.com/app/1158310) */
-    Ck3("ck3", "Crusader Kings III", "ck3", "1158310", EntryInfos.ofGameAndJomini),
+    Ck3("ck3", "Crusader Kings III", "ck3", "1158310"),
     /** [Europa Universalis IV](https://store.steampowered.com/app/236850) */
-    Eu4("eu4", "Europa Universalis IV", "eu4", "236850", EntryInfos.ofJomini),
+    Eu4("eu4", "Europa Universalis IV", "eu4", "236850"),
     /** [Europa Universalis V](https://store.steampowered.com/app/3450310) */
-    Eu5("eu5", "Europa Universalis V", "eu5", "3450310", EntryInfos.eu5),
+    Eu5("eu5", "Europa Universalis V", "eu5", "3450310"),
     /** [Hearts of Iron IV](https://store.steampowered.com/app/394360) */
-    Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360", EntryInfos.ofJomini),
+    Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360"),
     /** [Imperator: Rome](https://store.steampowered.com/app/859580) */
-    Ir("ir", "Imperator Rome", "imperator_rome", "859580", EntryInfos.ofGameAndJomini),
+    Ir("ir", "Imperator Rome", "imperator_rome", "859580"),
     /** [Victoria 2](https://store.steampowered.com/app/42960) */
-    Vic2("vic2", "Victoria 2", "victoria2", "42960", EntryInfos.ofGameAndJomini),
+    Vic2("vic2", "Victoria 2", "victoria2", "42960"),
     /** [Victoria 3](https://store.steampowered.com/app/529340) */
-    Vic3("vic3", "Victoria 3", "victoria3", "529340", EntryInfos.ofGameAndJomini),
+    Vic3("vic3", "Victoria 3", "victoria3", "529340"),
     ;
 
-    private object Entries {
-        val ofGame = setOf("game")
-        val ofCommonExtra = setOf("clausewitz", "jomini")
-        val eu5GameMain = setOf(
-            "game/in_game", "game/main_menu", "game/loading_screen",
-            "game/dlc/*/in_game", "game/dlc/*/main_menu", "game/dlc/*/loading_screen"
-        )
-        val eu5GameExtra = setOf(
-            "clausewitz/main_menu", "clausewitz/loading_screen",
-            "jomini/main_menu", "jomini/loading_screen",
-        )
-        val eu5ModMain = setOf("in_game", "main_menu", "loading_screen")
-        val stellarisGameExtra = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")
-    }
-
-    private object EntryInfos {
-        val empty = ParadoxEntryInfo()
-        val ofJomini = ParadoxEntryInfo(gameExtra = Entries.ofCommonExtra)
-        val ofGameAndJomini = ParadoxEntryInfo(gameMain = Entries.ofGame, gameExtra = Entries.ofCommonExtra)
-        val stellaris = ParadoxEntryInfo(gameExtra = Entries.stellarisGameExtra)
-        val eu5 = ParadoxEntryInfo(gameMain = Entries.eu5GameMain, gameExtra = Entries.eu5GameExtra, modMain = Entries.eu5ModMain)
-    }
+    val metadata: ParadoxGameTypeMetadata = ParadoxGameTypeManager.getGameTypeMetadata(this)
 
     companion object {
         @JvmStatic

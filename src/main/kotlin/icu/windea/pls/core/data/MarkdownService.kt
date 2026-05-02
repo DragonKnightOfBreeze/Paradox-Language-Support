@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.data
 
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator

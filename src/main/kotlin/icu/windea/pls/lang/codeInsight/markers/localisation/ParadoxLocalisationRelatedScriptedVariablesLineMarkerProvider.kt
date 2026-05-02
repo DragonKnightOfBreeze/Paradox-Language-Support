@@ -15,8 +15,8 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 提供本地化（localisation）的相关封装变量（relatedScriptedVariables）的装订线图标。

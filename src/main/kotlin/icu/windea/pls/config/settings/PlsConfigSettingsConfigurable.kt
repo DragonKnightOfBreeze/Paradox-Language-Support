@@ -12,9 +12,9 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.ide.help.PlsHelpTopics
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import java.awt.event.ActionEvent
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.config")), SearchableConfigurable {

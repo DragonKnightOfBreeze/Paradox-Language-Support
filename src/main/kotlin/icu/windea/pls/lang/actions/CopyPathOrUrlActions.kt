@@ -42,7 +42,7 @@ interface CopyPathOrUrlActions {
         override fun getTargetPath(e: AnActionEvent): Path? {
             val fileInfo = getFileInfo(e) ?: return null
             val gameType = fileInfo.rootInfo.gameType
-            return PlsPathService.getInstance().getGameDataPath(gameType.title)
+            return PlsPathService.getInstance().getGameDataPath(gameType)
         }
     }
 

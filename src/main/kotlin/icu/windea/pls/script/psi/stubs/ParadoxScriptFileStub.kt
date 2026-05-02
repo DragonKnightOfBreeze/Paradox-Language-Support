@@ -3,8 +3,8 @@ package icu.windea.pls.script.psi.stubs
 import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.stubs.PsiFileStubImpl
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 脚本文件的存根。

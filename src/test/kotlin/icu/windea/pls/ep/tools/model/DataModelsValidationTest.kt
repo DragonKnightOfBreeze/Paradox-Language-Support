@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.tools.model
 
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsSqliteService
 import org.junit.Test

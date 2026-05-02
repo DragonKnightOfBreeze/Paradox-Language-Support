@@ -8,12 +8,12 @@ import icu.windea.pls.lang.index.ParadoxMergedIndex
 import icu.windea.pls.lang.index.PlsIndexStatisticService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供对在合并索引中处理的各种索引数据的支持。包括构建、压缩、保存和读取等功能。

@@ -1,13 +1,18 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.optimizer.Optimizer
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.ParadoxLocalisationType
 
-fun OptimizerRegistry.forCwtType() = register(CwtTypeOptimizer)
-fun OptimizerRegistry.forCwtSeparatorType() = register(CwtSeparatorTypeOptimizer)
-fun OptimizerRegistry.forGameType() = register(ParadoxGameTypeOptimizer)
-fun OptimizerRegistry.forDefinitionSource() = register(ParadoxDefinitionSourceOptimizer)
-fun OptimizerRegistry.forLocalisationType() = register(ParadoxLocalisationTypeOptimizer)
+fun OptimizerFactory.forCwtType() = get(CwtTypeOptimizer)
+fun OptimizerFactory.forCwtSeparatorType() = get(CwtSeparatorTypeOptimizer)
+fun OptimizerFactory.forParadoxGameType() = get(ParadoxGameTypeOptimizer)
+fun OptimizerFactory.forParadoxDefinitionSource() = get(ParadoxDefinitionSourceOptimizer)
+fun OptimizerFactory.forParadoxLocalisationType() = get(ParadoxLocalisationTypeOptimizer)
 
 private object CwtTypeOptimizer : Optimizer<CwtType, Byte> {
     override fun optimize(input: CwtType): Byte {

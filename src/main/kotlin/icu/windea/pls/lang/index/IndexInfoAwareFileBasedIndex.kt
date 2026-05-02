@@ -18,11 +18,11 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.Collections.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 各种索引信息的文件索引的基类。

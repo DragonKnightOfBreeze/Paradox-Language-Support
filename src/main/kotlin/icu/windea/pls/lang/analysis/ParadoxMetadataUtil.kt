@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Files

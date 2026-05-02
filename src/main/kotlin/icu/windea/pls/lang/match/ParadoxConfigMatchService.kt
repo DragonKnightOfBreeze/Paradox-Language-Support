@@ -35,7 +35,6 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.values
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -58,6 +57,7 @@ import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.model.CwtType
 
 object ParadoxConfigMatchService {
     private val CwtConfigGroup.typeConfigCandidatesCache by registerKey(CwtConfigGroup.Keys) {

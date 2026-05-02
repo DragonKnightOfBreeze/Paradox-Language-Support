@@ -1,8 +1,8 @@
 package icu.windea.pls.model.index
 
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex

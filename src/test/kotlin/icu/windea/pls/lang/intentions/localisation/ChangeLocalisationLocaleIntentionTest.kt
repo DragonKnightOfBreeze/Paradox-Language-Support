@@ -3,7 +3,6 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
@@ -14,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see ChangeLocalisationLocaleIntention
@@ -111,7 +111,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
     fun testAvailable_multipleLocalesInFile() {
         val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
-        myFixture.configureByText("locale.test.yml", 
+        myFixture.configureByText("locale.test.yml",
             "l_english:\n key: \"English\"\n\n<caret>l_german:\n key: \"Deutsch\"")
         val intention = myFixture.findSingleIntention(intentionName)
         assertNotNull(intention)

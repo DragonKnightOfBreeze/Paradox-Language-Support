@@ -13,8 +13,8 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)

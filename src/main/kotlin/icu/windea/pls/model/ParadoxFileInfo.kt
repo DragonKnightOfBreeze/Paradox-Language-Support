@@ -7,8 +7,8 @@ import java.nio.file.Path
 /**
  * 文件信息。
  *
- * @property path 文件路径。相对于入口目录，参见 [ParadoxEntryInfo]。
- * @property entry 入口名称。参见 [ParadoxEntryInfo]。
+ * @property path 文件路径。相对于入口目录，参见 [icu.windea.pls.model.analysis.ParadoxGameTypeMetadata]。
+ * @property entry 入口名称。参见 [icu.windea.pls.model.analysis.ParadoxGameTypeMetadata]。
  * @property group 文件分组。
  * @property rootInfo 游戏或模组信息。
  *

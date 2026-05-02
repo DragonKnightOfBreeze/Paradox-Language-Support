@@ -8,6 +8,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.ParadoxLocalisationType
 
 enum class ParadoxLocalisationType(val id: String) {
     Normal("localisation"),

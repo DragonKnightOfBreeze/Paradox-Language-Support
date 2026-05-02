@@ -14,9 +14,9 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes as T
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 为切换类型的定义实现定义继承的逻辑。

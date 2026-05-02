@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 游戏或模组信息。
@@ -10,7 +11,7 @@ import icu.windea.pls.model.analysis.ParadoxRootMetadata
  * @property gameType 游戏类型。
  * @property rootFile 根目录。可以为空。
  *
- * @see ParadoxFileInfo
+ * @see ParadoxRootMetadata
  */
 sealed interface ParadoxRootInfo {
     val gameType: ParadoxGameType

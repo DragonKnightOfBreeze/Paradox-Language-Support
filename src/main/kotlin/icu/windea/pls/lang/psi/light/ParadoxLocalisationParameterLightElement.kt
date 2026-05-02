@@ -6,8 +6,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see ParadoxLocalisationParameterSupport

@@ -39,11 +39,11 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 object ParadoxDefinitionService {
     /**

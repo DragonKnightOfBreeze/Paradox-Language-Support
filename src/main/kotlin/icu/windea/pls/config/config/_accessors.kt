@@ -14,8 +14,8 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.resolve.CwtDeclarationConfigContext
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxTagType
+import icu.windea.pls.model.CwtType
 
 // region CwtMemberConfig Accessors
 

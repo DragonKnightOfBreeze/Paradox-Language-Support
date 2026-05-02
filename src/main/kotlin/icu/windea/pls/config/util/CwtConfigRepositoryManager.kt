@@ -25,13 +25,13 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.tools.PlsGitService
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 object CwtConfigRepositoryManager {

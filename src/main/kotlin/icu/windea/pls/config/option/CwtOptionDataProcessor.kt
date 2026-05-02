@@ -18,9 +18,9 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
+import icu.windea.pls.model.CwtSeparatorType
 
 object CwtOptionDataProcessor {
     // NOTE 2.1.1 目前不作为 EP

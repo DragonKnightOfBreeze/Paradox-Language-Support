@@ -13,8 +13,8 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 本地化的查询器。

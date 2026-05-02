@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import java.io.File
 
 /**

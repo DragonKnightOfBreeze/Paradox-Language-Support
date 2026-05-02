@@ -3,7 +3,6 @@ package icu.windea.pls.test.issues
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
@@ -14,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * Issue #284: scope link 在 trigger 上下文中不应产生冲突的解析结果。

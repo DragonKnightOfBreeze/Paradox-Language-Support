@@ -8,6 +8,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpressio
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 参数上下文信息。

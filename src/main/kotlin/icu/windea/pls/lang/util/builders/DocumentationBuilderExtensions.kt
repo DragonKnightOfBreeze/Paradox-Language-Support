@@ -18,12 +18,12 @@ import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsUrlService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.toScopeMap
+import icu.windea.pls.model.ParadoxGameType
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
     DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)

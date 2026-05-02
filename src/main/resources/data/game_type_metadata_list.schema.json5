@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "game_type_metadata.json",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/gameTypeMetadata"
+  },
+  "definitions": {
+    "gameTypeMetadata": {
+      "type": "object",
+      "properties": {
+        "gameType": {
+          "$ref": "#/definitions/gameTypeId"
+        },
+        "gameMainEntries": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "gameExtraEntries": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "modMainEntries": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "modExtraEntries": {
+          "$ref": "#/definitions/stringSet"
+        },
+        "executablePaths": {
+          "$ref": "#/definitions/stringSet"
+        },
+      },
+      "required": ["gameType"],
+      "additionalProperties": false
+    },
+    "gameTypeId": {
+      "type": "string",
+      "enum": ["stellaris", "ck2", "ck3", "eu4", "eu5", "hoi4", "ir", "vic2", "vic3"]
+    },
+    "stringSet": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

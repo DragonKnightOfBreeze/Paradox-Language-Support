@@ -7,6 +7,7 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 修正信息。

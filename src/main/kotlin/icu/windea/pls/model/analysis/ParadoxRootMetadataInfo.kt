@@ -7,4 +7,4 @@ package icu.windea.pls.model.analysis
  *
  * @see ParadoxRootMetadata
  */
-interface ParadoxMetadataInfo
+interface ParadoxRootMetadataInfo

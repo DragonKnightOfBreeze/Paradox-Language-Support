@@ -2,6 +2,7 @@ package icu.windea.pls.lang.tools
 
 import com.intellij.openapi.components.serviceOrNull
 import java.nio.file.Path
+import icu.windea.pls.model.ParadoxGameType
 
 interface PlsPathService {
     fun initAsync()
@@ -22,11 +23,9 @@ interface PlsPathService {
     fun getSteamGameWorkshopPath(steamId: String): Path?
 
     /**
-     * 得到 [gameName] 对应的游戏数据目录的路径。
-     *
-     * 注意：仅限 Paradox Interactive 游戏。
+     * 得到 [gameType] 对应的游戏数据目录的路径。使用绝对路径。
      */
-    fun getGameDataPath(gameName: String): Path?
+    fun getGameDataPath(gameType: ParadoxGameType): Path?
 
     /**
      * 在系统文件管理器中打开路径。

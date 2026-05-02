@@ -14,9 +14,9 @@ import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchOptimizerContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.CwtType
 
 class ParadoxScriptExpressionConstantMatchOptimizer : ParadoxScriptExpressionMatchOptimizer {
     // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则

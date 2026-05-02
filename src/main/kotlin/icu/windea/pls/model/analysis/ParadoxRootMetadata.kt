@@ -1,9 +1,11 @@
 package icu.windea.pls.model.analysis
 
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 游戏或模组的元数据。
@@ -12,16 +14,24 @@ import icu.windea.pls.model.ParadoxModSource
  *
  * 基于类别（游戏/模组）以及游戏类型（[icu.windea.pls.model.ParadoxGameType]），可以有多种不同的来源。
  *
+ * @property gameType 游戏类型。
+ * @property rootFile 游戏或模组的根目录。
+ * @property name 名字。
+ * @property version 版本。可以为空。
+ * @property info 元数据信息。可以为空。
+ * @property infoPath 元数据的路径。相对于游戏或模组的根目录。可以为空。
  *
- * @see ParadoxMetadataInfo
- * @see icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
+ * @see ParadoxRootInfo
+ * @see ParadoxRootMetadataInfo
+ * @see ParadoxRootMetadataProvider
  */
 sealed interface ParadoxRootMetadata {
-    val name: String
-    val version: String?
     val gameType: ParadoxGameType
     val rootFile: VirtualFile
-    val infoFile: VirtualFile?
+    val name: String
+    val version: String?
+    val info: ParadoxRootMetadataInfo?
+    val infoPath: String?
 
     val qualifiedName: String
     val steamId: String?
@@ -34,15 +44,12 @@ sealed interface ParadoxRootMetadata {
     interface Mod : ParadoxRootMetadata {
         val inferredGameType: ParadoxGameType?
         val supportedVersion: String?
-        val picture: String? // 相对于模组目录的路径
+        val picture: String? // 相对于模组根目录的路径
         val tags: Set<String>
         val remoteId: String?
         val source: ParadoxModSource
-        val presentablePath: String?
 
         override val qualifiedName: String get() = ParadoxAnalysisUtil.getModQualifiedName(gameType, name, version)
         override val steamId: String? get() = if (source == ParadoxModSource.Steam) remoteId else null
-
-        fun isValid(): Boolean = true
     }
 }

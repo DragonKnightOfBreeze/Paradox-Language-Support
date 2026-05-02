@@ -11,6 +11,7 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import javax.swing.Icon
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 参数信息。

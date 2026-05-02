@@ -12,8 +12,8 @@ import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
-import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {

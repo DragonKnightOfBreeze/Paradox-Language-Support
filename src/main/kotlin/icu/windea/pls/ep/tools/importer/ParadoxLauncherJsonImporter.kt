@@ -9,12 +9,12 @@ import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从官方启动器的 JSON 配置文件导入模组信息。
@@ -113,7 +113,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 游戏数据目录中的 playlists/playlist.json，或者 playlists 目录
         val jsonFileName = getJsonFileName()
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val playlistPath = gameDataPath.resolve(Constants.playlistsName).takeIf { it.exists() } ?: return null
         val playlistJsonPath = playlistPath.resolve(jsonFileName).takeIf { it.exists() }
         if (playlistJsonPath != null) return playlistJsonPath

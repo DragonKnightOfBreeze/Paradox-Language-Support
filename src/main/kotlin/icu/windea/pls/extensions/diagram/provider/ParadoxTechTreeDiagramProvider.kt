@@ -36,7 +36,6 @@ import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.getDefinitionPresentation
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationUtil
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -44,6 +43,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.util.concurrent.ConcurrentHashMap
 import javax.swing.Icon
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供群星的科技树图表。

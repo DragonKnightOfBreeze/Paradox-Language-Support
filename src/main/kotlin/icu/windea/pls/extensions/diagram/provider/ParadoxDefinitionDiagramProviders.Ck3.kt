@@ -10,8 +10,8 @@ import icu.windea.pls.extensions.diagram.settings.Ck3EventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Ck3)
 class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ck3) {

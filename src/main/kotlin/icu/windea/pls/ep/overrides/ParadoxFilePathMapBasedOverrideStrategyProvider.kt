@@ -14,11 +14,11 @@ import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.ParadoxSearchParameters
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 
 abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
     abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxOverrideStrategy>

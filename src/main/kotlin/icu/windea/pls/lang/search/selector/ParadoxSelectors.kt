@@ -13,9 +13,9 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import java.util.function.Function
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType

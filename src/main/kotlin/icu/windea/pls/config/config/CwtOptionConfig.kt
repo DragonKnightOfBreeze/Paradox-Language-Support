@@ -12,7 +12,7 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
@@ -20,9 +20,9 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
+import icu.windea.pls.model.constants.PlsStrings
 import java.util.*
 
 /**
@@ -123,7 +123,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
 
 private sealed class CwtOptionConfigBase : CwtOptionConfig {
     override fun equals(other: Any?) = this === other || other is CwtOptionConfig
@@ -139,10 +139,10 @@ private sealed class CwtOptionConfigImplBase(
     key: String,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigBase() {
-    private val separatorTypeId = separatorType.optimized(OptimizerRegistry.forCwtSeparatorType()) // optimized to optimize memory
+    private val separatorTypeId = separatorType.optimized(OptimizerFactory.forCwtSeparatorType()) // optimized to optimize memory
 
     override val key: String = key.optimized() // optimized to optimize memory
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
+    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerFactory.forCwtSeparatorType())
 }
 
 // 12 + 2 * 1 + 2 * 4 = 22 -> 24
@@ -152,10 +152,10 @@ private class CwtOptionConfigImpl(
     valueType: CwtType,
     separatorType: CwtSeparatorType,
 ) : CwtOptionConfigImplBase(key, separatorType) {
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String = value.optimized() // optimized to optimize memory
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

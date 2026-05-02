@@ -1,8 +1,7 @@
 package icu.windea.pls.ep.tools.model
 
-import icu.windea.pls.core.util.JsonService
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assume
 import org.junit.Test
 import org.ktorm.database.Database
@@ -14,6 +13,7 @@ import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 基于本地文件的验证测试：
@@ -24,7 +24,7 @@ import kotlin.io.path.isRegularFile
  *   -Dpls.test.include.local.env=true
  */
 class DataModelsLocalValidationTest {
-    private val gameDataDir = PlsPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris.title)
+    private val gameDataDir = PlsPathService.getInstance().getGameDataPath(ParadoxGameType.Stellaris)
 
     // 不需要
     // @Before

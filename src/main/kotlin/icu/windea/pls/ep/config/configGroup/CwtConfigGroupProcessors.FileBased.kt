@@ -52,9 +52,9 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于初始化规则分组中基于文件内容的那些数据。
