@@ -7,7 +7,7 @@ import java.util.*
 import javax.swing.Icon
 
 /**
- * 用于在导航视图中显示期望的图标、展示文本和位置字符串。
+ * 用于在导航视图中显示期望的图标、显示文本和位置字符串。
  */
 open class NavigationElement(
     private val parent: NavigatablePsiElement,

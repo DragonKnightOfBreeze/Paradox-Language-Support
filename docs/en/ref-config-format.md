@@ -814,7 +814,6 @@ Locale configs declare basic information about locales, facilitating identificat
 
 - `id`: Locale ID.
 - `codes: string[]`: Language codes included in this locale (e.g. `en`, `zh-CN`).
-- Derived fields: `shortId` (with `l_` prefix removed), `idWithText` (with display text).
 
 **Example**:
 

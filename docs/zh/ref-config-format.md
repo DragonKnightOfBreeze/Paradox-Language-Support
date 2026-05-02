@@ -814,7 +814,6 @@ rows = {
 
 - `id`：语言环境 ID。
 - `codes: string[]`：该语言环境包含的语言代码（如 `en`、`zh-CN`）。
-- 派生字段：`shortId`（去除前缀 `l_`）、`idWithText`（带展示文本）。
 
 **示例**：
 

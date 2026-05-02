@@ -40,9 +40,9 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * @property id 语言环境 ID（例如 `l_english`）。
  * @property codes 该语言环境包含的代码列表（如 `en`, `en-US` 等）。
- * @property text 该语言环境的展示文本（依具体实现）。
+ * @property text 该语言环境的显示文本（依具体实现）。
  * @property shortId 去除前缀 `l_` 的简短 ID。
- * @property idWithText 带展示文本的 ID。
+ * @property idWithText 带显示文本的 ID。
  */
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName
