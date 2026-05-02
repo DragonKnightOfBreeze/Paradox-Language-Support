@@ -91,7 +91,7 @@ private class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigR
             logger.warn("Missing option value, skipped.".withLocationPrefix(element))
             return null
         }
-        if(separatorType == null) {
+        if (separatorType == null) {
             logger.warn("Missing option separator, skipped.".withLocationPrefix(element))
             return null
         }

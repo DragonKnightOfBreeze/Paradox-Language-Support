@@ -32,7 +32,7 @@ private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     // Kotlin collections which are immutable
     if (className.startsWith("kotlin.collections.")) return true
     // Kotlin immutable collections, but bad memory
-    // if(className.startsWith("kotlinx.collections.immutable.")) return true
+    // if (className.startsWith("kotlinx.collections.immutable.")) return true
     return false
 }
 

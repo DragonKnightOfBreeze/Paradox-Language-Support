@@ -31,15 +31,15 @@ class ParadoxScriptValueArgumentValueNode(
 
     // region
     // override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-    //    if(!getSettings().inference.parameterConfig) return null
+    //    if (!getSettings().inference.parameterConfig) return null
     //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
     //    return ParadoxParameterManager.getInferredConfig(parameterElement)
     // }
     //
     // override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-    //    if(!getSettings().inference.parameterConfig) return null
-    //    if(valueNode == null) return null
-    //    if(text.isEmpty()) return null
+    //    if (!getSettings().inference.parameterConfig) return null
+    //    if (valueNode == null) return null
+    //    if (text.isEmpty()) return null
     //    val reference = valueNode.getReference(element)
     //    if (reference == null) return null
     //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))

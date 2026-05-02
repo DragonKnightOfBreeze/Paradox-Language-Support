@@ -49,7 +49,7 @@ class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntent
             var withWarnings = false
 
             run {
-                if(contextsToHandle.isEmpty()) return@run
+                if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
                 var current = 0
                 reportRawProgress { reporter ->

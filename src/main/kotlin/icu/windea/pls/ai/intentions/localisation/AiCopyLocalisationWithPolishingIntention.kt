@@ -54,7 +54,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
             var current = 0
 
             run {
-                if(contextsToHandle.isEmpty()) return@run
+                if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
                 reportRawProgress { reporter ->
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))

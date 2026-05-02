@@ -449,7 +449,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
-        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
 

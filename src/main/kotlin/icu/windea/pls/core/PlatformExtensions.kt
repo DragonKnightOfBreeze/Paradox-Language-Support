@@ -282,7 +282,7 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 // /**递归得到当前VirtualFile的所有作为子节点的VirtualFile。 */
 // fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
 //	for(child in this.children) {
-//		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
+//		if (child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
 //	}
 //	return destination
 // }

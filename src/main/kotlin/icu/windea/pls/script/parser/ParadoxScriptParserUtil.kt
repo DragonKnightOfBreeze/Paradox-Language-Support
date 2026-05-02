@@ -58,8 +58,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
             if (n == 0) break
             i++
         }
-        if(b.rawLookup(-2) in TokenSets.BREAK_SNIPPET_TYPES) return false
-        if(b.rawLookup(i + 1) in TokenSets.BREAK_SNIPPET_TYPES) return false
+        if (b.rawLookup(-2) in TokenSets.BREAK_SNIPPET_TYPES) return false
+        if (b.rawLookup(i + 1) in TokenSets.BREAK_SNIPPET_TYPES) return false
         return true
     }
 

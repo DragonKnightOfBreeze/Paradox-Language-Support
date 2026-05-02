@@ -30,7 +30,7 @@ class ParadoxCommandScopeLinkValueNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
-            val separatorChar = if(linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
+            val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 

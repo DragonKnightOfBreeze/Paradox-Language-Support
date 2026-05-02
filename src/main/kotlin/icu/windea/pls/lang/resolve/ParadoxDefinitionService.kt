@@ -263,7 +263,7 @@ object ParadoxDefinitionService {
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         for (primaryImage in primaryImages) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if(resolveResult !is CwtImageLocationResolveResult.Static) continue
+            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
             val file = resolveResult.element?.castOrNull<PsiFile>() ?: continue
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             return file
@@ -278,7 +278,7 @@ object ParadoxDefinitionService {
         val result = mutableSetOf<PsiFile>()
         for (primaryImage in primaryImages) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if(resolveResult !is CwtImageLocationResolveResult.Static) continue
+            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
             val files = resolveResult.elements.filterIsInstance<PsiFile>()
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(files)

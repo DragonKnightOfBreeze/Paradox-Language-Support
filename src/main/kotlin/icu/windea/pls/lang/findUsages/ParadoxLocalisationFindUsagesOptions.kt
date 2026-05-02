@@ -18,7 +18,7 @@ class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsages
     // }
     //
     // override fun generateUsagesString(): String {
-    //    if(isCrossLocales) {
+    //    if (isCrossLocales) {
     //        return PlsBundle.message("find.usages.panel.title.usages.crossLocales")
     //    } else {
     //        return super.generateUsagesString()
@@ -26,8 +26,8 @@ class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsages
     // }
     //
     // override fun equals(other: Any?): Boolean {
-    //    if(this === other) return true
-    //    if(!super.equals(other)) return false
+    //    if (this === other) return true
+    //    if (!super.equals(other)) return false
     //    return other is ParadoxLocalisationFindUsagesOptions &&
     //        isCrossLocales == other.isCrossLocales
     // }

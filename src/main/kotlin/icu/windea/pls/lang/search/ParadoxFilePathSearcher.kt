@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxFilePathSearch.SearchParameters, consumer: Processor<in VirtualFile>) {
         ProgressManager.checkCanceled()
-        if(queryParameters.project.isDefault) return
+        if (queryParameters.project.isDefault) return
         val scope = queryParameters.scope
         if (SearchScope.isEmptyScope(scope)) return
 

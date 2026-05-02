@@ -33,7 +33,7 @@ class AutomaticLocalisationsRenamer(element: PsiElement, newName: String) : Auto
     override fun entityName() = PlsBundle.message("rename.localisation.overrides.entityName")
 
     private fun prepareRenaming(element: PsiElement, newName: String, allRenames: MutableMap<PsiNamedElement, String>) {
-        if(element !is ParadoxLocalisationProperty) return
+        if (element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull() ?: return
         val type = element.type ?: return
         ProgressManager.checkCanceled()

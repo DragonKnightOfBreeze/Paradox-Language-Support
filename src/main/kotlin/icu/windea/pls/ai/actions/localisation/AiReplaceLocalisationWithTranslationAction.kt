@@ -63,7 +63,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
                     allContexts.addAll(contextsToHandle)
 
                     run {
-                        if(contextsToHandle.isEmpty()) return@run
+                        if (contextsToHandle.isEmpty()) return@run
                         val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, selectedLocale, description)
                         val callback: suspend (LocalisationAiResult) -> Unit = {
                             val context = request.localisationContexts[request.index]

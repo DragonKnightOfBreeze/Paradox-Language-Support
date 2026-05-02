@@ -511,7 +511,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
-        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
 
@@ -787,7 +787,7 @@ object ParadoxDocumentationManager {
 
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
-        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
 

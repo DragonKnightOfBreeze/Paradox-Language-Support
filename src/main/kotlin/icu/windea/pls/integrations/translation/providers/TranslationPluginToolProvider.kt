@@ -22,7 +22,7 @@ class TranslationPluginToolProvider : TranslationToolProvider {
     }
 
     override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslationCallback) {
-        val sourceLang = if(sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
+        val sourceLang = if (sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
         val targetLang = Lang[targetLocale]
         val translateService = TranslateService.getInstance()
 

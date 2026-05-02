@@ -56,7 +56,7 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
                     allContexts.addAll(contextsToHandle)
 
                     runCatchingCancelable r@{
-                        if(contextsToHandle.isEmpty()) return@r
+                        if (contextsToHandle.isEmpty()) return@r
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {
                                 withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
