@@ -1,4 +1,4 @@
-package icu.windea.pls.model.metadata
+package icu.windea.pls.model.analysis
 
 /**
  * 模组描述符信息（`descriptor.mod`）。

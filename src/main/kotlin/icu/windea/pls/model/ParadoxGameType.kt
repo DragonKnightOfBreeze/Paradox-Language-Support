@@ -72,8 +72,6 @@ enum class ParadoxGameType(
         private val values = entries.toList()
         @JvmStatic
         private val valuesNoCore = values - Core
-        @JvmStatic
-        private val valuesForMetadataJson = listOf(Vic3, Eu5)
 
         /**
          * 得到 [id] 对应的游戏类型。

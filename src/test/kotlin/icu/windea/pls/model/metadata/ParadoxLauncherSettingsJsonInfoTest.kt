@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.util.JsonService
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
 import org.junit.Assume
 import org.junit.Test
 import kotlin.io.path.exists

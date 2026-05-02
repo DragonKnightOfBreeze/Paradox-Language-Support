@@ -1,4 +1,4 @@
-package icu.windea.pls.model.metadata
+package icu.windea.pls.model.analysis
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

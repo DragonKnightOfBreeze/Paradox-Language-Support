@@ -7,10 +7,10 @@ import icu.windea.pls.lang.analysis.ParadoxMetadataManager
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
-import icu.windea.pls.model.ParadoxRootMetadata
+import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
-import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
+import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
 
 /**
  * 参见：[Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)

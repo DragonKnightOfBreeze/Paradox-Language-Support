@@ -17,7 +17,7 @@ import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.ParadoxRootMetadata
+import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxAnalysisService {

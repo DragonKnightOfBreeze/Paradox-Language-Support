@@ -5,9 +5,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
-import icu.windea.pls.model.metadata.ParadoxLauncherSettingsJsonInfo
-import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
+import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
+import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
 
 object ParadoxMetadataManager {
     private val logger = thisLogger()

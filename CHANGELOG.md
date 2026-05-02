@@ -28,6 +28,7 @@
 - [x] 为规则选项提供文档注释，基于 schema 规则文件 / Provided doc comments for config options, from the schema config file
 - [x] 优化配色方案 / Optimized color scheme
 - [x] 优化本地化的生成逻辑，提供额外的配置项 / Optimized localisation generation logic, providing extra settings ([#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296))
+- [ ] 优化 rootInfo 和 rootMetadata 的解析逻辑 / Optimized resolution logic for rootInfo and rootMetadata
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

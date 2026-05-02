@@ -11,6 +11,8 @@ import java.nio.file.Path
  * @property entry 入口名称。参见 [ParadoxEntryInfo]。
  * @property group 文件分组。
  * @property rootInfo 游戏或模组信息。
+ *
+ * @see ParadoxRootInfo
  */
 data class ParadoxFileInfo(
     val path: ParadoxPath,

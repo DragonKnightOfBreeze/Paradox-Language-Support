@@ -4,8 +4,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.readBytes
 import icu.windea.pls.lang.analysis.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootMetadata
-import icu.windea.pls.model.metadata.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.analysis.ParadoxRootMetadata
+import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
 
 class ParadoxLauncherSettingsJsonBasedGameMetadataProvider : ParadoxRootMetadataProvider {
     override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {

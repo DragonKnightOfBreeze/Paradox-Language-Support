@@ -10,9 +10,9 @@ import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
-import icu.windea.pls.model.metadata.ParadoxLauncherSettingsJsonInfo
-import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
+import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
+import icu.windea.pls.model.analysis.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 object ParadoxMetadataService {
