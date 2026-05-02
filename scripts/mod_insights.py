@@ -1,34 +1,35 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# mod_insights.py — Mod development environment detector + Steam Workshop stats fetcher.
-#
-# For each locally installed Paradox game, scans Workshop-downloaded mods and:
-#   1. Detects the development environment (IDEA / VSCode / Unknown) via filesystem heuristics.
-#   2. Fetches Steam Workshop statistics (views, subscriptions, favorites) via the public API.
-#
-# Dev environment heuristics (non-exclusive — a mod may match both):
-#   IDEA (JetBrains):               .idea/  |  *.iml (mod root)  |  .config/ with *.cwt files
-#   VSCode / VSCode-based AI IDEs:  .vscode/  |  _cwtools/  |  .cwtools  |  .cursor/  |  .windsurf/
-#
-# NOTE: Many mod authors exclude IDE config dirs when uploading to Workshop.
-#       An "Unknown" result does NOT mean no IDE was used.
-#
-# Steam Workshop API used (no API key required):
-#   POST https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/
-#   Returns: views, subscriptions (current), favorited (current)
-#   Note: "views" from the API may differ slightly from the "Unique Visitors" counter
-#   shown on the Workshop page.
-#
-# Workshop content path is derived from the game's install directory, so secondary
-# Steam library folders are handled correctly.
-#
-# Output modes:
-#   default    : full console report
-#   --markdown : write full Markdown report (to --output FILE, or a timestamped file)
-#
-# Usage:
-#   python scripts/mod_insights.py [--markdown] [--output FILE]
+"""mod_insights.py — Mod development environment detector + Steam Workshop stats fetcher.
+
+For each locally installed Paradox game, scans Workshop-downloaded mods and:
+  1. Detects the development environment (IDEA / VSCode / Unknown) via filesystem heuristics.
+  2. Fetches Steam Workshop statistics (views, subscriptions, favorites) via the public API.
+
+Dev environment heuristics (non-exclusive — a mod may match both):
+  IDEA (JetBrains):               .idea/  |  *.iml (mod root)  |  .config/ with *.cwt files
+  VSCode / VSCode-based AI IDEs:  .vscode/  |  _cwtools/  |  .cwtools  |  .cursor/  |  .windsurf/
+
+NOTE: Many mod authors exclude IDE config dirs when uploading to Workshop.
+      An "Unknown" result does NOT mean no IDE was used.
+
+Steam Workshop API used (no API key required):
+  POST https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/
+  Returns: views, subscriptions (current), favorited (current)
+  Note: "views" from the API may differ slightly from the "Unique Visitors" counter
+  shown on the Workshop page.
+
+Workshop content path is derived from the game's install directory, so secondary
+Steam library folders are handled correctly.
+
+Output modes:
+  default    : full console report
+  --markdown : write full Markdown report (to --output FILE, or a timestamped file)
+
+Usage:
+  python scripts/mod_insights.py [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 

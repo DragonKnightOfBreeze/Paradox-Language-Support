@@ -1,41 +1,42 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# game_file_hotspots.py — Game file distribution & hotspot audit for Paradox Language Support.
-#
-# Two complementary views of every locally-installed Paradox game:
-#
-#   1. Per-subdirectory distribution
-#      Groups files by their first-level subdirectory under each entry
-#      directory (e.g. common/, events/, gfx/, localisation/), then reports
-#      file count and line totals per category, sorted by total lines desc.
-#
-#   2. Large-file hotspots
-#      Lists individual files whose total line count exceeds a configurable
-#      threshold (default 10000), sorted by line count descending.
-#
-# Both views cover script (.txt, .gfx, .gui, .asset, .lines, .dlc, .settings),
-# localisation (.yml), and CSV (.csv) files — the same set tracked by the
-# plugin.  Only files *indirectly* under entry directories are counted.
-#
-# Game metadata, entry info, and path detection logic are synced from the
-# plugin's Kotlin sources (ParadoxGameType, ParadoxEntryInfo, PlsPathServiceImpl,
-# PlsConstants).
-#
-# Auto-generated files are detected and reported separately:
-#   - Path contains a '/generated/' directory segment
-#   - Zero comments AND zero blank lines AND total > 1000 lines
-#
-# Output modes:
-#   default   : full detailed report (per-subdirectory distribution + hotspots)
-#   --summary : condensed summary (top-N hotspots + generated stats per game)
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/game_file_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""game_file_hotspots.py — Game file distribution & hotspot audit for the plugin.
+
+Two complementary views of every locally-installed Paradox game:
+
+  1. Per-subdirectory distribution
+     Groups files by their first-level subdirectory under each entry
+     directory (e.g. common/, events/, gfx/, localisation/), then reports
+     file count and line totals per category, sorted by total lines desc.
+
+  2. Large-file hotspots
+     Lists individual files whose total line count exceeds a configurable
+     threshold (default 10000), sorted by line count descending.
+
+Both views cover script (.txt, .gfx, .gui, .asset, .lines, .dlc, .settings),
+localisation (.yml), and CSV (.csv) files — the same set tracked by the
+plugin.  Only files *indirectly* under entry directories are counted.
+
+Game metadata, entry info, and path detection logic are synced from the
+plugin's Kotlin sources (ParadoxGameType, ParadoxGameTypeMetadata, PlsPathServiceImpl,
+PlsConstants).
+
+Auto-generated files are detected and reported separately:
+  - Path contains a '/generated/' directory segment
+  - Zero comments AND zero blank lines AND total > 1000 lines
+
+Output modes:
+  default   : full detailed report (per-subdirectory distribution + hotspots)
+  --summary : condensed summary (top-N hotspots + generated stats per game)
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/game_file_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 
@@ -70,23 +71,22 @@ class GameTypeMetadata:
     game_extra: list[str] = field(default_factory=list)
 
 
-# Entries object mirrors ParadoxGameType.Entries / EntryInfos
 _COMMON_EXTRA = ["clausewitz", "jomini"]
 
 GAME_TYPES: list[GameType] = [
     GameType("stellaris", "Stellaris", "stellaris", "281990",
-             EntryInfo(game_extra=[
+             GameTypeMetadata(game_extra=[
                  "pdx_launcher/game", "pdx_launcher/common",
                  "pdx_online_assets", "previewer_assets", "tweakergui_assets",
              ])),
     GameType("ck2", "Crusader Kings II", "ck2", "203770",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("ck3", "Crusader Kings III", "ck3", "1158310",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("eu4", "Europa Universalis IV", "eu4", "236850",
-             EntryInfo(game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_extra=_COMMON_EXTRA)),
     GameType("eu5", "Europa Universalis V", "eu5", "3450310",
-             EntryInfo(
+             GameTypeMetadata(
                  game_main=[
                      "game/in_game", "game/main_menu", "game/loading_screen",
                      "game/dlc/*/in_game", "game/dlc/*/main_menu", "game/dlc/*/loading_screen",
@@ -97,13 +97,13 @@ GAME_TYPES: list[GameType] = [
                  ],
              )),
     GameType("hoi4", "Hearts of Iron IV", "hoi4", "394360",
-             EntryInfo(game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_extra=_COMMON_EXTRA)),
     GameType("ir", "Imperator Rome", "imperator_rome", "859580",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("vic2", "Victoria 2", "victoria2", "42960",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("vic3", "Victoria 3", "victoria3", "529340",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
 ]
 
 # ===========================================================================
@@ -331,7 +331,7 @@ def is_generated_game(rel_path: str, total: int, blank: int, comment: int) -> bo
 # File collection
 # ===========================================================================
 
-def collect_records(game_dir: str, entry_info: EntryInfo) -> list[FileRecord]:
+def collect_records(game_dir: str, entry_info: GameTypeMetadata) -> list[FileRecord]:
     """Walk all entry directories and build a FileRecord for every tracked file.
 
     Only files *indirectly* under entry directories are collected

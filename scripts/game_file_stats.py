@@ -1,36 +1,37 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# game_file_stats.py — Game file statistics audit for Paradox Language Support.
-#
-# Detects locally installed Paradox games via Steam registry / default paths,
-# then walks each game's entry directories to count script, localisation, and
-# CSV files.  Reports per-game, per-entry-type (main / extra), per-category
-# line metrics: total, min, max, avg, blank, comment, and code lines.
-#
-# Key design decisions (synced from plugin Kotlin sources):
-#   - Game types, entry info, and path detection logic mirror
-#     ParadoxGameType, ParadoxGameTypeMetadata, and PlsPathServiceImpl.
-#   - File extensions mirror PlsConstants.
-#   - Only files *indirectly* under entry directories are counted
-#     (files directly in an entry dir, like license.txt, are excluded).
-#   - Option comments (##) in CWT are N/A here; Paradox script and
-#     localisation use plain '#' line comments.  CSV has no comments.
-#
-# Auto-generated files are detected and reported separately:
-#   - Path contains a '/generated/' directory segment
-#   - Zero comments AND zero blank lines AND total > 1000 lines
-#
-# Output modes:
-#   default   : full detailed report (per-entry-type breakdown + combined + generated)
-#   --summary : condensed per-game table with file/line totals and generated percentages
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/game_file_stats.py [--summary] [--markdown] [--output FILE]
+"""game_file_stats.py — Game file statistics audit for the plugin.
+
+Detects locally installed Paradox games via Steam registry / default paths,
+then walks each game's entry directories to count script, localisation, and
+CSV files.  Reports per-game, per-entry-type (main / extra), per-category
+line metrics: total, min, max, avg, blank, comment, and code lines.
+
+Key design decisions (synced from plugin Kotlin sources):
+  - Game types, entry info, and path detection logic mirror
+    ParadoxGameType, ParadoxGameTypeMetadata, and PlsPathServiceImpl.
+  - File extensions mirror PlsConstants.
+  - Only files *indirectly* under entry directories are counted
+    (files directly in an entry dir, like license.txt, are excluded).
+  - Option comments (##) in CWT are N/A here; Paradox script and
+    localisation use plain '#' line comments.  CSV has no comments.
+
+Auto-generated files are detected and reported separately:
+  - Path contains a '/generated/' directory segment
+  - Zero comments AND zero blank lines AND total > 1000 lines
+
+Output modes:
+  default   : full detailed report (per-entry-type breakdown + combined + generated)
+  --summary : condensed per-game table with file/line totals and generated percentages
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/game_file_stats.py [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 
@@ -65,7 +66,6 @@ class GameTypeMetadata:
     game_extra: list[str] = field(default_factory=list)
 
 
-# Entries object mirrors ParadoxGameType.Entries / GameTypeMetadatas
 _COMMON_EXTRA = ["clausewitz", "jomini"]
 
 GAME_TYPES: list[GameType] = [

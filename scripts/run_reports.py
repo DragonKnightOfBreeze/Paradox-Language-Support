@@ -1,13 +1,14 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# run_reports.py — Facade runner: generate all six audit reports in Markdown format.
-#
-# Runs each of the six audit scripts with --markdown, saving output to:
-#   documents/reports/{timestamp}/{script_name}.md
-#
-# Usage:
-#   python scripts/run_reports.py
+"""run_reports.py — Facade runner: generate all six audit reports in Markdown format.
+
+Runs each of the six audit scripts with --markdown, saving output to:
+  documents/reports/{timestamp}/{script_name}.md
+
+Usage:
+  python scripts/run_reports.py
+"""
 
 from __future__ import annotations
 
