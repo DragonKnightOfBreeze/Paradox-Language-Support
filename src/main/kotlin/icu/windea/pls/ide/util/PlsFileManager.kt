@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.ArchiveFileSystem
 import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
@@ -24,6 +25,10 @@ object PlsFileManager {
 
     fun isStubFile(file: VirtualFile?): Boolean {
         return file is StubVirtualFile
+    }
+
+    fun isInArchiveFIle(file: VirtualFile?): Boolean {
+        return file?.fileSystem is ArchiveFileSystem
     }
 
     fun findFiles(e: AnActionEvent, deep: Boolean = false): Sequence<VirtualFile> {

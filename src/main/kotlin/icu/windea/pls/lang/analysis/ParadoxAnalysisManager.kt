@@ -50,6 +50,8 @@ object ParadoxAnalysisManager {
 
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(rootFile)) return null
+        // skip for in achieve files (unsupported)
+        if (PlsFileManager.isInArchiveFIle(rootFile)) return null
 
         // try to get injected root info first
         doGetForcedRootInfo(rootFile)?.let { return it }
@@ -85,9 +87,10 @@ object ParadoxAnalysisManager {
     fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
         // no file info for `VirtualFileWindow` (injected PSI)
         if (PlsFileManager.isInjectedFile(file)) return null
-
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(file)) return null
+        // skip for in achieve files (unsupported)
+        if (PlsFileManager.isInArchiveFIle(file)) return null
 
         // try to get injected file info first
         doGetForcedFileInfo(file)?.let { return it }
@@ -182,6 +185,8 @@ object ParadoxAnalysisManager {
 
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(file)) return null
+        // skip for in achieve files (unsupported)
+        if (PlsFileManager.isInArchiveFIle(file)) return null
 
         // try to get injected locale config first
         doGetForcedLocaleConfig(file)?.let { return it }
