@@ -1,11 +1,11 @@
 {
-  "name": "Mod name",
-  "id": "mod.id",
+  "name": "Chapters of the Chronicle",
+  "id": "chronicle.chapters",
   "version": "1.0",
   "game_id": "victoria3",
   "picture": "thumbnail.png",
   "supported_game_version": "*",
-  "short_description": "Mod shot description",
+  "short_description": "Chapters of the book that records all the past and future",
   "tags": [],
   "relationships": [],
   "game_custom_data": {

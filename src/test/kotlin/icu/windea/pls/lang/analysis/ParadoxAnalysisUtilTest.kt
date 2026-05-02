@@ -5,6 +5,8 @@ import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import kotlin.io.path.isDirectory
 
 class ParadoxAnalysisUtilTest {
@@ -29,22 +31,27 @@ class ParadoxAnalysisUtilTest {
         Assert.assertTrue(ParadoxAnalysisUtil.compareGameVersion("3.99.8 beta", "3.99.1 beta") > 0)
     }
 
-    @Test
-    fun getExecutablePath() {
-        val gameTypes = ParadoxGameType.getAll()
-        for (gameType in gameTypes) {
-            assertExecutablePath(gameType)
+    @RunWith(Parameterized::class)
+    class PerGameType(private val gameType: ParadoxGameType) {
+        companion object {
+            @JvmStatic
+            @Parameterized.Parameters(name = "{0}")
+            fun data() = ParadoxGameType.getAll()
         }
-    }
 
-    private fun assertExecutablePath(gameType: ParadoxGameType) {
-        val service = PlsPathService.getInstance()
-        val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
-        Assume.assumeTrue("root path for ${gameType.title} is missing", rootPath != null && rootPath.isDirectory())
-        rootPath!!
-        val executablePath = ParadoxAnalysisUtil.getExecutablePath(gameType, rootPath)
-        Assert.assertNotNull(executablePath)
-        executablePath!!
-        println("Executable path for ${gameType.title}: ${executablePath}")
+        @Test
+        fun getExecutablePath() {
+            val service = PlsPathService.getInstance()
+
+            val rootPath = service.getSteamGamePath(gameType.steamId, gameType.title)
+            Assume.assumeTrue("Root path for ${gameType.title}: (not found)", rootPath != null && rootPath.isDirectory())
+            rootPath!!
+            println("Root path for ${gameType.title}: ${rootPath}")
+
+            val executablePath = ParadoxAnalysisUtil.getExecutablePath(gameType, rootPath)
+            Assert.assertNotNull("Executable path for ${gameType.title}: (unknown)", executablePath)
+            executablePath!!
+            println("Executable path for ${gameType.title}: ${executablePath}")
+        }
     }
 }

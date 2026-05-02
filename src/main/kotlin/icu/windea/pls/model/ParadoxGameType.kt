@@ -4,7 +4,6 @@ import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 游戏类型。
@@ -46,7 +45,7 @@ enum class ParadoxGameType(
     Vic3("vic3", "Victoria 3", "victoria3", "529340"),
     ;
 
-    val metadata: ParadoxGameTypeMetadata = ParadoxGameTypeManager.getGameTypeMetadata(this)
+    val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getGameTypeMetadata(this)
 
     companion object {
         @JvmStatic

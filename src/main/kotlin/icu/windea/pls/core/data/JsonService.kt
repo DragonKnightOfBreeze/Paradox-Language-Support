@@ -17,11 +17,10 @@ object JsonService {
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         }
     }
-
-    // @Suppress("unused")
-    // val compactMapper by lazy {
-    //     mapper.copy().apply {
-    //         disable(SerializationFeature.INDENT_OUTPUT)
-    //     }
-    // }
+    val json5Mapper by lazy {
+        mapper.copy().apply {
+            enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
+            enable(JsonParser.Feature.ALLOW_TRAILING_COMMA)
+        }
+    }
 }

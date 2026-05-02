@@ -5,16 +5,16 @@ import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 
 object MarkdownService {
-    val flavour by lazy {
+    val gfmFlavour by lazy {
         GFMFlavourDescriptor()
     }
-    val parser by lazy {
-        MarkdownParser(flavour)
+    val gfmParser by lazy {
+        MarkdownParser(gfmFlavour)
     }
 
     fun toHtml(markdownText: String): String {
-        val flavour = flavour
-        val parser = parser
+        val flavour = gfmFlavour
+        val parser = gfmParser
         val ast = parser.buildMarkdownTreeFromString(markdownText)
         return HtmlGenerator(markdownText, ast, flavour).generateHtml()
     }

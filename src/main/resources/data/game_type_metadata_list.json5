@@ -9,7 +9,7 @@
       "previewer_assets",
       "tweakergui_assets"
     ],
-    executablePaths: [
+    "executablePaths": [
       "stellaris"
     ]
   },
@@ -23,7 +23,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       "binaries/ck2"
     ]
   },
@@ -37,7 +37,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       "binaries/ck3"
     ]
   },
@@ -48,7 +48,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       "eu4"
     ]
   },
@@ -74,7 +74,7 @@
       "main_menu",
       "loading_screen"
     ],
-    executablePaths: [
+    "executablePaths": [
       "binaries/eu5"
     ]
   },
@@ -99,7 +99,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       "binaries/imperator"
     ]
   },
@@ -113,7 +113,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       // "victoria2",
       "binaries/v2game"
     ]
@@ -128,7 +128,7 @@
       "clausewitz",
       "jomini"
     ],
-    executablePaths: [
+    "executablePaths": [
       "binaries/victoria3"
     ]
   }
