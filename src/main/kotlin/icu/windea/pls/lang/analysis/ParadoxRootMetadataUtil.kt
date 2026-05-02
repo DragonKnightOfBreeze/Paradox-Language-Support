@@ -6,6 +6,7 @@ import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.analysis.ParadoxDescriptorModInfo
@@ -89,23 +90,27 @@ object ParadoxRootMetadataUtil {
 
     fun getDescriptorModInfo(path: Path): ParadoxDescriptorModInfo? {
         try {
-            val project = getDefaultProject()
             val text = path.readText().trim().orNull() ?: return null
-            val file = ParadoxScriptElementFactory.createDummyFile(project, text)
-            val scriptData = ParadoxScriptDataResolver.DEFAULT.resolveFile(file) ?: return null
-            val data = ParadoxModDescriptorData(scriptData)
-            val name = data.name?.orNull() ?: path.parent?.name?.orNull() ?: "" // 作为回退，使用模组目录名作为模组名
-            val version = data.version?.orNull()
-            val picture = data.picture?.orNull()
-            val tags = data.tags.optimized()
-            val supportedVersion = data.supportedVersion?.orNull()
-            val remoteFileId = data.remoteFileId?.orNull()
-            val path = data.path?.orNull()
-            return ParadoxDescriptorModInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+            return runSmartReadAction { resolveDescriptorModInfo(path, text) }
         } catch (e: Exception) {
             logger.warn("Cannot resolve root metadata info from path: ${path}", e)
             return null
         }
+    }
+
+    private fun resolveDescriptorModInfo(path: Path, text: String): ParadoxDescriptorModInfo? {
+        val project = getDefaultProject()
+        val file = ParadoxScriptElementFactory.createDummyFile(project, text)
+        val scriptData = ParadoxScriptDataResolver.DEFAULT.resolveFile(file) ?: return null
+        val data = ParadoxModDescriptorData(scriptData)
+        val name = data.name?.orNull() ?: path.parent?.name?.orNull() ?: "" // 作为回退，使用模组目录名作为模组名
+        val version = data.version?.orNull()
+        val picture = data.picture?.orNull()
+        val tags = data.tags.optimized()
+        val supportedVersion = data.supportedVersion?.orNull()
+        val remoteFileId = data.remoteFileId?.orNull()
+        val path = data.path?.orNull()
+        return ParadoxDescriptorModInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
 
     // endregion

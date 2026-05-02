@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.analysis
 
-import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
+import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.analysis.ParadoxRootMetadataUtil
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.analysis.ParadoxExecutableFileBasedGameMetadata
@@ -35,8 +35,8 @@ class ParadoxExecutableFileBasedGameMetadataProvider : ParadoxRootMetadataProvid
         // 如果找到，再尝试查找游戏的分支标记文件，并尝试从中获取游戏版本信息
 
         for (gameType in allowedGameTypes) {
-            val executablePath = ParadoxAnalysisUtil.getExecutablePath(gameType, rootPath) ?: return null
-            val branchPath = ParadoxAnalysisUtil.getBranchPath(gameType, rootPath)
+            val executablePath = ParadoxGameManager.getExecutablePath(gameType, rootPath) ?: continue
+            val branchPath = ParadoxGameManager.getBranchPath(gameType, rootPath)
             return ParadoxExecutableFileBasedGameMetadata(gameType, rootPath, executablePath, branchPath)
         }
         return null

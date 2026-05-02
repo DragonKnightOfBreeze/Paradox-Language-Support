@@ -15,7 +15,7 @@ import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.actions.PlsDataKeys
-import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
+import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
@@ -32,7 +32,7 @@ class ParadoxModSettingsDialog(
     private val callbackLock = CallbackLock()
 
     val oldGameType = settings.finalGameType
-    val defaultGameVersion get() = ParadoxAnalysisUtil.getGameVersionFromGameDirectory(defaultGameDirectory)
+    val defaultGameVersion get() = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
     val defaultGameDirectory get() = PlsSettings.getInstance().state.defaultGameDirectories[oldGameType.id]
 
     val graph = PropertyGraph()
@@ -41,7 +41,7 @@ class ParadoxModSettingsDialog(
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
 
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxAnalysisUtil.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxGameManager.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
     }
 
     var gameType by gameTypeProperty
@@ -108,11 +108,11 @@ class ParadoxModSettingsDialog(
                     .bindText(gameDirectoryProperty)
                     .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
-                    .validationOnApply { ParadoxAnalysisUtil.validateGameDirectory(this, gameType, gameDirectory) }
+                    .validationOnApply { ParadoxGameManager.validateGameDirectory(this, gameType, gameDirectory) }
             }
             row {
                 link(PlsBundle.message("gameDirectory.quickSelect")) f@{
-                    val quickGameDirectory = ParadoxAnalysisUtil.getQuickGameDirectory(gameType)?.orNull() ?: return@f
+                    val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
                     gameDirectory = quickGameDirectory
                 }
             }

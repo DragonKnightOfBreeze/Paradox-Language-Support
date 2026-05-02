@@ -4,14 +4,15 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.io.path.name
 
 object ParadoxMetadataUtil {
     fun getModDirectoryFromSteamId(steamId: String?, workshopDirPath: Path): String? {
@@ -29,8 +30,7 @@ object ParadoxMetadataUtil {
         if (!path.endsWith(".mod", true)) return null // 检查后缀名
         val descriptorPath = gameDataDirPath.resolve(path)
         if (!descriptorPath.exists()) return null
-        val descriptorFile = descriptorPath.toVirtualFile(true) ?: return null
-        val descriptorInfo = ParadoxMetadataManager.getDescriptorModInfo(descriptorFile) ?: return null
+        val descriptorInfo = ParadoxRootMetadataUtil.getDescriptorModInfo(descriptorPath) ?: return null
         val modPath = descriptorInfo.path ?: return null
         val modDir = modPath.toVirtualFile() ?: return null
         val rootInfo = modDir.rootInfo
@@ -121,10 +121,9 @@ object ParadoxMetadataUtil {
         try {
             Files.newDirectoryStream(modDir) { it.fileName.toString().endsWith(".mod", ignoreCase = true) }.use { ds ->
                 for (p in ds) {
-                    val vf = p.toVirtualFile(true) ?: continue
-                    val info = ParadoxMetadataManager.getDescriptorModInfo(vf) ?: continue
+                    val info = ParadoxRootMetadataUtil.getDescriptorModInfo(p) ?: continue
                     val modPath = info.path ?: continue
-                    result[modPath.normalizePath()] = "mod/${vf.name}"
+                    result[modPath.normalizePath()] = "mod/${p.name}"
                 }
             }
         } catch (_: Exception) {

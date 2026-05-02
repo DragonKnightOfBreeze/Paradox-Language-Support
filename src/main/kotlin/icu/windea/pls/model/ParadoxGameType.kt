@@ -45,7 +45,7 @@ enum class ParadoxGameType(
     Vic3("vic3", "Victoria 3", "victoria3", "529340"),
     ;
 
-    val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getGameTypeMetadata(this)
+    val metadata: ParadoxGameTypeMetadata get() = ParadoxGameTypeManager.getMetadata(this)
 
     companion object {
         @JvmStatic

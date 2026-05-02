@@ -12,7 +12,7 @@ import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
@@ -212,8 +212,8 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
 
 val ParadoxGameOrModSettingsState.qualifiedName: String
     get() = when (this) {
-        is ParadoxGameSettingsState -> ParadoxAnalysisUtil.getGameQualifiedName(finalGameType, gameVersion)
-        is ParadoxModSettingsState -> ParadoxAnalysisUtil.getModQualifiedName(finalGameType, name, version)
+        is ParadoxGameSettingsState -> ParadoxGameTypeManager.getGameQualifiedName(finalGameType, gameVersion)
+        is ParadoxModSettingsState -> ParadoxGameTypeManager.getModQualifiedName(finalGameType, name, version)
     }
 
 /**

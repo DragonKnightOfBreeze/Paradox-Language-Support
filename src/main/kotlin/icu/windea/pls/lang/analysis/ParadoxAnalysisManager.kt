@@ -33,11 +33,11 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.CwtConfigIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import java.nio.file.Path
-import icu.windea.pls.model.ParadoxGameType
 
 object ParadoxAnalysisManager {
     private val logger = thisLogger()
@@ -315,7 +315,7 @@ object ParadoxAnalysisManager {
 
     // endregion
 
-    // region Inference Methods
+    // region Misc Methods
 
     fun getInferredCurrentGameType(project: Project): ParadoxGameType? {
         val fileEditorManager = FileEditorManager.getInstance(project)

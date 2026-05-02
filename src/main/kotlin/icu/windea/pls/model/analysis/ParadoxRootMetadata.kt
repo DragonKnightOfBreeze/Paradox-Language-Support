@@ -1,7 +1,7 @@
 package icu.windea.pls.model.analysis
 
 import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
-import icu.windea.pls.lang.analysis.ParadoxAnalysisUtil
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
@@ -39,7 +39,7 @@ sealed interface ParadoxRootMetadata {
     val steamId: String?
 
     interface Game : ParadoxRootMetadata {
-        override val qualifiedName: String get() = ParadoxAnalysisUtil.getGameQualifiedName(gameType, version)
+        override val qualifiedName: String get() = ParadoxGameTypeManager.getGameQualifiedName(gameType, version)
         override val steamId: String get() = gameType.steamId
     }
 
@@ -51,7 +51,7 @@ sealed interface ParadoxRootMetadata {
         val remoteId: String?
         val source: ParadoxModSource
 
-        override val qualifiedName: String get() = ParadoxAnalysisUtil.getModQualifiedName(gameType, name, version)
+        override val qualifiedName: String get() = ParadoxGameTypeManager.getModQualifiedName(gameType, name, version)
         override val steamId: String? get() = if (source == ParadoxModSource.Steam) remoteId else null
     }
 }

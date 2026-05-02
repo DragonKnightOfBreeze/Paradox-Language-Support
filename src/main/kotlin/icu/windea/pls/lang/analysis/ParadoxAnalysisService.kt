@@ -32,7 +32,6 @@ object ParadoxAnalysisService {
         }
     }
 
-
     /**
      * @see ParadoxRootMetadataProvider.get
      */

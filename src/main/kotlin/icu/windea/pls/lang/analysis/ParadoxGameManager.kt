@@ -5,7 +5,6 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.io.fileSizeSafe
 import com.intellij.util.system.OS
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitByBlank
@@ -19,24 +18,7 @@ import java.nio.file.Path
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.notExists
 
-object ParadoxAnalysisUtil {
-    fun getGameQualifiedName(gameType: ParadoxGameType, version: String?): String {
-        return buildString {
-            append(gameType.title)
-            if (version.isNotNullOrEmpty()) {
-                append("@").append(version)
-            }
-        }
-    }
-
-    fun getModQualifiedName(gameType: ParadoxGameType, name: String?, version: String?): String {
-        return buildString {
-            append(gameType.title).append(" Mod: ")
-            append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
-            version?.orNull()?.let { version -> append("@").append(version) }
-        }
-    }
-
+object ParadoxGameManager {
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
         val path = PlsPathService.getInstance().getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.notExists()) return null
@@ -115,6 +97,7 @@ object ParadoxAnalysisUtil {
     }
 
     fun getExecutablePath(gameType: ParadoxGameType, rootPath: Path): Path? {
+        // from candidates in game type metadata
         val candidates = gameType.metadata.executablePaths
         for (candidate in candidates) {
             val p = if (OS.CURRENT == OS.Windows) "$candidate.exe" else candidate
