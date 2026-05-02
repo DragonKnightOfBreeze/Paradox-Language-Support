@@ -5,7 +5,7 @@ import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.annotations.InlinedDelegateFields
 
 interface InlinedDelegateFieldCodeInjectors {
-    // 用于优化内存
+    // 用于减少样板代码，同时不带来额外的内存开销
 
     /** @see icu.windea.pls.config.option.CwtOptionDataHolderBase */
     @InjectionTarget("icu.windea.pls.config.option.CwtOptionDataHolderBase", pluginId = "icu.windea.pls")

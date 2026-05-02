@@ -16,9 +16,6 @@ import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 
-/**
- * @see InlinedDelegateFieldCodeInjectors.CwtOptionDataHolderBase
- */
 abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHolder {
     object Keys : KeyRegistry() {
         val optionConfigs by registerKey<List<CwtOptionMemberConfig<*>>>(this, emptyList())

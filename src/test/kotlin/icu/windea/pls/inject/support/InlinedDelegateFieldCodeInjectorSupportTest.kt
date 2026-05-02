@@ -17,9 +17,12 @@ import javassist.ClassPool
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * @see InlinedDelegateFieldCodeInjectorSupport
+ */
 class InlinedDelegateFieldCodeInjectorSupportTest {
     @Suppress("unused")
-     class Model : UserDataHolderBase() {
+    class Model : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
             val value by registerKey<Int>(this)
@@ -32,7 +35,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     }
 
     @Suppress("unused")
-     class Model2 : UserDataHolderBase() {
+    class Model2 : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
             val value by registerKey<Int, UserDataHolder>(this) { 0 }
@@ -44,7 +47,7 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
     }
 
     @Suppress("unused")
-     class ModelFail : UserDataHolderBase() {
+    class ModelFail : UserDataHolderBase() {
         object Keys : KeyRegistry() {
             val name by registerKey<String, UserDataHolder>(this) { "" }
         }
@@ -186,4 +189,55 @@ class InlinedDelegateFieldCodeInjectorSupportTest {
         setValue.invoke(instance, 1)
         assertEquals(1, getValue.invoke(instance))
     }
+
+    // smoke test for: com.intellij.openapi.components.SerializablePersistentStateComponent.SerializablePersistentStateComponent
+    // unavailable: need to call `state.copy(...)`, consider compiler plugin?
+    //
+    // class Settings : SerializablePersistentStateComponent<Settings.State>(State()) {
+    //     var name: String
+    //         get() = state.name
+    //         set(v) = run { updateState { it.copy(name = v) } }
+    //     var value: String
+    //         get() = state.value
+    //         set(v) = run { updateState { it.copy(value = v) } }
+    //
+    //     data class State(
+    //         @JvmField val name: String = "hello",
+    //         val value: String = "world",
+    //     )
+    // }
+    //
+    // @InlinedDelegateFields
+    // @InjectionTarget("icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Settings")
+    // private class InjectorForSettings : CodeInjectorBase()
+    //
+    // @Test
+    // fun testInlineDelegateField_smokeForSettings() {
+    //     val targetClassName = "icu.windea.pls.inject.support.InlinedDelegateFieldCodeInjectorSupportTest\$Settings"
+    //
+    //     val originalClass = Class.forName(targetClassName, false, javaClass.classLoader)
+    //     assertTrue(originalClass.declaredFields.any { it.name == "name\$delegate" })
+    //
+    //     val pool = ClassPool.getDefault()
+    //     pool.appendClassPath(ClassClassPath(javaClass))
+    //     val ctClass = pool.get(targetClassName)
+    //     ctClass.defrost()
+    //
+    //     val injector = InjectorForSettings()
+    //     injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
+    //
+    //     InlinedDelegateFieldCodeInjectorSupport().apply(injector)
+    //
+    //     // Use bytecode + custom ClassLoader instead of `CtClass.toClass()` to avoid classloader conflicts.
+    //     val bytecode = ctClass.toBytecode()
+    //     ctClass.detach()
+    //
+    //     val loader = ByteArrayClassLoader(javaClass.classLoader)
+    //     val injectedClass = loader.define(targetClassName, bytecode)
+    //
+    //     assertFalse(injectedClass.declaredFields.any { it.name == "name\$delegate" })
+    //
+    //     val instance = injectedClass.getDeclaredConstructor().newInstance()
+    //     assertTrue(instance != null)
+    // }
 }

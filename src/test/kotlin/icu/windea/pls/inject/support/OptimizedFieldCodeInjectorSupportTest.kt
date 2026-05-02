@@ -9,6 +9,9 @@ import javassist.ClassPool
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * @see OptimizedFieldCodeInjectorSupport
+ */
 class OptimizedFieldCodeInjectorSupportTest {
     @Suppress("unused")
     open class OldType {

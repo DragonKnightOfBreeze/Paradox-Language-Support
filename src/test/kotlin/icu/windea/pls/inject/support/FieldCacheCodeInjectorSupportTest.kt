@@ -9,6 +9,9 @@ import javassist.ClassPool
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * @see FieldCacheCodeInjectorSupport
+ */
 class FieldCacheCodeInjectorSupportTest {
     @Suppress("unused")
     class Model {

@@ -49,9 +49,6 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
-/**
- * @see InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase
- */
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
     object Keys : KeyRegistry() {
         val schemas by registerKey<FastList<CwtSchemaConfig>, CwtConfigGroupDataHolder>(this) { FastList() }
