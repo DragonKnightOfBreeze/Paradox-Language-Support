@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.lang.ExpressionTypeProvider
 import com.intellij.openapi.util.NlsContexts
@@ -16,6 +16,8 @@ import icu.windea.pls.config.util.CwtConfigManager
  * - 规则类型 - 当 PSI 表示一个规则时可用，基于规则的位置。
  */
 class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
+    // com.intellij.codeInsight.hint.JavaTypeProvider
+
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
         return CwtTypeManager.findTypedElements(elementAt)
     }

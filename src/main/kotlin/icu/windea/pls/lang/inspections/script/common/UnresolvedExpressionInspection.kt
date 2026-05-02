@@ -22,7 +22,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
-import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.expression
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized

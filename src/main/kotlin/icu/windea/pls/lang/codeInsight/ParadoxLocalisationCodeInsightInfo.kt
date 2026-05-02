@@ -1,4 +1,4 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.lang.codeInsight
 
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.model.ParadoxDefinitionInfo

@@ -1,4 +1,4 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.lang.codeInsight
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -11,6 +11,7 @@ import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.enabledTool
 import icu.windea.pls.core.getInspectionToolState
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil

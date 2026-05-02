@@ -1,8 +1,8 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
+import icu.windea.pls.ep.ReferenceLinkProvider
 
 object ReferenceLinkService {
     fun supports(link: String): Boolean {

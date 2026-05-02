@@ -21,7 +21,7 @@ import icu.windea.pls.ai.services.TranslateLocalisationAiService
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import java.awt.Dimension
 import kotlin.contracts.ExperimentalContracts

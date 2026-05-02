@@ -1,4 +1,4 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.lang.codeInsight.generation
 
 data class ParadoxLocalisationGenerationInfo(
     val name: String,

@@ -15,8 +15,9 @@ import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -45,7 +46,7 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
 
                 files.forEachConcurrent { file ->
                     val elements = findElements(e, file)
-                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+                    val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 

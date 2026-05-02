@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents
@@ -33,6 +33,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -54,7 +55,6 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
 import icu.windea.pls.script.psi.parentProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {

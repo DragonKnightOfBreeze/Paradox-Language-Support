@@ -5,10 +5,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 
 class GenerateLocalisationsInFileHandler(
     var context: ParadoxLocalisationCodeInsightContext? = null,

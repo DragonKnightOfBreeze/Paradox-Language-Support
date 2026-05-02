@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
+import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
@@ -67,7 +67,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.ParadoxDefinitionSource
+import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
@@ -79,8 +81,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.ParadoxLocalisationType
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
@@ -948,7 +948,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val contents = PlsCodeInsightService.listQuickDocText(element)
+        val contents = ParadoxCodeInsightService.listQuickDocText(element)
         if (contents.isEmpty()) return
         contents.forEach { content { append(it) } }
     }

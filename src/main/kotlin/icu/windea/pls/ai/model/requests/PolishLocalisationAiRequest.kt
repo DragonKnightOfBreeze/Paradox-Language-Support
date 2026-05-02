@@ -2,7 +2,7 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
 import java.util.concurrent.atomic.AtomicInteger
 
 class PolishLocalisationAiRequest(

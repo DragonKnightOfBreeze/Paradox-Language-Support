@@ -1,12 +1,13 @@
-package icu.windea.pls.ep.codeInsight.navigation
+package icu.windea.pls.ep
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
+import icu.windea.pls.model.ReferenceLinkType
 
 /**
  * 用于将特定的链接（快速文档中的PSI链接，或是html/markdown等文件中的链接）解析为匹配的目标引用（定义、本地化等）。
  *
- * @see icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider
+ * @see ReferenceLinkType
  */
 interface ReferenceLinkProvider {
     val linkPrefix: String

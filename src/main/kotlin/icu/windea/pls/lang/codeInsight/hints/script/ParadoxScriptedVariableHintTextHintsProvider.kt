@@ -7,7 +7,7 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
-import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
+import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -47,7 +47,7 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
         if (name.isNullOrEmpty()) return
         if (name.isParameterized()) return
 
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(scriptedVariable) ?: return
+        val hintLocalisation = ParadoxCodeInsightService.getHintLocalisation(scriptedVariable) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }

@@ -17,7 +17,7 @@ import icu.windea.pls.ai.model.toLineFlow
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.PlsPrompts
 import icu.windea.pls.core.coroutines.chunked
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat

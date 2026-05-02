@@ -20,8 +20,9 @@ import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -43,7 +44,7 @@ class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntent
         val (elements, data) = context
         val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.progress.title")) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false

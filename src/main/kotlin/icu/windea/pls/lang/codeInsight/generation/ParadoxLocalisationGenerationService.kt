@@ -15,9 +15,6 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationGenerationContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationGenerationContextBuilder
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationGenerationInfo
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 

@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
-import icu.windea.pls.lang.codeInsight.ReferenceLinkService
+import icu.windea.pls.lang.ReferenceLinkService
 
 // org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 
@@ -14,7 +14,6 @@ import icu.windea.pls.lang.codeInsight.ReferenceLinkService
  * 用于支持在 html/markdown 等文件中，将特定的链接解析为匹配的目标引用（定义、本地化等）。
  *
  * @see ParadoxPathReference
- * @see icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
  */
 class ParadoxPathReferenceProvider : PathReferenceProviderBase() {
     override fun createReferences(element: PsiElement, offset: Int, text: String?, references: MutableList<in PsiReference>, soft: Boolean): Boolean {

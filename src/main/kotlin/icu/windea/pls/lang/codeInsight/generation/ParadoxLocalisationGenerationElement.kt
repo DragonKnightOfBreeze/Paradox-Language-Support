@@ -5,9 +5,9 @@ import com.intellij.codeInsight.generation.MemberChooserObject
 import com.intellij.codeInsight.generation.MemberChooserObjectBase
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import javax.swing.Icon
 
 sealed class ParadoxLocalisationGenerationElement(text: String, icon: Icon? = null) : MemberChooserObjectBase(text, icon) {

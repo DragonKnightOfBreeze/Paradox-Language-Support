@@ -5,7 +5,7 @@ import com.intellij.platform.backend.documentation.DocumentationLinkHandler
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.LinkResolveResult
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.lang.codeInsight.ReferenceLinkService
+import icu.windea.pls.lang.ReferenceLinkService
 
 class CwtDocumentationLinkHandler : DocumentationLinkHandler {
     override fun resolveLink(target: DocumentationTarget, url: String): LinkResolveResult? {

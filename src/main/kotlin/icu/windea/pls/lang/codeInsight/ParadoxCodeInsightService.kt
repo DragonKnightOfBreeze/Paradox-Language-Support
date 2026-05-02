@@ -10,7 +10,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import java.awt.Color
 
-object PlsCodeInsightService {
+object ParadoxCodeInsightService {
     @Suppress("unused")
     fun getQuickDocText(element: PsiElement): String? {
         val gameType = selectGameType(element)

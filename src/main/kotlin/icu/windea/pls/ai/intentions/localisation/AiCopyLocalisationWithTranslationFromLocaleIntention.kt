@@ -23,9 +23,10 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -50,7 +51,7 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
         val (elements, selectedLocale, data) = context
         val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false

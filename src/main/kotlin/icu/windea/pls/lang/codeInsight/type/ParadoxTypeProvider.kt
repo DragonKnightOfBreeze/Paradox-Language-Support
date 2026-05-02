@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.lang.ExpressionTypeProvider
 import com.intellij.openapi.util.text.HtmlChunk
@@ -13,8 +13,6 @@ import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
-// com.intellij.codeInsight.hint.JavaTypeProvider
-
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
@@ -28,6 +26,8 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
  * - 作用域上下文信息 - 如果存在则可用。
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
+    // com.intellij.codeInsight.hint.JavaTypeProvider
+
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
         return ParadoxTypeManager.findTypedElements(elementAt)
     }

@@ -1,4 +1,4 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.lang.codeInsight.generation
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig

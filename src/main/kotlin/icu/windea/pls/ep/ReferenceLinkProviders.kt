@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.codeInsight.navigation
+package icu.windea.pls.ep
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager
@@ -27,11 +27,11 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class CwtConfigLinkProvider : ReferenceLinkProvider {
     override val linkPrefix = ReferenceLinkType.CwtConfig.prefix

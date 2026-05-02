@@ -45,14 +45,14 @@
     <qualifiedNameProvider implementation="icu.windea.pls.lang.actions.ParadoxQualifiedNameProvider"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxEntryCreateDirectoryCompletionContributor"/>
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
-
-    <codeInsight.typeInfo language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.CwtTypeProvider"/>
-    <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTypeProvider"/>
-    <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.CwtTypeDeclarationProvider"/>
-    <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
     <targetElementEvaluator language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTargetElementEvaluator"/>
     <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
+
+    <codeInsight.typeInfo language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.type.CwtTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.type.ParadoxTypeProvider"/>
+    <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.type.CwtTypeDeclarationProvider"/>
+    <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.type.ParadoxTypeDeclarationProvider"/>
 
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler"/>
 

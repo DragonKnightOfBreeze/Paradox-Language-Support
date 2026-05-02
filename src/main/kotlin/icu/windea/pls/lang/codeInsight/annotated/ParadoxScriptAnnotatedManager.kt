@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.annotated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
+import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxType

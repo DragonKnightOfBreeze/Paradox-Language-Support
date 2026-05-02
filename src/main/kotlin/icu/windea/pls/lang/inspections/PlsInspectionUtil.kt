@@ -9,13 +9,13 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
 import icu.windea.pls.core.match.similarity.SimilarityMatchService
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionInListFix
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object PlsInspectionUtil {

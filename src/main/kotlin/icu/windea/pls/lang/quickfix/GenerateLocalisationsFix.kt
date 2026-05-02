@@ -12,9 +12,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.codeInsight.generation.GenerateLocalisationsHandler
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 class GenerateLocalisationsFix(
     element: PsiElement,

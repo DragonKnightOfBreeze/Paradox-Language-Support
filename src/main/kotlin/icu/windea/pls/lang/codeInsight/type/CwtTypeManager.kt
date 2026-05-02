@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight
+package icu.windea.pls.lang.codeInsight.type
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parents

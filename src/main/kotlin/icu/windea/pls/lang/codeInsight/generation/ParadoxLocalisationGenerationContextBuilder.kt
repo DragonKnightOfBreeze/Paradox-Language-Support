@@ -1,11 +1,10 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.lang.codeInsight.generation
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.lang.codeInsight.generation.ParadoxLocalisationGenerationElement
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 object ParadoxLocalisationGenerationContextBuilder {
     fun build(

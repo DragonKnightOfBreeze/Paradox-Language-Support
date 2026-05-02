@@ -12,11 +12,11 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.codeInsight.type
-import icu.windea.pls.model.forCwtType
-import icu.windea.pls.model.constants.PlsStrings
-import java.util.*
+import icu.windea.pls.lang.type
 import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.forCwtType
+import java.util.*
 
 /**
  * 选项值规则。

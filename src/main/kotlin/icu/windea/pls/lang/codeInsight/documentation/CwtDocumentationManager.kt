@@ -37,7 +37,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.codeInsight.configType
+import icu.windea.pls.lang.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
@@ -61,7 +61,7 @@ import icu.windea.pls.lang.util.builders.getScopeContextText
 import icu.windea.pls.lang.util.builders.getScopeText
 import icu.windea.pls.lang.util.builders.getScopesText
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
-import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.scope.ParadoxScopeId

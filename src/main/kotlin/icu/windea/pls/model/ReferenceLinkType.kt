@@ -1,7 +1,10 @@
-package icu.windea.pls.model.codeInsight
+package icu.windea.pls.model
 
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.ep.ReferenceLinkProvider
 
+/**
+ * @see ReferenceLinkProvider
+ */
 abstract class ReferenceLinkType(
     val prefix: String
 ) {

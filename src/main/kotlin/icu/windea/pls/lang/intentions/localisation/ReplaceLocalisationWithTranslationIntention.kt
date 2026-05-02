@@ -17,9 +17,10 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -36,7 +37,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 

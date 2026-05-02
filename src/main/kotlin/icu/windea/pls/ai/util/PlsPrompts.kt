@@ -4,7 +4,7 @@ import com.intellij.DynamicBundle
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.prompts.PromptTemplateEngine
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
 import org.intellij.lang.annotations.Language
 import java.util.*
 

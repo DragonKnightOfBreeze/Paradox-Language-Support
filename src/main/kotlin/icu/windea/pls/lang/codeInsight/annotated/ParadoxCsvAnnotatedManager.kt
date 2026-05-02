@@ -4,7 +4,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.FallbackStrings
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
-import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
+import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.model.ParadoxType
 

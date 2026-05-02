@@ -24,12 +24,12 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.codeInsight.type
+import icu.windea.pls.lang.type
 import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtMembersType
-import icu.windea.pls.model.forCwtType
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.constants.PlsStrings
+import icu.windea.pls.model.forCwtType
 
 /**
  * 值规则（值型成员规则）。
