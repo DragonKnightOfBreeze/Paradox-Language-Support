@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.util
+package icu.windea.pls.core.options
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.options.Configurable
@@ -9,7 +9,7 @@ import icu.windea.pls.core.memberFunction
 import icu.windea.pls.core.runCatchingCancelable
 
 @Suppress("unused")
-object PlsOptionsManager {
+object OptionsService {
     fun <T : Configurable> showSettingsDialog(project: Project? = null, id: String) {
         // 如果在设置页面中使用，则会嵌套打开另一个设置页面
         ShowSettingsUtil.getInstance().showSettingsDialog(project, id)

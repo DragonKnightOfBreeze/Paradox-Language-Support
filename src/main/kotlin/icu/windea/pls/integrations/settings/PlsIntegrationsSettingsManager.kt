@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.ide.util.PlsOptionsManager
+import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
@@ -33,11 +33,11 @@ object PlsIntegrationsSettingsManager {
 
     fun installTranslationPlugin() {
         // NOTE 这里需要先切换到插件市场分页，并设置查询关键字
-        PlsOptionsManager.selectPlugin("Translation", openMarketplaceTab = true)
+        OptionsService.selectPlugin("Translation", openMarketplaceTab = true)
     }
 
     fun openAiSettingsPage() {
-        PlsOptionsManager.select<PlsAiSettingsConfigurable>()
+        OptionsService.select<PlsAiSettingsConfigurable>()
     }
 
     // Lint Tools
