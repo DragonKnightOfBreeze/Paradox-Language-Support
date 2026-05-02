@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.util
+package icu.windea.pls.core.vfs
 
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -10,11 +10,11 @@ import com.intellij.openapi.vfs.newvfs.ArchiveFileSystem
 import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.util.Processors
-import icu.windea.pls.lang.actions.editor
 import java.nio.file.Path
 
-object PlsFileManager {
+object VirtualFileService {
     fun isLightFile(file: VirtualFile?): Boolean {
         return file is LightVirtualFileBase
     }
@@ -27,7 +27,7 @@ object PlsFileManager {
         return file is StubVirtualFile
     }
 
-    fun isInArchiveFIle(file: VirtualFile?): Boolean {
+    fun isInArchiveFile(file: VirtualFile?): Boolean {
         return file?.fileSystem is ArchiveFileSystem
     }
 

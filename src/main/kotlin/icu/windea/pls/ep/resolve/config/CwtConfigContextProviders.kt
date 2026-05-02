@@ -9,7 +9,7 @@ import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
@@ -221,7 +221,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 
         val vFile = selectFile(file)
         if (vFile == null) return null
-        if (PlsFileManager.isInjectedFile(vFile)) return null // ignored for injected psi
+        if (VirtualFileService.isInjectedFile(vFile)) return null // ignored for injected psi
         val fileInfo = vFile.fileInfo
         if (fileInfo == null) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile) ?: return null

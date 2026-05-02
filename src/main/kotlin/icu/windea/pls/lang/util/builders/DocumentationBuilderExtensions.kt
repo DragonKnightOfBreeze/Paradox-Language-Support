@@ -11,19 +11,19 @@ import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsUrlService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.model.scope.toScopeMap
-import icu.windea.pls.model.ParadoxGameType
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
     DocumentationManagerUtil.createHyperlink(content, refText, label, plainLink)
@@ -48,7 +48,7 @@ fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = selectFile(element) ?: return this
-    if (PlsFileManager.isInjectedFile(file)) return this // ignored for injected PSI
+    if (VirtualFileService.isInjectedFile(file)) return this // ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     if (rootInfo !is ParadoxRootInfo.MetadataBased) return this

@@ -14,12 +14,12 @@ import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.context
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getColumnSize
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
 import kotlinx.coroutines.launch
 import java.util.function.Supplier

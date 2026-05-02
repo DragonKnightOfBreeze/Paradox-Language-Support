@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.core.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile

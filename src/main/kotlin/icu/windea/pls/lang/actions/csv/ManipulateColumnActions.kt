@@ -12,12 +12,12 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.getColumnIndex
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
 import kotlinx.coroutines.launch
 

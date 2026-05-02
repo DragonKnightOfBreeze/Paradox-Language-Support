@@ -1,6 +1,6 @@
 package icu.windea.pls.lang
 
-object PlsNameValidators {
+object ParadoxNameValidators {
     // NOTE 2.1.3 部分 `RenameInputValidator` 是有必要实现的，因为对应的 `name` 也接受额外字符
 
     fun checkScriptedVariableName(name: String): Boolean = name.isNotEmpty() && name.isIdentifier()

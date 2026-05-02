@@ -5,10 +5,10 @@ import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.core.options.OptionsService
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
@@ -65,8 +65,8 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onTigerSettingsChanged")) return
 
-        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.refreshFiles(files, refreshInlayHints = false)
+        val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.refreshFiles(files, refreshInlayHints = false)
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {

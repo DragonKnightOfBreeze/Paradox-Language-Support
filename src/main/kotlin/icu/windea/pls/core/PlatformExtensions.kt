@@ -19,12 +19,13 @@ import com.intellij.model.Symbol
 import com.intellij.model.psi.PsiSymbolService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
@@ -62,7 +63,6 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
-import com.intellij.util.ArrayUtil
 import com.intellij.util.Processor
 import com.intellij.util.Query
 import com.intellij.util.ThrowableRunnable
@@ -77,7 +77,6 @@ import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
 import org.jetbrains.concurrency.CancellablePromise
 import org.jetbrains.concurrency.resolvedCancellablePromise
-import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
@@ -155,12 +154,6 @@ fun <T> Query<T>.process(consumer: Processor<in T>): Boolean {
 fun <T> Query<T>.processAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
-
-@Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
-
-@Suppress("NOTHING_TO_INLINE")
-inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 
 /**
  * 得到默认项目。
@@ -265,27 +258,19 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
 
 // endregion
 
+// region Event Extensions
+
+val AnActionEvent.editor: Editor? get() = getData(CommonDataKeys.EDITOR)
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.getData(this)
+
+// endregion
+
 // region VFS Extensions
-
-// /**查找当前项目中指定语言文件类型和作用域的VirtualFile。 */
-// fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
-//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
-// }
-
-// /**查找当前项目中指定语言文件类型和作用域的PsiFile。 */
-// inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
-//	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
-//		PsiManager.getInstance(project).findFile(it)
-//	}.filterIsInstance<T>()
-// }
-
-// /**递归得到当前VirtualFile的所有作为子节点的VirtualFile。 */
-// fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
-//	for(child in this.children) {
-//		if (child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
-//	}
-//	return destination
-// }
 
 /** 将文件路径转换为 VirtualFile（可选刷新 VFS）。 */
 fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
@@ -315,37 +300,6 @@ fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
 fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
     if (project.isDisposed) return null
     return if (this.isFile) toPsiFile(project) else toPsiDirectory(project)
-}
-
-/** 判断（物理层面）是否包含指定 BOM。 */
-fun VirtualFile.hasBom(bom: ByteArray): Boolean {
-    return this.bom.let { it != null && it contentEquals bom }
-}
-
-/** 添加 BOM 到虚拟文件（物理层面）。 */
-@Throws(IOException::class)
-fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
-    this.bom = bom
-    val bytes = this.contentsToByteArray()
-    val contentWithAddedBom = ArrayUtil.mergeArrays(bom, bytes)
-    if (wait) {
-        WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithAddedBom) }
-    } else {
-        WriteAction.run<IOException> { this.setBinaryContent(contentWithAddedBom) }
-    }
-}
-
-/** 从虚拟文件移除 BOM（物理层面）。 */
-@Throws(IOException::class)
-fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
-    this.bom = null
-    val bytes = this.contentsToByteArray()
-    val contentWithStrippedBom = bytes.copyOfRange(bom.size, bytes.size)
-    if (wait) {
-        WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
-    } else {
-        WriteAction.run<IOException> { this.setBinaryContent(contentWithStrippedBom) }
-    }
 }
 
 // endregion

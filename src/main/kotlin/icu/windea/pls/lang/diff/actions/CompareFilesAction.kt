@@ -26,9 +26,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch

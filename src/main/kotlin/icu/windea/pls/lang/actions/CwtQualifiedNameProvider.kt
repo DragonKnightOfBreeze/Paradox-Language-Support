@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.actions
 
 import com.intellij.ide.actions.QualifiedNameProvider
 import com.intellij.openapi.project.Project

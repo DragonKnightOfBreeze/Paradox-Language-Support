@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.core.editor
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.actions.editor
 
 /**
  * 导航到对应的规则。

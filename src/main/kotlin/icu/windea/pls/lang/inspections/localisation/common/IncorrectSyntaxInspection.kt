@@ -11,7 +11,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.indicesOf
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.quickfix.ReplaceStringFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -38,7 +38,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
 
     private fun checkIncorrectLeftBracketEscape(holder: ProblemsHolder, element: PsiElement) {
         if (element.elementType != TEXT_TOKEN) return
-        if (PlsFileManager.isInjectedFile(holder.file.virtualFile)) return // only for actual localisation files, skip injected files (e.g., in script strings)
+        if (VirtualFileService.isInjectedFile(holder.file.virtualFile)) return // only for actual localisation files, skip injected files (e.g., in script strings)
         val text = element.text
         val indices = text.indicesOf("\\[")
         if (indices.isEmpty()) return

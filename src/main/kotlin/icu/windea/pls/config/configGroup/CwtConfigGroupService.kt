@@ -20,16 +20,16 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
@@ -199,8 +199,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     fun reparseOpenedFiles() {
         if (project.isDefault || project.isDisposed) return
         // 重新解析并刷新已打开的文件（IDE之后会自动请求重新索引）
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.reparseFiles(openedFiles)
+        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.reparseFiles(openedFiles)
     }
 
     fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
@@ -215,8 +215,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
-        val files = PlsDaemonManager.findFilesByRootFilePaths(rootFilePaths)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsAnalysisManager.reparseFiles(files)
     }
 
     fun refreshRootsForLibraries(project: Project, force: Boolean = false) {

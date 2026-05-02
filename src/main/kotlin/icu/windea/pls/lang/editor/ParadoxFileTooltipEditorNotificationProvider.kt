@@ -9,7 +9,7 @@ import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.children
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.codeInsight.generation.ParadoxLocalisationGenerationService
 import icu.windea.pls.lang.util.ParadoxLocalisationListManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -30,7 +30,7 @@ class ParadoxFileTooltipEditorNotificationProvider : EditorNotificationProvider 
     }
 
     private fun forLocalisationGeneration(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        if (!PlsFileManager.isLightFile(file)) return null
+        if (!VirtualFileService.isLightFile(file)) return null
         if (file.fileType != ParadoxLocalisationFileType) return null
         val fileTooltip = file.getUserData(ParadoxLocalisationGenerationService.fileTooltipKey) ?: return null
         return Function f@{ fileEditor ->

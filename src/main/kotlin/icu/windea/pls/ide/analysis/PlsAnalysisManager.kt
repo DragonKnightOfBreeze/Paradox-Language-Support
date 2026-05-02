@@ -1,4 +1,4 @@
-package icu.windea.pls.ide.util
+package icu.windea.pls.ide.analysis
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
@@ -18,12 +18,10 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
-object PlsDaemonManager {
-    // region VFS Methods
-
+object PlsAnalysisManager {
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
         // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
         // exclude some specific root file paths to avoid parsing and indexing unexpected files
@@ -78,15 +76,11 @@ object PlsDaemonManager {
         return files
     }
 
-    // endregion
-
-    // region Refresh Methods
-
     fun refreshAllFileTrackers() {
-        PlsModificationTrackers.ScriptFile.incModificationCount()
-        PlsModificationTrackers.LocalisationFile.incModificationCount()
-        PlsModificationTrackers.CsvFile.incModificationCount()
-        PlsModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
+        ParadoxModificationTrackers.ScriptFile.incModificationCount()
+        ParadoxModificationTrackers.LocalisationFile.incModificationCount()
+        ParadoxModificationTrackers.CsvFile.incModificationCount()
+        ParadoxModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
     }
 
     fun refreshFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {

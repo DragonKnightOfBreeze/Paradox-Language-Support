@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
@@ -36,7 +36,7 @@ object ParadoxPsiFileMatcher {
             if (!constraint.test(fileInfo.path)) return false
             return true
         } else {
-            if (injectable && PlsFileManager.isInjectedFile(file.virtualFile)) return true
+            if (injectable && VirtualFileService.isInjectedFile(file.virtualFile)) return true
             return false
         }
     }
@@ -58,7 +58,7 @@ object ParadoxPsiFileMatcher {
             if (!constraint.test(fileInfo.path)) return false
             return true
         } else {
-            if (injectable && PlsFileManager.isInjectedFile(file.virtualFile)) return true
+            if (injectable && VirtualFileService.isInjectedFile(file.virtualFile)) return true
             return false
         }
     }
@@ -80,7 +80,7 @@ object ParadoxPsiFileMatcher {
             if (!constraint.test(fileInfo.path)) return false
             return true
         } else {
-            if (injectable && PlsFileManager.isInjectedFile(file.virtualFile)) return true
+            if (injectable && VirtualFileService.isInjectedFile(file.virtualFile)) return true
             return false
         }
     }

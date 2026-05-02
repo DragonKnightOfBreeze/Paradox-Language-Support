@@ -40,7 +40,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -435,7 +435,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsNameValidators.checkLocalisationName(keyword)) return
+        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -472,7 +472,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsNameValidators.checkLocalisationName(keyword)) return
+        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))

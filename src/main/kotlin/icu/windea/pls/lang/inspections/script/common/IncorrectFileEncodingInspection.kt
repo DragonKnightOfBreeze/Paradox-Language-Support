@@ -7,14 +7,14 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.hasBom
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileBomService
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
@@ -31,8 +31,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val virtualFile = file.virtualFile
-        if (PlsFileManager.isLightFile(virtualFile)) return false
-        if (PlsFileManager.isInjectedFile(virtualFile)) return false
+        if (VirtualFileService.isLightFile(virtualFile)) return false
+        if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 要求是可接受的脚本文件
         return ParadoxPsiFileMatcher.isScriptFile(file)
     }
@@ -41,7 +41,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
         val virtualFile = file.virtualFile ?: return null
         val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
         val charset = virtualFile.charset
-        val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
+        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
         val isValidCharset = charset == Charsets.UTF_8
         val validBom = run {
             val gameType = selectGameType(virtualFile)

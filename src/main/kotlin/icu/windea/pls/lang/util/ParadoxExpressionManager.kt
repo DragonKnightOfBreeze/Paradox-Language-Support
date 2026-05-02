@@ -48,7 +48,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -480,7 +480,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetReferences(element)
-            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, PlsModificationTrackers.expression(element))
+            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, ParadoxModificationTrackers.expression(element))
         }
     }
 
@@ -511,7 +511,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.ScriptExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptExpressionResolution)
         }
     }
 
@@ -522,7 +522,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.LocalisationExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationExpressionResolution)
         }
     }
 
@@ -532,7 +532,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.CsvExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.CsvExpressionResolution)
         }
     }
 

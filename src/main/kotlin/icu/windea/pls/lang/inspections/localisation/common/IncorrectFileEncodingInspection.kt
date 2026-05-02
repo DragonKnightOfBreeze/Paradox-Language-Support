@@ -7,8 +7,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.hasBom
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileBomService
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.model.constants.PlsConstants
@@ -28,8 +28,8 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val virtualFile = file.virtualFile
-        if (PlsFileManager.isLightFile(virtualFile)) return false
-        if (PlsFileManager.isInjectedFile(virtualFile)) return false
+        if (VirtualFileService.isLightFile(virtualFile)) return false
+        if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
@@ -37,7 +37,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         val virtualFile = file.virtualFile ?: return null
         val charset = virtualFile.charset
-        val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
+        val hasBom = VirtualFileBomService.hasBom(virtualFile, PlsConstants.utf8Bom)
         val isValidCharset = charset == Charsets.UTF_8
         val isValidBom = hasBom
         if (isValidCharset && isValidBom) return null

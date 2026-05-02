@@ -8,11 +8,11 @@ import com.intellij.openapi.fileChooser.FileSystemTree
 import com.intellij.openapi.fileChooser.actions.FileChooserAction
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxFileInfo
-import java.nio.file.Path
 import icu.windea.pls.model.ParadoxGameType
+import java.nio.file.Path
 
 /**
  * 用于在文件选择页面中跳转到一个路径。
@@ -70,7 +70,7 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
     protected open fun shouldExpand(fileChooser: FileSystemTree, e: AnActionEvent): Boolean = false
 
     protected fun getFileInfo(e: AnActionEvent): ParadoxFileInfo? {
-        val files = PlsFileManager.findFiles(e)
+        val files = VirtualFileService.findFiles(e)
         val fileInfo = files.firstNotNullOfOrNull { it.fileInfo }
         return fileInfo
     }

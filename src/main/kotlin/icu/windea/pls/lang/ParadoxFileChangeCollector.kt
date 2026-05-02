@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastSet
-import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.PlsConstants
@@ -186,20 +186,20 @@ class ParadoxFileChangeCollector {
 
         // 通知更改 & 重新解析和索引相关文件
         if (refreshFilePaths) {
-            PlsModificationTrackers.FilePath.incModificationCount()
+            ParadoxModificationTrackers.FilePath.incModificationCount()
         }
         if (refreshInlineScripts) {
-            PlsModificationTrackers.ScriptFile.incModificationCount()
-            PlsModificationTrackers.InlineScripts.incModificationCount()
+            ParadoxModificationTrackers.ScriptFile.incModificationCount()
+            ParadoxModificationTrackers.InlineScripts.incModificationCount()
         }
         if (reparseOpenedFiles) {
             // 重新解析所有项目的所有已打开的文件
-            val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsDaemonManager.reparseFiles(files)
+            val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsAnalysisManager.reparseFiles(files)
         } else if (refreshInlineScripts) {
             // 重新解析所有项目的所有已打开的内联脚本文件
-            val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-            PlsDaemonManager.reparseFiles(files)
+            val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+            PlsAnalysisManager.reparseFiles(files)
         }
     }
 }

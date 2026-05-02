@@ -6,8 +6,8 @@ import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -17,11 +17,11 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
         override fun enteredDumbMode() {
-            PlsDaemonManager.refreshAllFileTrackers()
+            PlsAnalysisManager.refreshAllFileTrackers()
         }
 
         override fun exitDumbMode() {
-            PlsDaemonManager.refreshAllFileTrackers()
+            PlsAnalysisManager.refreshAllFileTrackers()
         }
     }
 
@@ -35,8 +35,8 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val fileInfo = file.fileInfo ?: return
         when (file) {
             is ParadoxScriptFile -> {
-                PlsModificationTrackers.ScriptFile.incModificationCount()
-                val trackers = PlsModificationTrackers.ScriptFileMap.values
+                ParadoxModificationTrackers.ScriptFile.incModificationCount()
+                val trackers = ParadoxModificationTrackers.ScriptFileMap.values
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
@@ -48,10 +48,10 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 }
             }
             is ParadoxLocalisationFile -> {
-                PlsModificationTrackers.LocalisationFile.incModificationCount()
+                ParadoxModificationTrackers.LocalisationFile.incModificationCount()
             }
             is ParadoxCsvFile -> {
-                PlsModificationTrackers.CsvFile.incModificationCount()
+                ParadoxModificationTrackers.CsvFile.incModificationCount()
             }
         }
     }

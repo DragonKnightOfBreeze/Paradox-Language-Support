@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.images.dds.DdsFileType
@@ -191,7 +191,7 @@ object ParadoxImageManager {
 
     private fun doCreateImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
         if (imagePath.exists()) {
-            if (PlsFileManager.isStubFile(file)) return true
+            if (VirtualFileService.isStubFile(file)) return true
             val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
             val slicedInfos = ParadoxAnalysisManager.getSliceInfos(file)
             if (!slicedInfos.add(sliceInfo)) return true

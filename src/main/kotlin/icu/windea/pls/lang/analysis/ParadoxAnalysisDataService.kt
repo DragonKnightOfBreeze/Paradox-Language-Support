@@ -13,14 +13,14 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.LazyValue
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
 import kotlin.reflect.KProperty
-import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused", "ktPropBy")
 @Service
@@ -70,7 +70,7 @@ class ParadoxAnalysisDataService : Disposable {
     var VirtualFile.sliceInfos: MutableSet<String>? by registerKey(Keys)
 
     private operator fun <T> Key<T>.setValue(thisRef: VirtualFile, property: KProperty<*>, value: T?) {
-        if (PlsFileManager.isStubFile(thisRef)) return // skip for `StubVirtualFile` (unsupported)
+        if (VirtualFileService.isStubFile(thisRef)) return // skip for `StubVirtualFile` (unsupported)
         thisRef.putUserData(this, value)
         trackedFiles.put(thisRef, EMPTY_OBJECT) // auto track file when write user data
     }

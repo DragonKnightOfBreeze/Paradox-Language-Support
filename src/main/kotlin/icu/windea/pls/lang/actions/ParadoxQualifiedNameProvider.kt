@@ -1,8 +1,9 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.actions
 
 import com.intellij.ide.actions.QualifiedNameProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -41,4 +42,3 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
         return null // 不处理
     }
 }
-

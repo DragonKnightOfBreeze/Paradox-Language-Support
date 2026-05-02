@@ -20,8 +20,8 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.ide.util.PlsFileManager
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
@@ -60,7 +60,7 @@ object ParadoxScriptInjectionManager {
         if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
-        if (!PlsNameValidators.checkParameterName(argumentName)) return  // 参数名必须合法
+        if (!ParadoxNameValidators.checkParameterName(argumentName)) return  // 参数名必须合法
         val argumentValue = host.text.orNull() ?: return  // 参数参数值为空的情况
         if (shouldApplyParameterValueInjection(argumentValue)) return
 
@@ -100,7 +100,7 @@ object ParadoxScriptInjectionManager {
         if (!PlsSettings.getInstance().state.inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
-        if (!PlsNameValidators.checkParameterName(parameterName)) return  // 参数名必须合法
+        if (!ParadoxNameValidators.checkParameterName(parameterName)) return  // 参数名必须合法
         val defaultValue = host.defaultValue?.orNull() ?: return  // 排除默认值不存在或为空的情况
         if (!shouldApplyParameterValueInjection(defaultValue)) return
 
@@ -159,7 +159,7 @@ object ParadoxScriptInjectionManager {
 
     fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
         val vFile = selectFile(injectedFile) ?: return null
-        if (!PlsFileManager.isInjectedFile(vFile)) return null
+        if (!VirtualFileService.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 

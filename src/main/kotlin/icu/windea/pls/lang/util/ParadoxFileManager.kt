@@ -14,8 +14,8 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.ParadoxCsvFileType
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
@@ -42,7 +42,7 @@ object ParadoxFileManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val entryPath = fileInfo.entryPath ?: return null
         val path = entryPath.resolve(scriptedVariablesPath)
-        return PlsFileManager.findDirectory(path)
+        return VirtualFileService.findDirectory(path)
     }
 
     /**

@@ -7,8 +7,8 @@ import com.intellij.openapi.application.EDT
 import com.intellij.psi.util.PsiUtilBase
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.findElementAt
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.ui.evaluators.ParadoxInlineMathEvaluatorDialog
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath

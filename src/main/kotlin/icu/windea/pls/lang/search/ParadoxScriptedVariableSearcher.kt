@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
@@ -88,7 +88,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
 
         val psiFile = file.toPsiFile(queryParameters.project) ?: return true
 
-        if (PlsFileManager.isInjectedFile(file)) {
+        if (VirtualFileService.isInjectedFile(file)) {
             run {
                 // input file is an injected file (from argument value)
                 val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
@@ -100,7 +100,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             return true
         }
 
-        if (PlsFileManager.isLightFile(file)) return true // skip for other in-memory files
+        if (VirtualFileService.isLightFile(file)) return true // skip for other in-memory files
 
         // input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true

@@ -2,8 +2,8 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.util.application
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener
@@ -27,7 +27,7 @@ object PlsSettingsManager {
     fun onPreferredLocaleChanged(callbackLock: CallbackLock, oldPreferredLocale: String, newPreferredLocale: String) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 
-        PlsModificationTrackers.PreferredLocale.incModificationCount()
+        ParadoxModificationTrackers.PreferredLocale.incModificationCount()
 
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
@@ -38,14 +38,14 @@ object PlsSettingsManager {
     fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = PlsDaemonManager.findFilesByFileNames(fileNames)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findFilesByFileNames(fileNames)
+        PlsAnalysisManager.reparseFiles(files)
     }
 
     fun refreshForParameterInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForParameterInference")) return
 
-        PlsModificationTrackers.ParameterConfigInference.incModificationCount()
+        ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
 
         refreshForOpenedFiles(callbackLock)
     }
@@ -53,19 +53,19 @@ object PlsSettingsManager {
     fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForInlineScriptInference")) return
 
-        PlsModificationTrackers.ScriptFile.incModificationCount()
-        PlsModificationTrackers.InlineScripts.incModificationCount()
-        PlsModificationTrackers.InlineScriptConfigInference.incModificationCount()
+        ParadoxModificationTrackers.ScriptFile.incModificationCount()
+        ParadoxModificationTrackers.InlineScripts.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsDaemonManager.reparseFiles(openedFiles)
+        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsAnalysisManager.reparseFiles(openedFiles)
     }
 
     fun refreshForScopeContextInference(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForScopeContextInference")) return
 
-        PlsModificationTrackers.DefinitionScopeContextInference.incModificationCount()
+        ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
         refreshForOpenedFiles(callbackLock)
     }
@@ -73,7 +73,7 @@ object PlsSettingsManager {
     fun refreshForOpenedFiles(callbackLock: CallbackLock) {
         if (!callbackLock.check("refreshForOpenedFiles")) return
 
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.refreshFiles(openedFiles)
+        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.refreshFiles(openedFiles)
     }
 }

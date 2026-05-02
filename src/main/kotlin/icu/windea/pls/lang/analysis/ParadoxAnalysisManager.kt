@@ -22,7 +22,7 @@ import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.values.LazyValue
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.light.CwtConfigLightElementBase
 import icu.windea.pls.lang.psi.light.ParadoxLightElementBase
@@ -49,9 +49,9 @@ object ParadoxAnalysisManager {
         if (!rootFile.isDirectory) return null
 
         // skip for `StubVirtualFile` (unsupported)
-        if (PlsFileManager.isStubFile(rootFile)) return null
+        if (VirtualFileService.isStubFile(rootFile)) return null
         // skip for in achieve files (unsupported)
-        if (PlsFileManager.isInArchiveFIle(rootFile)) return null
+        if (VirtualFileService.isInArchiveFile(rootFile)) return null
 
         // try to get injected root info first
         doGetForcedRootInfo(rootFile)?.let { return it }
@@ -73,7 +73,7 @@ object ParadoxAnalysisManager {
 
     private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
-        if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
+        if (rootInfo != null && !VirtualFileService.isLightFile(rootFile)) {
             application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
         }
         return rootInfo
@@ -86,11 +86,11 @@ object ParadoxAnalysisManager {
 
     fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
         // no file info for `VirtualFileWindow` (injected PSI)
-        if (PlsFileManager.isInjectedFile(file)) return null
+        if (VirtualFileService.isInjectedFile(file)) return null
         // skip for `StubVirtualFile` (unsupported)
-        if (PlsFileManager.isStubFile(file)) return null
+        if (VirtualFileService.isStubFile(file)) return null
         // skip for in achieve files (unsupported)
-        if (PlsFileManager.isInArchiveFIle(file)) return null
+        if (VirtualFileService.isInArchiveFile(file)) return null
 
         // try to get injected file info first
         doGetForcedFileInfo(file)?.let { return it }
@@ -184,9 +184,9 @@ object ParadoxAnalysisManager {
         // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
         // skip for `StubVirtualFile` (unsupported)
-        if (PlsFileManager.isStubFile(file)) return null
+        if (VirtualFileService.isStubFile(file)) return null
         // skip for in achieve files (unsupported)
-        if (PlsFileManager.isInArchiveFIle(file)) return null
+        if (VirtualFileService.isInArchiveFile(file)) return null
 
         // try to get injected locale config first
         doGetForcedLocaleConfig(file)?.let { return it }

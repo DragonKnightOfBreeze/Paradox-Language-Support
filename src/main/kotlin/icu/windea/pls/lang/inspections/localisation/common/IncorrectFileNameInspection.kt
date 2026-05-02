@@ -24,7 +24,7 @@ import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
@@ -49,8 +49,8 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val virtualFile = file.virtualFile
-        if (PlsFileManager.isLightFile(virtualFile)) return false
-        if (PlsFileManager.isInjectedFile(virtualFile)) return false
+        if (VirtualFileService.isLightFile(virtualFile)) return false
+        if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }

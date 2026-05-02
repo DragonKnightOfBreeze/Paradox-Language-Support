@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
@@ -23,8 +23,8 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
 
         // 重新解析文件（IDE之后会自动请求重新索引）
-        val files = PlsDaemonManager.findFilesByRootFilePaths(modDirectories)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findFilesByRootFilePaths(modDirectories)
+        PlsAnalysisManager.reparseFiles(files)
     }
 
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {

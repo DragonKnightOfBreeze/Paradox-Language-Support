@@ -35,7 +35,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.select.nameFieldElement
@@ -49,6 +49,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -67,7 +68,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.model.ParadoxDefinitionSource
 
 object ParadoxPsiManager {
     object Keys : KeyRegistry() {
@@ -112,7 +112,7 @@ object ParadoxPsiManager {
             for (p in element.properties()) {
                 // 对于传入参数的名字，要求不为空，且不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
                 val k = p.propertyKey.name.orNull() ?: continue
-                if (!PlsNameValidators.checkParameterName(k)) continue
+                if (!ParadoxNameValidators.checkParameterName(k)) continue
                 val v = p.propertyValue?.text ?: continue
                 this += tupleOf(k, v)
             }
@@ -400,7 +400,7 @@ object ParadoxPsiManager {
     }
 
     fun renameDefinition(element: ParadoxScriptProperty, name: String, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptProperty {
-        if (!PlsNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
+        if (!ParadoxNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
         when (definitionInfo.source) {
             ParadoxDefinitionSource.Property -> {
                 // 如果定义的名字来自某个定义属性，则修改那个属性的值

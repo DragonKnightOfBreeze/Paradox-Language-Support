@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-object PlsModificationTrackers {
+object ParadoxModificationTrackers {
     val PreferredLocale = SimpleModificationTracker()
     val FilePath = SimpleModificationTracker()
     val ParameterConfigInference = SimpleModificationTracker()

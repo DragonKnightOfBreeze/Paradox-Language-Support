@@ -20,7 +20,7 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxTypeService
 
@@ -120,7 +120,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
         if (variableName.isEmpty()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
-        } else if (!PlsNameValidators.checkScriptedVariableName(variableName)) {
+        } else if (!ParadoxNameValidators.checkScriptedVariableName(variableName)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
         }
         return null

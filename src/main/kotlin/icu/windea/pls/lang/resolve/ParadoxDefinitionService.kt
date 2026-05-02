@@ -17,7 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -39,11 +39,11 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager.Keys
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.model.ParadoxDefinitionSource
 
 object ParadoxDefinitionService {
     /**
@@ -304,18 +304,18 @@ object ParadoxDefinitionService {
         if (allFastMatch) return listOf(file)
 
         // 需要依赖声明结构
-        return listOf(file, PlsModificationTrackers.ScriptFile)
+        return listOf(file, ParadoxModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile)
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile)
     }
 
     fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
     }
 
     fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.ScriptFile)
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
     }
 }

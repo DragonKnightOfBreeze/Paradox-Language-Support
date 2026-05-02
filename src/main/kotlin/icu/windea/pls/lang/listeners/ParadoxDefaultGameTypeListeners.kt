@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.ide.util.PlsDaemonManager
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 
@@ -18,7 +18,7 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         }
 
         // 重新解析并刷新文件（IDE之后会自动请求重新索引）
-        val files = PlsDaemonManager.findFilesByRootFilePaths(modDirectories)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findFilesByRootFilePaths(modDirectories)
+        PlsAnalysisManager.reparseFiles(files)
     }
 }
