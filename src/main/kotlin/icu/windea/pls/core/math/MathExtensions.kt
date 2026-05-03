@@ -33,7 +33,7 @@ fun Number.formatted(precision: Int = -3, isFloatingPoint: Boolean = true): Stri
             val scale = if (isFloatingPoint) -precision else 0
             val result = number.setScale(scale, RoundingMode.HALF_UP)
             val output = result.stripTrailingZeros().toPlainString()
-            if (isFloatingPoint) "$output.0" else output
+            if (isFloatingPoint && output.lastIndexOf('.') == -1) "$output.0" else output
         }
     }
 }

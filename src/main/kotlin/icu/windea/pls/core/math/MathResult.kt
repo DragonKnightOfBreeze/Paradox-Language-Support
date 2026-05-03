@@ -28,20 +28,36 @@ data class MathResult(
     }
 
     companion object {
+        fun from(value: Int): MathResult {
+            return MathResult(value.toDouble(), isFloatingPoint = false)
+        }
+
+        fun from(value: Long): MathResult {
+            return MathResult(value.toDouble(), isFloatingPoint = false)
+        }
+
+        fun from(value: Float): MathResult {
+            return MathResult(value.toDouble(), isFloatingPoint = true)
+        }
+
+        fun from(value: Double): MathResult {
+            return MathResult(value, isFloatingPoint = true)
+        }
+
         fun fromIntString(text: String): MathResult? {
-            return text.toIntOrNull()?.let { MathResult(it.toDouble(), isFloatingPoint = false) }
+            return text.toIntOrNull()?.let { from(it) }
         }
 
         fun fromLongString(text: String): MathResult? {
-            return text.toLongOrNull()?.let { MathResult(it.toDouble(), isFloatingPoint = false) }
+            return text.toLongOrNull()?.let { from(it) }
         }
 
         fun fromFloatString(text: String): MathResult? {
-            return text.toFloatOrNull()?.takeIf { it.isFinite() }?.let { MathResult(it.toDouble(), isFloatingPoint = true) }
+            return text.toFloatOrNull()?.let { from(it) }
         }
 
         fun fromDoubleString(text: String): MathResult? {
-            return text.toDoubleOrNull()?.takeIf { it.isFinite() }?.let { MathResult(it, isFloatingPoint = true) }
+            return text.toDoubleOrNull()?.let { from(it) }
         }
     }
 }
