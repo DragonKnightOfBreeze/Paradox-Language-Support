@@ -7,7 +7,8 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
+import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -92,7 +93,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 setOf(p)
             }
             // 额外兼容
-            searchParameters is ParadoxDefineSearch.Parameters -> {
+            searchParameters is ParadoxDefineNamespaceSearch.Parameters || searchParameters is ParadoxDefineVariableSearch.Parameters -> {
                 val p = "common/defines"
                 setOf(p)
             }

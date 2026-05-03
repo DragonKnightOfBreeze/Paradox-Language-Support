@@ -28,6 +28,8 @@ import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxComplexEnumValueInfo
 import icu.windea.pls.model.ParadoxDefineInfo
+import icu.windea.pls.model.ParadoxDefineNamespaceInfo
+import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
@@ -57,10 +59,15 @@ inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.s
 // region Resolution Data Accessors
 
 inline val ParadoxScriptProperty.defineInfo: ParadoxDefineInfo? get() = ParadoxDefineManager.getInfo(this)
+inline val ParadoxScriptProperty.defineNamespaceInfo: ParadoxDefineNamespaceInfo? get() = ParadoxDefineManager.getNamespaceInfo(this)
+inline val ParadoxScriptProperty.defineVariableInfo: ParadoxDefineVariableInfo? get() = ParadoxDefineManager.getVariableInfo(this)
+
 inline val ParadoxDefinitionElement.definitionCandidateInfo: ParadoxDefinitionCandidateInfo? get() = ParadoxDefinitionCandidateManager.getInfo(this)
 inline val ParadoxDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
 inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
+
 inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+
 inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
 
 inline fun <reified T : ParadoxDefinitionData> ParadoxDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.getDefinitionData(this, relax)

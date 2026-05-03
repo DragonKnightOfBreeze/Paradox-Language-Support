@@ -9,7 +9,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.filePathSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.dynamicValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.complexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.search.defineSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.defineNamespaceSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.defineVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.inlineScriptUsageSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionInjectionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -385,7 +386,8 @@
     <filePathSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxFilePathSearcher"/>
     <complexEnumValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxComplexEnumValueSearcher"/>
     <dynamicValueSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDynamicValueSearcher"/>
-    <defineSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineSearcher"/>
+    <defineNamespaceSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineNamespaceSearcher"/>
+    <defineVariableSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefineVariableSearcher"/>
     <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxInlineScriptUsageSearcher"/>
     <definitionInjectionSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxDefinitionInjectionSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.searchers.ParadoxParameterSearcher"/>

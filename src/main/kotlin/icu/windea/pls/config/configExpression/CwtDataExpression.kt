@@ -27,7 +27,7 @@ import icu.windea.pls.model.constants.PlsStrings
  * CWTools 兼容性：兼容，但存在较多扩展与改进。
  *
  * @property isKey 是否来源于作为键的表达式。
- * @property type 解析得到的数据类型。
+ * @property type 数据类型。
  * @property value 主要的元数据。可用于存储定义类型、枚举名等信息。
  *
  * @see CwtDataType

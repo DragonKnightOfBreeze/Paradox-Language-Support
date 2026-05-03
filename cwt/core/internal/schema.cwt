@@ -453,18 +453,18 @@ $$options = {
 
     #### Specifies the minimum cardinality, dynamically obtained from a define.
     ####
-    #### Dynamically specifies the minimum occurrences via a string path (e.g., `NGameplay/ETHOS_MIN_POINTS`).
+    #### Dynamically specifies the minimum occurrences via a string path (e.g., `NGameplay.ETHOS_MIN_POINTS`).
     ####
     #### Applicable to: Configs corresponding to definition members.
     ####
-    #### Example: `## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
+    #### Example: `## cardinality_min_define = "NGameplay.ETHOS_MIN_POINTS"`
     cardinality_min_define
 
     #### Specifies the maximum cardinality, dynamically obtained from a define.
     ####
     #### Applicable to: Configs corresponding to definition members.
     ####
-    #### Example: `## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
+    #### Example: `## cardinality_max_define = "NGameplay.ETHOS_MAX_POINTS"`
     cardinality_max_define
 
     #### Specifies a simple structural predicate (structured filtering).

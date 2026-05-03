@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpre
 import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
-import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -82,14 +82,14 @@ class ParadoxDefineVariableNode(
         private fun doResolve(): PsiElement? {
             if (namespace == null) return null
             val selector = selector(project, element).define().contextSensitive()
-            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).find()
+            val resolved = ParadoxDefineVariableSearch.search(namespace, variableName, selector).find()
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             if (namespace == null) return ResolveResult.EMPTY_ARRAY
             val selector = selector(project, element).define().contextSensitive()
-            val resolved = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
+            val resolved = ParadoxDefineVariableSearch.search(namespace, variableName, selector).findAll()
             return resolved.createResults()
         }
     }

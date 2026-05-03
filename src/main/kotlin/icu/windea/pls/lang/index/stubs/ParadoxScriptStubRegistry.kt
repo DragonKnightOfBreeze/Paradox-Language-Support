@@ -19,7 +19,7 @@ import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.forParadoxGameType
-import icu.windea.pls.model.index.ParadoxDefineVariableKey
+import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty

@@ -27,13 +27,15 @@ object ParadoxMatchOccurrenceService {
         val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin, cardinality.relaxMax)
         run {
             if (cardinalityMinDefine == null) return@run
-            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMinDefine, contextElement, project)?.intValue() ?: return@run
+            val defineElement = ParadoxDefineManager.findDefineVariableElement(cardinalityMinDefine, contextElement, project) ?: return@run
+            val defineValue = defineElement.propertyValue?.intValue() ?: return@run
             occurrence.min = defineValue
             occurrence.minDefine = cardinalityMinDefine
         }
         run {
             if (cardinalityMaxDefine == null) return@run
-            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMaxDefine, contextElement, project)?.intValue() ?: return@run
+            val defineElement = ParadoxDefineManager.findDefineVariableElement(cardinalityMaxDefine, contextElement, project) ?: return@run
+            val defineValue = defineElement.propertyValue?.intValue() ?: return@run
             occurrence.max = defineValue
             occurrence.maxDefine = cardinalityMaxDefine
         }

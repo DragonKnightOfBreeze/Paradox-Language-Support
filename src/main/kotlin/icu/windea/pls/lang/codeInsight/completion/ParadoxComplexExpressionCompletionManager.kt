@@ -20,7 +20,8 @@ import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.defineInfo
+import icu.windea.pls.lang.defineNamespaceInfo
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
@@ -58,7 +59,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.valueNode
-import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
+import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByDefineExpression
@@ -1221,9 +1223,9 @@ object ParadoxComplexExpressionCompletionManager {
         val tailText = " from define namespaces"
         val selector = selector(project, contextElement).define()
             .distinctByDefineExpression()
-        ParadoxDefineSearch.search(null, "", selector).processAsync p@{ element ->
+        ParadoxDefineNamespaceSearch.search(null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
-            val defineInfo = element.defineInfo ?: return@p true
+            val defineInfo = element.defineNamespaceInfo ?: return@p true
             val namespace = defineInfo.namespace
             val lookupElement = LookupElementBuilder.create(element, namespace)
                 .withPatchableIcon(PlsIcons.Nodes.DefineNamespace)
@@ -1243,10 +1245,10 @@ object ParadoxComplexExpressionCompletionManager {
         val tailText = " from define namespace ${namespace}"
         val selector = selector(project, contextElement).define()
             .distinctByDefineExpression()
-        ParadoxDefineSearch.search(namespace, null, selector).processAsync p@{ element ->
+        ParadoxDefineVariableSearch.search(namespace, null, selector).processAsync p@{ element ->
             ProgressManager.checkCanceled()
-            val defineInfo = element.defineInfo ?: return@p true
-            val variable = defineInfo.variable ?: return@p true
+            val defineInfo = element.defineVariableInfo ?: return@p true
+            val variable = defineInfo.variable
             val lookupElement = LookupElementBuilder.create(element, variable)
                 .withPatchableIcon(PlsIcons.Nodes.DefineVariable)
                 .withPatchableTailText(tailText)

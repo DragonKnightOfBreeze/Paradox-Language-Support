@@ -78,13 +78,13 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 最小基数，从定值（define）动态获取。
      *
-     * 通过字符串路径（如 `NGameplay/ETHOS_MIN_POINTS`）动态指定最小次数。
+     * 通过字符串路径（如 `NGameplay.ETHOS_MIN_POINTS`）动态指定最小次数。
      *
      * 适用对象：定义成员对应的规则。
      *
      * CWTools 兼容性：扩展。
      *
-     * 示例：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
+     * 示例：`## cardinality_min_define = "NGameplay.ETHOS_MIN_POINTS"`
      */
     val cardinalityMinDefine: String?
 
@@ -95,7 +95,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：扩展。
      *
-     * 示例：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
+     * 示例：`## cardinality_max_define = "NGameplay.ETHOS_MAX_POINTS"`
      */
     val cardinalityMaxDefine: String?
 

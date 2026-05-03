@@ -4,9 +4,9 @@ import com.intellij.psi.stubs.StubBase
 import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 脚本属性的存根。
@@ -21,11 +21,9 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
      * （作为脚本属性的）定值（命名空间/变量）的存根。
      *
      * @property namespace 命名空间。
-     * @property variable 变量名。如果当前存根对应命名空间，则为 `null`。
      */
     sealed interface Define : ParadoxScriptPropertyStub {
         val namespace: String
-        val variable: String?
     }
 
     /**
@@ -35,7 +33,6 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
      */
     sealed interface DefineNamespace : Define {
         override val namespace: String
-        override val variable: String? get() = null
     }
 
     /**
@@ -46,7 +43,7 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
      */
     sealed interface DefineVariable : Define {
         override val namespace: String
-        override val variable: String
+        val variable: String
 
         override fun getParentStub(): DefineNamespace
     }
