@@ -9,6 +9,7 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -25,7 +26,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 提供封装变量的名字的代码补全。
+ * 提供已有的封装变量的名字的代码补全。
  */
 class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
@@ -43,7 +44,9 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         val selector = selector(project, element).scriptedVariable().contextSensitive()
             .filterBy { it.name != element.name } // 排除与正在输入的同名的
             .distinctByName()
-        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync {
+            processScriptedVariable(context, result, it)
+        }
 
         ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)
     }
@@ -52,7 +55,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
     private fun processScriptedVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
         // 不自动插入后面的等号
         ProgressManager.checkCanceled()
-        val name = element.name ?: return true
+        val name = element.name?.orNull() ?: return true
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)

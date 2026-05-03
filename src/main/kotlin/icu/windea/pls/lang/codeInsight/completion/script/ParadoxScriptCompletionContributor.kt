@@ -30,6 +30,11 @@ class ParadoxScriptCompletionContributor : CompletionContributor() {
             .withElementType(ParadoxScriptTokenSets.KEY_OR_STRING_TOKENS)
         extend(CompletionType.BASIC, definitionNamePattern, ParadoxDefinitionNameCompletionProvider())
 
+        // 当用户可能正在输入定值的命名空间或变量的名字时提示
+        val defineNamePattern = psiElement()
+            .withElementType(ParadoxScriptTokenSets.KEY_TOKENS)
+        extend(CompletionType.BASIC, defineNamePattern, ParadoxDefineNameCompletionProvider())
+
         // 当用户可能正在输入变量名时提示
         val variableNamePattern = psiElement()
             .withElementType(ParadoxScriptTokenSets.STRING_TOKENS)

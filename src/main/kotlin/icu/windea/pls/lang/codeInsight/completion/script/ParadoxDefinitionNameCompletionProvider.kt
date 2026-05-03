@@ -48,7 +48,7 @@ import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isDefinitionName
 
 /**
- * 提供定义的名字的代码补全。
+ * 提供已有的定义的名字的代码补全。
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

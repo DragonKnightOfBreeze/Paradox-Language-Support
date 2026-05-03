@@ -97,7 +97,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * @property completeVariableNames 是否补全效果子句中现有的变量名称。
+     * @property completeVariableNames 是否在效果子句中补全已有的变量名称。
      * @property completeInlineScriptUsages 是否补全内联脚本用法。
      * @property completeDefinitionInjectionExpressions 是否补全定义注入表达式。
      * @property completeWithValue 如有可能，应用代码补全后，将会自动插入常量值或花括号。
@@ -111,6 +111,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
         var completeLocalisationNames by property(true)
+        var completeDefineNames by property(true)
         var completeVariableNames by property(true)
         var completeInlineScriptUsages by property(true)
         var completeDefinitionInjectionExpressions by property(true)

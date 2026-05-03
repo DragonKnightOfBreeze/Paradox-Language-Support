@@ -32,7 +32,11 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
 
 /**
- * 提供变量名的代码补全。（在effect子句中）
+ * 提供已有的变量的名字的代码补全。
+ *
+ * 适用条件：
+ * - 直接位于效果子句中。
+ *
  * @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {

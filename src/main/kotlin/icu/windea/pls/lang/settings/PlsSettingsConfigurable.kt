@@ -17,8 +17,8 @@ import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
-import java.awt.event.ActionEvent
 import icu.windea.pls.model.ParadoxGameType
+import java.awt.event.ActionEvent
 
 class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
@@ -237,6 +237,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                 .bindSelected(settings::completeLocalisationNames)
+        }
+        // completeDefineNames
+        row {
+            checkBox(PlsBundle.message("settings.completion.completeDefineNames"))
+                .bindSelected(settings::completeDefineNames)
         }
         // completeVariableNames
         row {
