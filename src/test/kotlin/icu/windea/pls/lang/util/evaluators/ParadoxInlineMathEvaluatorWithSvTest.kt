@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util.evaluators
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath

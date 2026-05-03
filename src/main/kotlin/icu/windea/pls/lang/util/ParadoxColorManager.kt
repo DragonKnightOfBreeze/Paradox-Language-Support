@@ -7,7 +7,7 @@ import icu.windea.pls.core.component1
 import icu.windea.pls.core.component2
 import icu.windea.pls.core.component3
 import icu.windea.pls.core.component4
-import icu.windea.pls.core.formatted
+import icu.windea.pls.core.math.formatted
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate

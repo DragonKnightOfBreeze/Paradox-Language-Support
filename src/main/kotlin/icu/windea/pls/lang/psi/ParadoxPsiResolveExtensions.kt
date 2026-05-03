@@ -5,7 +5,7 @@ package icu.windea.pls.lang.psi
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
-import icu.windea.pls.lang.util.evaluators.MathResult
+import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

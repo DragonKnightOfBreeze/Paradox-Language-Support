@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.evaluators
+package icu.windea.pls.core.math
 
 sealed interface MathToken {
     fun render(): String

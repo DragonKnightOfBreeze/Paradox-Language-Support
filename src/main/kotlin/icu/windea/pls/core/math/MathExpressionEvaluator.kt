@@ -1,8 +1,8 @@
-package icu.windea.pls.lang.util.evaluators
+package icu.windea.pls.core.math
 
 import com.intellij.openapi.progress.ProgressManager
 
-open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
+open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
     private enum class ContextType { None, Operand, Operator, LeftPar, LeftAbs }
 
     override fun evaluate(tokens: List<MathToken>): MathResult {
@@ -146,41 +146,35 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
     }
 
     override fun validateBinary(operator: MathOperator.Binary, left: MathResult, right: MathResult) {
-        ensureArithmeticValid(operator, right)
+        checkArithmeticValid(operator, right)
     }
 
     override fun onUnaryApplied(operator: MathOperator.Unary, input: MathResult, result: MathResult) {
-        handleNumberType(result, input)
+        handleResult(result, input)
     }
 
     override fun onBinaryApplied(operator: MathOperator.Binary, left: MathResult, right: MathResult, result: MathResult) {
-        handleNumberType(operator, left, right, result)
+        handleResult(operator, left, right, result)
     }
 
-    private fun ensureArithmeticValid(operator: MathOperator.Binary, right: MathResult) {
+    private fun checkArithmeticValid(operator: MathOperator.Binary, right: MathResult) {
         if (operator is MathOperator.Binary.Div || operator is MathOperator.Binary.Mod) {
-            if (right.value == 0f) throw ArithmeticException("/ by zero")
+            if (right.value == 0.0) throw ArithmeticException("/ by zero")
         }
     }
 
-    private fun handleNumberType(result: MathResult, input: MathResult) {
-        result.isInt = input.isInt
+    private fun handleResult(result: MathResult, input: MathResult) {
+        result.isFloatingPoint = input.isFloatingPoint
     }
 
-    private fun handleNumberType(operator: MathOperator.Binary, left: MathResult, right: MathResult, result: MathResult) {
-        if (!left.isInt || !right.isInt) {
-            result.isInt = false
-            return
-        }
-        return when (operator) {
-            MathOperator.Binary.Div -> {
-                // 注意：MathOperator.Binary.Div 会原地修改 left.value，因此不能再用 left.value 推导可整除性。
-                // 在两个操作数都为整数时，只要结果是整数即可认为 isInt。
-                val computedValue = result.value
-                val asInt = computedValue.toInt().toFloat()
-                result.isInt = computedValue == asInt
-            }
-            else -> result.isInt = true
+    private fun handleResult(operator: MathOperator.Binary, left: MathResult, right: MathResult, result: MathResult) {
+        return when {
+            // 左值或右值被标记为浮点数 -> 将结果标记为浮点数
+            left.isFloatingPoint || right.isFloatingPoint -> result.isFloatingPoint = true
+            // 除法运算，且结果的值被判定为浮点数 -> 将结果标记为浮点数
+            operator == MathOperator.Binary.Div -> result.isFloatingPoint = result.isFloatingPointValue()
+            // 默认将结果标记为非浮点数
+            else -> result.isFloatingPoint = false
         }
     }
 }

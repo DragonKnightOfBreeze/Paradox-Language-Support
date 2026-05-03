@@ -19,9 +19,6 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.isDirectory
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.round
 
 private data object EmptyObject
 
@@ -106,23 +103,6 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     }
 
     return this != null && this.size != 0
-}
-
-/**
- * 将数字按 [digits] 位进行格式化，返回格式化后的字符串。
- *
- * - [digits] > 0：向最接近的 10^digits 值取整（保留整数）；
- * - [digits] = 0：转为整数；
- * - [digits] < 0：按小数位四舍五入。
- */
-fun Number.formatted(digits: Int): String {
-    val power = 10.0.pow(abs(digits))
-    return when {
-        digits > 0 -> (round(this.toLong() / power) * power).toLong().toString()
-        digits == 0 -> this.toLong().toString()
-        else -> (round(this.toDouble() * power) / power).toString()
-            .let { if (it.lastIndexOf('.') == -1) "$it.0" else it }
-    }
 }
 
 /** 如果当前字符串为空，则返回 `null`。否则返回自身。 */

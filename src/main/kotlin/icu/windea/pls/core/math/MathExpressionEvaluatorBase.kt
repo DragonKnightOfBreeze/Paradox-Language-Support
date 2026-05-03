@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.evaluators
+package icu.windea.pls.core.math
 
 abstract class MathExpressionEvaluatorBase {
     abstract fun evaluate(tokens: List<MathToken>): MathResult

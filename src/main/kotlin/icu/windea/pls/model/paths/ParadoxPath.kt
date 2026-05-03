@@ -8,6 +8,7 @@ import icu.windea.pls.core.collections.ImmutableList
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.toPath
 
 /**
  * 游戏或模组文件的路径。

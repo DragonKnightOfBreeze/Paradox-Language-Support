@@ -8,6 +8,9 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.children
+import icu.windea.pls.core.math.MathExpressionEvaluator
+import icu.windea.pls.core.math.MathResult
+import icu.windea.pls.core.math.MathToken
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
