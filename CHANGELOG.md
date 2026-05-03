@@ -9,7 +9,7 @@
 - [x] P2 消除或重构initializer组件 & `PlsDataPathService`
 - [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
 - [ ] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
-- [ ] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
+- [x] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
 - [x] P2 color scheme - 优化/整理配色选项和预览文本。
 - [x] P3 检查设置页面，优化文字表述，修正错误。
 - [x] P3 为规则选项提供文档注释，基于schema规则文件。
@@ -29,6 +29,8 @@
 - [x] 优化配色方案 / Optimized color scheme
 - [x] 优化本地化的生成逻辑，提供额外的配置项 / Optimized localisation generation logic, providing extra settings ([#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296))
 - [x] 优化 rootInfo 和 rootMetadata 的解析逻辑 / Optimized resolution logic for rootInfo and rootMetadata
+- [x] 为定值的命名空间和变量提供特殊的图标、代码高亮和快速文档 / Provided special icons, code highlight and quick docs for define namespaces and variables
+- [ ] 为定值的命名空间和变量提供代码补全 / Provided code completion for define namespaces and variables
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

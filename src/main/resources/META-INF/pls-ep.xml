@@ -74,6 +74,7 @@
     <rootMetadataProvider id="descriptorModBased" implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider"/>
 
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTextColorQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxDefineQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDefinitionQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedGameRuleQuickDocTextProvider"/>

@@ -72,7 +72,10 @@ object PlsIcons {
         val Column = AllIcons.Nodes.DataColumn
 
         @JvmField val Definition = IconManager.getInstance().getIcon("/icons/nodes/definition.svg")
+        @JvmField val DefinitionGroup = IconManager.getInstance().getIcon("/icons/nodes/definitionGroup.svg")
         @JvmField val Localisation = IconManager.getInstance().getIcon("/icons/nodes/localisation.svg")
+        @JvmField val DefineNamespace = IconManager.getInstance().getIcon("/icons/nodes/defineNamespace.svg")
+        @JvmField val DefineVariable = IconManager.getInstance().getIcon("/icons/nodes/defineVariable.svg")
         @JvmField val Type = IconManager.getInstance().getIcon("/icons/nodes/type.svg")
         @JvmField val Variable = IconManager.getInstance().getIcon("/icons/nodes/variable.svg")
         @JvmField val DynamicValueType = IconManager.getInstance().getIcon("/icons/nodes/dynamicValueType.svg")
@@ -97,10 +100,6 @@ object PlsIcons {
         @JvmField val EventId = IconManager.getInstance().getIcon("/icons/nodes/eventId.svg")
         @JvmField val PathReference = AllIcons.FileTypes.Any_type
         @JvmField val DatabaseObjectType = IconManager.getInstance().getIcon("/icons/nodes/databaseObjectType.svg")
-        @JvmField val DefineNamespace = IconManager.getInstance().getIcon("/icons/nodes/defineNamespace.svg")
-        @JvmField val DefineVariable = IconManager.getInstance().getIcon("/icons/nodes/defineVariable.svg")
-
-        @JvmField val DefinitionGroup = IconManager.getInstance().getIcon("/icons/nodes/definitionGroup.svg")
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {

@@ -35,7 +35,10 @@
         "localisationTextFormat.svg": "icons/nodes/localisationTextFormat.svg",
         "localisationTextIcon.svg": "icons/nodes/localisationTextIcon.svg",
         "definition.svg": "icons/nodes/definition.svg",
+        "definitionGroup.svg": "icons/nodes/definitionGroup.svg",
         "localisation.svg": "icons/nodes/localisation.svg",
+        "defineNamespace.svg": "icons/nodes/defineNamespace.svg",
+        "defineVariable.svg": "icons/nodes/defineVariable.svg",
         "type.svg": "icons/nodes/type.svg",
         "variable.svg": "icons/nodes/variable.svg",
         "dynamicValueType.svg": "icons/nodes/dynamicValueType.svg",
@@ -58,10 +61,7 @@
         "onAction.svg": "icons/nodes/onAction.svg",
         "eventNamespace.svg": "icons/nodes/eventNamespace.svg",
         "eventId.svg": "icons/nodes/eventId.svg",
-        "databaseObjectType.svg": "icons/nodes/databaseObjectType.svg",
-        "defineNamespace.svg": "icons/nodes/defineNamespace.svg",
-        "defineVariable.svg": "icons/nodes/defineVariable.svg",
-        "definitionGroup.svg": "icons/nodes/definitionGroup.svg"
+        "databaseObjectType.svg": "icons/nodes/databaseObjectType.svg"
       },
       "gutter": {
         "scriptedVariable.svg": "icons/gutter/scriptedVariable.svg",

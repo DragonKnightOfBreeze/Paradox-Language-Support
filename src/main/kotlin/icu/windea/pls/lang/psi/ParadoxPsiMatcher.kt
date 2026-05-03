@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -18,6 +19,8 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -25,8 +28,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 用于按照类型或语义匹配输入的 PSI。
@@ -143,6 +144,14 @@ object ParadoxPsiMatcher {
             returns(true) implies (element is ParadoxScriptProperty)
         }
         return element is ParadoxScriptProperty && element.definitionInjectionInfo != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefine(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxScriptProperty && element.defineInfo != null
     }
 
     @OptIn(ExperimentalContracts::class)

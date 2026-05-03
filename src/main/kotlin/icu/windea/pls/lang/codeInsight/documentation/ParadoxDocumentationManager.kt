@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
@@ -66,6 +67,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxDefineInfo
+import icu.windea.pls.model.ParadoxDefineNamespaceInfo
+import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.ParadoxLocalisationType
@@ -168,6 +172,9 @@ object ParadoxDocumentationManager {
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, hint)
 
+        val defineInfo = element.defineInfo
+        if (defineInfo != null) return getDefineDoc(element, defineInfo, originalElement, hint)
+
         val name = element.name
         return buildDocumentation {
             buildPropertyDefinition(element, name)
@@ -198,6 +205,16 @@ object ParadoxDocumentationManager {
             buildDocumentationContent(element)
             buildLineCommentContent(element)
             addOverrideStrategy(element)
+            buildSections()
+        }
+    }
+
+    private fun getDefineDoc(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            if (!hint) initSections()
+            buildDefineDefinition(element, defineInfo)
+            if (hint) return@buildDocumentation
+            buildDocumentationContent(element)
             buildSections()
         }
     }
@@ -812,6 +829,24 @@ object ParadoxDocumentationManager {
         val categories = ReferenceLinkType.CwtConfig.Categories
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
         append(PlsStrings.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
+    }
+
+    private fun DocumentationBuilder.buildDefineDefinition(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo) {
+        definition {
+            // 加上文件信息
+            appendFileInfoHeader(element)
+            // 加上基本信息
+            when (defineInfo) {
+                is ParadoxDefineNamespaceInfo -> {
+                    append(PlsStrings.defineNamespacePrefix)
+                    append(" <b>").append(defineInfo.namespace.escapeXml()).append("</b>")
+                }
+                is ParadoxDefineVariableInfo -> {
+                    append(PlsStrings.defineVariablePrefix)
+                    append(" <b>").append(defineInfo.namespace.escapeXml()).append(".").append(defineInfo.variable.escapeXml()).append("</b>")
+                }
+            }
+        }
     }
 
     private fun DocumentationBuilder.buildInlineScriptDefinition(element: ParadoxScriptFile, expression: String) {

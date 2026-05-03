@@ -10,11 +10,13 @@ import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
@@ -23,6 +25,13 @@ class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Def
         val info = ParadoxTextColorManager.getInfo(element) ?: return null
         val quickDoc = info.textWithColor
         return quickDoc
+    }
+}
+
+class ParadoxDefineQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Define() {
+    override fun doGetQuickDocText(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo): String? {
+        // TODO 2.1.8+
+        return null
     }
 }
 

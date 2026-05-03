@@ -40,6 +40,8 @@ object PlsStrings {
     const val eventTypePrefix = "(event type)"
     const val definitionPropertyPrefix = "(definition property)"
     const val definitionValuePrefix = "(definition value)"
+    const val defineNamespacePrefix = "(define namespace)"
+    const val defineVariablePrefix = "(define variable)"
     const val propertyPrefix = "(property)"
     const val stringPrefix = "(string)"
     const val localePrefix = "(locale)"
