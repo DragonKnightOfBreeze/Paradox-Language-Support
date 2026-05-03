@@ -38,7 +38,6 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
         val file = parameters.originalFile
         if (!ParadoxDefineManager.isDefineFile(file)) return
 
-        // TODO 2.1.8
         val project = file.project
         val position = parameters.position
         val keyElement = position.parent?.castOrNull<ParadoxScriptPropertyKey>() ?: return
