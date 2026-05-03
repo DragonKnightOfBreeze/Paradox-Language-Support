@@ -11,7 +11,6 @@ import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
@@ -19,6 +18,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 import java.awt.Color
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as Keys
 
 class ParadoxLocalisationSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -39,7 +39,7 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
             // 如果可以被解析为本地化，则高亮为本地化引用
             if (element.resolveLocalisation() == null) return@run
             val idElement = element.idElement ?: return@run
-            val attributesKey = ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE
+            val attributesKey = Keys.LOCALISATION_REFERENCE
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(idElement).textAttributes(attributesKey).create()
         }
 
@@ -69,7 +69,7 @@ class ParadoxLocalisationSemanticAnnotator : Annotator {
 
     private fun getTextColorKey(color: Color): TextAttributesKey? {
         if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
-        return ParadoxLocalisationAttributesKeys.getColorKey(color)
+        return Keys.getColorKey(color)
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {

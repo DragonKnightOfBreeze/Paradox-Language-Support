@@ -13,6 +13,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -24,7 +25,9 @@ import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefineNamespaceInfo
+import icu.windea.pls.model.ParadoxDefineVariableInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -34,7 +37,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
-import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxScriptSemanticAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -47,20 +49,22 @@ class ParadoxScriptSemanticAnnotator : Annotator {
 
     private fun annotateFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
         // 高亮定义声明
-        val definitionInfo = file.definitionInfo
-        if (definitionInfo != null) annotateDefinition(file, holder, definitionInfo)
+        annotateDefinition(file, holder)
     }
 
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
         val gameType = selectGameType(element) ?: return
+
+        // 高亮定义声明
+        if (annotateDefinition(element, holder)) return
+
+        // 高亮定值的命名空间和变量
+        if (annotateDefine(element, holder)) return
+
         // 高亮内联脚本用法 - `inline_script = ...` 中的 `inline_script`
         if (annotateInlineScriptUsage(element, holder, gameType)) return
         // 高亮定义注入表达式 - `inject:some_definition = {...}` 中的 `inject:some_definition`（以及使用其他合法前缀的情况）
         if (annotateDefinitionInjectionExpression(element, holder, gameType)) return
-
-        // 高亮定义声明
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) annotateDefinition(element, holder, definitionInfo)
     }
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
@@ -84,7 +88,9 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         }
     }
 
-    private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
+    private fun annotateDefinition(element: ParadoxDefinitionElement, holder: AnnotationHolder): Boolean {
+        val definitionInfo = element.definitionInfo
+        if (definitionInfo == null) return false
         if (element is ParadoxScriptProperty) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION).create()
         }
@@ -100,26 +106,20 @@ class ParadoxScriptSemanticAnnotator : Annotator {
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_NAME).create()
             }
         }
-    }
-
-    private fun annotateExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
-        ParadoxExpressionManager.annotateScriptExpression(element, null, holder, config)
-    }
-
-    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return false
-        if (element.complexEnumValueInfo == null) return false
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
-            .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE)
-            .create()
         return true
     }
 
-    private fun annotateTag(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
-        // 目前不在这里显示标签类型，而是在快速文档中
-        if (element !is ParadoxScriptString) return false
-        if (element.tagType == null) return false
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG).create()
+    private fun annotateDefine(element: ParadoxScriptProperty, holder: AnnotationHolder): Boolean {
+        val defineInfo = element.defineInfo
+        if (defineInfo == null) return false
+        when (defineInfo) {
+            is ParadoxDefineNamespaceInfo -> {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINE_NAMESPACE).create()
+            }
+            is ParadoxDefineVariableInfo -> {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINE_VARIABLE).create()
+            }
+        }
         return true
     }
 
@@ -152,5 +152,26 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         val targetRange = TextRange.from(offset + mode.length + 1, target.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(targetRange).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE).create()
         return true
+    }
+
+    private fun annotateTag(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
+        // 目前不在这里显示标签类型，而是在快速文档中
+        if (element !is ParadoxScriptString) return false
+        if (element.tagType == null) return false
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG).create()
+        return true
+    }
+
+    private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
+        if (element !is ParadoxScriptStringExpressionElement) return false
+        if (element.complexEnumValueInfo == null) return false
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
+            .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE)
+            .create()
+        return true
+    }
+
+    private fun annotateExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
+        ParadoxExpressionManager.annotateScriptExpression(element, null, holder, config)
     }
 }
