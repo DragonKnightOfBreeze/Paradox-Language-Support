@@ -3,12 +3,12 @@ package icu.windea.pls.core.math
 import com.intellij.openapi.progress.ProgressManager
 
 open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
-    private enum class ContextType { None, Operand, Operator, LeftPar, LeftAbs }
+    private enum class State { None, Operand, Operator, LeftPar, LeftAbs }
 
     override fun evaluate(tokens: List<MathToken>): MathResult {
         val values = ArrayDeque<MathResult>()
         val expressions = ArrayDeque<MathExpression>()
-        var contextType = ContextType.None
+        var state = State.None
 
         fun popExpression() {
             val expression = expressions.removeLast()
@@ -53,15 +53,16 @@ open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
             when (token) {
                 is MathToken.Operand -> {
                     values.addLast(token.operand)
-                    contextType = ContextType.Operand
+                    state = State.Operand
                 }
                 is MathToken.Operator.LeftAbs -> {
                     expressions.addLast(MathExpression.Dangling.LeftAbs)
-                    contextType = ContextType.LeftAbs
+                    state = State.LeftAbs
                 }
                 is MathToken.Operator.RightAbs -> {
                     while (true) {
-                        val top = expressions.lastOrNull() ?: throw IllegalStateException("Cannot evaluate: mismatched absolute operator.")
+                        val top = expressions.lastOrNull()
+                            ?: throw IllegalStateException("Cannot evaluate: mismatched absolute operator.")
                         if (top is MathExpression.Dangling.LeftAbs) {
                             expressions.removeLast()
                             break
@@ -74,33 +75,36 @@ open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
                     val result = MathOperator.Unary.Abs.evaluate(value)
                     onUnaryApplied(MathOperator.Unary.Abs, value, result)
                     values.addLast(result)
-                    contextType = ContextType.Operand
+                    state = State.Operand
                 }
                 is MathToken.Operator.LeftPar -> {
                     expressions.addLast(MathExpression.Dangling.LeftPar)
-                    contextType = ContextType.LeftPar
+                    state = State.LeftPar
                 }
                 is MathToken.Operator.RightPar -> {
                     while (true) {
-                        val top = expressions.lastOrNull() ?: throw IllegalStateException("Cannot evaluate: mismatched parentheses.")
+                        val top = expressions.lastOrNull()
+                            ?: throw IllegalStateException("Cannot evaluate: mismatched parentheses.")
                         if (top is MathExpression.Dangling.LeftPar) {
                             expressions.removeLast()
                             break
                         }
                         popExpression()
                     }
-                    contextType = ContextType.Operand
+                    state = State.Operand
                 }
                 is MathToken.Operator -> {
-                    val isUnary = contextType == ContextType.None || contextType == ContextType.Operator || contextType == ContextType.LeftPar || contextType == ContextType.LeftAbs
+                    val isUnary = state == State.None || state == State.Operator || state == State.LeftPar || state == State.LeftAbs
                     if (isUnary) {
-                        val unary = toUnaryOperator(token) ?: throw IllegalStateException("Cannot evaluate: invalid unary operator.")
+                        val unary = toUnaryOperator(token)
+                            ?: throw IllegalStateException("Cannot evaluate: invalid unary operator.")
                         pushExpression(MathExpression.Unary(unary))
-                        contextType = ContextType.Operator
+                        state = State.Operator
                     } else {
-                        val binary = toBinaryOperator(token) ?: throw IllegalStateException("Cannot evaluate: invalid binary operator.")
+                        val binary = toBinaryOperator(token)
+                            ?: throw IllegalStateException("Cannot evaluate: invalid binary operator.")
                         pushExpression(MathExpression.Binary(binary))
-                        contextType = ContextType.Operator
+                        state = State.Operator
                     }
                 }
             }
@@ -115,10 +119,9 @@ open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
         }
 
         if (values.size != 1) {
-            throw IllegalStateException(
-                "Cannot evaluate: invalid expression. " +
-                    "tokens=[${tokens.joinToString(" ") { it.render() }}], " +
-                    "values=${values.size}, operators=${expressions.size}"
+            throw IllegalStateException("Cannot evaluate: invalid expression. " +
+                "tokens=[${tokens.joinToString(" ") { it.render() }}], " +
+                "values=${values.size}, operators=${expressions.size}"
             )
         }
 
@@ -159,7 +162,7 @@ open class MathExpressionEvaluator : MathExpressionEvaluatorBase() {
 
     private fun checkArithmeticValid(operator: MathOperator.Binary, right: MathResult) {
         if (operator is MathOperator.Binary.Div || operator is MathOperator.Binary.Mod) {
-            if (right.value == 0.0) throw ArithmeticException("/ by zero")
+            if (right.value == 0.0) throw ArithmeticException("Divided by zero")
         }
     }
 
