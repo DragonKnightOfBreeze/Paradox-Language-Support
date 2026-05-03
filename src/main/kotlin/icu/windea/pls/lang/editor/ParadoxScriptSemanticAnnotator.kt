@@ -55,16 +55,16 @@ class ParadoxScriptSemanticAnnotator : Annotator {
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
         val gameType = selectGameType(element) ?: return
 
+        // 高亮内联脚本用法 - `inline_script = ...` 中的 `inline_script`
+        if (annotateInlineScriptUsage(element, holder, gameType)) return
+        // 高亮定义注入表达式 - `inject:some_definition = {...}` 中的 `inject:some_definition`（以及使用其他合法前缀的情况）
+        if (annotateDefinitionInjectionExpression(element, holder, gameType)) return
+
         // 高亮定义声明
         if (annotateDefinition(element, holder)) return
 
         // 高亮定值的命名空间和变量
         if (annotateDefine(element, holder)) return
-
-        // 高亮内联脚本用法 - `inline_script = ...` 中的 `inline_script`
-        if (annotateInlineScriptUsage(element, holder, gameType)) return
-        // 高亮定义注入表达式 - `inject:some_definition = {...}` 中的 `inject:some_definition`（以及使用其他合法前缀的情况）
-        if (annotateDefinitionInjectionExpression(element, holder, gameType)) return
     }
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
