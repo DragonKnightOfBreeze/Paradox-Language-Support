@@ -205,11 +205,6 @@ object CwtConfigManager {
         }
     }
 
-    fun isRemoved(config: CwtConfig<*>): Boolean {
-        if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
-        return config.config.optionData.apiStatus == CwtConfigApiStatus.Removed
-    }
-
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
         if (constKey != null) return setOf(constKey)

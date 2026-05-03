@@ -32,14 +32,27 @@ import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.psi.CwtPsiManager
-import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.paths.CwtConfigPath
 
 object CwtConfigService {
+    /**
+     * @see CwtConfigFilterProvider.filter
+     */
+    @Optimized
+    fun filter(config: CwtConfig<*>): Boolean {
+        val eps = CwtConfigFilterProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if(ep.filter(config)) return true
+        }
+        return false
+    }
+
     /**
      * @see CwtConfigPostProcessor.postProcess
      */
