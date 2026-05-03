@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.test.clearIntegrationTest
@@ -15,7 +16,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -36,13 +36,13 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
 
-        assertResult(2) { evaluator.evaluate(map.getValue("k1")) }
-        assertResult(2) { evaluator.evaluate(map.getValue("k2")) }
-        assertResult(2) { evaluator.evaluate(map.getValue("k2"), mapOf("v" to "NaN")) }
-        assertResult(2) { evaluator.evaluate(map.getValue("k2"), mapOf("v" to "1")) }
-        assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "NaN")) }
-        assertResult(2) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "1")) }
-        assertResult(3) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "2")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k2")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k2"), mapOf("v" to "NaN")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k2"), mapOf("v" to "1")) }
+        assertResult(ArithmeticException::class.java) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "NaN")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "1")) }
+        assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2"), mapOf("var" to "2")) }
     }
 
     @Test
@@ -54,8 +54,8 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
 
-        assertResult(2) { evaluator.evaluate(map.getValue("k1")) }
-        assertResult(3) { evaluator.evaluate(map.getValue("k2")) }
+        assertResult(MathResult.from(2)) { evaluator.evaluate(map.getValue("k1")) }
+        assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2")) }
     }
 
     @Test
@@ -67,9 +67,9 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
 
-        assertResult(2.5f) { evaluator.evaluate(map.getValue("k1")) }
-        assertResult(3) { evaluator.evaluate(map.getValue("k2")) }
-        assertResult(5) { evaluator.evaluate(map.getValue("k3")) }
+        assertResult(MathResult.from(2.5)) { evaluator.evaluate(map.getValue("k1")) }
+        assertResult(MathResult.from(3)) { evaluator.evaluate(map.getValue("k2")) }
+        assertResult(MathResult.from(5)) { evaluator.evaluate(map.getValue("k3")) }
     }
 
     @Test
@@ -110,7 +110,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
 
-        assertResult(8) { evaluator.evaluate(map.getValue("k1")) }
+        assertResult(MathResult.from(8)) { evaluator.evaluate(map.getValue("k1")) }
     }
 
     @Test
@@ -123,7 +123,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val evaluator = ParadoxInlineMathEvaluator()
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
-        assertResult(8) { evaluator.evaluate(map.getValue("k1"), mapOf("\$NUM$" to "2")) }
+        assertResult(MathResult.from(8)) { evaluator.evaluate(map.getValue("k1"), mapOf("\$NUM$" to "2")) }
     }
 
     @Test
@@ -135,7 +135,7 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathEvaluator()
 
-        assertResult(4) { evaluator.evaluate(map.getValue("k1")) }
+        assertResult(MathResult.from(4)) { evaluator.evaluate(map.getValue("k1")) }
     }
 
     @Test
@@ -156,11 +156,11 @@ class ParadoxInlineMathEvaluatorWithSvTest : BasePlatformTestCase() {
             .mapValues { (_, v) -> v as ParadoxScriptInlineMath }
     }
 
-    private fun assertResult(expect: Number, expression: () -> MathResult) {
-        Assert.assertEquals(expect, expression().normalized())
+    private fun assertResult(expect: MathResult, expression: () -> MathResult) {
+        Assert.assertEquals(expect, expression())
     }
 
     private fun assertResult(expect: Class<out Throwable>, expression: () -> MathResult) {
-        Assert.assertThrows(expect) { expression().normalized() }
+        Assert.assertThrows(expect) { expression() }
     }
 }

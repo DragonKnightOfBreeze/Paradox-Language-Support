@@ -16,7 +16,7 @@ data class MathResult(
     var isFloatingPoint: Boolean = true,
 ) {
     fun isFloatingPointValue(): Boolean {
-        return value.toLong().toDouble() == value
+        return value.toLong().toDouble() != value
     }
 
     fun normalized(): Number {

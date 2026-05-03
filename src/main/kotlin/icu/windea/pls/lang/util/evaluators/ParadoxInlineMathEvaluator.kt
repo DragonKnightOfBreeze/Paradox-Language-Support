@@ -205,13 +205,13 @@ class ParadoxInlineMathEvaluator(
                                 withRecursionGuard {
                                     withRecursionCheck("sv:${argument.id}") {
                                         evaluateInternal(resolvedValueElement, args)
-                                    } ?: throw IllegalStateException("Cannot evaluate: recursive scripted variable reference '$expression'.")
-                                } ?: throw IllegalStateException("Cannot evaluate: recursion detected.")
+                                    } ?: throw IllegalArgumentException("Recursive scripted variable reference '$expression'.")
+                                } ?: throw IllegalArgumentException("Recursion detected.")
                             }
                             else -> {
                                 val valueText = resolvedValueElement.text.orEmpty()
                                 resolveResult(valueText)
-                                    ?: throw IllegalStateException("Cannot evaluate: invalid scripted variable value '$valueText' for '$expression'.")
+                                    ?: throw IllegalArgumentException("Invalid scripted variable value '$valueText' for '$expression'.")
                             }
                         }
                     }

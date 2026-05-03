@@ -61,6 +61,9 @@ class DefaultMathExpressionEvaluator(
             ProgressManager.checkCanceled()
             when (token) {
                 is MathToken.Operand -> {
+                    if (!token.operand.value.isFinite()) {
+                        throw ArithmeticException("NaN operand")
+                    }
                     values.addLast(token.operand)
                     state = State.Operand
                 }
