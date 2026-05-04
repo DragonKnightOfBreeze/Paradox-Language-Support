@@ -6,11 +6,11 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder
 
-class ParadoxErrorScopeLinkNode(
+class ParadoxErrorScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxErrorNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxScopeNode, ParadoxErrorNode {
     override fun getUnresolvedError(): ParadoxComplexExpressionError? {
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null

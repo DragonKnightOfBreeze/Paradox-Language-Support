@@ -35,7 +35,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.namespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
@@ -44,12 +44,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObject
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
@@ -216,7 +216,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
             }
-            if (node is ParadoxScopeLinkNode) {
+            if (node is ParadoxScopeNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
@@ -326,7 +326,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
             }
-            if (node is ParadoxScopeLinkNode) {
+            if (node is ParadoxScopeNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
@@ -339,7 +339,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
-                    val scopeNode = ParadoxScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeLinkNode(scopeNode, context, result)
                     if (afterPrefix) break
                     completeForValueFieldNode(node, context, result)
@@ -377,7 +377,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
             }
-            if (node is ParadoxScopeLinkNode) {
+            if (node is ParadoxScopeNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
@@ -390,7 +390,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
-                    val scopeNode = ParadoxScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeLinkNode(scopeNode, context, result)
                     if (afterPrefix) break
                     completeForVariableFieldValueNode(node, context, result)
@@ -428,7 +428,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (!inRange) {
                 if (node is ParadoxErrorNode || node.text.isEmpty()) break // skip error or empty nodes
             }
-            if (node is ParadoxCommandScopeLinkNode) {
+            if (node is ParadoxCommandScopeNode) {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
@@ -441,7 +441,7 @@ object ParadoxComplexExpressionCompletionManager {
                 if (inRange) {
                     ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
-                    val scopeNode = ParadoxCommandScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
+                    val scopeNode = ParadoxCommandScopeNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForCommandScopeLinkNode(scopeNode, context, result)
                     if (afterPrefix) break
                     completeForCommandFieldNode(node, context, result)
@@ -679,7 +679,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForScopeLinkNode(node: ParadoxScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForScopeLinkNode(node: ParadoxScopeNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -690,9 +690,9 @@ object ParadoxComplexExpressionCompletionManager {
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
-        val scopeLinkNode = node.castOrNull<ParadoxDynamicScopeLinkNode>()
-        val prefixNode = scopeLinkNode?.prefixNode
-        val valueNode = scopeLinkNode?.valueNode
+        val dynamicScopeNode = node.castOrNull<ParadoxDynamicScopeNode>()
+        val prefixNode = dynamicScopeNode?.prefixNode
+        val valueNode = dynamicScopeNode?.valueNode
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
@@ -796,7 +796,7 @@ object ParadoxComplexExpressionCompletionManager {
     /**
      * @return 是否已经输入了前缀。
      */
-    private fun completeForCommandScopeLinkNode(node: ParadoxCommandScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+    private fun completeForCommandScopeLinkNode(node: ParadoxCommandScopeNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
         val offset = context.offsetInParent - context.expressionOffset
         if (offset < 0) return false // unexpected
 
@@ -807,9 +807,9 @@ object ParadoxComplexExpressionCompletionManager {
         val oldArgIndex = context.argumentIndex
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val scopeContext = context.scopeContext ?: ParadoxScopeContext.getAny()
-        val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
-        val prefixNode = scopeLinkNode?.prefixNode
-        val valueNode = scopeLinkNode?.valueNode
+        val dynamicScopeNode = node.castOrNull<ParadoxDynamicCommandScopeNode>()
+        val prefixNode = dynamicScopeNode?.prefixNode
+        val valueNode = dynamicScopeNode?.valueNode
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)

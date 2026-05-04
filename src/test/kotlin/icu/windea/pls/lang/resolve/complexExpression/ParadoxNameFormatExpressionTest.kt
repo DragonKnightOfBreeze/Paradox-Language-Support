@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatDefi
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNamePartNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -107,7 +107,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                         node<ParadoxCommandExpression>("This.GetCapitalSystemNameOrRandom", 22 to 55) {
                             node<ParadoxSystemCommandScopeNode>("This", 22 to 26)
                             node<ParadoxOperatorNode>(".", 26 to 27)
-                            node<ParadoxPredefinedCommandFieldNode>("GetCapitalSystemNameOrRandom", 27 to 55)
+                            node<ParadoxStaticCommandFieldNode>("GetCapitalSystemNameOrRandom", 27 to 55)
                         }
                         node<ParadoxMarkerNode>("]", 55 to 56)
                     }
@@ -235,7 +235,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxCommandExpression>("Root.GetName", 2 to 14) {
                         node<ParadoxSystemCommandScopeNode>("Root", 2 to 6)
                         node<ParadoxOperatorNode>(".", 6 to 7)
-                        node<ParadoxPredefinedCommandFieldNode>("GetName", 7 to 14)
+                        node<ParadoxStaticCommandFieldNode>("GetName", 7 to 14)
                     }
                     node<ParadoxMarkerNode>("]", 14 to 15)
                 }
@@ -267,7 +267,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                         node<ParadoxCommandExpression>("Root.GetName", 8 to 20) {
                             node<ParadoxSystemCommandScopeNode>("Root", 8 to 12)
                             node<ParadoxOperatorNode>(".", 12 to 13)
-                            node<ParadoxPredefinedCommandFieldNode>("GetName", 13 to 20)
+                            node<ParadoxStaticCommandFieldNode>("GetName", 13 to 20)
                         }
                         node<ParadoxMarkerNode>("]", 20 to 21)
                     }
@@ -601,7 +601,7 @@ class ParadoxNameFormatExpressionTest : ParadoxComplexExpressionTest() {
                     node<ParadoxCommandExpression>("Root.GetName", 3 to 15) {
                         node<ParadoxSystemCommandScopeNode>("Root", 3 to 7)
                         node<ParadoxOperatorNode>(".", 7 to 8)
-                        node<ParadoxPredefinedCommandFieldNode>("GetName", 8 to 15)
+                        node<ParadoxStaticCommandFieldNode>("GetName", 8 to 15)
                     }
                     node<ParadoxMarkerNode>("]", 15 to 16)
                 }

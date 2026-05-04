@@ -15,7 +15,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -61,7 +61,7 @@ class IncorrectScopeLinkChainInspection : ScopeInspectionBase() {
     }
 
     private fun doCheckExpression(holder: ProblemsHolder, element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-        val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeLinkNode>()
+        val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeNode>()
         val max = ParadoxScopeManager.maxScopeLinkSize
         val actual = scopeNodes.size
         if (actual <= max) return

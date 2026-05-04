@@ -12,7 +12,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
-class ParadoxCommandScopeLinkValueNode(
+class ParadoxCommandScopeValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -27,7 +27,7 @@ class ParadoxCommandScopeLinkValueNode(
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeValueNode {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
@@ -61,7 +61,7 @@ class ParadoxCommandScopeLinkValueNode(
                 // original single-value resolution path
                 val linkConfigsForDs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, 0) }.ifEmpty { linkConfigs }
                 nodes += resolveDsNode(text, textRange, configGroup, linkConfigsForDs)
-                return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
+                return ParadoxCommandScopeValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // argument list path: split by top-level separators, emit blanks and markers
@@ -127,7 +127,7 @@ class ParadoxCommandScopeLinkValueNode(
                 i++
             }
             emitSegment(text.length, false)
-            return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
+            return ParadoxCommandScopeValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
 
         private fun resolveDsNode(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtLinkConfig>): ParadoxComplexExpressionNode {

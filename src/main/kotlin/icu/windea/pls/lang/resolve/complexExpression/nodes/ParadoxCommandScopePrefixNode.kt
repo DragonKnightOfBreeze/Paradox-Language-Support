@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiPolyVariantReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
-class ParadoxCommandScopeLinkPrefixNode(
+class ParadoxCommandScopePrefixNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
@@ -37,8 +37,8 @@ class ParadoxCommandScopeLinkPrefixNode(
         CwtConfigBasedPsiPolyVariantReference<CwtProperty>(element, rangeInElement, configs)
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkPrefixNode {
-            return ParadoxCommandScopeLinkPrefixNode(text, textRange, configGroup, linkConfigs)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopePrefixNode {
+            return ParadoxCommandScopePrefixNode(text, textRange, configGroup, linkConfigs)
         }
     }
 

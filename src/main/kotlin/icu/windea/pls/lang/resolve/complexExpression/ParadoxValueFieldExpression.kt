@@ -7,15 +7,15 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
@@ -28,13 +28,13 @@ import icu.windea.pls.model.expressions.ParadoxScriptExpression
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypeSets.ValueField]。
- * - 由零个或多个作用域链接节点（[ParadoxScopeLinkNode]）以及一个值字段节点（[ParadoxValueFieldNode]）组成。之间用点号分隔。
- * - 作用域链接节点可以是静态链接（[ParadoxSystemScopeNode] 和 [ParadoxScopeNode]）、动态链接（[ParadoxDynamicScopeLinkNode]）或者带参数的链接（[ParadoxParameterizedScopeLinkNode]）。
- * - 值字段链接节点可以是静态链接（[ParadoxPredefinedValueFieldNode]）、动态链接（[ParadoxDynamicValueFieldNode]）或者带参数的链接（[ParadoxParameterizedValueFieldNode]）。
+ * - 由零个或多个作用域链接节点（[ParadoxScopeNode]）以及一个值字段节点（[ParadoxValueFieldNode]）组成。之间用点号分隔。
+ * - 作用域节点可以是系统链接（[ParadoxSystemScopeNode]）、静态链接（[ParadoxStaticScopeNode]）、动态链接（[ParadoxDynamicScopeNode]）或者带参数的链接（[ParadoxParameterizedScopeNode]）。
+ * - 值字段节点可以是静态链接（[ParadoxStaticValueFieldNode]）、动态链接（[ParadoxDynamicValueFieldNode]）或者带参数的链接（[ParadoxParameterizedValueFieldNode]）。
  * - 动态链接可能是前缀形式（`prefix:ds`），也可能是传参形式（`prefix(x)`）。其中可能嵌套其他复杂表达式。
  * - 对于传参形式的动态链接，兼容多个传参（`prefix(x,y)`）和字面量传参（`prefix('s')`）。传入链式表达式时，需要整个用双引号括起。
  *
- * [ParadoxDynamicScopeLinkNode] 的数据源的解析优先级：
+ * [ParadoxDynamicScopeNode] 的数据源的解析优先级：
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.DynamicValue]，则解析为 [ParadoxDynamicValueExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ScopeField]，则解析为 [ParadoxScopeFieldExpression]。
  * - 如果数据源表达式的数据类型属于 [CwtDataTypeSets.ValueField]，则解析为 [ParadoxValueFieldExpression]。
@@ -121,7 +121,7 @@ private class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpress
                         // 中间段：按作用域链接解析
                         val nodeText = text.substring(startIndex, i)
                         val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
-                        val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                        val node = ParadoxScopeNode.resolve(nodeText, nodeTextRange, configGroup)
                         if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                         nodes += node
                         val dotRange = TextRange.create(i + offset, i + 1 + offset)

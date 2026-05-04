@@ -37,24 +37,24 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpressi
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.dynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefixNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopePrefixNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeAwareLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
@@ -362,21 +362,21 @@ object ParadoxScopeService {
         val scopeNodes = expression.scopeNodes
         if (scopeNodes.isEmpty()) return inputScopeContext // unexpected -> unchanged
         var result = inputScopeContext
-        val links = mutableListOf<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>()
+        val links = mutableListOf<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>()
         for (scopeNode in scopeNodes) {
             result = evaluateScopeContextForNode(element, scopeNode, result)
             links.add(scopeNode to result)
-            if (scopeNode is ParadoxErrorScopeLinkNode) break
+            if (scopeNode is ParadoxErrorScopeNode) break
         }
         return inputScopeContext.resolveNext(links)
     }
 
     fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         when (node) {
-            is ParadoxScopeLinkNode -> {
+            is ParadoxScopeNode -> {
                 when (node) {
                     // parameterized -> any (or inferred from extended configs)
-                    is ParadoxParameterizedScopeLinkNode -> {
+                    is ParadoxParameterizedScopeNode -> {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // system -> context sensitive
@@ -384,26 +384,26 @@ object ParadoxScopeService {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // predefined -> static
-                    is ParadoxScopeNode -> {
+                    is ParadoxStaticScopeNode -> {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // dynamic -> any (or inferred from extended configs)
-                    is ParadoxDynamicScopeLinkNode -> {
+                    is ParadoxDynamicScopeNode -> {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // error -> unknown
-                    is ParadoxErrorScopeLinkNode -> {
+                    is ParadoxErrorScopeNode -> {
                         return ParadoxScopeContext.getUnknown(inputScopeContext)
                     }
                 }
             }
-            is ParadoxScopeLinkPrefixNode -> {
+            is ParadoxScopePrefixNode -> {
                 return evaluateScopeContextForNode(element, node, inputScopeContext)
             }
-            is ParadoxCommandScopeLinkNode -> {
+            is ParadoxCommandScopeNode -> {
                 when (node) {
                     // parameterized -> any (or inferred from extended configs)
-                    is ParadoxParameterizedCommandScopeLinkNode -> {
+                    is ParadoxParameterizedCommandScopeNode -> {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // system -> context sensitive
@@ -411,7 +411,7 @@ object ParadoxScopeService {
                         return evaluateScopeContextForNode(element, node, inputScopeContext)
                     }
                     // predefined -> static (with promotions)
-                    is ParadoxCommandScopeNode -> {
+                    is ParadoxStaticCommandScopeNode -> {
                         val linkConfig = node.config
                         val promotions = linkConfig.configGroup.localisationPromotions[linkConfig.name]?.supportedScopes
                         val next = inputScopeContext.resolveNext(linkConfig.outputScope)
@@ -419,11 +419,11 @@ object ParadoxScopeService {
                         return next
                     }
                     // dynamic -> any (or inferred from extended configs)
-                    is ParadoxDynamicCommandScopeLinkNode -> {
+                    is ParadoxDynamicCommandScopeNode -> {
                         return inputScopeContext.resolveNext(ParadoxScopeContext.getAny())
                     }
                     // error -> unknown
-                    is ParadoxErrorCommandScopeLinkNode -> {
+                    is ParadoxErrorCommandScopeNode -> {
                         return ParadoxScopeContext.getUnknown(inputScopeContext)
                     }
                 }
@@ -499,12 +499,12 @@ object ParadoxScopeService {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxStaticScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val outputScope = node.config.outputScope
         return inputScopeContext.resolveNext(outputScope)
     }
 
-    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeLinkNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
+    private fun evaluateScopeContextForNode(element: ParadoxExpressionElement, node: ParadoxDynamicScopeNode, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val linkConfig = node.linkConfigs.firstOrNull() ?: return ParadoxScopeContext.getUnknown(inputScopeContext)
         if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
 
@@ -514,7 +514,7 @@ object ParadoxScopeService {
         when {
             // hidden:event_target:xxx = {...}
             dataType in CwtDataTypeSets.ScopeField -> {
-                val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
+                val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeNode>()
                     ?: return ParadoxScopeContext.getUnknown(inputScopeContext)
                 return evaluateScopeContextForNode(element, nestedNode, inputScopeContext)
             }
@@ -545,26 +545,26 @@ object ParadoxScopeService {
     @Suppress("UNUSED_PARAMETER")
     fun evaluateSupportedScopesForNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, inputScopeContext: ParadoxScopeContext): Set<String>? {
         when (node) {
-            is ParadoxCommandScopeLinkNode -> {
+            is ParadoxCommandScopeNode -> {
                 when (node) {
                     // system -> any
                     is ParadoxSystemCommandScopeNode -> {
                         return ParadoxScopeId.anyScopeIdSet
                     }
                     // predefined -> static
-                    is ParadoxCommandScopeNode -> {
+                    is ParadoxStaticCommandScopeNode -> {
                         return node.config.inputScopes
                     }
                     // parameterized -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxParameterizedCommandScopeLinkNode -> {
+                    is ParadoxParameterizedCommandScopeNode -> {
                         return ParadoxScopeId.anyScopeIdSet
                     }
                     // dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)
-                    is ParadoxDynamicCommandScopeLinkNode -> {
+                    is ParadoxDynamicCommandScopeNode -> {
                         return ParadoxScopeId.anyScopeIdSet
                     }
                     // error -> any
-                    is ParadoxErrorCommandScopeLinkNode -> {
+                    is ParadoxErrorCommandScopeNode -> {
                         return ParadoxScopeId.anyScopeIdSet
                     }
                 }
@@ -576,7 +576,7 @@ object ParadoxScopeService {
                         return ParadoxScopeId.anyScopeIdSet
                     }
                     // predefined -> static
-                    is ParadoxPredefinedCommandFieldNode -> {
+                    is ParadoxStaticCommandFieldNode -> {
                         return node.config.supportedScopes
                     }
                     // dynamic -> any (NOTE cannot be inferred from extended configs, not supported yet)

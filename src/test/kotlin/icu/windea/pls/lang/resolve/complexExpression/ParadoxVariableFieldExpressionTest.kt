@@ -6,7 +6,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markIntegrationTest
@@ -48,9 +48,9 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
         val exp = parse(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0 to s.length) {
-            node<ParadoxScopeLinkNode>("root", 0 to 4)
+            node<ParadoxScopeNode>("root", 0 to 4)
             node<ParadoxOperatorNode>(".", 4 to 5)
-            node<ParadoxScopeLinkNode>("owner", 5 to 10)
+            node<ParadoxScopeNode>("owner", 5 to 10)
             node<ParadoxOperatorNode>(".", 10 to 11)
             node<ParadoxDataSourceNode>("some_variable", 11 to 24)
         }
@@ -63,7 +63,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
         val exp = parse(s)!!
         println(exp.render())
         val dsl = buildComplexExpression<ParadoxVariableFieldExpression>(s, 0 to s.length) {
-            node<ParadoxScopeLinkNode>("root", 0 to 4)
+            node<ParadoxScopeNode>("root", 0 to 4)
             node<ParadoxOperatorNode>(".", 4 to 5)
             node<ParadoxDataSourceNode>("owner|x.y", 5 to 14)
         }

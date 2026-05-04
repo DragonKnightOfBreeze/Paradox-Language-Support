@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
@@ -177,7 +177,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             node is ParadoxScriptValueNode -> {
                 node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
             }
-            node is ParadoxScopeLinkNode -> {
+            node is ParadoxScopeNode -> {
                 CwtValueConfig.createMock(configGroup, "scope_field").to.singletonList()
             }
             node is ParadoxValueFieldNode -> {

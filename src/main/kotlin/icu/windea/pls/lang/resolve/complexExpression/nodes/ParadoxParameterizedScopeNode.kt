@@ -7,19 +7,19 @@ import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
-class ParadoxParameterizedScopeLinkNode(
+class ParadoxParameterizedScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
-) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxParameterizedNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxScopeNode, ParadoxParameterizedNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxSemanticAttributesKeys.scope()
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedScopeLinkNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedScopeNode? {
             if (!text.isParameterized()) return null
-            return ParadoxParameterizedScopeLinkNode(text, textRange, configGroup)
+            return ParadoxParameterizedScopeNode(text, textRange, configGroup)
         }
     }
 

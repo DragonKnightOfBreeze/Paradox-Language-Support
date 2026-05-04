@@ -10,10 +10,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.select.parentDefinitionCandidate
 import icu.windea.pls.lang.select.selectScope
@@ -67,7 +67,7 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                         holder.registerProblem(propertyKey, rangeInExpression, description)
                     }
                 }
-                is ParadoxScopeNode -> {
+                is ParadoxStaticScopeNode -> {
                     val parentScopeContext = scopeContext.prev ?: continue
                     val inputScopes = node.config.inputScopes
                     val configGroup = config.configGroup
@@ -76,11 +76,11 @@ class IncorrectScopeSwitchInspection : ScopeInspectionBase() {
                     holder.registerProblem(propertyKey, rangeInExpression, description)
                 }
                 // TODO 1.3.0+ dynamic value
-                is ParadoxDynamicScopeLinkNode -> {
+                is ParadoxDynamicScopeNode -> {
 
                 }
-                is ParadoxParameterizedScopeLinkNode -> pass()
-                is ParadoxErrorScopeLinkNode -> break
+                is ParadoxParameterizedScopeNode -> pass()
+                is ParadoxErrorScopeNode -> break
             }
         }
     }

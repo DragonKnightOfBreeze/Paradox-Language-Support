@@ -8,7 +8,7 @@ import icu.windea.pls.lang.resolve.complexExpression.dsl.*
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markIntegrationTest
@@ -62,7 +62,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
             node<ParadoxMarkerNode>("@", 13 to 14)
             node<ParadoxScopeFieldExpression>("root", 14 to 18) {
-                node<ParadoxScopeLinkNode>("root", 14 to 18)
+                node<ParadoxScopeNode>("root", 14 to 18)
             }
         }
         exp.check(dsl)
@@ -77,9 +77,9 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDynamicValueNode>("some_variable", 0 to 13)
             node<ParadoxMarkerNode>("@", 13 to 14)
             node<ParadoxScopeFieldExpression>("root.owner", 14 to 24) {
-                node<ParadoxScopeLinkNode>("root", 14 to 18)
+                node<ParadoxScopeNode>("root", 14 to 18)
                 node<ParadoxOperatorNode>(".", 18 to 19)
-                node<ParadoxScopeLinkNode>("owner", 19 to 24)
+                node<ParadoxScopeNode>("owner", 19 to 24)
             }
         }
         exp.check(dsl)

@@ -4,7 +4,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.values.singletonSet
@@ -16,18 +17,18 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
-class ParadoxSystemCommandScopeNode(
+class ParadoxStaticCommandScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    override val config: CwtSystemScopeConfig
-) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeNode, ParadoxSystemScopeAwareLinkNode, ParadoxIdentifierNode {
+    val config: CwtLinkConfig
+) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeNode, ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.to.singletonSet()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.systemCommandScope(element.language)
+        return ParadoxSemanticAttributesKeys.commandScope(element.language)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {
@@ -39,14 +40,14 @@ class ParadoxSystemCommandScopeNode(
     class Reference(
         element: PsiElement,
         rangeInElement: TextRange,
-        config: CwtSystemScopeConfig
+        config: CwtLinkConfig
     ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemCommandScopeNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxStaticCommandScopeNode? {
             if (text.isParameterized()) return null
-            val config = configGroup.systemScopes[text] ?: return null
-            return ParadoxSystemCommandScopeNode(text, textRange, configGroup, config)
+            val config = configGroup.localisationLinks[text]?.takeIf { it.type.forScope() && it.isStatic } ?: return null
+            return ParadoxStaticCommandScopeNode(text, textRange, configGroup, config)
         }
     }
 

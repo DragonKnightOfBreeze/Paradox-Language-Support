@@ -6,24 +6,24 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.findIsInstance
 
-class ParadoxDynamicCommandScopeLinkNode(
+class ParadoxDynamicCommandScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeLinkNode {
-    val prefixNode: ParadoxCommandScopeLinkPrefixNode?
-        get() = nodes.findIsInstance<ParadoxCommandScopeLinkPrefixNode>()
-    val valueNode: ParadoxCommandScopeLinkValueNode
-        get() = nodes.findIsInstance<ParadoxCommandScopeLinkValueNode>()!!
+) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeNode {
+    val prefixNode: ParadoxCommandScopePrefixNode?
+        get() = nodes.findIsInstance<ParadoxCommandScopePrefixNode>()
+    val valueNode: ParadoxCommandScopeValueNode
+        get() = nodes.findIsInstance<ParadoxCommandScopeValueNode>()!!
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
     }
 
     open class Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeLinkNode? {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandScopeNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = textRange.startOffset
             var startIndex = 0
@@ -37,7 +37,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                 run r2@{
                     val nodeText = prefix // = linkConfigs.first().prefixFromArgument!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
-                    val node = ParadoxCommandScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    val node = ParadoxCommandScopePrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                     startIndex += nodeText.length
                 }
@@ -51,7 +51,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                 run r2@{
                     val nodeText = text.substring(startIndex, valueEndIndex)
                     val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
-                    val node = ParadoxCommandScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    val node = ParadoxCommandScopeValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                     startIndex += nodeText.length
                 }
@@ -61,7 +61,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                     else ParadoxMarkerNode(")", nodeTextRange, configGroup)
                     nodes += node
                 }
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
+                return ParadoxDynamicCommandScopeNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 匹配某一前缀的场合（如 `event_target:some_job`）
@@ -72,26 +72,26 @@ class ParadoxDynamicCommandScopeLinkNode(
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
-                    val node = ParadoxCommandScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    val node = ParadoxCommandScopePrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                     startIndex += nodeText.length
                 }
                 run r2@{
                     val nodeText = text.substring(startIndex)
                     val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
-                    val node = ParadoxCommandScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    val node = ParadoxCommandScopeValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                 }
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
+                return ParadoxDynamicCommandScopeNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 没有前缀且允许没有前缀的场合
             run r1@{
                 val linkConfigs = configGroup.localisationLinksModel.forScopeNoPrefixSorted
                 if (linkConfigs.isEmpty()) return@r1
-                val node = ParadoxCommandScopeLinkValueNode.resolve(text, textRange, configGroup, linkConfigs)
+                val node = ParadoxCommandScopeValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
+                return ParadoxDynamicCommandScopeNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             return null

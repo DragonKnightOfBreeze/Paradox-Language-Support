@@ -7,7 +7,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
@@ -16,14 +16,14 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariable
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 
-val ParadoxCommandExpression.scopeNodes: List<ParadoxCommandScopeLinkNode>
-    get() = nodes.filterIsInstance<ParadoxCommandScopeLinkNode>()
+val ParadoxCommandExpression.scopeNodes: List<ParadoxCommandScopeNode>
+    get() = nodes.filterIsInstance<ParadoxCommandScopeNode>()
 val ParadoxCommandExpression.fieldNode: ParadoxCommandFieldNode
     get() = nodes.last().cast()
 
@@ -45,8 +45,8 @@ val ParadoxDynamicValueExpression.nestedScopeFieldExpression: ParadoxScopeFieldE
 val ParadoxLinkedExpression.linkNodes: List<ParadoxLinkNode>
     get() = nodes.filterIsInstance<ParadoxLinkNode>()
 
-val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeLinkNode>
-    get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
+val ParadoxScopeFieldExpression.scopeNodes: List<ParadoxScopeNode>
+    get() = nodes.filterIsInstance<ParadoxScopeNode>()
 
 val ParadoxScriptValueExpression.scriptValueNode: ParadoxScriptValueNode
     get() = nodes.first().cast()
@@ -66,14 +66,14 @@ val ParadoxScriptValueExpression.argumentNodes: List<Pair<ParadoxScriptValueArgu
         }
     }
 
-val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeLinkNode>
-    get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
+val ParadoxValueFieldExpression.scopeNodes: List<ParadoxScopeNode>
+    get() = nodes.filterIsInstance<ParadoxScopeNode>()
 val ParadoxValueFieldExpression.fieldNode: ParadoxValueFieldNode
     get() = nodes.last().cast()
 val ParadoxValueFieldExpression.nestedScriptValueExpression: ParadoxScriptValueExpression?
     get() = fieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.valueNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
-val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeLinkNode>
-    get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
+val ParadoxVariableFieldExpression.scopeNodes: List<ParadoxScopeNode>
+    get() = nodes.filterIsInstance<ParadoxScopeNode>()
 val ParadoxVariableFieldExpression.variableNode: ParadoxDataSourceNode
     get() = nodes.last().cast()
