@@ -189,7 +189,7 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInvocationReference(element: PsiElement?, referenceElement: PsiElement): Boolean {
+    fun isDefinitionCall(element: PsiElement?, referenceElement: PsiElement): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }

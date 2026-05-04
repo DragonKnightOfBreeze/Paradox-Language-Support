@@ -54,7 +54,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
+                ParadoxRecursionManager.checkDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
                 if (recursions.isEmpty()) return
                 val description = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2")

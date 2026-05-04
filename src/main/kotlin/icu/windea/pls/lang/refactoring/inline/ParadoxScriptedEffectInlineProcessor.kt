@@ -53,7 +53,7 @@ class ParadoxScriptedEffectInlineProcessor(
         }
         ReferencesSearch.search(element, myRefactoringScope, true).process p@{ reference ->
             ProgressManager.checkCanceled()
-            if (!ParadoxPsiMatcher.isInvocationReference(element, reference.element)) return@p true
+            if (!ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) return@p true
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()
