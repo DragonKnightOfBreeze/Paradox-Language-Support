@@ -9,14 +9,14 @@ Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game m
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides code highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diff viewing, diagrams and many other features.
-- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
-- **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
+- **Rich IDE Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
+- **Enhanced Information Hints**: Shows key information intuitively through quick documentation and inlay hints, including localisation text, images, scopes, parameters, etc.
 - **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
+- **Directory Detection**: Automatically detects game and mod directories.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
+- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
-- **Directory Detection**: Automatically detects game and mod directories.
 
 The plugin implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html).
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
@@ -28,15 +28,15 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 
 **核心特性：**
 
-- **多语言支持**：完整支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用于编写规则的 CWT 语言。
-- **丰富的语言功能**：提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模板、代码层级、差异比较和图表等多项功能。
-- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TGA）之间互相转换。
-- **信息增强提示**：通过快速文档和内嵌提示，直观展示本地化文本、图片、作用域和参数等关键信息。
+- **多语言支持**：支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用于编写规则的 CWT 语言。
+- **丰富的 IDE 功能**：提供代码高亮、代码导航、代码补全、代码重构、意向动作、代码检查、快速文档、内嵌提示、代码层级、差异比较和图表等多项 IDE 功能。
+- **信息增强提示**：通过快速文档和内嵌提示，直观显示各类关键信息，包括本地化文本、图片、作用域和参数等。
 - **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、复杂表达式、内联脚本和定义注入等。
+- **目录检测**：自动检测游戏目录与模组目录。
 - **可扩展的规则系统**：支持自定义和导入规则文件，强化代码导航、代码补全、文档提示等功能。
+- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TGA）之间互相转换。
 - **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
 - **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
-- **目录检测**：自动检测游戏目录与模组目录。
 
 插件基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。
 其使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循基本一致的语法与格式，并进行了一定的改进与扩展。

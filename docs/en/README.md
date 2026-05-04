@@ -11,14 +11,14 @@ Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game m
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides code highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diff viewing, diagrams and many other features.
-- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
-- **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
+- **Rich IDE Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
+- **Enhanced Information Hints**: Shows key information intuitively through quick documentation and inlay hints, including localisation text, images, scopes, parameters, etc.
 - **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
+- **Directory Detection**: Automatically detects game and mod directories.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
+- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
-- **Directory Detection**: Automatically detects game and mod directories.
 
 The plugin implements its core language features based on its own [config system](config.md).
 The CWT config files it uses follow basically the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions.
