@@ -8,7 +8,8 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 
 /**
- * 导航到当前文件的包括自身在内的相同路径的文件。如果是本地化文件的话也忽略路径中的语言环境。
+ * 导航到当前文件的包括自身在内的拥有相同路径的文件。
+ * 如果是本地化文件的话，也忽略路径中的语言环境。
  */
 class GotoFilesAction : BaseCodeInsightAction() {
     private val handler = GotoFilesHandler()

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 导航到当前本地化的包括自身在内的相同名称的本地化。
+ * 导航到当前本地化的包括自身在内的拥有相同名称的本地化。
  */
 class GotoLocalisationsAction : BaseCodeInsightAction() {
     private val handler = GotoLocalisationsHandler()

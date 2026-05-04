@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
+ * 导航到当前定义的包括自身在内的拥有相同名称和主要类型的定义。
  *
  * 不支持直接声明为文件的定义。
  */

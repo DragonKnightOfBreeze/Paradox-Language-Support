@@ -5,6 +5,8 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.defineInfo
+import icu.windea.pls.lang.defineNamespaceInfo
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -152,6 +154,22 @@ object ParadoxPsiMatcher {
             returns(true) implies (element is ParadoxScriptProperty)
         }
         return element is ParadoxScriptProperty && element.defineInfo != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefineNamespace(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxScriptProperty && element.defineNamespaceInfo != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefineVariable(element: PsiElement?): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        return element is ParadoxScriptProperty && element.defineVariableInfo != null
     }
 
     @OptIn(ExperimentalContracts::class)

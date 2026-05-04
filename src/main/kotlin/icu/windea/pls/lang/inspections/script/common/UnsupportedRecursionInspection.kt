@@ -47,7 +47,6 @@ class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
                 holder.registerProblem(location, description, NavigateToRecursionsFix(name, element, recursions))
             }
 
-            @Suppress("KotlinConstantConditions")
             override fun visitProperty(element: ParadoxScriptProperty) {
                 ProgressManager.checkCanceled()
                 val definitionInfo = element.definitionInfo ?: return

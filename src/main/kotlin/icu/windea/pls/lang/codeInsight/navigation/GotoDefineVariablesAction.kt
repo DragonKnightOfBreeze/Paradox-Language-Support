@@ -4,17 +4,22 @@ import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.model.ParadoxModSource
+import icu.windea.pls.model.constraints.ParadoxPathConstraint
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前封装变量的包括自身在内的拥有相同名称的封装变量（仅限本地+全局）。
+ * 导航到当前定值变量的包括自身在内的拥有相同命名空间和名称的定值变量。
  */
-class GotoScriptedVariablesAction : BaseCodeInsightAction() {
-    private val handler = GotoScriptedVariablesHandler()
+class GotoDefineVariablesAction : BaseCodeInsightAction() {
+    private val handler = GotoDefineVariablesHandler()
 
     override fun getHandler() = handler
 
@@ -24,16 +29,15 @@ class GotoScriptedVariablesAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (!ParadoxPsiFileMatcher.isScriptFile(file, injectable = true)) return
+        if (!ParadoxPsiFileMatcher.isScriptFile(file, ParadoxPathConstraint.ForDefine, injectable = true)) return
         if (ParadoxPsiFileMatcher.isTopFileFromRoot(file)) return // 忽略直接位于游戏或模组的根目录下的文件
-        presentation.isVisible = true
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        if (!ParadoxPsiMatcher.isScriptedVariable(element)) return
-        presentation.isEnabled = true
+        if (!ParadoxPsiMatcher.isDefineVariable(element)) return
+        presentation.isEnabledAndVisible = true
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        return ParadoxPsiFileManager.findScriptProperty(file, offset)
     }
 }
