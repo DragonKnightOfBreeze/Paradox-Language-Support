@@ -36,12 +36,12 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField val VARIABLE = create("PARADOX_LOCALISATION.VARIABLE", ParadoxScriptAttributesKeys.VARIABLE)
     @JvmField val SYSTEM_COMMAND_SCOPE = create("PARADOX_LOCALISATION.SYSTEM_COMMAND_SCOPE", ParadoxScriptAttributesKeys.SYSTEM_COMMAND_SCOPE)
     @JvmField val COMMAND_SCOPE = create("PARADOX_LOCALISATION.COMMAND_SCOPE", ParadoxScriptAttributesKeys.COMMAND_SCOPE)
+    @JvmField val COMMAND_SCOPE_PREFIX = create("PARADOX_LOCALISATION.COMMAND_SCOPE_PREFIX", ParadoxScriptAttributesKeys.COMMAND_SCOPE_PREFIX)
     @JvmField val COMMAND_FIELD = create("PARADOX_LOCALISATION.COMMAND_FIELD", ParadoxScriptAttributesKeys.COMMAND_FIELD)
+    @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX)
     @JvmField val DATABASE_OBJECT_TYPE = create("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE)
     @JvmField val DATABASE_OBJECT = create("PARADOX_LOCALISATION.DATABASE_OBJECT", ParadoxScriptAttributesKeys.DATABASE_OBJECT)
 
-    @JvmField val COMMAND_SCOPE_LINK_PREFIX = create("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_PREFIX", ParadoxScriptAttributesKeys.COMMAND_SCOPE_LINK_PREFIX)
-    @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX)
 
     private fun create(name: String, fallback: TextAttributesKey? = null): TextAttributesKey {
         if (fallback == null) return TextAttributesKey.createTextAttributesKey(name)

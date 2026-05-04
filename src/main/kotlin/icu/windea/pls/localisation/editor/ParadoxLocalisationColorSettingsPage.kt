@@ -38,12 +38,12 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.variable"), ParadoxLocalisationAttributesKeys.VARIABLE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.systemCommandScope"), ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScopePrefix"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_PREFIX),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandFieldPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT),
 
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScopeLinkPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandFieldPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX),
     )
 
     private val _tagToDescriptorMap = mapOf(
@@ -56,12 +56,12 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "VARIABLE" to ParadoxLocalisationAttributesKeys.VARIABLE,
         "SYSTEM_COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE,
         "COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE,
+        "COMMAND_SCOPE_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_PREFIX,
         "COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD,
+        "COMMAND_FIELD_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX,
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT,
 
-        "CSL_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX,
-        "CF_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX,
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)

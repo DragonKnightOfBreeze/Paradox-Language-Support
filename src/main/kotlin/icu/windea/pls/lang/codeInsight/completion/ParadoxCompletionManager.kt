@@ -850,7 +850,7 @@ object ParadoxCompletionManager {
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
                     .withInsertHandler(PlsInsertHandlers.addColon())
-                    .withPriority(PlsCompletionPriorities.prefix)
+                    .withPriority(PlsCompletionPriorities.macro)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)

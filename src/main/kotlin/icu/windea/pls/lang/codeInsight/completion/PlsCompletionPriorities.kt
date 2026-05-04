@@ -4,6 +4,7 @@ object PlsCompletionPriorities {
     const val pinned = 1000.0
     const val keyword = 10.0
     const val constant = 90.0
+    const val macro = 80.0
     const val prefix = 70.0
 
     const val rootKey = 100.0

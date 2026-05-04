@@ -6,7 +6,7 @@ l_english:
  text_with_colorful_text:0 "Colorful text: §RRed text§!"
  text_with_parameter:0 "Parameter: $<LOCALISATION_REFERENCE>KEY</LOCALISATION_REFERENCE>$ and $WITH_COLOR|Y$"
  text_with_scripted_variable_reference:0 "Scripted variable: $@var$"
- text_with_command:0 "Command: [<SYSTEM_COMMAND_SCOPE>Root</SYSTEM_COMMAND_SCOPE><OPERATOR>.</OPERATOR><COMMAND_SCOPE>Owner</COMMAND_SCOPE><OPERATOR>.</OPERATOR><CSL_PREFIX>event_target:</CSL_PREFIX><DYNAMIC_VALUE>some_event_target</DYNAMIC_VALUE><OPERATOR>.</OPERATOR><COMMAND_FIELD>GetName</COMMAND_FIELD>] [<DEFINITION_REFERENCE>some_scripted_loc</DEFINITION_REFERENCE>] [<VARIABLE>some_variable</VARIABLE>]"
+ text_with_command:0 "Command: [<SYSTEM_COMMAND_SCOPE>Root</SYSTEM_COMMAND_SCOPE><OPERATOR>.</OPERATOR><COMMAND_SCOPE>Owner</COMMAND_SCOPE><OPERATOR>.</OPERATOR><COMMAND_SCOPE_PREFIX>event_target:</COMMAND_SCOPE_PREFIX><DYNAMIC_VALUE>some_event_target</DYNAMIC_VALUE><OPERATOR>.</OPERATOR><COMMAND_FIELD>GetName</COMMAND_FIELD>] [<DEFINITION_REFERENCE>some_scripted_loc</DEFINITION_REFERENCE>] [<VARIABLE>some_variable</VARIABLE>]"
  text_with_icon:0 "Icon: £unity£ and £leader_skill|3£"
  text_with_concept_command:0 "Concept: ['concept', concept text] ['<DATABASE_OBJECT_TYPE>civic</DATABASE_OBJECT_TYPE><MARKER>:</MARKER><DEFINITION_REFERENCE><DATABASE_OBJECT>some_civic</DATABASE_OBJECT></DEFINITION_REFERENCE>']"
  text_with_text_format:0 "Text format: #v text#!"

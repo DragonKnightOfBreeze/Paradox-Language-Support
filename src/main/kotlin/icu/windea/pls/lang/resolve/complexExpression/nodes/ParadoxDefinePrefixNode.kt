@@ -12,7 +12,7 @@ class ParadoxDefinePrefixNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.definePrefix()
+        return ParadoxSemanticAttributesKeys.keyword()
     }
 
     open class Resolver {

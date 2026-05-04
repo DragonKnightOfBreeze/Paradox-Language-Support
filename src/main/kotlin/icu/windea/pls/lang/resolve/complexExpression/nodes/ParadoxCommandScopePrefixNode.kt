@@ -24,7 +24,7 @@ class ParadoxCommandScopePrefixNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxSemanticAttributesKeys.commandScopeLinkPrefix(element.language)
+        return ParadoxSemanticAttributesKeys.commandScopePrefix(element.language)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

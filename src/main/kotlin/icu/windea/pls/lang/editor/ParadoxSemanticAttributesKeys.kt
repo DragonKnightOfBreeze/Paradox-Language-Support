@@ -23,6 +23,10 @@ object ParadoxSemanticAttributesKeys {
         }
     }
 
+    fun keyword(): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.KEYWORD
+    }
+
     fun text(language: Language? = null): TextAttributesKey {
         return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.TEXT
@@ -94,8 +98,16 @@ object ParadoxSemanticAttributesKeys {
         return ParadoxScriptAttributesKeys.SCOPE
     }
 
+    fun scopePrefix(): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.SCOPE_PREFIX
+    }
+
     fun valueField(): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_FIELD
+    }
+
+    fun valueFieldPrefix(): TextAttributesKey {
+        return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX
     }
 
     fun systemCommandScope(language: Language? = null): TextAttributesKey {
@@ -112,10 +124,24 @@ object ParadoxSemanticAttributesKeys {
         }
     }
 
+    fun commandScopePrefix(language: Language? = null): TextAttributesKey {
+        return when (language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_PREFIX
+            else -> ParadoxScriptAttributesKeys.COMMAND_SCOPE_PREFIX
+        }
+    }
+
     fun commandField(language: Language? = null): TextAttributesKey {
         return when (language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_FIELD
             else -> ParadoxScriptAttributesKeys.COMMAND_FIELD
+        }
+    }
+
+    fun commandFieldPrefix(language: Language? = null): TextAttributesKey {
+        return when (language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX
+            else -> ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX
         }
     }
 
@@ -131,31 +157,5 @@ object ParadoxSemanticAttributesKeys {
             is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT
             else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT
         }
-    }
-
-    fun scopeLinkPrefix(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.SCOPE_LINK_PREFIX
-    }
-
-    fun valueFieldPrefix(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX
-    }
-
-    fun commandScopeLinkPrefix(language: Language? = null): TextAttributesKey {
-        return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX
-            else -> ParadoxScriptAttributesKeys.COMMAND_SCOPE_LINK_PREFIX
-        }
-    }
-
-    fun commandFieldPrefix(language: Language? = null): TextAttributesKey {
-        return when (language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX
-            else -> ParadoxScriptAttributesKeys.COMMAND_FIELD_PREFIX
-        }
-    }
-
-    fun definePrefix(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.DEFINE_PREFIX
     }
 }
