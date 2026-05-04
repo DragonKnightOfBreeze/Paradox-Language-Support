@@ -1,11 +1,10 @@
 <html>
 <body>
-  Reports incorrect overrides of (global) scripted variables.
+  Reports incorrect overrides of define variables.
   <p>Notes:</p>
   <ul>
-    <li>If a scripted variable with the same name exists in the current context, an override of this scripted variable is considered present.</li>
+    <li>If a define variable with the same name and namespace exists in the current context, an override of this define variable is considered present.</li>
     <li>Applies only to project script files that are game or mod files, excluding in-memory or injected files.</li>
-    <li>Applies only to non-parameterized global scripted variables.</li>
     <li>Checked based on its override strategy.</li>
   </ul>
   <p>See: <a href="https://windea.icu/Paradox-Language-Support/en/ref-config-format.html#config-priority">Priority Config</a></p>
@@ -19,11 +18,11 @@
   </ul>
   <p>Example:</p>
   <p>
-    The original scripted variable is declared in <code>common/scripted_variables/test.txt</code>,
-    and the overriding scripted variable is declared in <code>common/scripted_variables/zzz_test.txt</code>.
+    The original define variable is declared in <code>common/defines/99_test.txt</code>,
+    and the overriding define variable is declared in <code>common/defines/00_test.txt</code>.
   </p>
   <p>
-    This override is incorrect because scripted variables use the <code>FIOS</code> override strategy.
+    This override is incorrect because define variables use the <code>LIOS</code> override strategy.
   </p>
 </body>
 </html>

@@ -19,6 +19,10 @@
                      key="inspection.overrideForDefinition" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.overrides.OverrideForDefinitionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverrideForDefineVariable"
+                     key="inspection.overrideForDefineVariable" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
+                     enabledByDefault="false" level="WEAK WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.OverrideForDefineVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverrideForScriptedVariable"
                      key="inspection.incorrectOverrideForScriptedVariable" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
@@ -27,6 +31,10 @@
                      key="inspection.incorrectOverrideForDefinition" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForDefinitionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverrideForDefineVariable"
+                     key="inspection.incorrectOverrideForDefineVariable" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForDefineVariableInspection"/>
     <!-- endregion -->
 
     <!-- region Paradox Script -->

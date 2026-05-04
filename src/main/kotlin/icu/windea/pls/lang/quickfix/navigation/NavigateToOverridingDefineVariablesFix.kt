@@ -6,14 +6,14 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
-class NavigateToOverridingDefinitionsFix(
+class NavigateToOverridingDefineVariablesFix(
     private val key: String,
     target: PsiElement,
     elements: Collection<PsiElement>
 ) : NavigateToFix(target, elements) {
-    override fun getText() = PlsBundle.message("fix.navigateTo.overridingDefinitions.name")
+    override fun getText() = PlsBundle.message("fix.navigateTo.overridingDefineVariables.name")
 
-    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.overridingDefinitions.popup.title", key)
+    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.overridingDefineVariables.popup.title", key)
 
     override fun getPopupText(editor: Editor, value: PsiElement): String {
         val file = value.containingFile ?: return PlsBundle.message("fix.navigate.popup.text.0", key)

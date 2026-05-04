@@ -30,8 +30,9 @@
 - [x] 优化本地化的生成逻辑，提供额外的配置项 / Optimized localisation generation logic, providing extra settings ([#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296))
 - [x] 优化 rootInfo 和 rootMetadata 的解析逻辑 / Optimized resolution logic for rootInfo and rootMetadata
 - [x] 为定值的命名空间和变量提供特殊的图标、代码高亮和快速文档 / Provided special icons, code highlight and quick docs for define namespaces and variables
-- [x] 为定值的变量提供导航动作、装订线图标和实现查询 / Provided navigation action, gutter icons and implementations search for define variables
 - [ ] 为定值的命名空间和变量提供代码补全 / Provided code completion for define namespaces and variables
+- [x] 为定值变量提供导航动作、装订线图标和实现查询 / Provided navigation action, gutter icons and implementations search for define variables
+- [x] 为定值变量提供相关代码检查（重载、不正确的重载） / Provided related code inspections for define variables (override, incorrect override)
 - [ ] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 

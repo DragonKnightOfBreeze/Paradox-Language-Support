@@ -5,10 +5,15 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 与重载相关的代码检查的基类。
+ *
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 abstract class OverrideRelatedInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
