@@ -87,14 +87,14 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
     }
 }
 
-class ParadoxExtendedInlineScriptQuickDocTextProvider : ParadoxQuickDocTextProviderBase.InlineScript() {
+class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Parameter() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String? {
-        val gameType = selectGameType(element) ?: return null
-        val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val config = configGroup.extendedInlineScripts.findByPattern(expression, element, configGroup) ?: return null
+    override fun doGetQuickDocText(element: ParadoxParameterLightElement): String? {
+        val name = element.name
+        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
+        val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
+        val config = configs.findLast { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) } ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
@@ -129,14 +129,14 @@ class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProvi
     }
 }
 
-class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Parameter() {
+class ParadoxExtendedInlineScriptQuickDocTextProvider : ParadoxQuickDocTextProviderBase.InlineScript() {
     override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
-    override fun doGetQuickDocText(element: ParadoxParameterLightElement): String? {
-        val name = element.name
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) } ?: return null
+    override fun doGetQuickDocText(element: ParadoxScriptFile, expression: String): String? {
+        val gameType = selectGameType(element) ?: return null
+        val project = element.project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        val config = configGroup.extendedInlineScripts.findByPattern(expression, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }

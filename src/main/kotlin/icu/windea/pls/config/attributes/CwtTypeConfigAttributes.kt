@@ -19,7 +19,6 @@ data class CwtTypeConfigAttributes(
     val possibleTypeKeys: Set<@CaseInsensitive String> = emptySet(),
 ) : CwtConfigAttributes {
     companion object {
-        @JvmStatic
-        val EMPTY = CwtTypeConfigAttributes()
+        @JvmField val EMPTY = CwtTypeConfigAttributes()
     }
 }

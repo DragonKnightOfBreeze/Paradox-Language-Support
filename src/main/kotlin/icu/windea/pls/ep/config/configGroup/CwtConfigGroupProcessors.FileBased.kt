@@ -338,14 +338,6 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         initializer.extendedOnActions[onActionConfig.name] = onActionConfig
                     }
                 }
-                key == "inline_scripts" -> {
-                    val configs = property.configs ?: continue
-                    for (config in configs) {
-                        val inlineScriptConfig = CwtExtendedInlineScriptConfig.resolve(config)
-                        if (CwtConfigService.filter(inlineScriptConfig)) continue
-                        initializer.extendedInlineScripts[inlineScriptConfig.name] = inlineScriptConfig
-                    }
-                }
                 key == "parameters" -> {
                     val configs = property.configs ?: continue
                     for (config in configs) {
@@ -378,6 +370,14 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                             if (CwtConfigService.filter(dynamicValueConfig)) continue
                             initializer.extendedDynamicValues.computeIfAbsent(type) { FastMap() }[dynamicValueConfig.name] = dynamicValueConfig
                         }
+                    }
+                }
+                key == "inline_scripts" -> {
+                    val configs = property.configs ?: continue
+                    for (config in configs) {
+                        val inlineScriptConfig = CwtExtendedInlineScriptConfig.resolve(config)
+                        if (CwtConfigService.filter(inlineScriptConfig)) continue
+                        initializer.extendedInlineScripts[inlineScriptConfig.name] = inlineScriptConfig
                     }
                 }
                 else -> {

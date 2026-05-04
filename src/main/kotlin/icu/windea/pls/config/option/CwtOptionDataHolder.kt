@@ -237,7 +237,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
      * 默认为 `single`。
      *
-     * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedInlineScriptConfig] 和 [CwtExtendedParameterConfig]）。
+     * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
      *
      * CWTools 兼容性：扩展。
      *

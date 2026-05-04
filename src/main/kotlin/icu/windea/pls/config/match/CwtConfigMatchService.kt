@@ -149,40 +149,19 @@ object CwtConfigMatchService {
                 val source = configGroup.types
                 source.processValue(id) { processor.process(it.cast()) }
             }
-            CwtExtendedComplexEnumValueConfig::class.java -> {
-                val source = configGroup.extendedComplexEnumValues
-                val enumName = id?.substringBefore(':')?.trim()?.orNull()
-                val name = id?.substringAfter(':')?.trim()?.orNull()
-                source.processValue(enumName) { v1 ->
-                    v1.processValue(name) {
-                        processor.process(it.cast())
-                    }
-                }
+            CwtExtendedScriptedVariableConfig::class.java -> {
+                // TODO 2.1.6+ pattern match
+                val source = configGroup.extendedScriptedVariables
+                source.processValue(id) { processor.process(it.cast()) }
             }
             CwtExtendedDefinitionConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedDefinitions
                 source.processValue(id) { v -> v.process { processor.process(it.cast()) } }
             }
-            CwtExtendedDynamicValueConfig::class.java -> {
-                // TODO 2.1.6+ pattern match
-                val source = configGroup.extendedDynamicValues
-                val dynamicValueType = id?.substringBefore(':')?.trim()?.orNull()
-                val name = id?.substringAfter(':')?.trim()?.orNull()
-                source.processValue(dynamicValueType) { v1 ->
-                    v1.processValue(name) {
-                        processor.process(it.cast())
-                    }
-                }
-            }
             CwtExtendedGameRuleConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
                 val source = configGroup.extendedGameRules
-                source.processValue(id) { processor.process(it.cast()) }
-            }
-            CwtExtendedInlineScriptConfig::class.java -> {
-                // TODO 2.1.6+ pattern match
-                val source = configGroup.extendedInlineScripts
                 source.processValue(id) { processor.process(it.cast()) }
             }
             CwtExtendedOnActionConfig::class.java -> {
@@ -195,9 +174,30 @@ object CwtConfigMatchService {
                 val source = configGroup.extendedParameters
                 source.processValue(id) { v -> v.process { processor.process(it.cast()) } }
             }
-            CwtExtendedScriptedVariableConfig::class.java -> {
+            CwtExtendedComplexEnumValueConfig::class.java -> {
+                val source = configGroup.extendedComplexEnumValues
+                val enumName = id?.substringBefore(':')?.trim()?.orNull()
+                val name = id?.substringAfter(':')?.trim()?.orNull()
+                source.processValue(enumName) { v1 ->
+                    v1.processValue(name) {
+                        processor.process(it.cast())
+                    }
+                }
+            }
+            CwtExtendedDynamicValueConfig::class.java -> {
                 // TODO 2.1.6+ pattern match
-                val source = configGroup.extendedScriptedVariables
+                val source = configGroup.extendedDynamicValues
+                val dynamicValueType = id?.substringBefore(':')?.trim()?.orNull()
+                val name = id?.substringAfter(':')?.trim()?.orNull()
+                source.processValue(dynamicValueType) { v1 ->
+                    v1.processValue(name) {
+                        processor.process(it.cast())
+                    }
+                }
+            }
+            CwtExtendedInlineScriptConfig::class.java -> {
+                // TODO 2.1.6+ pattern match
+                val source = configGroup.extendedInlineScripts
                 source.processValue(id) { processor.process(it.cast()) }
             }
             else -> throw UnsupportedOperationException()

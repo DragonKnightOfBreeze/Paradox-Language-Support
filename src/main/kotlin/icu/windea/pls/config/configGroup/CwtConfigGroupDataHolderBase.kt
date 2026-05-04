@@ -46,7 +46,6 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
@@ -83,10 +82,10 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val extendedDefinitions by registerKey<FastMap<String, FastList<CwtExtendedDefinitionConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedGameRules by registerKey<FastMap<String, CwtExtendedGameRuleConfig>, UserDataHolder>(this) { FastMap() }
         val extendedOnActions by registerKey<FastMap<String, CwtExtendedOnActionConfig>, UserDataHolder>(this) { FastMap() }
+        val extendedParameters by registerKey<FastMap<String, FastList<CwtExtendedParameterConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedComplexEnumValues by registerKey<FastMap<String, FastMap<String, CwtExtendedComplexEnumValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedDynamicValues by registerKey<FastMap<String, FastMap<String, CwtExtendedDynamicValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedInlineScripts by registerKey<FastMap<String, CwtExtendedInlineScriptConfig>, UserDataHolder>(this) { FastMap() }
-        val extendedParameters by registerKey<FastMap<String, FastList<CwtExtendedParameterConfig>>, UserDataHolder>(this) { FastMap() }
         val predefinedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val generatedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val aliasKeysGroupConst by registerKey<FastCustomMap<@CaseInsensitive String, FastCustomMap<@CaseInsensitive String, String>>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
@@ -137,10 +136,10 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val extendedDefinitions by Keys.extendedDefinitions
     final override val extendedGameRules by Keys.extendedGameRules
     final override val extendedOnActions by Keys.extendedOnActions
+    final override val extendedParameters by Keys.extendedParameters
     final override val extendedComplexEnumValues by Keys.extendedComplexEnumValues
     final override val extendedDynamicValues by Keys.extendedDynamicValues
     final override val extendedInlineScripts by Keys.extendedInlineScripts
-    final override val extendedParameters by Keys.extendedParameters
     final override val predefinedModifiers by Keys.predefinedModifiers
     final override val generatedModifiers by Keys.generatedModifiers
     final override val aliasKeysGroupConst by Keys.aliasKeysGroupConst
@@ -200,12 +199,12 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         extendedDefinitions.values.forEach { it.trim() }
         extendedGameRules.trim()
         extendedOnActions.trim()
+        extendedParameters.trim()
         extendedComplexEnumValues.trim()
         extendedComplexEnumValues.values.forEach { it.trim() }
         extendedDynamicValues.trim()
         extendedDynamicValues.values.forEach { it.trim() }
         extendedInlineScripts.trim()
-        extendedParameters.trim()
         extendedParameters.values.forEach { it.trim() }
         predefinedModifiers.trim()
         generatedModifiers.trim()

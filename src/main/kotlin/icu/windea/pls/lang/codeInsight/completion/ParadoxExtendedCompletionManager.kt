@@ -28,7 +28,7 @@ object ParadoxExtendedCompletionManager {
             val element = config0.pointer.element ?: return@f
             val typeFile = config0.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.ScriptedVariable)
+                .withIcon(PlsIcons.Configs.ExtendedScriptedVariable)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
                 .withCompletionId()
@@ -64,7 +64,7 @@ object ParadoxExtendedCompletionManager {
                     val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withItemTextUnderlined(true) // used for completions from extended configs
-                        .withPatchableIcon(PlsIcons.Nodes.Definition(type))
+                        .withPatchableIcon(PlsIcons.Configs.ExtendedDefinition)
                         .withPatchableTailText(tailText)
                         .forScriptExpression(context)
                     result.addElement(lookupElement, context)
@@ -72,8 +72,7 @@ object ParadoxExtendedCompletionManager {
             }
         }
         run r1@{
-            val tGameRule = ParadoxDefinitionTypes.gameRule
-            if (typeExpression != tGameRule) return@r1
+            if (typeExpression != ParadoxDefinitionTypes.gameRule) return@r1
             configGroup.extendedGameRules.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
@@ -83,15 +82,14 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.Definition(tGameRule))
+                    .withPatchableIcon(PlsIcons.Configs.ExtendedGameRule)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
         run r1@{
-            val tOnAction = ParadoxDefinitionTypes.onAction
-            if (typeExpression != tOnAction) return@r1
+            if (typeExpression != ParadoxDefinitionTypes.onAction) return@r1
             configGroup.extendedOnActions.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
@@ -101,34 +99,11 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.Definition(tOnAction))
+                    .withPatchableIcon(PlsIcons.Configs.ExtendedOnAction)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
-        }
-    }
-
-    fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
-        ProgressManager.checkCanceled()
-
-        val config = context.config ?: return
-        val configGroup = config.configGroup
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
-        configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
-            ProgressManager.checkCanceled()
-            val name = config0.name
-            if (checkExtendedConfigName(name)) return@f
-            val element = config0.pointer.element
-            val typeFile = config0.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                .withIcon(PlsIcons.Nodes.Directive)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableTailText(tailText)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
         }
     }
 
@@ -151,7 +126,7 @@ object ParadoxExtendedCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) // used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.Parameter)
+                    .withPatchableIcon(PlsIcons.Configs.ExtendedParameter)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
@@ -175,7 +150,7 @@ object ParadoxExtendedCompletionManager {
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue(enumName))
+                .withPatchableIcon(PlsIcons.Configs.ExtendedComplexEnumValue)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
@@ -210,6 +185,29 @@ object ParadoxExtendedCompletionManager {
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
+        }
+    }
+
+    fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
+        if (!PlsSettings.getInstance().state.completion.completeByExtendedConfigs) return
+        ProgressManager.checkCanceled()
+
+        val config = context.config ?: return
+        val configGroup = config.configGroup
+        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+        configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
+            ProgressManager.checkCanceled()
+            val name = config0.name
+            if (checkExtendedConfigName(name)) return@f
+            val element = config0.pointer.element
+            val typeFile = config0.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
+                .withIcon(PlsIcons.Configs.ExtendedInlineScript)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withItemTextUnderlined(true) // used for completions from extended configs
+                .withPatchableTailText(tailText)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
         }
     }
 

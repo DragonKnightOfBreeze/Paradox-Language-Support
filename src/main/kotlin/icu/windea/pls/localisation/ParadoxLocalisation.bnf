@@ -225,7 +225,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue getReference getReferences
+    getName getValue setValue getReference getReferences
   ]
 }
 private concept_text_part ::= COMMA concept_text ?

@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import icu.windea.pls.lang.util.ParadoxDefineManager
 
 /**
- * 定值的变量的解析信息。
+ * 定值变量的解析信息。
  *
  * @property namespace 命名空间。
  * @property variable 变量名。

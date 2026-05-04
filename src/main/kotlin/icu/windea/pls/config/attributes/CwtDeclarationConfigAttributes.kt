@@ -22,7 +22,6 @@ data class CwtDeclarationConfigAttributes(
     override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
-        @JvmStatic
-        val EMPTY = CwtDeclarationConfigAttributes()
+        @JvmField val EMPTY = CwtDeclarationConfigAttributes()
     }
 }

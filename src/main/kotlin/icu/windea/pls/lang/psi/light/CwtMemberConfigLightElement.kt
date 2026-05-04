@@ -18,8 +18,8 @@ class CwtMemberConfigLightElement(
 ) : CwtConfigLightElementBase(parent) {
     override fun getIcon(flags: Int): Icon {
         return when (config) {
-            is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
-            is CwtValueConfig -> PlsIcons.Nodes.CwtValue
+            is CwtPropertyConfig -> PlsIcons.Nodes.Property
+            is CwtValueConfig -> PlsIcons.Nodes.Value
         }
     }
 

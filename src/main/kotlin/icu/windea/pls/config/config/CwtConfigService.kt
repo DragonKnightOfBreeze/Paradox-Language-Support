@@ -255,11 +255,11 @@ object CwtConfigService {
             "definitions" -> if (length == 2) CwtConfigTypes.ExtendedDefinition else null
             "game_rules" -> if (length == 2) CwtConfigTypes.ExtendedGameRule else null
             "on_actions" -> if (length == 2) CwtConfigTypes.ExtendedOnAction else null
-            "inline_scripts" -> if (length == 2) CwtConfigTypes.ExtendedInlineScript else null
             "parameters" -> if (length == 2) CwtConfigTypes.ExtendedParameter else null
             // extended: length == 3, 不检查元素类型
             "complex_enum_values" -> if (length == 3) CwtConfigTypes.ExtendedComplexEnumValue else null
             "dynamic_values" -> if (length == 3) CwtConfigTypes.ExtendedDynamicValue else null
+            "inline_scripts" -> if (length == 2) CwtConfigTypes.ExtendedInlineScript else null
             else -> null
         }
     }

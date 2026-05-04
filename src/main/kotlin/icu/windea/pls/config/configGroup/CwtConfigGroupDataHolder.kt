@@ -115,14 +115,14 @@ interface CwtConfigGroupDataHolder {
     val extendedGameRules: Map<String, CwtExtendedGameRuleConfig>
     // pattern - config
     val extendedOnActions: Map<String, CwtExtendedOnActionConfig>
+    // pattern - configs
+    val extendedParameters: Map<String, List<CwtExtendedParameterConfig>>
     // enum_name - pattern - config
     val extendedComplexEnumValues: Map<String, Map<String, CwtExtendedComplexEnumValueConfig>>
     // dynamic_value_type - pattern - config
     val extendedDynamicValues: Map<String, Map<String, CwtExtendedDynamicValueConfig>>
     // pattern - config
     val extendedInlineScripts: Map<String, CwtExtendedInlineScriptConfig>
-    // pattern - configs
-    val extendedParameters: Map<String, List<CwtExtendedParameterConfig>>
 
     // endregion
 

@@ -977,52 +977,6 @@ on_actions = {
 - `## event_type` is required; if missing, the entry will be skipped.
 - If scope replacement is needed, use `## replace_scopes` in combination.
 
-#### Extended Config for Inline Scripts {#config-extended-inline-script}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
-
-Declares "context configs" and "scope context" for specific inline scripts, used to provide correct completion and inspection at call sites.
-
-**Path location**: `inline_scripts/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions. When `name` is `x/y`, the corresponding file is `common/inline_scripts/x/y.txt`.
-
-`## context_configs_type` controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
-
-**Format description**:
-
-```cwt
-inline_scripts = {
-    # 'x' is an inline script expression
-    # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s)
-
-    x
-
-    ## context_configs_type = multiple
-    x = {
-        ## cardinality = 0..1
-        potential = single_alias_right[trigger_clause]
-        ## cardinality = 0..1
-        possible = single_alias_right[trigger_clause]
-    }
-
-    # scope context options are also available
-    ## replace_scopes = { this = country root = country }
-    x
-
-    # using single alias at root level is also available
-    ## context_configs_type = multiple
-    x = single_alias_right[trigger_clause]
-}
-```
-
-![](../assets/config/inline_scripts_1.png)
-
-**Considerations**:
-
-- If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
-- Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
-
 #### Extended Config for Parameters {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
@@ -1131,6 +1085,52 @@ dynamic_values = {
 
 - This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
+
+#### Extended Config for Inline Scripts {#config-extended-inline-script}
+
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
+
+Declares "context configs" and "scope context" for specific inline scripts, used to provide correct completion and inspection at call sites.
+
+**Path location**: `inline_scripts/{name}`. The name supports constants, template expressions, ANT path patterns, and regular expressions. When `name` is `x/y`, the corresponding file is `common/inline_scripts/x/y.txt`.
+
+`## context_configs_type` controls the aggregation form of context configs: `single` (default) takes only the value side as the context config; `multiple` takes the sub-config list as context configs.
+
+**Format description**:
+
+```cwt
+inline_scripts = {
+    # 'x' is an inline script expression
+    # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to declare context config(s)
+
+    x
+
+    ## context_configs_type = multiple
+    x = {
+        ## cardinality = 0..1
+        potential = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        possible = single_alias_right[trigger_clause]
+    }
+
+    # scope context options are also available
+    ## replace_scopes = { this = country root = country }
+    x
+
+    # using single alias at root level is also available
+    ## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
+}
+```
+
+![](../assets/config/inline_scripts_1.png)
+
+**Considerations**:
+
+- If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
+- Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
 
 ### Internal Configs {#configs-internal}
 

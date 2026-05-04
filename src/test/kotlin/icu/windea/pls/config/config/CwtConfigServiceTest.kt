@@ -345,15 +345,6 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveConfigType_extendedInlineScript() {
-        assertResolveConfigType("""
-            inline_scripts = {
-                <caret>my_script = something
-            }
-        """.trimIndent(), CwtConfigTypes.ExtendedInlineScript)
-    }
-
-    @Test
     fun testResolveConfigType_extendedParameter() {
         assertResolveConfigType("""
             parameters = {
@@ -382,6 +373,15 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                 }
             }
         """.trimIndent(), CwtConfigTypes.ExtendedDynamicValue)
+    }
+
+    @Test
+    fun testResolveConfigType_extendedInlineScript() {
+        assertResolveConfigType("""
+            inline_scripts = {
+                <caret>my_script = something
+            }
+        """.trimIndent(), CwtConfigTypes.ExtendedInlineScript)
     }
 
     @Test

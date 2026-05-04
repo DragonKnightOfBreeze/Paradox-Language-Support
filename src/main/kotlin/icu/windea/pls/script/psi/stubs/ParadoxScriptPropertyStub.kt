@@ -27,7 +27,7 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
     }
 
     /**
-     * （作为脚本属性的）定值的命名空间的存根。
+     * （作为脚本属性的）定值命名空间的存根。
      *
      * @property namespace 命名空间。等同于 [ParadoxScriptPropertyStub.name]。
      */
@@ -36,7 +36,7 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
     }
 
     /**
-     * （作为脚本属性的）定值的变量的存根。
+     * （作为脚本属性的）定值变量的存根。
      *
      * @property namespace 命名空间。来自父存根（[DefineNamespace]）。
      * @property variable 变量名。等同于 [ParadoxScriptPropertyStub.name]。

@@ -20,10 +20,8 @@ data class CwtInlinedConfigAttributes(
     override val inferredScopeContextAwareDefinitionReferenceInvolved: Boolean = false,
 ) : CwtDeclarationLikeConfigAttributes {
     companion object {
-        @JvmStatic
-        val EMPTY = CwtInlinedConfigAttributes()
-        @JvmStatic
-        val ALL = CwtInlinedConfigAttributes(true, true, true, true)
+        @JvmField val EMPTY = CwtInlinedConfigAttributes()
+        @JvmField val ALL = CwtInlinedConfigAttributes(true, true, true, true)
     }
 }
 

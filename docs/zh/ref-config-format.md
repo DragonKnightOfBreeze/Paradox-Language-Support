@@ -977,52 +977,6 @@ on_actions = {
 - `## event_type` 为必填；缺失将导致该条目被跳过。
 - 如需作用域替换，可结合 `## replace_scopes` 使用。
 
-#### 内联脚本的扩展规则 {#config-extended-inline-script}
-
-<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
-
-为具体的内联脚本（inline script）声明"上下文规则"和"作用域上下文"，用于在被调用处提供正确的补全与检查。
-
-**路径定位**：`inline_scripts/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。其中 `name` 为 `x/y` 时，对应文件为 `common/inline_scripts/x/y.txt`。
-
-`## context_configs_type` 控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
-
-**格式说明**：
-
-```cwt
-inline_scripts = {
-    # 'x' is an inline script expression
-    # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
-    # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    # use 'x = xxx' to declare context config(s)
-
-    x
-
-    ## context_configs_type = multiple
-    x = {
-        ## cardinality = 0..1
-        potential = single_alias_right[trigger_clause]
-        ## cardinality = 0..1
-        possible = single_alias_right[trigger_clause]
-    }
-
-    # scope context options are also available
-    ## replace_scopes = { this = country root = country }
-    x
-
-    # using single alias at root level is also available
-    ## context_configs_type = multiple
-    x = single_alias_right[trigger_clause]
-}
-```
-
-![](../assets/config/inline_scripts_1.png)
-
-**注意事项**：
-
-- 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
-- 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
-
 #### 参数的扩展规则 {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.extended.CwtExtendedParameterConfig -->
@@ -1131,6 +1085,52 @@ dynamic_values = {
 
 - 本扩展不改变动态值类型与基础"值集合"的定义，仅提供提示信息。
 - 名称可使用模板 / ANT / 正则匹配，但请避免过宽导致误匹配。
+
+#### 内联脚本的扩展规则 {#config-extended-inline-script}
+
+<!-- @see icu.windea.pls.config.config.extended.CwtExtendedInlineScriptConfig -->
+
+为具体的内联脚本（inline script）声明"上下文规则"和"作用域上下文"，用于在被调用处提供正确的补全与检查。
+
+**路径定位**：`inline_scripts/{name}`。名称支持常量、模板表达式、ANT 路径模式与正则表达式。其中 `name` 为 `x/y` 时，对应文件为 `common/inline_scripts/x/y.txt`。
+
+`## context_configs_type` 控制上下文规则的聚合形态：`single`（默认）仅取值侧作为上下文规则；`multiple` 取子规则列表作为上下文规则。
+
+**格式说明**：
+
+```cwt
+inline_scripts = {
+    # 'x' is an inline script expression
+    # e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' can also be a pattern expression (template expression, ant expression or regex)
+    # use 'x = xxx' to declare context config(s)
+
+    x
+
+    ## context_configs_type = multiple
+    x = {
+        ## cardinality = 0..1
+        potential = single_alias_right[trigger_clause]
+        ## cardinality = 0..1
+        possible = single_alias_right[trigger_clause]
+    }
+
+    # scope context options are also available
+    ## replace_scopes = { this = country root = country }
+    x
+
+    # using single alias at root level is also available
+    ## context_configs_type = multiple
+    x = single_alias_right[trigger_clause]
+}
+```
+
+![](../assets/config/inline_scripts_1.png)
+
+**注意事项**：
+
+- 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
+- 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
 ### 内部规则 {#configs-internal}
 
