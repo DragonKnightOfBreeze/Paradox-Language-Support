@@ -217,7 +217,7 @@
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedLocalisationsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxRelatedDefinitionInjectionsLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedInjectionsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxInlineScriptsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionTargetsLineMarkerProvider"/>
@@ -498,12 +498,6 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
-      <action id="Pls.GoToRelatedConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction">
-        <keyboard-shortcut keymap="$default" first-keystroke="alt p"/>
-        <mouse-shortcut keymap="$default" keystroke="alt button1"/>
-        <override-text place="MainMenu"/>
-        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
-      </action>
       <action id="Pls.GoToInlineScripts" class="icu.windea.pls.lang.codeInsight.navigation.GotoInlineScriptsAction">
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
@@ -513,6 +507,12 @@
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.GoToDefinitionInjectionTargets" class="icu.windea.pls.lang.codeInsight.navigation.GotoDefinitionInjectionTargetsAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
+      <action id="Pls.GoToRelatedConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="alt p"/>
+        <mouse-shortcut keymap="$default" keystroke="alt button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>

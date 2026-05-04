@@ -15,8 +15,8 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.constants.PlsStrings
 
 /**
  * 提供本地化（localisation）的相关封装变量（relatedScriptedVariables）的装订线图标。
@@ -52,10 +52,8 @@ class ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider : ParadoxRel
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
-        NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("localisation.gutterIcon.relatedScriptedVariables.action"),
-            PlsActions.GotoRelatedScriptedVariables
-        )
+        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
+        val actionText = PlsBundle.message("localisation.gutterIcon.relatedScriptedVariables.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedScriptedVariables)
     }
 }

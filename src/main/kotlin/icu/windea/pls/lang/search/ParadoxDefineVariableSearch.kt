@@ -10,11 +10,11 @@ import icu.windea.pls.lang.search.util.search
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 定值的变量的查询。
+ * 定值变量的查询。
  */
 class ParadoxDefineVariableSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefineVariableSearch.Parameters>(EP_NAME) {
     /**
-     * 定值的变量的查询参数。
+     * 定值变量的查询参数。
      *
      * @property namespace 命名空间。
      * @property variable 变量名。

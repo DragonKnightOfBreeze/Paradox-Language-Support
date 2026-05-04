@@ -17,7 +17,7 @@ import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 定值的命名空间的查询器。
+ * 定值命名空间的查询器。
  */
 class ParadoxDefineNamespaceSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxDefineNamespaceSearch.Parameters>() {
     override fun processQuery(queryParameters: ParadoxDefineNamespaceSearch.Parameters, consumer: Processor<in ParadoxScriptProperty>) {

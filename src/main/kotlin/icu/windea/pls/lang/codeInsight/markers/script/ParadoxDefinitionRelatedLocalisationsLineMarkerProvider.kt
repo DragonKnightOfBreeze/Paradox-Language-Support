@@ -76,10 +76,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        NavigateAction.setNavigateAction(
-            lineMarkerInfo,
-            PlsBundle.message("script.gutterIcon.definitionRelatedLocalisations.action"),
-            PlsActions.GotoRelatedLocalisations
-        )
+        val actionText = PlsBundle.message("script.gutterIcon.definitionRelatedLocalisations.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedLocalisations)
     }
 }

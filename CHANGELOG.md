@@ -31,7 +31,7 @@
 - [x] 优化 rootInfo 和 rootMetadata 的解析逻辑 / Optimized resolution logic for rootInfo and rootMetadata
 - [x] 为定值的命名空间和变量提供特殊的图标、代码高亮和快速文档 / Provided special icons, code highlight and quick docs for define namespaces and variables
 - [ ] 为定值的命名空间和变量提供代码补全 / Provided code completion for define namespaces and variables
-- [ ] 为定值的变量提供内嵌提示和实现查询 / Provided inlay hints and implementations search for define variables
+- [ ] 为定值的变量提供装订线图标和实现查询 / Provided gutter icons and implementations search for define variables
 - [ ] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 

@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 定值的命名空间的索引（基于命名空间）。
+ * 定值命名空间的索引。基于命名空间。
  */
 class ParadoxDefineNamespaceIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
     override fun getKey() = PlsIndexKeys.DefineNamespace

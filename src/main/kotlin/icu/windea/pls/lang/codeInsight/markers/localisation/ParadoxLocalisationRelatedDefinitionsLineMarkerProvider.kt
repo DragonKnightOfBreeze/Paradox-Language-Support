@@ -16,8 +16,8 @@ import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvi
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.constants.PlsStrings
 
 /**
  * 提供本地化（localisation）的相关定义的装订线图标。
@@ -57,11 +57,8 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("localisation.gutterIcon.relatedDefinitions.action"),
-        	PlsActions.GotoRelatedDefinitions
-        )
+        val actionText = PlsBundle.message("localisation.gutterIcon.relatedDefinitions.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedDefinitions)
     }
 
     // <= 3s for l_simple_chinese.yml of Stellaris if enabled, so it's ok

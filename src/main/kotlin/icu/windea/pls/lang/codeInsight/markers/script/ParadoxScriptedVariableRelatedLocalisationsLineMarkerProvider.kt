@@ -19,7 +19,7 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 提供封装变量（scripted_variable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
+ * 提供封装变量（scriptedVariable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
 class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations")
@@ -53,10 +53,7 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.action"),
-        	PlsActions.GotoRelatedLocalisations
-        )
+        val actionText = PlsBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedLocalisations)
     }
 }

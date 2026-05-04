@@ -23,14 +23,14 @@ import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 提供定义（definition）的相关注入（relatedDefinitionInjections，对应定义注入）的装订线图标。
+ * 提供定义（definition）的相关注入（relatedInjections，对应定义注入）的装订线图标。
  */
-class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.relatedDefinitionInjections")
+class ParadoxDefinitionRelatedInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+    override fun getName() = PlsBundle.message("script.gutterIcon.definitionRelatedInjections")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedDefinitionInjections
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.group")
+    override fun getGroup() = PlsBundle.message("script.gutterIcon.definitionRelatedInjections.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 definition，且存在对应的 definitionInjection
@@ -52,18 +52,15 @@ class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemL
         ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.title"))
+            .setPopupTitle(PlsBundle.message("script.gutterIcon.definitionRelatedInjections.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.relatedDefinitionInjections") }
+            .setNamer { PlsBundle.message("script.gutterIcon.definitionRelatedInjections") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        NavigateAction.setNavigateAction(
-            lineMarkerInfo,
-            PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.action"),
-            PlsActions.GotoRelatedDefinitionInjections
-        )
+        val actionText = PlsBundle.message("script.gutterIcon.definitionRelatedInjections.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedDefinitionInjections)
     }
 }
