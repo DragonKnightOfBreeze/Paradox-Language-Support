@@ -894,7 +894,6 @@ object ParadoxComplexExpressionCompletionManager {
             context.keywordOffset = node.rangeInExpression.startOffset
             context.argumentIndex = argIndex
             if (inFirstNode) {
-                completePredefinedCommandField(context, resultToUse)
                 completeStaticCommandField(context, resultToUse)
                 completeCommandFieldPrefix(context, resultToUse)
             }
