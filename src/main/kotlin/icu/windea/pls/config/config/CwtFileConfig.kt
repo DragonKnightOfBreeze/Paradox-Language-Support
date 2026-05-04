@@ -14,7 +14,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.model.CwtMembersType
 
 /**
  * 文件规则。

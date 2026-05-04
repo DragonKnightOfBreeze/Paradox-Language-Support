@@ -6,6 +6,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
@@ -64,7 +65,6 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScopeManager.findParentMember
-import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId

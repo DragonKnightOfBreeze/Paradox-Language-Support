@@ -3,13 +3,13 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

@@ -7,7 +7,6 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.CwtType
 
 /**

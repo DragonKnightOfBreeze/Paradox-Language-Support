@@ -32,8 +32,6 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.type
-import icu.windea.pls.model.CwtMemberType
-import icu.windea.pls.model.CwtMembersType
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings

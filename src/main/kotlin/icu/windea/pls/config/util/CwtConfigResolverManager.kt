@@ -8,6 +8,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
+import icu.windea.pls.config.config.CwtMembersType
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
@@ -40,8 +42,6 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.model.CwtMemberType
-import icu.windea.pls.model.CwtMembersType
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {
