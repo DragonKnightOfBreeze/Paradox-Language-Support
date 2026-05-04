@@ -215,6 +215,8 @@ object ParadoxDocumentationManager {
             buildDefineDefinition(element, defineInfo)
             if (hint) return@buildDocumentation
             buildDocumentationContent(element)
+            buildLineCommentContent(element)
+            addOverrideStrategy(element)
             buildSections()
         }
     }

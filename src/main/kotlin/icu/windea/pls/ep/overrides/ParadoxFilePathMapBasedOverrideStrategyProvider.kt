@@ -4,10 +4,10 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.filePathPatternsForPriority
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -19,6 +19,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
@@ -43,6 +44,12 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
     }
 
     private fun getFilePathPatterns(target: Any): Set<String>? {
+        // 额外兼容
+        if (target is ParadoxScriptProperty && target.defineVariableInfo != null) {
+            val p = "common/defines"
+            return setOf(p)
+        }
+
         return when {
             target is ParadoxScriptScriptedVariable -> {
                 val targetPath = target.fileInfo?.path?.path ?: return null
@@ -72,6 +79,12 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
     }
 
     private fun getFilePathPatterns(searchParameters: ParadoxSearchParameters<*>): Set<String>? {
+        // 额外兼容
+        if (searchParameters is ParadoxDefineVariableSearch.Parameters) {
+            val p = "common/defines"
+            return setOf(p)
+        }
+
         return when {
             searchParameters is ParadoxScriptedVariableSearch.Parameters -> {
                 if (searchParameters.type == ParadoxScriptedVariableType.Local) return null // 排除本地封装变量
@@ -90,11 +103,6 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                     ParadoxLocalisationType.Normal -> "localisation"
                     ParadoxLocalisationType.Synced -> "localisation_synced"
                 }
-                setOf(p)
-            }
-            // 额外兼容
-            searchParameters is ParadoxDefineNamespaceSearch.Parameters || searchParameters is ParadoxDefineVariableSearch.Parameters -> {
-                val p = "common/defines"
                 setOf(p)
             }
             else -> null
