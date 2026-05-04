@@ -97,22 +97,24 @@ import icu.windea.pls.model.ParadoxGameType
  */
 @Suppress("unused")
 object CwtDataTypes {
+    // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
+    
     /**
      * 任意类型。规则表达式：`$any`。
      *
      * 匹配任意脚本表达式，作为最低优先级的后备匹配。
      */
-    val Any = CwtDataType.builder("Any")
-        .withPriority(1.0) // very low
-        .build()
+    val Any = CwtDataType.builder("Any").build {
+        withPriority(1.0) // very low
+    }
     /**
      * 布尔类型。规则表达式：`bool`。
      *
      * 匹配脚本中的布尔值（`yes` / `no`）。
      */
-    val Bool = CwtDataType.builder("Bool")
-        .withPriority(100.0) // highest
-        .build()
+    val Bool = CwtDataType.builder("Bool").build {
+        withPriority(100.0) // highest
+    }
     /**
      * 整数类型。规则表达式：`int` 或 `int(min..max)`。
      *
@@ -123,9 +125,9 @@ object CwtDataTypes {
      *
      * @see IntRangeInfo
      */
-    val Int = CwtDataType.builder("Int")
-        .withPriority(90.0) // very high
-        .build()
+    val Int = CwtDataType.builder("Int").build {
+        withPriority(90.0) // very high
+    }
     /**
      * 浮点数类型。规则表达式：`float` 或 `float(min..max)`。
      *
@@ -136,51 +138,51 @@ object CwtDataTypes {
      *
      * @see FloatRangeInfo
      */
-    val Float = CwtDataType.builder("Float")
-        .withPriority(90.0) // very high
-        .build()
+    val Float = CwtDataType.builder("Float").build {
+        withPriority(90.0) // very high
+    }
     /**
      * 标量类型。规则表达式：`scalar` 或 `wildcard_scalar`。
      *
      * 匹配脚本中的大多数非子句表达式（字符串、数字、布尔值等），作为低优先级的宽泛匹配。
      * 作为键时总是匹配。`wildcard_scalar` 变体会设置通配符标记。
      */
-    val Scalar = CwtDataType.builder("Scalar")
-        .withPriority(2.0) // very low
-        .build()
+    val Scalar = CwtDataType.builder("Scalar").build {
+        withPriority(2.0) // very low
+    }
     /**
      * 颜色字段类型。规则表达式：`colour_field`、`color_field`、`colour[type]` 或 `color[type]`。
      *
      * 匹配脚本中的颜色值。带参数时（如 `colour[rgb]`），还会验证颜色类型前缀。
      */
-    val ColorField = CwtDataType.builder("ColorField")
-        .withPriority(90.0) // very high
-        .build()
+    val ColorField = CwtDataType.builder("ColorField").build {
+        withPriority(90.0) // very high
+    }
     /**
      * 子句类型。仅用于内部表示，不对应规则表达式字符串。
      *
      * 匹配脚本中的花括号块（`{ ... }`）。要求值位置且表达式类型为 Block，并递归匹配子句内容。
      */
-    val Block = CwtDataType.builder("Block")
-        .withPriority(100.0) // highest
-        .build()
+    val Block = CwtDataType.builder("Block").build {
+        withPriority(100.0) // highest
+    }
 
     /**
      * 百分比字段类型。规则表达式：`percentage_field`。
      *
      * 匹配脚本中的百分比值字符串（如 `50%`）。
      */
-    val PercentageField = CwtDataType.builder("PercentageField")
-        .withPriority(90.0)
-        .build()
+    val PercentageField = CwtDataType.builder("PercentageField").build {
+        withPriority(90.0)
+    }
     /**
      * 日期字段类型。规则表达式：`date_field` 或 `date_field[format]`。
      *
      * 匹配脚本中的日期值字符串（如 `2200.1.1`）。带参数时还会验证日期格式。
      */
-    val DateField = CwtDataType.builder("DateField")
-        .withPriority(90.0)
-        .build()
+    val DateField = CwtDataType.builder("DateField").build {
+        withPriority(90.0)
+    }
 
     /**
      * 定义引用类型。规则表达式：`<type>` 或 `<type.subtype>`。
@@ -188,76 +190,76 @@ object CwtDataTypes {
      * 匹配脚本中对指定类型定义的引用。表达式须为合法标识符（允许 `.` 和 `-`），
      * 可以是整数或浮点数（如 `<technology_tier>` 的情况）。匹配时验证引用的定义是否存在。
      */
-    val Definition = CwtDataType.builder("Definition").reference()
-        .withPriority(70.0)
-        .build()
+    val Definition = CwtDataType.builder("Definition").reference().build {
+        withPriority(70.0)
+    }
     /**
      * 本地化引用类型。规则表达式：`localisation`。
      *
      * 匹配脚本中对本地化键的引用。表达式须为合法标识符（允许`.`、`-`、`'`）。
      * 匹配时验证引用的本地化是否存在。
      */
-    val Localisation = CwtDataType.builder("Localisation").reference()
-        .withPriority(60.0)
-        .build()
+    val Localisation = CwtDataType.builder("Localisation").reference().build {
+        withPriority(60.0)
+    }
     /**
      * 同步本地化引用类型。规则表达式：`localisation_synced`。
      *
      * 与 [Localisation][CwtDataTypes.Localisation] 类似，但指向同步本地化键。
      */
-    val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference()
-        .withPriority(60.0)
-        .build()
+    val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference().build {
+        withPriority(60.0)
+    }
     /**
      * 内联本地化引用类型。规则表达式：`localisation_inline`。
      *
      * 匹配本地化键引用或用引号括起的任意字符串（后者作为内联文本，以后备匹配返回）。
      */
-    val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference()
-        .withPriority(60.0)
-        .build()
+    val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference().build {
+        withPriority(60.0)
+    }
     /**
      * 修正引用类型。规则表达式：`<modifier>`。
      *
      * 匹配脚本中对修正（modifier）的引用。表达式须为合法标识符。
      * 匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition][CwtDataTypes.Definition]。
      */
-    val Modifier = CwtDataType.builder("Modifier").reference()
-        .withPriority(75.0) // higher than Definition
-        .build()
+    val Modifier = CwtDataType.builder("Modifier").reference().build {
+        withPriority(75.0) // higher than Definition
+    }
 
     /**
      * 绝对文件路径类型。规则表达式：`abs_filepath`。
      *
      * 匹配脚本中的绝对文件路径字符串。匹配时仅验证为字符串类型（通配匹配）。
      */
-    val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference()
-        .withPriority(70.0)
-        .build()
+    val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
+        withPriority(70.0)
+    }
     /**
      * 图标路径类型。规则表达式：`icon[path]`。
      *
      * 匹配脚本中对图标文件的路径引用。匹配时验证路径引用的文件是否存在。
      */
-    val Icon = CwtDataType.builder("Icon").reference()
-        .withPriority(70.0)
-        .build()
+    val Icon = CwtDataType.builder("Icon").reference().build {
+        withPriority(70.0)
+    }
     /**
      * 文件路径类型。规则表达式：`filepath`、`filepath[./]` 或 `filepath[path]`。
      *
      * 匹配脚本中对文件的路径引用。匹配时验证路径引用的文件是否存在。
      */
-    val FilePath = CwtDataType.builder("FilePath").reference()
-        .withPriority(70.0)
-        .build()
+    val FilePath = CwtDataType.builder("FilePath").reference().build {
+        withPriority(70.0)
+    }
     /**
      * 文件名类型。规则表达式：`filename` 或 `filename[path]`。
      *
      * 匹配脚本中对文件名的引用。匹配时验证路径引用的文件是否存在。
      */
-    val FileName = CwtDataType.builder("FileName").reference()
-        .withPriority(70.0)
-        .build()
+    val FileName = CwtDataType.builder("FileName").reference().build {
+        withPriority(70.0)
+    }
 
     /**
      * 枚举值类型。规则表达式：`enum[name]`。
@@ -265,14 +267,14 @@ object CwtDataTypes {
      * 匹配脚本中对枚举值的引用。
      * 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
      */
-    val EnumValue = CwtDataType.builder("EnumValue").reference()
-        .withPriority { configExpression, configGroup ->
+    val EnumValue = CwtDataType.builder("EnumValue").reference().build {
+        withPriority { configExpression, configGroup ->
             val enumName = configExpression.value ?: return@withPriority 0.0 // unexpected
             if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
             if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 45.0
             0.0 // unexpected
         }
-        .build()
+    }
 
     /**
      * 动态值读取类型。规则表达式：`value[name]`。
@@ -282,9 +284,9 @@ object CwtDataTypes {
      *
      * @see ParadoxDynamicValueExpression
      */
-    val Value = CwtDataType.builder("Value").reference()
-        .withPriority(40.0)
-        .build()
+    val Value = CwtDataType.builder("Value").reference().build {
+        withPriority(40.0)
+    }
     /**
      * 动态值写入类型。规则表达式：`value_set[name]`。
      *
@@ -293,9 +295,9 @@ object CwtDataTypes {
      *
      * @see ParadoxDynamicValueExpression
      */
-    val ValueSet = CwtDataType.builder("ValueSet").reference()
-        .withPriority(40.0)
-        .build()
+    val ValueSet = CwtDataType.builder("ValueSet").reference().build {
+        withPriority(40.0)
+    }
     /**
      * 动态值类型。规则表达式：`dynamic_value[name]`。
      *
@@ -304,9 +306,9 @@ object CwtDataTypes {
      *
      * @see ParadoxDynamicValueExpression
      */
-    val DynamicValue = CwtDataType.builder("DynamicValue").reference()
-        .withPriority(40.0)
-        .build()
+    val DynamicValue = CwtDataType.builder("DynamicValue").reference().build {
+        withPriority(40.0)
+    }
 
     /**
      * 作用域字段类型。规则表达式：`scope_field`。
@@ -315,9 +317,9 @@ object CwtDataTypes {
      *
      * @see ParadoxScopeFieldExpression
      */
-    val ScopeField = CwtDataType.builder("ScopeField").reference()
-        .withPriority(50.0)
-        .build()
+    val ScopeField = CwtDataType.builder("ScopeField").reference().build {
+        withPriority(50.0)
+    }
     /**
      * 作用域类型。规则表达式：`scope[type]`。
      *
@@ -326,9 +328,9 @@ object CwtDataTypes {
      *
      * @see ParadoxScopeFieldExpression
      */
-    val Scope = CwtDataType.builder("Scope").reference()
-        .withPriority(50.0)
-        .build()
+    val Scope = CwtDataType.builder("Scope").reference().build {
+        withPriority(50.0)
+    }
     /**
      * 作用域组类型。规则表达式：`scope_group[name]`。
      *
@@ -336,9 +338,9 @@ object CwtDataTypes {
      *
      * @see ParadoxScopeFieldExpression
      */
-    val ScopeGroup = CwtDataType.builder("ScopeGroup").reference()
-        .withPriority(50.0)
-        .build()
+    val ScopeGroup = CwtDataType.builder("ScopeGroup").reference().build {
+        withPriority(50.0)
+    }
 
     /**
      * 值字段类型。规则表达式：`value_field` 或 `value_field(min..max)`。
@@ -351,9 +353,9 @@ object CwtDataTypes {
      * @see ParadoxValueFieldExpression
      * @see FloatRangeInfo
      */
-    val ValueField = CwtDataType.builder("ValueField").reference()
-        .withPriority(45.0)
-        .build()
+    val ValueField = CwtDataType.builder("ValueField").reference().build {
+        withPriority(45.0)
+    }
     /**
      * 整数值字段类型。规则表达式：`int_value_field` 或 `int_value_field(min..max)`。
      *
@@ -365,9 +367,9 @@ object CwtDataTypes {
      * @see ParadoxValueFieldExpression
      * @see IntRangeInfo
      */
-    val IntValueField = CwtDataType.builder("IntValueField").reference()
-        .withPriority(45.0)
-        .build()
+    val IntValueField = CwtDataType.builder("IntValueField").reference().build {
+        withPriority(45.0)
+    }
 
     /**
      * 变量字段类型。规则表达式：`variable_field`、`variable_field(min..max)`（或 `variable_field_32` 变体）。
@@ -379,9 +381,9 @@ object CwtDataTypes {
      * @see ParadoxVariableFieldExpression
      * @see FloatRangeInfo
      */
-    val VariableField = CwtDataType.builder("VariableField").reference()
-        .withPriority(45.0)
-        .build()
+    val VariableField = CwtDataType.builder("VariableField").reference().build {
+        withPriority(45.0)
+    }
     /**
      * 整数变量字段类型。规则表达式：`int_variable_field`、`int_variable_field(min..max)`（或 `int_variable_field_32` 变体）。
      *
@@ -392,9 +394,9 @@ object CwtDataTypes {
      * @see ParadoxVariableFieldExpression
      * @see IntRangeInfo
      */
-    val IntVariableField = CwtDataType.builder("IntVariableField").reference()
-        .withPriority(45.0)
-        .build()
+    val IntVariableField = CwtDataType.builder("IntVariableField").reference().build {
+        withPriority(45.0)
+    }
 
     /**
      * 单别名右侧类型。规则表达式：`single_alias_right[name]`。
@@ -426,25 +428,25 @@ object CwtDataTypes {
      *
      * 匹配脚本中的参数名。表达式须为合法标识符。即使对应的定义声明中不存在该参数名，也视为匹配。
      */
-    val Parameter = CwtDataType.builder("Parameter").reference()
-        .withPriority(10.0)
-        .build()
+    val Parameter = CwtDataType.builder("Parameter").reference().build {
+        withPriority(10.0)
+    }
     /**
      * 参数值类型。规则表达式：`$parameter_value`。
      *
      * 匹配脚本中的参数值。只要不是子句即可匹配。
      */
-    val ParameterValue = CwtDataType.builder("ParameterValue").reference()
-        .withPriority(90.0) // same to Scalar
-        .build()
+    val ParameterValue = CwtDataType.builder("ParameterValue").reference().build {
+        withPriority(90.0) // same to Scalar
+    }
     /**
      * 本地化参数名类型。规则表达式：`$localisation_parameter`。
      *
      * 匹配脚本中的本地化参数名。表达式须为合法标识符（允许`.`、`-`、`'`）。
      */
-    val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference()
-        .withPriority(10.0)
-        .build()
+    val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build {
+        withPriority(10.0)
+    }
 
     /**
      * 命令表达式类型。规则表达式：`$command`。
@@ -454,9 +456,9 @@ object CwtDataTypes {
      * @see ParadoxCommandExpression
      * @since 2.1.1
      */
-    val Command = CwtDataType.builder("Command").reference()
-        .withPriority(45.0)
-        .build()
+    val Command = CwtDataType.builder("Command").reference().build {
+        withPriority(45.0)
+    }
     /**
      * 定值引用表达式类型。规则表达式：`$define_reference`。
      *
@@ -465,9 +467,9 @@ object CwtDataTypes {
      * @see ParadoxDefineReferenceExpression
      * @since 1.3.25
      */
-    val DefineReference = CwtDataType.builder("DefineReference").reference()
-        .withPriority(60.0)
-        .build()
+    val DefineReference = CwtDataType.builder("DefineReference").reference().build {
+        withPriority(60.0)
+    }
     /**
      * 数据库对象表达式类型。规则表达式：`$database_object`。
      *
@@ -477,9 +479,9 @@ object CwtDataTypes {
      * @since 1.3.9
      */
     // @WithGameType(ParadoxGameType.Stellaris) // not limited yet
-    val DatabaseObject = CwtDataType.builder("DatabaseObject").reference()
-        .withPriority(60.0)
-        .build()
+    val DatabaseObject = CwtDataType.builder("DatabaseObject").reference().build {
+        withPriority(60.0)
+    }
     /**
      * 命名格式表达式类型。规则表达式：`name_format[type]`。
      *
@@ -488,9 +490,9 @@ object CwtDataTypes {
      * @see ParadoxNameFormatExpression
      */
     @WithGameType(ParadoxGameType.Stellaris)
-    val NameFormat = CwtDataType.builder("NameFormat").reference()
-        .withPriority(60.0)
-        .build()
+    val NameFormat = CwtDataType.builder("NameFormat").reference().build {
+        withPriority(60.0)
+    }
 
     /**
      * 着色器效果类型。规则表达式：`$shader_effect`。
@@ -498,9 +500,9 @@ object CwtDataTypes {
      * 匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
      */
     // effects in .shader files
-    val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/)
-        .withPriority(85.0)
-        .build()
+    val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/).build {
+        withPriority(85.0)
+    }
     /**
      * 带等级的科技类型。规则表达式：`<technology_with_level>`。
      *
@@ -508,9 +510,9 @@ object CwtDataTypes {
      * 仅限 Stellaris 游戏类型。优先级低于 [Definition][CwtDataTypes.Definition]。
      */
     @WithGameType(ParadoxGameType.Stellaris)
-    val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference()
-        .withPriority(69.0) // lower than Definition
-        .build()
+    val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
+        withPriority(69.0) // lower than Definition
+    }
 
     // Pattern Aware Data Types
 
@@ -520,9 +522,9 @@ object CwtDataTypes {
      * 匹配脚本中与常量值完全相同的表达式。作为值时，常量`yes`/`no`不匹配用引号括起的表达式。
      * 不含特殊字符（`:` `.` `@` `[` `]` `<` `>`）的表达式字符串解析为此类型。
      */
-    val Constant = CwtDataType.builder("Constant").patternAware()
-        .withPriority(100.0) // highest
-        .build()
+    val Constant = CwtDataType.builder("Constant").patternAware().build {
+        withPriority(100.0) // highest
+    }
     /**
      * 模板表达式类型（模式感知）。规则表达式示例：`a_<b>_enum[c]_value[d]`。
      *
@@ -531,9 +533,9 @@ object CwtDataTypes {
      *
      * @see ParadoxTemplateExpression
      */
-    val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware()
-        .withPriority(65.0)
-        .build()
+    val TemplateExpression = CwtDataType.builder("TemplateExpression").patternAware().build {
+        withPriority(65.0)
+    }
     /**
      * Ant路径模式类型（模式感知）。规则表达式：`ant:pattern` 或 `ant.i:pattern`（忽略大小写）。
      *
@@ -541,8 +543,7 @@ object CwtDataTypes {
      *
      * @since 1.3.6
      */
-    val Ant = CwtDataType.builder("Ant").patternAware()
-        .build()
+    val Ant = CwtDataType.builder("Ant").patternAware().build()
     /**
      * 正则表达式模式类型（模式感知）。规则表达式：`re:pattern` 或 `re.i:pattern`（忽略大小写）。
      *
@@ -550,15 +551,14 @@ object CwtDataTypes {
      *
      * @since 1.3.6
      */
-    val Regex = CwtDataType.builder("Regex").patternAware()
-        .build()
+    val Regex = CwtDataType.builder("Regex").patternAware().build()
 
     // Suffix Aware Data Types
 
     // TODO SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
 
     /**
-     * 后缀感知定义引用类型。规则表达式：`<type>|suffix1,suffix2,...`。
+     * 后缀感知的定义引用类型。规则表达式：`<type>|suffix1,suffix2,...`。
      *
      * 由基础定义引用和逗号分隔的后缀列表组成。匹配时同时验证定义引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [Definition][CwtDataTypes.Definition]。
@@ -568,7 +568,7 @@ object CwtDataTypes {
     // #162, #193
     val SuffixAwareDefinition = CwtDataType.builder("SuffixAwareDefinition").suffixAware().build()
     /**
-     * 后缀感知本地化引用类型。规则表达式：`localisation|suffix1,suffix2,...`。
+     * 后缀感知的本地化引用类型。规则表达式：`localisation|suffix1,suffix2,...`。
      *
      * 由基础本地化引用和逗号分隔的后缀列表组成。匹配时同时验证本地化引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [Localisation][CwtDataTypes.Localisation]。
@@ -578,7 +578,7 @@ object CwtDataTypes {
     // #162, #193
     val SuffixAwareLocalisation = CwtDataType.builder("SuffixAwareLocalisation").suffixAware().build()
     /**
-     * 后缀感知同步本地化引用类型。规则表达式：`localisation_synced|suffix1,suffix2,...`。
+     * 后缀感知的同步本地化引用类型。规则表达式：`localisation_synced|suffix1,suffix2,...`。
      *
      * 由基础同步本地化引用和逗号分隔的后缀列表组成。匹配时同时验证同步本地化引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [SyncedLocalisation][CwtDataTypes.SyncedLocalisation]。
