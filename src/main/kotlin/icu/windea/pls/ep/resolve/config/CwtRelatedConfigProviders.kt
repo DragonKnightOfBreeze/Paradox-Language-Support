@@ -18,6 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.isParameterized
@@ -63,6 +64,16 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val result = mutableSetOf<CwtConfig<*>>()
 
+        // 尝试解析为定值
+        run {
+            if (element !is ParadoxScriptPropertyKey) return@run
+            val property = element.parentProperty ?: return@run
+            val defineInfo = property.defineInfo ?: return@run
+            val config = defineInfo.config ?: return@run
+            result += config
+            return result // 中断
+        }
+
         // 尝试解析为定义注入目标
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
@@ -72,7 +83,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             result += modeConfig
             val typeConfig = definitionInjectionInfo.typeConfig
             if (typeConfig != null) result += typeConfig
-            return result // 中断解析
+            return result // 中断
         }
 
         // 尝试解析为复杂枚举值声明
