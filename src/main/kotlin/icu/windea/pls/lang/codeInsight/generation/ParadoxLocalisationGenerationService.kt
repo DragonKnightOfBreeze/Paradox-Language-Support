@@ -33,8 +33,8 @@ object ParadoxLocalisationGenerationService {
     }
 
     fun generateFile(file: PsiFile, locale: CwtLocaleConfig, tooltip: String?, elements: List<ParadoxLocalisationGenerationElement.Item>): VirtualFile {
-        val generationContext = ParadoxLocalisationGenerationContextBuilder.build(file, locale, tooltip, elements)
-        return generateFile(generationContext)
+        val context = ParadoxLocalisationGenerationContextBuilder.build(file, locale, tooltip, elements)
+        return generateFile(context)
     }
 
     fun getFileName(context: ParadoxLocalisationGenerationContext): String {
