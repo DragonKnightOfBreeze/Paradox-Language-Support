@@ -133,8 +133,8 @@ object ParadoxColorManager {
      * - 其他可选值适用于 [element] 是 [ParadoxScriptBlock] 或 [ParadoxScriptColor] 的场合。
      */
     fun getColorType(element: PsiElement): String? {
-        val configToGetOption = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true)).firstOrNull()
-        if (configToGetOption == null) return null
-        return configToGetOption.optionData.colorType
+        val options = ParadoxMatchOptions(forDeclarationRoot = true)
+        val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
+        return config.optionData.colorType
     }
 }

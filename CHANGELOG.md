@@ -34,7 +34,7 @@
 - [x] 为定值变量提供导航动作、装订线图标和实现查询 / Provided navigation action, gutter icons and implementations search for define variables
 - [x] 为定值变量提供相关代码检查（重载、不正确的重载） / Provided related code inspections for define variables (override, incorrect override)
 - [x] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
-- [ ] 整理并更新各个游戏的定值的规则文件 / Arrange and update define config files for each game 
+- [ ] 整理并更新各个游戏的定值的规则文件 / Arrange and update define config files for each game (Stellaris / CK3 / VIC3 / EU5) 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
