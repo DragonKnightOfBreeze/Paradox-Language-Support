@@ -30,7 +30,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 路径定位：`rows/row[{name}]`，`{name}` 匹配规则名称（行名）。
  *
- * CWTools 兼容性：扩展。
+ * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * 示例：
  * ```cwt

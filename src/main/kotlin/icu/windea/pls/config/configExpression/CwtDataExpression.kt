@@ -24,7 +24,7 @@ import icu.windea.pls.model.constants.PlsStrings
  *
  * 适用对象：定义成员对应的规则的键或值。
  *
- * CWTools 兼容性：兼容，但存在较多扩展与改进。
+ * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * @property isKey 是否来源于作为键的表达式。
  * @property type 数据类型。

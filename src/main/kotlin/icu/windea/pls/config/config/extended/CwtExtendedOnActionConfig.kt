@@ -26,7 +26,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  *
  * 路径定位：`on_actions/{name}`，`{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容，拥有不同的格式与行为。
+ * CWTools 兼容性：不兼容，拥有不同的格式和行为。
  *
  * 示例：
  * ```cwt

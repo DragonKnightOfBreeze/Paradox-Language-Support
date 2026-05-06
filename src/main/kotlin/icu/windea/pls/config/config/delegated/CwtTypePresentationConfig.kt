@@ -10,6 +10,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 用于定位对应类型的定义的相关本地化与图片，以便在 UI 与各种提示信息中展示。
  *
+ * @see CwtTypeLocalisationConfig
+ * @see CwtTypeImagesConfig
  * @see CwtLocationConfig
  * @see CwtLocationExpression
  */

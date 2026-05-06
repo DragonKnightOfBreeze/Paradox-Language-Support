@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * 路径定位：`locales/{id}`，`{name}` 匹配语言环境 ID。
  *
- * CWTools 兼容性：扩展。
+ * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
  * 示例：
  * ```cwt

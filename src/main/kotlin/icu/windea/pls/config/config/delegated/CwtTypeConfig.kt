@@ -39,7 +39,7 @@ import icu.windea.pls.model.ParadoxTagType
  *
  * 路径定位：`types/type[{type}]`，`{type}` 匹配规则名称（定义类型）。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * 示例：
  * ```cwt

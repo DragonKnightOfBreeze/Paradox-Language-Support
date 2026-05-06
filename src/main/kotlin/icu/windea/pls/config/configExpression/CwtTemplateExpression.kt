@@ -25,7 +25,7 @@ import icu.windea.pls.lang.isIdentifierChar
  *
  * 适用对象：定义成员对应的规则的键或值。
  *
- * CWTools 兼容性：兼容，但实际的解析与处理逻辑可能不同。
+ * CWTools 兼容性：部分兼容。拥有不同的解析和处理逻辑。
  *
  * 示例：
  *

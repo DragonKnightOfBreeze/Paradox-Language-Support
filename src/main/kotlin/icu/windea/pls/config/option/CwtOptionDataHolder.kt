@@ -55,7 +55,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：需要特殊处理的规则（目前支持 [CwtSingleAliasConfig] 和 [CwtAliasConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## api_status = obsolete`
      */
@@ -82,7 +82,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：定义成员对应的规则。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## cardinality_min_define = "NGameplay.ETHOS_MIN_POINTS"`
      */
@@ -93,7 +93,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：定义成员对应的规则。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## cardinality_max_define = "NGameplay.ETHOS_MAX_POINTS"`
      */
@@ -107,7 +107,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：定义成员对应的规则，作为补充过滤条件。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## predicate = { scope = fleet type != country }`
      */
@@ -187,7 +187,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：定义的扩展规则（[CwtExtendedDefinitionConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## type = scripted_trigger`
      */
@@ -200,7 +200,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：部分扩展规则（如 [CwtExtendedScriptedVariableConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## hint = "一些提示"`
      */
@@ -213,7 +213,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：on action 的扩展规则（[CwtExtendedOnActionConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## event_type = country`
      */
@@ -227,7 +227,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：参数的扩展规则（[CwtExtendedParameterConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val contextKey: String?
 
@@ -239,7 +239,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## context_configs_type = multiple`
      */
@@ -252,7 +252,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：子类型规则（[CwtSubtypeConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## group = ships`
      */
@@ -280,7 +280,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## type_key_regex = "^ship_.*$"`
      */
@@ -317,7 +317,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## graph_related_types = { special_project anomaly_category }`
      *
-     * CWTools 兼容性：插件目前未使用这类选项数据。
+     * CWTools 兼容性：未使用。
      */
     val graphRelatedTypes: Set<String>?
 
@@ -326,7 +326,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 示例：`## severity = warning`
      *
-     * CWTools 兼容性：插件目前未使用这类选项数据。
+     * CWTools 兼容性：未使用。
      */
     val severity: String?
 
@@ -337,7 +337,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：值为路径引用的成员规则（[CwtMemberConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## file_extensions = { png dds tga }`
      *
@@ -350,7 +350,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## modifier_categories = { economic_unit planet }`
      */
@@ -363,7 +363,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：携带了颜色信息的定义成员对应的规则。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## color_type = rgb`
      */
@@ -374,7 +374,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：任意值为子句的成员规则。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * 示例：`## inject = some/file.cwt@some/property`
      *
@@ -413,7 +413,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val inherit: Boolean
 
@@ -423,7 +423,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
      * @see ParadoxTagType
      */
@@ -434,7 +434,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val caseInsensitive: Boolean
 
@@ -443,7 +443,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
      *
-     * CWTools 兼容性：扩展。
+     * CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val perDefinition: Boolean
 

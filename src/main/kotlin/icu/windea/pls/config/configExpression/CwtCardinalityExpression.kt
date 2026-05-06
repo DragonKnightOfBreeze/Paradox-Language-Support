@@ -17,7 +17,7 @@ import icu.windea.pls.core.cache.CacheBuilder
  *
  * 适用对象：`## cardinality` 选项的值。
  *
- * CWTools 兼容性：兼容。
+ * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
  * 示例：
  * ```cwt

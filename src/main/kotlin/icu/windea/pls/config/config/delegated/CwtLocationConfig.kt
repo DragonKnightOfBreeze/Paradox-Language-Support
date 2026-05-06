@@ -41,8 +41,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property required 是否是必需项。
  * @property primary 是否是主要项。
  *
- * @see CwtTypeImagesConfig
- * @see CwtTypeLocalisationConfig
+ * @see CwtTypePresentationConfig
  * @see CwtLocationExpression
  */
 interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
