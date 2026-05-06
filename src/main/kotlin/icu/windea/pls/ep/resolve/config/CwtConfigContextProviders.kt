@@ -127,7 +127,7 @@ class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
         val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
         if (defineVariableInfo.config == null) return null // no define variable config -> skip
         val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize()
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(2)).normalize()
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         if (memberPath.isEmpty()) configContext.declarationRoot = true
         configContext.defineVariableInfo = defineVariableInfo
