@@ -6,11 +6,10 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 定义候选的解析信息。
@@ -20,6 +19,10 @@ import icu.windea.pls.model.ParadoxDefinitionSource
  * @property type 类型。
  * @property typeConfig 对应的类型规则。
  * @property configGroup 对应的规则分组。
+ *
+ * @see CwtTypeConfig
+ * @see CwtDeclarationConfig
+ * @see CwtExtendedDefinitionConfig
  */
 sealed interface ParadoxDefinitionCandidateInfo : UserDataHolder {
     val source: ParadoxDefinitionSource

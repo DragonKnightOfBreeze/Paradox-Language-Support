@@ -102,9 +102,9 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val severity: String?
     @FromOptionMember("graph_related_types: string[]")
     val graphRelatedTypes: Set<String>?
-    @FromMember("subtype[*]: SubtypeInfo", multiple = true)
+    @FromMember("subtype[*]: SubtypeConfig", multiple = true)
     val subtypes: Map<String, CwtSubtypeConfig>
-    @FromMember("localisation: LocalisationInfo")
+    @FromMember("localisation: TypeLocalisationConfig")
     val localisation: CwtTypeLocalisationConfig?
     @FromMember("images: ImagesInfo")
     val images: CwtTypeImagesConfig?

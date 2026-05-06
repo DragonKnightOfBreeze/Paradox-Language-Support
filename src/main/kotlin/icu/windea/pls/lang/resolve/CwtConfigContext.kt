@@ -14,13 +14,14 @@ import icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
 import icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
+import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentHashMap
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 规则上下文。
@@ -71,7 +72,9 @@ data class CwtConfigContext(
 var CwtConfigContext.dynamic: Boolean by registerKey(CwtConfigContext.Keys, false)
 val CwtConfigContext.dynamicCache: MutableMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
 
+var CwtConfigContext.declarationRoot: Boolean by registerKey(CwtConfigContext.Keys, false)
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
+var CwtConfigContext.defineVariableInfo: ParadoxDefineVariableInfo? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterElement: ParadoxParameterLightElement? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.parameterValueQuoted: Boolean? by registerKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptExpression: String? by registerKey(CwtConfigContext.Keys)
@@ -81,11 +84,10 @@ var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by
 
 // Extensions
 
-fun CwtConfigContext.isRootForDefinition(): Boolean {
-    return memberPath.let { it != null && it.isEmpty() }
-        && (definitionInfo != null || definitionInjectionInfo != null)
-}
-
 fun CwtConfigContext.inRoot(): Boolean {
     return memberPath != null
+}
+
+fun CwtConfigContext.isDeclarationRoot(): Boolean {
+    return memberPath != null && declarationRoot
 }

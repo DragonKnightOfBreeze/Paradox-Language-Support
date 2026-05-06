@@ -2,13 +2,13 @@
 
 ## Unreleased
 
-- [ ] PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma
+- [ ] DELAY ~~PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma~~
 - [x] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
 - [x] PLANNED 补充本地化文件中的快速复制文本的意向
 - [x] PLANNED 重构渲染器组件
 - [x] P2 消除或重构initializer组件 & `PlsDataPathService`
 - [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
-- [ ] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
+- [x] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
 - [x] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
 - [x] P2 color scheme - 优化/整理配色选项和预览文本。
 - [x] P3 检查设置页面，优化文字表述，修正错误。
@@ -33,7 +33,8 @@
 - [x] 为定值的命名空间和变量提供代码补全 / Provided code completion for define namespaces and variables
 - [x] 为定值变量提供导航动作、装订线图标和实现查询 / Provided navigation action, gutter icons and implementations search for define variables
 - [x] 为定值变量提供相关代码检查（重载、不正确的重载） / Provided related code inspections for define variables (override, incorrect override)
-- [ ] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
+- [x] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
+- [ ] 整理并更新各个游戏的定值的规则文件 / Arrange and update define config files for each game 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

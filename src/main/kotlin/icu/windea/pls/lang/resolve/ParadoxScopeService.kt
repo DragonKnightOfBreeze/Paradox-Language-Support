@@ -236,7 +236,7 @@ object ParadoxScopeService {
     }
 
     private fun isScopeContextSupportedForDefinitionMember(element: ParadoxScriptMember): Boolean {
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return false
         return configs.any { isScopeContextSupportedFromConfig(it) }
     }
@@ -307,7 +307,7 @@ object ParadoxScopeService {
         // element could be a definition member only if after inlined
         val parentMember = findParentMember(element, withSelf = false)
         val parentScopeContext = if (parentMember != null) ParadoxScopeManager.getScopeContext(parentMember) else null
-        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+        val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
         val config = configs.firstOrNull() ?: return null
 
         val overriddenScopeContext = getOverriddenScopeContext(element, config, parentScopeContext)

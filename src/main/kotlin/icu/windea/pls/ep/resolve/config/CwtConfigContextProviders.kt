@@ -10,6 +10,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
@@ -18,15 +19,19 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
+import icu.windea.pls.lang.resolve.declarationRoot
+import icu.windea.pls.lang.resolve.defineVariableInfo
 import icu.windea.pls.lang.resolve.definitionInfo
 import icu.windea.pls.lang.resolve.definitionInjectionInfo
 import icu.windea.pls.lang.resolve.inlineScriptExpression
 import icu.windea.pls.lang.resolve.parameterElement
 import icu.windea.pls.lang.resolve.parameterValueQuoted
+import icu.windea.pls.lang.select.parentDefineVariable
 import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.parentDefinitionInjection
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -82,6 +87,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val memberPathFromFile = memberPathFromFile.normalize()
         val memberPath = definitionInfo.memberPath.relativeTo(memberPathFromFile)?.normalize() ?: return null
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
+        if (memberPath.isEmpty()) configContext.declarationRoot = true
         configContext.definitionInfo = definitionInfo
         return configContext
     }
@@ -99,13 +105,50 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        ProgressManager.checkCanceled()
-
         val memberPath = context.memberPath ?: return null
-        val definitionInfo = context.definitionInfo ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(options) ?: return null
         val rootConfigs = declarationConfig.to.singletonList()
+        return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
+    }
+}
+
+/**
+ * 提供定值变量声明中的规则上下文。
+ */
+class CwtDefineVariableConfigContextProvider : CwtConfigContextProvider {
+    override fun getContext(element: ParadoxScriptMember, file: PsiFile, configGroup: CwtConfigGroup, memberPathFromFile: ParadoxMemberPath, memberRole: ParadoxMemberRole): CwtConfigContext? {
+        ProgressManager.checkCanceled()
+
+        if (!ParadoxDefineManager.isDefineFile(file)) return null
+        if (memberPathFromFile.length <= 1) return null // file level or top property level -> not within define variable
+        val defineVariable = selectScope { element.parentDefineVariable() } ?: return null
+        val defineVariableInfo = defineVariable.defineVariableInfo ?: return null
+        if (defineVariableInfo.config == null) return null // no define variable config -> skip
+        val memberPathFromFile = memberPathFromFile.normalize()
+        val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize()
+        val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
+        if (memberPath.isEmpty()) configContext.declarationRoot = true
+        configContext.defineVariableInfo = defineVariableInfo
+        return configContext
+    }
+
+    override fun getCacheKey(context: CwtConfigContext, options: ParadoxMatchOptions?): String? {
+        val gameTypeId = context.gameType.id
+        val defineVariableInfo = context.defineVariableInfo ?: return null
+        val declarationKey = defineVariableInfo.namespace + "\u0000" + defineVariableInfo.variable
+        val memberPath = context.memberPath ?: return null // null -> unexpected
+        val memberRole = context.memberRole
+        val suffix = "${memberPath}\u0000${memberRole.ordinal}\u0000${options.toHashString(forMatched = false)}"
+        return "dv@$gameTypeId#${declarationKey}#$suffix"
+    }
+
+    override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
+        val memberPath = context.memberPath ?: return null
+        if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val defineVariableInfo = context.defineVariableInfo ?: return null
+        val rootConfigs = defineVariableInfo.config?.config?.let { listOf(it) } ?: return null // NOTE 2.1.8 inline or deep copy ops should be unnecessary here
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
 }
@@ -147,11 +190,9 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        ProgressManager.checkCanceled()
-
-        val parameterElement = context.parameterElement ?: return null
         val memberPath = context.memberPath ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val parameterElement = context.parameterElement ?: return null
         val rootConfigs = ParadoxParameterManager.getInferredContextConfigs(parameterElement)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
@@ -199,8 +240,8 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
         val memberPath = context.memberPath ?: return null
-        val inlineConfigs = context.configGroup.directivesModel.inlineScript.orNull() ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val inlineConfigs = context.configGroup.directivesModel.inlineScript.orNull() ?: return null
         val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
@@ -241,11 +282,9 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        ProgressManager.checkCanceled()
-
         val memberPath = context.memberPath ?: return null
-        val inlineScriptExpression = context.inlineScriptExpression ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val inlineScriptExpression = context.inlineScriptExpression ?: return null
         val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, context.element, context, options)
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)
     }
@@ -286,6 +325,7 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
         val memberPathFromFile = memberPathFromFile.normalize()
         val memberPath = ParadoxMemberPath.resolve(memberPathFromFile.subPaths.drop(1)).normalize() // 去除第一个子路径
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
+        if (memberPath.isEmpty()) configContext.declarationRoot = true
         configContext.definitionInjectionInfo = definitionInjectionInfo
         return configContext
     }
@@ -301,11 +341,9 @@ class CwtDefinitionInjectionConfigContextProvider : CwtConfigContextProvider {
     }
 
     override fun getConfigs(context: CwtConfigContext, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>>? {
-        ProgressManager.checkCanceled()
-
         val memberPath = context.memberPath ?: return null
-        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
         if (memberPath.isNotEmpty()) return ParadoxConfigService.getFlattenedConfigsForConfigContext(context, options)
+        val definitionInjectionInfo = context.definitionInjectionInfo ?: return null
         val declaration = definitionInjectionInfo.declaration ?: return null
         val rootConfigs = declaration.to.singletonList()
         return ParadoxConfigService.getTopConfigsForConfigContext(context, rootConfigs)

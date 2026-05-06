@@ -73,7 +73,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if (file !is ParadoxScriptFile) return
                 val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(file, file, configs)
             }
 
@@ -90,7 +90,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?: return
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(element, position, configs)
             }
 

@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
@@ -72,6 +73,8 @@ interface CwtConfigGroupDataHolder {
 
     // type - declarationConfig
     val declarations: Map<String, CwtDeclarationConfig>
+
+    val defineNamespaces: Map<String, CwtDefineNamespaceConfig>
 
     val rows: Map<String, CwtRowConfig>
 

@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
@@ -197,6 +198,14 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val typeConfig = CwtTypeConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(typeConfig)) continue
                         initializer.types[typeConfig.name] = typeConfig
+                    }
+                }
+                key == "defines" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        val defineNamespaceConfig = CwtDefineNamespaceConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(defineNamespaceConfig)) continue
+                        initializer.defineNamespaces[defineNamespaceConfig.name] = defineNamespaceConfig
                     }
                 }
                 key == "rows" -> {

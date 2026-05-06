@@ -48,7 +48,7 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         if (element.text.isParameterized()) return
         if (!element.isBlockMember()) return
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return
-        val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(acceptDefinition = true))
+        val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup
         context.configGroup = configGroup

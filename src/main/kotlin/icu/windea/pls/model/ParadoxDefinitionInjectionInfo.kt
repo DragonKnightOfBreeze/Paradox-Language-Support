@@ -3,13 +3,15 @@ package icu.windea.pls.model
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 定义注入的解析信息。
@@ -20,6 +22,11 @@ import icu.windea.pls.model.ParadoxDefinitionSource
  * @property modeConfig 注入模式对应的规则。
  * @property typeConfig 目标定义的类型对应的规则。
  * @property expression 定义注入表达式。格式：`{mode}:{target}`。
+ *
+ * @see CwtTypeConfig
+ * @see CwtDeclarationConfig
+ * @see CwtDirectiveConfig
+ * @see CwtExtendedDefinitionConfig
  */
 data class ParadoxDefinitionInjectionInfo(
     val mode: String,

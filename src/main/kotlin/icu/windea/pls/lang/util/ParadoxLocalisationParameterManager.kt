@@ -89,7 +89,7 @@ object ParadoxLocalisationParameterManager {
 
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if (element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
             if (configs.any { it isSamePointer config }) return true
         }
         return false

@@ -32,7 +32,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.inRoot
-import icu.windea.pls.lang.resolve.isRootForDefinition
+import icu.windea.pls.lang.resolve.isDeclarationRoot
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.tagType
@@ -106,7 +106,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // skip if config context not exists
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
-                if (!configContext.inRoot() || configContext.isRootForDefinition()) return true
+                if (!configContext.inRoot() || configContext.isDeclarationRoot()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 

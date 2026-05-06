@@ -183,7 +183,8 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtColumnRelatedConfigProvider"/>
 
     <configContextProvider id="base" implementation="icu.windea.pls.ep.resolve.config.CwtBaseConfigContextProvider" order="last"/>
-    <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="last, before base"/>
+    <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="before base"/>
+    <configContextProvider id="defineVariable" implementation="icu.windea.pls.ep.resolve.config.CwtDefineVariableConfigContextProvider" order="before definition"/>
     <configContextProvider id="parameterValue" implementation="icu.windea.pls.ep.resolve.config.CwtParameterValueConfigContextProvider"/>
     <configContextProvider id="inlineScriptUsage" implementation="icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider"/>
     <configContextProvider id="inlineScript" implementation="icu.windea.pls.ep.resolve.config.CwtInlineScriptConfigContextProvider"/>

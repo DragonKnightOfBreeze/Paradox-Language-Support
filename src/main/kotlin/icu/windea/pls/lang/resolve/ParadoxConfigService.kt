@@ -62,7 +62,6 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.expressions.ParadoxScriptExpression
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -384,9 +383,9 @@ object ParadoxConfigService {
         val contextConfigs = configContext.getConfigs(options)
         if (contextConfigs.isEmpty()) return emptyList()
 
-        // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
-        if (element is ParadoxDefinitionElement && configContext.isRootForDefinition()) {
-            if (ParadoxMatchService.acceptDefinition(options)) return contextConfigs
+        // 如果允许匹配声明的根对应的脚本属性，且当前上下文是声明的根，则直接返回所有上下文规则
+        if (ParadoxMatchService.forDeclarationRoot(options)) {
+            if (element is ParadoxScriptProperty && configContext.isDeclarationRoot()) return contextConfigs
         }
 
         val configGroup = configContext.configGroup

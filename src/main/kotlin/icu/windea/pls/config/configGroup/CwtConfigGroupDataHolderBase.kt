@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
 import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
@@ -61,6 +62,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val swappedTypes by registerKey<FastMap<String, CwtTypeConfig>, UserDataHolder>(this) { FastMap() }
         val type2ModifiersMap by registerKey<FastMap<String, FastMap<String, CwtModifierConfig>>, UserDataHolder>(this) { FastMap() }
         val declarations by registerKey<FastMap<String, CwtDeclarationConfig>, UserDataHolder>(this) { FastMap() }
+        val defineNamespaces by registerKey<FastMap<String, CwtDefineNamespaceConfig>, UserDataHolder>(this) { FastMap() }
         val rows by registerKey<FastMap<String, CwtRowConfig>, UserDataHolder>(this) { FastMap() }
         val enums by registerKey<FastMap<String, CwtEnumConfig>, UserDataHolder>(this) { FastMap() }
         val complexEnums by registerKey<FastMap<String, CwtComplexEnumConfig>, UserDataHolder>(this) { FastMap() }
@@ -115,6 +117,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val swappedTypes by Keys.swappedTypes
     final override val type2ModifiersMap by Keys.type2ModifiersMap
     final override val declarations by Keys.declarations
+    final override val defineNamespaces by Keys.defineNamespaces
     final override val rows by Keys.rows
     final override val enums by Keys.enums
     final override val complexEnums by Keys.complexEnums
@@ -176,6 +179,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         type2ModifiersMap.trim()
         type2ModifiersMap.values.forEach { it.trim() }
         declarations.trim()
+        defineNamespaces.trim()
         rows.trim()
         enums.trim()
         complexEnums.trim()

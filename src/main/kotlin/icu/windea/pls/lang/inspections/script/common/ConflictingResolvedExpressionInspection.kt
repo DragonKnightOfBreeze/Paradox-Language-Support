@@ -70,7 +70,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
                     ?: return
                 val expression = property?.expression ?: element.expression
-                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(element, position, configs, expression)
             }
 

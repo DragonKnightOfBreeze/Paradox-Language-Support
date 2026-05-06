@@ -115,7 +115,7 @@ object ParadoxCompletionManager {
         }
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, relax = true))
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -156,7 +156,7 @@ object ParadoxCompletionManager {
         if (!configContext.inRoot()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, relax = true))
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->

@@ -30,8 +30,9 @@ class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Def
 
 class ParadoxDefineQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Define() {
     override fun doGetQuickDocText(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo): String? {
-        // TODO 2.1.8+
-        return null
+        val config = defineInfo.config ?: return null
+        val quickDoc = config.config.documentation?.orNull()
+        return quickDoc
     }
 }
 

@@ -314,6 +314,21 @@ fun ParadoxDefinitionElement.nameFieldElement(nameField: String?): ParadoxScript
 }
 
 /**
+ * 向上查找第一个符合条件的定义候选（定义或定义注入）。
+ *
+ * @param withSelf 结果是否可以是自身。
+ */
+context(scope: ParadoxPsiSelectScope)
+fun PsiElement.parentDefinitionCandidate(withSelf: Boolean = true): ParadoxDefinitionElement? {
+    if (language !is ParadoxScriptLanguage) return null
+    processParent(withSelf = withSelf) p@{
+        if (ParadoxPsiMatcher.isDefinitionCandidate(it)) return it
+        true
+    }
+    return null
+}
+
+/**
  * 向上查找第一个符合条件的定义。
  *
  * @param withSelf 结果是否可以是自身。
@@ -345,15 +360,15 @@ fun PsiElement.parentDefinitionInjection(withSelf: Boolean = true): ParadoxScrip
 }
 
 /**
- * 向上查找第一个符合条件的定义候选（定义或定义注入）。
+ * 向上查找第一个符合条件的定值变量。
  *
  * @param withSelf 结果是否可以是自身。
  */
 context(scope: ParadoxPsiSelectScope)
-fun PsiElement.parentDefinitionCandidate(withSelf: Boolean = true): ParadoxDefinitionElement? {
+fun PsiElement.parentDefineVariable(withSelf: Boolean = true): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     processParent(withSelf = withSelf) p@{
-        if (ParadoxPsiMatcher.isDefinitionCandidate(it)) return it
+        if (ParadoxPsiMatcher.isDefineVariable(it)) return it
         true
     }
     return null

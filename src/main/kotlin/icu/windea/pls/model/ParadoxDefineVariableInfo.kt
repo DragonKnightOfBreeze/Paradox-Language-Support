@@ -1,5 +1,7 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.config.config.delegated.CwtDefineVariableConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.util.ParadoxDefineManager
 
 /**
@@ -7,11 +9,14 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  *
  * @property namespace 命名空间。
  * @property variable 变量名。
+ *
+ * @see CwtDefineVariableConfig
  */
 data class ParadoxDefineVariableInfo(
     override val namespace: String,
     val variable: String,
-    override val gameType: ParadoxGameType,
+    override val configGroup: CwtConfigGroup,
+    override val config: CwtDefineVariableConfig?,
 ) : ParadoxDefineInfo {
     override val expression: String get() = ParadoxDefineManager.getExpression(namespace, variable)
 
