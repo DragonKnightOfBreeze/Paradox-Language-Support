@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -60,7 +59,7 @@ object ParadoxModifierManager {
 
     private val CwtConfigGroup.modifierInfoCache by registerKey(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> modifierInfo
-        createNestedCache<VirtualFile, _, _, Cache<String, ParadoxModifierInfo>> {
+        createNestedCache<VirtualFile, _, _> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }

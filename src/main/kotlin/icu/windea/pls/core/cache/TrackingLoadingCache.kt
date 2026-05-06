@@ -1,19 +1,19 @@
 package icu.windea.pls.core.cache
 
-import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.intellij.openapi.util.ModificationTracker
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
 /**
- * 追踪缓存。通过 [modificationTrackerProvider] 获取用于追踪值的更改的 [ModificationTracker]。
+ * 追踪载入缓存。通过 [modificationTrackerProvider] 获取用于追踪值的更改的 [ModificationTracker]。
  *
  * @see ModificationTracker
  */
-class TrackingCache<K : Any, V : Any>(
-    private val delegate: Cache<K, V>,
+class TrackingLoadingCache<K : Any, V : Any>(
+    private val delegate: LoadingCache<K, V>,
     private val modificationTrackerProvider: (V) -> ModificationTracker?
-) : Cache<K, V> by delegate {
+) : LoadingCache<K, V> by delegate {
     private val modificationCounts: MutableMap<K, Long> = ConcurrentHashMap()
 
     override fun get(key: K, mappingFunction: Function<in K, out V>): V {
@@ -39,6 +39,19 @@ class TrackingCache<K : Any, V : Any>(
         if (oldModificationCount == null) return result
         delegate.invalidate(key)
         return null
+    }
+
+    override fun get(key: K): V {
+        val result = delegate.get(key)
+        val modificationTracker = modificationTrackerProvider(result)
+        if (modificationTracker == null || modificationTracker == ModificationTracker.NEVER_CHANGED) return result
+        val newModificationCount = modificationTracker.modificationCount
+        val oldModificationCount = modificationCounts.get(key)
+        if (oldModificationCount == newModificationCount) return result
+        modificationCounts.put(key, newModificationCount)
+        if (oldModificationCount == null) return result
+        delegate.invalidate(key)
+        return delegate.get(key)
     }
 
     override fun invalidate(key: K) {

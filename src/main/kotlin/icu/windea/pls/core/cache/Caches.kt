@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.cache
 
@@ -32,12 +32,21 @@ inline fun <K : Any, V : Any> LoadingCache<K, V>.cancelable(): CancelableLoading
 }
 
 /** 将缓存包装为追踪缓存（[TrackingCache]），基于 [ModificationTracker] 自动失效。 */
-inline fun <K : Any, V : Any, C : Cache<K, V>> C.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingCache<K, V, C> {
+inline fun <K : Any, V : Any> Cache<K, V>.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingCache<K, V> {
     return TrackingCache(this, modificationTrackerProvider)
 }
 
-/** 创建嵌套缓存（[NestedCache]），用于为每个“外层键”懒创建一个内部缓存。 */
-inline fun <RK : Any, K : Any, V : Any, C : Cache<K, V>> createNestedCache(noinline cacheProvider: () -> C): NestedCache<RK, K, V, C> {
+/** 将载入缓存包装为追踪缓存（[TrackingLoadingCache]），基于 [ModificationTracker] 自动失效。 */
+inline fun <K : Any, V : Any> LoadingCache<K, V>.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingLoadingCache<K, V> {
+    return TrackingLoadingCache(this, modificationTrackerProvider)
+}
+
+/** 创建嵌套缓存（[NestedCache]），用于为每个"外层键"懒创建一个内部缓存。 */
+inline fun <RK : Any, K : Any, V : Any> createNestedCache(noinline cacheProvider: () -> Cache<K, V>): NestedCache<RK, K, V> {
     return NestedCache(cacheProvider)
 }
 
+/** 创建嵌套载入缓存（[NestedLoadingCache]），用于为每个"外层键"懒创建一个内部缓存。 */
+inline fun <RK : Any, K : Any, V : Any> createNestedLoadingCache( noinline  cacheProvider: () -> LoadingCache<K, V>): NestedLoadingCache<RK, K, V> {
+    return NestedLoadingCache(cacheProvider)
+}

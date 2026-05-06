@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
@@ -77,7 +76,7 @@ object ParadoxConfigService {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
             // use soft values to optimize memory
-            createNestedCache<VirtualFile, _, _, Cache<String, List<CwtMemberConfig<*>>>> {
+            createNestedCache<VirtualFile, _, _> {
                 CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
             }.withDependencyItems(ParadoxModificationTrackers.ConfigResolution)
         }

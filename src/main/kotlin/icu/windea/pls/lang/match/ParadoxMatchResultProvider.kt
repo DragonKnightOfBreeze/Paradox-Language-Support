@@ -16,7 +16,6 @@ import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.CancelableCache
 import icu.windea.pls.core.cache.NestedCache
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
@@ -49,9 +48,8 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
-private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
-private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
+private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
+private typealias MatchResultNestedCacheKey = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
@@ -66,7 +64,7 @@ object ParadoxMatchResultProvider {
         private fun createKeyForCache(vararg dependencies: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
-                createNestedCache<VirtualFile, _, _, _> {
+                createNestedCache<VirtualFile, _, _> {
                     CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
                 }.withDependencyItems(*dependencies)
             }
@@ -104,7 +102,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
-    fun getCached(element: PsiElement, project: Project, key: KeyForCache, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
+    fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
