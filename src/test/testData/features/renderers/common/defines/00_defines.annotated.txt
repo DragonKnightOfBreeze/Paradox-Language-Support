@@ -2,15 +2,19 @@
 STORY_SETTINGS = {
     ## @type string = string
     ## @config_expression MODE = scalar
+    ## @override_strategy LIOS
     MODE = normal
     ## @type string = int
     ## @config_expression INITIAL_LEVEL = int
+    ## @override_strategy LIOS
     INITIAL_LEVEL = 0
     ## @type string = float
     ## @config_expression EXPERIENCE_RATIO = float
+    ## @override_strategy LIOS
     EXPERIENCE_RATIO = 1.0
     ## @type string = block
     ## @config_expression GREETS = block
+    ## @override_strategy LIOS
     GREETS = {
         ## @type string
         ## @config_expression scalar
