@@ -12,13 +12,13 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
-import icu.windea.pls.model.ParadoxGameType
 
 class PlsPathServiceImpl : PlsPathService, Disposable {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
@@ -79,7 +79,7 @@ class PlsPathServiceImpl : PlsPathService, Disposable {
 
     override fun getSteamGamePath(steamId: String, gameName: String): Path? {
         if (steamId.isEmpty() || gameName.isEmpty()) return null
-        return steamPathCache.getOrPut(steamId) { resolveSteamGamePath(steamId, gameName) ?: emptyPath }.takeIf { it !== emptyPath }
+        return steamPathCache.computeIfAbsent(steamId) { resolveSteamGamePath(steamId, gameName) ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
     private fun resolveSteamGamePath(steamId: String, gameName: String): Path? {

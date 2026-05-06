@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.index
 
 import icu.windea.pls.PlsCapacities
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object PlsIndexStatisticService {
@@ -34,25 +34,25 @@ object PlsIndexStatisticService {
 
     fun recordComplexEnumValue(gameType: ParadoxGameType) {
         if (!recordIndexStats) return
-        val counter = complexEnumValueCounters.computeIfAbsent(gameType) { AtomicLong() }
+        val counter = complexEnumValueCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordDefinition(gameType: ParadoxGameType) {
         if (!recordIndexStats) return
-        val counter = definitionCounters.computeIfAbsent(gameType) { AtomicLong() }
+        val counter = definitionCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordDefinitionInjection(gameType: ParadoxGameType) {
         if (!recordIndexStats) return
-        val counter = definitionInjectionCounters.computeIfAbsent(gameType) { AtomicLong() }
+        val counter = definitionInjectionCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordMerged(gameType: ParadoxGameType, indexInfoType: ParadoxIndexInfoType<*>) {
         if (!recordIndexStats) return
-        val counter = mergedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.computeIfAbsent(indexInfoType) { AtomicLong() }
+        val counter = mergedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(indexInfoType) { AtomicLong() }
         counter.incrementAndGet()
     }
 

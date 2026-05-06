@@ -49,11 +49,11 @@ class TigerLintToolService : Disposable {
     }
 
     fun getModificationTracker(gameType: ParadoxGameType): SimpleModificationTracker {
-        return modificationTrackers.computeIfAbsent(gameType) { SimpleModificationTracker() }
+        return modificationTrackers.getOrPut(gameType) { SimpleModificationTracker() }
     }
 
     fun getLintResultLock(file: VirtualFile): Any {
-        return lintResultLocks.computeIfAbsent(file) { Any() }
+        return lintResultLocks.getOrPut(file) { Any() }
     }
 
     fun checkAvailableFor(file: PsiFile): Boolean {
