@@ -334,4 +334,3 @@ Recomputation gives com.intellij.util.CachedValueBase$DefaultData@7e0ed162 which
 	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:2073)
 	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:2035)
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
-
