@@ -22,6 +22,7 @@ import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * 规则上下文。
@@ -70,7 +71,7 @@ data class CwtConfigContext(
 // Accessors
 
 var CwtConfigContext.dynamic: Boolean by registerKey(CwtConfigContext.Keys, false)
-val CwtConfigContext.dynamicCache: MutableMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
+val CwtConfigContext.dynamicCache: ConcurrentMap<String, List<CwtMemberConfig<*>>> by registerKey(CwtConfigContext.Keys) { ConcurrentHashMap() }
 
 var CwtConfigContext.declarationRoot: Boolean by registerKey(CwtConfigContext.Keys, false)
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by registerKey(CwtConfigContext.Keys)
