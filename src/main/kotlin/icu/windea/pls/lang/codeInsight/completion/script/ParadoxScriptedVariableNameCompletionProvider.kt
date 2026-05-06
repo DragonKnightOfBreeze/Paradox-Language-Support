@@ -5,9 +5,11 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
@@ -24,6 +26,7 @@ import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 
 /**
  * 提供已有的封装变量的名字的代码补全。
@@ -33,16 +36,19 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         if (!PlsSettings.getInstance().state.completion.completeScriptedVariableNames) return
 
         val position = parameters.position
-        val element = position.parent?.castOrNull<ParadoxScriptScriptedVariable>() ?: return
+        val element = position.parent?.castOrNull<ParadoxScriptScriptedVariableName>() ?: return
         if (element.text.isParameterized()) return
         val file = parameters.originalFile
         val project = file.project
+
+        val offsetInParent = parameters.offset - element.startOffset
+        val keyword = element.getKeyword(offsetInParent)
 
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         // 这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-            .filterBy { it.name != element.name } // 排除与正在输入的同名的
+            .filterBy { it.name != keyword } // skip if name = input
             .distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processAsync {
             processScriptedVariable(context, result, it)

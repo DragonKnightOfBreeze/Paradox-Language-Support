@@ -97,10 +97,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = true
                     context.expressionTailText = ""
-                    // 排除与正在输入的同名的定义
                     // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it.name != element.name }
+                        .filterBy { it.name != keyword } // skip if name = input
                         .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
@@ -124,7 +123,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     // 排除与正在输入的同名的定义
                     // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
+                        .filterBy { it.name != keyword } // skip if name = input
                         .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
