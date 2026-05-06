@@ -13,7 +13,7 @@ STORY_SETTINGS = {
     ## @override_strategy LIOS
     EXPERIENCE_RATIO = 1.0
     ## @type string = block
-    ## @config_expression GREETS = block
+    ## @config_expression GREETS = {...}
     ## @override_strategy LIOS
     GREETS = {
         ## @type string

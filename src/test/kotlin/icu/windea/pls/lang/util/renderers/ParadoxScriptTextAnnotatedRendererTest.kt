@@ -38,39 +38,46 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun example() {
+    fun smokeTest_example() {
         configureFile("common/misc/example.test.txt")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         assertResult("common/misc/example.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun example_unformatted() {
+    fun smokeTest_example_unformatted() {
         configureFile("common/misc/example_unformatted.test.txt")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         assertResult("common/misc/example_unformatted.test.txt", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun chronicle() {
+    fun snapshotTest_chronicle() {
         configureFile("common/chapters/categories/00_chapter_categories.txt")
         configureFile("common/characters/tags/00_character_tags.txt")
         configureFile("common/chapters/00_chapters.txt")
         configureFile("common/characters/00_characters.txt")
         configureFile("common/species/00_species.txt")
         configureFile("common/defines/00_defines.txt")
+        configureFile("events/00_events.txt")
         configureFile("localisation/main_l_english.yml")
         configureFile("localisation/main_l_simp_chinese.yml")
+        configureFile("localisation/events_l_english.yml")
+        configureFile("localisation/events_l_simp_chinese.yml")
+        configureFile("localisation/comments_l_english.yml")
+        configureFile("localisation/comments_l_simp_chinese.yml")
+        configureFile("localisation/comment_details_l_english.yml")
+        configureFile("localisation/comment_details_l_simp_chinese.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
         assertResult("common/characters/tags/00_character_tags.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
         assertResult("common/chapters/00_chapters.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/characters/00_characters.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/species/00_species.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/defines/00_defines.txt", ParadoxAnnotatedLevel.ALL)
+        assertResult("events/00_events.txt", ParadoxAnnotatedLevel.ALL)
     }
 
     private fun configureFile(path: String) {

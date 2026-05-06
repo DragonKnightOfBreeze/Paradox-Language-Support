@@ -1,0 +1,57 @@
+## @type string = string
+event_namespace = hello_world
+## @type string = block
+## @definition_type event, scopeless
+## @config_expression event = {...}
+## @override_strategy FIOS
+## @scope_context this = any root = any
+event = {
+    ## @type string = string
+    ## @config_expression id = scalar
+    id = hello_world.1
+    ## @type string = string
+    ## @config_expression title = localisation
+    title = hello_world.1.title
+    ## @type string = string
+    ## @config_expression desc = localisation
+    desc = hello_world.1.desc
+    ## @type string = block
+    ## @config_expression immediate = {...}
+    ## @scope_context this = any root = any
+    immediate = {
+        ## @type string = boolean
+        ## @config_expression say_hello_world = bool
+        ## @scope_context this = any root = any
+        say_hello_world = yes
+    }
+}
+## @type string = block
+## @definition_type event, scopeless
+## @config_expression event = {...}
+## @override_strategy FIOS
+## @scope_context this = any root = any
+event = {
+    ## @type string = string
+    ## @config_expression id = scalar
+    id = hello_world.2
+    ## @type string = string
+    ## @config_expression title = localisation
+    title = hello_world.2.title
+    ## @type string = string
+    ## @config_expression desc = localisation
+    desc = hello_world.2.desc
+    ## @type string = block
+    ## @config_expression immediate = {...}
+    ## @scope_context this = any root = any
+    immediate = {
+        ## @type string = block
+        ## @config_expression hidden_effect = {...}
+        ## @scope_context this = any root = any
+        hidden_effect = {
+            ## @type string = boolean
+            ## @config_expression say_hello_world = bool
+            ## @scope_context this = any root = any
+            say_hello_world = yes
+        }
+    }
+}

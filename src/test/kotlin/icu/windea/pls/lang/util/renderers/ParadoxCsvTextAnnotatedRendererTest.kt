@@ -5,6 +5,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -17,7 +18,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -38,19 +38,19 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun example() {
+    fun smokeTest_example() {
         configureFile("common/misc/example.test.csv")
         assertResult("common/misc/example.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun example_unformatted() {
+    fun smokeTest_example_unformatted() {
         configureFile("common/misc/example_unformatted.test.csv")
         assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun chronicle() {
+    fun snapshotTest_chronicle() {
         configureFile("common/chapters/00_chapters.txt")
         configureFile("common/chapters/categories/00_chapter_categories.txt")
         configureFile("common/chapters/00_chapter_pages.csv")

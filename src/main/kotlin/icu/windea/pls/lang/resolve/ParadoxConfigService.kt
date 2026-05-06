@@ -383,9 +383,12 @@ object ParadoxConfigService {
         val contextConfigs = configContext.getConfigs(options)
         if (contextConfigs.isEmpty()) return emptyList()
 
+        // 如果当前上下文是声明的根对应的脚本属性，且允许这样匹配，则直接返回所有上下文规则
+        // 如果不允许这样匹配的情况下，则直接返回空列表
         // 如果允许匹配声明的根对应的脚本属性，且当前上下文是声明的根，则直接返回所有上下文规则
-        if (ParadoxMatchService.forDeclarationRoot(options)) {
-            if (element is ParadoxScriptProperty && configContext.isDeclarationRoot()) return contextConfigs
+        if (element is ParadoxScriptProperty && configContext.isDeclarationRoot()) {
+            if (ParadoxMatchService.forDeclarationRoot(options)) return contextConfigs
+            return emptyList()
         }
 
         val configGroup = configContext.configGroup

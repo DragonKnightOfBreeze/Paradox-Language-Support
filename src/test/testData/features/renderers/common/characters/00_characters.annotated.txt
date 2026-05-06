@@ -1,5 +1,6 @@
 ## @type string = block
 ## @definition_type character
+## @config_expression character = {...}
 ## @override_strategy LIOS
 windea = {
     ## @type string = string

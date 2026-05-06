@@ -14,8 +14,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 支持的注解：
  * - 类型信息。参见 [ParadoxScriptAnnotatedManager.getType]。
  * - 定义类型信息。参见 [ParadoxScriptAnnotatedManager.getDefinitionType]。
- * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategy]。
  * - 规则表达式信息。参见 [ParadoxScriptAnnotatedManager.getConfigExpression]。
+ * - 覆盖方式信息。参见 [ParadoxScriptAnnotatedManager.getOverrideStrategy]。
  * - 作用域上下文信息。参见 [ParadoxScriptAnnotatedManager.getScopeContext]。
  */
 class ParadoxScriptTextAnnotatedRenderer : ParadoxScriptTextRenderer<String, ParadoxScriptTextAnnotatedRenderContext, ParadoxScriptTextAnnotatedRenderSettings>() {
@@ -52,11 +52,11 @@ class ParadoxScriptTextAnnotatedRenderContext(
             if (settings.level.includeDefinitionType) {
                 ParadoxScriptAnnotatedManager.getDefinitionType(element)?.let { add(it) }
             }
-            if (settings.level.includeOverrideStrategy) {
-                ParadoxScriptAnnotatedManager.getOverrideStrategy(element)?.let { add(it) }
-            }
             if (settings.level.includeConfigExpression) {
                 ParadoxScriptAnnotatedManager.getConfigExpression(element)?.let { add(it) }
+            }
+            if (settings.level.includeOverrideStrategy) {
+                ParadoxScriptAnnotatedManager.getOverrideStrategy(element)?.let { add(it) }
             }
             if (settings.level.includeScopeContext) {
                 val unchanged = settings.level.includeUnchancedScopeContext

@@ -4,6 +4,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -18,8 +19,8 @@ object ParadoxScriptAnnotatedManager {
 
     const val typePrefix = "@type"
     const val definitionTypePrefix = "@definition_type"
-    const val overrideStrategyPrefix = "@override_strategy"
     const val configExpressionPrefix = "@config_expression"
+    const val overrideStrategyPrefix = "@override_strategy"
     const val scopeContextPrefix = "@scope_context"
 
     // endregion
@@ -62,17 +63,6 @@ object ParadoxScriptAnnotatedManager {
     }
 
     /**
-     * 得到覆盖方式信息的注解。
-     *
-     * 格式：
-     * - `## @override_strategy = STRATEGY`
-     */
-    fun getOverrideStrategy(element: ParadoxScriptMember): String? {
-        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return null
-        return "## $overrideStrategyPrefix ${overrideStrategy.id}"
-    }
-
-    /**
      * 得到规则表达式信息的注解。
      *
      * 格式：
@@ -80,7 +70,8 @@ object ParadoxScriptAnnotatedManager {
      * - `## @config_expression value_expression`
      */
     fun getConfigExpression(element: ParadoxScriptMember): String? {
-        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
+        val options = ParadoxMatchOptions(forDeclarationRoot = true)
+        val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
         return when (element) {
             is ParadoxScriptProperty -> {
                 if (config !is CwtPropertyConfig) return null
@@ -95,6 +86,17 @@ object ParadoxScriptAnnotatedManager {
             }
             else -> null
         }
+    }
+
+    /**
+     * 得到覆盖方式信息的注解。
+     *
+     * 格式：
+     * - `## @override_strategy = STRATEGY`
+     */
+    fun getOverrideStrategy(element: ParadoxScriptMember): String? {
+        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return null
+        return "## $overrideStrategyPrefix ${overrideStrategy.id}"
     }
 
     /**

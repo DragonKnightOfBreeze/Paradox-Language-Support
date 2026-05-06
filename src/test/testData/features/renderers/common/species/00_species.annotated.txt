@@ -1,5 +1,6 @@
 ## @type string = block
 ## @definition_type species
+## @config_expression species = {...}
 ## @override_strategy LIOS
 unknown = {
     ## @type string = string
