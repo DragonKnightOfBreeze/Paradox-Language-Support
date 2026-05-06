@@ -4,6 +4,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxType
@@ -67,11 +68,7 @@ object ParadoxScriptAnnotatedManager {
      * - `## @override_strategy = STRATEGY`
      */
     fun getOverrideStrategy(element: ParadoxScriptMember): String? {
-        val key = when (element) {
-            is ParadoxScriptProperty -> element.propertyKey
-            else -> null
-        } ?: return null
-        val overrideStrategy = ParadoxTypeManager.getOverrideStrategy(key) ?: return null
+        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return null
         return "## $overrideStrategyPrefix ${overrideStrategy.id}"
     }
 

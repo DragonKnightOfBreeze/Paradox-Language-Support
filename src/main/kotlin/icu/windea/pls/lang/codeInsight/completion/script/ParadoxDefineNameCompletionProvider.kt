@@ -67,6 +67,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
 
     @Suppress("SameReturnValue")
     private fun processDefineNamespace(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+        // 不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile
@@ -80,6 +81,7 @@ class ParadoxDefineNameCompletionProvider : CompletionProvider<CompletionParamet
 
     @Suppress("SameReturnValue")
     private fun processDefineVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptProperty): Boolean {
+        // 不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name.orNull() ?: return true
         val typeFile = element.containingFile

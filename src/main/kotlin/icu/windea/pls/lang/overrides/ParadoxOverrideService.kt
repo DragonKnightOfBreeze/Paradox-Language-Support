@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxOverrideService {
     /**
-     * 得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 得到目标（文件、全局封装变量、定义、定值变量、本地化等）使用的覆盖方式。
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
@@ -41,7 +41,7 @@ object ParadoxOverrideService {
     }
 
     /**
-     * 从查询参数得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 从查询参数得到目标（文件、全局封装变量、定义、定值变量、本地化等）使用的覆盖方式。
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {

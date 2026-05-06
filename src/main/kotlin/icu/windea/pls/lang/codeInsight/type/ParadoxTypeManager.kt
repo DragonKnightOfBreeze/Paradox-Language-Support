@@ -13,12 +13,12 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionCandidateInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.resolve.ParadoxTypeService
@@ -80,15 +80,16 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 名字 - 如果 PSI 表示一个封装变量、定义、本地化或参数则可用。
+     * 名字 - 如果 PSI 表示一个封装变量、定义、定值变量、本地化或参数则可用。
      */
     fun getName(element: PsiElement): String? {
         if (element.language !is ParadoxLanguage) return null
         return when (element) {
             is ParadoxScriptScriptedVariable -> element.name
             is ParadoxScriptPropertyKey -> {
-                val definitionInfo = element.parentProperty?.definitionInfo ?: return null
-                definitionInfo.name
+                val property = element.parentProperty ?: return null
+                property.definitionInfo?.let { return it.name }
+                property.defineInfo?.let { return it.expression }
             }
             is ParadoxLocalisationProperty -> element.name
             is ParadoxParameter -> element.name
@@ -178,13 +179,13 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
+     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、定值变量、本地化。
      */
     fun getOverrideStrategy(element: PsiElement): ParadoxOverrideStrategy? {
         val targetElement = when {
-            element is ParadoxScriptScriptedVariable -> element.takeIf { ParadoxPsiMatcher.isGlobalScriptedVariable(it) }
-            element is ParadoxScriptPropertyKey -> element.parent?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
-            element is ParadoxLocalisationProperty -> element.takeIf { ParadoxPsiMatcher.isLocalisation(it) }
+            element is ParadoxScriptScriptedVariable -> element
+            element is ParadoxScriptPropertyKey -> element.parent
+            element is ParadoxLocalisationProperty -> element
             else -> null
         }
         if (targetElement == null) return null

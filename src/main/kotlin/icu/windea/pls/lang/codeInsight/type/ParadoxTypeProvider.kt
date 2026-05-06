@@ -12,6 +12,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import org.jetbrains.uast.kotlin.orAnonymous
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
@@ -54,7 +55,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): String {
         val map = buildMap {
             val name = ParadoxTypeManager.getName(element)
-            name?.let { this[PlsBundle.message("title.name")] = it }
+            name?.let { this[PlsBundle.message("title.name")] = it.orAnonymous() }
 
             val expression = ParadoxTypeManager.getExpression(element)
             expression?.let { this[PlsBundle.message("title.expression")] = it }
