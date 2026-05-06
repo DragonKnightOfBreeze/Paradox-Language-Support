@@ -62,11 +62,11 @@
 本文档中的"规则"按层级分为以下几类：
 
 - **基础规则**：如 `CwtPropertyConfig`，是语法树级别的通用节点，用于承载规则文件中的属性和值。本文档不逐一介绍基础规则。
-- **[普通规则](#configs-normal)**：驱动各种语言功能的核心规则，包括类型、别名、枚举、链接、作用域等。
+- **[标准规则](#configs-standard)**：驱动各种语言功能的核心规则，包括类型、别名、枚举、链接、作用域等。
 - **[扩展规则](#configs-extended)**：用于增强插件功能的附加规则，如为特定定义或内联脚本提供额外的上下文与提示。
 - **[内部规则](#configs-internal)**：由插件内部使用的规则，目前不支持（或尚不支持）自定义。
 
-### 普通规则 {#configs-normal}
+### 标准规则 {#configs-standard}
 
 > 这些规则驱动了各种各样的语言功能，包括但不限于代码补全、代码检查、快速文档、内嵌提示等。
 
@@ -115,57 +115,6 @@ priorities = {
 - 两个 MOD 都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的 MOD 生效，后者被忽略。
 - 两个 MOD 都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
 
-#### 声明规则 {#config-declaration}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
-
-声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
-
-**路径定位**：`{name}`，其中 `{name}` 为规则名称（即"定义类型"名）。规则文件中的顶级属性，如果键为合法标识符且未被其他规则匹配到，会回退尝试解析为声明规则。
-
-声明规则的处理流程大致如下：首先，只有键为合法标识符的顶级属性才会被视为声明规则。如果声明的根级值为 `single_alias_right[...]`，会先进行内联展开。随后，插件会按子类型裁剪和扁平化规则树——匹配当前上下文子类型的 `subtype[...]` 块会被展开为平级子规则，不匹配的则跳过。最终生成的规则树用于驱动补全、检查等功能。
-
-声明规则可以与其他规则协作：在声明内可引用[别名与单别名](#config-alias)（`alias_name[...]` / `alias_match_left[...]`、`single_alias_right[...]`）。切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。游戏规则（game rule）和动作触发（on action）还可以通过[扩展规则](#configs-extended)改写声明上下文。
-
-**示例**：
-
-```cwt
-# from `common/buildings.cwt` of stellaris config group
-
-## push_scope = planet
-building = {
-    ## cardinality = 0..inf
-    ## replace_scopes = { this = planet root = planet }
-    desc = single_alias_right[triggered_desc_clause]
-
-    ## cardinality = 0..1
-    owner_type = corporate
-
-    ## cardinality = 0..1
-    ruined_icon = icon[gfx/interface/icons/buildings]
-
-    ## cardinality = 0..1
-    ruined_icon = <sprite>
-
-    ## cardinality = 0..1
-    building_sets = {
-        ## cardinality = 0..inf
-        enum[building_set]
-    }
-
-    # ...
-}
-```
-
-**注意事项**：
-
-- `subtype[...]` 仅在与上下文子类型匹配时生效；不匹配将被忽略（不会报错）。
-- 根级 `single_alias_right[...]` 会先被展开，再参与后续解析与检查。
-- 为保证后续功能能够"向上溯源"，生成的规则节点均会保持父链（parent config）引用。
-
 #### 系统作用域规则 {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
@@ -202,27 +151,25 @@ system_scopes = {
 }
 ```
 
-#### 指令规则 {#config-directive}
+#### 语言环境规则 {#config-locale}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
-<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
-<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-指令规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
+语言环境规则声明语言环境（locale）的基本信息，便于识别项目 / 用户偏好的语言环境，改进 UI 展示与本地化校验。
 
-目前涉及的指令包括：
+**路径定位**：`locales/{id}`，`{id}` 如 `l_english`。
 
-- **内联脚本（inline_script）**：（Stellaris）在解析阶段被替换为目标文件的内容，且可以指定参数。
-- **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
+**字段含义**：
 
-**路径定位**：`directive[{name}]`，`{name}` 为规则名称。
+- `id`：语言环境 ID。
+- `codes: string[]`：该语言环境包含的语言代码（如 `en`、`zh-CN`）。
 
 **示例**：
 
 ```cwt
-directive[inline_script] = {
-    # ...
+locales = {
+    l_english = { codes = { "en" } }
+    l_simp_chinese = { codes = { "zh-CN" } }
 }
 ```
 
@@ -363,6 +310,98 @@ types = {
 - 子类型匹配"顺序敏感"，请将更具体的规则放在更前面。
 - 同一 `## group` 内的子类型互斥（如 `event_type` 分组中的 `country`、`planet`、`ship` 等）。
 
+#### 类型展示规则 {#config-type-presentation}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
+
+类型展示规则为定义类型配置"名称 / 描述 / 必需本地化键"和"主要图片 / 切分规则"等展示信息，以便在 UI、导航与提示中展示。
+
+**路径定位**：
+
+- 本地化：`types/type[{type}]/localisation`
+- 图片：`types/type[{type}]/images`
+
+二者结构一致：由若干"子类型表达式 + 位置规则"的配对组成。在运行时根据实际"定义的子类型集合"过滤并合并得到最终的规则列表。位置规则的常用选项包括 `required`（是否必需项）和 `primary`（是否主要项，用于主展示图标 / 主名称）。位置表达式的详细语法参见[位置表达式](#config-expression-location)。
+
+**示例**：
+
+```cwt
+types = {
+    type[ship_design] = {
+        localisation = {
+            ## primary
+            name = some_loc_key
+            subtype[corvette] = { name = some_corvette_loc_key }
+        }
+        images = {
+            ## primary ## required
+            icon = "icon|icon_frame"  # image location expression
+        }
+    }
+}
+```
+
+#### 位置规则 {#config-location}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
+
+位置规则声明图片 / 本地化等资源的定位键与位置表达式，用于类型展示规则的 `localisation` 和 `images` 小节中。
+
+**路径定位**：`types/type[{type}]/localisation/{key}` 和 `types/type[{type}]/images/{key}`。
+
+#### 声明规则 {#config-declaration}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
+<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
+
+声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
+
+**路径定位**：`{name}`，其中 `{name}` 为规则名称（即"定义类型"名）。规则文件中的顶级属性，如果键为合法标识符且未被其他规则匹配到，会回退尝试解析为声明规则。
+
+声明规则的处理流程大致如下：首先，只有键为合法标识符的顶级属性才会被视为声明规则。如果声明的根级值为 `single_alias_right[...]`，会先进行内联展开。随后，插件会按子类型裁剪和扁平化规则树——匹配当前上下文子类型的 `subtype[...]` 块会被展开为平级子规则，不匹配的则跳过。最终生成的规则树用于驱动补全、检查等功能。
+
+声明规则可以与其他规则协作：在声明内可引用[别名与单别名](#config-alias)（`alias_name[...]` / `alias_match_left[...]`、`single_alias_right[...]`）。切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。游戏规则（game rule）和动作触发（on action）还可以通过[扩展规则](#configs-extended)改写声明上下文。
+
+**示例**：
+
+```cwt
+# from `common/buildings.cwt` of stellaris config group
+
+## push_scope = planet
+building = {
+    ## cardinality = 0..inf
+    ## replace_scopes = { this = planet root = planet }
+    desc = single_alias_right[triggered_desc_clause]
+
+    ## cardinality = 0..1
+    owner_type = corporate
+
+    ## cardinality = 0..1
+    ruined_icon = icon[gfx/interface/icons/buildings]
+
+    ## cardinality = 0..1
+    ruined_icon = <sprite>
+
+    ## cardinality = 0..1
+    building_sets = {
+        ## cardinality = 0..inf
+        enum[building_set]
+    }
+
+    # ...
+}
+```
+
+**注意事项**：
+
+- `subtype[...]` 仅在与上下文子类型匹配时生效；不匹配将被忽略（不会报错）。
+- 根级 `single_alias_right[...]` 会先被展开，再参与后续解析与检查。
+- 为保证后续功能能够"向上溯源"，生成的规则节点均会保持父链（parent config）引用。
+
 #### 别名规则与单别名规则 {#config-alias}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
@@ -421,6 +460,67 @@ some_definition = {
 - 别名唯一键由 `name:subName` 组成；重复定义将按覆盖方式 / 优先级处理。
 - 展开后才会进行基数与选项校验；请在展开位置而非声明处考虑最终语义。
 - `subName` 为数据表达式（受限），可使用模板 / 枚举等提高复用度，但请避免过宽导致误匹配。
+
+#### 行规则 {#config-row}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
+
+行规则为 CSV 行声明列名与取值形态，用于补全与检查。
+
+**路径定位**：`rows/row[{name}]`。
+
+`path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` 组合决定参与扫描的文件集合。`columns` 小节声明列名到列规则的映射，`end_column` 声明终止列名（匹配到后视为可省略的尾列）。
+
+**示例**：
+
+```cwt
+rows = {
+    row[component_template] = {
+        path = "game/common/component_templates"
+        path_extension = .csv
+        columns = {
+            key = <component_template>
+            # ... other columns
+        }
+    }
+}
+```
+
+#### 定值规则 {#config-define}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineVariableConfig -->
+
+定值规则用于描述脚本文件中的定值命名空间和定值变量，提供快速文档文本和规则上下文。
+它们位于 `common/defines` 目录中的扩展名为 `.txt` 的脚本文件中。
+
+**路径定位**：
+
+- 定值命名空间：`defines/{name}`，`{name}` 为命名空间。
+- 定值变量：`defines/*/{name}`，`{name}` 为变量名。
+
+**示例**：
+
+```cwt
+defines = {
+    # define namespace config `NAMESPACE`
+    NAMESPACE = {
+        # define variable config `STRING`
+        STRING = scalar
+        # define variable config `STRING_SET`
+        STRING_SET = {
+            ## cardinality = 0..inf
+            scalar
+        }
+    }
+}
+```
+
+**注意事项**：
+- 插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
+- 目前，基于定值规则，插件会检查定值变量的声明结构的合法性，但不会检查定值命名空间或定值变量的名字的合法性。
 
 #### 枚举规则与复杂枚举规则 {#config-enum}
 
@@ -568,44 +668,42 @@ links = {
 - 可混合多个 `data_source`。
 - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
 
-#### 作用域规则与作用域分组规则 {#config-scope}
+#### 本地化命令规则与本地化提升规则 {#config-localisation}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
 
-作用域规则定义"作用域类型"及其别名，作用域分组规则对作用域进行分组，二者用于作用域检查、链路约束与提示。
+本地化命令规则声明"本地化命令字段"（如 `GetCountryType`）的可用性与允许作用域。本地化提升规则声明"本地化作用域提升"，使得通过本地化链接切换作用域后仍能使用对应的命令字段。
 
-**路径定位与字段**：
+**路径定位**：
 
-- 作用域：`scopes/{name}`
-  - `name`：作用域 ID。
-  - `aliases: string[]`：别名集合（忽略大小写）。
-- 作用域分组：`scope_groups/{name}`
-  - `name`：分组名。
-  - `: string[]`（值列表）：分组内作用域 ID 集合（忽略大小写）。
+- 本地化命令：`localisation_commands/{name}`（名称忽略大小写）
+- 本地化提升：`localisation_promotions/{name}`（名称忽略大小写，对应本地化链接名）
 
-作用域规则与系统作用域共同决定作用域栈与含义；与链接规则共同约束链式访问的输入 / 输出作用域。在扩展规则中可通过 `## replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
+二者均包含 `supported_scopes` 字段，声明允许的作用域类型集合。
 
 **示例**：
 
 ```cwt
-# from `scopes.cwt` of stellaris config group
+# from `localisation.cwt` of stellaris config group
 
-scopes = {
-    Country = { aliases = { country } }
-    Leader = { aliases = { leader } }
-    System = { aliases = { galacticobject system galactic_object } }
-    Planet = { aliases = { planet } }
-    "Pop Group" = { aliases = { pop_group } }
-    "Pop Job" = { aliases = { job pop_job } }
+localisation_commands = {
+    GetCountryType = { country }
 }
 
-scope_groups = {
-    target_species = {
-        country pop_group leader planet ship fleet army species first_contact
-    }
+localisation_promotions = {
+    Ruler = { country }
 }
+
+# In localisation text:
+# [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
 ```
+
+**注意事项**：
+
+- 名称大小写不敏感；请保持与实际使用一致的拼写风格以便检索。
+- 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
+- 静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
 
 #### 修正规则与修正分类规则 {#config-modifier}
 
@@ -664,72 +762,41 @@ types = {
 - 类型规则中的修正名称使用 `$` 占位，请确保与类型 / 子类型表达式对应。
 - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
 
-#### 本地化命令规则与本地化提升规则 {#config-localisation}
+#### 作用域规则与作用域分组规则 {#config-scope}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
 
-本地化命令规则声明"本地化命令字段"（如 `GetCountryType`）的可用性与允许作用域。本地化提升规则声明"本地化作用域提升"，使得通过本地化链接切换作用域后仍能使用对应的命令字段。
+作用域规则定义"作用域类型"及其别名，作用域分组规则对作用域进行分组，二者用于作用域检查、链路约束与提示。
 
-**路径定位**：
+**路径定位与字段**：
 
-- 本地化命令：`localisation_commands/{name}`（名称忽略大小写）
-- 本地化提升：`localisation_promotions/{name}`（名称忽略大小写，对应本地化链接名）
+- 作用域：`scopes/{name}`
+  - `name`：作用域 ID。
+  - `aliases: string[]`：别名集合（忽略大小写）。
+- 作用域分组：`scope_groups/{name}`
+  - `name`：分组名。
+  - `: string[]`（值列表）：分组内作用域 ID 集合（忽略大小写）。
 
-二者均包含 `supported_scopes` 字段，声明允许的作用域类型集合。
-
-**示例**：
-
-```cwt
-# from `localisation.cwt` of stellaris config group
-
-localisation_commands = {
-    GetCountryType = { country }
-}
-
-localisation_promotions = {
-    Ruler = { country }
-}
-
-# In localisation text:
-# [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
-```
-
-**注意事项**：
-
-- 名称大小写不敏感；请保持与实际使用一致的拼写风格以便检索。
-- 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
-- 静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
-
-#### 类型展示规则 {#config-type-presentation}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
-
-类型展示规则为定义类型配置"名称 / 描述 / 必需本地化键"和"主要图片 / 切分规则"等展示信息，以便在 UI、导航与提示中展示。
-
-**路径定位**：
-
-- 本地化：`types/type[{type}]/localisation`
-- 图片：`types/type[{type}]/images`
-
-二者结构一致：由若干"子类型表达式 + 位置规则"的配对组成。在运行时根据实际"定义的子类型集合"过滤并合并得到最终的规则列表。位置规则的常用选项包括 `required`（是否必需项）和 `primary`（是否主要项，用于主展示图标 / 主名称）。位置表达式的详细语法参见[位置表达式](#config-expression-location)。
+作用域规则与系统作用域共同决定作用域栈与含义；与链接规则共同约束链式访问的输入 / 输出作用域。在扩展规则中可通过 `## replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
 
 **示例**：
 
 ```cwt
-types = {
-    type[ship_design] = {
-        localisation = {
-            ## primary
-            name = some_loc_key
-            subtype[corvette] = { name = some_corvette_loc_key }
-        }
-        images = {
-            ## primary ## required
-            icon = "icon|icon_frame"  # image location expression
-        }
+# from `scopes.cwt` of stellaris config group
+
+scopes = {
+    Country = { aliases = { country } }
+    Leader = { aliases = { leader } }
+    System = { aliases = { galacticobject system galactic_object } }
+    Planet = { aliases = { planet } }
+    "Pop Group" = { aliases = { pop_group } }
+    "Pop Job" = { aliases = { job pop_job } }
+}
+
+scope_groups = {
+    target_species = {
+        country pop_group leader planet ship fleet army species first_contact
     }
 }
 ```
@@ -768,59 +835,27 @@ database_object_types = {
 }
 ```
 
-#### 位置规则 {#config-location}
+#### 指令规则 {#config-directive}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
+<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-位置规则声明图片 / 本地化等资源的定位键与位置表达式，用于类型展示规则的 `localisation` 和 `images` 小节中。
+指令规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
 
-**路径定位**：`types/type[{type}]/localisation/{key}` 和 `types/type[{type}]/images/{key}`。
+目前涉及的指令包括：
 
-#### 行规则 {#config-row}
+- **内联脚本（inline_script）**：（Stellaris）在解析阶段被替换为目标文件的内容，且可以指定参数。
+- **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
-
-行规则为 CSV 行声明列名与取值形态，用于补全与检查。
-
-**路径定位**：`rows/row[{name}]`。
-
-`path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` 组合决定参与扫描的文件集合。`columns` 小节声明列名到列规则的映射，`end_column` 声明终止列名（匹配到后视为可省略的尾列）。
+**路径定位**：`directive[{name}]`，`{name}` 为规则名称。
 
 **示例**：
 
 ```cwt
-rows = {
-    row[component_template] = {
-        path = "game/common/component_templates"
-        path_extension = .csv
-        columns = {
-            key = <component_template>
-            # ... other columns
-        }
-    }
-}
-```
-
-#### 语言环境规则 {#config-locale}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
-
-语言环境规则声明语言环境（locale）的基本信息，便于识别项目 / 用户偏好的语言环境，改进 UI 展示与本地化校验。
-
-**路径定位**：`locales/{id}`，`{id}` 如 `l_english`。
-
-**字段含义**：
-
-- `id`：语言环境 ID。
-- `codes: string[]`：该语言环境包含的语言代码（如 `en`、`zh-CN`）。
-
-**示例**：
-
-```cwt
-locales = {
-    l_english = { codes = { "en" } }
-    l_simp_chinese = { codes = { "zh-CN" } }
+directive[inline_script] = {
+    # ...
 }
 ```
 

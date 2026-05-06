@@ -62,11 +62,11 @@ The source and overriding mechanisms for configs are detailed in the "Config Gro
 The "configs" in this document are categorized by level as follows:
 
 - **Base configs**: Such as `CwtPropertyConfig`, generic syntax-tree-level nodes used to carry properties and values from config files. This document does not cover base configs individually.
-- **[Normal configs](#configs-normal)**: Core configs that drive various language features, including types, aliases, enums, links, scopes, etc.
+- **[Standard configs](#configs-standard)**: Core configs that drive various language features, including types, aliases, enums, links, scopes, etc.
 - **[Extended configs](#configs-extended)**: Additional configs for enhancing plugin functionality, such as providing extra context and hints for specific definitions or inline scripts.
 - **[Internal configs](#configs-internal)**: Configs used internally by the plugin, currently not supporting (or not yet supporting) customization.
 
-### Normal Configs {#configs-normal}
+### Standard Configs {#configs-standard}
 
 > These configs drive a wide variety of language features, including but not limited to code completion, code inspection, quick documentation, inlay hints, etc.
 
@@ -115,57 +115,6 @@ priorities = {
 - Two mods both define an event with the same name in `events/`: Due to `events = fios`, the mod loaded first takes effect, and the later one is ignored.
 - Two mods both add entries in `common/on_actions/`: Due to `ordered`, entries are merged in order without overriding.
 
-#### Declaration Config {#config-declaration}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
-<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
-
-Declaration configs describe the structure of "definition entries" and serve as the foundation for features such as completion, inspection, and quick documentation.
-
-**Path location**: `{name}`, where `{name}` is the config name (i.e. the "definition type" name). Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being parsed as declaration configs.
-
-The processing flow of declaration configs is roughly as follows: First, only top-level properties with valid identifier keys are treated as declaration configs. If the root-level value of the declaration is `single_alias_right[...]`, inline expansion is performed first. Then, the plugin trims and flattens the config tree by subtypes — `subtype[...]` blocks matching the current context subtypes are expanded to sibling-level sub-configs, while non-matching ones are skipped. The resulting config tree is used to drive completion, inspection, and other features.
-
-Declaration configs can cooperate with other configs: [aliases and single aliases](#config-alias) (`alias_name[...]` / `alias_match_left[...]`, `single_alias_right[...]`) can be referenced within declarations. Swapped type declarations can be nested directly within the corresponding base type's declaration. Game rules and on actions can also have their declaration context overridden through [extended configs](#configs-extended).
-
-**Example**:
-
-```cwt
-# from `common/buildings.cwt` of stellaris config group
-
-## push_scope = planet
-building = {
-    ## cardinality = 0..inf
-    ## replace_scopes = { this = planet root = planet }
-    desc = single_alias_right[triggered_desc_clause]
-
-    ## cardinality = 0..1
-    owner_type = corporate
-
-    ## cardinality = 0..1
-    ruined_icon = icon[gfx/interface/icons/buildings]
-
-    ## cardinality = 0..1
-    ruined_icon = <sprite>
-
-    ## cardinality = 0..1
-    building_sets = {
-        ## cardinality = 0..inf
-        enum[building_set]
-    }
-
-    # ...
-}
-```
-
-**Considerations**:
-
-- `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
-- Root-level `single_alias_right[...]` is expanded first, then participates in subsequent parsing and inspection.
-- To ensure that downstream features can "trace back upward", generated config nodes maintain parent config references.
-
 #### System Scope Config {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
@@ -202,27 +151,25 @@ system_scopes = {
 }
 ```
 
-#### Directive Config {#config-directive}
+#### Locale Config {#config-locale}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
-<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
-<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
-Directive configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
+Locale configs declare basic information about locales, facilitating identification of the project / user's preferred locale and improving UI display and localisation validation.
 
-Currently involved directives include:
+**Path location**: `locales/{id}`, where `{id}` is e.g. `l_english`.
 
-- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during parsing, with parameters support.
-- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during parsing, with mode support to determine specific behavior.
+**Field meanings**:
 
-**Path location**: `directive[{name}]`, where `{name}` is the config name.
+- `id`: Locale ID.
+- `codes: string[]`: Language codes included in this locale (e.g. `en`, `zh-CN`).
 
 **Example**:
 
 ```cwt
-directive[inline_script] = {
-    # ...
+locales = {
+    l_english = { codes = { "en" } }
+    l_simp_chinese = { codes = { "zh-CN" } }
 }
 ```
 
@@ -363,6 +310,98 @@ types = {
 - Subtype matching is "order-sensitive"; place more specific configs earlier.
 - Subtypes within the same `## group` are mutually exclusive (e.g. `country`, `planet`, `ship`, etc. in the `event_type` group).
 
+#### Type Presentation Config {#config-type-presentation}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
+
+Type presentation configs configure "name / description / required localisation keys" and "primary image / frame rules" display information for definition types, for use in UI, navigation, and hints.
+
+**Path location**:
+
+- Localisation: `types/type[{type}]/localisation`
+- Images: `types/type[{type}]/images`
+
+Both share the same structure: composed of "subtype expression + location config" pairs. At runtime, they are filtered and merged based on the actual "definition's subtype set" to produce the final config list. Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
+
+**Example**:
+
+```cwt
+types = {
+    type[ship_design] = {
+        localisation = {
+            ## primary
+            name = some_loc_key
+            subtype[corvette] = { name = some_corvette_loc_key }
+        }
+        images = {
+            ## primary ## required
+            icon = "icon|icon_frame"  # image location expression
+        }
+    }
+}
+```
+
+#### Location Config {#config-location}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
+
+Location configs declare the locating key and location expression for resources such as images / localisation, used in the `localisation` and `images` sections of type presentation configs.
+
+**Path location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
+
+#### Declaration Config {#config-declaration}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
+<!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
+
+Declaration configs describe the structure of "definition entries" and serve as the foundation for features such as completion, inspection, and quick documentation.
+
+**Path location**: `{name}`, where `{name}` is the config name (i.e. the "definition type" name). Top-level properties in config files whose keys are valid identifiers and are not matched by other configs will fall back to being parsed as declaration configs.
+
+The processing flow of declaration configs is roughly as follows: First, only top-level properties with valid identifier keys are treated as declaration configs. If the root-level value of the declaration is `single_alias_right[...]`, inline expansion is performed first. Then, the plugin trims and flattens the config tree by subtypes — `subtype[...]` blocks matching the current context subtypes are expanded to sibling-level sub-configs, while non-matching ones are skipped. The resulting config tree is used to drive completion, inspection, and other features.
+
+Declaration configs can cooperate with other configs: [aliases and single aliases](#config-alias) (`alias_name[...]` / `alias_match_left[...]`, `single_alias_right[...]`) can be referenced within declarations. Swapped type declarations can be nested directly within the corresponding base type's declaration. Game rules and on actions can also have their declaration context overridden through [extended configs](#configs-extended).
+
+**Example**:
+
+```cwt
+# from `common/buildings.cwt` of stellaris config group
+
+## push_scope = planet
+building = {
+    ## cardinality = 0..inf
+    ## replace_scopes = { this = planet root = planet }
+    desc = single_alias_right[triggered_desc_clause]
+
+    ## cardinality = 0..1
+    owner_type = corporate
+
+    ## cardinality = 0..1
+    ruined_icon = icon[gfx/interface/icons/buildings]
+
+    ## cardinality = 0..1
+    ruined_icon = <sprite>
+
+    ## cardinality = 0..1
+    building_sets = {
+        ## cardinality = 0..inf
+        enum[building_set]
+    }
+
+    # ...
+}
+```
+
+**Considerations**:
+
+- `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
+- Root-level `single_alias_right[...]` is expanded first, then participates in subsequent parsing and inspection.
+- To ensure that downstream features can "trace back upward", generated config nodes maintain parent config references.
+
 #### Alias Config and Single Alias Config {#config-alias}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
@@ -421,6 +460,67 @@ some_definition = {
 - The alias unique key is composed of `name:subName`; duplicate definitions are handled by the override strategy / priority.
 - Cardinality and option validation occur only after expansion; consider the final semantics at the expansion site rather than at the declaration site.
 - `subName` is a data expression (restricted); templates / enums can be used to increase reusability, but avoid being too broad to prevent false matches.
+
+#### Row Config {#config-row}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
+<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
+
+Row configs declare column names and value forms for CSV rows, used for completion and inspection.
+
+**Path location**: `rows/row[{name}]`.
+
+The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan. The `columns` section declares the mapping from column names to column configs, and `end_column` declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
+
+**Example**:
+
+```cwt
+rows = {
+    row[component_template] = {
+        path = "game/common/component_templates"
+        path_extension = .csv
+        columns = {
+            key = <component_template>
+            # ... other columns
+        }
+    }
+}
+```
+
+#### Define Configs {#config-define}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDefineVariableConfig -->
+
+Define configs are used to describe define namespaces and define variables in script files, providing quick documentation text and config context.
+They are located in script files with the `.txt` extension within the `common/defines` directory.
+
+**Path Location**:
+
+- Define namespace: `defines/{name}`, where `{name}` is the namespace.
+- Define variable: `defines/*/{name}`, where `{name}` is the variable name.
+
+**Example**:
+
+```cwt
+defines = {
+    # define namespace config `NAMESPACE`
+    NAMESPACE = {
+        # define variable config `STRING`
+        STRING = scalar
+        # define variable config `STRING_SET`
+        STRING_SET = {
+            ## cardinality = 0..inf
+            scalar
+        }
+    }
+}
+```
+
+**Notes**:
+- The plugin forcibly ignores any type config or declaration config named `define` or `defines`.
+- Currently, based on define configs, the plugin checks the validity of the declaration structure for define variables, but does not check the validity of the names of define namespaces or define variables.
 
 #### Enum Config and Complex Enum Config {#config-enum}
 
@@ -568,44 +668,42 @@ links = {
 - Multiple `data_source` values can be mixed.
 - If a dynamic link argument is a single-quoted literal, it is treated as a literal and typically does not provide completion.
 
-#### Scope Config and Scope Group Config {#config-scope}
+#### Localisation Command Config and Localisation Promotion Config {#config-localisation}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
 
-Scope configs define "scope types" and their aliases; scope group configs group scopes together. Both are used for scope checking, link constraints, and hints.
+Localisation command configs declare the availability and allowed scopes of "localisation command fields" (e.g. `GetCountryType`). Localisation promotion configs declare "localisation scope promotions", allowing corresponding command fields to be used after switching scopes via localisation links.
 
-**Path location and fields**:
+**Path location**:
 
-- Scope: `scopes/{name}`
-  - `name`: Scope ID.
-  - `aliases: string[]`: Alias set (case-insensitive).
-- Scope group: `scope_groups/{name}`
-  - `name`: Group name.
-  - `: string[]` (value list): Set of scope IDs within the group (case-insensitive).
+- Localisation command: `localisation_commands/{name}` (name is case-insensitive)
+- Localisation promotion: `localisation_promotions/{name}` (name is case-insensitive, corresponds to a localisation link name)
 
-Scope configs and system scopes together determine the scope stack and semantics; together with link configs, they constrain the input / output scopes of chained access. In extended configs, `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in a specific context.
+Both include a `supported_scopes` field declaring the set of allowed scope types.
 
 **Example**:
 
 ```cwt
-# from `scopes.cwt` of stellaris config group
+# from `localisation.cwt` of stellaris config group
 
-scopes = {
-    Country = { aliases = { country } }
-    Leader = { aliases = { leader } }
-    System = { aliases = { galacticobject system galactic_object } }
-    Planet = { aliases = { planet } }
-    "Pop Group" = { aliases = { pop_group } }
-    "Pop Job" = { aliases = { job pop_job } }
+localisation_commands = {
+    GetCountryType = { country }
 }
 
-scope_groups = {
-    target_species = {
-        country pop_group leader planet ship fleet army species first_contact
-    }
+localisation_promotions = {
+    Ruler = { country }
 }
+
+# In localisation text:
+# [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
 ```
+
+**Considerations**:
+
+- Names are case-insensitive; maintain spelling consistent with actual usage for searchability.
+- The promotion config name should match the localisation link name; otherwise, correct matching cannot occur.
+- Static regular links are automatically copied as localisation links; if dynamic behavior is needed, declare localisation links separately.
 
 #### Modifier Config and Modifier Category Config {#config-modifier}
 
@@ -664,72 +762,41 @@ types = {
 - Modifier names in type configs use `$` as a placeholder; ensure they correspond to the type / subtype expression.
 - `supported_scopes` within categories should use standard scope IDs; case is automatically normalized during parsing.
 
-#### Localisation Command Config and Localisation Promotion Config {#config-localisation}
+#### Scope Config and Scope Group Config {#config-scope}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
 
-Localisation command configs declare the availability and allowed scopes of "localisation command fields" (e.g. `GetCountryType`). Localisation promotion configs declare "localisation scope promotions", allowing corresponding command fields to be used after switching scopes via localisation links.
+Scope configs define "scope types" and their aliases; scope group configs group scopes together. Both are used for scope checking, link constraints, and hints.
 
-**Path location**:
+**Path location and fields**:
 
-- Localisation command: `localisation_commands/{name}` (name is case-insensitive)
-- Localisation promotion: `localisation_promotions/{name}` (name is case-insensitive, corresponds to a localisation link name)
+- Scope: `scopes/{name}`
+  - `name`: Scope ID.
+  - `aliases: string[]`: Alias set (case-insensitive).
+- Scope group: `scope_groups/{name}`
+  - `name`: Group name.
+  - `: string[]` (value list): Set of scope IDs within the group (case-insensitive).
 
-Both include a `supported_scopes` field declaring the set of allowed scope types.
-
-**Example**:
-
-```cwt
-# from `localisation.cwt` of stellaris config group
-
-localisation_commands = {
-    GetCountryType = { country }
-}
-
-localisation_promotions = {
-    Ruler = { country }
-}
-
-# In localisation text:
-# [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
-```
-
-**Considerations**:
-
-- Names are case-insensitive; maintain spelling consistent with actual usage for searchability.
-- The promotion config name should match the localisation link name; otherwise, correct matching cannot occur.
-- Static regular links are automatically copied as localisation links; if dynamic behavior is needed, declare localisation links separately.
-
-#### Type Presentation Config {#config-type-presentation}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypePresentationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
-
-Type presentation configs configure "name / description / required localisation keys" and "primary image / frame rules" display information for definition types, for use in UI, navigation, and hints.
-
-**Path location**:
-
-- Localisation: `types/type[{type}]/localisation`
-- Images: `types/type[{type}]/images`
-
-Both share the same structure: composed of "subtype expression + location config" pairs. At runtime, they are filtered and merged based on the actual "definition's subtype set" to produce the final config list. Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
+Scope configs and system scopes together determine the scope stack and semantics; together with link configs, they constrain the input / output scopes of chained access. In extended configs, `## replace_scopes` can be used to specify the concrete scope types that system scopes map to in a specific context.
 
 **Example**:
 
 ```cwt
-types = {
-    type[ship_design] = {
-        localisation = {
-            ## primary
-            name = some_loc_key
-            subtype[corvette] = { name = some_corvette_loc_key }
-        }
-        images = {
-            ## primary ## required
-            icon = "icon|icon_frame"  # image location expression
-        }
+# from `scopes.cwt` of stellaris config group
+
+scopes = {
+    Country = { aliases = { country } }
+    Leader = { aliases = { leader } }
+    System = { aliases = { galacticobject system galactic_object } }
+    Planet = { aliases = { planet } }
+    "Pop Group" = { aliases = { pop_group } }
+    "Pop Job" = { aliases = { job pop_job } }
+}
+
+scope_groups = {
+    target_species = {
+        country pop_group leader planet ship fleet army species first_contact
     }
 }
 ```
@@ -768,59 +835,27 @@ database_object_types = {
 }
 ```
 
-#### Location Config {#config-location}
+#### Directive Config {#config-directive}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
+<!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
+<!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Location configs declare the locating key and location expression for resources such as images / localisation, used in the `localisation` and `images` sections of type presentation configs.
+Directive configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
 
-**Path location**: `types/type[{type}]/localisation/{key}` and `types/type[{type}]/images/{key}`.
+Currently involved directives include:
 
-#### Row Config {#config-row}
+- **Inline script (inline_script)**: (Stellaris) Replaced with the content of the target file during parsing, with parameters support.
+- **Definition injection (definition_injection)**: (VIC3 / EU5) Injects into or replaces the declaration of the target definition during parsing, with mode support to determine specific behavior.
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
-<!-- @see icu.windea.pls.lang.match.ParadoxConfigMatchService.matchesRow -->
-
-Row configs declare column names and value forms for CSV rows, used for completion and inspection.
-
-**Path location**: `rows/row[{name}]`.
-
-The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan. The `columns` section declares the mapping from column names to column configs, and `end_column` declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
+**Path location**: `directive[{name}]`, where `{name}` is the config name.
 
 **Example**:
 
 ```cwt
-rows = {
-    row[component_template] = {
-        path = "game/common/component_templates"
-        path_extension = .csv
-        columns = {
-            key = <component_template>
-            # ... other columns
-        }
-    }
-}
-```
-
-#### Locale Config {#config-locale}
-
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
-
-Locale configs declare basic information about locales, facilitating identification of the project / user's preferred locale and improving UI display and localisation validation.
-
-**Path location**: `locales/{id}`, where `{id}` is e.g. `l_english`.
-
-**Field meanings**:
-
-- `id`: Locale ID.
-- `codes: string[]`: Language codes included in this locale (e.g. `en`, `zh-CN`).
-
-**Example**:
-
-```cwt
-locales = {
-    l_english = { codes = { "en" } }
-    l_simp_chinese = { codes = { "zh-CN" } }
+directive[inline_script] = {
+    # ...
 }
 ```
 

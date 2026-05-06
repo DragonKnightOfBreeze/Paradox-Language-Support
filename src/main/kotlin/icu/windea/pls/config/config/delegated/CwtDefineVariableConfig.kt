@@ -18,7 +18,7 @@ import icu.windea.pls.config.util.withLocationPrefix
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
- * 备注：插件会强制忽略名为 `define` 的类型规则和声明规则。
+ * 备注：插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
  *
  * 示例：
  * ```cwt
