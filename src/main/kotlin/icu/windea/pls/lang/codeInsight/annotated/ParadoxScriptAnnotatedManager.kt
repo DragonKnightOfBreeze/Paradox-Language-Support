@@ -103,11 +103,13 @@ object ParadoxScriptAnnotatedManager {
      * 格式：
      * - `## @scope_context this = scope_1 root = scope_2`
      *
+     * @param unchanged 是否包含未发生更改的作用域上下文信息。
      * @param detailed 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
      */
-    fun getScopeContext(element: ParadoxScriptMember, detailed: Boolean): String? {
+    fun getScopeContext(element: ParadoxScriptMember, unchanged: Boolean = false, detailed: Boolean = false): String? {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return null
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
+        if (!unchanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return null
         val map = scopeContext.toScopeIdMap(showPrev = detailed)
         if (map.isEmpty()) return null
         return map.entries.joinToString(" ", "## $scopeContextPrefix ") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }

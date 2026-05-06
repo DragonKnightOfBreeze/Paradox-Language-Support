@@ -57,6 +57,18 @@ chapter = {
     category = enum[chapter_category]
 }
 
+defines = {
+    STORY_SETTINGS = {
+        MODE = scalar
+        INITIAL_LEVEL = int
+        EXPERIENCE_RATIO = float
+        GREETS = {
+            ## cardinality = 0..inf
+            scalar
+        }
+    }
+}
+
 rows = {
     row[chapter_page] = {
         path = "game/common/chapters"

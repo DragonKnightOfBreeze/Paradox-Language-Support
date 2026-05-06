@@ -1,0 +1,22 @@
+## @type string = block
+STORY_SETTINGS = {
+    ## @type string = string
+    ## @config_expression MODE = scalar
+    MODE = normal
+    ## @type string = int
+    ## @config_expression INITIAL_LEVEL = int
+    INITIAL_LEVEL = 0
+    ## @type string = float
+    ## @config_expression EXPERIENCE_RATIO = float
+    EXPERIENCE_RATIO = 1.0
+    ## @type string = block
+    ## @config_expression GREETS = block
+    GREETS = {
+        ## @type string
+        ## @config_expression scalar
+        "hello world"
+        ## @type string
+        ## @config_expression scalar
+        "hello the real world"
+    }
+}

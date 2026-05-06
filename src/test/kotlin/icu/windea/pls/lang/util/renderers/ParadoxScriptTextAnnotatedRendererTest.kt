@@ -4,6 +4,7 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.codeInsight.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
@@ -17,7 +18,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -58,16 +58,19 @@ class ParadoxScriptTextAnnotatedRendererTest : BasePlatformTestCase() {
         configureFile("common/chapters/00_chapters.txt")
         configureFile("common/characters/00_characters.txt")
         configureFile("common/species/00_species.txt")
+        configureFile("common/defines/00_defines.txt")
         configureFile("localisation/main_l_english.yml")
         configureFile("localisation/main_l_simp_chinese.yml")
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
+        assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/chapters/categories/00_chapter_categories.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
         assertResult("common/characters/tags/00_character_tags.txt", ParadoxAnnotatedLevel.ALL) // no advanced annotations
         assertResult("common/chapters/00_chapters.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/characters/00_characters.txt", ParadoxAnnotatedLevel.ALL)
         assertResult("common/species/00_species.txt", ParadoxAnnotatedLevel.ALL)
+        assertResult("common/defines/00_defines.txt", ParadoxAnnotatedLevel.ALL)
     }
 
     private fun configureFile(path: String) {

@@ -1,0 +1,9 @@
+STORY_SETTINGS = {
+    MODE = normal
+    INITIAL_LEVEL = 0
+    EXPERIENCE_RATIO = 1.0
+    GREETS = {
+        "hello world"
+        "hello the real world"
+    }
+}

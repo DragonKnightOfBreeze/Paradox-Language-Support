@@ -59,8 +59,9 @@ class ParadoxScriptTextAnnotatedRenderContext(
                 ParadoxScriptAnnotatedManager.getConfigExpression(element)?.let { add(it) }
             }
             if (settings.level.includeScopeContext) {
+                val unchanged = settings.level.includeUnchancedScopeContext
                 val detailed = settings.level.includeDetailedScopeContext
-                ParadoxScriptAnnotatedManager.getScopeContext(element, detailed)?.let { add(it) }
+                ParadoxScriptAnnotatedManager.getScopeContext(element, unchanged, detailed)?.let { add(it) }
             }
         }
     }
