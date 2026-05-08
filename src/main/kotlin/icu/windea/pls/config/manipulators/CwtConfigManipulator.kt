@@ -264,7 +264,7 @@ object CwtConfigManipulator {
         val inlined = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = configGroup,
-            valueExpresssion = CwtDataExpression.resolveBlock(),
+            valueExpression = CwtDataExpression.resolveBlock(),
             valueType = CwtType.Block,
             configs = configs,
         )
@@ -435,7 +435,7 @@ object CwtConfigManipulator {
         val merged = CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = config1.configGroup,
-            valueExpresssion = CwtDataExpression.resolveValue(expressionString),
+            valueExpression = CwtDataExpression.resolveValue(expressionString),
         )
         mergeOptionData(merged.optionData, config1.optionData, config2.optionData) // merge option data
         return merged
