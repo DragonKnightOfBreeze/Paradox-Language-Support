@@ -23,6 +23,7 @@ import icu.windea.pls.core.quote
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.lang.expression
+import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
@@ -273,8 +274,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
-        result += PlsInspectionUtil.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += PlsInspectionUtil.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }

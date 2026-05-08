@@ -2,7 +2,9 @@ package icu.windea.pls.lang.analysis
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.collect.ImmutableMap
+import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.data.JsonModuleFactory
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -13,6 +15,7 @@ import icu.windea.pls.model.analysis.ParadoxFallbackGameTypeMetadata
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.model.analysis.ParadoxJsonBasedGameTypeMetadata
 import icu.windea.pls.model.forParadoxGameTypeById
+import java.nio.file.Path
 
 @Suppress("unused")
 object ParadoxGameTypeManager {
@@ -73,6 +76,32 @@ object ParadoxGameTypeManager {
             append(gameType.title).append(" Mod: ")
             append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
             version?.orNull()?.let { version -> append("@").append(version) }
+        }
+    }
+
+    fun processGamePath(gameType: ParadoxGameType, rootPath: Path, path: Path, processor: Processor<Path>): Boolean {
+        val entries = gameType.metadata.gameEntries
+        return if (entries.isEmpty()) {
+            val r = rootPath.resolve(path)
+            processor.process(r)
+        } else {
+            entries.process { entry ->
+                val r = rootPath.resolve(entry).resolve(path)
+                processor.process(r)
+            }
+        }
+    }
+
+    fun processModPath(gameType: ParadoxGameType, rootPath: Path, path: Path, processor: Processor<Path>): Boolean {
+        val entries = gameType.metadata.modEntries
+        return if (entries.isEmpty()) {
+            val r = rootPath.resolve(path)
+            processor.process(r)
+        } else {
+            entries.process { entry ->
+                val r = rootPath.resolve(entry).resolve(path)
+                processor.process(r)
+            }
         }
     }
 }
