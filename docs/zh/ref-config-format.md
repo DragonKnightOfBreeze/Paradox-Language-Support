@@ -1373,7 +1373,7 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 
 基数表达式用于约束定义成员的出现次数，驱动代码检查与代码补全等功能。通过选项注释 `## cardinality` 声明。
 
-格式为 `min..max`，其中 `min` 和 `max` 为非负整数或 `inf`（不区分大小写，表示无限）。在 `min` 或 `max` 前添加 `~` 前缀表示宽松校验（未满足时，仅产生警告而非错误）。
+格式为 `{min}..{max}`，其中 `min` 和 `max` 为非负整数或 `inf`（不区分大小写，表示无限）。在整数前添加 `~` 前缀表示宽松校验（未满足时，仅产生警告而非错误）。
 
 **默认与边界行为**：
 
@@ -1389,6 +1389,11 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 ## cardinality = 1..5     # 必须出现 1 到 5 次
 ## cardinality = ~1..10   # 宽松校验：期望出现 1 到 10 次，但未出现时仅产生警告
 ```
+
+**提示**：
+
+- 可使用 `## cardinality_min_define` 从对应表达式的定值变量动态获取最小基数（如 `## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS`）。
+- 可使用 `## cardinality_max_define` 从对应表达式的定值变量动态获取最大基数（如 `## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS`）。
 
 ### 位置表达式 {#config-expression-location}
 

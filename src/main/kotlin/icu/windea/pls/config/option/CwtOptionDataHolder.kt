@@ -57,45 +57,62 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## api_status = obsolete`
+     * 示例：
+     * ```cwt
+     * ## api_status = obsolete
+     * ```
+     *
+     * @see CwtConfigApiStatus
      */
     val apiStatus: CwtConfigApiStatus?
 
     /**
      * 允许的出现次数范围（基数表达式）。
      *
-     * 指定后续规则项的匹配次数的上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
+     * 指定后续规则项的匹配次数的上下限，格式为 `{min}..{max}`，其中 `{min}` 和 `{max}` 分别表示下限和上限。
+     * 上下限可以为 `1` 或 `~1` 等形式，上限也可以为 `inf`。
+     *
      * 如果未显式指定，且该定义成员为常量类型，则默认推断为 `1..~1`（必须出现一次，超过仅作弱警告）。
      *
      * 适用对象：定义成员对应的规则。
      *
      * CWTools 兼容性：兼容。
      *
-     * 示例：`## cardinality = 0..1`
+     * 示例：
+     * ```cwt
+     * ## cardinality = 0..1
+     * ## cardinality = ~1..inf
+     * ```
+     *
+     * @see CwtCardinalityExpression
      */
     val cardinality: CwtCardinalityExpression?
 
     /**
-     * 最小基数，从定值（define）动态获取。
-     *
-     * 通过字符串路径（如 `NGameplay.ETHOS_MIN_POINTS`）动态指定最小次数。
+     * 最小基数，通过指定表达式的定值变量动态指定。
      *
      * 适用对象：定义成员对应的规则。
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## cardinality_min_define = "NGameplay.ETHOS_MIN_POINTS"`
+     * 示例：
+     * ```cwt
+     * ## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS
+     * ```
      */
     val cardinalityMinDefine: String?
 
     /**
-     * 最大基数，从定值（define）动态获取。
+     * 最大基数，通过指定表达式的定值变量动态指定。
      *
      * 适用对象：定义成员对应的规则。
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## cardinality_max_define = "NGameplay.ETHOS_MAX_POINTS"`
+     * 示例：
+     * ```cwt
+     * ## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS
+     * ```
      */
     val cardinalityMaxDefine: String?
 
@@ -109,7 +126,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## predicate = { scope = fleet type != country }`
+     * 示例：
+     * ```cwt
+     * ## predicate = { scope = fleet type != country }
+     * ```
      */
     val predicate: Map<String, ReversibleValue<String>>?
 
@@ -124,7 +144,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
      *
-     * 示例：`## replace_scopes = { this = country root = country }`
+     * 示例：
+     * ```
+     * ## replace_scopes = { this = country root = country }
+     * ```
      *
      * @see ParadoxScope
      * @see ParadoxScopeContext
@@ -141,7 +164,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
      *
-     * 示例：`## push_scope = country`
+     * 示例：
+     * ```cwt
+     * ## push_scope = country
+     * ```
      *
      * @see ParadoxScope
      * @see ParadoxScopeContext
@@ -189,7 +215,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## type = scripted_trigger`
+     * 示例：
+     * ```cwt
+     * ## type = scripted_trigger
+     * ```
      */
     val type: String?
 
@@ -202,7 +231,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## hint = "一些提示"`
+     * 示例：
+     * ```cwt
+     * ## hint = "Some hint"
+     * ```
      */
     val hint: String?
 
@@ -215,7 +247,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## event_type = country`
+     * 示例：
+     * ```cwt
+     * ## event_type = country
+     * ```
      */
     val eventType: String?
 
@@ -241,7 +276,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## context_configs_type = multiple`
+     * 示例：
+     * ```cwt
+     * ## context_configs_type = multiple
+     * ```
      */
     val contextConfigsType: String
 
@@ -254,7 +292,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## group = ships`
+     * 示例：
+     * ```cwt
+     * ## group = ships
+     * ```
      */
     val group: String?
 
@@ -282,7 +323,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## type_key_regex = "^ship_.*$"`
+     * 示例：
+     * ```cwt
+     * ## type_key_regex = "^ship_.*$"
+     *
      */
     val typeKeyRegex: Regex?
 
@@ -295,7 +339,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：兼容。
      *
-     * 示例：`## starts_with = ship_`
+     * 示例：
+     * ```wct
+     * ## starts_with = ship_
+     * ```
      */
     val startsWith: String?
 
@@ -308,7 +355,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：兼容。
      *
-     * 示例：`## only_if_not = { simple complex }`
+     * 示例：
+     * ```cwt
+     * ## only_if_not = { simple complex }
+     * ```
      */
     val onlyIfNot: Set<String>?
 
@@ -339,7 +389,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## file_extensions = { png dds tga }`
+     * 示例：
+     * ```cwt
+     * ## file_extensions = { png dds tga }
+     * ```
      *
      * @see CwtDataTypeSets.PathReference
      */
@@ -352,7 +405,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## modifier_categories = { economic_unit planet }`
+     * 示例：
+     * ```cwt
+     * ## modifier_categories = { economic_unit planet }
+     * ```cwt
      */
     val modifierCategories: Set<String>?
 
@@ -365,7 +421,17 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## color_type = rgb`
+     * 示例：
+     * ```cwt
+     * ## color_type = hex
+     * color_hex = scalar
+     *
+     * ## color_type = rgb
+     * color_rgb = {
+     *     ## cardinality = 3..3
+     *     float
+     * }
+     * ```
      */
     val colorType: String?
 
@@ -376,7 +442,10 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * CWTools 兼容性：不兼容。插件作为扩展提供。
      *
-     * 示例：`## inject = some/file.cwt@some/property`
+     * 示例：
+     * ```cwt
+     * ## inject = some/file.cwt@some/property
+     * ```
      *
      * @see CwtInjectConfigPostProcessor
      */

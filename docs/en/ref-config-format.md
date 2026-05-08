@@ -1373,7 +1373,7 @@ For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, e
 
 Cardinality expressions constrain the number of occurrences of definition members, driving code inspection and code completion features. Declared via the option comment `## cardinality`.
 
-The format is `min..max`, where `min` and `max` are non-negative integers or `inf` (case-insensitive, meaning unlimited). Adding a `~` prefix before `min` or `max` indicates lenient validation (when not satisfied, only a warning is produced instead of an error).
+The format is `{min}..{max}`, where `{min}` and `{max}` are non-negative integers or `inf` (case-insensitive, meaning unlimited). Adding a `~` prefix before the integer indicates lenient validation (when not satisfied, only a warning is produced instead of an error).
 
 **Default and boundary behaviors**:
 
@@ -1389,6 +1389,11 @@ The format is `min..max`, where `min` and `max` are non-negative integers or `in
 ## cardinality = 1..5     # must occur 1 to 5 times
 ## cardinality = ~1..10   # lenient: expected 1 to 10 times, but produces only a warning if not met
 ```
+
+**Tip:**
+
+- You can use `## cardinality_min_define` to dynamically obtain the minimum cardinality from a define variable in specified expression (e.g., `## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS`).
+- You can use `## cardinality_max_define` to dynamically obtain the maximum cardinality from a define variable in specified expression (e.g., `## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS`).
 
 ### Location Expression {#config-expression-location}
 

@@ -350,7 +350,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [x] 语法解析优化 - 支持脚本文件中的`!=`
   - [x] 语法解析优化 - CWT文件的文档注释中可以任意使用`#`
   - [x] CWT规则文件的`cardinality`
-    选项也可以引用define的数值（如，`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`）
+    选项也可以引用define的数值（如，`## cardinality_max_define = NGameplay/ETHOS_MAX_POINTS`）
 - 新增功能
   - 操作（`Action`）
     - [x] ~~在文件上使用`Goto Implementations`操作可以导航到同名的重载或者被重载的文件~~（IDE默认不可行，无法生效）

@@ -10,8 +10,8 @@ class CwtCardinalityExpressionTest {
         assertEquals("", e.expressionString)
         assertEquals(0, e.min)
         assertNull(e.max)
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
         assertEquals(e, CwtCardinalityExpression.resolve(""))
     }
 
@@ -22,8 +22,8 @@ class CwtCardinalityExpressionTest {
             val e = CwtCardinalityExpression.resolve(s)
             assertEquals(0, e.min)
             assertEquals(1, e.max)
-            assertFalse(e.relaxMin)
-            assertFalse(e.relaxMax)
+            assertFalse(e.lenientMin)
+            assertFalse(e.lenientMax)
             assertEquals(s, e.toString())
         }
         run {
@@ -31,8 +31,8 @@ class CwtCardinalityExpressionTest {
             val e = CwtCardinalityExpression.resolve(s)
             assertEquals(0, e.min)
             assertNull(e.max)
-            assertFalse(e.relaxMin)
-            assertFalse(e.relaxMax)
+            assertFalse(e.lenientMin)
+            assertFalse(e.lenientMax)
         }
     }
 
@@ -43,24 +43,24 @@ class CwtCardinalityExpressionTest {
             val e = CwtCardinalityExpression.resolve(s)
             assertEquals(1, e.min)
             assertEquals(10, e.max)
-            assertTrue(e.relaxMin)
-            assertFalse(e.relaxMax)
+            assertTrue(e.lenientMin)
+            assertFalse(e.lenientMax)
         }
         run {
             val s = "1..~10"
             val e = CwtCardinalityExpression.resolve(s)
             assertEquals(1, e.min)
             assertEquals(10, e.max)
-            assertFalse(e.relaxMin)
-            assertTrue(e.relaxMax)
+            assertFalse(e.lenientMin)
+            assertTrue(e.lenientMax)
         }
         run {
             val s = "~1..~inf"
             val e = CwtCardinalityExpression.resolve(s)
             assertEquals(1, e.min)
             assertNull(e.max)
-            assertTrue(e.relaxMin)
-            assertTrue(e.relaxMax)
+            assertTrue(e.lenientMin)
+            assertTrue(e.lenientMax)
         }
     }
 }

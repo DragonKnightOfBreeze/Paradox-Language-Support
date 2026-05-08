@@ -61,6 +61,7 @@ private class CwtDefineNamespaceConfigResolverImpl : CwtDefineNamespaceConfig.Re
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtDefineNamespaceConfig? {
+        // NOTE 2.1.8 a define namespace config can have no within define variable configs
         val namespace = config.key
         val propElements = config.properties
         if (propElements == null) {

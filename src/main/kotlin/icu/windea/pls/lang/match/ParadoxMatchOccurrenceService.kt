@@ -24,7 +24,7 @@ object ParadoxMatchOccurrenceService {
         val cardinality = config.optionData.cardinality ?: return ParadoxMatchOccurrence(0, null, null)
         val cardinalityMinDefine = config.optionData.cardinalityMinDefine
         val cardinalityMaxDefine = config.optionData.cardinalityMaxDefine
-        val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin, cardinality.relaxMax)
+        val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.lenientMin, cardinality.lenientMax)
         run {
             if (cardinalityMinDefine == null) return@run
             val defineElement = ParadoxDefineManager.findDefineVariableElement(cardinalityMinDefine, contextElement, project) ?: return@run

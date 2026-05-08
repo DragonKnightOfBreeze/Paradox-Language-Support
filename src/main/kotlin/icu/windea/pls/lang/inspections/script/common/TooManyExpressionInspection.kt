@@ -127,7 +127,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
 
             private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
-                val (actual, _, max, _, relaxMax) = occurrence
+                val (actual, _, max, _, lenientMax) = occurrence
                 if (max != null && actual > max) {
                     val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
@@ -147,7 +147,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
-                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(relaxMax)
+                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(lenientMax)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false
