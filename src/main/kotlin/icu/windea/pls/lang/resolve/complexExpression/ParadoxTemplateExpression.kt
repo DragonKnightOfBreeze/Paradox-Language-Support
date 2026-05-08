@@ -34,7 +34,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  *
  * #### 节点组成
  * - 常量片段：[ParadoxTemplateSnippetConstantNode]（与模板的常量部分对应）。
- * - 占位片段：[ParadoxTemplateSnippetNode]（与模板的引用/占位部分对应）。
+ * - 引用片段：[ParadoxTemplateSnippetNode]（与模板的引用部分对应）。
  *
  * #### 解析要点
  * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
