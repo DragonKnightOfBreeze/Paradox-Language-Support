@@ -29,11 +29,15 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  *
  * 在语义与格式上，它们类似编程语言中的属性或字段。
 
- * 路径定位：`localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * localisation_commands = {
  *     GetCountryType = { country }

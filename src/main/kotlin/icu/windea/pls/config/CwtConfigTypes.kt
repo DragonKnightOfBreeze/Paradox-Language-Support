@@ -46,12 +46,11 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 object CwtConfigTypes {
     // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
 
-    // region Standard Config Types
-
     /**
      * 类型规则。
      *
-     * 路径定位：`types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
+     * 路径定位：
+     * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
      *
      * @see CwtTypeConfig
      */
@@ -60,11 +59,11 @@ object CwtConfigTypes {
         prefix("(type)")
         description(PlsBundle.message("config.description.type"))
     }
-
     /**
      * 子类型规则。
      *
-     * 路径定位：`types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
+     * 路径定位：
+     * - `types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
      *
      * @see CwtSubtypeConfig
      */
@@ -73,11 +72,11 @@ object CwtConfigTypes {
         prefix("(subtype)")
         description(PlsBundle.message("config.description.subtype"))
     }
-
     /**
      * 行规则。
      *
-     * 路径定位：`rows/row[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtRowConfig
      */
@@ -86,11 +85,11 @@ object CwtConfigTypes {
         prefix("(row)")
         description(PlsBundle.message("config.description.row"))
     }
-
     /**
      * 定值命名空间规则。
      *
-     * 路径定位：`defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
+     * 路径定位：
+     * - `defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
      *
      * @see CwtDefineNamespaceConfig
      */
@@ -99,11 +98,11 @@ object CwtConfigTypes {
         prefix("(define namespace)")
         description(PlsBundle.message("config.description.defineNamespace"))
     }
-
     /**
      * 定值变量规则。
      *
-     * 路径定位：`defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
+     * 路径定位：
+     * - `defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
      *
      * @see CwtDefineVariableConfig
      */
@@ -112,11 +111,11 @@ object CwtConfigTypes {
         prefix("(define variable)")
         description(PlsBundle.message("config.description.defineVariable"))
     }
-
     /**
      * 枚举规则。
      *
-     * 路径定位：`enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtEnumConfig
      */
@@ -125,11 +124,11 @@ object CwtConfigTypes {
         prefix("(enum)")
         description(PlsBundle.message("config.description.enum"))
     }
-
     /**
      * 枚举值。
      *
-     * 路径定位：`enums/enum[{enum}]/-`。其中 {enum} 匹配枚举名。
+     * 路径定位：
+     * - `enums/enum[{enum}]/-`。其中 {enum} 匹配枚举名。
      *
      * @see CwtEnumConfig
      */
@@ -138,11 +137,11 @@ object CwtConfigTypes {
         prefix("(enum value)")
         description(PlsBundle.message("config.description.enumValue"))
     }
-
     /**
      * 复杂枚举规则。
      *
-     * 路径定位：`enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtComplexEnumConfig
      */
@@ -151,11 +150,11 @@ object CwtConfigTypes {
         prefix("(complex enum)")
         description(PlsBundle.message("config.description.complexEnum"))
     }
-
     /**
      * 动态值类型规则。
      *
-     * 路径定位：`values/value[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `values/value[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtDynamicValueTypeConfig
      */
@@ -164,11 +163,11 @@ object CwtConfigTypes {
         prefix("(dynamic value type)")
         description(PlsBundle.message("config.description.dynamicValueType"))
     }
-
     /**
      * 动态值。
      *
-     * 路径定位：`values/value[{type}]/-`。其中 {type} 匹配动态值类型。
+     * 路径定位：
+     * - `values/value[{type}]/-`。其中 {type} 匹配动态值类型。
      *
      * @see CwtDynamicValueTypeConfig
      *  */
@@ -177,11 +176,11 @@ object CwtConfigTypes {
         prefix("(dynamic value)")
         description(PlsBundle.message("config.description.dynamicValue"))
     }
-
     /**
      * 单别名规则。
      *
-     * 路径定位：`single_alias[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtSingleAliasConfig
      */
@@ -190,11 +189,11 @@ object CwtConfigTypes {
         prefix("(single alias)")
         description(PlsBundle.message("config.description.singleAlias"))
     }
-
     /**
      * 别名规则。
      *
-     * 路径定位：`alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
+     * 路径定位：
+     * - `alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
      *
      * 如果别名的名称为 `modifier`、`trigger` 或 `effect`，将会分别解析为 [Modifier]、[Trigger]、[Effect]。
      *
@@ -205,11 +204,11 @@ object CwtConfigTypes {
         prefix("(alias)")
         description(PlsBundle.message("config.description.alias"))
     }
-
     /**
      * 指令规则。
      *
-     * 路径定位：`directive[{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `directive[{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtDirectiveConfig
      */
@@ -218,11 +217,11 @@ object CwtConfigTypes {
         prefix("(directive)")
         description(PlsBundle.message("config.description.directive"))
     }
-
     /**
      * 链接规则。
      *
-     * 路径定位：`links/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `links/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtLinkConfig
      */
@@ -231,11 +230,11 @@ object CwtConfigTypes {
         prefix("(link)")
         description(PlsBundle.message("config.description.link"))
     }
-
     /**
      * 本地化链接规则。
      *
-     * 路径定位：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `localisation_links/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtLinkConfig
      */
@@ -244,11 +243,11 @@ object CwtConfigTypes {
         prefix("(localisation link)")
         description(PlsBundle.message("config.description.localisationLink"))
     }
-
     /**
      * 本地化提升规则。
      *
-     * 路径定位：`localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtLocalisationPromotionConfig
      */
@@ -257,11 +256,11 @@ object CwtConfigTypes {
         prefix("(localisation promotion)")
         description(PlsBundle.message("config.description.localisationPromotion"))
     }
-
     /**
      * 本地化命令规则。
      *
-     * 路径定位：`localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtLocalisationCommandConfig
      *  */
@@ -270,11 +269,11 @@ object CwtConfigTypes {
         prefix("(localisation command)")
         description(PlsBundle.message("config.description.localisationCommand"))
     }
-
     /**
      * 修正分类规则。
      *
-     * 路径定位：`modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtModifierCategoryConfig
      */
@@ -283,7 +282,6 @@ object CwtConfigTypes {
         prefix("(modifier category)")
         description(PlsBundle.message("config.description.modifierCategory"))
     }
-
     /**
      * 修正规则。
      *
@@ -299,11 +297,11 @@ object CwtConfigTypes {
         prefix("(modifier)")
         description(PlsBundle.message("config.description.modifier"))
     }
-
     /**
      * 触发器规则。
      *
-     * 路径定位：`alias[trigger:{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `alias[trigger:{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtAliasConfig
      */
@@ -312,11 +310,11 @@ object CwtConfigTypes {
         prefix("(trigger)")
         description(PlsBundle.message("config.description.trigger"))
     }
-
     /**
      * 效果规则。
      *
-     * 路径定位：`alias[effect:{name}]`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `alias[effect:{name}]`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtAliasConfig
      */
@@ -325,11 +323,11 @@ object CwtConfigTypes {
         prefix("(effect)")
         description(PlsBundle.message("config.description.effect"))
     }
-
     /**
      * 作用域规则。
      *
-     * 路径定位：`scopes/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `scopes/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtScopeConfig
      */
@@ -338,11 +336,11 @@ object CwtConfigTypes {
         prefix("(scope)")
         description(PlsBundle.message("config.description.scope"))
     }
-
     /**
      * 作用域组规则。
      *
-     * 路径定位：`scope_groups/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `scope_groups/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtScopeGroupConfig
      */
@@ -351,11 +349,11 @@ object CwtConfigTypes {
         prefix("(scope group)")
         description(PlsBundle.message("config.description.scopeGroup"))
     }
-
     /**
      * 数据库对象类型规则。
      *
-     * 路径定位：`database_object_types/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtDatabaseObjectTypeConfig
      */
@@ -364,11 +362,11 @@ object CwtConfigTypes {
         prefix("(database object type)")
         description(PlsBundle.message("config.description.databaseObjectType"))
     }
-
     /**
      * 系统作用域规则。
      *
-     * 路径定位：`system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
+     * 路径定位：
+     * - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
      *
      * @see CwtSystemScopeConfig
      */
@@ -377,11 +375,11 @@ object CwtConfigTypes {
         prefix("(system scope)")
         description(PlsBundle.message("config.description.systemScope"))
     }
-
     /**
      * 语言区域规则。
      *
-     * 路径定位：`locales/{id}`。其中 `{name}` 匹配语言环境 ID。
+     * 路径定位：
+     * - `locales/{id}`。其中 `{name}` 匹配语言环境 ID。
      *
      * @see CwtLocaleConfig
      */
@@ -391,14 +389,11 @@ object CwtConfigTypes {
         description(PlsBundle.message("config.description.locale"))
     }
 
-    // endregion
-
-    // region Extended Config Types
-
     /**
      * 封装变量的扩展规则。
      *
-     * 路径定位：`scripted_variables/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `scripted_variables/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedScriptedVariableConfig
      */
@@ -406,11 +401,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedScriptedVariable)
         prefix("(scripted variable config)")
     }
-
     /**
      * 定义的扩展规则。
      *
-     * 路径定位：`definitions/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `definitions/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedDefinitionConfig
      */
@@ -418,11 +413,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedDefinition)
         prefix("(definition config)")
     }
-
     /**
      * 游戏规则（game rule）的扩展规则。
      *
-     * 路径定位：`game_rules/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `game_rules/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedGameRuleConfig
      */
@@ -430,11 +425,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedGameRule)
         prefix("(game rule config)")
     }
-
     /**
      * 动作触发（on action）的扩展规则。
      *
-     * 路径定位：`on_actions/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedOnActionConfig
      */
@@ -442,11 +437,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedOnAction)
         prefix("(on action config)")
     }
-
     /**
      * 参数的扩展规则。
      *
-     * 路径定位：`parameters/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `parameters/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedParameterConfig
      */
@@ -454,11 +449,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedParameter)
         prefix("(parameter config)")
     }
-
     /**
      * 复杂枚举值的扩展规则。
      *
-     * 路径定位：`complex_enum_values/{type}/{name}`。其中 `{type}` 匹配枚举名，`{name}` 匹配规则名称。
+     * 路径定位：
+     * - `complex_enum_values/{type}/{name}`。其中 `{type}` 匹配枚举名，`{name}` 匹配规则名称。
      *
      * @see CwtExtendedComplexEnumValueConfig
      */
@@ -466,11 +461,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedComplexEnumValue)
         prefix("(complex enum value config)")
     }
-
     /**
      * 动态值的扩展规则。
      *
-     * 路径定位：`dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
+     * 路径定位：
+     * - `dynamic_values/{type}/{name}`。其中 `{type}` 匹配动态值类型，`{name}` 匹配规则名称。
      *
      * @see CwtExtendedDynamicValueConfig
      */
@@ -478,11 +473,11 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedDynamicValue)
         prefix("(dynamic value config)")
     }
-
     /**
      * 内联脚本（inline script）的扩展规则。
      *
-     * 路径定位：`inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
+     * 路径定位：
+     * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
      *
      * @see CwtExtendedInlineScriptConfig
      */
@@ -490,6 +485,4 @@ object CwtConfigTypes {
         icon(PlsIcons.Configs.ExtendedInlineScript)
         prefix("(inline script config)")
     }
-
-    // endregion
 }

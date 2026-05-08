@@ -18,12 +18,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位。
  *
  * 路径定位：
- * 1. 本地化资源：`types/type[{type}]/localisation/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
- * 2. 图片资源：`types/type[{type}]/images/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
+ * - 本地化资源：`types/type[{type}]/localisation/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
+ * - 图片资源：`types/type[{type}]/images/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[army] = {

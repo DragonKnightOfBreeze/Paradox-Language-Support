@@ -21,11 +21,15 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * **系统作用域（system scope）** 是一组预定义的 **作用域连接（scope link）**，用于获取或切换到需要的作用域。
  *
- * 路径定位：`system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
+ * 路径定位：
+ * - `system_scopes/{name}`。其中 `{name}` 匹配系统作用域 ID。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * system_scopes = {
  *     This = {}

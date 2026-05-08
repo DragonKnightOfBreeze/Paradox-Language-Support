@@ -31,11 +31,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - **内联脚本（inline_script）**：（Stellaris）会在解析阶段被替换为目标文件的内容，且可以指定参数。
  * - **定义注入（definition_injection）**：（VIC3 / EU5）会在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
  *
- * 路径定位：`directive[{name}]`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `directive[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * directive[inline_script] = {
  *     # ...

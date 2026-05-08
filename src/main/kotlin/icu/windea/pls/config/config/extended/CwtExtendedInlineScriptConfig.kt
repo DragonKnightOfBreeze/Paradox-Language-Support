@@ -29,11 +29,15 @@ import icu.windea.pls.cwt.psi.CwtMember
  * - 名为 `x/y` 的规则会匹配路径为 `common/inline_scripts/x/y.txt` 的内联脚本文件。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 路径定位：`inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * inline_scripts = {
  *     ### Some documentation

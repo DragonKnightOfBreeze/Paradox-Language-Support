@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @see CwtLocationConfig
  * @see CwtLocationExpression
  */
-sealed interface CwtTypePresentationConfig: CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+sealed interface CwtTypePresentationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
 
     /** 按给定的 [subtypes] 合并与筛选后，返回生效的位置规则列表。 */

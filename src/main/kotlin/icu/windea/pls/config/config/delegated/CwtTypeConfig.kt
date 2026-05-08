@@ -36,11 +36,15 @@ import icu.windea.pls.model.ParadoxTagType
  * 用于描述如何定位、匹配与命名对应类型的定义，以及如何提供相关本地化、相关图片等额外信息。
  * 按照路径模式匹配脚本文件，并在其中进一步匹配定义类型。
  *
- * 路径定位：`types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
+ * 路径定位：
+ * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
  *
- * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[civic_or_origin] = {

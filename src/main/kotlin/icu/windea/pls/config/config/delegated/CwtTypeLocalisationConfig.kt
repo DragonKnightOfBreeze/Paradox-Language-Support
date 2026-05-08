@@ -16,11 +16,15 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * 用于定位对应类型的定义的相关本地化，以便在 UI 与各种提示信息中展示。
  * 具体而言，通过位置表达式（[CwtLocalisationLocationExpression]）进行定位，并最终解析为本地化。
  *
- * 路径定位：`types/type[{type}]/localisation`，`{type}` 匹配定义类型。
+ * 路径定位：
+ * - `types/type[{type}]/localisation`。其中 `{type}` 匹配定义类型。
  *
- * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[ship_design] = {

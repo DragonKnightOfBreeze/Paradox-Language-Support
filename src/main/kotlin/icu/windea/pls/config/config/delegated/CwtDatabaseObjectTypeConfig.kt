@@ -23,11 +23,15 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * 这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
  * 目前，它们最终会引用一个定义或本地化。
  *
- * 路径定位：`database_object_types/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * database_object_types = {
  *     civic = {

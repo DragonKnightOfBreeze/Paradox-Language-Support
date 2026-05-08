@@ -48,7 +48,7 @@ object CwtConfigService {
     fun filter(config: CwtConfig<*>): Boolean {
         val eps = CwtConfigFilterProvider.EP_NAME.extensionList
         eps.forEachFast f@{ ep ->
-            if(ep.filter(config)) return true
+            if (ep.filter(config)) return true
         }
         return false
     }
@@ -217,6 +217,14 @@ object CwtConfigService {
                 }
             }
             "rows" -> if (isProperty && length == 2 && configPath.get(1).surroundsWith("row[", "]")) CwtConfigTypes.Row else null
+            "defines" -> {
+                if (!isProperty) return null
+                when (length) {
+                    2 -> CwtConfigTypes.DefineNamespace
+                    3 -> CwtConfigTypes.DefineVariable
+                    else -> null
+                }
+            }
             "enums" -> {
                 val s1 = configPath.get(1)
                 when {

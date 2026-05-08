@@ -27,11 +27,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 用于描述 CSV 文件中每一行允许的列的列名与可选值，从而提供代码补全、代码检查等功能。
  * 按照路径模式匹配 CSV 文件。
  *
- * 路径定位：`rows/row[{name}]`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * rows = {
  *     row[component_template] = {

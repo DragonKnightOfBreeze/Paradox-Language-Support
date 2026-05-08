@@ -32,11 +32,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
  * 其枚举值默认不忽略大小写。
  *
- * 路径定位：`enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * enums = {
  *     complex_enum[component_tag] = {

@@ -20,11 +20,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 单别名规则可用来简化规则文件，提升可读性和复用性。
  * 另外，包括触发块（trigger clause）、效果块（effect clause）在内的多种代码片段对应的规则，都建议以单别名规则的形式提供。
  *
- * 路径定位：`single_alias[{name}]`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * # declaration
  * single_alias[trigger_clause] = {

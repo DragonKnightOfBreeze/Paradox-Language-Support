@@ -21,11 +21,15 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 说明：
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
  *
- * 路径定位：`scripted_variables/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `scripted_variables/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * scripted_variables = {
  *     ### Some documentation

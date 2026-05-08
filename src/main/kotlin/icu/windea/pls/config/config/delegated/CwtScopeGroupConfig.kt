@@ -23,11 +23,15 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * 用于分组作用域类型（scope type），便于在其他规则中按分组引用与校验。
  *
- * 路径定位：`scope_groups/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `scope_groups/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * scope_groups = {
  *     target_species = {

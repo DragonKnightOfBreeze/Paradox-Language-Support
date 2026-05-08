@@ -19,109 +19,46 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * 每个数据类型对应规则表达式中一种特定的取值形态，决定了规则表达式如何从字符串解析，以及如何与脚本表达式匹配。
  *
- * ### 基本类型
- *
- * - [Any][CwtDataTypes.Any] - 匹配任意表达式（后备）
- * - [Bool][CwtDataTypes.Bool] - 布尔值（`yes` / `no`）
- * - [Int][CwtDataTypes.Int] - 整数，可带范围约束
- * - [Float][CwtDataTypes.Float] - 浮点数，可带范围约束
- * - [Scalar][CwtDataTypes.Scalar] - 标量（字符串、数字、布尔值均可）
- * - [ColorField][CwtDataTypes.ColorField] - 颜色字段
- * - [Block][CwtDataTypes.Block] - 子句（花括号块）
- *
- * ### 扩展基本类型
- *
- * - [PercentageField][CwtDataTypes.PercentageField] - 百分比字段
- * - [DateField][CwtDataTypes.DateField] - 日期字段，可带格式约束
- *
- * ### 引用类型
- *
- * - [Definition][CwtDataTypes.Definition] - 定义引用
- * - [Localisation][CwtDataTypes.Localisation]
- *   / [SyncedLocalisation][CwtDataTypes.SyncedLocalisation]
- *   / [InlineLocalisation][CwtDataTypes.InlineLocalisation] - 本地化引用
- * - [Modifier][CwtDataTypes.Modifier] - 修正引用
- * - [AbsoluteFilePath][CwtDataTypes.AbsoluteFilePath]
- *   / [FilePath][CwtDataTypes.FilePath]
- *   / [FileName][CwtDataTypes.FileName]
- *   / [Icon][CwtDataTypes.Icon] - 文件路径引用
- * - [EnumValue][CwtDataTypes.EnumValue] - 枚举值引用（简单枚举或复杂枚举）
- * - [Value][CwtDataTypes.Value]
- *   / [ValueSet][CwtDataTypes.ValueSet]
- *   / [DynamicValue][CwtDataTypes.DynamicValue] - 动态值表达式
- * - [ScopeField][CwtDataTypes.ScopeField]
- *   / [Scope][CwtDataTypes.Scope]
- *   / [ScopeGroup][CwtDataTypes.ScopeGroup] - 作用域字段表达式
- * - [ValueField][CwtDataTypes.ValueField]
- *   / [IntValueField][CwtDataTypes.IntValueField]
- *   / [VariableField][CwtDataTypes.VariableField]
- *   / [IntVariableField][CwtDataTypes.IntVariableField] - 值/变量字段表达式
- *
- * ### 别名与指令类型
- *
- * - [SingleAliasRight][CwtDataTypes.SingleAliasRight]
- *   / [AliasName][CwtDataTypes.AliasName]
- *   / [AliasKeysField][CwtDataTypes.AliasKeysField]
- *   / [AliasMatchLeft][CwtDataTypes.AliasMatchLeft] - 别名相关（不直接参与脚本匹配，由别名解析机制处理）
- *
- * ### 参数类型
- *
- * - [Parameter][CwtDataTypes.Parameter]
- *   / [ParameterValue][CwtDataTypes.ParameterValue]
- *   / [LocalisationParameter][CwtDataTypes.LocalisationParameter] - 参数相关
- *
- * ### 特殊类型
- *
- * - [Command][CwtDataTypes.Command] - 命令表达式（如 `Root.GetName`）
- * - [DefineReference][CwtDataTypes.DefineReference] - 定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）
- * - [DatabaseObject][CwtDataTypes.DatabaseObject] - 数据库对象表达式（如 `civic:x:y`）
- * - [NameFormat][CwtDataTypes.NameFormat] - 命名格式表达式
- * - [ShaderEffect][CwtDataTypes.ShaderEffect] - 着色器效果
- * - [TechnologyWithLevel][CwtDataTypes.TechnologyWithLevel] - 带等级的科技（如 `some_repeatable_tech@1`）
- *
- * ### 模式感知类型
- *
- * - [Constant][CwtDataTypes.Constant] - 常量（精确匹配）
- * - [TemplateExpression][CwtDataTypes.TemplateExpression] - 模板表达式（如 `a_<b>_enum[c]`）
- * - [Ant][CwtDataTypes.Ant] - Ant路径模式（如 `ant:/foo/bar?/abc*`）
- * - [Regex][CwtDataTypes.Regex] - 正则表达式模式（如 `re:foo.*bar`）
- *
- * ### 后缀感知类型
- *
- * - [SuffixAwareDefinition][CwtDataTypes.SuffixAwareDefinition]
- *   / [SuffixAwareLocalisation][CwtDataTypes.SuffixAwareLocalisation]
- *   / [SuffixAwareSyncedLocalisation][CwtDataTypes.SuffixAwareSyncedLocalisation] - 带后缀列表的引用类型
- *
  * @see CwtDataType
  * @see CwtDataTypeSets
  */
 @Suppress("unused")
 object CwtDataTypes {
     // NOTE 2.1.8 偏好使用 lambda 式构建器，而非多行的链式构建器：可通过代码折叠隐藏细节，方便查看
-    
+
     /**
-     * 任意类型。规则表达式：`$any`。
+     * 任意类型。
      *
      * 匹配任意脚本表达式，作为最低优先级的后备匹配。
+     *
+     * 规则表达式：
+     * - `$any`
      */
     val Any = CwtDataType.builder("Any").build {
         withPriority(1.0) // very low
     }
     /**
-     * 布尔类型。规则表达式：`bool`。
+     * 布尔类型。
      *
      * 匹配脚本中的布尔值（`yes` / `no`）。
+     *
+     * 规则表达式
+     * - `bool`
      */
     val Bool = CwtDataType.builder("Bool").build {
         withPriority(100.0) // highest
     }
     /**
-     * 整数类型。规则表达式：`int` 或 `int(min..max)`。
+     * 整数类型。
      *
      * 匹配脚本中的整数值。带范围参数时，还会验证值是否在指定范围内。
      * 用引号括起的数字也视为匹配（兼容原版游戏文件）。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：
+     * - `int`
+     * - `int({min}..{max})` - 其中 `min` `max` 匹配任意整数，或者无限大（`inf`）。
      *
      * @see IntRangeInfo
      */
@@ -129,12 +66,16 @@ object CwtDataTypes {
         withPriority(90.0) // very high
     }
     /**
-     * 浮点数类型。规则表达式：`float` 或 `float(min..max)`。
+     * 浮点数类型。
      *
      * 匹配脚本中的浮点数值。带范围参数时，还会验证值是否在指定范围内。
      * 用引号括起的数字也视为匹配（兼容原版游戏文件）。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：
+     * - `float`
+     * - `float({min}..{max})` - 其中 `min` `max` 匹配任意浮点数，或者无限大（`inf`）。
      *
      * @see FloatRangeInfo
      */
@@ -142,18 +83,26 @@ object CwtDataTypes {
         withPriority(90.0) // very high
     }
     /**
-     * 标量类型。规则表达式：`scalar` 或 `wildcard_scalar`。
+     * 标量类型。
      *
      * 匹配脚本中的大多数非子句表达式（字符串、数字、布尔值等），作为低优先级的宽泛匹配。
      * 作为键时总是匹配。`wildcard_scalar` 变体会设置通配符标记。
+     *
+     * 规则表达式：
+     * - `scalar`
+     * - `wildcard_scalar` - 通配符变体。
      */
     val Scalar = CwtDataType.builder("Scalar").build {
         withPriority(2.0) // very low
     }
     /**
-     * 颜色字段类型。规则表达式：`colour_field`、`color_field`、`colour[type]` 或 `color[type]`。
+     * 颜色字段类型。
      *
-     * 匹配脚本中的颜色值。带参数时（如 `colour[rgb]`），还会验证颜色类型前缀。
+     * 匹配脚本中的颜色值。带参数时，还会验证颜色类型前缀。
+     *
+     * 规则表达式：
+     * - `colour_field` `color_field`
+     * - `colour[{type}]` `color[{type}]` - 其中 `{type}` 匹配颜色类型（可选值：`rgb` `hsv` `hsv360`）。
      */
     val ColorField = CwtDataType.builder("ColorField").build {
         withPriority(90.0) // very high
@@ -168,104 +117,129 @@ object CwtDataTypes {
     }
 
     /**
-     * 百分比字段类型。规则表达式：`percentage_field`。
+     * 百分比字段类型。
      *
      * 匹配脚本中的百分比值字符串（如 `50%`）。
+     *
+     * 规则表达式：
+     * - `percentage_field`
      */
     val PercentageField = CwtDataType.builder("PercentageField").build {
         withPriority(90.0)
     }
     /**
-     * 日期字段类型。规则表达式：`date_field` 或 `date_field[format]`。
+     * 日期字段类型。
      *
      * 匹配脚本中的日期值字符串（如 `2200.1.1`）。带参数时还会验证日期格式。
+     *
+     * 规则表达式：`date_field` 或 `date_field[format]`。
      */
     val DateField = CwtDataType.builder("DateField").build {
         withPriority(90.0)
     }
 
     /**
-     * 定义引用类型。规则表达式：`<type>` 或 `<type.subtype>`。
+     * 定义引用类型。
      *
      * 匹配脚本中对指定类型定义的引用。表达式须为合法标识符（允许 `.` 和 `-`），
      * 可以是整数或浮点数（如 `<technology_tier>` 的情况）。匹配时验证引用的定义是否存在。
+     *
+     * 规则表达式：`<type>` 或 `<type.subtype>`。
      */
     val Definition = CwtDataType.builder("Definition").reference().build {
         withPriority(70.0)
     }
     /**
-     * 本地化引用类型。规则表达式：`localisation`。
+     * 本地化引用类型。
      *
-     * 匹配脚本中对本地化键的引用。表达式须为合法标识符（允许`.`、`-`、`'`）。
+     * 匹配脚本中对本地化键的引用。表达式须为合法标识符（允许 `.`、`-`、`'`）。
      * 匹配时验证引用的本地化是否存在。
+     *
+     * 规则表达式：`localisation`。
      */
     val Localisation = CwtDataType.builder("Localisation").reference().build {
         withPriority(60.0)
     }
     /**
-     * 同步本地化引用类型。规则表达式：`localisation_synced`。
+     * 同步本地化引用类型。
      *
      * 与 [Localisation][CwtDataTypes.Localisation] 类似，但指向同步本地化键。
+     *
+     * 规则表达式：`localisation_synced`。
      */
     val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference().build {
         withPriority(60.0)
     }
     /**
-     * 内联本地化引用类型。规则表达式：`localisation_inline`。
+     * 内联本地化引用类型。
      *
      * 匹配本地化键引用或用引号括起的任意字符串（后者作为内联文本，以后备匹配返回）。
+     *
+     * 规则表达式：`localisation_inline`。
      */
     val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference().build {
         withPriority(60.0)
     }
     /**
-     * 修正引用类型。规则表达式：`<modifier>`。
+     * 修正引用类型。
      *
      * 匹配脚本中对修正（modifier）的引用。表达式须为合法标识符。
      * 匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition][CwtDataTypes.Definition]。
+     *
+     * 规则表达式：`<modifier>`。
      */
     val Modifier = CwtDataType.builder("Modifier").reference().build {
         withPriority(75.0) // higher than Definition
     }
 
     /**
-     * 绝对文件路径类型。规则表达式：`abs_filepath`。
+     * 绝对文件路径类型。
      *
      * 匹配脚本中的绝对文件路径字符串。匹配时仅验证为字符串类型（通配匹配）。
+     *
+     * 规则表达式：`abs_filepath`。
      */
     val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
         withPriority(70.0)
     }
     /**
-     * 图标路径类型。规则表达式：`icon[path]`。
+     * 图标路径类型。
      *
      * 匹配脚本中对图标文件的路径引用。匹配时验证路径引用的文件是否存在。
+     *
+     * 规则表达式：`icon[path]`。
      */
     val Icon = CwtDataType.builder("Icon").reference().build {
         withPriority(70.0)
     }
     /**
-     * 文件路径类型。规则表达式：`filepath`、`filepath[./]` 或 `filepath[path]`。
+     * 文件路径类型。
      *
      * 匹配脚本中对文件的路径引用。匹配时验证路径引用的文件是否存在。
+     *
+     * 规则表达式：`filepath`、`filepath[./]` 或 `filepath[path]`。
      */
     val FilePath = CwtDataType.builder("FilePath").reference().build {
         withPriority(70.0)
     }
     /**
-     * 文件名类型。规则表达式：`filename` 或 `filename[path]`。
+     * 文件名类型。
      *
      * 匹配脚本中对文件名的引用。匹配时验证路径引用的文件是否存在。
+     *
+     * 规则表达式：`filename` 或 `filename[path]`。
      */
     val FileName = CwtDataType.builder("FileName").reference().build {
         withPriority(70.0)
     }
 
     /**
-     * 枚举值类型。规则表达式：`enum[name]`。
+     * 枚举值类型。
      *
      * 匹配脚本中对枚举值的引用。
      * 匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
+     *
+     * 规则表达式：`enum[name]`。
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
@@ -277,10 +251,12 @@ object CwtDataTypes {
     }
 
     /**
-     * 动态值读取类型。规则表达式：`value[name]`。
+     * 动态值读取类型。
      *
      * 匹配脚本中的动态值表达式，表示对已声明动态值的读取引用。
-     * 动态值的名字须为合法标识符（允许`.`）。
+     * 动态值的名字须为合法标识符（允许 `.`）。
+     *
+     * 规则表达式：`value[name]`。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -288,10 +264,12 @@ object CwtDataTypes {
         withPriority(40.0)
     }
     /**
-     * 动态值写入类型。规则表达式：`value_set[name]`。
+     * 动态值写入类型。
      *
      * 匹配脚本中的动态值表达式，表示对动态值的写入（声明）引用。
-     * 动态值的名字须为合法标识符（允许`.`）。
+     * 动态值的名字须为合法标识符（允许 `.`）。
+     *
+     * 规则表达式：`value_set[name]`。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -299,10 +277,12 @@ object CwtDataTypes {
         withPriority(40.0)
     }
     /**
-     * 动态值类型。规则表达式：`dynamic_value[name]`。
+     * 动态值类型。
      *
      * 匹配脚本中的动态值表达式，表示对动态值的引用（不区分读写）。
-     * 动态值的名字须为合法标识符（允许`.`）。
+     * 动态值的名字须为合法标识符（允许 `.`）。
+     *
+     * 规则表达式：`dynamic_value[name]`。
      *
      * @see ParadoxDynamicValueExpression
      */
@@ -311,9 +291,11 @@ object CwtDataTypes {
     }
 
     /**
-     * 作用域字段类型。规则表达式：`scope_field`。
+     * 作用域字段类型。
      *
      * 匹配脚本中的作用域字段表达式（可包含作用域链，如 `root.owner`）。
+     *
+     * 规则表达式：`scope_field`。
      *
      * @see ParadoxScopeFieldExpression
      */
@@ -321,10 +303,12 @@ object CwtDataTypes {
         withPriority(50.0)
     }
     /**
-     * 作用域类型。规则表达式：`scope[type]`。
+     * 作用域类型。
      *
      * 匹配脚本中的作用域字段表达式，同时约束输出作用域类型。
      * 参数为 `any` 时等同于 [ScopeField][CwtDataTypes.ScopeField]。
+     *
+     * 规则表达式：`scope[type]`。
      *
      * @see ParadoxScopeFieldExpression
      */
@@ -332,9 +316,11 @@ object CwtDataTypes {
         withPriority(50.0)
     }
     /**
-     * 作用域组类型。规则表达式：`scope_group[name]`。
+     * 作用域组类型。
      *
      * 匹配脚本中的作用域字段表达式，约束输出作用域属于指定的作用域组。
+     *
+     * 规则表达式：`scope_group[name]`。
      *
      * @see ParadoxScopeFieldExpression
      */
@@ -343,12 +329,14 @@ object CwtDataTypes {
     }
 
     /**
-     * 值字段类型。规则表达式：`value_field` 或 `value_field(min..max)`。
+     * 值字段类型。
      *
      * 匹配浮点数或值字段表达式（可包含作用域链和动态值引用）。
      * 带范围参数时还会限制数值范围。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：`value_field` 或 `value_field(min..max)`。
      *
      * @see ParadoxValueFieldExpression
      * @see FloatRangeInfo
@@ -357,12 +345,14 @@ object CwtDataTypes {
         withPriority(45.0)
     }
     /**
-     * 整数值字段类型。规则表达式：`int_value_field` 或 `int_value_field(min..max)`。
+     * 整数值字段类型。
      *
      * 匹配整数或整数值字段表达式（可包含作用域链和动态值引用）。
      * 带范围参数时还会限制数值范围。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：`int_value_field` 或 `int_value_field(min..max)`。
      *
      * @see ParadoxValueFieldExpression
      * @see IntRangeInfo
@@ -372,11 +362,13 @@ object CwtDataTypes {
     }
 
     /**
-     * 变量字段类型。规则表达式：`variable_field`、`variable_field(min..max)`（或 `variable_field_32` 变体）。
+     * 变量字段类型。
      *
      * 匹配浮点数或变量字段表达式（可包含作用域链和封装变量引用）。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：`variable_field`、`variable_field(min..max)`（或 `variable_field_32` 变体）。
      *
      * @see ParadoxVariableFieldExpression
      * @see FloatRangeInfo
@@ -385,11 +377,13 @@ object CwtDataTypes {
         withPriority(45.0)
     }
     /**
-     * 整数变量字段类型。规则表达式：`int_variable_field`、`int_variable_field(min..max)`（或 `int_variable_field_32` 变体）。
+     * 整数变量字段类型。
      *
      * 匹配整数或整数变量字段表达式（可包含作用域链和封装变量引用）。
      *
      * 范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+     *
+     * 规则表达式：`int_variable_field`、`int_variable_field(min..max)`（或 `int_variable_field_32` 变体）。
      *
      * @see ParadoxVariableFieldExpression
      * @see IntRangeInfo
@@ -399,59 +393,75 @@ object CwtDataTypes {
     }
 
     /**
-     * 单别名右侧类型。规则表达式：`single_alias_right[name]`。
+     * 单别名右侧类型。
      *
      * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+     *
+     * 规则表达式：`single_alias_right[name]`。
      */
     val SingleAliasRight = CwtDataType.builder("SingleAliasRight").reference().build()
     /**
-     * 别名键字段类型。规则表达式：`alias_keys_field[name]`。
+     * 别名键字段类型。
      *
      * 匹配时解析别名子键并递归匹配。
+     *
+     * 规则表达式：`alias_keys_field[name]`。
      */
     val AliasKeysField = CwtDataType.builder("AliasKeysField").reference().build()
     /**
-     * 别名名称类型。规则表达式：`alias_name[name]`。
+     * 别名名称类型。
      *
      * 匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft][CwtDataTypes.AliasMatchLeft] 组合使用。
+     *
+     * 规则表达式：`alias_name[name]`。
      */
     val AliasName = CwtDataType.builder("AliasName").reference().build()
     /**
-     * 别名匹配左侧类型。规则表达式：`alias_match_left[name]`。
+     * 别名匹配左侧类型。
      *
      * 不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName][CwtDataTypes.AliasName] 组合使用。
+     *
+     * 规则表达式：`alias_match_left[name]`。
      */
     val AliasMatchLeft = CwtDataType.builder("AliasMatchLeft").reference().build()
 
     /**
-     * 参数名类型。规则表达式：`$parameter`。
+     * 参数名类型。
      *
      * 匹配脚本中的参数名。表达式须为合法标识符。即使对应的定义声明中不存在该参数名，也视为匹配。
+     *
+     * 规则表达式：`$parameter`。
      */
     val Parameter = CwtDataType.builder("Parameter").reference().build {
         withPriority(10.0)
     }
     /**
-     * 参数值类型。规则表达式：`$parameter_value`。
+     * 参数值类型。
      *
      * 匹配脚本中的参数值。只要不是子句即可匹配。
+     *
+     * 规则表达式：`$parameter_value`。
      */
     val ParameterValue = CwtDataType.builder("ParameterValue").reference().build {
         withPriority(90.0) // same to Scalar
     }
     /**
-     * 本地化参数名类型。规则表达式：`$localisation_parameter`。
+     * 本地化参数名类型。
      *
-     * 匹配脚本中的本地化参数名。表达式须为合法标识符（允许`.`、`-`、`'`）。
+     * 匹配脚本中的本地化参数名。表达式须为合法标识符（允许 `.`、`-`、`'`）。
+     *
+     * 规则表达式：`$localisation_parameter`。
      */
     val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build {
         withPriority(10.0)
     }
 
     /**
-     * 命令表达式类型。规则表达式：`$command`。
+     * 命令表达式类型。
      *
      * 匹配脚本中的命令表达式（如 `Root.GetName`）。目前不支持用来匹配脚本表达式。
+     *
+     * 规则表达式：`$command`。
      *
      * @see ParadoxCommandExpression
      * @since 2.1.1
@@ -460,9 +470,11 @@ object CwtDataTypes {
         withPriority(45.0)
     }
     /**
-     * 定值引用表达式类型。规则表达式：`$define_reference`。
+     * 定值引用表达式类型。
      *
      * 匹配脚本中的定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）。
+     *
+     * 规则表达式：`$define_reference`。
      *
      * @see ParadoxDefineReferenceExpression
      * @since 1.3.25
@@ -471,9 +483,11 @@ object CwtDataTypes {
         withPriority(60.0)
     }
     /**
-     * 数据库对象表达式类型。规则表达式：`$database_object`。
+     * 数据库对象表达式类型。
      *
      * 匹配脚本中的数据库对象表达式（如`civic:x:y`），由冒号分隔的多段引用组成。
+     *
+     * 规则表达式：`$database_object`。
      *
      * @see ParadoxDatabaseObjectExpression
      * @since 1.3.9
@@ -483,9 +497,11 @@ object CwtDataTypes {
         withPriority(60.0)
     }
     /**
-     * 命名格式表达式类型。规则表达式：`name_format[type]`。
+     * 命名格式表达式类型。
      *
      * 匹配脚本中的命名格式表达式。仅限 Stellaris 游戏类型。
+     *
+     * 规则表达式：`name_format[type]`。
      *
      * @see ParadoxNameFormatExpression
      */
@@ -495,19 +511,23 @@ object CwtDataTypes {
     }
 
     /**
-     * 着色器效果类型。规则表达式：`$shader_effect`。
+     * 着色器效果类型。
      *
      * 匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+     *
+     * 规则表达式：`$shader_effect`。
      */
     // effects in .shader files
     val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/).build {
         withPriority(85.0)
     }
     /**
-     * 带等级的科技类型。规则表达式：`<technology_with_level>`。
+     * 带等级的科技类型。
      *
      * 匹配脚本中的带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。
      * 仅限 Stellaris 游戏类型。优先级低于 [Definition][CwtDataTypes.Definition]。
+     *
+     * 规则表达式：`<technology_with_level>`。
      */
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
@@ -526,10 +546,12 @@ object CwtDataTypes {
         withPriority(100.0) // highest
     }
     /**
-     * 模板表达式类型（模式感知）。规则表达式示例：`a_<b>_enum[c]_value[d]`。
+     * 模板表达式类型（模式感知）。
      *
      * 由常量文本片段和引用占位符（如 `<type>`、`enum[name]`、`value[name]`）交替组成的模式。
      * 匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+     *
+     * 规则表达式示例：`a_<b>_enum[c]_value[d]`。
      *
      * @see ParadoxTemplateExpression
      */
@@ -537,17 +559,21 @@ object CwtDataTypes {
         withPriority(65.0)
     }
     /**
-     * Ant路径模式类型（模式感知）。规则表达式：`ant:pattern` 或 `ant.i:pattern`（忽略大小写）。
+     * Ant路径模式类型（模式感知）。
      *
      * 匹配脚本中符合Ant路径模式的表达式。支持通配符`?`（单字符）、`*`（单段）和`**`（多段，不常用）。
+     *
+     * 规则表达式：`ant:pattern` 或 `ant.i:pattern`（忽略大小写）。
      *
      * @since 1.3.6
      */
     val Ant = CwtDataType.builder("Ant").patternAware().build()
     /**
-     * 正则表达式模式类型（模式感知）。规则表达式：`re:pattern` 或 `re.i:pattern`（忽略大小写）。
+     * 正则表达式模式类型（模式感知）。
      *
      * 匹配脚本中符合正则表达式的表达式。
+     *
+     * 规则表达式：`re:pattern` 或 `re.i:pattern`（忽略大小写）。
      *
      * @since 1.3.6
      */
@@ -558,30 +584,36 @@ object CwtDataTypes {
     // TODO SUFFIX_AWARE 目前不兼容/不支持：代码补全、用法查询
 
     /**
-     * 后缀感知的定义引用类型。规则表达式：`<type>|suffix1,suffix2,...`。
+     * 后缀感知的定义引用类型。
      *
      * 由基础定义引用和逗号分隔的后缀列表组成。匹配时同时验证定义引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [Definition][CwtDataTypes.Definition]。
+     *
+     * 规则表达式：`<type>|suffix1,suffix2,...`。
      *
      * @since 2.0.5
      */
     // #162, #193
     val SuffixAwareDefinition = CwtDataType.builder("SuffixAwareDefinition").suffixAware().build()
     /**
-     * 后缀感知的本地化引用类型。规则表达式：`localisation|suffix1,suffix2,...`。
+     * 后缀感知的本地化引用类型。
      *
      * 由基础本地化引用和逗号分隔的后缀列表组成。匹配时同时验证本地化引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [Localisation][CwtDataTypes.Localisation]。
+     *
+     * 规则表达式：`localisation|suffix1,suffix2,...`。
      *
      * @since 2.0.5
      */
     // #162, #193
     val SuffixAwareLocalisation = CwtDataType.builder("SuffixAwareLocalisation").suffixAware().build()
     /**
-     * 后缀感知的同步本地化引用类型。规则表达式：`localisation_synced|suffix1,suffix2,...`。
+     * 后缀感知的同步本地化引用类型。
      *
      * 由基础同步本地化引用和逗号分隔的后缀列表组成。匹配时同时验证同步本地化引用和后缀。
      * 如果后缀列表为空，则退化为普通的 [SyncedLocalisation][CwtDataTypes.SyncedLocalisation]。
+     *
+     * 规则表达式：`localisation_synced|suffix1,suffix2,...`。
      *
      * @since 2.0.5
      */

@@ -13,13 +13,17 @@ import icu.windea.pls.config.config.CwtPropertyConfig
  * 用于描述脚本文件中的定值变量，提供快速文档文本和规则上下文。
  * 它们位于 `common/defines` 目录中的扩展名为 `.txt` 的脚本文件中。
  *
- * 路径定位：`defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
+ * 路径定位：
+ * - `defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
  *
- * CWTools 兼容性：不兼容。插件作为扩展提供。
+ * ### CWTools 兼容性
+ *
+ * 不兼容。插件作为扩展提供。
  *
  * 备注：插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
  *
- * 示例：
+ * ### 示例
+ *
  * ```cwt
  * defines = {
  *     # define namespace config `NAMESPACE`

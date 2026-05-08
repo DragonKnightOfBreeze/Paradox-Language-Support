@@ -20,11 +20,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 用于描述如何匹配定义的子类型，从而提供更准确的代码补全、代码检查等功能。
  *
- * 路径定位：`types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
+ * 路径定位：
+ * - `types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
  *
- * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[civic_or_origin] = {

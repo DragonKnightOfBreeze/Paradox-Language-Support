@@ -26,11 +26,15 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * 通过本地化链接切换作用域后，也可使用提升后的作用域匹配的本地化命令字段。
  * 可参见：`localizations.log`。
  *
- * 路径定位：`localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `localisation_promotions/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * localisation_promotions = {
  *     Ruler = { country }

@@ -20,11 +20,15 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  *
  * 用于分组修正（modifier），为其指定允许的作用域类型。
  *
- * 路径定位：`modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
+ * 路径定位：
+ * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * modifier_categories = {
  *     Pops = { supported_scopes = { species pop_group planet ... } }
