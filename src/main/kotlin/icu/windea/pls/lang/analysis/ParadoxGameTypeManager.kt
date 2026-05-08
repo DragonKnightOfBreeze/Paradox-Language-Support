@@ -2,7 +2,6 @@ package icu.windea.pls.lang.analysis
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.common.collect.ImmutableMap
-import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.data.JsonModuleFactory
@@ -79,28 +78,30 @@ object ParadoxGameTypeManager {
         }
     }
 
-    fun processGamePath(gameType: ParadoxGameType, rootPath: Path, path: Path, processor: Processor<Path>): Boolean {
+    fun processGamePath(gameType: ParadoxGameType, rootPath: Path, relPath: String, processor: (path: Path, entryPath: Path) -> Boolean): Boolean {
         val entries = gameType.metadata.gameEntries
         return if (entries.isEmpty()) {
-            val r = rootPath.resolve(path)
-            processor.process(r)
+            val r = rootPath.resolve(relPath)
+            processor(r, rootPath)
         } else {
             entries.process { entry ->
-                val r = rootPath.resolve(entry).resolve(path)
-                processor.process(r)
+                val entryPath = rootPath.resolve(entry)
+                val r = entryPath.resolve(relPath)
+                processor(r, entryPath)
             }
         }
     }
 
-    fun processModPath(gameType: ParadoxGameType, rootPath: Path, path: Path, processor: Processor<Path>): Boolean {
+    fun processModPath(gameType: ParadoxGameType, rootPath: Path, relPath: String, processor: (path: Path, entryPath: Path) -> Boolean): Boolean {
         val entries = gameType.metadata.modEntries
         return if (entries.isEmpty()) {
-            val r = rootPath.resolve(path)
-            processor.process(r)
+            val r = rootPath.resolve(relPath)
+            processor(r, rootPath)
         } else {
             entries.process { entry ->
-                val r = rootPath.resolve(entry).resolve(path)
-                processor.process(r)
+                val entryPath = rootPath.resolve(entry)
+                val r = entryPath.resolve(relPath)
+                processor(r, entryPath)
             }
         }
     }
