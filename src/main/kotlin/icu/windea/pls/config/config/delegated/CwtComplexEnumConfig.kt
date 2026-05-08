@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -16,9 +17,7 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized

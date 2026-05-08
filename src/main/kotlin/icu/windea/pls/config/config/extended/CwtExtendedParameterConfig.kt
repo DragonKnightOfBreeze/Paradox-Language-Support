@@ -7,14 +7,13 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember

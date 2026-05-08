@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.test
 
 import com.intellij.openapi.project.Project
@@ -10,10 +8,10 @@ import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.ParadoxFileGroup
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Path
-import icu.windea.pls.model.ParadoxGameType
 
 /** @see com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots */
 context(_: UsefulTestCase)

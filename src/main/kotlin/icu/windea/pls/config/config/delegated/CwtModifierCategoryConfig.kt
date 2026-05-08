@@ -5,13 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScopeId

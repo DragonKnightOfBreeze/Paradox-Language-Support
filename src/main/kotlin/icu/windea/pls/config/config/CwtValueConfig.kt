@@ -12,9 +12,7 @@ import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
@@ -74,7 +72,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
-            valueExpresssion: CwtDataExpression,
+            valueExpression: CwtDataExpression,
             valueType: CwtType = CwtType.String,
             configs: List<CwtMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null,
@@ -134,7 +132,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
     override fun create(
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
-        valueExpresssion: CwtDataExpression,
+        valueExpression: CwtDataExpression,
         valueType: CwtType,
         configs: List<CwtMemberConfig<*>>?,
         propertyConfig: CwtPropertyConfig?,
@@ -144,7 +142,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val config = when (withConfigs) {
             true -> CwtValueConfigImplWithConfigs(pointer, configGroup, propertyConfig)
                 .also { it.configs = configs.optimized() } // optimized to optimize memory
-            else -> CwtValueConfigImpl(pointer, configGroup, valueExpresssion, valueType, propertyConfig)
+            else -> CwtValueConfigImpl(pointer, configGroup, valueExpression, valueType, propertyConfig)
         }
         return config
     }

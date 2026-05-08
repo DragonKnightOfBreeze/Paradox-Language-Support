@@ -1,10 +1,10 @@
 package icu.windea.pls.config.config.delegated
 
 import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull

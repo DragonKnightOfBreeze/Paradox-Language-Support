@@ -1,10 +1,10 @@
 package icu.windea.pls.config.config.internal
 
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtConfigSchemaManager
 
 /**
