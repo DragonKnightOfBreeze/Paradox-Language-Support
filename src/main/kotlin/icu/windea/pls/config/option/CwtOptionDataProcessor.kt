@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
@@ -18,9 +19,9 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.values.ReversibleValue
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
-import icu.windea.pls.model.CwtSeparatorType
 
 object CwtOptionDataProcessor {
     // NOTE 2.1.1 目前不作为 EP
@@ -128,7 +129,7 @@ object CwtOptionDataProcessor {
                 optionData.severity = v
             }
             "file_extensions" -> {
-                val v = config.getOptionValueOrValues()?.optimized() ?: return
+                val v = config.getOptionValueOrValues()?.mapTo(mutableSetOf()) { it.optimizedPathExtension() }?.optimized() ?: return
                 optionData.fileExtensions = v
             }
             "modifier_categories" -> {
