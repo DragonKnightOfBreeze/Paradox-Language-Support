@@ -1281,16 +1281,6 @@ The following data types correspond to more complex expression structures; match
 - **`AnyType`**: Matches any type (including blocks), used for lenient validation scenarios. Syntax is `any`. Always returns a fallback match result.
 - **`Other`**: Fallback type, used when the expression cannot be parsed into any of the above known types.
 
-### Data Type Groups {#data-type-groups}
-
-The plugin internally groups data types by behavioral characteristics (`CwtDataTypeSets`), used to quickly determine an expression's available behavior in specific contexts. For example:
-
-- Which data types can appear on the key side or value side of complex expressions.
-- Which data types can participate as "dynamic values" or "scopes" in chained access.
-- Which data types need to participate in completion or validation, etc.
-
-These groups primarily serve the plugin's internal logic; config file writers typically do not need to be concerned with them directly.
-
 ## Config Expressions {#config-expressions}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->

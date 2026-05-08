@@ -1281,16 +1281,6 @@ inline_scripts = {
 - **`AnyType`**：匹配任意类型（包括块），用于宽松校验场景。语法为 `any`。总是返回兜底匹配结果。
 - **`Other`**：兜底类型，当无法解析为上述任何已知类型时使用。
 
-### 数据类型分组 {#data-type-groups}
-
-插件内部将数据类型按行为特征分组（`CwtDataTypeSets`），用于在特定上下文中快速判断表达式的可用行为。例如：
-
-- 哪些数据类型可以出现在复杂表达式的键侧或值侧。
-- 哪些数据类型支持作为"动态值"或"作用域"参与链式访问。
-- 哪些数据类型需要参与补全或校验等。
-
-这些分组主要服务于插件内部逻辑，规则文件的编写者通常不需要直接关注。
-
 ## 规则表达式 {#config-expressions}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
