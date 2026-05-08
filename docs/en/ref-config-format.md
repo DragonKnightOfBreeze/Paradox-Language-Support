@@ -1255,9 +1255,6 @@ Matches boolean values (`yes` / `no`).
 Data expression format:
 - `bool`
 
-Data expression example:
-- `bool`
-
 #### Int {#data-type-int}
 
 Matches integer values. With a range parameter, also validates that the value falls within the specified range. Numbers enclosed in quotes are also accepted as matches (compatible with original game files).
@@ -1298,10 +1295,6 @@ Data expression format:
 - `scalar`
 - `wildcard_scalar`
 
-Data expression example:
-- `scalar`
-- `wildcard_scalar`
-
 #### ColorField {#data-type-color-field}
 
 Matches color values. With a parameter, also validates the color type prefix.
@@ -1320,18 +1313,11 @@ Data expression example:
 
 Matches blocks (`{ ... }`). For internal representation only; does not correspond to a data expression string.
 
-Data expression format:
-
-*(For internal representation only; does not correspond to data expression strings.)*
-
 #### PercentageField {#data-type-percentage-field}
 
 Matches percentage value strings (e.g. `50%`).
 
 Data expression format:
-- `percentage_field`
-
-Data expression example:
 - `percentage_field`
 
 #### DateField {#data-type-date-field}
@@ -1349,18 +1335,6 @@ Data expression example:
 ### Reference Data Types {#data-types-reference}
 
 The following data types perform matching by referencing content from other configs or indices.
-
-#### Constant {#data-type-constant}
-
-When resolved to this type, the expression string is the constant value itself. Matches script expressions identical to the constant value. As a value, `yes` / `no` do not match quoted expressions.
-
-Data expression format:
-
-*(Use the constant string directly as the data expression, e.g. `yes`, `no`, `trigger`.)*
-
-Data expression example:
-- `yes`
-- `trigger`
 
 #### Definition {#data-type-definition}
 
@@ -1380,9 +1354,6 @@ Data expression example:
 Matches references to localisation keys. The expression must be a valid identifier (allowing `.`, `-`, `'`). Validates the existence of the referenced localisation on match.
 
 Data expression format:
-- `localisation`
-
-Data expression example:
 - `localisation`
 
 #### SyncedLocalisation {#data-type-synced-localisation}
@@ -1418,11 +1389,11 @@ Data expression format:
 
 Data expression example:
 - `enum[weight_or_base]`
-- `enum[shipsize_class]`
+- `enum[ship_class]`
 
 #### Value {#data-type-value}
 
-Matches read references to declared dynamic values. The dynamic value name must be a valid identifier (allowing `.`).
+Matches dynamic value expressions and represents a read reference to a dynamic value. The dynamic value name must be a valid identifier (allowing `.`).
 
 Data expression format:
 - `value[{name}]` - where `{name}` matches a dynamic value type.
@@ -1432,7 +1403,7 @@ Data expression example:
 
 #### ValueSet {#data-type-value-set}
 
-Matches write (declaration) references to dynamic values. The dynamic value name must be a valid identifier (allowing `.`).
+Matches dynamic value expressions and represents a write (declaration) reference to a dynamic value. The dynamic value name must be a valid identifier (allowing `.`).
 
 Data expression format:
 - `value_set[{name}]` - where `{name}` matches a dynamic value type.
@@ -1442,38 +1413,13 @@ Data expression example:
 
 #### DynamicValue {#data-type-dynamic-value}
 
-Matches references to dynamic values, without distinguishing read from write. The dynamic value name must be a valid identifier (allowing `.`).
+Matches dynamic value expressions and represents references to dynamic values (read and write are not distinguished). The dynamic value name must be a valid identifier (allowing `.`).
 
 Data expression format:
 - `dynamic_value[{name}]` - where `{name}` matches a dynamic value type.
 
 Data expression example:
 - `dynamic_value[event_target]`
-
-#### Parameter {#data-type-parameter}
-
-Matches parameter names. The expression must be a valid identifier. Treated as a match even if the parameter does not exist in the corresponding definition declaration.
-
-Data expression format:
-- `$parameter`
-
-#### ParameterValue {#data-type-parameter-value}
-
-Matches parameter values. Matches as long as the value is not a block.
-
-Data expression format:
-- `$parameter_value`
-
-#### LocalisationParameter {#data-type-localisation-parameter}
-
-Matches localisation parameter names. The expression must be a valid identifier (allowing `.`, `-`, `'`).
-
-Data expression format:
-- `$localisation_parameter`
-
-### Complex Data Types {#data-types-complex}
-
-The following data types correspond to more complex expression structures; matched script expressions are typically further parsed into "complex expressions".
 
 #### ScopeField {#data-type-scope-field}
 
@@ -1560,57 +1506,6 @@ Data expression example:
 - `int_variable_field[-100..100]`
 - `int_variable_field_32`
 
-### Path Data Types {#data-types-path}
-
-The following data types are used for matching file path references, validating the existence of the referenced file on match.
-
-#### AbsoluteFilePath {#data-type-absolute-file-path}
-
-Matches absolute file path strings. On match, validates as a string type only (wildcard match).
-
-Data expression format:
-- `abs_filepath`
-
-#### Icon {#data-type-icon}
-
-Matches path references to icon files. Validates the existence of the referenced file on match.
-
-Data expression format:
-- `icon[{path}]` - where `{path}` matches a path pattern.
-
-Data expression example:
-- `icon[gfx/interface/icons/*.dds]`
-
-#### FilePath {#data-type-file-path}
-
-Matches path references to files. Validates the existence of the referenced file on match.
-
-Data expression format:
-- `filepath`
-- `filepath[./]`
-- `filepath[{path}]` - where `{path}` matches a path pattern.
-
-Data expression example:
-- `filepath`
-- `filepath[./]`
-- `filepath[common/*.txt]`
-
-#### FileName {#data-type-file-name}
-
-Matches references to file names. Validates the existence of the referenced file on match.
-
-Data expression format:
-- `filename`
-- `filename[{path}]` - where `{path}` matches a path pattern.
-
-Data expression example:
-- `filename`
-- `filename[common/*.txt]`
-
-### Expression Data Types {#data-types-expression}
-
-The following data types correspond to special expression forms in scripts.
-
 #### Command {#data-type-command}
 
 Matches command expressions (e.g. `Root.GetName`). Currently not supported for matching script expressions.
@@ -1656,6 +1551,27 @@ Matches technology references with levels (e.g. `some_repeatable_tech@1`), where
 Data expression format:
 - `<technology_with_level>`
 
+#### Parameter {#data-type-parameter}
+
+Matches parameter names. The expression must be a valid identifier. Treated as a match even if the parameter does not exist in the corresponding definition declaration.
+
+Data expression format:
+- `$parameter`
+
+#### ParameterValue {#data-type-parameter-value}
+
+Matches parameter values. Matches as long as the value is not a block.
+
+Data expression format:
+- `$parameter_value`
+
+#### LocalisationParameter {#data-type-localisation-parameter}
+
+Matches localisation parameter names. The expression must be a valid identifier (allowing `.`, `-`, `'`).
+
+Data expression format:
+- `$localisation_parameter`
+
 ### Alias Data Types {#data-types-alias}
 
 The following data types are related to the alias resolution mechanism; they typically do not directly participate in script matching but are handled internally by the alias system.
@@ -1688,9 +1604,65 @@ Does not directly participate in script matching; handled by the alias resolutio
 Data expression format:
 - `alias_match_left[{name}]` - where `{name}` matches the name of an alias.
 
-### Advanced Pattern Data Types {#data-types-pattern}
+### Path Reference Data Types {#data-types-path-reference}
 
-The following data types use special pattern matching strategies.
+The following data types are used for matching file path references, validating the existence of the referenced file on match.
+
+#### AbsoluteFilePath {#data-type-absolute-file-path}
+
+Matches absolute file path strings. On match, validates as a string type only (wildcard match).
+
+Data expression format:
+- `abs_filepath`
+
+#### Icon {#data-type-icon}
+
+Matches path references to icon files. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `icon[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `icon[gfx/interface/icons/*.dds]`
+
+#### FilePath {#data-type-file-path}
+
+Matches path references to files. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `filepath`
+- `filepath[./]`
+- `filepath[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `filepath`
+- `filepath[./]`
+- `filepath[flags/]`
+- `filepath[common/inline_scripts/,.txt]`
+
+#### FileName {#data-type-file-name}
+
+Matches references to file names. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `filename`
+- `filename[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `filename`
+- `filename[gfx/models]`
+
+
+### Pattern Aware Data Types {#data-types-pattern-aware}
+
+The following data types use special pattern matching strategies. The [Constant](#data-type-constant) data type is also belong to this category.
+
+#### Constant {#data-type-constant}
+
+When resolved to this type, the expression string is the constant value itself. Matches script expressions identical to the constant value. As a value, `yes` / `no` do not match quoted expressions.
+
+Data expression format:
+- Use the constant string directly as the data expression, e.g. `yes`, `100`, `trigger`.
 
 #### TemplateExpression {#data-type-template-expression}
 
@@ -1725,6 +1697,8 @@ Data expression format:
 Data expression example:
 - `re:^country_.*`
 - `re.i:event_.*`
+
+### Suffix Aware Data Types {#data-types-suffix-aware}
 
 #### SuffixAwareDefinition {#data-type-suffix-aware-definition}
 
