@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
  * - 游戏规则（game rule）即类型为 `game_rule` 的定义。
  *
- * 路径定位：`game_rules/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`game_rules/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：不兼容，拥有不同的格式和行为。
  *
@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property hint 额外提示信息（可选）。
  * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  */

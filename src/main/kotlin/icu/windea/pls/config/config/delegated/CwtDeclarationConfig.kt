@@ -47,7 +47,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property attributes 综合属性。
  * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  *

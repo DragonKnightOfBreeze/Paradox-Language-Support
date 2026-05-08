@@ -498,8 +498,8 @@ rows = {
 
 **路径定位**：
 
-- 定值命名空间：`defines/{name}`，`{name}` 为命名空间。
-- 定值变量：`defines/*/{name}`，`{name}` 为变量名。
+- 定值命名空间：`defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
+- 定值变量：`defines/{namespace}/{variable}`。其中 `{namespace}` 匹配命名空间，`variable` 匹配变量名（即规则名称）。
 
 **示例**：
 
@@ -519,6 +519,7 @@ defines = {
 ```
 
 **注意事项**：
+
 - 插件会强制忽略名为 `define` 或 `defines` 的类型规则和声明规则。
 - 目前，基于定值规则，插件会检查定值变量的声明结构的合法性，但不会检查定值命名空间或定值变量的名字的合法性。
 

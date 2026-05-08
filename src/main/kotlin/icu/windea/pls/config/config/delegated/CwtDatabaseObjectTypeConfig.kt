@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * 这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
  * 目前，它们最终会引用一个定义或本地化。
  *
- * 路径定位：`database_object_types/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`database_object_types/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * }
  * ```
  *
- * @property name 名称。匹配类型前缀（如 `civic:some_civic` 中的 `civic:`）。
+ * @property name 规则名称。匹配类型前缀（如 `civic:some_civic` 中的 `civic:`）。
  * @property type 如果存在，则将对象节点（如 `civic:some_civic` 中的 `some_civic`）视为该类型的定义引用。
  * @property swapType 如果存在，则将接续的对象节点（如 `civic:some_civic:some_swapped_civic` 中的 `some_swapped_civic`）视为该切换类型的定义引用。
  * @property localisation 如果存在，则将对象节点（如 `job:job_soldier` 中的 `job_soldier`）视为匹配该前缀的本地化引用。

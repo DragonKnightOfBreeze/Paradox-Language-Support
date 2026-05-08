@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * - on action 即类型为 `on_action` 的定义。
  * - 事件类型是通过 `## event_type` 选项指定的。这会重载声明规则中的所有对事件的引用为对该类型事件的引用。
  *
- * 路径定位：`on_actions/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`on_actions/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：不兼容，拥有不同的格式和行为。
  *
@@ -38,7 +38,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property eventType 事件类型。
  * @property hint 额外提示信息（可选）。
  */

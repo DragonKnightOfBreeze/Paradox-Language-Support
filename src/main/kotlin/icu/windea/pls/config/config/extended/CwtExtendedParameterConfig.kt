@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * - 参数是指特定类型的定义（如封装触发器，scripted trigger）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 路径定位：`parameters/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`parameters/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
@@ -58,7 +58,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。

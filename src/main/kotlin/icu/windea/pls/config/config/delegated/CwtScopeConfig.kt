@@ -23,7 +23,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * 用于提供作用域类型（scope type）的相关信息（快速文档、别名）。
  *
- * 路径定位：`scopes/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`scopes/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：兼容。
  *

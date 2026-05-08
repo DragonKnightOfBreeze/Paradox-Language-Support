@@ -3,8 +3,7 @@ package icu.windea.pls.config.config.delegated
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.CwtDataTypes.Constant
-import icu.windea.pls.config.CwtDataTypes.TemplateExpression
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -27,13 +26,13 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * 可参见：`modifiers.log`。
  *
  * 规则名称在这里用于匹配（而非等同于）修正名，可以是：
- * - 常量（[Constant]） - 匹配预定义的修正。
- * - 模板表达式（[TemplateExpression]） - 匹配动态生成的修正。
+ * - 常量（[Constant][CwtDataTypes.Constant]） - 匹配预定义的修正。
+ * - 模板表达式（[TemplateExpression][CwtDataTypes.TemplateExpression]） - 匹配动态生成的修正。
  *
  * 路径定位：
- * 1. `modifiers/{name}`，`{name}` 匹配规则名称。
- * 2. `types/type[{type}]/modifiers/{name}`，`{type}` 匹配定义类型，`{name}`匹配规则名称（其中的 `$` 会被替换为 `<{type}>`）。
- * 3. `types/type[{type}]/modifiers/subtype[{subtype}]/{name}`，`{subtype}` 匹配定义的子类型。
+ * - `modifiers/{name}`。其中 `{name}` 匹配规则名称。
+ * - `types/type[{type}]/modifiers/{name}`。其中 `{type}` 匹配定义类型，`{name}` 匹配规则名称（其中的 `$` 会被替换为 `<{type}>`）。
+ * - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}`。其中 `{subtype}` 匹配定义的子类型。
  *
  * CWTools 兼容性：兼容。
  *
@@ -57,7 +56,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property categories 分类名的集合。
  * @property categoryConfigMap 分类名到分类规则的映射。
  * @property template 名称对应的模板表达式（如 `job_<job>_add`）。

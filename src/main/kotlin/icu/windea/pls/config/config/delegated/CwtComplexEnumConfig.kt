@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
  * 其枚举值默认不忽略大小写。
  *
- * 路径定位：`enums/complex_enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
+ * 路径定位：`enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
  *
@@ -49,7 +49,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 名称（枚举名）。
+ * @property name 规则名称（即枚举名）。
  * @property startFromRoot 是否从文件顶部（而非顶级属性）开始查询。
  * @property caseInsensitive （扩展）是否将复杂枚举值标记为忽略大小写。
  * @property perDefinition （扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。

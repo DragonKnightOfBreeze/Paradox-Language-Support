@@ -23,7 +23,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 插件基于这些规则，识别和推断上下文（如本地化文件）中的语言环境，或用户偏好的语言环境，
  * 以提供更恰当的 UI 展示与提示信息。
  *
- * 路径定位：`locales/{id}`，`{name}` 匹配语言环境 ID。
+ * 路径定位：`locales/{id}`。其中 `{name}` 匹配语言环境 ID。
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *

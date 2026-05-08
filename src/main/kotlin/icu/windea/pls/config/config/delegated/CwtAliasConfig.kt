@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 别名规则可用来简化规则文件，提升可读性和复用性。
  * 另外，包括触发器（trigger）、效果（effect）在内的多种概念对应的规则，都是以别名规则的形式提供的。
  *
- * 路径定位：`alias[{name}:{subName}]`，`{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
+ * 路径定位：`alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
  *
  * CWTools 兼容性：兼容。
  *
@@ -39,7 +39,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property subName 子名（受限支持的数据表达式）。
  * @property supportedScopes 允许的作用域（类型）的集合。
  * @property outputScope 输出的作用域。

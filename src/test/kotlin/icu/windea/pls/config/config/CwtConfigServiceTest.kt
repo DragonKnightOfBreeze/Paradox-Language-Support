@@ -117,6 +117,28 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testResolveConfigType_defineNamespace() {
+        assertResolveConfigType("""
+            defines = {
+                <caret>Namespace = {
+                    Variable = 0
+                }
+            }
+        """.trimIndent(), CwtConfigTypes.DefineNamespace)
+    }
+
+    @Test
+    fun testResolveConfigType_defineVariable() {
+        assertResolveConfigType("""
+            defines = {
+                Namespace = {
+                    <caret>Variable = 0
+                }
+            }
+        """.trimIndent(), CwtConfigTypes.DefineVariable)
+    }
+
+    @Test
     fun testResolveConfigType_enum() {
         assertResolveConfigType("""
             enums = {

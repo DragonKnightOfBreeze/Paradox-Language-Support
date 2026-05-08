@@ -20,7 +20,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  *
  * 用于分组修正（modifier），为其指定允许的作用域类型。
  *
- * 路径定位：`modifier_categories/{name}`，`{name}` 匹配规则名称（分类名）。
+ * 路径定位：`modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：兼容。
  *
@@ -31,7 +31,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * }
  * ```
  *
- * @property name 名称（分类名）。
+ * @property name 规则名称（即分类名）。
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig

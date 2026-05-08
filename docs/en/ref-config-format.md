@@ -303,7 +303,7 @@ types = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - `path` is a required field; if missing, the type will be skipped.
 - `skip_root_key` is a multi-group setting: if any group matches the file's top-level key sequence, skipping is allowed and type key matching continues.
@@ -396,7 +396,7 @@ building = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - `subtype[...]` only takes effect when it matches the context subtypes; non-matching ones are ignored (no error is reported).
 - Root-level `single_alias_right[...]` is expanded first, then participates in subsequent parsing and inspection.
@@ -455,7 +455,7 @@ some_definition = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - The alias unique key is composed of `name:subName`; duplicate definitions are handled by the override strategy / priority.
 - Cardinality and option validation occur only after expansion; consider the final semantics at the expansion site rather than at the declaration site.
@@ -498,8 +498,8 @@ They are located in script files with the `.txt` extension within the `common/de
 
 **Path Location**:
 
-- Define namespace: `defines/{name}`, where `{name}` is the namespace.
-- Define variable: `defines/*/{name}`, where `{name}` is the variable name.
+- Define namespace: `defines/{namespace}`. Where `{namespace}` matches the namespace (aka the config name).
+- Define variable: `defines/{namespace}/{variable}`. Where `{namespace}` matches the namespace, `{variable}` matches the variable name (aka the config name).
 
 **Example**:
 
@@ -519,6 +519,7 @@ defines = {
 ```
 
 **Notes**:
+
 - The plugin forcibly ignores any type config or declaration config named `define` or `defines`.
 - Currently, based on define configs, the plugin checks the validity of the declaration structure for define variables, but does not check the validity of the names of define namespaces or define variables.
 
@@ -571,7 +572,7 @@ enums = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - Simple enums currently only support constant values; template expressions will not be parsed as templates.
 - If a complex enum lacks a `name` section or no `enum_name` anchors are found in matching files, the enum will be empty.
@@ -662,7 +663,7 @@ links = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - `prefix` should not contain quotes or parentheses; `input_scopes` uses curly-brace set syntax (e.g. `{ country }`).
 - Multiple `data_source` values can be mixed.
@@ -699,7 +700,7 @@ localisation_promotions = {
 # [Ruler.GetCountryType] is valid under the promoted scope after Ruler link
 ```
 
-**Considerations**:
+**Notes**:
 
 - Names are case-insensitive; maintain spelling consistent with actual usage for searchability.
 - The promotion config name should match the localisation link name; otherwise, correct matching cannot occur.
@@ -756,7 +757,7 @@ types = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - Modifier entries missing `categories` will be skipped (not effective).
 - Modifier names in type configs use `$` as a placeholder; ensure they correspond to the type / subtype expression.
@@ -890,7 +891,7 @@ scripted_variables = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
 - This entry only provides "hint enhancement" and is not responsible for declaring or validating the value and type of scripted variables.
@@ -921,7 +922,7 @@ definitions = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - `type` is required; if missing, the entry will be skipped.
 - This extension is for "hint and context enhancement" and does not directly change the structure of [declaration configs](#config-declaration).
@@ -964,7 +965,7 @@ game_rules = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - If the value is `single_alias_right[...]`, it is first inlined and expanded, then takes effect as the override config.
 - This extension only affects the "source / structure of the [declaration config](#config-declaration)" and "hint information"; it does not change the overall priority and override strategy.
@@ -1007,7 +1008,7 @@ on_actions = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - `## event_type` is required; if missing, the entry will be skipped.
 - If scope replacement is needed, use `## replace_scopes` in combination.
@@ -1061,7 +1062,7 @@ parameters = {
 
 ![](../assets/config/parameters_1.png)
 
-**Considerations**:
+**Notes**:
 
 - `## context_key` is required; if missing, the entry will be skipped.
 - When `## inherit` is marked, the context is taken from the "usage site" and may be empty or vary by location.
@@ -1087,7 +1088,7 @@ complex_enum_values = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - This extension does not change the collection logic for complex enum "value sources"; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
@@ -1116,7 +1117,7 @@ dynamic_values = {
 }
 ```
 
-**Considerations**:
+**Notes**:
 
 - This extension does not change the dynamic value type or the base "value set" definition; it only provides hint information.
 - The name can use template / ANT / regex matching, but avoid being too broad to prevent false matches.
@@ -1162,7 +1163,7 @@ inline_scripts = {
 
 ![](../assets/config/inline_scripts_1.png)
 
-**Considerations**:
+**Notes**:
 
 - If only a single context config is needed, keep the default `single`; use `multiple` when declaring multiple.
 - Root-level `single_alias_right[...]` is inlined and expanded before being used as a context config.
@@ -1362,7 +1363,7 @@ a_enum[weight_or_base]_b  # "a_" + enum[weight_or_base] + "_b"
 
 For example, `job_<job>_add` can match `job_researcher_add`, `job_farmer_add`, etc. — where the `<job>` part matches any definition name of type `job`.
 
-**Considerations**:
+**Notes**:
 
 - When constant fragments and dynamic config names are adjacent, the parser prioritizes correct identification of dynamic configs.
 - Template expressions do not support whitespace characters; if whitespace matching is needed, use [ANT path patterns](#faq-ant) or [regular expressions](#faq-regex) instead.

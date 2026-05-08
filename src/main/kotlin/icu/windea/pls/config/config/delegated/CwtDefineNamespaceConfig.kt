@@ -15,7 +15,7 @@ import icu.windea.pls.core.optimized
  * 用于描述脚本文件中的定值命名空间，提供快速文档文本。
  * 它们位于 `common/defines` 目录中的扩展名为 `.txt` 的脚本文件中。
  *
- * 路径定位：`defines/{name}`，`{name}` 匹配规则名称（命名空间）。
+ * 路径定位：`defines/{namespace}`。其中 `{namespace}` 匹配命名空间（即规则名称）。
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
@@ -37,7 +37,7 @@ import icu.windea.pls.core.optimized
  * }
  * ```
  *
- * @property name 名称（命名空间）。等同于 [namespace]。
+ * @property name 规则名称（即命名空间）。等同于 [namespace]。
  * @property namespace 命名空间。
  * @property variables 变量到对应定值变量规则的映射。
  */

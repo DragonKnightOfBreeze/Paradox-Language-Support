@@ -23,7 +23,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * 用于分组作用域类型（scope type），便于在其他规则中按分组引用与校验。
  *
- * 路径定位：`scope_groups/{name}`，`{name}` 匹配规则名称（分组名）。
+ * 路径定位：`scope_groups/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：兼容。
  *
@@ -36,7 +36,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  * }
  * ```
  *
- * @property name 名称（分组名）。
+ * @property name 规则名称（即分组名）。
  * @property values 分组内的作用域 ID 集合（忽略大小写）。
  * @property valueConfigMap 每个作用域 ID 到其原始值规则的映射。
  *

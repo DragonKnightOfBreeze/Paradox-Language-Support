@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 路径定位：`definitions/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：`definitions/{name}`。其中 `{name}` 匹配规则名称。
  *
  * CWTools 兼容性：不兼容。插件作为扩展提供。
  *
@@ -38,7 +38,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property type 定义类型。
  * @property hint 提示文本（可选）。
  *
