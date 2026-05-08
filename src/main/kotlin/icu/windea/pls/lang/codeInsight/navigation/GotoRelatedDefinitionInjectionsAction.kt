@@ -9,7 +9,6 @@ import icu.windea.pls.core.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager

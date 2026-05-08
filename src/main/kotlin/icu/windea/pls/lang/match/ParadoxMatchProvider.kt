@@ -18,8 +18,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock

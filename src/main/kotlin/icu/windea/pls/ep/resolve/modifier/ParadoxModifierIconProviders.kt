@@ -11,13 +11,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {

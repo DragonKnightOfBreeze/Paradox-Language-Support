@@ -29,19 +29,17 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.parentOfPath
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.lang.util.data.get
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object ParadoxTechnologyManager {

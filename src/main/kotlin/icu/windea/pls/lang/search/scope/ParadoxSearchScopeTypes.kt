@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.select.parentDefinitionCandidate
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo

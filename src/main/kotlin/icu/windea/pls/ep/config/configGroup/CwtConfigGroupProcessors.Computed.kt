@@ -14,9 +14,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
-import icu.windea.pls.config.select.asProperty
-import icu.windea.pls.config.select.ofPaths
-import icu.windea.pls.config.select.one
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.FastList

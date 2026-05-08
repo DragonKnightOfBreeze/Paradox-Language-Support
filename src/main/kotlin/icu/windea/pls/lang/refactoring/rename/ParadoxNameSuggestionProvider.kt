@@ -7,8 +7,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
-import icu.windea.pls.lang.select.parentDefinition
-import icu.windea.pls.lang.select.parentDefinitionInjection
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

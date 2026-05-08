@@ -19,7 +19,6 @@ import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
 import icu.windea.pls.config.configGroup.scriptValueModificationTracker
-import icu.windea.pls.config.select.asProperty
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.castOrNull
@@ -47,9 +46,6 @@ import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.parentDefinition
-import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager

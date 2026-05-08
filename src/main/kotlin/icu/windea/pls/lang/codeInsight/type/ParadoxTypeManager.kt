@@ -22,7 +22,6 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.resolve.ParadoxTypeService
-import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager

@@ -26,9 +26,6 @@ import icu.windea.pls.lang.resolve.definitionInjectionInfo
 import icu.windea.pls.lang.resolve.inlineScriptExpression
 import icu.windea.pls.lang.resolve.parameterElement
 import icu.windea.pls.lang.resolve.parameterValueQuoted
-import icu.windea.pls.lang.select.parentDefineVariable
-import icu.windea.pls.lang.select.parentDefinition
-import icu.windea.pls.lang.select.parentDefinitionInjection
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxDefineManager

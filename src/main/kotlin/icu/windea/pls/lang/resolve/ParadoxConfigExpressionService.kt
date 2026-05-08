@@ -24,9 +24,6 @@ import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.ofPath
-import icu.windea.pls.lang.select.ofPaths
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager

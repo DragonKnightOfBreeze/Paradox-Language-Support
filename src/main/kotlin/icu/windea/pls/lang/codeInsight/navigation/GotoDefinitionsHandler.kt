@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.GotoTargetHandler
-import com.intellij.codeInsight.navigation.activateFileWithPsiElement
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
@@ -19,7 +17,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement

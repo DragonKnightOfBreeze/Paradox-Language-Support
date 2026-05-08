@@ -16,13 +16,11 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
-import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
 import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
@@ -34,7 +32,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
-import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxInferredScopeContextAwareDefinitionMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }

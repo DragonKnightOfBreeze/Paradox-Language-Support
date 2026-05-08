@@ -27,7 +27,6 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager

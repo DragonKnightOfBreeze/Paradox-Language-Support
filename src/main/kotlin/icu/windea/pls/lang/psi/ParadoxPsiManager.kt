@@ -38,7 +38,6 @@ import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
-import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager

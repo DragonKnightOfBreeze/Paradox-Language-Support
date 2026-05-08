@@ -19,8 +19,6 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager

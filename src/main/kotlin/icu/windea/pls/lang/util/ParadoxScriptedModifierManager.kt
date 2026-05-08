@@ -3,8 +3,6 @@ package icu.windea.pls.lang.util
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

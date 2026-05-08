@@ -25,7 +25,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.select.parentDefinitionCandidate
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.forParadoxGameType

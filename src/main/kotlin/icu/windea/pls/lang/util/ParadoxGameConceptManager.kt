@@ -10,17 +10,15 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {

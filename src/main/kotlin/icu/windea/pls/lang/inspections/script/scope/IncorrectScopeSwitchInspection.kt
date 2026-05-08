@@ -15,7 +15,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.lang.select.parentDefinitionCandidate
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
