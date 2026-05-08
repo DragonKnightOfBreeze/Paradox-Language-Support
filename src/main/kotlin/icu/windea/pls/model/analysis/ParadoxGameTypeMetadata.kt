@@ -1,6 +1,7 @@
 package icu.windea.pls.model.analysis
 
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.paths.ParadoxPath
 
 /**
  * 游戏类型的额外的元数据。
@@ -32,8 +33,8 @@ interface ParadoxGameTypeMetadata {
     val gameEntries: Set<String>
     val modEntries: Set<String>
 
-    val gameEntriesWithPaths: Map<String, List<String>>
-    val modEntriesWithPaths: Map<String, List<String>>
+    val gameEntryPaths: Set<ParadoxPath>
+    val modEntryPaths: Set<ParadoxPath>
 
     val executablePaths: Set<String>
 }

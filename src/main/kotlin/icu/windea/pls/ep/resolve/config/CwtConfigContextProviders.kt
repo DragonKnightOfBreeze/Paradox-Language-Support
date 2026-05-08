@@ -34,7 +34,6 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxMemberRole
 import icu.windea.pls.model.paths.ParadoxMemberPath
-import icu.windea.pls.model.paths.relativeTo
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
@@ -82,7 +81,7 @@ class CwtDefinitionConfigContextProvider : CwtConfigContextProvider {
         val definition = selectScope { element.parentDefinition() } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val memberPathFromFile = memberPathFromFile.normalize()
-        val memberPath = definitionInfo.memberPath.relativeTo(memberPathFromFile)?.normalize() ?: return null
+        val memberPath = definitionInfo.memberPath.relativize(memberPathFromFile)?.normalize() ?: return null
         val configContext = CwtConfigContext(element, memberPathFromFile, memberPath, memberRole, configGroup)
         if (memberPath.isEmpty()) configContext.declarationRoot = true
         configContext.definitionInfo = definitionInfo

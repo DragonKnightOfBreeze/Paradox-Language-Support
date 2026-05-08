@@ -5,10 +5,10 @@ package icu.windea.pls.model.paths
 import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.ImmutableList
+import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
-import icu.windea.pls.core.toPath
 
 /**
  * 游戏或模组文件的路径。
@@ -34,7 +34,10 @@ interface ParadoxPath : Iterable<String> {
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
-    fun normalize(): ParadoxPath = this
+
+    fun normalize(): ParadoxPath
+    fun resolve(other: ParadoxPath): ParadoxPath?
+    fun relativize(other: ParadoxPath, wildcard: String? = null): ParadoxPath?
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
@@ -102,6 +105,19 @@ private sealed class ParadoxPathBase : ParadoxPath {
         if (this is NormalizedParadoxPath || this is EmptyParadoxPath) return this
         if (this.isEmpty()) return EmptyParadoxPath
         return NormalizedParadoxPath(this)
+    }
+
+    override fun resolve(other: ParadoxPath): ParadoxPath {
+        if (other.isEmpty()) return this
+        val subPaths = this.subPaths + other.subPaths
+        return ParadoxPath.resolve(subPaths)
+    }
+
+    override fun relativize(other: ParadoxPath, wildcard: String?): ParadoxPath? {
+        if (this == other) return ParadoxPath.resolveEmpty()
+        if (this.isEmpty()) return other
+        val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
+        return ParadoxPath.resolve(subPaths)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path

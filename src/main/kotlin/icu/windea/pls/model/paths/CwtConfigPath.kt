@@ -33,7 +33,10 @@ interface CwtConfigPath : Iterable<String> {
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
-    fun normalize(): CwtConfigPath = this
+
+    fun normalize(): CwtConfigPath
+    fun resolve(other: CwtConfigPath): CwtConfigPath?
+    fun relativize(other: CwtConfigPath, wildcard: String? = null): CwtConfigPath?
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
@@ -47,14 +50,6 @@ interface CwtConfigPath : Iterable<String> {
     }
 
     companion object : Resolver by CwtConfigPathResolverImpl()
-}
-
-@Suppress("unused")
-fun CwtConfigPath.relativeTo(other: CwtConfigPath): CwtConfigPath? {
-    if (this == other) return CwtConfigPath.resolveEmpty()
-    if (this.isEmpty()) return other
-    val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
-    return CwtConfigPath.resolve(subPaths)
 }
 
 // region Implementations
@@ -88,6 +83,19 @@ private sealed class CwtConfigPathBase : CwtConfigPath {
         if (this is NormalizedCwtConfigPath || this is EmptyCwtConfigPath) return this
         if (this.isEmpty()) return EmptyCwtConfigPath
         return NormalizedCwtConfigPath(this)
+    }
+
+    override fun resolve(other: CwtConfigPath): CwtConfigPath {
+        if (other.isEmpty()) return this
+        val subPaths = this.subPaths + other.subPaths
+        return CwtConfigPath.resolve(subPaths)
+    }
+
+    override fun relativize(other: CwtConfigPath, wildcard: String?): CwtConfigPath? {
+        if (this == other) return CwtConfigPath.resolveEmpty()
+        if (this.isEmpty()) return other
+        val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
+        return CwtConfigPath.resolve(subPaths)
     }
 
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path

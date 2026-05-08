@@ -2,6 +2,9 @@
   // stellaris
   {
     "gameType": "stellaris",
+    "gameMainEntries": [
+      ""
+    ],
     "gameExtraEntries": [
       "pdx_launcher/game",
       "pdx_launcher/common",
@@ -44,6 +47,9 @@
   // eu4
   {
     "gameType": "eu4",
+    "gameMainEntries": [
+      ""
+    ],
     "gameExtraEntries": [
       "clausewitz",
       "jomini"
@@ -81,6 +87,9 @@
   // hoi4
   {
     "gameType": "hoi4",
+    "gameMainEntries": [
+      ""
+    ],
     "gameExtraEntries": [
       "clausewitz",
       "jomini"

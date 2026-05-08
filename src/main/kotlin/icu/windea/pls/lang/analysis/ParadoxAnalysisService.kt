@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
@@ -87,20 +86,25 @@ object ParadoxAnalysisService {
 
     private fun resolvePathAndEntry(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
+        val pathToRoot = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val gameType = rootInfo.gameType
-        val entriesWithPaths = when (rootInfo) {
-            is ParadoxRootInfo.Game -> gameType.metadata.gameEntriesWithPaths
-            is ParadoxRootInfo.Mod -> gameType.metadata.modEntriesWithPaths
+        val entryPaths = when (rootInfo) {
+            is ParadoxRootInfo.Game -> gameType.metadata.gameEntryPaths
+            is ParadoxRootInfo.Mod -> gameType.metadata.modEntryPaths
         }
-        if (entriesWithPaths.isEmpty()) return relPath to ""
-        for ((entry, entryPath) in entriesWithPaths) {
-            val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
-            return ParadoxPath.resolve(resolved) to entry
+        if (entryPaths.isEmpty()) return pathToRoot to ""
+
+        for (entryPath in entryPaths) {
+            val resolved = entryPath.relativize(pathToRoot, wildcard = "*") ?: continue
+            return resolved to entryPath.path
         }
-        if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
-        if (filePath == rootInfo.infoPresentablePath) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
-        return null // 2.0.7 null now
+
+        // 2.0.7 directories are allowed outside entry paths
+        if (isDirectory) return pathToRoot to ""
+        // 2.0.7 info files (e.g., `descriptor.mod`) are allowed outside entry paths
+        if (pathToRoot.path == rootInfo.infoPresentablePath) return pathToRoot to ""
+        // 2.0.7 null now
+        return null
     }
 
     fun resolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
