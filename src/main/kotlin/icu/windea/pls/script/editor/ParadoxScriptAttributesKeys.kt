@@ -34,7 +34,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField val DEFINITION_REFERENCE = create("PARADOX_SCRIPT.DEFINITION_REFERENCE", DefaultLanguageHighlighterColors.INSTANCE_FIELD)  // dotted line #707D95
     @JvmField val LOCALISATION_REFERENCE = create("PARADOX_SCRIPT.LOCALISATION_REFERENCE", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val SYNCED_LOCALISATION_REFERENCE = create("PARADOX_SCRIPT.SYNCED_LOCALISATION_REFERENCE", LOCALISATION_REFERENCE)
-    @JvmField val DEFINE_NAMESPACE = create("PARADOX_SCRIPT.DEFINE_NAMESPACE", DefaultLanguageHighlighterColors.IDENTIFIER)
+    @JvmField val DEFINE_NAMESPACE = create("PARADOX_SCRIPT.DEFINE_NAMESPACE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
     @JvmField val DEFINE_VARIABLE = create("PARADOX_SCRIPT.DEFINE_VARIABLE", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE)
     @JvmField val ENUM_VALUE = create("PARADOX_SCRIPT.ENUM_VALUE", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val COMPLEX_ENUM_VALUE = create("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", DefaultLanguageHighlighterColors.INSTANCE_FIELD) // dotted line #707D95, italic
@@ -55,7 +55,6 @@ object ParadoxScriptAttributesKeys {
     @JvmField val COMMAND_FIELD_PREFIX = create("PARADOX_SCRIPT.COMMAND_FIELD_PREFIX", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val DATABASE_OBJECT_TYPE = create("PARADOX_SCRIPT.DATABASE_OBJECT_TYPE", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val DATABASE_OBJECT = create("PARADOX_SCRIPT.DATABASE_OBJECT")
-
 
     @JvmField val TAG = create("PARADOX_SCRIPT.TAG", DefaultLanguageHighlighterColors.METADATA)
     @JvmField val TAG_TYPE_KEY_PREFIX = create("PARADOX_SCRIPT.TAG.TYPE_KEY_PREFIX", TAG)
