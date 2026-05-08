@@ -1233,53 +1233,526 @@ Originating only from the built-in file `internal/postfix_template_settings.cwt`
 
 Data types are the bridge connecting "config expressions" to "script content". Each data expression, once parsed, yields a specific data type that determines which keys or values in script files that expression can match.
 
-For example, the data expression `<event.country>` has a data type of `Definition` with metadata `event.country`, indicating it matches definitions whose type is `event` and whose subtypes include `country`. Similarly, `enum[weight_or_base]` has a data type of `Enum` with metadata `weight_or_base`, indicating it matches all possible values declared in that enum.
+For example, the data expression `<event.country>` has a data type of `Definition` with metadata `event.country`, indicating it matches definitions whose type is `event` and whose subtypes include `country`. Similarly, `enum[weight_or_base]` has a data type of `EnumValue` with metadata `weight_or_base`, indicating it matches all possible values declared in that enum.
 
 Data type resolution is driven by the `CwtDataExpressionResolver` extension point, and matching logic is driven by the `ParadoxScriptExpressionMatcher` extension point. These two cooperate to allow the config system to flexibly support various complex value forms. The plugin iterates through all registered matchers until one returns a non-null match result.
 
 ### Base Data Types {#data-types-base}
 
-The following data types represent basic value forms in scripts:
+The following data types represent basic value forms in scripts.
 
-- **`Block`**: Matches blocks (`{ ... }`). Only effective in value context, requiring the script expression to be a block.
-- **`Bool`**: Matches boolean values (`yes` / `no`). Requires the script expression's type to be boolean.
-- **`Int`**: Matches integers, with optional range constraints (e.g. `int[-5..100]`). Accepts integer types and also tolerates quoted integer strings. Tolerates values outside the range when a range constraint exists (this issue is reported via code inspection).
-- **`Float`**: Matches floating-point numbers, with optional range constraints (e.g. `float[0.0..1.0]`). Accepts float types and also tolerates quoted float strings. Tolerates values outside the range when a range constraint exists (this issue is reported via code inspection).
-- **`Scalar`**: Matches any scalar value. Accepts keys, booleans, integers, floats, and strings (including quoted ones) — a lenient matching type.
-- **`String`**: Matches any string. Typically appears in quoted form in scripts.
-- **`ColorField`**: Matches color fields (e.g. `color[rgb]`, `color[hsv]`, etc.). Requires the script expression's type to be a color type, with the prefix matching the color type specified in the config.
-- **`PercentageField`**: Matches percentage fields (e.g. `percentage_field`).
-- **`DateField`**: Matches date fields (e.g. `date_field`).
+#### Any {#data-type-any}
+
+Matches any script expression, serving as the lowest-priority fallback match.
+
+Data expression format:
+- `$any`
+
+#### Bool {#data-type-bool}
+
+Matches boolean values (`yes` / `no`).
+
+Data expression format:
+- `bool`
+
+Data expression example:
+- `bool`
+
+#### Int {#data-type-int}
+
+Matches integer values. With a range parameter, also validates that the value falls within the specified range. Numbers enclosed in quotes are also accepted as matches (compatible with original game files).
+
+Range parameters can be any combination of open and closed intervals; by convention, `inf` is used to represent infinity.
+
+Data expression format:
+- `int`
+- `int{range}` - where `{range}` matches a range parameter (e.g. `[-100..100]` `[0..inf)`).
+
+Data expression example:
+- `int`
+- `int[0..1]`
+- `int[-100..100]`
+- `int[0..inf)`
+
+#### Float {#data-type-float}
+
+Matches floating-point values. With a range parameter, also validates that the value falls within the specified range. Numbers enclosed in quotes are also accepted as matches.
+
+Range parameters can be any combination of open and closed intervals; by convention, `inf` is used to represent infinity.
+
+Data expression format:
+- `float`
+- `float{range}` - where `{range}` matches a range parameter (e.g. `[0.0..1.0]` `[0.0..inf)`).
+
+Data expression example:
+- `float`
+- `float[0.0..1.0]`
+- `float[-1.0..1.0]`
+- `float[0.0..inf)`
+
+#### Scalar {#data-type-scalar}
+
+Matches most non-block expressions (strings, numbers, booleans, etc.), serving as a low-priority broad match. Always matches when used as a key. The `wildcard_scalar` variant sets a wildcard flag.
+
+Data expression format:
+- `scalar`
+- `wildcard_scalar`
+
+Data expression example:
+- `scalar`
+- `wildcard_scalar`
+
+#### ColorField {#data-type-color-field}
+
+Matches color values. With a parameter, also validates the color type prefix.
+
+Data expression format:
+- `colour_field` `color_field`
+- `colour[{type}]` `color[{type}]` - where `{type}` matches a color type (valid values: `rgb` `hsv` `hsv360`).
+
+Data expression example:
+- `color_field`
+- `color[rgb]`
+- `color[hsv]`
+- `color[hsv360]`
+
+#### Block {#data-type-block}
+
+Matches blocks (`{ ... }`). For internal representation only; does not correspond to a data expression string.
+
+Data expression format:
+
+*(For internal representation only; does not correspond to data expression strings.)*
+
+#### PercentageField {#data-type-percentage-field}
+
+Matches percentage value strings (e.g. `50%`).
+
+Data expression format:
+- `percentage_field`
+
+Data expression example:
+- `percentage_field`
+
+#### DateField {#data-type-date-field}
+
+Matches date value strings (e.g. `2200.1.1`). With a parameter, also validates the date format.
+
+Data expression format:
+- `date_field`
+- `date_field[{format}]` - where `{format}` matches a date format (e.g. `y.M.d`).
+
+Data expression example:
+- `date_field`
+- `date_field[y.M.d]`
 
 ### Reference Data Types {#data-types-reference}
 
-The following data types perform matching by referencing content from other configs or indices:
+The following data types perform matching by referencing content from other configs or indices.
 
-- **`Constant`**: Matches a fixed constant string (case-insensitive). As a value, `yes` / `no` must be in unquoted form to match. Also attempts to accommodate empty strings and expressions containing parameters.
-- **`Definition`**: Matches definitions of a specific type. Syntax is `<type>` or `<type.subtype>`. Accepts string, integer, and float types (e.g. `<technology_tier>` can be represented by a number). Queries the index for the existence of a definition with the corresponding name and type.
-- **`Enum`**: Matches enum values. Syntax is `enum[name]`. For simple enums, checks whether the value is in the enum's value set (case-insensitive); for complex enums, queries the index for whether the value has been collected as an enum value.
-- **`DynamicValue`**: Matches dynamic values. Syntax is `value[name]`. Requires the value to be a valid identifier (allowing `.` separators); uses a lenient matching strategy (since dynamic values can be declared by scripts themselves).
-- **`Modifier`**: Matches modifier names. Syntax is `modifier`. Requires the value to be a valid identifier; queries the index for the existence of a modifier with the corresponding name.
-- **`Parameter`**: Matches parameter references. Syntax is `parameter`. Requires the value to be a valid identifier.
-- **`ShorthandParameter`**: Matches shorthand parameter references. Syntax is `shorthand_parameter`.
-- **`LocalisationCommand`**: Matches localisation command fields. Syntax is `localisation_command`.
-- **`DatabaseObject`**: Matches database objects. Syntax is `database_object[type]`.
+#### Constant {#data-type-constant}
+
+When resolved to this type, the expression string is the constant value itself. Matches script expressions identical to the constant value. As a value, `yes` / `no` do not match quoted expressions.
+
+Data expression format:
+
+*(Use the constant string directly as the data expression, e.g. `yes`, `no`, `trigger`.)*
+
+Data expression example:
+- `yes`
+- `trigger`
+
+#### Definition {#data-type-definition}
+
+Matches references to definitions of a specified type. The expression must be a valid identifier (allowing `.` and `-`); it may also be an integer or float. Validates the existence of the referenced definition on match.
+
+Data expression format:
+- `<{type}>` - where `{type}` matches a type name.
+- `<{type}.{subtypes}>` - where `{type}` matches a type name, and `{subtypes}` matches one or more dot-separated subtype names.
+
+Data expression example:
+- `<event>`
+- `<event.country>`
+- `<technology_tier>`
+
+#### Localisation {#data-type-localisation}
+
+Matches references to localisation keys. The expression must be a valid identifier (allowing `.`, `-`, `'`). Validates the existence of the referenced localisation on match.
+
+Data expression format:
+- `localisation`
+
+Data expression example:
+- `localisation`
+
+#### SyncedLocalisation {#data-type-synced-localisation}
+
+Similar to [Localisation](#data-type-localisation), but points to synced localisation keys.
+
+Data expression format:
+- `localisation_synced`
+
+#### InlineLocalisation {#data-type-inline-localisation}
+
+Matches localisation key references or any string enclosed in quotes (the latter returning inline text as a fallback match).
+
+Data expression format:
+- `localisation_inline`
+
+#### Modifier {#data-type-modifier}
+
+Matches references to modifiers. The expression must be a valid identifier. Validates that the referenced modifier exists in the config group. Higher priority than [Definition](#data-type-definition).
+
+Data expression format:
+- `<modifier>`
+
+Data expression example:
+- `<modifier>`
+
+#### EnumValue {#data-type-enum-value}
+
+Matches references to enum values. For simple enums, performs exact matching against the enum value list; for complex enums, queries via the index.
+
+Data expression format:
+- `enum[{name}]` - where `{name}` matches an enum name.
+
+Data expression example:
+- `enum[weight_or_base]`
+- `enum[shipsize_class]`
+
+#### Value {#data-type-value}
+
+Matches read references to declared dynamic values. The dynamic value name must be a valid identifier (allowing `.`).
+
+Data expression format:
+- `value[{name}]` - where `{name}` matches a dynamic value type.
+
+Data expression example:
+- `value[event_target]`
+
+#### ValueSet {#data-type-value-set}
+
+Matches write (declaration) references to dynamic values. The dynamic value name must be a valid identifier (allowing `.`).
+
+Data expression format:
+- `value_set[{name}]` - where `{name}` matches a dynamic value type.
+
+Data expression example:
+- `value_set[event_target]`
+
+#### DynamicValue {#data-type-dynamic-value}
+
+Matches references to dynamic values, without distinguishing read from write. The dynamic value name must be a valid identifier (allowing `.`).
+
+Data expression format:
+- `dynamic_value[{name}]` - where `{name}` matches a dynamic value type.
+
+Data expression example:
+- `dynamic_value[event_target]`
+
+#### Parameter {#data-type-parameter}
+
+Matches parameter names. The expression must be a valid identifier. Treated as a match even if the parameter does not exist in the corresponding definition declaration.
+
+Data expression format:
+- `$parameter`
+
+#### ParameterValue {#data-type-parameter-value}
+
+Matches parameter values. Matches as long as the value is not a block.
+
+Data expression format:
+- `$parameter_value`
+
+#### LocalisationParameter {#data-type-localisation-parameter}
+
+Matches localisation parameter names. The expression must be a valid identifier (allowing `.`, `-`, `'`).
+
+Data expression format:
+- `$localisation_parameter`
 
 ### Complex Data Types {#data-types-complex}
 
-The following data types correspond to more complex expression structures; matched script expressions are typically further parsed into "complex expressions":
+The following data types correspond to more complex expression structures; matched script expressions are typically further parsed into "complex expressions".
 
-- **`ScopeField`**: Matches scope field expressions (e.g. `root.owner`). Syntax is `scope_field`. Requires the value to be a string type, which is parsed into a complex chained scope expression and then validated.
-- **`Scope`**: Matches a specific scope. Syntax is `scope[name]` or `scope[group_name]`.
-- **`ScopeGroup`**: Matches a scope group. Syntax is `scope_group[name]`.
-- **`ValueField`**: Matches value field expressions. Syntax is `value_field`. In addition to accepting string-type complex expressions, also directly accepts floats.
-- **`VariableField`**: Matches variable field expressions. Syntax is `variable_field`. In addition to accepting string-type complex expressions, also directly accepts floats.
-- **`IntVariableField`**: Matches integer variable field expressions. Syntax is `int_variable_field`. In addition to accepting string-type complex expressions, also directly accepts integers.
+#### ScopeField {#data-type-scope-field}
 
-### Special Data Types {#data-types-special}
+Matches scope field expressions (which may include scope chains, e.g. `root.owner`).
 
-- **`AnyType`**: Matches any type (including blocks), used for lenient validation scenarios. Syntax is `any`. Always returns a fallback match result.
-- **`Other`**: Fallback type, used when the expression cannot be parsed into any of the above known types.
+Data expression format:
+- `scope_field`
+
+Data expression example:
+- `scope_field`
+
+#### Scope {#data-type-scope}
+
+Matches scope field expressions while constraining the output scope type. When the parameter is `any`, equivalent to [ScopeField](#data-type-scope-field).
+
+Data expression format:
+- `scope[{type}]` - where `{type}` matches a scope type name.
+
+Data expression example:
+- `scope[country]`
+- `scope[any]`
+
+#### ScopeGroup {#data-type-scope-group}
+
+Matches scope field expressions, constraining the output scope to belong to a specified scope group.
+
+Data expression format:
+- `scope_group[{name}]` - where `{name}` matches a scope group name.
+
+Data expression example:
+- `scope_group[economic_categories]`
+
+#### ValueField {#data-type-value-field}
+
+Matches floats or value field expressions (which may include scope chains and dynamic value references). With a range parameter, also constrains the numeric range.
+
+Data expression format:
+- `value_field`
+- `value_field{range}` - where `{range}` matches a range parameter (e.g. `[0.0..1.0]` `[0.0..inf)`).
+
+Data expression example:
+- `value_field`
+- `value_field[0.0..1.0]`
+
+#### IntValueField {#data-type-int-value-field}
+
+Matches integers or integer value field expressions (which may include scope chains and dynamic value references). With a range parameter, also constrains the numeric range.
+
+Data expression format:
+- `int_value_field`
+- `int_value_field{range}` - where `{range}` matches a range parameter (e.g. `[-100..100]` `[0..inf)`).
+
+Data expression example:
+- `int_value_field`
+- `int_value_field[-100..100]`
+
+#### VariableField {#data-type-variable-field}
+
+Matches floats or variable field expressions (which may include scope chains and scripted variable references).
+
+Data expression format:
+- `variable_field`
+- `variable_field{range}` - where `{range}` matches a range parameter.
+- `variable_field_32` - 32-bit variant.
+- `variable_field_32{range}` - 32-bit variant, where `{range}` matches a range parameter.
+
+Data expression example:
+- `variable_field`
+- `variable_field[0.0..1.0]`
+- `variable_field_32`
+
+#### IntVariableField {#data-type-int-variable-field}
+
+Matches integers or integer variable field expressions (which may include scope chains and scripted variable references).
+
+Data expression format:
+- `int_variable_field`
+- `int_variable_field{range}` - where `{range}` matches a range parameter.
+- `int_variable_field_32` - 32-bit variant.
+- `int_variable_field_32{range}` - 32-bit variant, where `{range}` matches a range parameter.
+
+Data expression example:
+- `int_variable_field`
+- `int_variable_field[-100..100]`
+- `int_variable_field_32`
+
+### Path Data Types {#data-types-path}
+
+The following data types are used for matching file path references, validating the existence of the referenced file on match.
+
+#### AbsoluteFilePath {#data-type-absolute-file-path}
+
+Matches absolute file path strings. On match, validates as a string type only (wildcard match).
+
+Data expression format:
+- `abs_filepath`
+
+#### Icon {#data-type-icon}
+
+Matches path references to icon files. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `icon[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `icon[gfx/interface/icons/*.dds]`
+
+#### FilePath {#data-type-file-path}
+
+Matches path references to files. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `filepath`
+- `filepath[./]`
+- `filepath[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `filepath`
+- `filepath[./]`
+- `filepath[common/*.txt]`
+
+#### FileName {#data-type-file-name}
+
+Matches references to file names. Validates the existence of the referenced file on match.
+
+Data expression format:
+- `filename`
+- `filename[{path}]` - where `{path}` matches a path pattern.
+
+Data expression example:
+- `filename`
+- `filename[common/*.txt]`
+
+### Expression Data Types {#data-types-expression}
+
+The following data types correspond to special expression forms in scripts.
+
+#### Command {#data-type-command}
+
+Matches command expressions (e.g. `Root.GetName`). Currently not supported for matching script expressions.
+
+Data expression format:
+- `$command`
+
+#### DefineReference {#data-type-define-reference}
+
+Matches define reference expressions (e.g. `define:NPortrait|GRACEFUL_AGING_START`).
+
+Data expression format:
+- `$define_reference`
+
+#### DatabaseObject {#data-type-database-object}
+
+Matches database object expressions (e.g. `civic:x:y`), composed of multiple colon-separated reference segments.
+
+Data expression format:
+- `$database_object`
+
+#### NameFormat {#data-type-name-format}
+
+Matches name format expressions. Limited to the Stellaris game type.
+
+Data expression format:
+- `name_format[{type}]`
+
+Data expression example:
+- `name_format[full_names]`
+
+#### ShaderEffect {#data-type-shader-effect}
+
+Matches effect declarations in `.shader` files. Currently handled as a general string (fallback match).
+
+Data expression format:
+- `$shader_effect`
+
+#### TechnologyWithLevel {#data-type-technology-with-level}
+
+Matches technology references with levels (e.g. `some_repeatable_tech@1`), where the technology name and level are separated by `@`. Limited to the Stellaris game type. Lower priority than [Definition](#data-type-definition).
+
+Data expression format:
+- `<technology_with_level>`
+
+### Alias Data Types {#data-types-alias}
+
+The following data types are related to the alias resolution mechanism; they typically do not directly participate in script matching but are handled internally by the alias system.
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values.
+
+Data expression format:
+- `single_alias_right[{name}]` - where `{name}` matches the name of a single alias.
+
+#### AliasKeysField {#data-type-alias-keys-field}
+
+Resolves alias sub-keys on match and matches them recursively.
+
+Data expression format:
+- `alias_keys_field[{name}]` - where `{name}` matches the name of an alias.
+
+#### AliasName {#data-type-alias-name}
+
+Resolves alias sub-keys on match and matches them recursively. Can only be used to match property keys, and must be used in combination with [AliasMatchLeft](#data-type-alias-match-left).
+
+Data expression format:
+- `alias_name[{name}]` - where `{name}` matches the name of an alias.
+
+#### AliasMatchLeft {#data-type-alias-match-left}
+
+Does not directly participate in script matching; handled by the alias resolution mechanism. Can only be used to match property values, and must be used in combination with [AliasName](#data-type-alias-name).
+
+Data expression format:
+- `alias_match_left[{name}]` - where `{name}` matches the name of an alias.
+
+### Advanced Pattern Data Types {#data-types-pattern}
+
+The following data types use special pattern matching strategies.
+
+#### TemplateExpression {#data-type-template-expression}
+
+A pattern composed of alternating constant text fragments and reference fragments. On match, splits the script expression by the template structure and validates each reference fragment individually.
+
+This is a pattern-aware type; its data expression format is the template expression itself (see [Template Expression](#config-expression-template)).
+
+Data expression example (as data expression):
+- `a_<b>_enum[c]_value[d]`
+- `job_<job>_add`
+
+#### Ant {#data-type-ant}
+
+Matches expressions conforming to Ant path patterns. Supports wildcards `?` (single character), `*` (single segment), and `**` (multiple segments, infrequently used).
+
+Data expression format:
+- `ant:{pattern}` - where `{pattern}` matches a pattern.
+- `ant.i:{pattern}` - case-insensitive variant.
+
+Data expression example:
+- `ant:**/*.txt`
+- `ant.i:common/**/*`
+
+#### Regex {#data-type-regex}
+
+Matches expressions conforming to regular expressions.
+
+Data expression format:
+- `re:{pattern}` - where `{pattern}` matches a pattern.
+- `re.i:{pattern}` - case-insensitive variant.
+
+Data expression example:
+- `re:^country_.*`
+- `re.i:event_.*`
+
+#### SuffixAwareDefinition {#data-type-suffix-aware-definition}
+
+Composed of a base definition reference and a comma-separated suffix list. On match, validates both the definition reference and the suffixes. If the suffix list is empty, degrades to a plain [Definition](#data-type-definition).
+
+Data expression format:
+- `<{type}>|{suffixes}` - where `{type}` matches a type name, and `{suffixes}` matches one or more comma-separated suffixes.
+- `<{type}.{subtypes}>|{suffixes}` - where `{type}` matches a type name, `{subtypes}` matches one or more dot-separated subtype names, and `{suffixes}` matches one or more comma-separated suffixes.
+
+Data expression example:
+- `<event>|country,crisis`
+
+#### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
+
+Composed of a base localisation reference and a comma-separated suffix list. On match, validates both the localisation reference and the suffixes. If the suffix list is empty, degrades to a plain [Localisation](#data-type-localisation).
+
+Data expression format:
+- `localisation|{suffixes}` - where `{suffixes}` matches one or more comma-separated suffixes.
+
+Data expression example:
+- `localisation|name,desc`
+
+#### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
+
+Composed of a base synced localisation reference and a comma-separated suffix list. On match, validates both the synced localisation reference and the suffixes. If the suffix list is empty, degrades to a plain [SyncedLocalisation](#data-type-synced-localisation).
+
+Data expression format:
+- `localisation_synced|{suffixes}` - where `{suffixes}` matches one or more comma-separated suffixes.
 
 ## Config Expressions {#config-expressions}
 

@@ -1233,53 +1233,493 @@ inline_scripts = {
 
 数据类型（Data Type）是连接"规则表达式"与"脚本内容"的桥梁。每条数据表达式在解析后都会得到一个具体的数据类型，该数据类型决定了这条表达式能够匹配脚本文件中的哪些键或值。
 
-例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。又如，`enum[weight_or_base]` 的数据类型为 `Enum`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
+例如，数据表达式 `<event.country>` 的数据类型为 `Definition`，附带元数据 `event.country`，表示匹配类型为 `event`、子类型包含 `country` 的定义。又如，`enum[weight_or_base]` 的数据类型为 `EnumValue`，附带元数据 `weight_or_base`，表示匹配该枚举中声明的所有可选值。
 
 数据类型的解析由 `CwtDataExpressionResolver` 扩展点驱动，匹配逻辑由 `ParadoxScriptExpressionMatcher` 扩展点驱动。二者协作，使规则系统能够灵活地支持各种复杂的取值形态。插件会遍历所有已注册的匹配器，直到某个匹配器返回非空的匹配结果。
 
 ### 基本数据类型 {#data-types-base}
 
-以下数据类型表示脚本中的基本取值形态：
+以下数据类型表示脚本中的基本取值形态。
 
-- **`Block`**：匹配块（`{ ... }`）。仅在值上下文中生效，且要求脚本表达式为块。
-- **`Bool`**：匹配布尔值（`yes` / `no`）。要求脚本表达式的类型为布尔类型。
-- **`Int`**：匹配整数，可附带范围约束（如 `int[-5..100]`）。接受整数类型，也兼容加引号的整数字符串。容忍存在范围约束但值超出范围的情况（通过代码检查报告此问题）。
-- **`Float`**：匹配浮点数，可附带范围约束（如 `float[0.0..1.0]`）。接受浮点数类型，也兼容加引号的浮点数字符串。容忍存在范围约束但值超出范围的情况（通过代码检查报告此问题）。
-- **`Scalar`**：匹配任意标量值。接受键、布尔值、整数、浮点数和字符串（含加引号的），是一种宽松的匹配类型。
-- **`String`**：匹配任意字符串。通常以加引号的形式出现在脚本中。
-- **`ColorField`**：匹配颜色字段（如 `color[rgb]`、`color[hsv]` 等）。要求脚本表达式的类型为颜色类型，且前缀与规则中指定的颜色类型一致。
-- **`PercentageField`**：匹配百分比字段（如 `percentage_field`）。
-- **`DateField`**：匹配日期字段（如 `date_field`）。
+#### Any {#data-type-any}
+
+匹配任意脚本表达式，作为最低优先级的后备匹配。
+
+对应的数据表达式的格式：
+- `$any`
+
+#### Bool {#data-type-bool}
+
+匹配布尔值（`yes` / `no`）。
+
+对应的数据表达式的格式：
+- `bool`
+
+#### Int {#data-type-int}
+
+匹配整数值。带范围参数时，还会验证值是否在指定范围内。用引号括起的数字也视为匹配（兼容原版游戏文件）。
+
+范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+
+对应的数据表达式的格式：
+- `int`
+- `int{range}` - 其中 `{range}` 匹配范围参数（如 `[-100..100]` `[0..inf)`）。
+
+对应的数据表达式的示例：
+- `int`
+- `int[0..1]`
+- `int[-100..100]`
+- `int[0..inf)`
+
+#### Float {#data-type-float}
+
+匹配浮点数值。带范围参数时，还会验证值是否在指定范围内。用引号括起的数字也视为匹配。
+
+范围参数可以是开区间与闭区间的任意组合，习惯上使用 `inf` 表示无限大。
+
+对应的数据表达式的格式：
+- `float`
+- `float{range}` - 其中 `{range}` 匹配范围参数（如 `[0.0..1.0]` `[0.0..inf)`）。
+
+对应的数据表达式的示例：
+- `float`
+- `float[0.0..1.0]`
+- `float[-1.0..1.0]`
+- `float[0.0..inf)`
+
+#### Scalar {#data-type-scalar}
+
+匹配大多数非子句表达式（字符串、数字、布尔值等），作为低优先级的宽泛匹配。作为键时总是匹配。`wildcard_scalar` 变体会设置通配符标记。
+
+对应的数据表达式的格式：
+- `scalar`
+- `wildcard_scalar`
+
+#### ColorField {#data-type-color-field}
+
+匹配颜色值。带参数时，还会验证颜色类型前缀。
+
+对应的数据表达式的格式：
+- `colour_field` `color_field`
+- `colour[{type}]` `color[{type}]` - 其中 `{type}` 匹配颜色类型（可选值：`rgb` `hsv` `hsv360`）。
+
+对应的数据表达式的示例：
+- `color_field`
+- `color[rgb]`
+- `color[hsv]`
+- `color[hsv360]`
+
+#### Block {#data-type-block}
+
+匹配块（`{ ... }`）。仅用于内部表示，不作为数据表达式字符串使用。
+
+#### PercentageField {#data-type-percentage-field}
+
+匹配百分比值字符串（如 `50%`）。
+
+对应的数据表达式的格式：
+- `percentage_field`
+
+#### DateField {#data-type-date-field}
+
+匹配日期值字符串（如 `2200.1.1`）。带参数时还会验证日期格式。
+
+对应的数据表达式的格式：
+- `date_field`
+- `date_field[{format}]` - 其中 `{format}` 匹配日期格式（如 `y.M.d`）。
+
+对应的数据表达式的示例：
+- `date_field`
+- `date_field[y.M.d]`
 
 ### 引用数据类型 {#data-types-reference}
 
-以下数据类型通过引用其他规则或索引中的内容来进行匹配：
+以下数据类型通过引用其他规则或索引中的内容来进行匹配，其中一些数据类型会匹配某种复杂表达式。
 
-- **`Constant`**：匹配固定的常量字符串（忽略大小写）。作为值时，`yes` / `no` 需为非引号形式才能匹配。也尝试兼容空字符串和含参数的表达式。
-- **`Definition`**：匹配特定类型的定义。语法为 `<type>` 或 `<type.subtype>`。接受字符串、整数和浮点数类型（如 `<technology_tier>` 可用数字表示）。通过索引查询是否存在对应名称和类型的定义。
-- **`Enum`**：匹配枚举值。语法为 `enum[name]`。对于简单枚举，检查值是否在枚举的值集合中（忽略大小写）；对于复杂枚举，通过索引查询该值是否被收集为枚举值。
-- **`DynamicValue`**：匹配动态值。语法为 `value[name]`。要求值为合法标识符（允许 `.` 分隔符），匹配时采用宽松策略（因为动态值可以被脚本自行声明）。
-- **`Modifier`**：匹配修正名。语法为 `modifier`。要求值为合法标识符，通过索引查询是否存在对应名称的修正。
-- **`Parameter`**：匹配参数引用。语法为 `parameter`。要求值为合法标识符即可。
-- **`ShorthandParameter`**：匹配简写参数引用。语法为 `shorthand_parameter`。
-- **`LocalisationCommand`**：匹配本地化命令字段。语法为 `localisation_command`。
-- **`DatabaseObject`**：匹配数据库对象。语法为 `database_object[type]`。
+#### Definition {#data-type-definition}
 
-### 复杂数据类型 {#data-types-complex}
+匹配对指定类型定义的引用。表达式须为合法标识符（允许 `.-`），可以是整数或浮点数（如 `<technology_tier>` 可用数字表示）。匹配时验证引用的定义是否存在。
 
-以下数据类型对应更复杂的表达式结构，匹配的脚本表达式通常会被进一步解析为"复杂表达式"：
+对应的数据表达式的格式：
+- `<{type}>` - 其中 `{type}` 匹配类型名。
+- `<{type}.{subtypes}>` - 其中 `{type}` 匹配类型名，`{subtypes}` 匹配点号分隔的一组子类型名。
 
-- **`ScopeField`**：匹配作用域字段表达式（如 `root.owner`）。语法为 `scope_field`。要求值为字符串类型，将其解析为复杂的链式作用域表达式后进行验证。
-- **`Scope`**：匹配特定的作用域。语法为 `scope[name]` 或 `scope[group_name]`。
-- **`ScopeGroup`**：匹配作用域分组。语法为 `scope_group[name]`。
-- **`ValueField`**：匹配值字段表达式。语法为 `value_field`。除了接受字符串类型的复杂表达式外，也直接接受浮点数。
-- **`VariableField`**：匹配变量字段表达式。语法为 `variable_field`。除了接受字符串类型的复杂表达式外，也直接接受浮点数。
-- **`IntVariableField`**：匹配整数变量字段表达式。语法为 `int_variable_field`。除了接受字符串类型的复杂表达式外，也直接接受整数。
+对应的数据表达式的示例：
+- `<event>`
+- `<event.country>`
+- `<technology_tier>`
 
-### 特殊数据类型 {#data-types-special}
+#### Localisation {#data-type-localisation}
 
-- **`AnyType`**：匹配任意类型（包括块），用于宽松校验场景。语法为 `any`。总是返回兜底匹配结果。
-- **`Other`**：兜底类型，当无法解析为上述任何已知类型时使用。
+匹配对本地化键的引用。表达式须为合法标识符（允许 `.-'`）。匹配时验证引用的本地化是否存在。
+
+对应的数据表达式的格式：
+- `localisation`
+
+#### SyncedLocalisation {#data-type-synced-localisation}
+
+与 [Localisation](#data-type-localisation) 类似，但指向同步本地化键。
+
+对应的数据表达式的格式：
+- `localisation_synced`
+
+#### InlineLocalisation {#data-type-inline-localisation}
+
+匹配本地化键引用或用引号括起的任意字符串（后者作为内联文本，以后备匹配返回）。
+
+对应的数据表达式的格式：
+- `localisation_inline`
+
+#### Modifier {#data-type-modifier}
+
+匹配对修正（modifier）的引用。表达式须为合法标识符。匹配时验证引用的修正是否在规则组中存在。优先级高于 [Definition](#data-type-definition)。
+
+对应的数据表达式的格式：
+- `<modifier>`
+
+#### EnumValue {#data-type-enum-value}
+
+匹配对枚举值的引用。匹配简单枚举时精确匹配枚举值列表，匹配复杂枚举时则通过索引查询。
+
+对应的数据表达式的格式：
+- `enum[{name}]` - 其中 `{name}` 匹配枚举名。
+
+对应的数据表达式的示例：
+- `enum[weight_or_base]`
+- `enum[ship_class]`
+
+#### Value {#data-type-value}
+
+匹配动态值表达式，表示对已声明动态值的读取引用。动态值的名字须为合法标识符（允许 `.`）。
+
+对应的数据表达式的格式：
+- `value[{name}]` - 其中 `{name}` 匹配动态值类型。
+
+对应的数据表达式的示例：
+- `value[event_target]`
+
+#### ValueSet {#data-type-value-set}
+
+匹配动态值表达式，表示对动态值的写入（声明）引用。动态值的名字须为合法标识符（允许 `.`）。
+
+对应的数据表达式的格式：
+- `value_set[{name}]` - 其中 `{name}` 匹配动态值类型。
+
+对应的数据表达式的示例：
+- `value_set[event_target]`
+
+#### DynamicValue {#data-type-dynamic-value}
+
+匹配动态值表达式，表示对动态值的引用（不区分读写）。动态值的名字须为合法标识符（允许 `.`）。
+
+对应的数据表达式的格式：
+- `dynamic_value[{name}]` - 其中 `{name}` 匹配动态值类型。
+
+对应的数据表达式的示例：
+- `dynamic_value[event_target]`
+
+#### ScopeField {#data-type-scope-field}
+
+匹配作用域字段表达式（可包含作用域链，如 `root.owner`）。
+
+对应的数据表达式的格式：
+- `scope_field`
+
+#### Scope {#data-type-scope}
+
+匹配作用域字段表达式，同时约束输出作用域类型。参数为 `any` 时等同于 [ScopeField](#data-type-scope-field)。
+
+对应的数据表达式的格式：
+- `scope[{type}]` - 其中 `{type}` 匹配作用域类型名。
+
+对应的数据表达式的示例：
+- `scope[country]`
+- `scope[any]`
+
+#### ScopeGroup {#data-type-scope-group}
+
+匹配作用域字段表达式，约束输出作用域属于指定的作用域组。
+
+对应的数据表达式的格式：
+- `scope_group[{name}]` - 其中 `{name}` 匹配作用域分组名。
+
+对应的数据表达式的示例：
+- `scope_group[economic_categories]`
+
+#### ValueField {#data-type-value-field}
+
+匹配浮点数或值字段表达式（可包含作用域链和动态值引用）。带范围参数时还会限制数值范围。
+
+对应的数据表达式的格式：
+- `value_field`
+- `value_field{range}` - 其中 `{range}` 匹配范围参数（如 `[0.0..1.0]` `[0.0..inf)`）。
+
+对应的数据表达式的示例：
+- `value_field`
+- `value_field[0.0..1.0]`
+
+#### IntValueField {#data-type-int-value-field}
+
+匹配整数或整数值字段表达式（可包含作用域链和动态值引用）。带范围参数时还会限制数值范围。
+
+对应的数据表达式的格式：
+- `int_value_field`
+- `int_value_field{range}` - 其中 `{range}` 匹配范围参数（如 `[-100..100]` `[0..inf)`）。
+
+对应的数据表达式的示例：
+- `int_value_field`
+- `int_value_field[-100..100]`
+
+#### VariableField {#data-type-variable-field}
+
+匹配浮点数或变量字段表达式（可包含作用域链和封装变量引用）。
+
+对应的数据表达式的格式：
+- `variable_field`
+- `variable_field{range}` - 其中 `{range}` 匹配范围参数。
+- `variable_field_32` - 32 位变体。
+- `variable_field_32{range}` - 32 位变体，其中 `{range}` 匹配范围参数。
+
+对应的数据表达式的示例：
+- `variable_field`
+- `variable_field[0.0..1.0]`
+- `variable_field_32`
+
+#### IntVariableField {#data-type-int-variable-field}
+
+匹配整数或整数变量字段表达式（可包含作用域链和封装变量引用）。
+
+对应的数据表达式的格式：
+- `int_variable_field`
+- `int_variable_field{range}` - 其中 `{range}` 匹配范围参数。
+- `int_variable_field_32` - 32 位变体。
+- `int_variable_field_32{range}` - 32 位变体，其中 `{range}` 匹配范围参数。
+
+对应的数据表达式的示例：
+- `int_variable_field`
+- `int_variable_field[-100..100]`
+- `int_variable_field_32`
+
+#### Command {#data-type-command}
+
+匹配命令表达式（如 `Root.GetName`）。目前不支持用来匹配脚本表达式。
+
+对应的数据表达式的格式：
+- `$command`
+
+#### DefineReference {#data-type-define-reference}
+
+匹配定值引用表达式（如 `define:NPortrait|GRACEFUL_AGING_START`）。
+
+对应的数据表达式的格式：
+- `$define_reference`
+
+#### DatabaseObject {#data-type-database-object}
+
+匹配数据库对象表达式（如 `civic:x:y`），由冒号分隔的多段引用组成。
+
+对应的数据表达式的格式：
+- `$database_object`
+
+#### NameFormat {#data-type-name-format}
+
+匹配命名格式表达式。仅限 Stellaris 游戏类型。
+
+对应的数据表达式的格式：
+- `name_format[{type}]`
+
+对应的数据表达式的示例：
+- `name_format[empire]`
+
+#### ShaderEffect {#data-type-shader-effect}
+
+匹配 `.shader` 文件中的效果声明。目前作为一般的字符串处理（后备匹配）。
+
+对应的数据表达式的格式：
+- `$shader_effect`
+
+#### TechnologyWithLevel {#data-type-technology-with-level}
+
+匹配带等级科技引用（如 `some_repeatable_tech@1`），通过 `@` 分隔科技名和等级。仅限 Stellaris 游戏类型。优先级低于 [Definition](#data-type-definition)。
+
+对应的数据表达式的格式：
+- `<technology_with_level>`
+
+#### Parameter {#data-type-parameter}
+
+匹配参数名。表达式须为合法标识符。即使对应的定义声明中不存在该参数名，也视为匹配。
+
+对应的数据表达式的格式：
+- `$parameter`
+
+#### ParameterValue {#data-type-parameter-value}
+
+匹配参数值。只要不是子句即可匹配。
+
+对应的数据表达式的格式：
+- `$parameter_value`
+
+#### LocalisationParameter {#data-type-localisation-parameter}
+
+匹配本地化参数名。表达式须为合法标识符（允许 `.`、`-`、`'`）。
+
+对应的数据表达式的格式：
+- `$localisation_parameter`
+
+### 别名数据类型 {#data-types-alias}
+
+以下数据类型与别名解析机制相关，通常不直接参与脚本匹配，而是由别名系统内部处理。
+
+#### SingleAliasRight {#data-type-single-alias-right}
+
+不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值。
+
+对应的数据表达式的格式：
+- `single_alias_right[{name}]` - 其中 `{name}` 匹配单别名的名字。
+
+#### AliasKeysField {#data-type-alias-keys-field}
+
+匹配时解析别名子键并递归匹配。
+
+对应的数据表达式的格式：
+- `alias_keys_field[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+#### AliasName {#data-type-alias-name}
+
+匹配时解析别名子键并递归匹配。只能用来匹配属性键，且需要与 [AliasMatchLeft](#data-type-alias-match-left) 组合使用。
+
+对应的数据表达式的格式：
+- `alias_name[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+#### AliasMatchLeft {#data-type-alias-match-left}
+
+不直接参与脚本匹配，由别名解析机制处理。只能用来匹配属性值，且需要与 [AliasName](#data-type-alias-name) 组合使用。
+
+对应的数据表达式的格式：
+- `alias_match_left[{name}]` - 其中 `{name}` 匹配别名的名字。
+
+### 路径数据类型 {#data-types-path}
+
+以下数据类型用于匹配文件路径引用，匹配时验证路径引用的文件是否存在。
+
+#### AbsoluteFilePath {#data-type-absolute-file-path}
+
+匹配绝对文件路径字符串。匹配时仅验证为字符串类型（通配匹配）。
+
+对应的数据表达式的格式：
+- `abs_filepath`
+
+#### Icon {#data-type-icon}
+
+匹配对图标文件的路径引用。匹配时验证路径引用的文件是否存在。
+
+对应的数据表达式的格式：
+- `icon[{path}]` - 其中 `{path}` 匹配路径模式。
+
+对应的数据表达式的示例：
+- `icon[gfx/interface/icons/*.dds]`
+
+#### FilePath {#data-type-file-path}
+
+匹配对文件的路径引用。匹配时验证路径引用的文件是否存在。
+
+对应的数据表达式的格式：
+- `filepath`
+- `filepath[./]`
+- `filepath[{path}]` - 其中 `{path}` 匹配路径模式。
+
+对应的数据表达式的示例：
+- `filepath`
+- `filepath[./]`
+- `filepath[flags/]`
+- `filepath[common/inline_scripts/,.txt]`
+
+#### FileName {#data-type-file-name}
+
+匹配对文件名的引用。匹配时验证路径引用的文件是否存在。
+
+对应的数据表达式的格式：
+- `filename`
+- `filename[{path}]` - 其中 `{path}` 匹配路径模式。
+
+对应的数据表达式的示例：
+- `filename`
+- `filename[gfx/models]`
+
+### 模式感知的数据类型 {#data-types-pattern-aware}
+
+以下数据类型采用特殊的模式匹配策略。常量数据类型 [Constant](#data-type-constant) 也属于这类数据类型。
+
+#### Constant {#data-type-constant}
+
+解析为此类型时，表达式字符串即为常量值本身。匹配与常量值完全相同的脚本表达式。作为值时，常量 `yes` / `no` 不匹配用引号括起的表达式。
+
+对应的数据表达式的格式：
+- 直接使用字面量作为数据表达式，如 `yes`、`10`、`trigger` 等。
+
+#### TemplateExpression {#data-type-template-expression}
+
+由常量文本片段和引用片段交替组成的模式。匹配时将脚本表达式按模板结构拆分，逐个验证各引用片段。
+
+此类型为模式感知类型，其数据表达式格式即为模板表达式本身（参见[模板表达式](#config-expression-template)）。
+
+对应的数据表达式的示例：
+- `a_<b>_enum[c]_value[d]`
+- `job_<job>_add`
+
+#### Ant {#data-type-ant}
+
+匹配符合 Ant 路径模式的表达式。支持通配符 `?`（单字符）、`*`（单段）和 `**`（多段，不常用）。
+
+对应的数据表达式的格式：
+- `ant:{pattern}` - 其中 `{pattern}` 匹配模式。
+- `ant.i:{pattern}` - 忽略大小写的变体。
+
+对应的数据表达式的示例：
+- `ant:**/*.txt`
+- `ant.i:common/**/*`
+
+#### Regex {#data-type-regex}
+
+匹配符合正则表达式的表达式。
+
+对应的数据表达式的格式：
+- `re:{pattern}` - 其中 `{pattern}` 匹配模式。
+- `re.i:{pattern}` - 忽略大小写的变体。
+
+对应的数据表达式的示例：
+- `re:^country_.*`
+- `re.i:event_.*`
+
+### 后缀感知的数据类型 {#data-types-suffix-aware}
+
+#### SuffixAwareDefinition {#data-type-suffix-aware-definition}
+
+由基础定义引用和逗号分隔的后缀列表组成。匹配时同时验证定义引用和后缀。如果后缀列表为空，则退化为普通的 [Definition](#data-type-definition)。
+
+对应的数据表达式的格式：
+- `<{type}>|{suffixes}` - 其中 `{type}` 匹配类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
+- `<{type}.{subtypes}>|{suffixes}` - 其中 `{type}` 匹配类型名，`{subtypes}` 匹配点号分隔的一组子类型名，`{suffixes}` 匹配逗号分隔的一组后缀。
+
+对应的数据表达式的示例：
+- `<event>|country,crisis`
+
+#### SuffixAwareLocalisation {#data-type-suffix-aware-localisation}
+
+由基础本地化引用和逗号分隔的后缀列表组成。匹配时同时验证本地化引用和后缀。如果后缀列表为空，则退化为普通的 [Localisation](#data-type-localisation)。
+
+对应的数据表达式的格式：
+- `localisation|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
+
+对应的数据表达式的示例：
+- `localisation|name,desc`
+
+#### SuffixAwareSyncedLocalisation {#data-type-suffix-aware-synced-localisation}
+
+由基础同步本地化引用和逗号分隔的后缀列表组成。匹配时同时验证同步本地化引用和后缀。如果后缀列表为空，则退化为普通的 [SyncedLocalisation](#data-type-synced-localisation)。
+
+对应的数据表达式的格式：
+- `localisation_synced|{suffixes}` - 其中 `{suffixes}` 匹配逗号分隔的一组后缀。
 
 ## 规则表达式 {#config-expressions}
 
