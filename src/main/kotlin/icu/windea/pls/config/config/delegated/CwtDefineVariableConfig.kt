@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulators.CwtConfigManipulator
 
 /**
  * 定值变量规则。
@@ -42,6 +43,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
  * @property name 规则名称（即变量名）。等同于 [variable]。
  * @property namespace 命名空间。
  * @property variable 变量名。
+ * @property configForDeclaration 经过处理后的顶级成员规则，可以直接用于确定定义声明的结构。
  */
 interface CwtDefineVariableConfig : CwtDefineConfig {
     @FromName
@@ -49,6 +51,8 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
 
     override val namespace: String
     val variable: String
+
+    val configForDeclaration: CwtPropertyConfig?
 
     interface Resolver {
         /** 由属性规则解析为定值变量规则。 */
@@ -73,5 +77,11 @@ private class CwtDefineVariableConfigImpl(
     override val namespace: String,
     override val variable: String,
 ) : UserDataHolderBase(), CwtDefineVariableConfig {
+    override val configForDeclaration: CwtPropertyConfig? by lazy { computeConfigForDeclaration() }
+
+    private fun computeConfigForDeclaration(): CwtPropertyConfig {
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    }
+
     override fun toString() = "CwtDefineVariableConfigImpl(namespace=$namespace, variable=$variable)"
 }
