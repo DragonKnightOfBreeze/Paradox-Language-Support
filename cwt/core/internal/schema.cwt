@@ -648,7 +648,7 @@ $$options = {
     ####
     #### Specifies the parsing/rendering mode for color values.
     ####
-    #### Applicable to: Configs corresponding to definition members that carry color information.
+    #### Applicable to: Configs corresponding to definition members (including the root property) that carry color information.
     ####
     #### Example: `## color_type = rgb`
     color_type

@@ -1,0 +1,57 @@
+single_alias[int_array] = {
+    ## cardinality = 0..inf
+    int
+}
+
+single_alias[float_array] = {
+    ## cardinality = 0..inf
+    float
+}
+
+single_alias[scalar_array] = {
+    ## cardinality = 0..inf
+    scalar
+}
+
+## color_type = rgb
+single_alias[color_type_rgb] = {
+    ## cardinality = 3..3
+    float
+}
+
+## color_type = hex
+single_alias[color_hex] = scalar
+
+## color_type = rgb
+single_alias[color_type_rgb] = {
+    ## cardinality = 3..3
+    float
+}
+
+## color_type = rgb
+single_alias[color_type_rgba] = {
+    ## cardinality = 3..4
+    float
+}
+
+## color_type = hsv
+single_alias[color_type_hsv] = {
+    ## cardinality = 3..3
+    float
+}
+
+## color_type = hsv
+single_alias[color_type_hsva] = {
+    ## cardinality = 3..4
+    float
+}
+
+single_alias[coordinate_2d] = {
+    ## cardinality = 2..2
+    float
+}
+
+single_alias[coordinate_3d] = {
+    ## cardinality = 3..3
+    float
+}
