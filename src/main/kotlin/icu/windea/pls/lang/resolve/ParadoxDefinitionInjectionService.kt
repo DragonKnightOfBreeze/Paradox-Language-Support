@@ -10,6 +10,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -78,11 +79,12 @@ object ParadoxDefinitionInjectionService {
         val typeKey = definitionInjectionInfo.target.orEmpty() // use target name as type key
 
         val result = mutableListOf<CwtSubtypeConfig>()
+        val context = CwtSubtypeConfigMatchContext(typeConfig.configGroup, result, typeKey, options)
         for (subtypeConfig in subtypes.values) {
-            val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
+            val matched = ParadoxConfigMatchService.matchesSubtype(context, element, subtypeConfig)
             if (matched) result += subtypeConfig
         }
-        // processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.1.3 commented out since it's unnecessary for injections
+
         return result
     }
 

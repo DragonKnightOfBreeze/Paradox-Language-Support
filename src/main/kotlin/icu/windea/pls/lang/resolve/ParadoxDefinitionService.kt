@@ -21,6 +21,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -149,15 +150,19 @@ object ParadoxDefinitionService {
         val typeKey = definitionInfo.typeKey
 
         val result = mutableListOf<CwtSubtypeConfig>()
+        val context = CwtSubtypeConfigMatchContext(typeConfig.configGroup, result, typeKey, options)
         for (subtypeConfig in subtypesConfig.values) {
-            val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
+            val matched = ParadoxConfigMatchService.matchesSubtype(context, element, subtypeConfig)
             if (matched) result += subtypeConfig
         }
-        // avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
-        if (!ParadoxMatchService.isDumb(options)) {
-            processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
-        }
-        return result.distinctBy { it.name } // it's necessary to distinct by name here since inherit subtypes may be duplicate
+
+        // NOTE 2.1.8 avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
+        if (ParadoxMatchService.isDumb(options)) return result
+
+        // NOTE 2.1.8 may inherit certain subtypes from super definitions
+        processSubtypeConfigsFromInherit(definitionInfo, result)
+        // NOTE 2.1.8 it's necessary to distinct by name here since inherit subtypes may be duplicate
+        return result.distinctBy { it.name }
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
