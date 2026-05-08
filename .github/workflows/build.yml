@@ -8,7 +8,6 @@
 # The workflow is triggered on push and pull_request events.
 #
 # GitHub Actions reference: https://help.github.com/en/actions
-##
 
 name: Build
 
@@ -231,43 +230,3 @@ jobs:
         with:
           name: plugin-verifier-report
           path: ${{ github.workspace }}/build/reports/pluginVerifier
-
-  # Prepare a draft release for GitHub Releases page for the manual verification
-  # If accepted and published, release workflow would be triggered
-  releaseDraft:
-    name: Release Draft
-    # if: ${{ github.ref_name == 'master' && github.event_name != 'pull_request' }}
-    # needs: [ build, test, verify ]
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      # Check out the current repository
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-
-      # Remove old release drafts
-      - name: Remove Old Release Drafts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH="${{ github.ref_name }}"
-          gh api repos/{owner}/{repo}/releases \
-            --jq ".[] | select(.draft == true and .target_commitish == \"${BRANCH}\") | .id" \
-            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
-
-      # Create new release draft - which is not publicly visible and requires manual acceptance
-      - name: Create Release Draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH="${{ github.ref_name }}"
-          gh release create v${{ needs.build.outputs.version }} \
-            --target "$BRANCH" \
-            --draft \
-            --title "v${{ needs.build.outputs.version }}" \
-            --notes "$(cat << 'EOM'
-          ${{ needs.build.outputs.changelog }}
-          EOM
-          )"
