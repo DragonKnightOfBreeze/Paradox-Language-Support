@@ -74,8 +74,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
     private val _tagToDescriptorMap = mapOf(
         "MARKER" to ParadoxScriptAttributesKeys.MARKER,
         "OPERATOR" to ParadoxScriptAttributesKeys.OPERATOR,
-        "ARGUMENT" to ParadoxScriptAttributesKeys.ARGUMENT,
         "KEYWORD" to ParadoxScriptAttributesKeys.KEYWORD,
+        "ARGUMENT" to ParadoxScriptAttributesKeys.ARGUMENT,
 
         "DEFINITION" to ParadoxScriptAttributesKeys.DEFINITION,
         "DEFINITION_NAME" to ParadoxScriptAttributesKeys.DEFINITION_NAME,

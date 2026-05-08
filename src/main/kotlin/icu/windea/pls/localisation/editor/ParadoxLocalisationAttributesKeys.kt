@@ -12,6 +12,7 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField val OPERATOR = create("PARADOX_LOCALISATION.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     @JvmField val MARKER = create("PARADOX_LOCALISATION.MARKER", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val COMMENT = create("PARADOX_LOCALISATION.COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+    @JvmField val KEYWORD = create("PARADOX_LOCALISATION.KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val NUMBER = create("PARADOX_LOCALISATION.NUMBER", DefaultLanguageHighlighterColors.NUMBER)
     @JvmField val LOCALE = create("PARADOX_LOCALISATION.LOCALE", DefaultLanguageHighlighterColors.KEYWORD)
     @JvmField val PROPERTY_KEY = create("PARADOX_LOCALISATION.PROPERTY_KEY", DefaultLanguageHighlighterColors.KEYWORD)

@@ -6,6 +6,7 @@ object ParadoxLocalisationAttributesKeySets {
     @JvmField val OPERATOR = arrayOf(K.OPERATOR)
     @JvmField val MARKER = arrayOf(K.MARKER)
     @JvmField val COMMENT = arrayOf(K.COMMENT)
+    @JvmField val KEYWORD = arrayOf(K.KEYWORD)
     @JvmField val NUMBER = arrayOf(K.NUMBER)
     @JvmField val LOCALE = arrayOf(K.LOCALE)
     @JvmField val PROPERTY_KEY = arrayOf(K.PROPERTY_KEY)

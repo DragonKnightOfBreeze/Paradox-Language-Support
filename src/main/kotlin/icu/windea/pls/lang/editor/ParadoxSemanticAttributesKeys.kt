@@ -23,8 +23,11 @@ object ParadoxSemanticAttributesKeys {
         }
     }
 
-    fun keyword(): TextAttributesKey {
-        return ParadoxScriptAttributesKeys.KEYWORD
+    fun keyword(language: Language? = null): TextAttributesKey {
+        return when(language) {
+            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.KEYWORD
+            else ->ParadoxScriptAttributesKeys.KEYWORD
+        }
     }
 
     fun text(language: Language? = null): TextAttributesKey {

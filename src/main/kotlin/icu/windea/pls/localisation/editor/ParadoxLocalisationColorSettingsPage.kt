@@ -6,6 +6,7 @@ import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeys
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.model.constants.PlsPreviewTexts
 
@@ -14,6 +15,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.operator"), ParadoxLocalisationAttributesKeys.OPERATOR),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.marker"), ParadoxLocalisationAttributesKeys.MARKER),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.comment"), ParadoxLocalisationAttributesKeys.COMMENT),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.keyword"), ParadoxLocalisationAttributesKeys.KEYWORD),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationAttributesKeys.NUMBER),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY),
@@ -49,6 +51,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _tagToDescriptorMap = mapOf(
         "MARKER" to ParadoxLocalisationAttributesKeys.MARKER,
         "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR,
+        "KEYWORD" to ParadoxCsvAttributesKeys.KEYWORD,
 
         "DEFINITION_REFERENCE" to ParadoxLocalisationAttributesKeys.DEFINITION_REFERENCE,
         "LOCALISATION_REFERENCE" to ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE,
