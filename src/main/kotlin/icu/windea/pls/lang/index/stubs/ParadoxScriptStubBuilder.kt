@@ -8,10 +8,10 @@ import com.intellij.psi.stubs.LightStubBuilder
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxScriptStubBuilder : LightStubBuilder() {
     override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {

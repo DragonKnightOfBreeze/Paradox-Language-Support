@@ -5,6 +5,7 @@ import com.intellij.ui.ColorUtil
 import com.intellij.util.ui.ColorIcon
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.awt.Color
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 文本颜色信息。

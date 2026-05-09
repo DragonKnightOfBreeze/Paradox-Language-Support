@@ -12,7 +12,7 @@ class ParadoxCommandSuffixNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.TEXT_KEY
+        return ParadoxLocalisationAttributesKeys.TEXT
     }
 
     open class Resolver {

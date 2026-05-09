@@ -82,11 +82,10 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val gameType = configGroup.gameType
         val isBuiltIn = source == CwtConfigGroupFileSource.BuiltIn
         val isShared = gameType == ParadoxGameType.Core
-        val title = when {
-            isShared -> PlsBundle.message("configGroup.title.shared", messageIndex)
-            else -> PlsBundle.message("configGroup.title", messageIndex)
+        val notification = when {
+            isShared -> PlsBundle.message("configGroup.notification.shared", messageIndex)
+            else -> PlsBundle.message("configGroup.notification", messageIndex, gameType.title)
         }
-        val notification = PlsBundle.message("configGroup.notification", title, gameType.title)
         val message = when {
             isEnabled || (isBuiltIn && isShared) -> PlsBundle.message("configGroup.notification.enabled", notification)
             else -> PlsBundle.message("configGroup.notification.disabled", notification)

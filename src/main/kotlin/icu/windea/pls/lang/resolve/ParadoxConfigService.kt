@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
@@ -21,8 +20,9 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigMergeService
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
@@ -46,7 +46,7 @@ import icu.windea.pls.ep.resolve.config.CwtConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.resolve.config.CwtRelatedConfigProvider
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
@@ -55,14 +55,13 @@ import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
 import icu.windea.pls.lang.match.toHashString
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.select.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxMemberRole
-import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -78,9 +77,9 @@ object ParadoxConfigService {
         createCachedValue(project) {
             // rootFile -> cacheKey -> configs
             // use soft values to optimize memory
-            createNestedCache<VirtualFile, _, _, Cache<String, List<CwtMemberConfig<*>>>> {
+            createNestedCache<VirtualFile, _, _> {
                 CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
-            }.withDependencyItems(PlsModificationTrackers.ConfigResolution)
+            }.withDependencyItems(ParadoxModificationTrackers.ConfigResolution)
         }
     }
 
@@ -348,7 +347,7 @@ object ParadoxConfigService {
 
         if (configs == null) return null // 不是作为参数的键，不作特殊处理
         if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigManipulator.mergeAndMatchValueConfig(configs, configExpression)
+        return CwtConfigMergeService.mergeAndMatchValueConfig(configs, configExpression)
     }
 
     private fun inlineConfigForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
@@ -357,11 +356,11 @@ object ParadoxConfigService {
         val valueExpression = config.valueExpression
         val result = when (valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
-                val inlined = CwtConfigManipulator.inlineSingleAlias(config)
+                val inlined = CwtConfigInlineService.inlineSingleAlias(config)
                 inlined?.to?.singletonList()
             }
             CwtDataTypes.AliasMatchLeft -> {
-                val inlined = CwtConfigManipulator.inlineAlias(config, key)
+                val inlined = CwtConfigInlineService.inlineAlias(config, key)
                 inlined
             }
             else -> null
@@ -384,9 +383,12 @@ object ParadoxConfigService {
         val contextConfigs = configContext.getConfigs(options)
         if (contextConfigs.isEmpty()) return emptyList()
 
-        // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
-        if (element is ParadoxDefinitionElement && configContext.isRootForDefinition()) {
-            if (ParadoxMatchService.acceptDefinition(options)) return contextConfigs
+        // 如果当前上下文是声明的根对应的脚本属性，且允许这样匹配，则直接返回所有上下文规则
+        // 如果不允许这样匹配的情况下，则直接返回空列表
+        // 如果允许匹配声明的根对应的脚本属性，且当前上下文是声明的根，则直接返回所有上下文规则
+        if (element is ParadoxScriptProperty && configContext.isDeclarationRoot()) {
+            if (ParadoxMatchService.forDeclarationRoot(options)) return contextConfigs
+            return emptyList()
         }
 
         val configGroup = configContext.configGroup

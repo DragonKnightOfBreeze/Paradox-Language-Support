@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon
 
 /**
- * 为游戏或模组目录、入口目录以及模组描述符文件，提供特殊图标。
+ * 为游戏或模组目录、入口目录以及模组描述符文件提供特殊图标。
  */
 class ParadoxFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {

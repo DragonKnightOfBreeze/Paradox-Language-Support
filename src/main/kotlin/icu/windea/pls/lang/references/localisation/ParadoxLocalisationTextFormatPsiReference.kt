@@ -13,9 +13,9 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxDefinitionIndexConstraint
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 文本格式的PSI引用。

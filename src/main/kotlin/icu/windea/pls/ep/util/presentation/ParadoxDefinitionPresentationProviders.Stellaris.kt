@@ -5,10 +5,10 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.annotations.WithDefinitionType
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.presentation.StellarisTechnologyCardBuilder
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 科技的图形展示（科技卡）。

@@ -9,11 +9,11 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupPostProcessor
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupProcessor
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 private val logger = logger<CwtConfigGroupImpl>()
 

@@ -14,17 +14,17 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.ParadoxCsvFileType
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.model.ParadoxEntryInfo
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
 import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
 import java.nio.file.Path
@@ -42,7 +42,7 @@ object ParadoxFileManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val entryPath = fileInfo.entryPath ?: return null
         val path = entryPath.resolve(scriptedVariablesPath)
-        return PlsFileManager.findDirectory(path)
+        return VirtualFileService.findDirectory(path)
     }
 
     /**
@@ -50,8 +50,8 @@ object ParadoxFileManager {
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val gamePath = PlsPathService.getInstance().getSteamGamePath(gameType.id, gameType.title) ?: return null
-        val mainEntryName = gameType.entryInfo.gameMain.firstOrNull()
-        val mainEntryPath = if (mainEntryName != null) gamePath.resolve(mainEntryName) else gamePath
+        val mainEntry = gameType.metadata.gameMainEntries.firstOrNull()
+        val mainEntryPath = if (mainEntry != null) gamePath.resolve(mainEntry) else gamePath
         val resultPath = mainEntryPath.resolve(path)
         return resultPath.formatted()
     }
@@ -61,7 +61,7 @@ object ParadoxFileManager {
      *
      * 主要入口目录中的文件不能引用次要入口目录中的文件中的内容。
      *
-     * @see ParadoxEntryInfo
+     * @see ParadoxGameTypeMetadata
      */
     fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = file?.fileInfo ?: return true

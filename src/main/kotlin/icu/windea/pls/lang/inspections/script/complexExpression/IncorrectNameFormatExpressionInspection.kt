@@ -1,0 +1,15 @@
+package icu.windea.pls.lang.inspections.script.complexExpression
+
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
+
+/**
+ * 不正确的 [ParadoxNameFormatExpression] 的代码检查。
+ */
+class IncorrectNameFormatExpressionInspection : IncorrectComplexExpressionBase() {
+    override fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean {
+        val dataType = config.configExpression.type
+        return dataType == CwtDataTypes.NameFormat
+    }
+}

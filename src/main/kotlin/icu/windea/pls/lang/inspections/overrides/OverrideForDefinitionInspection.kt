@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
@@ -17,6 +18,9 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * - 如果当前上下文中存在同名同类型的定义，那么就说存在对此定义的重载。
  * - 仅适用于项目中的、作为游戏或模组文件的、非内存非注入的脚本文件。
  * - 仅适用于非参数化的、非匿名的、作为脚本属性的定义。
+ *
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 class OverrideForDefinitionInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

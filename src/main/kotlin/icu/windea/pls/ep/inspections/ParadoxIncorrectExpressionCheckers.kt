@@ -20,7 +20,7 @@ import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameType
-import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.expression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.floatValue
 import icu.windea.pls.lang.psi.intValue
@@ -30,9 +30,6 @@ import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
-import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtType
@@ -189,7 +186,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
             }
         } else {
             // can also be complex trigger here, for some parameters can be ignored (like `count = xxx`)
-            // if(resultTriggerConfigs.none { !it.config.isBlock }) {
+            // if (resultTriggerConfigs.none { !it.config.isBlock }) {
             //    holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
             // }
         }

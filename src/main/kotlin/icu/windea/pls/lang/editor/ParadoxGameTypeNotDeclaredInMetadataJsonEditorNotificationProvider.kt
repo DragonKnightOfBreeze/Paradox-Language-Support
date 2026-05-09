@@ -10,11 +10,13 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider
+import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.analysis.ParadoxMetadataJsonBasedModMetadata
 import kotlinx.coroutines.launch
 import java.util.function.Function
 import javax.swing.JComponent
@@ -33,7 +35,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
         if (!rootFile.isValid) return null
 
         val metadata = rootInfo.metadata
-        if (metadata !is ParadoxMetadataJsonBasedModMetadataProvider.Metadata) return null
+        if (metadata !is ParadoxMetadataJsonBasedModMetadata) return null
         if (metadata.inferredGameType != null) return null
 
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
@@ -43,7 +45,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
             if (fileEditor !is TextEditor) return@f null
             val message = PlsBundle.message("editor.notification.2.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
-            val gameTypes = ParadoxGameType.getAllUseMetadataJson()
+            val gameTypes = ParadoxGameTypeManager.getGameTypesUseMetadataJson()
             for (gameType in gameTypes) {
                 panel.createActionLabel(PlsBundle.message("editor.notification.2.action", gameType.gameId, gameType.title)) action@{
                     declareGameType(project, gameType, metadata)
@@ -53,15 +55,19 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
         }
     }
 
-    private fun declareGameType(project: Project, gameType: ParadoxGameType, metadata: ParadoxMetadataJsonBasedModMetadataProvider.Metadata) {
-        val infoFile = metadata.infoFile
-        val newInfo = metadata.info.copy(gameId = gameType.gameId)
+    private fun declareGameType(project: Project, gameType: ParadoxGameType, metadata: ParadoxMetadataJsonBasedModMetadata) {
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             writeCommandAction(project, PlsBundle.message("editor.notification.2.action.command")) {
-                jsonMapper.writeValue(infoFile.getOutputStream(this), newInfo)
+                updateGameType(metadata, gameType)
             }
         }
+    }
+
+    private fun updateGameType(metadata: ParadoxMetadataJsonBasedModMetadata, gameType: ParadoxGameType) {
+        val infoFile = metadata.infoPath.toVirtualFile(refreshIfNeed = true) ?: return
+        val newInfo = metadata.info.copy(gameId = gameType.gameId)
+        JsonService.mapper.writeValue(infoFile.getOutputStream(this), newInfo)
 
         // 之后，`ParadoxFileListener` 将会监听到 `.metadata/metadata.json` 的更改，从而进行必要的刷新
     }

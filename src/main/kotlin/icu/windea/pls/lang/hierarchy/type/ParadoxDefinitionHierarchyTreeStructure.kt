@@ -21,11 +21,11 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxDefinitionHierarchyTreeStructure(
     project: Project,

@@ -15,7 +15,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.executeWriteCommand
@@ -24,6 +23,8 @@ import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -33,7 +34,6 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -150,10 +150,10 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
+                PlsNotificationGroups.global().createNotification(
                     PlsBundle.message("notification.generateLocalisationFile.success.title"),
-                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total)
+                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total),
+                    NotificationType.INFORMATION
                 ).notify(project)
             }
         }
@@ -166,12 +166,12 @@ class GenerateLocalisationFileAction : AnAction() {
     private fun isValidFile(file: VirtualFile): Boolean {
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
-        if (PlsFileManager.isLightFile(file)) return false
+        if (VirtualFileService.isLightFile(file)) return false
         return true
     }
 
     private fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
-        return PlsFileManager.findFiles(e, deep = true).filter { isValidFile(it) }
+        return VirtualFileService.findFiles(e, deep = true).filter { isValidFile(it) }
     }
 
     private fun findAllLocales(): Map<String, CwtLocaleConfig> {

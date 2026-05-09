@@ -2,7 +2,7 @@
 
 # Line comment
 
-settings = {
+examples = {
     boolean_value = yes
 
     # foo
@@ -20,7 +20,7 @@ settings = {
     color =  rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM]    parameter_condition = $PARAM$ ]
-    inline_math = @[  2 + ( $MAX$ - 1 + var )  ]
+    inline_math = @[    var + ($NUM$ * 2)   ]
 }
 
 # comment

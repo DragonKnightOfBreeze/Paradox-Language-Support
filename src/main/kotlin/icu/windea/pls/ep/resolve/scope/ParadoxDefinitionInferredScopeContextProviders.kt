@@ -16,9 +16,10 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -27,7 +28,6 @@ import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.manipulators.ParadoxScopeManipulator
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.index.ParadoxIndexInfoTypes
@@ -81,8 +81,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
         val configGroup = definition.definitionInfo?.configGroup
-        val scriptTracker = configGroup?.definitionScopeContextModificationTracker ?: PlsModificationTrackers.ScriptFile
-        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = configGroup?.definitionScopeContextModificationTracker ?: ParadoxModificationTrackers.ScriptFile
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -114,7 +114,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                             }
                         }
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -187,8 +187,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
-        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("common/on_actions/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -220,7 +220,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
                         val map = config.config.optionData.replaceScopes ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -301,8 +301,8 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
-        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -352,7 +352,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -373,7 +373,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeManipulator.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManipulationService.mergeScopeId(oldRefScope, newRefScope)
                                 if (refScope == null) {
                                     return@p false
                                 }
@@ -454,8 +454,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     @Suppress("UNUSED_PARAMETER")
     private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = PlsModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
-        return listOf(PlsModificationTrackers.DefinitionScopeContextInference, scriptTracker)
+        val scriptTracker = ParadoxModificationTrackers.scriptFileFromPatterns("events/**/*.txt")
+        return listOf(ParadoxModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -505,7 +505,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -526,7 +526,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeManipulator.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManipulationService.mergeScopeId(oldRefScope, newRefScope)
                                 if (refScope == null) {
                                     return@p false
                                 }

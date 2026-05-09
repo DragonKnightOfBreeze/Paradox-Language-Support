@@ -32,7 +32,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
         AssumePredicates.includeLocalEnv()
         addAdditionalAllowedRoots(
             PlsPathService.getInstance().getSteamGameWorkshopPath(gameType.steamId),
-            PlsPathService.getInstance().getGameDataPath(gameType.title),
+            PlsPathService.getInstance().getGameDataPath(gameType),
         )
     }
 

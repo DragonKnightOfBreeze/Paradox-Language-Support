@@ -1,21 +1,26 @@
 package icu.windea.pls.ep.analysis
 
-import com.intellij.openapi.vcs.FilePath
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.paths.matchesExtension
 
 class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
-    override fun isIgnoredFile(file: VirtualFile): Boolean {
-        return isIgnoredFile(file.name)
+    // based on:
+    // - ignoredFileNameSet
+
+    override fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
+        return path.fileName in PlsSettings.getInstance().state.ignoredFileNameSet
     }
 
-    override fun isIgnoredFile(filePath: FilePath): Boolean {
-        return isIgnoredFile(filePath.name)
-    }
+}
 
-    private fun isIgnoredFile(fileName: String): Boolean {
-        return fileName in PlsSettings.getInstance().state.ignoredFileNameSet
+class ParadoxTopLevelIgnoredFileProvider : ParadoxIgnoredFileProvider {
+    // rules:
+    // - ignore top level .txt files
+
+    override fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
+        return path.parent.isEmpty() && path.matchesExtension("txt")
     }
 }
 
@@ -25,23 +30,15 @@ class ParadoxForcedIgnoredFileProvider : ParadoxIgnoredFileProvider {
     // - credits.txt
     // - 99_README_CONCEPTS.txt
 
-    override fun isIgnoredFile(file: VirtualFile): Boolean {
-        return isIgnoredFile(file.name)
-    }
-
-    override fun isIgnoredFile(filePath: FilePath): Boolean {
-        return isIgnoredFile(filePath.name)
-    }
-
-    private fun isIgnoredFile(fileName: String): Boolean {
-        val name = fileName.lowercase()
-        when {
-            name == "readme.txt" -> return true
-            name == "changelog.txt" -> return true
-            name == "license.txt" -> return true
-            name == "credits.txt" -> return true
-            name.matchesRegex("""(?:\d+_)?readme(?:_\w+)?.txt""") -> return true
-            else -> return false
+    override fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
+        val fileName = path.fileName.lowercase()
+        return when {
+            fileName == "readme.txt" -> true
+            fileName == "changelog.txt" -> true
+            fileName == "license.txt" -> true
+            fileName == "credits.txt" -> true
+            fileName.matchesRegex("""(?:\d+_)?readme(?:_\w+)?.txt""") -> true
+            else -> false
         }
     }
 }

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
@@ -9,30 +7,27 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.resolve.ParadoxDefineService
+import icu.windea.pls.lang.search.ParadoxDefineNamespaceSearch
+import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxDefineInfo
+import icu.windea.pls.model.ParadoxDefineNamespaceInfo
+import icu.windea.pls.model.ParadoxDefineVariableInfo
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptRootBlock
-import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
@@ -56,9 +51,13 @@ object ParadoxDefineManager {
         return if (variable == null) namespace else "$namespace.$variable"
     }
 
+    fun splitExpression(expression: String): Tuple2<String, String?> {
+        val index = expression.indexOf('.')
+        if (index == -1) return expression to null
+        return expression.substring(0, index) to expression.substring(index + 1)
+    }
+
     fun getExpression(element: ParadoxScriptProperty): String? {
-        val stub = runSmartReadAction { getStub(element) }
-        stub?.let { return getExpression(stub.namespace, stub.variable) }
         return getInfo(element)?.expression
     }
 
@@ -68,54 +67,36 @@ object ParadoxDefineManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val file = element.containingFile
-                val value = resolveInfo(element, file)
+                val value = ParadoxDefineService.resolveInfo(element, file)
                 value.withDependencyItems(file)
             }
         }
     }
 
-    private fun resolveInfo(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
-        resolveInfoFromStub(element)?.let { return it }
-        return resolveInfoFromPsi(element, file)
+    fun getNamespaceInfo(element: ParadoxScriptProperty): ParadoxDefineNamespaceInfo? {
+        return getInfo(element) as? ParadoxDefineNamespaceInfo
     }
 
-    private fun resolveInfoFromStub(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        val stub = getStub(element) ?: return null
-        return ParadoxDefineInfo(stub.namespace, stub.variable, stub.gameType)
+    fun getVariableInfo(element: ParadoxScriptProperty): ParadoxDefineVariableInfo? {
+        return getInfo(element) as? ParadoxDefineVariableInfo
     }
 
-    private fun resolveInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefineInfo? {
-        if (!isDefineFile(file)) return null
-        val gameType = selectGameType(file) ?: return null
-        val parent = element.parent
-        if (parent is ParadoxScriptRootBlock) {
-            val namespace = element.name
-            if (namespace.isEmpty() || namespace.isParameterized()) return null
-            return ParadoxDefineInfo(namespace, null, gameType)
-        } else if (parent is ParadoxScriptBlock) {
-            val namespaceElement = parent.parent
-            if (namespaceElement !is ParadoxScriptProperty) return null
-            if (namespaceElement.parent !is ParadoxScriptRootBlock) return null
-            val namespace = namespaceElement.name
-            if (namespace.isEmpty() || namespace.isParameterized()) return null
-            val variable = element.name
-            if (variable.isEmpty() || variable.isParameterized()) return null
-            return ParadoxDefineInfo(namespace, variable, gameType)
-        }
-        return null
-    }
-
-    fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.Define? {
-        return element.greenStub?.castOrNull()
-    }
-
-    fun findDefineElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
+    @Suppress("unused")
+    fun findDefineNamespaceElement(namespace: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
+        if (namespace.isEmpty()) return null
         val defineSelector = selector(project, contextElement).define().contextSensitive()
-        return ParadoxDefineSearch.search(expression, defineSelector).find()
+        return ParadoxDefineNamespaceSearch.search(namespace, defineSelector).find()
     }
 
-    fun findDefineValueElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptValue? {
-        val defineElement = findDefineElement(expression, contextElement, project) ?: return null
-        return defineElement.propertyValue
+    fun findDefineVariableElement(namespace: String, variable: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
+        if (namespace.isEmpty() || variable.isEmpty()) return null
+        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        return ParadoxDefineVariableSearch.search(namespace, variable, defineSelector).find()
+    }
+
+    fun findDefineVariableElement(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptProperty? {
+        val (namespace, variable) = splitExpression(expression)
+        if (variable == null) return null
+        return findDefineVariableElement(namespace, variable, contextElement, project)
     }
 }

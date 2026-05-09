@@ -111,7 +111,7 @@ class ChangeLocalisationLocaleIntentionTest : BasePlatformTestCase() {
     fun testAvailable_multipleLocalesInFile() {
         val intentionName = PlsBundle.message("intention.changeLocalisationLocale")
         markFileInfo(gameType, "localisation/test.yml")
-        myFixture.configureByText("locale.test.yml", 
+        myFixture.configureByText("locale.test.yml",
             "l_english:\n key: \"English\"\n\n<caret>l_german:\n key: \"Deutsch\"")
         val intention = myFixture.findSingleIntention(intentionName)
         assertNotNull(intention)

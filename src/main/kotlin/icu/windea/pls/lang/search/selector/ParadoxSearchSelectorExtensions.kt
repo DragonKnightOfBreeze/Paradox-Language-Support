@@ -1,11 +1,9 @@
 package icu.windea.pls.lang.search.selector
 
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.letIf
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxDefineManager
@@ -57,9 +55,9 @@ fun <S : ParadoxSearchSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S 
     return this
 }
 
-fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
-    return filterBy { element == null || !element.isSamePosition(it) }
-}
+// fun <S : ParadoxSearchSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
+//     return filterBy { element == null || !element.isSamePosition(it) }
+// }
 
 @JvmName("distinctByScriptedVariableName")
 fun <S : ParadoxSearchSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {

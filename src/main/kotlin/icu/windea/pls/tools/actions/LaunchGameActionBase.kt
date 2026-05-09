@@ -7,8 +7,8 @@ import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class LaunchGameActionBase : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

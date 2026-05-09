@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.dynamic
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
     /**

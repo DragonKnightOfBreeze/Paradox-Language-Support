@@ -13,7 +13,7 @@ class NavigateToOverridingDefinitionsFix(
 ) : NavigateToFix(target, elements) {
     override fun getText() = PlsBundle.message("fix.navigateTo.overridingDefinitions.name")
 
-    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.overridingDefinitions.title", key)
+    override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.overridingDefinitions.popup.title", key)
 
     override fun getPopupText(editor: Editor, value: PsiElement): String {
         val file = value.containingFile ?: return PlsBundle.message("fix.navigate.popup.text.0", key)

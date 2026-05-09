@@ -2,9 +2,11 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -24,6 +26,10 @@ import icu.windea.pls.script.psi.ParadoxDefinitionElement
  * @property rootKeys 一组顶级键。
  * @property typeConfig 对应的类型规则。
  * @property memberPath 成员路径。作为文件的定义的成员路径始终为空。
+ *
+ * @see CwtTypeConfig
+ * @see CwtDeclarationConfig
+ * @see CwtExtendedDefinitionConfig
  */
 data class ParadoxDefinitionInfo(
     override val source: ParadoxDefinitionSource,

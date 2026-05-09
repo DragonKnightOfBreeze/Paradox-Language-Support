@@ -10,15 +10,15 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.settings.PlsSettingsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 
 /**
- * 插件的全局设置。可以在插件的对应设置页面中进行配置。
+ * 插件的全局设置。
  */
 @Service
 @State(name = "PlsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
@@ -97,7 +97,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     }
 
     /**
-     * @property completeVariableNames 是否补全效果子句中现有的变量名称。
+     * @property completeVariableNames 是否在效果子句中补全已有的变量名称。
      * @property completeInlineScriptUsages 是否补全内联脚本用法。
      * @property completeDefinitionInjectionExpressions 是否补全定义注入表达式。
      * @property completeWithValue 如有可能，应用代码补全后，将会自动插入常量值或花括号。
@@ -111,6 +111,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
         var completeScriptedVariableNames by property(true)
         var completeDefinitionNames by property(true)
         var completeLocalisationNames by property(true)
+        var completeDefineNames by property(true)
         var completeVariableNames by property(true)
         var completeInlineScriptUsages by property(true)
         var completeDefinitionInjectionExpressions by property(true)
@@ -136,12 +137,16 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      * @property localisationStrategy 生成本地化时，生成本地化文本的策略。
      * @property localisationStrategyText 生成本地化时，如果本地化文本要用特定文本填充，这个特定文本是什么。
      * @property localisationStrategyLocale 生成本地化时，如果本地化文本要用来自特定语言环境的本地化文本填充，这个特定语言环境是什么。
+     * @property blankLineBetweenLocalisationGroups 生成本地化时，是否在分组之间添加一个空行。
+     * @property moveIntoLocalisationGroups 生成本地化时，将名字与分组名匹配的本地化移入对应的分组。
      */
     @Tag("generation")
     class GenerationState : BaseState() {
         var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
+        var blankLineBetweenLocalisationGroups by property(true)
+        var moveIntoLocalisationGroups by property(true)
     }
 
     /**

@@ -100,7 +100,7 @@ CWT 拥有三级注释系统，这是它区别于 Paradox Script 的主要特征
 
 **选项注释** 以 `##` 开头，用于为紧随其后的成员（属性、值或块）附加元信息。选项注释的内容语法与属性一致，采用 `<optionKey> <sep> <optionValue>` 的形式。常见的选项注释包括 `## cardinality = 0..1`（声明基数约束）、`## severity = warning`（声明检查严重级别）、`## push_scope = country`（声明推入的作用域）等。
 
-**文档注释** 以 `###` 开头，用于为成员提供说明文本，这些文本会在代码补全和快速文档中展示。特别地，以 `####`（或更多 `#`）开头的文档注释，插件会将其内容直接渲染为 HTML。
+**文档注释** 以 `###` 开头，用于为成员提供说明文本，这些文本会在代码补全和快速文档中展示。特别地，对于以 `####`（或更多 `#`）开头的文档注释，插件会将注释文本视为 Markdown 文本。
 
 ### 转义 {#cwt-escaping}
 
@@ -228,20 +228,18 @@ Paradox Script 在 CWT 的基础值类型之上，增加了若干特有的值类
 @var = 1
 
 # Line comment
-settings = {
+examples = {
     boolean_value = yes
     number_value = 1.0
     number_value = @var
     string_value = Foo
     string_value = "Foo\n bar "
-    values = {
-        foo = bar
-    }
     values = { 1 2 3 }
+    values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM] parameter_condition = $PARAM$ ]
-    inline_math = @[ 2 + ( $MAX$ - 1 + var ) ]
+    inline_math = @[ var + ($NUM$ * 2) ]
 }
 ```
 
@@ -359,11 +357,11 @@ l_english:
  text:0 "Value"
  text_multiline:0 "Value\nNew line"
  text_with_colorful_text:0 "Colorful text: §RRed text§!"
- text_with_parameter:0 "Parameter: $KEY$ and $KEY|Y$"
+ text_with_parameter:0 "Parameter: $KEY$ and $WITH_COLOR|Y$"
  text_with_scripted_variable_reference:0 "Scripted variable: $@var$"
  text_with_command:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
  text_with_icon:0 "Icon: £unity£ and £leader_skill|3£"
- text_with_concept_command:0 "Concept: ['concept', concept text] ['civic:some_civic']"
+ text_with_concept_command:0 "Concept command: ['concept', concept text] ['civic:some_civic']"
  text_with_text_format:0 "Text format: #v text#!"
  text_with_text_icon:0 "Text icon: @icon!"
 ```

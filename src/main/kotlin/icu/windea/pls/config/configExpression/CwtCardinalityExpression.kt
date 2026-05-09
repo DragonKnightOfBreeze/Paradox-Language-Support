@@ -13,13 +13,22 @@ import icu.windea.pls.core.cache.CacheBuilder
  * 用于约束定义成员的出现次数，驱动代码检查、代码补全等功能。
  * 支持宽松校验与无限上限。
  *
- * 用 `min..max` 表示允许的出现次数范围，`~` 为宽松标记，`inf` 表示无限。
+ * 语法与约定：
+ * - 格式为 `{min}..{max}`，其中 `{min}` 和 `{max}` 分别表示下限和上限。
+ * - 上下限可以为普通格式（如 `1`），也可以为宽松格式（如 `~1`）。
+ * - 上限可以为无限（`inf`，不区分大小写）。
+ * - 默认下限为 `0`，默认上限为 `inf`。如果无法解析上下限，则会使用各自的默认值。
  *
- * 适用对象：`## cardinality` 选项的值。
+ * ### 适用对象
  *
- * CWTools 兼容性：兼容。
+ * `## cardinality` 选项的值。
  *
- * 示例：
+ * ### CWTools 兼容性
+ *
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * ## cardinality = 0..1
  * ## cardinality = 0..inf
@@ -28,23 +37,23 @@ import icu.windea.pls.core.cache.CacheBuilder
  *
  * @property min 最小值。
  * @property max 最大值，`null` 表示无限。
- * @property relaxMin 宽松标记。当为 `true` 时，小于最小值仅视为（弱）警告而非错误。
- * @property relaxMax 宽松标记。当为 `true` 时，大于最大值仅视为（弱）警告而非错误。
+ * @property lenientMin 最小值的宽松标记。如果为 `true`，小于最小值仅视为（弱）警告而非错误。
+ * @property lenientMax 最大值的宽松标记。如果为 `true`，大于最大值仅视为（弱）警告而非错误。
  *
  * @see CwtOptionDataHolder.cardinality
  */
 interface CwtCardinalityExpression : CwtConfigExpression {
     val min: Int
     val max: Int?
-    val relaxMin: Boolean
-    val relaxMax: Boolean
+    val lenientMin: Boolean
+    val lenientMax: Boolean
 
     operator fun component1() = min
     operator fun component2() = max
-    operator fun component3() = relaxMin
-    operator fun component4() = relaxMax
+    operator fun component3() = lenientMin
+    operator fun component4() = lenientMax
 
-    fun isRequired() = !relaxMin && min > 0
+    fun isRequired() = !lenientMin && min > 0
 
     interface Resolver {
         fun resolveEmpty(): CwtCardinalityExpression
@@ -83,9 +92,9 @@ private class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Re
             logger.warn("Invalid cardinality expression $expressionString, fallback to default")
             return emptyExpression
         }
-        val relaxMin = s1.startsWith('~')
-        val relaxMax = s2.startsWith('~')
-        return CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin, relaxMax)
+        val lenientMin = s1.startsWith('~')
+        val lenientMax = s2.startsWith('~')
+        return CwtCardinalityExpressionImpl(expressionString, min, max, lenientMin, lenientMax)
     }
 }
 
@@ -93,8 +102,8 @@ private class CwtCardinalityExpressionImpl(
     override val expressionString: String,
     override val min: Int,
     override val max: Int?,
-    override val relaxMin: Boolean,
-    override val relaxMax: Boolean
+    override val lenientMin: Boolean,
+    override val lenientMax: Boolean
 ) : CwtCardinalityExpression {
     override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()

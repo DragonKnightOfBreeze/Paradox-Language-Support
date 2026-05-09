@@ -29,7 +29,7 @@ class OptimizerRelaxTest {
     // ========== List ==========
     @Test
     fun testList_kotlin_empty_returnsSelf() {
-        val optimizer = OptimizerRegistry.forList<String>()
+        val optimizer = OptimizerFactory.forList<String>()
         val input = emptyList<String>() // kotlin.collections.EmptyList
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -37,7 +37,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testList_kotlin_singleton_returnsSelf() {
-        val optimizer = OptimizerRegistry.forList<String>()
+        val optimizer = OptimizerFactory.forList<String>()
         val input = listOf("a") // kotlin.collections.SingletonList
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -45,7 +45,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testList_jdk_immutable_returnsSelf() {
-        val optimizer = OptimizerRegistry.forList<String>()
+        val optimizer = OptimizerFactory.forList<String>()
         val input = java.util.List.of("a", "b") // java.util.ImmutableCollections$ListN
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -54,7 +54,7 @@ class OptimizerRelaxTest {
     // ========== Set ==========
     @Test
     fun testSet_kotlin_empty_returnsSelf() {
-        val optimizer = OptimizerRegistry.forSet<String>()
+        val optimizer = OptimizerFactory.forSet<String>()
         val input = emptySet<String>() // kotlin.collections.EmptySet
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -62,7 +62,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testSet_kotlin_singleton_returnsSelf() {
-        val optimizer = OptimizerRegistry.forSet<String>()
+        val optimizer = OptimizerFactory.forSet<String>()
         val input = setOf("a") // kotlin.collections.SingletonSet
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -70,7 +70,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testSet_jdk_immutable_returnsSelf() {
-        val optimizer = OptimizerRegistry.forSet<String>()
+        val optimizer = OptimizerFactory.forSet<String>()
         val input = java.util.Set.of("a", "b") // java.util.ImmutableCollections$SetN
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -79,7 +79,7 @@ class OptimizerRelaxTest {
     // ========== Map ==========
     @Test
     fun testMap_kotlin_empty_returnsSelf() {
-        val optimizer = OptimizerRegistry.forMap<String, Int>()
+        val optimizer = OptimizerFactory.forMap<String, Int>()
         val input = emptyMap<String, Int>() // kotlin.collections.EmptyMap
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -87,7 +87,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testMap_kotlin_singleton_returnsSelf() {
-        val optimizer = OptimizerRegistry.forMap<String, Int>()
+        val optimizer = OptimizerFactory.forMap<String, Int>()
         val input = mapOf("a" to 1) // kotlin.collections.SingletonMap
         val result = optimizer.optimize(input)
         assertSame(input, result)
@@ -95,7 +95,7 @@ class OptimizerRelaxTest {
 
     @Test
     fun testMap_jdk_immutable_returnsSelf() {
-        val optimizer = OptimizerRegistry.forMap<String, Int>()
+        val optimizer = OptimizerFactory.forMap<String, Int>()
         val input = java.util.Map.of("a", 1) // java.util.ImmutableCollections$Map1
         val result = optimizer.optimize(input)
         assertSame(input, result)

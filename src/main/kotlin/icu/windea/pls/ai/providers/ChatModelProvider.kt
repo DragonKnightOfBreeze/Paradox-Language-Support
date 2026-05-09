@@ -4,14 +4,14 @@ import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.StreamingChatModel
 
 /**
- * AI 服务提供者（目前不作为 EP）。
+ * AI 服务的提供者。
  *
  * 注意：IDE 自身的代理设置会被自动应用，因此插件不用专门配置。
  *
  * @see ChatModelProviderType
  * @see ChatModelProvider.Options
  */
-interface ChatModelProvider<S : ChatModelProvider.Options> {
+sealed interface ChatModelProvider<S : ChatModelProvider.Options> {
     val type: ChatModelProviderType
 
     val options: S?
@@ -26,7 +26,7 @@ interface ChatModelProvider<S : ChatModelProvider.Options> {
     fun checkStatus(options: S? = this.options): StatusResult
 
     /**
-     * AI 服务提供者的选项。再次封装一层,可由用户配置或者来自环境变量。
+     * AI 服务提供者的选项。可由用户配置或者来自环境变量。
      */
     interface Options
 

@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -13,8 +14,6 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
@@ -25,14 +24,18 @@ import icu.windea.pls.cwt.psi.CwtProperty
 /**
  * 行规则。
  *
- * 用于描述 CSV 文件中每一行允许的列的列名与可选值，从而在 CSV 文件中提供代码补全、代码检查等功能。
+ * 用于描述 CSV 文件中每一行允许的列的列名与可选值，从而提供代码补全、代码检查等功能。
  * 按照路径模式匹配 CSV 文件。
  *
- * 路径定位：`rows/row[{name}]`，`{name}` 匹配规则名称（行名）。
+ * 路径定位：
+ * - `rows/row[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * rows = {
  *     row[component_template] = {
@@ -46,7 +49,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 名称（行名）。
+ * @property name 规则名称。
  * @property columns 各列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  */

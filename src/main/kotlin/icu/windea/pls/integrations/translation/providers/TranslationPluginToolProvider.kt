@@ -15,13 +15,14 @@ import kotlinx.coroutines.withContext
 /**
  * 参见：[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)
  */
+@Suppress("UnstableApiUsage")
 class TranslationPluginToolProvider : TranslationToolProvider {
     override fun isAvailable(): Boolean {
         return true // see: pls-extension-translation.xml
     }
 
     override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslationCallback) {
-        val sourceLang = if(sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
+        val sourceLang = if (sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
         val targetLang = Lang[targetLocale]
         val translateService = TranslateService.getInstance()
 

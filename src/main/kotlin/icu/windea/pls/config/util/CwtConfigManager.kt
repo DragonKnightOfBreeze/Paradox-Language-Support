@@ -9,7 +9,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
@@ -19,7 +18,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
@@ -205,11 +204,6 @@ object CwtConfigManager {
         }
     }
 
-    fun isRemoved(config: CwtConfig<*>): Boolean {
-        if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
-        return config.config.optionData.apiStatus == CwtConfigApiStatus.Removed
-    }
-
     fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
         if (constKey != null) return setOf(constKey)
@@ -248,7 +242,7 @@ object CwtConfigManager {
             is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
             }
-            is CwtDirectiveConfig -> {
+            is CwtMacroConfig -> {
                 config.config.to.singletonListOrEmpty()
             }
             else -> {

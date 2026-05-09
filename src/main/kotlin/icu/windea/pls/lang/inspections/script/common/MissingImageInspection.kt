@@ -12,10 +12,10 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContextBuilder
+import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContextBuilder
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty

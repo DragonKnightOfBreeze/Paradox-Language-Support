@@ -32,6 +32,7 @@ import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
@@ -40,6 +41,18 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 
 object CwtConfigService {
+    /**
+     * @see CwtConfigFilterProvider.filter
+     */
+    @Optimized
+    fun filter(config: CwtConfig<*>): Boolean {
+        val eps = CwtConfigFilterProvider.EP_NAME.extensionList
+        eps.forEachFast f@{ ep ->
+            if (ep.filter(config)) return true
+        }
+        return false
+    }
+
     /**
      * @see CwtConfigPostProcessor.postProcess
      */
@@ -161,7 +174,7 @@ object CwtConfigService {
         val length = configPath.length
         val s0 = configPath.get(0)
 
-        // depth 1: single_alias[*], alias[*], directive[*]
+        // depth 1: single_alias[*], alias[*], macro[*]
         if (length == 1 && isProperty) {
             return when {
                 s0.surroundsWith("single_alias[", "]") -> CwtConfigTypes.SingleAlias
@@ -174,7 +187,7 @@ object CwtConfigService {
                         else -> CwtConfigTypes.Alias
                     }
                 }
-                s0.surroundsWith("directive[", "]") -> CwtConfigTypes.Directive
+                s0.surroundsWith("macro[", "]") -> CwtConfigTypes.Macro
                 else -> null
             }
         }
@@ -204,6 +217,14 @@ object CwtConfigService {
                 }
             }
             "rows" -> if (isProperty && length == 2 && configPath.get(1).surroundsWith("row[", "]")) CwtConfigTypes.Row else null
+            "defines" -> {
+                if (!isProperty) return null
+                when (length) {
+                    2 -> CwtConfigTypes.DefineNamespace
+                    3 -> CwtConfigTypes.DefineVariable
+                    else -> null
+                }
+            }
             "enums" -> {
                 val s1 = configPath.get(1)
                 when {
@@ -242,11 +263,11 @@ object CwtConfigService {
             "definitions" -> if (length == 2) CwtConfigTypes.ExtendedDefinition else null
             "game_rules" -> if (length == 2) CwtConfigTypes.ExtendedGameRule else null
             "on_actions" -> if (length == 2) CwtConfigTypes.ExtendedOnAction else null
-            "inline_scripts" -> if (length == 2) CwtConfigTypes.ExtendedInlineScript else null
             "parameters" -> if (length == 2) CwtConfigTypes.ExtendedParameter else null
             // extended: length == 3, 不检查元素类型
             "complex_enum_values" -> if (length == 3) CwtConfigTypes.ExtendedComplexEnumValue else null
             "dynamic_values" -> if (length == 3) CwtConfigTypes.ExtendedDynamicValue else null
+            "inline_scripts" -> if (length == 2) CwtConfigTypes.ExtendedInlineScript else null
             else -> null
         }
     }
@@ -264,14 +285,14 @@ object CwtConfigService {
             CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
-            CwtConfigTypes.Directive -> text.removeSurroundingOrNull("directive[", "]")
+            CwtConfigTypes.Macro -> text.removeSurroundingOrNull("macro[", "]")
             else -> text
         }?.orNull()
     }
 
     fun getDocumentation(element: CwtMember): String? {
-        val ownedComments = CwtPsiManager.getOwnedComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
         return documentation
     }
 

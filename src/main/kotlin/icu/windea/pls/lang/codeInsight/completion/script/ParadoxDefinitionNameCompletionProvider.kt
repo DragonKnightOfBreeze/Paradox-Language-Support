@@ -35,7 +35,6 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.parentDefinition
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -48,7 +47,7 @@ import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isDefinitionName
 
 /**
- * 提供定义的名字的代码补全。
+ * 提供已有的定义的名字的代码补全。
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
@@ -97,10 +96,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.config = config
                     context.isKey = true
                     context.expressionTailText = ""
-                    // 排除与正在输入的同名的定义
                     // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it.name != element.name }
+                        .filterBy { it.name != keyword } // skip if name = input
                         .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)
@@ -124,7 +122,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     // 排除与正在输入的同名的定义
                     // 仅限作为属性的定义
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it.name != element.name } // 排除与正在输入的同名的
+                        .filterBy { it.name != keyword } // skip if name = input
                         .distinctByName()
                     ParadoxDefinitionSearch.searchProperty(null, type, selector).processAsync {
                         ParadoxCompletionManager.processDefinition(context, result, it)

@@ -1,0 +1,48 @@
+package icu.windea.pls.lang.resolve.complexExpression.nodes
+
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.isStatic
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.resolveElementWithConfig
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+
+class ParadoxStaticValueFieldNode(
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup,
+    val config: CwtLinkConfig
+) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxIdentifierNode {
+    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
+        return ParadoxSemanticAttributesKeys.valueField()
+    }
+
+    override fun getReference(element: ParadoxExpressionElement): Reference {
+        config.resolveElementWithConfig()
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
+        return Reference(element, rangeInExpression.shiftRight(offset), config)
+    }
+
+    class Reference(
+        element: PsiElement,
+        rangeInElement: TextRange,
+        config: CwtLinkConfig
+    ) : CwtConfigBasedPsiReference<CwtProperty>(element, rangeInElement, config), ParadoxIdentifierNode.Reference
+
+    open class Resolver {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxStaticValueFieldNode? {
+            if (text.isParameterized()) return null
+            val config = configGroup.links[text]?.takeIf { it.type.forValue() && it.isStatic } ?: return null
+            return ParadoxStaticValueFieldNode(text, textRange, configGroup, config)
+        }
+    }
+
+    companion object : Resolver()
+}

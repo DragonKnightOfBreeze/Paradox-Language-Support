@@ -3,10 +3,10 @@ package icu.windea.pls.lang.analysis
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider
@@ -17,52 +17,45 @@ import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.ParadoxRootMetadata
+import icu.windea.pls.model.analysis.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
+import java.nio.file.Path
 
 object ParadoxAnalysisService {
     /**
      * @see ParadoxIgnoredFileProvider.isIgnoredFile
      */
-    fun isIgnoredFile(file: VirtualFile): Boolean {
+    fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean {
         return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(file)
-        }
-    }
-
-    /**
-     * @see ParadoxIgnoredFileProvider.isIgnoredFile
-     */
-    fun isIgnoredFile(filePath: FilePath): Boolean {
-        return ParadoxIgnoredFileProvider.EP_NAME.extensionList.any { ep ->
-            ep.isIgnoredFile(filePath)
+            ep.isIgnoredFile(path, entry)
         }
     }
 
     /**
      * @see ParadoxRootMetadataProvider.get
      */
-    fun getRootMetadata(rootFile: VirtualFile): ParadoxRootMetadata? {
+    fun getRootMetadata(rootPath: Path): ParadoxRootMetadata? {
         return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootFile)
+            ep.get(rootPath)
         }
     }
 
     /**
      * @see ParadoxInferredGameTypeProvider.get
      */
-    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
+    fun getInferredGameType(rootPath: Path): ParadoxGameType? {
         return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.get(rootFile)
+            ep.get(rootPath)
         }
     }
 
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         // NOTE 2.1.7 invalid metadata is allowed here
-        val metadata = getRootMetadata(rootFile) ?: return null
+        val rootPath = rootFile.toNioPathOrNull() ?: return null
+        val metadata = getRootMetadata(rootPath) ?: return null
         val rootInfo = when (metadata) {
-            is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(metadata)
-            is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
+            is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(rootFile, metadata)
+            is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(rootFile, metadata)
         }
         return rootInfo
     }
@@ -72,8 +65,7 @@ object ParadoxAnalysisService {
         val (path, entry) = resolvePathAndEntry(file.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            isIgnoredFile(file) -> ParadoxFileGroup.Other
+            isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
@@ -85,8 +77,7 @@ object ParadoxAnalysisService {
         val (path, entry) = resolvePathAndEntry(filePath.path, isDirectory, rootInfo) ?: return null
         val group = when {
             isDirectory -> ParadoxFileGroup.Other
-            path.length <= 1 && entry.isEmpty() -> ParadoxFileGroup.Other
-            isIgnoredFile(filePath) -> ParadoxFileGroup.Other
+            isIgnoredFile(path, entry) -> ParadoxFileGroup.Other
             else -> ParadoxFileGroup.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path.normalize(), entry, group, rootInfo)
@@ -95,20 +86,25 @@ object ParadoxAnalysisService {
 
     private fun resolvePathAndEntry(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val entryInfo = rootInfo.gameType.entryInfo
-        val entryMap = when (rootInfo) {
-            is ParadoxRootInfo.Game -> entryInfo.gameEntryMap
-            is ParadoxRootInfo.Mod -> entryInfo.modEntryMap
+        val pathToRoot = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
+        val gameType = rootInfo.gameType
+        val entryPaths = when (rootInfo) {
+            is ParadoxRootInfo.Game -> gameType.metadata.gameEntryPaths
+            is ParadoxRootInfo.Mod -> gameType.metadata.modEntryPaths
         }
-        if (entryMap.isEmpty()) return relPath to ""
-        for ((entry, entryPath) in entryMap) {
-            val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
-            return ParadoxPath.resolve(resolved) to entry
+        if (entryPaths.isEmpty()) return pathToRoot to ""
+
+        for (entryPath in entryPaths) {
+            val resolved = entryPath.relativize(pathToRoot, wildcard = "*") ?: continue
+            return resolved to entryPath.path
         }
-        if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
-        if (filePath == rootInfo.infoFile?.path) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
-        return null // 2.0.7 null now
+
+        // 2.0.7 directories are allowed outside entry paths
+        if (isDirectory) return pathToRoot to ""
+        // 2.0.7 info files (e.g., `descriptor.mod`) are allowed outside entry paths
+        if (pathToRoot.path == rootInfo.infoPresentablePath) return pathToRoot to ""
+        // 2.0.7 null now
+        return null
     }
 
     fun resolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {

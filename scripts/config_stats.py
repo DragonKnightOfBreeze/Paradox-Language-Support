@@ -1,37 +1,38 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# config_stats.py — CWT config file statistics audit for Paradox Language Support.
-#
-# Walks the cwt/ directory tree and collects per-repository line metrics
-# for CWT config files (.cwt):
-#   - Total / min / max / average lines per file
-#   - Blank lines, comment lines, and code lines
-#
-# CWT has three kinds of comment lines:
-#   - Line comment:     starts with a single '#' (not '##')
-#   - Option comment:   starts with '##' (not '###') — carries metadata,
-#                        counted as CODE (not comment)
-#   - Doc comment:      starts with '###' or more '#'s — counted as comment
-#
-# Only line comments and doc comments are tallied as "comment lines".
-# Option comments (##) are considered part of the effective config and
-# therefore counted as code lines.
-#
-# Auto-generated files are detected and reported separately:
-#   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
-#   - Zero comments AND zero blank lines AND total > 500 lines
-#
-# Output modes:
-#   default   : per-repository detailed stats block
-#   --summary : condensed table with one row per repository
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/config_stats.py [--summary] [--markdown] [--output FILE]
+"""config_stats.py — CWT config file statistics audit for the plugin.
+
+Walks the cwt/ directory tree and collects per-repository line metrics
+for CWT config files (.cwt):
+  - Total / min / max / average lines per file
+  - Blank lines, comment lines, and code lines
+
+CWT has three kinds of comment lines:
+  - Line comment:     starts with a single '#' (not '##')
+  - Option comment:   starts with '##' (not '###') — carries metadata,
+                       counted as CODE (not comment)
+  - Doc comment:      starts with '###' or more '#'s — counted as comment
+
+Only line comments and doc comments are tallied as "comment lines".
+Option comments (##) are considered part of the effective config and
+therefore counted as code lines.
+
+Auto-generated files are detected and reported separately:
+  - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+  - Zero comments AND zero blank lines AND total > 500 lines
+
+Output modes:
+  default   : per-repository detailed stats block
+  --summary : condensed table with one row per repository
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/config_stats.py [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 

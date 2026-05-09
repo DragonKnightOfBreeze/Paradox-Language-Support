@@ -7,9 +7,9 @@ import com.intellij.ide.util.treeView.smartTree.Sorter
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.cwt.navigation.CwtNavigationManager
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.lang.psi.PlsPsiManager
 
 class CwtStructureViewModel(
     editor: Editor?,
@@ -22,7 +22,7 @@ class CwtStructureViewModel(
     override fun getRoot() = CwtFileTreeElement(psiFile as CwtFile)
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
+        return PsiService.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
     override fun isSuitable(element: PsiElement?): Boolean {

@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.codeInsight.documentation
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
@@ -8,9 +9,11 @@ import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.model.ParadoxDefineInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
@@ -37,6 +40,16 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
         }
 
         abstract fun doGetQuickDocText(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String?
+    }
+
+    abstract class Define : ParadoxQuickDocTextProviderBase() {
+        override fun getQuickDocText(element: PsiElement): String? {
+            if (!ParadoxPsiMatcher.isDefine(element)) return null
+            val defineInfo = element.defineInfo ?: return null
+            return doGetQuickDocText(element, defineInfo)
+        }
+
+        abstract fun doGetQuickDocText(element: ParadoxScriptProperty, defineInfo: ParadoxDefineInfo): String?
     }
 
     abstract class InlineScript : ParadoxQuickDocTextProviderBase() {

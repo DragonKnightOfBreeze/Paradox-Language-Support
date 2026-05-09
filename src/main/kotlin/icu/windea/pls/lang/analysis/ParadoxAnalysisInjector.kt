@@ -6,10 +6,10 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object ParadoxAnalysisInjector {

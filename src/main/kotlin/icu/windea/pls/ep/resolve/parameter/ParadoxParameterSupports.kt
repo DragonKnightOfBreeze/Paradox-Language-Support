@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.resolve.parameter
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -16,12 +15,12 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
 import icu.windea.pls.config.configGroup.scriptValueModificationTracker
-import icu.windea.pls.config.select.asProperty
 import icu.windea.pls.config.select.selectConfigScope
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
@@ -31,7 +30,7 @@ import icu.windea.pls.core.processAsync
 import icu.windea.pls.core.util.builders.DocumentationBuilder
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.isParameterized
@@ -47,9 +46,6 @@ import icu.windea.pls.lang.resolve.complexExpression.scriptValueNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.parentDefinition
-import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -60,7 +56,7 @@ import icu.windea.pls.lang.util.builders.appendPsiLinkOrUnresolved
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
-import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxConditionParameter
@@ -430,7 +426,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val readWriteAccess = ReadWriteAccess.Write
         val gameType = configGroup.gameType
         val project = configGroup.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
@@ -475,7 +471,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         // NOTE 2.1.0 这里目前不验证游戏类型
-        var inlineConfig: CwtDirectiveConfig? = null
+        var inlineConfig: CwtMacroConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1
         when (from) {
@@ -519,7 +515,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -568,7 +564,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
@@ -595,9 +591,9 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
+        val readWriteAccess = ReadWriteAccess.Write
         val gameType = config.configGroup.gameType
         val project = config.configGroup.project
         val result = ParadoxParameterLightElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
@@ -607,7 +603,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker {
-        return PlsModificationTrackers.InlineScripts
+        return ParadoxModificationTrackers.InlineScripts
     }
 
     override fun processContext(parameterElement: ParadoxParameterLightElement, onlyMostRelevant: Boolean, processor: (ParadoxDefinitionElement) -> Boolean): Boolean {

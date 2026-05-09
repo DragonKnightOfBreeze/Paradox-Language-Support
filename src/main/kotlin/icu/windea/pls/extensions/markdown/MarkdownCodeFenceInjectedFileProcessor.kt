@@ -1,10 +1,10 @@
 package icu.windea.pls.extensions.markdown
 
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
-import icu.windea.pls.ide.util.PlsFileManager
 
 /**
  * 用于为 Markdown 代码块注入文件信息，从而获取其中的规则上下文。
@@ -16,7 +16,7 @@ class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
         if (!PlsExtensionsSettings.getInstance().state.markdown.injectCodeBlocks) return true
 
         val vFile = file.virtualFile
-        if (PlsFileManager.isStubFile(vFile)) return true
+        if (VirtualFileService.isStubFile(vFile)) return true
         val element = MarkdownExtensionManager.getCodeFenceFromInjectedFile(file) ?: return true
         val injectedFileInfo = MarkdownExtensionManager.getInjectedFileInfoFromInjectedFile(element)
         ParadoxAnalysisInjector.injectFileInfo(vFile, injectedFileInfo)

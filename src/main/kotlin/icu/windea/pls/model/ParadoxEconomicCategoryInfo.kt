@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @property modifierCategory `modifier_category` 属性的值，并非 `modifier_categories.cwt` 中已定义的值。

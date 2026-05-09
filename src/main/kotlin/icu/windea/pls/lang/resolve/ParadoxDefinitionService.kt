@@ -17,17 +17,17 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.stringValue
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -150,15 +150,19 @@ object ParadoxDefinitionService {
         val typeKey = definitionInfo.typeKey
 
         val result = mutableListOf<CwtSubtypeConfig>()
+        val context = CwtSubtypeConfigMatchContext(typeConfig.configGroup, result, typeKey, options)
         for (subtypeConfig in subtypesConfig.values) {
-            val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
+            val matched = ParadoxConfigMatchService.matchesSubtype(context, element, subtypeConfig)
             if (matched) result += subtypeConfig
         }
-        // avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
-        if (!ParadoxMatchService.isDumb(options)) {
-            processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.3.1 may inherit certain subtypes from super definitions
-        }
-        return result.distinctBy { it.name } // it's necessary to distinct by name here since inherit subtypes may be duplicate
+
+        // NOTE 2.1.8 avoid relying on non-indexed file data (e.g., super definition) when indexing (through this may loss some information)
+        if (ParadoxMatchService.isDumb(options)) return result
+
+        // NOTE 2.1.8 may inherit certain subtypes from super definitions
+        processSubtypeConfigsFromInherit(definitionInfo, result)
+        // NOTE 2.1.8 it's necessary to distinct by name here since inherit subtypes may be duplicate
+        return result.distinctBy { it.name }
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
@@ -224,8 +228,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val key = resolveResult?.name ?: continue
-            return key
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            return resolveResult.name
         }
         return null
     }
@@ -237,8 +241,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val localisation = resolveResult?.element ?: continue
-            return localisation
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            return resolveResult.element
         }
         return null
     }
@@ -251,8 +255,8 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = ParadoxConfigExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            val localisations = resolveResult?.elements ?: continue
-            result.addAll(localisations)
+            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) continue
+            result.addAll(resolveResult.elements)
         }
         return result
     }
@@ -262,10 +266,10 @@ object ParadoxDefinitionService {
         val primaryImages = definitionInfo.primaryImages
         if (primaryImages.isEmpty()) return null // 没有或者规则不完善
         for (primaryImage in primaryImages) {
-            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            val file = resolved?.element?.castOrNull<PsiFile>()
-            if (file == null) continue
-            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
+            val file = resolveResult.element?.castOrNull<PsiFile>() ?: continue
+            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             return file
         }
         return null
@@ -277,9 +281,10 @@ object ParadoxDefinitionService {
         if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
         val result = mutableSetOf<PsiFile>()
         for (primaryImage in primaryImages) {
-            val resolved = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            val files = resolved?.elements?.filterIsInstance<PsiFile>() ?: continue
-            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
+            val resolveResult = ParadoxConfigExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
+            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
+            val files = resolveResult.elements.filterIsInstance<PsiFile>()
+            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(files)
         }
         return result
@@ -303,18 +308,18 @@ object ParadoxDefinitionService {
         if (allFastMatch) return listOf(file)
 
         // 需要依赖声明结构
-        return listOf(file, PlsModificationTrackers.ScriptFile)
+        return listOf(file, ParadoxModificationTrackers.ScriptFile)
     }
 
     fun getRelatedLocalisationKeyAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile)
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile)
     }
 
     fun getRelatedLocalisationAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
+        return listOf(element.containingFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
     }
 
     fun getRelatedImageAwareDependencies(element: ParadoxDefinitionElement): List<Any> {
-        return listOf(element.containingFile, PlsModificationTrackers.ScriptFile)
+        return listOf(element.containingFile, ParadoxModificationTrackers.ScriptFile)
     }
 }

@@ -8,13 +8,12 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
@@ -29,7 +28,7 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false
+        if (VirtualFileService.isLightFile(file.virtualFile)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file, injectable = true)
     }
@@ -38,9 +37,8 @@ class MissingLocaleInspection : LocalInspectionTool(), DumbAware {
         if (file !is ParadoxLocalisationFile) return null
 
         val fileName = file.name
-        ignoredFileNames.splitOptimized(';').forEach {
-            if (fileName.matchesPattern(it, true)) return null // 忽略
-        }
+        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
+
         if (file.propertyLists.all { it.locale != null }) return null // 没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.localisation.missingLocale.desc")

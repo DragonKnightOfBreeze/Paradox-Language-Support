@@ -3,15 +3,15 @@ package icu.windea.pls.lang.match
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.intValue
 import icu.windea.pls.lang.psi.members
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.model.CwtMemberType
 import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -24,16 +24,18 @@ object ParadoxMatchOccurrenceService {
         val cardinality = config.optionData.cardinality ?: return ParadoxMatchOccurrence(0, null, null)
         val cardinalityMinDefine = config.optionData.cardinalityMinDefine
         val cardinalityMaxDefine = config.optionData.cardinalityMaxDefine
-        val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin, cardinality.relaxMax)
+        val occurrence = ParadoxMatchOccurrence(0, cardinality.min, cardinality.max, cardinality.lenientMin, cardinality.lenientMax)
         run {
             if (cardinalityMinDefine == null) return@run
-            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMinDefine, contextElement, project)?.intValue() ?: return@run
+            val defineElement = ParadoxDefineManager.findDefineVariableElement(cardinalityMinDefine, contextElement, project) ?: return@run
+            val defineValue = defineElement.propertyValue?.intValue() ?: return@run
             occurrence.min = defineValue
             occurrence.minDefine = cardinalityMinDefine
         }
         run {
             if (cardinalityMaxDefine == null) return@run
-            val defineValue = ParadoxDefineManager.findDefineValueElement(cardinalityMaxDefine, contextElement, project)?.intValue() ?: return@run
+            val defineElement = ParadoxDefineManager.findDefineVariableElement(cardinalityMaxDefine, contextElement, project) ?: return@run
+            val defineValue = defineElement.propertyValue?.intValue() ?: return@run
             occurrence.max = defineValue
             occurrence.maxDefine = cardinalityMaxDefine
         }

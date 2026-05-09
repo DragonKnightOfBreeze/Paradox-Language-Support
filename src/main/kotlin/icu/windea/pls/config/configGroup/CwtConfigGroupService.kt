@@ -20,10 +20,11 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.listeners.CwtConfigGroupRefreshStatusListener
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.ide.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +51,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         // 必须先切换到 EDT
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
-            val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
+            val title = PlsBundle.message("configGroup.refresh.builtin.progress.title")
             runWithModalProgressBlocking(project, title) {
                 files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
             }
@@ -109,7 +110,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 init(configGroups, project)
             } else {
                 // 显示不可取消的后台进度条
-                val title = PlsBundle.message("configGroup.init.progressTitle")
+                val title = PlsBundle.message("configGroup.init.progress.title")
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
                     init(configGroups, project)
                 }
@@ -170,7 +171,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // 显示可以取消的后台进度条
-            val title = PlsBundle.message("configGroup.refresh.progressTitle")
+            val title = PlsBundle.message("configGroup.refresh.progress.title")
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
                 refresh(configGroups, project)
             }
@@ -180,22 +181,17 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             refreshRootsForLibraries(project)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
-                    ""
-                ).notify(project)
+                val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
+                PlsNotificationGroups.global().createNotification(title, "", NotificationType.INFORMATION).notify(project)
             } else if (e == null) {
                 updateRefreshStatus()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                     refreshRootsForLibraries(project, force = true)
                 }
-                PlsFacade.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("configGroup.refresh.notification.finished.title"),
-                    PlsBundle.message("configGroup.refresh.notification.finished.content")
-                ).addAction(action).notify(project)
+                val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
+                val content = PlsBundle.message("configGroup.refresh.notification.finished.content")
+                PlsNotificationGroups.global().createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
             }
         }
     }
@@ -203,8 +199,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     fun reparseOpenedFiles() {
         if (project.isDefault || project.isDisposed) return
         // 重新解析并刷新已打开的文件（IDE之后会自动请求重新索引）
-        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.reparseFiles(openedFiles)
+        val openedFiles = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.reparseFiles(openedFiles)
     }
 
     fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
@@ -219,8 +215,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
-        val files = PlsDaemonManager.findFilesByRootFilePaths(rootFilePaths)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsAnalysisManager.reparseFiles(files)
     }
 
     fun refreshRootsForLibraries(project: Project, force: Boolean = false) {

@@ -18,9 +18,9 @@ import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从 `triggers.log` 生成 `triggers.cwt`。

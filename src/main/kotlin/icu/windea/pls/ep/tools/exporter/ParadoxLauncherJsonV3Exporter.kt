@@ -8,11 +8,11 @@ import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 import kotlin.io.path.exists
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 导出模组信息到官方启动器（>= 2021.10）的 JSON 配置文件。
@@ -76,7 +76,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val playlistsDir = gameDataPath.resolve(Constants.playlistsName)
         return playlistsDir.takeIf { it.exists() } ?: gameDataPath
     }

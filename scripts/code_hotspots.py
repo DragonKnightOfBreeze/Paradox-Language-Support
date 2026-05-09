@@ -1,31 +1,32 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# code_hotspots.py — Code distribution & hotspot audit for Paradox Language Support.
-#
-# Two complementary views of the same source tree:
-#
-#   1. Per-package distribution
-#      Groups files by their Java/Kotlin package (derived from directory path
-#      relative to the source root), then reports file count and line totals
-#      for every package, sorted by total lines descending.
-#
-#   2. Large-file hotspots
-#      Lists individual files whose total line count exceeds a configurable
-#      threshold (default 500), sorted by line count descending.
-#
-# Both views cover Kotlin (.kt) and Java (.java) under src/main and src/test.
-#
-# Output modes:
-#   default   : per-package distribution + large-file hotspots
-#   --summary : top-N hotspot list + overall stats only
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/code_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""code_hotspots.py — Code distribution & hotspot audit for the plugin.
+
+Two complementary views of the same source tree:
+
+  1. Per-package distribution
+     Groups files by their Java/Kotlin package (derived from directory path
+     relative to the source root), then reports file count and line totals
+     for every package, sorted by total lines descending.
+
+  2. Large-file hotspots
+     Lists individual files whose total line count exceeds a configurable
+     threshold (default 500), sorted by line count descending.
+
+Both views cover Kotlin (.kt) and Java (.java) under src/main and src/test.
+
+Output modes:
+  default   : per-package distribution + large-file hotspots
+  --summary : top-N hotspot list + overall stats only
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/code_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 

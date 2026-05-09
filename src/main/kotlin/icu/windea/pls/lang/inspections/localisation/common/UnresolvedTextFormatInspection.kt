@@ -9,16 +9,15 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import javax.swing.JComponent
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 无法解析的文本格式的代码检查。
@@ -48,9 +47,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
             override fun visitTextFormat(element: ParadoxLocalisationTextFormat) {
                 ProgressManager.checkCanceled()
                 val name = element.name ?: return
-                ignoredNames.splitOptimized(';').forEach {
-                    if (name.matchesPattern(it, true)) return // 忽略
-                }
+                if (name.matchesPatterns(ignoredNames, ignoreCase = true)) return // 忽略
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return

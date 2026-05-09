@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -18,6 +19,9 @@ import icu.windea.pls.script.psi.ParadoxScriptVisitor
  * - 如果当前上下文中存在同名的封装变量，那么就说存在对此封装变量的重载。
  * - 仅适用于项目中的、作为游戏或模组文件的、非内存非注入的脚本文件。
  * - 仅适用于非参数化的全局封装变量。
+ *
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

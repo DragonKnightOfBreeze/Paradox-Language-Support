@@ -2,6 +2,7 @@ package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtConfigApiStatus
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
@@ -53,49 +54,87 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 部分规则（尤其是可从日志文件生成的规则）需要特殊处理，例如跳过解析，用这个来标记。
      *
-     * 适用对象：需要特殊处理的规则（目前支持 [CwtSingleAliasConfig] 和 [CwtAliasConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 需要特殊处理的规则（目前支持 [CwtSingleAliasConfig] 和 [CwtAliasConfig]）。
      *
-     * 示例：`## api_status = obsolete`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## api_status = obsolete
+     * ```
+     *
+     * @see CwtConfigApiStatus
      */
     val apiStatus: CwtConfigApiStatus?
 
     /**
      * 允许的出现次数范围（基数表达式）。
      *
-     * 指定后续规则项的匹配次数的上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
+     * 指定后续规则项的匹配次数的上下限。
+     * 格式为 `{min}..{max}`，其中 `{min}` 和 `{max}` 分别表示下限和上限。
+     * 上下限可以为 `1` 或 `~1` 等形式，上限也可以为 `inf`。
+     *
      * 如果未显式指定，且该定义成员为常量类型，则默认推断为 `1..~1`（必须出现一次，超过仅作弱警告）。
      *
-     * 适用对象：定义成员对应的规则。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 定义成员对应的规则。
      *
-     * 示例：`## cardinality = 0..1`
+     * ### CWTools 兼容性
+     *
+     * 兼容。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## cardinality = 0..1
+     * ## cardinality = ~1..inf
+     * ```
+     *
+     * @see CwtCardinalityExpression
      */
     val cardinality: CwtCardinalityExpression?
 
     /**
-     * 最小基数，从定值（define）动态获取。
+     * 最小基数，通过指定表达式的定值变量动态指定。
      *
-     * 通过字符串路径（如 `NGameplay/ETHOS_MIN_POINTS`）动态指定最小次数。
+     * ### 适用对象
      *
-     * 适用对象：定义成员对应的规则。
+     * 定义成员对应的规则。
      *
-     * CWTools 兼容性：扩展。
+     * ### CWTools 兼容性
      *
-     * 示例：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## cardinality_min_define = NGameplay.ETHOS_MIN_POINTS
+     * ```
      */
     val cardinalityMinDefine: String?
 
     /**
-     * 最大基数，从定值（define）动态获取。
+     * 最大基数，通过指定表达式的定值变量动态指定。
      *
-     * 适用对象：定义成员对应的规则。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 定义成员对应的规则。
      *
-     * 示例：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## cardinality_max_define = NGameplay.ETHOS_MAX_POINTS
+     * ```
      */
     val cardinalityMaxDefine: String?
 
@@ -105,13 +144,46 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 使用 `key = value` 或 `key != value` 的形式对匹配进行简单过滤。
      * 值存储为 `ReversibleValue`，其中分隔符 `=` 表示正向、`!=` 表示反向。
      *
-     * 适用对象：定义成员对应的规则，作为补充过滤条件。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 定义成员对应的规则，作为补充过滤条件。
      *
-     * 示例：`## predicate = { scope = fleet type != country }`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## predicate = { scope = fleet type != country }
+     * ```
      */
     val predicate: Map<String, ReversibleValue<String>>?
+
+    /**
+     * 入栈作用域（push scope）。
+     *
+     * 将指定作用域（通常为 `this`）推入作用域栈，影响后续规则匹配的上下文。
+     * 返回值为归一化后的作用域 ID。
+     *
+     * ### 适用对象
+     *
+     * 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 兼容。插件会做作用域 ID 归一化。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## push_scope = country
+     * ```
+     *
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
+     */
+    val pushScope: String?
 
     /**
      * 替换作用域上下文（replace scopes）。
@@ -120,11 +192,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 支持键名 `replace_scope` 和 `replace_scopes`，二者等价。
      * 值中的作用域会被归一化（大小写和别名）。
      *
-     * 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
+     * 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
      *
-     * 示例：`## replace_scopes = { this = country root = country }`
+     * ### CWTools 兼容性
+     *
+     * 兼容。插件会做作用域 ID 归一化。
+     *
+     * ### 示例
+     *
+     * ```
+     * ## replace_scopes = { this = country root = country }
+     * ```
      *
      * @see ParadoxScope
      * @see ParadoxScopeContext
@@ -132,30 +212,17 @@ interface CwtOptionDataHolder : UserDataHolder {
     val replaceScopes: Map<String, String>?
 
     /**
-     * 入栈作用域（push scope）。
-     *
-     * 将指定作用域（通常为 `this`）推入作用域栈，影响后续规则匹配的上下文。
-     * 返回值为归一化后的作用域 ID。
-     *
-     * 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
-     *
-     * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
-     *
-     * 示例：`## push_scope = country`
-     *
-     * @see ParadoxScope
-     * @see ParadoxScopeContext
-     */
-    val pushScope: String?
-
-    /**
      * 初始的作用域上下文。
      *
      * 来自 [replaceScopes] 和 [pushScope]，经过计算得到。用于后续表达式匹配、补全和校验。
      *
-     * 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
+     * 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 兼容。插件会做作用域 ID 归一化。
      *
      * @see ParadoxScope
      * @see ParadoxScopeContext
@@ -165,14 +232,19 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 允许的作用域（类型）的集合。默认支持任意作用域。
      *
-     * 适用对象：触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。插件会做作用域 ID 归一化。
+     * 触发器（trigger）和效果（effect）对应的别名规则（[CwtAliasConfig]）。
      *
-     * 示例：
+     * ### CWTools 兼容性
+     *
+     * 兼容。插件会做作用域 ID 归一化。
+     *
+     * ### 示例
+     *
      * ```cwt
      * ## scope = country
-     * ## scope = { country planet }
+     * ## scopes = { country planet }
      * ```
      *
      * @see ParadoxScope
@@ -185,11 +257,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于在定义的扩展规则中声明定义的类型。
      *
-     * 适用对象：定义的扩展规则（[CwtExtendedDefinitionConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 定义的扩展规则（[CwtExtendedDefinitionConfig]）。
      *
-     * 示例：`## type = scripted_trigger`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## type = scripted_trigger
+     * ```
      */
     val type: String?
 
@@ -198,11 +278,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于在部分扩展规则中使用，以提供额外的内嵌提示。
      *
-     * 适用对象：部分扩展规则（如 [CwtExtendedScriptedVariableConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 部分扩展规则（如 [CwtExtendedScriptedVariableConfig]）。
      *
-     * 示例：`## hint = "一些提示"`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## hint = "Some hint"
+     * ```
      */
     val hint: String?
 
@@ -211,11 +299,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于在 on action 的扩展规则中指示事件类型（如 `country`、`system`）。
      *
-     * 适用对象：on action 的扩展规则（[CwtExtendedOnActionConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * on action 的扩展规则（[CwtExtendedOnActionConfig]）。
      *
-     * 示例：`## event_type = country`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## event_type = country
+     * ```
      */
     val eventType: String?
 
@@ -225,23 +321,35 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 指定参数的上下文，常见形式：`definitionType@definitionName` 或 `inline_script@path`。
      * 插件也支持模板/正则等灵活匹配（详见 [config.md](https://windea.icu/Paradox-Language-Support/config.md)）。
      *
-     * 适用对象：参数的扩展规则（[CwtExtendedParameterConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 参数的扩展规则（[CwtExtendedParameterConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
      */
     val contextKey: String?
 
     /**
-     * 上下文配置的聚合类型。
+     * 上下文规则的聚合类型。
      *
-     * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
+     * 指定 `x = {...}` 根下的“上下文规则”是单个（`single`）还是多个（`multiple`）。
      * 默认为 `single`。
      *
-     * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedInlineScriptConfig] 和 [CwtExtendedParameterConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 可指定规则上下文的扩展规则（[CwtExtendedParameterConfig] 和 [CwtExtendedInlineScriptConfig]）。
      *
-     * 示例：`## context_configs_type = multiple`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## context_configs_type = multiple
+     * ```
      */
     val contextConfigsType: String
 
@@ -250,11 +358,19 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 用于对子类型进行分组。
      *
-     * 适用对象：子类型规则（[CwtSubtypeConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 子类型规则（[CwtSubtypeConfig]）。
      *
-     * 示例：`## group = ships`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## group = ships
+     * ```
      */
     val group: String?
 
@@ -263,11 +379,16 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 要求类型键必须匹配可选值，可以取反，可以指定多个可选值。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
-     * 示例：
+     * ### CWTools 兼容性
+     *
+     * 兼容。
+     *
+     * ### 示例
+     *
      * ```cwt
      * ## type_key_filter = country_event
      * ## type_key_filter <> { ship country }
@@ -278,11 +399,19 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 类型键的正则过滤器（忽略大小写）。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
-     * 示例：`## type_key_regex = "^ship_.*$"`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## type_key_regex = "^ship_.*$"
+     *
      */
     val typeKeyRegex: Regex?
 
@@ -291,92 +420,158 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * 要求类型键必须以指定前缀开始。
      *
-     * 适用对象：类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 类型规则（[CwtTypeConfig]）和子类型规则（[CwtSubtypeConfig]）。
      *
-     * 示例：`## starts_with = ship_`
+     * ### CWTools 兼容性
+     *
+     * 兼容。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## starts_with = ship_
+     * ```
      */
     val startsWith: String?
 
     /**
-     * 排除名单（only_if_not）。
+     * 排除名单。
      *
      * 指定一个集合，只要“名称不在集合内”即可匹配。
      *
-     * 适用对象：子类型规则（[CwtSubtypeConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 子类型规则（[CwtSubtypeConfig]）。
      *
-     * 示例：`## only_if_not = { simple complex }`
+     * ### CWTools 兼容性
+     *
+     * 兼容。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## only_if_not = { simple complex }
+     * ```
      */
     val onlyIfNot: Set<String>?
 
     /**
-     * 图相关的关联类型集合（graph_related_types）。
+     * 图相关的关联类型集合（graph related types）。
      *
-     * 示例：`## graph_related_types = { special_project anomaly_category }`
+     * ### CWTools 兼容性
      *
-     * CWTools 兼容性：插件目前未使用这类选项数据。
+     * 未使用。
+     *
+     * ### 示例
+     * ```cwt
+     * ## graph_related_types = { special_project anomaly_category }
+     * ```
      */
     val graphRelatedTypes: Set<String>?
 
     /**
-     * （基于规则的代码检查的）严重度。
+     * 基于规则的代码检查的严重度（severity）。
      *
-     * 示例：`## severity = warning`
+     * ### CWTools 兼容性
      *
-     * CWTools 兼容性：插件目前未使用这类选项数据。
+     * 未使用。
+     *
+     * ### 示例
+     * ```
+     * ## severity = warning
+     * ```
      */
     val severity: String?
 
     /**
-     * 允许的文件扩展名集合（file_extensions）。
-     *
-     * 用于约束路径引用，从而提供代码检查与过滤代码补全。
-     *
-     * 适用对象：值为路径引用的成员规则（[CwtMemberConfig]）。
-     *
-     * CWTools 兼容性：扩展。
-     *
-     * 示例：`## file_extensions = { png dds tga }`
-     *
-     * @see CwtDataTypeSets.PathReference
-     */
-    val fileExtensions: Set<String>?
-
-    /**
-     * 修正分类键集合（modifier_categories）。
+     * 修正分类键集合（modifier categories）。
      *
      * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
      *
-     * CWTools 兼容性：扩展。
+     * ### CWTools 兼容性
      *
-     * 示例：`## modifier_categories = { economic_unit planet }`
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## modifier_categories = { economic_unit planet }
+     * ```cwt
      */
     val modifierCategories: Set<String>?
 
     /**
      * 颜色类型（`hex` / `rgb` / `hsv` / `hsv360`）。
      *
-     * 指定颜色值的解析/渲染模式。
+     * 指定颜色字段的解析/渲染模式。
      *
-     * 适用对象：携带了颜色信息的定义成员对应的规则。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 携带了颜色信息的定义成员对应的规则。
      *
-     * 示例：`## color_type = rgb`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## color_type = hex
+     * color_hex = scalar
+     *
+     * ## color_type = rgb
+     * color_rgb = {
+     *     ## cardinality = 3..3
+     *     float
+     * }
+     * ```
      */
     val colorType: String?
 
     /**
+     * 允许的文件扩展名集合。
+     *
+     * 用于约束路径引用，从而提供代码检查与过滤代码补全。
+     *
+     * 需要注意的是，某些数据类型（如 [Icon][CwtDataTypes.Icon]）与格式（如已制定了扩展名信息）的路径引用不会携带扩展名信息，
+     * 因此也不应使用此选项。
+     *
+     * ### 适用对象
+     *
+     * 值为路径引用的成员规则（[CwtMemberConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## file_extensions = { png dds tga }
+     * ```
+     *
+     * @see CwtDataTypeSets.PathReference
+     */
+    val fileExtensions: Set<String>?
+
+    /**
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
      *
-     * 适用对象：任意值为子句的成员规则。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 任意值为子句的成员规则。
      *
-     * 示例：`## inject = some/file.cwt@some/property`
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## inject = some/file.cwt@some/property
+     * ```
      *
      * @see CwtInjectConfigPostProcessor
      */
@@ -389,9 +584,13 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 将对应位置的本地化和图片标记为必需项。
      *
-     * 适用对象：位置规则（[CwtLocationConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 位置规则（[CwtLocationConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 兼容。
      */
     val required: Boolean
 
@@ -399,9 +598,13 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 将对应位置的本地化和图片标记为主要项。
      * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
      *
-     * 适用对象：位置规则（[CwtLocationConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：兼容。
+     * 位置规则（[CwtLocationConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 兼容。
      *
      * @see CwtLocationConfig
      */
@@ -411,9 +614,13 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 注明规则上下文和作用域上下文将会被继承。
      * 即，继承自对应的使用处，与其保持一致。
      *
-     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 部分可指定规则上下文的扩展规则（如 [CwtExtendedParameterConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
      */
     val inherit: Boolean
 
@@ -421,9 +628,13 @@ interface CwtOptionDataHolder : UserDataHolder {
      * 将匹配的单独的值标记为预定义的标签。
      * 脚本文件中的对应的值会启用特殊的语义高亮和文档注释。
      *
-     * 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 作为单独的值的成员规则（[CwtValueConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
      *
      * @see ParadoxTagType
      */
@@ -432,18 +643,26 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 将复杂枚举的枚举值标记为忽略大小写。
      *
-     * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 复杂枚举规则（[CwtComplexEnumConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
      */
     val caseInsensitive: Boolean
 
     /**
      * 将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
      *
-     * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
+     * ### 适用对象
      *
-     * CWTools 兼容性：扩展。
+     * 复杂枚举规则（[CwtComplexEnumConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
      */
     val perDefinition: Boolean
 

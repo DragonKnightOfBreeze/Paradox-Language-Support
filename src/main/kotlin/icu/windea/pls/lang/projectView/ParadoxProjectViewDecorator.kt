@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  * 在项目视图中：
  * - 为游戏或模组目录提供特殊图标和额外的信息文本。
  * - 为入口目录提供特殊图标。
- * - 为文件定义提供特殊图标，并处理展示文本。
+ * - 为文件定义提供特殊图标，并处理显示文本。
  */
 class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
@@ -71,7 +71,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         val definitionInfo = file.definitionInfo ?: return false
 
         // 特殊图标
-        data.setIcon(PlsIcons.Nodes.Definition)
+        data.setIcon(PlsIcons.Nodes.Definition(definitionInfo.type))
 
         // 定义名（通常等同于去掉扩展名后的文件名）
         data.presentableText = definitionInfo.name

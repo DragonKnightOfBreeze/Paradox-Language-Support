@@ -9,10 +9,10 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 /**
  * 通过内嵌提示显示定义信息，包括名称、类型和子类型。

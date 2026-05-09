@@ -19,10 +19,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.quote
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.truncate
-import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.expression
+import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
@@ -31,15 +31,15 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.resolve.inRoot
-import icu.windea.pls.lang.resolve.isRootForDefinition
+import icu.windea.pls.lang.resolve.isDeclarationRoot
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -106,7 +106,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // skip if config context not exists
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
-                if (!configContext.inRoot() || configContext.isRootForDefinition()) return true
+                if (!configContext.inRoot() || configContext.isDeclarationRoot()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
@@ -242,7 +242,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getDescription(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
-            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString.quote('`') }
+            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
                 .truncate(PlsInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
@@ -273,8 +273,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
-        result += PlsInspectionUtil.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += PlsInspectionUtil.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionService.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionService.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }

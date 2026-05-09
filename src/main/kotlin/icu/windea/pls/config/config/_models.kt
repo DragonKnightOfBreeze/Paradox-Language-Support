@@ -4,6 +4,25 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 
 /**
+ * @see CwtMemberConfig
+ */
+enum class CwtMembersType {
+    UNSET,
+    NONE,
+    MIXED,
+    PROPERTY,
+    VALUE,
+}
+
+/**
+ * @see CwtMemberConfig
+ */
+enum class CwtMemberType {
+    PROPERTY,
+    VALUE,
+}
+
+/**
  * 子规则分组。
  *
  * @see CwtSubtypeConfig

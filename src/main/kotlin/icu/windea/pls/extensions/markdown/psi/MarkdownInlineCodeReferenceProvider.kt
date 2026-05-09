@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.extensions.settings.PlsExtensionsSettings
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -65,7 +65,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
 
             when {
                 prefix == "@" -> {
-                    if (!PlsNameValidators.checkScriptedVariableName(name)) return emptySet()
+                    if (!ParadoxNameValidators.checkScriptedVariableName(name)) return emptySet()
                     val selector = selector(element.project, element).scriptedVariable().contextSensitive()
                     val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
                     return result.asSymbol().to.singletonSet()
@@ -77,7 +77,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                         return result.asSymbol().to.singletonSet()
                     }
                     run {
-                        if (!PlsNameValidators.checkLocalisationName(name)) return@run
+                        if (!ParadoxNameValidators.checkLocalisationName(name)) return@run
                         val selector = selector(element.project, element).localisation().contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run

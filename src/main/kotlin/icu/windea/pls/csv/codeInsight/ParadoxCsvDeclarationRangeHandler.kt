@@ -8,7 +8,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 
 /**
- * 用于在 CSV 文件中，提供上下文信息（表格头）。
+ * 用于在 CSV 文件中提供上下文信息（表格头）。
  */
 class ParadoxCsvDeclarationRangeHandler : DeclarationRangeHandler<ParadoxCsvRow> {
     override fun getDeclarationRange(container: ParadoxCsvRow): TextRange? {

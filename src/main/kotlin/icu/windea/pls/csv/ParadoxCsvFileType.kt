@@ -4,7 +4,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.ParadoxFileType
 
-object ParadoxCsvFileType: ParadoxFileType(ParadoxCsvLanguage) {
+object ParadoxCsvFileType : ParadoxFileType(ParadoxCsvLanguage) {
     override fun getName() = "Paradox Csv"
 
     override fun getDisplayName() = PlsBundle.message("csv.language.name")

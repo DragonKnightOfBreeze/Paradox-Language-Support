@@ -44,7 +44,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.gameConcept, conceptSelector).processAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
-            val icon = PlsIcons.Nodes.LocalisationConcept
+            val icon = PlsIcons.Nodes.LocalisationConceptCommand
             run action@{
                 val key = concept.name
                 if (key.isEmpty()) return@action

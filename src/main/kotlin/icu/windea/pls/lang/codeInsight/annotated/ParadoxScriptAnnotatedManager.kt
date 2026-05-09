@@ -3,7 +3,9 @@ package icu.windea.pls.lang.codeInsight.annotated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.lang.codeInsight.ParadoxTypeManager
+import icu.windea.pls.lang.codeInsight.type.ParadoxTypeManager
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxType
@@ -17,8 +19,8 @@ object ParadoxScriptAnnotatedManager {
 
     const val typePrefix = "@type"
     const val definitionTypePrefix = "@definition_type"
-    const val overrideStrategyPrefix = "@override_strategy"
     const val configExpressionPrefix = "@config_expression"
+    const val overrideStrategyPrefix = "@override_strategy"
     const val scopeContextPrefix = "@scope_context"
 
     // endregion
@@ -61,21 +63,6 @@ object ParadoxScriptAnnotatedManager {
     }
 
     /**
-     * 得到覆盖方式信息的注解。
-     *
-     * 格式：
-     * - `## @override_strategy = STRATEGY`
-     */
-    fun getOverrideStrategy(element: ParadoxScriptMember): String? {
-        val key = when (element) {
-            is ParadoxScriptProperty -> element.propertyKey
-            else -> null
-        } ?: return null
-        val overrideStrategy = ParadoxTypeManager.getOverrideStrategy(key) ?: return null
-        return "## $overrideStrategyPrefix ${overrideStrategy.id}"
-    }
-
-    /**
      * 得到规则表达式信息的注解。
      *
      * 格式：
@@ -83,7 +70,8 @@ object ParadoxScriptAnnotatedManager {
      * - `## @config_expression value_expression`
      */
     fun getConfigExpression(element: ParadoxScriptMember): String? {
-        val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return null
+        val options = ParadoxMatchOptions(forDeclarationRoot = true)
+        val config = ParadoxConfigManager.getConfigs(element, options).firstOrNull() ?: return null
         return when (element) {
             is ParadoxScriptProperty -> {
                 if (config !is CwtPropertyConfig) return null
@@ -101,16 +89,29 @@ object ParadoxScriptAnnotatedManager {
     }
 
     /**
+     * 得到覆盖方式信息的注解。
+     *
+     * 格式：
+     * - `## @override_strategy = STRATEGY`
+     */
+    fun getOverrideStrategy(element: ParadoxScriptMember): String? {
+        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return null
+        return "## $overrideStrategyPrefix ${overrideStrategy.id}"
+    }
+
+    /**
      * 得到作用域上下文信息的注解。
      *
      * 格式：
      * - `## @scope_context this = scope_1 root = scope_2`
      *
+     * @param unchanged 是否包含未发生更改的作用域上下文信息。
      * @param detailed 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
      */
-    fun getScopeContext(element: ParadoxScriptMember, detailed: Boolean): String? {
+    fun getScopeContext(element: ParadoxScriptMember, unchanged: Boolean = false, detailed: Boolean = false): String? {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return null
         val scopeContext = ParadoxScopeManager.getScopeContext(element) ?: return null
+        if (!unchanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return null
         val map = scopeContext.toScopeIdMap(showPrev = detailed)
         if (map.isEmpty()) return null
         return map.entries.joinToString(" ", "## $scopeContextPrefix ") { "${it.key.quoteIfNecessary()} = ${it.value.quoteIfNecessary()}" }

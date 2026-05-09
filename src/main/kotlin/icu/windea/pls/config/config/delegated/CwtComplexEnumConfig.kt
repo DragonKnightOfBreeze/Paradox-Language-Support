@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -16,9 +17,7 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigRecursiveVisitor
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
@@ -33,11 +32,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
  * 其枚举值默认不忽略大小写。
  *
- * 路径定位：`enums/complex_enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
+ * 路径定位：
+ * - `enums/complex_enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * enums = {
  *     complex_enum[component_tag] = {
@@ -50,7 +53,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 名称（枚举名）。
+ * @property name 规则名称（即枚举名）。
  * @property startFromRoot 是否从文件顶部（而非顶级属性）开始查询。
  * @property caseInsensitive （扩展）是否将复杂枚举值标记为忽略大小写。
  * @property perDefinition （扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。

@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -35,7 +36,7 @@ import icu.windea.pls.script.psi.isPropertyValue
  */
 class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
+        val element = parameters.position.parent?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         if (!element.isExpression()) return
 
         val file = parameters.originalFile

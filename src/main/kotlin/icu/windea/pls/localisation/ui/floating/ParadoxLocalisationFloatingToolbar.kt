@@ -8,8 +8,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
+import icu.windea.pls.core.ui.FloatingToolbar
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.ui.FloatingToolbar
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets

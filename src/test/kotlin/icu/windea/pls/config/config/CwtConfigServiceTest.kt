@@ -117,6 +117,28 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testResolveConfigType_defineNamespace() {
+        assertResolveConfigType("""
+            defines = {
+                <caret>Namespace = {
+                    Variable = 0
+                }
+            }
+        """.trimIndent(), CwtConfigTypes.DefineNamespace)
+    }
+
+    @Test
+    fun testResolveConfigType_defineVariable() {
+        assertResolveConfigType("""
+            defines = {
+                Namespace = {
+                    <caret>Variable = 0
+                }
+            }
+        """.trimIndent(), CwtConfigTypes.DefineVariable)
+    }
+
+    @Test
     fun testResolveConfigType_enum() {
         assertResolveConfigType("""
             enums = {
@@ -203,10 +225,10 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveConfigType_directive() {
+    fun testResolveConfigType_macro() {
         assertResolveConfigType("""
-            <caret>directive[my_dir] = something
-        """.trimIndent(), CwtConfigTypes.Directive)
+            <caret>macro[my_dir] = something
+        """.trimIndent(), CwtConfigTypes.Macro)
     }
 
     @Test
@@ -345,15 +367,6 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveConfigType_extendedInlineScript() {
-        assertResolveConfigType("""
-            inline_scripts = {
-                <caret>my_script = something
-            }
-        """.trimIndent(), CwtConfigTypes.ExtendedInlineScript)
-    }
-
-    @Test
     fun testResolveConfigType_extendedParameter() {
         assertResolveConfigType("""
             parameters = {
@@ -382,6 +395,15 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
                 }
             }
         """.trimIndent(), CwtConfigTypes.ExtendedDynamicValue)
+    }
+
+    @Test
+    fun testResolveConfigType_extendedInlineScript() {
+        assertResolveConfigType("""
+            inline_scripts = {
+                <caret>my_script = something
+            }
+        """.trimIndent(), CwtConfigTypes.ExtendedInlineScript)
     }
 
     @Test
@@ -469,8 +491,8 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveNameByConfigType_directive() {
-        assertEquals("my_dir", CwtConfigService.resolveNameByConfigType("directive[my_dir]", CwtConfigTypes.Directive))
+    fun testResolveNameByConfigType_macro() {
+        assertEquals("my_dir", CwtConfigService.resolveNameByConfigType("macro[my_dir]", CwtConfigTypes.Macro))
     }
 
     @Test

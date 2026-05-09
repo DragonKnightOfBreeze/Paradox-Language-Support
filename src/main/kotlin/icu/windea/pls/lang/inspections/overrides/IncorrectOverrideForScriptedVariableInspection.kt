@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 不正确的对（全局）封装变量的重载的代码检查。
+ * 对（全局）封装变量的不正确的重载的代码检查。
  *
  * 说明：
  * - 如果当前上下文中存在同名的封装变量，那么就说存在对此封装变量的重载。

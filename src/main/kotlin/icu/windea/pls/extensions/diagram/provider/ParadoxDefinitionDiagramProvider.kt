@@ -16,7 +16,7 @@ import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector

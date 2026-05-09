@@ -4,7 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.*
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
@@ -52,7 +52,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0 to 5)
             node<ParadoxMarkerNode>(":", 5 to 6)
             node<ParadoxDatabaseObjectNode>("some_civic", 6 to 16) {
-                node<ParadoxDatabaseObjectDataDataNode>("some_civic", 6 to 16)
+                node<ParadoxDatabaseObjectDataNode>("some_civic", 6 to 16)
             }
         }
         exp.check(dsl)
@@ -67,11 +67,11 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0 to 5)
             node<ParadoxMarkerNode>(":", 5 to 6)
             node<ParadoxDatabaseObjectNode>("some_civic", 6 to 16) {
-                node<ParadoxDatabaseObjectDataDataNode>("some_civic", 6 to 16)
+                node<ParadoxDatabaseObjectDataNode>("some_civic", 6 to 16)
             }
             node<ParadoxMarkerNode>(":", 16 to 17)
             node<ParadoxDatabaseObjectNode>("some_swapped_civic", 17 to 35) {
-                node<ParadoxDatabaseObjectDataDataNode>("some_swapped_civic", 17 to 35)
+                node<ParadoxDatabaseObjectDataNode>("some_swapped_civic", 17 to 35)
             }
         }
         exp.check(dsl)
@@ -86,7 +86,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxDatabaseObjectTypeNode>("job", 0 to 3)
             node<ParadoxMarkerNode>(":", 3 to 4)
             node<ParadoxDatabaseObjectNode>("job_soldier", 4 to 15) {
-                node<ParadoxDatabaseObjectDataDataNode>("job_soldier", 4 to 15)
+                node<ParadoxDatabaseObjectDataNode>("job_soldier", 4 to 15)
             }
         }
         exp.check(dsl)

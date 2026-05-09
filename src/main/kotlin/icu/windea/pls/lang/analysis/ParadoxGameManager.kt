@@ -2,6 +2,8 @@ package icu.windea.pls.lang.analysis
 
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
+import com.intellij.util.io.fileSizeSafe
+import com.intellij.util.system.OS
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -12,6 +14,8 @@ import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import java.nio.file.Path
+import kotlin.io.path.isRegularFile
 import kotlin.io.path.notExists
 
 object ParadoxGameManager {
@@ -90,5 +94,22 @@ object ParadoxGameManager {
             s2.isEmpty() -> -1
             else -> s1.compareTo(s2)
         }
+    }
+
+    fun getExecutablePath(gameType: ParadoxGameType, rootPath: Path): Path? {
+        // from candidates in game type metadata
+        val candidates = gameType.metadata.executablePaths
+        for (candidate in candidates) {
+            val p = if (OS.CURRENT == OS.Windows) "$candidate.exe" else candidate
+            val r = rootPath.resolve(p)
+            if (r.isRegularFile() && r.fileSizeSafe() > 0) return r
+        }
+        return null
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun getBranchPath(gameType: ParadoxGameType, rootPath: Path): Path? {
+        // although there may be other branch files (e.g., `caligula_branch.txt` for vic3), we use the common `clausewitz_branch.txt` here
+        return rootPath.resolve("clausewitz_branch.txt").takeIf { it.isRegularFile() }
     }
 }

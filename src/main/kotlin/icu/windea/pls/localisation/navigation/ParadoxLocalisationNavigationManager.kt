@@ -69,7 +69,7 @@ object ParadoxLocalisationNavigationManager {
 
     fun getLocalLocationString(element: PsiElement): String? {
         return when (element) {
-            // 语言区域的展示文本
+            // 语言区域的显示文本
             is ParadoxLocalisationPropertyList -> selectLocale(element)?.text
             else -> null
         }

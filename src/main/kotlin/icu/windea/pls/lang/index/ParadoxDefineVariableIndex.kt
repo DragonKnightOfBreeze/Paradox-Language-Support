@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.AbstractStubIndex
 import com.intellij.util.io.KeyDescriptor
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeUTFFast
-import icu.windea.pls.model.index.ParadoxDefineVariableKey
+import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.io.DataInput
 import java.io.DataOutput

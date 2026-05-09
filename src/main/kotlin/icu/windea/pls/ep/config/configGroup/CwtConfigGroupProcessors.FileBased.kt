@@ -4,13 +4,15 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -175,6 +177,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val systemScopeConfig = CwtSystemScopeConfig.resolve(config)
+                        if (CwtConfigService.filter(systemScopeConfig)) continue
                         initializer.systemScopes[systemScopeConfig.id] = systemScopeConfig
                     }
                 }
@@ -182,6 +185,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val localeConfig = CwtLocaleConfig.resolve(config)
+                        if (CwtConfigService.filter(localeConfig)) continue
                         initializer.localisationLocalesById[localeConfig.id] = localeConfig
                         for (code in localeConfig.codes) {
                             initializer.localisationLocalesByCode[code] = localeConfig
@@ -192,6 +196,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val typeConfig = CwtTypeConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(typeConfig)) continue
                         initializer.types[typeConfig.name] = typeConfig
                     }
                 }
@@ -199,7 +204,16 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val rowConfig = CwtRowConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(rowConfig)) continue
                         initializer.rows[rowConfig.name] = rowConfig
+                    }
+                }
+                key == "defines" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        val defineNamespaceConfig = CwtDefineNamespaceConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(defineNamespaceConfig)) continue
+                        initializer.defineNamespaces[defineNamespaceConfig.name] = defineNamespaceConfig
                     }
                 }
                 key == "enums" -> {
@@ -207,10 +221,12 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         run {
                             val enumConfig = CwtEnumConfig.resolve(config) ?: return@run
+                            if (CwtConfigService.filter(enumConfig)) return@run
                             initializer.enums[enumConfig.name] = enumConfig
                         }
                         run {
                             val complexEnumConfig = CwtComplexEnumConfig.resolve(config) ?: return@run
+                            if (CwtConfigService.filter(complexEnumConfig)) return@run
                             initializer.complexEnums[complexEnumConfig.name] = complexEnumConfig
                         }
                     }
@@ -219,6 +235,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val dynamicValueTypeConfig = CwtDynamicValueTypeConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(dynamicValueTypeConfig)) continue
                         initializer.dynamicValueTypes[dynamicValueTypeConfig.name] = dynamicValueTypeConfig
                     }
                 }
@@ -226,6 +243,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val linkConfig = CwtLinkConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(linkConfig)) continue
                         initializer.links[linkConfig.name] = linkConfig
                     }
                 }
@@ -233,6 +251,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val linkConfig = CwtLinkConfig.resolveForLocalisation(config) ?: continue
+                        if (CwtConfigService.filter(linkConfig)) continue
                         initializer.localisationLinks[linkConfig.name] = linkConfig
                     }
                 }
@@ -240,6 +259,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val localisationPromotionConfig = CwtLocalisationPromotionConfig.resolve(config)
+                        if (CwtConfigService.filter(localisationPromotionConfig)) continue
                         initializer.localisationPromotions[localisationPromotionConfig.name] = localisationPromotionConfig
                     }
                 }
@@ -247,6 +267,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val localisationCommandConfig = CwtLocalisationCommandConfig.resolve(config)
+                        if (CwtConfigService.filter(localisationCommandConfig)) continue
                         initializer.localisationCommands[localisationCommandConfig.name] = localisationCommandConfig
                     }
                 }
@@ -254,6 +275,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val modifierCategoryConfig = CwtModifierCategoryConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(modifierCategoryConfig)) continue
                         initializer.modifierCategories[modifierCategoryConfig.name] = modifierCategoryConfig
                     }
                 }
@@ -262,6 +284,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     for (config in configs) {
                         val modifierName = config.key
                         val modifierConfig = CwtModifierConfig.resolve(config, modifierName) ?: continue
+                        if (CwtConfigService.filter(modifierConfig)) continue
                         initializer.modifiers[modifierName] = modifierConfig
                     }
                 }
@@ -269,6 +292,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val scopeConfig = CwtScopeConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(scopeConfig)) continue
                         initializer.scopes[scopeConfig.name] = scopeConfig
                         for (alias in scopeConfig.aliases) {
                             initializer.scopeAliasMap[alias] = scopeConfig
@@ -279,6 +303,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val scopeGroupConfig = CwtScopeGroupConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(scopeGroupConfig)) continue
                         initializer.scopeGroups[scopeGroupConfig.name] = scopeGroupConfig
                     }
                 }
@@ -286,6 +311,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val databaseObjectTypeConfig = CwtDatabaseObjectTypeConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(databaseObjectTypeConfig)) continue
                         initializer.databaseObjectTypes[databaseObjectTypeConfig.name] = databaseObjectTypeConfig
                     }
                 }
@@ -293,6 +319,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val scriptedVariableConfig = CwtExtendedScriptedVariableConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(scriptedVariableConfig)) continue
                         initializer.extendedScriptedVariables[scriptedVariableConfig.name] = scriptedVariableConfig
                     }
                 }
@@ -300,7 +327,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val definitionConfig = CwtExtendedDefinitionConfig.resolve(config) ?: continue
-                        // 使用 fast 列表作为默认值
+                        if (CwtConfigService.filter(definitionConfig)) continue
                         initializer.extendedDefinitions.computeIfAbsent(definitionConfig.name) { FastList() } += definitionConfig
                     }
                 }
@@ -308,6 +335,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val gameRuleConfig = CwtExtendedGameRuleConfig.resolve(config)
+                        if (CwtConfigService.filter(gameRuleConfig)) continue
                         initializer.extendedGameRules[gameRuleConfig.name] = gameRuleConfig
                     }
                 }
@@ -315,20 +343,15 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val onActionConfig = CwtExtendedOnActionConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(onActionConfig)) continue
                         initializer.extendedOnActions[onActionConfig.name] = onActionConfig
-                    }
-                }
-                key == "inline_scripts" -> {
-                    val configs = property.configs ?: continue
-                    for (config in configs) {
-                        val inlineScriptConfig = CwtExtendedInlineScriptConfig.resolve(config)
-                        initializer.extendedInlineScripts[inlineScriptConfig.name] = inlineScriptConfig
                     }
                 }
                 key == "parameters" -> {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val parameterConfig = CwtExtendedParameterConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(parameterConfig)) continue
                         initializer.extendedParameters.computeIfAbsent(parameterConfig.name) { FastList() } += parameterConfig
                     }
                 }
@@ -340,6 +363,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val configs1 = config.configs ?: continue
                         for (config1 in configs1) {
                             val complexEnumValueConfig = CwtExtendedComplexEnumValueConfig.resolve(config1, type)
+                            if (CwtConfigService.filter(complexEnumValueConfig)) continue
                             initializer.extendedComplexEnumValues.computeIfAbsent(type) { FastMap() }[complexEnumValueConfig.name] = complexEnumValueConfig
                         }
                     }
@@ -352,28 +376,39 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         val configs1 = config.configs ?: continue
                         for (config1 in configs1) {
                             val dynamicValueConfig = CwtExtendedDynamicValueConfig.resolve(config1, type)
+                            if (CwtConfigService.filter(dynamicValueConfig)) continue
                             initializer.extendedDynamicValues.computeIfAbsent(type) { FastMap() }[dynamicValueConfig.name] = dynamicValueConfig
                         }
+                    }
+                }
+                key == "inline_scripts" -> {
+                    val configs = property.configs ?: continue
+                    for (config in configs) {
+                        val inlineScriptConfig = CwtExtendedInlineScriptConfig.resolve(config)
+                        if (CwtConfigService.filter(inlineScriptConfig)) continue
+                        initializer.extendedInlineScripts[inlineScriptConfig.name] = inlineScriptConfig
                     }
                 }
                 else -> {
                     run {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
-                        if (CwtConfigManager.isRemoved(singleAliasConfig)) return@run
+                        if (CwtConfigService.filter(singleAliasConfig)) return@run
                         initializer.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
                     run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
-                        if (CwtConfigManager.isRemoved(aliasConfig)) return@run
+                        if (CwtConfigService.filter(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
                     }
                     run {
-                        val directiveConfig = CwtDirectiveConfig.resolve(property) ?: return@run
-                        initializer.directives += directiveConfig
+                        val macroConfig = CwtMacroConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(macroConfig)) return@run
+                        initializer.macros += macroConfig
                     }
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(declarationConfig)) return@run
                         initializer.declarations[key] = declarationConfig
                     }
                 }

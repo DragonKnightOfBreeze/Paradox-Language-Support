@@ -17,7 +17,6 @@ import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.paths.ParadoxMemberPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -32,6 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.model.CwtSeparatorType
 
 object ParadoxMemberService {
     /**

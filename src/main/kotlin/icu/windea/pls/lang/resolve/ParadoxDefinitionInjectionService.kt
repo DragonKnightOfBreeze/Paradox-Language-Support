@@ -6,10 +6,11 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -35,7 +36,7 @@ object ParadoxDefinitionInjectionService {
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val config = configGroup.directivesModel.definitionInjection ?: return null
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return null
         val modeConfig = config.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
         run {
@@ -78,11 +79,12 @@ object ParadoxDefinitionInjectionService {
         val typeKey = definitionInjectionInfo.target.orEmpty() // use target name as type key
 
         val result = mutableListOf<CwtSubtypeConfig>()
+        val context = CwtSubtypeConfigMatchContext(typeConfig.configGroup, result, typeKey, options)
         for (subtypeConfig in subtypes.values) {
-            val matched = ParadoxConfigMatchService.matchesSubtype(element, subtypeConfig, result, typeKey, options)
+            val matched = ParadoxConfigMatchService.matchesSubtype(context, element, subtypeConfig)
             if (matched) result += subtypeConfig
         }
-        // processSubtypeConfigsFromInherit(definitionInfo, result) // NOTE 2.1.3 commented out since it's unnecessary for injections
+
         return result
     }
 
@@ -115,6 +117,6 @@ object ParadoxDefinitionInjectionService {
         if (allFastMatch) return listOf(element)
 
         // 需要依赖声明结构
-        return listOf(element, PlsModificationTrackers.ScriptFile)
+        return listOf(element, ParadoxModificationTrackers.ScriptFile)
     }
 }

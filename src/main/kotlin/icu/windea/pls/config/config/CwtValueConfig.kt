@@ -12,21 +12,17 @@ import icu.windea.pls.config.option.CwtOptionDataHolder
 import icu.windea.pls.config.option.CwtOptionDataHolderBase
 import icu.windea.pls.config.option.CwtOptionDataProcessor
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.config.util.CwtMemberConfigVisitor
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
-import icu.windea.pls.lang.codeInsight.type
-import icu.windea.pls.model.CwtMemberType
-import icu.windea.pls.model.CwtMembersType
+import icu.windea.pls.lang.type
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.forCwtType
@@ -76,7 +72,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
-            valueExpresssion: CwtDataExpression,
+            valueExpression: CwtDataExpression,
             valueType: CwtType = CwtType.String,
             configs: List<CwtMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null,
@@ -136,7 +132,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
     override fun create(
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
-        valueExpresssion: CwtDataExpression,
+        valueExpression: CwtDataExpression,
         valueType: CwtType,
         configs: List<CwtMemberConfig<*>>?,
         propertyConfig: CwtPropertyConfig?,
@@ -146,7 +142,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
         val config = when (withConfigs) {
             true -> CwtValueConfigImplWithConfigs(pointer, configGroup, propertyConfig)
                 .also { it.configs = configs.optimized() } // optimized to optimize memory
-            else -> CwtValueConfigImpl(pointer, configGroup, valueExpresssion, valueType, propertyConfig)
+            else -> CwtValueConfigImpl(pointer, configGroup, valueExpression, valueType, propertyConfig)
         }
         return config
     }
@@ -169,7 +165,7 @@ private class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigRes
 }
 
 private const val blockValue = PlsStrings.blockFolder
-private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerFactory.forCwtType())
 
 // 12 + 2 * 4 = 20 -> 24
 private sealed class CwtValueConfigBase : CwtOptionDataHolderBase(), CwtValueConfig {
@@ -225,10 +221,10 @@ private open class CwtValueConfigImpl(
     valueType: CwtType,
     propertyConfig: CwtPropertyConfig?,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
+    private val valueTypeId = valueType.optimized(OptimizerFactory.forCwtType()) // optimized to optimize memory
 
     override val value: String get() = valueExpression.expressionString
-    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerFactory.forCwtType())
     override val configs: List<CwtMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 

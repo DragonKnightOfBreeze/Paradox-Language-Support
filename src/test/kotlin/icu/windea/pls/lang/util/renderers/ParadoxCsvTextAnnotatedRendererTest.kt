@@ -38,19 +38,19 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     fun doTearDown() = clearIntegrationTest()
 
     @Test
-    fun example() {
+    fun smokeTest_example() {
         configureFile("common/misc/example.test.csv")
         assertResult("common/misc/example.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun example_unformatted() {
+    fun smokeTest_example_unformatted() {
         configureFile("common/misc/example_unformatted.test.csv")
         assertResult("common/misc/example_unformatted.test.csv", ParadoxAnnotatedLevel.BASIC)
     }
 
     @Test
-    fun chronicle() {
+    fun snapshotTest_chronicle() {
         configureFile("common/chapters/00_chapters.txt")
         configureFile("common/chapters/categories/00_chapter_categories.txt")
         configureFile("common/chapters/00_chapter_pages.csv")
@@ -68,7 +68,7 @@ class ParadoxCsvTextAnnotatedRendererTest : BasePlatformTestCase() {
     private fun assertResult(path: String, level: ParadoxAnnotatedLevel) {
         val file = myFixture.configureFromTempProjectFile(path)
         file as ParadoxCsvFile
-        val renderer = ParadoxCsvTextAnnotatedRenderer().also { it.level = level }
+        val renderer = ParadoxCsvTextAnnotatedRenderer().apply { settings.level = level }
         val result = renderer.render(file)
         val annotatedPath = path.substringBeforeLast('.') + ".annotated." + path.substringAfterLast('.')
         val annotatedFile = myFixture.configureByFile("features/renderers/$annotatedPath")

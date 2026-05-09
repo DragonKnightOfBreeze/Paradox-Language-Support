@@ -48,7 +48,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -293,10 +293,11 @@ object ParadoxExpressionManager {
     }
 
     private fun annotateComplexExpressionNode(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
-        val attributesKey = node.getAttributesKey(element)
+        if (node.text.isEmpty()) return
 
+        val attributesKey = node.getAttributesKey(element)
         run {
-            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
+            val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING
             if (attributesKey != null && mustUseAttributesKey) {
                 annotateNodeByAttributesKey(element, node, attributesKey, holder)
                 return@run
@@ -320,6 +321,8 @@ object ParadoxExpressionManager {
     }
 
     private fun annotateNodeByAttributesKey(element: ParadoxExpressionElement, node: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
+        if (node.text.isEmpty()) return
+
         val offest = element.startOffset + getExpressionOffset(element)
         val rangeToAnnotate = node.rangeInExpression.shiftRight(offest)
 
@@ -477,7 +480,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetReferences(element)
-            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, PlsModificationTrackers.expression(element))
+            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, ParadoxModificationTrackers.expression(element))
         }
     }
 
@@ -508,7 +511,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.ScriptExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptExpressionResolution)
         }
     }
 
@@ -519,7 +522,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.LocalisationExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationExpressionResolution)
         }
     }
 
@@ -529,7 +532,7 @@ object ParadoxExpressionManager {
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, PlsModificationTrackers.CsvExpressionResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.CsvExpressionResolution)
         }
     }
 

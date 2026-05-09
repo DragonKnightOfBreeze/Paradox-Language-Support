@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.util.jsonMapper
+import icu.windea.pls.core.data.JsonService
 import java.io.File
 
 /**
@@ -144,12 +144,11 @@ data class TigerLintResult(
     }
 
     companion object {
-        @JvmField
-        val EMPTY = TigerLintResult("")
+        @JvmField val EMPTY = TigerLintResult("")
 
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {
-            val items = jsonMapper.readValue<List<Item>>(outputFile)
+            val items = JsonService.mapper.readValue<List<Item>>(outputFile)
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {

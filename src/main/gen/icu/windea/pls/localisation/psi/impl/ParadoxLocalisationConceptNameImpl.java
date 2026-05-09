@@ -11,11 +11,9 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import javax.swing.Icon;
 
 public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptName {
 
@@ -36,11 +34,6 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
   @Override
   public @Nullable PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
-  }
-
-  @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override

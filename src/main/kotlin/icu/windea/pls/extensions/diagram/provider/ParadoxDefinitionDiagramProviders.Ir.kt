@@ -10,8 +10,8 @@ import icu.windea.pls.extensions.diagram.settings.IrEventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Ir)
 class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ir) {

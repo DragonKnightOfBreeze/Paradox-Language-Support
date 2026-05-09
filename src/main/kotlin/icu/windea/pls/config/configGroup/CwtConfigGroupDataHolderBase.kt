@@ -8,7 +8,8 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -46,12 +47,8 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
-/**
- * @see InlinedDelegateFieldCodeInjectors.CwtConfigGroupDataHolderBase
- */
 abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGroupDataHolder {
     object Keys : KeyRegistry() {
         val schemas by registerKey<FastList<CwtSchemaConfig>, CwtConfigGroupDataHolder>(this) { FastList() }
@@ -66,6 +63,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val type2ModifiersMap by registerKey<FastMap<String, FastMap<String, CwtModifierConfig>>, UserDataHolder>(this) { FastMap() }
         val declarations by registerKey<FastMap<String, CwtDeclarationConfig>, UserDataHolder>(this) { FastMap() }
         val rows by registerKey<FastMap<String, CwtRowConfig>, UserDataHolder>(this) { FastMap() }
+        val defineNamespaces by registerKey<FastMap<String, CwtDefineNamespaceConfig>, UserDataHolder>(this) { FastMap() }
         val enums by registerKey<FastMap<String, CwtEnumConfig>, UserDataHolder>(this) { FastMap() }
         val complexEnums by registerKey<FastMap<String, CwtComplexEnumConfig>, UserDataHolder>(this) { FastMap() }
         val dynamicValueTypes by registerKey<FastMap<String, CwtDynamicValueTypeConfig>, UserDataHolder>(this) { FastMap() }
@@ -78,18 +76,18 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val scopeGroups by registerKey<FastCustomMap<@CaseInsensitive String, CwtScopeGroupConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val singleAliases by registerKey<FastMap<String, CwtSingleAliasConfig>, UserDataHolder>(this) { FastMap() }
         val aliasGroups by registerKey<FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>, UserDataHolder>(this) { FastMap() }
-        val directives by registerKey<FastList<CwtDirectiveConfig>, UserDataHolder>(this) { FastList() }
         val modifierCategories by registerKey<FastMap<String, CwtModifierCategoryConfig>, UserDataHolder>(this) { FastMap() }
         val modifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val databaseObjectTypes by registerKey<FastMap<String, CwtDatabaseObjectTypeConfig>, UserDataHolder>(this) { FastMap() }
+        val macros by registerKey<FastList<CwtMacroConfig>, UserDataHolder>(this) { FastList() }
         val extendedScriptedVariables by registerKey<FastMap<String, CwtExtendedScriptedVariableConfig>, UserDataHolder>(this) { FastMap() }
         val extendedDefinitions by registerKey<FastMap<String, FastList<CwtExtendedDefinitionConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedGameRules by registerKey<FastMap<String, CwtExtendedGameRuleConfig>, UserDataHolder>(this) { FastMap() }
         val extendedOnActions by registerKey<FastMap<String, CwtExtendedOnActionConfig>, UserDataHolder>(this) { FastMap() }
+        val extendedParameters by registerKey<FastMap<String, FastList<CwtExtendedParameterConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedComplexEnumValues by registerKey<FastMap<String, FastMap<String, CwtExtendedComplexEnumValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedDynamicValues by registerKey<FastMap<String, FastMap<String, CwtExtendedDynamicValueConfig>>, UserDataHolder>(this) { FastMap() }
         val extendedInlineScripts by registerKey<FastMap<String, CwtExtendedInlineScriptConfig>, UserDataHolder>(this) { FastMap() }
-        val extendedParameters by registerKey<FastMap<String, FastList<CwtExtendedParameterConfig>>, UserDataHolder>(this) { FastMap() }
         val predefinedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val generatedModifiers by registerKey<FastCustomMap<@CaseInsensitive String, CwtModifierConfig>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
         val aliasKeysGroupConst by registerKey<FastCustomMap<@CaseInsensitive String, FastCustomMap<@CaseInsensitive String, String>>, UserDataHolder>(this) { caseInsensitiveStringKeyMap() }
@@ -98,7 +96,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         val relatedLocalisationPatterns by registerKey<FastSet<Tuple2<String, String>>, UserDataHolder>(this) { FastSet() }
         val linksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
         val localisationLinksModel by registerKey<CwtLinksModelBase, UserDataHolder>(this) { CwtLinksModelBase() }
-        val directivesModel by registerKey<CwtDirectivesModelBase, UserDataHolder>(this) { CwtDirectivesModelBase() }
+        val macrosModel by registerKey<CwtMacrosModelBase, UserDataHolder>(this) { CwtMacrosModelBase() }
         val definitionTypesModel by registerKey<CwtDefinitionTypesModelBase, UserDataHolder>(this) { CwtDefinitionTypesModelBase() }
         val filePathExpressions by registerKey<FastSet<CwtDataExpression>, UserDataHolder>(this) { FastSet() }
         val parameterConfigs by registerKey<FastSet<CwtMemberConfig<*>>, UserDataHolder>(this) { FastSet() }
@@ -120,6 +118,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val type2ModifiersMap by Keys.type2ModifiersMap
     final override val declarations by Keys.declarations
     final override val rows by Keys.rows
+    final override val defineNamespaces by Keys.defineNamespaces
     final override val enums by Keys.enums
     final override val complexEnums by Keys.complexEnums
     final override val dynamicValueTypes by Keys.dynamicValueTypes
@@ -132,18 +131,18 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val scopeGroups by Keys.scopeGroups
     final override val singleAliases by Keys.singleAliases
     final override val aliasGroups by Keys.aliasGroups
-    final override val directives by Keys.directives
     final override val modifierCategories by Keys.modifierCategories
     final override val modifiers by Keys.modifiers
     final override val databaseObjectTypes by Keys.databaseObjectTypes
+    final override val macros by Keys.macros
     final override val extendedScriptedVariables by Keys.extendedScriptedVariables
     final override val extendedDefinitions by Keys.extendedDefinitions
     final override val extendedGameRules by Keys.extendedGameRules
     final override val extendedOnActions by Keys.extendedOnActions
+    final override val extendedParameters by Keys.extendedParameters
     final override val extendedComplexEnumValues by Keys.extendedComplexEnumValues
     final override val extendedDynamicValues by Keys.extendedDynamicValues
     final override val extendedInlineScripts by Keys.extendedInlineScripts
-    final override val extendedParameters by Keys.extendedParameters
     final override val predefinedModifiers by Keys.predefinedModifiers
     final override val generatedModifiers by Keys.generatedModifiers
     final override val aliasKeysGroupConst by Keys.aliasKeysGroupConst
@@ -152,7 +151,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
     final override val relatedLocalisationPatterns by Keys.relatedLocalisationPatterns
     final override val linksModel by Keys.linksModel
     final override val localisationLinksModel by Keys.localisationLinksModel
-    final override val directivesModel by Keys.directivesModel
+    final override val macrosModel by Keys.macrosModel
     final override val definitionTypesModel by Keys.definitionTypesModel
     final override val filePathExpressions by Keys.filePathExpressions
     final override val parameterConfigs by Keys.parameterConfigs
@@ -181,6 +180,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         type2ModifiersMap.values.forEach { it.trim() }
         declarations.trim()
         rows.trim()
+        defineNamespaces.trim()
         enums.trim()
         complexEnums.trim()
         dynamicValueTypes.trim()
@@ -194,7 +194,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         singleAliases.trim()
         aliasGroups.trim()
         aliasGroups.values.forEach { it.trim() }
-        directives.trim()
+        this@CwtConfigGroupDataHolderBase.macros.trim()
         modifierCategories.trim()
         modifiers.trim()
         databaseObjectTypes.trim()
@@ -203,12 +203,12 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         extendedDefinitions.values.forEach { it.trim() }
         extendedGameRules.trim()
         extendedOnActions.trim()
+        extendedParameters.trim()
         extendedComplexEnumValues.trim()
         extendedComplexEnumValues.values.forEach { it.trim() }
         extendedDynamicValues.trim()
         extendedDynamicValues.values.forEach { it.trim() }
         extendedInlineScripts.trim()
-        extendedParameters.trim()
         extendedParameters.values.forEach { it.trim() }
         predefinedModifiers.trim()
         generatedModifiers.trim()
@@ -219,7 +219,7 @@ abstract class CwtConfigGroupDataHolderBase : UserDataHolderBase(), CwtConfigGro
         relatedLocalisationPatterns.trim()
         linksModel.trim()
         localisationLinksModel.trim()
-        directivesModel.trim()
+        this@CwtConfigGroupDataHolderBase.macrosModel.trim()
         definitionTypesModel.trim()
         filePathExpressions.trim()
         parameterConfigs.trim()
@@ -256,12 +256,12 @@ class CwtLinksModelBase : CwtLinksModel {
     }
 }
 
-class CwtDirectivesModelBase : CwtDirectivesModel {
-    override val inlineScript: FastList<CwtDirectiveConfig> = FastList()
-    override var definitionInjection: CwtDirectiveConfig? = null
+class CwtMacrosModelBase : CwtMacrosModel {
+    override val forInlineScripts: FastList<CwtMacroConfig.InlineScript> = FastList()
+    override var forDefinitionInjections: CwtMacroConfig.DefinitionInjection? = null
 
     override fun trim() {
-        inlineScript.trim()
+        forInlineScripts.trim()
     }
 }
 

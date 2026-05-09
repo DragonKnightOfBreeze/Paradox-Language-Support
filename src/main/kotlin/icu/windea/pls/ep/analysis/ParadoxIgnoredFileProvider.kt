@@ -1,10 +1,9 @@
 package icu.windea.pls.ep.analysis
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.vcs.FilePath
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.paths.ParadoxPath
 
 /**
  * 提供需要忽略的文件。
@@ -15,9 +14,7 @@ import icu.windea.pls.model.ParadoxFileInfo
  * @see ParadoxFileInfo
  */
 interface ParadoxIgnoredFileProvider {
-    fun isIgnoredFile(file: VirtualFile): Boolean
-
-    fun isIgnoredFile(filePath: FilePath): Boolean
+    fun isIgnoredFile(path: ParadoxPath, entry: String): Boolean
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxIgnoredFileProvider>("icu.windea.pls.ignoredFileProvider")

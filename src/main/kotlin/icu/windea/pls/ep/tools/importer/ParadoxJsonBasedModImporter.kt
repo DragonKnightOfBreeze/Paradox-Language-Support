@@ -2,11 +2,11 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.icons.AllIcons
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.core.data.JsonService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 使用 JSON 文件作为数据文件的模组导入器。
@@ -25,7 +25,7 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     private fun <T> doReadData(filePath: Path, type: Class<T>): T {
         return try {
-            jsonMapper.readValue(filePath.toFile(), type)
+            JsonService.mapper.readValue(filePath.toFile(), type)
         } catch (e: Exception) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.data", filePath), e)
         }

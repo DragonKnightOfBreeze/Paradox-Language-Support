@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls.ai" parentId="pls" groupWeight="90" bundle="messages.PlsBundle" key="settings.ai"
+    <applicationConfigurable id="pls.ai" parentId="pls" groupWeight="90" bundle="messages.PlsAiBundle" key="settings.ai"
                              instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
 
     <intentionAction>
@@ -41,7 +41,7 @@
     </intentionAction>
   </extensions>
 
-  <actions>
+  <actions resource-bundle="messages.PlsAiBundle">
     <action id="Pls.Manipulation.AiReplaceLocalisationWithTranslation" class="icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithTranslationAction">
       <add-to-group group-id="Pls.LocalisationManipulation"/>
     </action>

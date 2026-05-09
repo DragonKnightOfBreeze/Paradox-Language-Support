@@ -12,8 +12,8 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.toMutableProperty
 import icu.windea.pls.core.ui.threeStateCheckBox
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
     val project: Project,

@@ -125,7 +125,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo', Foo]")
+        val r = render("Concept command: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("Foo"))
     }
 
@@ -146,7 +146,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        val r = render("Concept: ['concept_bar', Bar]")
+        val r = render("Concept command: ['concept_bar', Bar]")
         Assert.assertTrue(r.contains("Bar"))
     }
 
@@ -157,7 +157,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo']")
+        val r = render("Concept command: ['concept_foo']")
         Assert.assertTrue(r.contains("Tooltip Text"))
     }
 
@@ -166,17 +166,17 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
         myFixture.copyFileToProject("features/renderers/$path", path)
     }
 
-    private fun render(input: String, configure: ParadoxLocalisationTextPlainRenderer.() -> Unit = {}): String {
+    private fun render(input: String, configure: ParadoxLocalisationTextPlainRenderSettings.() -> Unit = {}): String {
         val id = counter.getAndIncrement()
         markFileInfo(gameType, "localisation/renderer_test_$id.yml")
         myFixture.configureByText("renderer_test.yml", "l_english:\n key:0 \"$input\"")
         val file = myFixture.file as ParadoxLocalisationFile
         val property = file.properties.first()
-        val renderer = ParadoxLocalisationTextPlainRenderer().apply(configure)
+        val renderer = ParadoxLocalisationTextPlainRenderer().apply { settings.configure() }
         return renderer.render(property)
     }
 
-    private fun assertResult(expect: String, input: String, configure: ParadoxLocalisationTextPlainRenderer.() -> Unit = {}) {
+    private fun assertResult(expect: String, input: String, configure: ParadoxLocalisationTextPlainRenderSettings.() -> Unit = {}) {
         val result = render(input, configure)
         Assert.assertEquals(expect, result)
     }

@@ -8,6 +8,7 @@ package icu.windea.pls.lang.codeInsight.annotated
  * @property includeOverrideStrategy 是否包含覆盖方式信息。
  * @property includeConfigExpression 是否包含规则表达式信息。
  * @property includeScopeContext 是否包含作用域上下文信息。
+ * @property includeUnchancedScopeContext 是否包含未发生更改的作用域上下文信息。
  * @property includeDetailedScopeContext 是否包含详细的作用域上下文信息。这意味着会包含 `prev` `prevprev` 等回溯型系统作用域。
  *
  * @see ParadoxScriptAnnotatedManager
@@ -20,36 +21,34 @@ data class ParadoxAnnotatedLevel(
     val includeOverrideStrategy: Boolean = false,
     val includeConfigExpression: Boolean = false,
     val includeScopeContext: Boolean = false,
+    val includeUnchancedScopeContext: Boolean = false,
     val includeDetailedScopeContext: Boolean = false,
 ) {
     companion object {
-        @JvmField
-        val BASIC: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val BASIC: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
         )
 
-        @JvmField
-        val DEFAULT: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val DEFAULT: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
         )
 
-        @JvmField
-        val ADVANCED: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val ADVANCED: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
             includeScopeContext = true,
         )
 
-        @JvmField
-        val ALL: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
+        @JvmField val ALL: ParadoxAnnotatedLevel = ParadoxAnnotatedLevel(
             includeType = true,
             includeDefinitionType = true,
             includeOverrideStrategy = true,
             includeConfigExpression = true,
             includeScopeContext = true,
+            includeUnchancedScopeContext = true,
             includeDetailedScopeContext = true,
         )
     }

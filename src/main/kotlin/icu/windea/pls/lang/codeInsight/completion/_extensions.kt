@@ -7,7 +7,6 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
 import com.intellij.ui.JBColor
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
@@ -17,20 +16,21 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.Icon
+import icu.windea.pls.model.CwtType
 
 fun CompletionResultSet.addElement(lookupElement: LookupElement?, context: ProcessingContext) {
     if (lookupElement == null) return
@@ -103,7 +103,7 @@ fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: Parado
     return this
 }
 
-fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: PsiElement): LookupElementBuilder {
+fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: ParadoxScriptStringExpressionElement): LookupElementBuilder {
     if (PlsSettings.getInstance().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)
@@ -121,9 +121,9 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
         config is CwtSingleAliasConfig -> config.config
-        config is CwtDirectiveConfig -> config.config
+        config is CwtMacroConfig -> config.config
         else -> null
-    }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
+    }?.let { c -> CwtConfigInlineService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
     val isKeyElement = contextElement is ParadoxScriptPropertyKey

@@ -6,12 +6,11 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
@@ -20,15 +19,19 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的动作触发（on action）提供额外的提示信息（文档注释和内嵌提示），以及指定事件类型。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - on action 即类型为 `on_action` 的定义。
  * - 事件类型是通过 `## event_type` 选项指定的。这会重载声明规则中的所有对事件的引用为对该类型事件的引用。
  *
- * 路径定位：`on_actions/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：
+ * - `on_actions/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：不兼容，拥有不同的格式与行为。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容，拥有不同的格式和行为。
+ *
+ * ### 示例
+ *
  * ```cwt
  * on_actions = {
  *     ### Some documentation
@@ -39,7 +42,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property eventType 事件类型。
  * @property hint 额外提示信息（可选）。
  */

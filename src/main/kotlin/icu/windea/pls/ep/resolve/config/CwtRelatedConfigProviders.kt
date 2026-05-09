@@ -18,6 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.isParameterized
@@ -31,7 +32,6 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionRecursiveVisitor
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
@@ -44,6 +44,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -63,6 +64,16 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val result = mutableSetOf<CwtConfig<*>>()
 
+        // 尝试解析为定值
+        run {
+            if (element !is ParadoxScriptPropertyKey) return@run
+            val property = element.parentProperty ?: return@run
+            val defineInfo = property.defineInfo ?: return@run
+            val config = defineInfo.config ?: return@run
+            result += config
+            return result // 中断
+        }
+
         // 尝试解析为定义注入目标
         run {
             if (element !is ParadoxScriptPropertyKey) return@run
@@ -72,7 +83,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             result += modeConfig
             val typeConfig = definitionInjectionInfo.typeConfig
             if (typeConfig != null) result += typeConfig
-            return result // 中断解析
+            return result // 中断
         }
 
         // 尝试解析为复杂枚举值声明
@@ -86,7 +97,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         // 基于所有匹配的规则
         run {
             val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, acceptDefinition = true))
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, forDeclarationRoot = true))
             if (configs.isEmpty()) return@run
             for (config in configs) {
                 result += config
@@ -249,7 +260,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             }
 
             val isKey = element is ParadoxScriptPropertyKey
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, acceptDefinition = true))
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = isKey, forDeclarationRoot = true))
             for (config in configs) {
                 val configExpression = config.configExpression
                 if (configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {

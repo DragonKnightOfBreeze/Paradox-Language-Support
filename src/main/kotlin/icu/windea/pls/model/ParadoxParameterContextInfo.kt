@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import java.util.*
 

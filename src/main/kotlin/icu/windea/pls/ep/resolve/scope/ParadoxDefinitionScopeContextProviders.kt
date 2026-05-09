@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.resolve.scope
 
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.isExact
 import icu.windea.pls.script.psi.ParadoxDefinitionElement

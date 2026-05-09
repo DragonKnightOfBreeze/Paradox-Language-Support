@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
@@ -14,9 +15,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.configGroup.CwtLinksModelBase
 import icu.windea.pls.config.filePathPatterns
-import icu.windea.pls.config.select.asProperty
-import icu.windea.pls.config.select.ofPaths
-import icu.windea.pls.config.select.one
 import icu.windea.pls.config.select.selectConfigScope
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.FastList
@@ -179,10 +177,10 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             computeLinksModel(initializer, initializer.localisationLinksModel, initializer.localisationLinks.values)
         }
 
-        // compute `directivesModel`
+        // compute `macrosModel`
         run {
             checkCanceled()
-            computeDirectivesModel(initializer)
+            computeMacrosModel(initializer)
         }
 
         // compute `definitionTypesModel`
@@ -239,13 +237,13 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeDirectivesModel(initializer: CwtConfigGroupInitializer) {
-        with(initializer.directivesModel) {
-            val directives = initializer.directives
-            directives.forEach { c ->
-                when (c.name) {
-                    "inline_script" -> inlineScript += c
-                    "definition_injection" -> definitionInjection = c
+    private fun computeMacrosModel(initializer: CwtConfigGroupInitializer) {
+        with(initializer.macrosModel) {
+            val macros = initializer.macros
+            macros.forEach { c ->
+                when (c) {
+                    is CwtMacroConfig.InlineScript -> forInlineScripts += c
+                    is CwtMacroConfig.DefinitionInjection -> forDefinitionInjections = c
                 }
             }
         }

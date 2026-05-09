@@ -7,14 +7,16 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.ParadoxSearchParameters
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.util.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
@@ -27,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxOverrideService {
     /**
-     * 得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 得到目标（文件、全局封装变量、定义、定值变量、本地化等）使用的覆盖方式。
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
@@ -39,7 +41,7 @@ object ParadoxOverrideService {
     }
 
     /**
-     * 从查询参数得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 从查询参数得到目标（文件、全局封装变量、定义、定值变量、本地化等）使用的覆盖方式。
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
@@ -119,6 +121,23 @@ object ParadoxOverrideService {
         val results = ParadoxDefinitionSearch.searchElement(name, type, selector).findAll().filterIsInstance<ParadoxScriptProperty>()
         if (results.size < 2) return null // no override -> skip
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
+    }
+
+    /**
+     * 检查是否存在对定值变量的重载。
+     * 如果返回 `null`，则表示使用的覆盖方式为 `ORDERED`，或者不存在重载。
+     */
+    fun getOverrideResultForDefineVariable(element: ParadoxScriptProperty, file: PsiFile): ParadoxOverrideResult<ParadoxScriptProperty>? {
+        val defineVariableInfo = element.defineVariableInfo ?: return null
+        val namespace = defineVariableInfo.namespace
+        val variable = defineVariableInfo.variable
+        val overrideStrategy = getOverrideStrategy(element) ?: return null
+        if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
+        val project = file.project
+        val selector = selector(project, file).define()
+        val results = ParadoxDefineVariableSearch.search(namespace, variable, selector).findAll().toList()
+        if (results.size < 2) return null // no override -> skip
+        return ParadoxOverrideResult(defineVariableInfo.expression, element, results, overrideStrategy)
     }
 
     /**

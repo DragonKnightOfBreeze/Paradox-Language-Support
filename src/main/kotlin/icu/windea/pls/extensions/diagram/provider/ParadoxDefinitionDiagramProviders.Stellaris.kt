@@ -18,9 +18,9 @@ import icu.windea.pls.extensions.diagram.settings.StellarisTechTreeDiagramSettin
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import java.awt.Color
+import icu.windea.pls.model.ParadoxGameType
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {

@@ -6,7 +6,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigMergeService
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.orNull
@@ -19,8 +19,6 @@ import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -148,7 +146,7 @@ object ParadoxInlineScriptService {
             val usageConfigContext = ParadoxConfigManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(options).orNull()
             // merge
-            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+            val r = result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }.also {
                 if (it) return@also
                 context.inlineScriptHasConflict = true
                 result.set(null)

@@ -3,11 +3,11 @@ package icu.windea.pls.ide
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import icu.windea.pls.PlsCapacities
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.constants.PlsPaths
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -41,7 +41,6 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     }
 
     private fun initCachesAsync() {
-        PlsPaths.initAsync()
         PlsPathService.getInstance().initAsync()
     }
 
@@ -53,7 +52,7 @@ class PlsLifecycleListener : AppLifecycleListener, ProjectActivity {
     private suspend fun refreshBuiltInConfigFiles(project: Project) {
         if (project.isDefault || project.isDisposed) return
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则目录
-        if (!PlsFacade.Capacities.refreshBuiltIn()) return // 必须显式启用
+        if (!PlsCapacities.refreshBuiltIn()) return // 必须显式启用
         CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles(project)
     }
 

@@ -6,9 +6,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.editor
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import java.util.function.Supplier
 

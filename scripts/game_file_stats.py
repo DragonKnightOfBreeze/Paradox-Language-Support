@@ -1,36 +1,37 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# game_file_stats.py — Game file statistics audit for Paradox Language Support.
-#
-# Detects locally installed Paradox games via Steam registry / default paths,
-# then walks each game's entry directories to count script, localisation, and
-# CSV files.  Reports per-game, per-entry-type (main / extra), per-category
-# line metrics: total, min, max, avg, blank, comment, and code lines.
-#
-# Key design decisions (synced from plugin Kotlin sources):
-#   - Game types, entry info, and path detection logic mirror
-#     ParadoxGameType, ParadoxEntryInfo, and PlsPathServiceImpl.
-#   - File extensions mirror PlsConstants.
-#   - Only files *indirectly* under entry directories are counted
-#     (files directly in an entry dir, like license.txt, are excluded).
-#   - Option comments (##) in CWT are N/A here; Paradox script and
-#     localisation use plain '#' line comments.  CSV has no comments.
-#
-# Auto-generated files are detected and reported separately:
-#   - Path contains a '/generated/' directory segment
-#   - Zero comments AND zero blank lines AND total > 1000 lines
-#
-# Output modes:
-#   default   : full detailed report (per-entry-type breakdown + combined + generated)
-#   --summary : condensed per-game table with file/line totals and generated percentages
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/game_file_stats.py [--summary] [--markdown] [--output FILE]
+"""game_file_stats.py — Game file statistics audit for the plugin.
+
+Detects locally installed Paradox games via Steam registry / default paths,
+then walks each game's entry directories to count script, localisation, and
+CSV files.  Reports per-game, per-entry-type (main / extra), per-category
+line metrics: total, min, max, avg, blank, comment, and code lines.
+
+Key design decisions (synced from plugin Kotlin sources):
+  - Game types, entry info, and path detection logic mirror
+    ParadoxGameType, ParadoxGameTypeMetadata, and PlsPathServiceImpl.
+  - File extensions mirror PlsConstants.
+  - Only files *indirectly* under entry directories are counted
+    (files directly in an entry dir, like license.txt, are excluded).
+  - Option comments (##) in CWT are N/A here; Paradox script and
+    localisation use plain '#' line comments.  CSV has no comments.
+
+Auto-generated files are detected and reported separately:
+  - Path contains a '/generated/' directory segment
+  - Zero comments AND zero blank lines AND total > 1000 lines
+
+Output modes:
+  default   : full detailed report (per-entry-type breakdown + combined + generated)
+  --summary : condensed per-game table with file/line totals and generated percentages
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/game_file_stats.py [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 
@@ -46,15 +47,8 @@ from dataclasses import dataclass, field
 from typing import Iterable, TextIO
 
 # ===========================================================================
-# Game metadata (synced from ParadoxGameType + ParadoxEntryInfo)
+# Game metadata (synced from ParadoxGameType + ParadoxGameTypeMetadata)
 # ===========================================================================
-
-@dataclass
-class EntryInfo:
-    """Mirrors ParadoxEntryInfo.  Only game-side entries are needed here."""
-    game_main: list[str] = field(default_factory=list)
-    game_extra: list[str] = field(default_factory=list)
-
 
 @dataclass
 class GameType:
@@ -63,26 +57,31 @@ class GameType:
     title: str
     game_id: str
     steam_id: str
-    entry_info: EntryInfo
+    entry_info: GameTypeMetadata
+
+@dataclass
+class GameTypeMetadata:
+    """Mirrors ParadoxGameTypeMetadata.  Only game-side entries are needed here."""
+    game_main: list[str] = field(default_factory=list)
+    game_extra: list[str] = field(default_factory=list)
 
 
-# Entries object mirrors ParadoxGameType.Entries / EntryInfos
 _COMMON_EXTRA = ["clausewitz", "jomini"]
 
 GAME_TYPES: list[GameType] = [
     GameType("stellaris", "Stellaris", "stellaris", "281990",
-             EntryInfo(game_extra=[
+             GameTypeMetadata(game_extra=[
                  "pdx_launcher/game", "pdx_launcher/common",
                  "pdx_online_assets", "previewer_assets", "tweakergui_assets",
              ])),
     GameType("ck2", "Crusader Kings II", "ck2", "203770",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("ck3", "Crusader Kings III", "ck3", "1158310",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("eu4", "Europa Universalis IV", "eu4", "236850",
-             EntryInfo(game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_extra=_COMMON_EXTRA)),
     GameType("eu5", "Europa Universalis V", "eu5", "3450310",
-             EntryInfo(
+             GameTypeMetadata(
                  game_main=[
                      "game/in_game", "game/main_menu", "game/loading_screen",
                      "game/dlc/*/in_game", "game/dlc/*/main_menu", "game/dlc/*/loading_screen",
@@ -93,13 +92,13 @@ GAME_TYPES: list[GameType] = [
                  ],
              )),
     GameType("hoi4", "Hearts of Iron IV", "hoi4", "394360",
-             EntryInfo(game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_extra=_COMMON_EXTRA)),
     GameType("ir", "Imperator Rome", "imperator_rome", "859580",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("vic2", "Victoria 2", "victoria2", "42960",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
     GameType("vic3", "Victoria 3", "victoria3", "529340",
-             EntryInfo(game_main=["game"], game_extra=_COMMON_EXTRA)),
+             GameTypeMetadata(game_main=["game"], game_extra=_COMMON_EXTRA)),
 ]
 
 # ===========================================================================
@@ -343,7 +342,7 @@ def iter_indirect_files(entry_dir: str) -> Iterable[str]:
                     yield os.path.join(root, fn)
 
 
-def collect_game_stats(game_dir: str, entry_info: EntryInfo
+def collect_game_stats(game_dir: str, entry_info: GameTypeMetadata
                        ) -> tuple[dict[tuple[str, str], Stats],
                                   dict[tuple[str, str], Stats]]:
     """Collect stats keyed by (entry_type, category).

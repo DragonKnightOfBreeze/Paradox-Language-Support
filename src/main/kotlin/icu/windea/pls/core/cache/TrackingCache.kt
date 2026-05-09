@@ -10,9 +10,8 @@ import java.util.function.Function
  *
  * @see ModificationTracker
  */
-@Suppress("AddVarianceModifier")
-class TrackingCache<K : Any, V : Any, in C : Cache<K, V>>(
-    private val delegate: C,
+class TrackingCache<K : Any, V : Any>(
+    private val delegate: Cache<K, V>,
     private val modificationTrackerProvider: (V) -> ModificationTracker?
 ) : Cache<K, V> by delegate {
     private val modificationCounts: MutableMap<K, Long> = ConcurrentHashMap()

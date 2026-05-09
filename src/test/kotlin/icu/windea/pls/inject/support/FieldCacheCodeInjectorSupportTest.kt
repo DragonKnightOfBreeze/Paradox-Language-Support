@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.support
 
 import icu.windea.pls.inject.CodeInjectorBase
-import icu.windea.pls.inject.CodeInjectorUtil
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.annotations.FieldCache
 import icu.windea.pls.inject.annotations.InjectionTarget
 import javassist.ClassClassPath
@@ -9,6 +9,9 @@ import javassist.ClassPool
 import org.junit.Assert.*
 import org.junit.Test
 
+/**
+ * @see FieldCacheCodeInjectorSupport
+ */
 class FieldCacheCodeInjectorSupportTest {
     @Suppress("unused")
     class Model {
@@ -45,8 +48,8 @@ class FieldCacheCodeInjectorSupportTest {
         ctClass.defrost()
 
         val injector = Injector()
-        // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorUtil.targetClassKey`.
-        injector.putUserData(CodeInjectorUtil.targetClassKey, ctClass)
+        // CodeInjectorSupport implementations read the target CtClass from `CodeInjectorContext.targetClassKey`.
+        injector.putUserData(CodeInjectorContext.targetClassKey, ctClass)
 
         FieldCacheCodeInjectorSupport().apply(injector)
 

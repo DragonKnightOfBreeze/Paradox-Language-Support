@@ -1,3 +1,4 @@
 # Line comment
 <HEADER>id</HEADER>;<HEADER>name</HEADER>;<HEADER>number</HEADER>;<HEADER>status</HEADER>;
-other_id;other_name;<NUMBER>1</NUMBER>;<KEYWORD>no</KEYWORD>;
+some_id;<DR>some_name</DR>;<NUMBER>0</NUMBER>;<KEYWORD>yes</KEYWORD>;
+other_id;<DR>other_name</DR>;<NUMBER>1</NUMBER>;<KEYWORD>no</KEYWORD>;

@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.extensions.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extensions.diagram.PlsDiagramBundle
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 
 // com.intellij.uml.core.actions.scopes.UmlScopesActionGroup
 

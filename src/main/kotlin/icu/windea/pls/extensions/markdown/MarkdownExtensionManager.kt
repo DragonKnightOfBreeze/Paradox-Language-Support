@@ -15,12 +15,12 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -83,7 +83,7 @@ object MarkdownExtensionManager {
 
     fun getCodeFenceFromInjectedFile(injectedFile: PsiFile): MarkdownCodeFence? {
         val vFile = selectFile(injectedFile) ?: return null
-        if (!PlsFileManager.isInjectedFile(vFile)) return null
+        if (!VirtualFileService.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 

@@ -33,7 +33,10 @@ interface ParadoxMemberPath : Iterable<String> {
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
-    fun normalize(): ParadoxMemberPath = this
+
+    fun normalize(): ParadoxMemberPath
+    fun resolve(other: ParadoxMemberPath): ParadoxMemberPath?
+    fun relativize(other: ParadoxMemberPath, wildcard: String? = null): ParadoxMemberPath?
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
@@ -47,13 +50,6 @@ interface ParadoxMemberPath : Iterable<String> {
     }
 
     companion object : Resolver by ParadoxMemberPathResolverImpl()
-}
-
-fun ParadoxMemberPath.relativeTo(other: ParadoxMemberPath): ParadoxMemberPath? {
-    if (this == other) return ParadoxMemberPath.resolveEmpty()
-    if (this.isEmpty()) return other
-    val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
-    return ParadoxMemberPath.resolve(subPaths)
 }
 
 // region Implementations
@@ -87,6 +83,19 @@ private sealed class ParadoxMemberPathBase : ParadoxMemberPath {
         if (this is NormalizedParadoxMemberPath || this is EmptyParadoxMemberPath) return this
         if (this.isEmpty()) return EmptyParadoxMemberPath
         return NormalizedParadoxMemberPath(this)
+    }
+
+    override fun resolve(other: ParadoxMemberPath): ParadoxMemberPath {
+        if (other.isEmpty()) return this
+        val subPaths = this.subPaths + other.subPaths
+        return ParadoxMemberPath.resolve(subPaths)
+    }
+
+    override fun relativize(other: ParadoxMemberPath, wildcard: String?): ParadoxMemberPath? {
+        if (this == other) return ParadoxMemberPath.resolveEmpty()
+        if (this.isEmpty()) return other
+        val subPaths = other.subPaths.removePrefixOrNull(this.subPaths, wildcard) ?: return null
+        return ParadoxMemberPath.resolve(subPaths)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxMemberPath && path == other.path

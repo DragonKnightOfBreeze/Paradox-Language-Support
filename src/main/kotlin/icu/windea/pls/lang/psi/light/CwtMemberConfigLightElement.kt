@@ -6,9 +6,9 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon
+import icu.windea.pls.model.ParadoxGameType
 
 class CwtMemberConfigLightElement(
     parent: PsiElement,
@@ -18,8 +18,8 @@ class CwtMemberConfigLightElement(
 ) : CwtConfigLightElementBase(parent) {
     override fun getIcon(flags: Int): Icon {
         return when (config) {
-            is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
-            is CwtValueConfig -> PlsIcons.Nodes.CwtValue
+            is CwtPropertyConfig -> PlsIcons.Nodes.Property
+            is CwtValueConfig -> PlsIcons.Nodes.Value
         }
     }
 

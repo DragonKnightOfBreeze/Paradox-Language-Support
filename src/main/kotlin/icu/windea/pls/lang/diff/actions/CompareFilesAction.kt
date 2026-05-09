@@ -26,9 +26,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.diff.FileDocumentReadonlyContent
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -40,7 +40,8 @@ import java.awt.Color
 import javax.swing.Icon
 
 /**
- * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。如果是本地化文件的话也忽略路径中的语言环境。
+ * 对当前文件与包括其只读副本在内的拥有相同路径的文件进行差异比较。
+ * 如果是本地化文件的话，也忽略路径中的语言环境。
  *
  * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 可以用于比较二进制文件。（如DDS图片）
@@ -89,7 +90,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if (virtualFiles.size <= 1) {
             // unexpected
             val content = PlsBundle.message("diff.compare.files.content.title.info.1")
-            PlsFacade.createNotification(NotificationType.INFORMATION, content).notify(project)
+            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 

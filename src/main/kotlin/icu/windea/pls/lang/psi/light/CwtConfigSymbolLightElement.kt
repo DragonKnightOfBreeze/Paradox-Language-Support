@@ -1,17 +1,17 @@
 package icu.windea.pls.lang.psi.light
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 class CwtConfigSymbolLightElement(
     parent: CwtStringExpressionElement,
     private val name: String,
     val configType: CwtConfigType,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
+    val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
     private val project: Project
 ) : CwtConfigLightElementBase(parent) {

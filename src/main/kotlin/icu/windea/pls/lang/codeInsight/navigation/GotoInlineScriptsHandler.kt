@@ -66,12 +66,4 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
         return PlsBundle.message("script.goto.inlineScripts.notFoundMessage")
     }
-
-    override fun navigateToElement(descriptor: Navigatable) {
-        if (descriptor is PsiElement) {
-            activateFileWithPsiElement(descriptor, true)
-        } else {
-            descriptor.navigate(true)
-        }
-    }
 }

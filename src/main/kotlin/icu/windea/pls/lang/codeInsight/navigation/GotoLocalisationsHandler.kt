@@ -18,7 +18,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
+import icu.windea.pls.model.ParadoxTargetInfo
 
 class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -65,13 +65,5 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
         return PlsBundle.message("script.goto.localisations.notFoundMessage")
-    }
-
-    override fun navigateToElement(descriptor: Navigatable) {
-        if (descriptor is PsiElement) {
-            activateFileWithPsiElement(descriptor, true)
-        } else {
-            descriptor.navigate(true)
-        }
     }
 }

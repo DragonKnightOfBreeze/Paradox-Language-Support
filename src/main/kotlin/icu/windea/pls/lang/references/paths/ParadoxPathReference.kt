@@ -5,7 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.lang.codeInsight.ReferenceLinkService
+import icu.windea.pls.lang.ReferenceLinkService
 
 /**
  * @see ParadoxPathReferenceProvider

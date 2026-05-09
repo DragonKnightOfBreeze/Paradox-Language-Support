@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.navigation
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.navigation.ChooseByNameContributorEx
 import com.intellij.navigation.NavigationItem
 import com.intellij.psi.search.GlobalSearchScope
@@ -9,6 +8,7 @@ import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
@@ -37,7 +37,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val project = scope.project ?: getCurrentProject() ?: return
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // declarations only
+            if (it.readWriteAccess != ReadWriteAccess.Write) return@p true // declarations only
             val name = it.name
             processor.process(name)
         }
@@ -50,7 +50,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
         val scope = parameters.searchScope
         val gameType = ParadoxAnalysisManager.getInferredCurrentGameType(project)
         CwtConfigSymbolSearch.search(null, types, gameType, project, scope).process p@{
-            if (it.readWriteAccess != ReadWriteAccessDetector.Access.Write) return@p true // declarations only
+            if (it.readWriteAccess != ReadWriteAccess.Write) return@p true // declarations only
             val name = it.name
             val configType = CwtConfigType.entries.get(it.type) ?: return@p true
             val element = it.element ?: return@p true

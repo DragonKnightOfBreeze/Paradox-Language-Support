@@ -6,12 +6,11 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -26,18 +25,22 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 用于描述拥有一组固定的可选项（即枚举值）的简单枚举。
  * 其枚举值默认忽略大小写。
  *
- * 路径定位：`enums/enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
+ * 路径定位：
+ * - `enums/enum[{name}]`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
+ *
+ * ### 示例
+ *
  * ```cwt
  * enums = {
  *     enum[weight_or_base] = { weight base }
  * }
  * ```
  *
- * @property name 名称（枚举名）。
+ * @property name 规则名称（即枚举名）。
  * @property values 可选项集合（忽略大小写）。
  * @property valueConfigMap 可选项到对应的值规则的映射。
  */

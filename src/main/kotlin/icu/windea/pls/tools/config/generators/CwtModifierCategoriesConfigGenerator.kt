@@ -14,9 +14,9 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从 `modifiers.log` 生成 `modifier_categories.cwt`。

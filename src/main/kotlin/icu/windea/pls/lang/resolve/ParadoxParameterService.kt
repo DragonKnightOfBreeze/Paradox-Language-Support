@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.wildcard
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigMergeService
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
@@ -26,11 +26,11 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
-import icu.windea.pls.lang.resolve.expression.ParadoxParameterConditionExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.model.expressions.ParadoxParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -220,7 +220,7 @@ object ParadoxParameterService {
             val contextInfo = getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo, fast).orNull()
             // merge
-            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }
             if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()
@@ -234,7 +234,7 @@ object ParadoxParameterService {
             ProgressManager.checkCanceled()
             val contextConfigs = getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             // merge
-            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
+            val r = result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigMergeService.mergeConfigs(v1, v2) }
             if (fast && isFastAvailable(result)) false else r
         }
         return result.get().orEmpty()

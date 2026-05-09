@@ -6,8 +6,8 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.model.ParadoxGameType
 import java.util.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see ParadoxModifierSupport

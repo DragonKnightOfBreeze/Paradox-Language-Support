@@ -5,13 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.scope.ParadoxScopeId
@@ -21,18 +20,22 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  *
  * 用于分组修正（modifier），为其指定允许的作用域类型。
  *
- * 路径定位：`modifier_categories/{name}`，`{name}` 匹配规则名称（分类名）。
+ * 路径定位：
+ * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * modifier_categories = {
  *     Pops = { supported_scopes = { species pop_group planet ... } }
  * }
  * ```
  *
- * @property name 名称（分类名）。
+ * @property name 规则名称（即分类名）。
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig

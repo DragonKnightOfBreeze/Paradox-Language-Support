@@ -17,7 +17,7 @@ object ParadoxScopeId {
     @Optimized
     fun getId(scope: String): String {
         val scopeId = scope.lowercase().replace(' ', '_').optimized() // optimized to optimize memory
-        // "all" scope are always resolved as "any" scope
+        // "all" scope is always resolved as "any" scope
         if (scopeId == allScopeId) return anyScopeId
         return scopeId
     }

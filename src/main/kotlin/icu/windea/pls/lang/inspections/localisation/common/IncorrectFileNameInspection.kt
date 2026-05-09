@@ -15,17 +15,23 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.RenameProcessor
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import javax.swing.JComponent
 
 /**
  * 不正确的文件名的代码检查。
@@ -33,19 +39,27 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  * 提供快速修复：
  * - 改为正确的文件名
  * - 改为正确的语言环境名
+ *
+ * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */
 class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
+    @JvmField
+    var ignoredFileNames = "languages.yml"
+
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过内存文件和注入的文件
         val virtualFile = file.virtualFile
-        if (PlsFileManager.isLightFile(virtualFile)) return false
-        if (PlsFileManager.isInjectedFile(virtualFile)) return false
+        if (VirtualFileService.isLightFile(virtualFile)) return false
+        if (VirtualFileService.isInjectedFile(virtualFile)) return false
         // 要求是可接受的本地化文件
         return ParadoxPsiFileMatcher.isLocalisationFile(file)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
+
+        val fileName = file.name
+        if (fileName.matchesPatterns(ignoredFileNames, ignoreCase = true)) return null // 忽略
 
         // 仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
@@ -57,11 +71,11 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
                 false
             }
         }
+
         val locale = theOnlyPropertyList?.locale ?: return null
         if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
         val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
         val localeId = localeConfig.id
-        val fileName = file.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
         if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
@@ -122,6 +136,22 @@ class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             val locale = startElement.castOrNull<ParadoxLocalisationLocale>() ?: return
             locale.name = expectedLocaleId
+        }
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            // ignoredFileNames
+            row {
+                label(PlsBundle.message("inspection.localisation.incorrectFileName.option.ignoredFileNames"))
+            }
+            row {
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFileNames.toAtomicProperty())
+                    .comment(PlsBundle.message("inspection.localisation.incorrectFileName.option.ignoredFileNames.comment"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
         }
     }
 }

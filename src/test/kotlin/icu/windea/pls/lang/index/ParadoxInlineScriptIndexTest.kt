@@ -26,7 +26,7 @@ class ParadoxInlineScriptIndexTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        initConfigGroups(project, gameType) // required (depends on `directive[inline_script]` configs)
+        initConfigGroups(project, gameType) // required (depends on `macro[inline_script]` configs)
         markIntegrationTest()
     }
 

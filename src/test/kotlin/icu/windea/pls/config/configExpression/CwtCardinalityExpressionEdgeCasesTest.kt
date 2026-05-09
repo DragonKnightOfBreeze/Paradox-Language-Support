@@ -11,8 +11,8 @@ class CwtCardinalityExpressionEdgeCasesTest {
         assertEquals(empty.expressionString, e.expressionString)
         assertEquals(empty.min, e.min)
         assertEquals(empty.max, e.max)
-        assertEquals(empty.relaxMin, e.relaxMin)
-        assertEquals(empty.relaxMax, e.relaxMax)
+        assertEquals(empty.lenientMin, e.lenientMin)
+        assertEquals(empty.lenientMax, e.lenientMax)
     }
 
     @Test
@@ -22,8 +22,8 @@ class CwtCardinalityExpressionEdgeCasesTest {
         val e = CwtCardinalityExpression.resolve(s)
         assertEquals(0, e.min)
         assertEquals(2, e.max)
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
         assertEquals(s, e.toString())
     }
 
@@ -33,8 +33,8 @@ class CwtCardinalityExpressionEdgeCasesTest {
         val e = CwtCardinalityExpression.resolve(s)
         assertEquals(0, e.min)
         assertEquals(2, e.max)
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
     }
 
     @Test
@@ -43,8 +43,8 @@ class CwtCardinalityExpressionEdgeCasesTest {
         val e = CwtCardinalityExpression.resolve(s)
         assertEquals(1, e.min)
         assertNull(e.max)
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
     }
 
     @Test
@@ -53,15 +53,15 @@ class CwtCardinalityExpressionEdgeCasesTest {
         val e = CwtCardinalityExpression.resolve(s)
         assertEquals(1, e.min)
         assertNull(e.max)
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
     }
 
     @Test
-    fun resolveDoubleRelaxMin_parsesAsRelaxAndZero() {
+    fun resolveDoubleLenientMin_parsesAsRelaxAndZero() {
         val s = "~~1..2"
         val e = CwtCardinalityExpression.resolve(s)
-        assertTrue(e.relaxMin)
+        assertTrue(e.lenientMin)
         assertEquals(0, e.min) // "~1" -> not numeric -> defaults to 0
         assertEquals(2, e.max)
     }
@@ -72,8 +72,8 @@ class CwtCardinalityExpressionEdgeCasesTest {
         val e = CwtCardinalityExpression.resolve(s)
         assertEquals(1, e.min)
         assertNull(e.max) // ".2" -> not numeric -> null
-        assertFalse(e.relaxMin)
-        assertFalse(e.relaxMax)
+        assertFalse(e.lenientMin)
+        assertFalse(e.lenientMax)
     }
 
     @Test

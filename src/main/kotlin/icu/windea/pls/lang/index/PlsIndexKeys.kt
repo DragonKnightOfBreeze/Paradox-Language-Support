@@ -5,7 +5,7 @@ import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.index.ParadoxDefineVariableKey
+import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.model.index.ParadoxDefinitionIndexInfo
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo

@@ -5,10 +5,9 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
@@ -21,11 +20,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 用于描述如何匹配定义的子类型，从而提供更准确的代码补全、代码检查等功能。
  *
- * 路径定位：`types/type[{type}]/subtype[{subtype}]`，`{type}` 匹配定义类型， `{subtype}` 匹配定义子类型。
+ * 路径定位：
+ * - `types/type[{type}]/subtype[{subtype}]`。其中 `{type}` 匹配类型名，`{subtype}` 匹配子类型名（即规则名称）。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[civic_or_origin] = {
@@ -40,7 +43,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 子类型名。
+ * @property name 即规则名称（即子类型名）。
  * @property typeKeyFilter 类型键过滤器（包含/排除，忽略大小写）。
  * @property typeKeyRegex 类型键正则过滤器（忽略大小写）。
  * @property startsWith 类型键前缀要求（大小写敏感与否取决于实现，这里按字面匹配）。

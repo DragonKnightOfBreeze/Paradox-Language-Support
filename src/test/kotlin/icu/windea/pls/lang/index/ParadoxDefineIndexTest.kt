@@ -5,8 +5,8 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.model.ParadoxDefineVariableKey
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.index.ParadoxDefineVariableKey
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo

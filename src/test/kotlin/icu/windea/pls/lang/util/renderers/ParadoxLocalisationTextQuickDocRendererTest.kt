@@ -99,9 +99,7 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
     fun text_withColor() {
         val c = Color(1, 2, 3)
         val hex = ColorUtil.toHex(c, true)
-        assertResult("<span style=\"color: #$hex\">Value</span>", "Value") {
-            withColor(c)
-        }
+        assertResult("<span style=\"color: #$hex\">Value</span>", "Value") { color = c }
     }
 
     @Test
@@ -203,7 +201,7 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo', Foo]")
+        val r = render("Concept command: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("psi_element://"))
         Assert.assertTrue(r.contains("Foo"))
         Assert.assertFalse(r.contains("file:/"))
@@ -217,7 +215,7 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_bar', Bar]")
+        val r = render("Concept command: ['concept_bar', Bar]")
         Assert.assertTrue(r.contains("psi_element://"))
         Assert.assertTrue(r.contains("Bar"))
         Assert.assertFalse(r.contains("file:/"))
@@ -232,7 +230,7 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // no explicit conceptText -> should use tooltip_override
-        val r = render("Concept: ['concept_foo']")
+        val r = render("Concept command: ['concept_foo']")
         // should still link to definition, but display override text
         Assert.assertTrue(r.contains("Tooltip Text"))
         Assert.assertTrue(r.contains("psi_element://"))
@@ -256,22 +254,22 @@ class ParadoxLocalisationTextQuickDocRendererTest : BasePlatformTestCase() {
         }
     }
 
-    private fun render(input: String, configure: ParadoxLocalisationTextQuickDocRenderer.() -> Unit = {}): String {
+    private fun render(input: String, configure: ParadoxLocalisationTextQuickDocRenderSettings.() -> Unit = {}): String {
         val id = counter.getAndIncrement()
         markFileInfo(gameType, "localisation/renderer_test_$id.yml")
         myFixture.configureByText("renderer_test_$id.yml", "l_english:\n key:0 \"$input\"")
         val file = myFixture.file as ParadoxLocalisationFile
         val property = file.properties.first()
-        val renderer = ParadoxLocalisationTextQuickDocRenderer().apply(configure)
+        val renderer = ParadoxLocalisationTextQuickDocRenderer().apply { settings.configure() }
         return renderer.render(property)
     }
 
-    private fun assertResult(expect: String, input: String, configure: ParadoxLocalisationTextQuickDocRenderer.() -> Unit = {}) {
+    private fun assertResult(expect: String, input: String, configure: ParadoxLocalisationTextQuickDocRenderSettings.() -> Unit = {}) {
         val result = render(input, configure)
         Assert.assertEquals(expect, result)
     }
 
-    private fun assertResultContains(expectContains: String, input: String, configure: ParadoxLocalisationTextQuickDocRenderer.() -> Unit = {}, assertion: (String) -> Unit = {}) {
+    private fun assertResultContains(expectContains: String, input: String, configure: ParadoxLocalisationTextQuickDocRenderSettings.() -> Unit = {}, assertion: (String) -> Unit = {}) {
         val result = render(input, configure)
         Assert.assertTrue(result.contains(expectContains))
         assertion(result)

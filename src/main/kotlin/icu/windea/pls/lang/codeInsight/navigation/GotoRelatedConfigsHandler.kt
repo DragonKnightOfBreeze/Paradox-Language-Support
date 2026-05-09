@@ -1,10 +1,8 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.GotoTargetHandler
-import com.intellij.codeInsight.navigation.activateFileWithPsiElement
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -46,13 +44,5 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
         return PlsBundle.message("script.goto.relatedConfigs.notFoundMessage")
-    }
-
-    override fun navigateToElement(descriptor: Navigatable) {
-        if (descriptor is PsiElement) {
-            activateFileWithPsiElement(descriptor, true)
-        } else {
-            descriptor.navigate(true)
-        }
     }
 }

@@ -12,7 +12,6 @@ import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import org.ktorm.database.Database
@@ -25,6 +24,7 @@ import org.ktorm.entity.toList
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从官方启动器的数据库文件导入模组信息。
@@ -94,7 +94,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 默认选择游戏数据目录下的数据库文件，否则回退到游戏数据目录
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val dbPath = gameDataPath.resolve(getDbFileName())
         return if (dbPath.exists()) dbPath else gameDataPath
     }

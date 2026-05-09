@@ -5,16 +5,16 @@ import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.lints.LintToolProvider
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
-import icu.windea.pls.ide.util.PlsDaemonManager
-import icu.windea.pls.ide.util.PlsOptionsManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
@@ -33,11 +33,11 @@ object PlsIntegrationsSettingsManager {
 
     fun installTranslationPlugin() {
         // NOTE 这里需要先切换到插件市场分页，并设置查询关键字
-        PlsOptionsManager.selectPlugin("Translation", openMarketplaceTab = true)
+        OptionsService.selectPlugin("Translation", openMarketplaceTab = true)
     }
 
     fun openAiSettingsPage() {
-        PlsOptionsManager.select<PlsAiSettingsConfigurable>()
+        OptionsService.select<PlsAiSettingsConfigurable>()
     }
 
     // Lint Tools
@@ -65,8 +65,8 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onTigerSettingsChanged")) return
 
-        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.refreshFiles(files, refreshInlayHints = false)
+        val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.refreshFiles(files, refreshInlayHints = false)
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {

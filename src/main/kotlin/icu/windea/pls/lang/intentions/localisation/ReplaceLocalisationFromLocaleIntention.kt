@@ -10,12 +10,13 @@ import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.ide.notification.PlsNotificationGroups
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -28,7 +29,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationFromLocale.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
@@ -45,30 +46,30 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
             }
 
             createNotification(selectedLocale, errorRef.get())
-                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
-                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
+                .addAction(ParadoxLocalisationManipulationService.createRevertAction(contexts))
+                .addAction(ParadoxLocalisationManipulationService.createReapplyAction(contexts))
                 .notify(project)
         }
     }
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
+         ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.replace")
-        return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        return ParadoxLocalisationManipulationService.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("intention.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.success())
-            return PlsFacade.createNotification(NotificationType.INFORMATION, content)
+            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.failed()) + errorDetails
-        return PlsFacade.createNotification(NotificationType.WARNING, content)
+        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

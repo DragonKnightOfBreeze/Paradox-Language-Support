@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingFilesFix
 import icu.windea.pls.lang.util.ParadoxFileManager
 
@@ -15,6 +16,9 @@ import icu.windea.pls.lang.util.ParadoxFileManager
  * 说明：
  * - 如果当前上下文中存在同路径（相对于入口目录）的文件，那么就说存在对此文件的重载。
  * - 仅适用于项目中的、作为游戏或模组文件的、非内存非注入的文件。
+ *
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 class OverrideForFileInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

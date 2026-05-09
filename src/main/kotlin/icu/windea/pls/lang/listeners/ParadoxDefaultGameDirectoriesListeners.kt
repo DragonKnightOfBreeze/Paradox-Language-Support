@@ -2,10 +2,10 @@ package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.lang.ParadoxLibrary
 import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
-import icu.windea.pls.ide.util.PlsDaemonManager
 
 /**
  * 当更改默认游戏目录映射后，更新编辑器通知。
@@ -37,7 +37,7 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
         }
 
         // 重新解析已打开的文件（IDE之后会自动请求重新索引）
-        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsDaemonManager.reparseFiles(files)
+        val files = PlsAnalysisManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalysisManager.reparseFiles(files)
     }
 }

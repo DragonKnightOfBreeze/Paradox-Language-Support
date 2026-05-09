@@ -6,12 +6,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import kotlin.reflect.KClass
 
 /**
- * 复杂表达式的 DSL，用于对其结构进行严格的验证。
- */
-@DslMarker
-annotation class ParadoxComplexExpressionDsl
-
-/**
  * 复杂表达式的 DSL 的节点。存储了必要的数据，以验证节点的类型、文本、文本范围与结构。
  */
 data class ParadoxComplexExpressionDslNode(
@@ -21,7 +15,6 @@ data class ParadoxComplexExpressionDslNode(
     val nodes: MutableList<ParadoxComplexExpressionDslNode>
 )
 
-@ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
     text: String,
     rangeInExpression: TypedTuple2<Int>,
@@ -32,7 +25,6 @@ inline fun <reified T : ParadoxComplexExpression> buildComplexExpression(
     return node
 }
 
-@ParadoxComplexExpressionDsl
 inline fun <reified T : ParadoxComplexExpressionNode> ParadoxComplexExpressionDslNode.node(
     text: String,
     rangeInExpression: TypedTuple2<Int>,

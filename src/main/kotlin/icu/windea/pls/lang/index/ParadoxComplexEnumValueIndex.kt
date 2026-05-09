@@ -12,10 +12,11 @@ import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
@@ -24,11 +25,9 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtComplexEnumConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
-import icu.windea.pls.lang.select.parentDefinitionCandidate
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.ide.util.PlsFileManager
-import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -57,7 +56,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsFileManager.isInjectedFile(file)) return true
+        if (VirtualFileService.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
         return false
     }
@@ -146,7 +145,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
+        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
         var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
         value.forEachFast { info ->
             storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
@@ -160,7 +159,7 @@ class ParadoxComplexEnumValueIndex : ParadoxIndexInfoAwareFileBasedIndex<List<Pa
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         var previousInfo: ParadoxComplexEnumValueIndexInfo? = null
         return MutableList(size) {
             val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })

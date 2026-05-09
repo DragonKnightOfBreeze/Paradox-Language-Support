@@ -1,38 +1,39 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# config_hotspots.py — CWT config distribution & hotspot audit for Paradox Language Support.
-#
-# Two complementary views of the CWT config repositories:
-#
-#   1. Per-subdirectory distribution
-#      Groups .cwt files by their immediate subdirectory under each config
-#      repository (e.g. config/common/buildings), then reports file count
-#      and line totals, sorted by total lines descending.
-#
-#   2. Large-file hotspots
-#      Lists individual .cwt files whose total line count exceeds a
-#      configurable threshold (default 1000), sorted by line count descending.
-#
-# CWT comment classification (same rules as config_stats.py):
-#   - '#'   (single)  : line comment   -> counted as comment
-#   - '##'  (exactly 2): option comment -> counted as code (metadata)
-#   - '###' (3 or more): doc comment   -> counted as comment
-#
-# Auto-generated files are detected and reported separately:
-#   - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
-#   - Zero comments AND zero blank lines AND total > 500 lines
-#
-# Output modes:
-#   default   : per-subdirectory distribution + large-file hotspots + generated summary
-#   --summary : condensed top-N hotspot list + generated stats only
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/config_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""config_hotspots.py — CWT config distribution & hotspot audit for the plugin.
+
+Two complementary views of the CWT config repositories:
+
+  1. Per-subdirectory distribution
+     Groups .cwt files by their immediate subdirectory under each config
+     repository (e.g. config/common/buildings), then reports file count
+     and line totals, sorted by total lines descending.
+
+  2. Large-file hotspots
+     Lists individual .cwt files whose total line count exceeds a
+     configurable threshold (default 1000), sorted by line count descending.
+
+CWT comment classification (same rules as config_stats.py):
+  - '#'   (single)  : line comment   -> counted as comment
+  - '##'  (exactly 2): option comment -> counted as code (metadata)
+  - '###' (3 or more): doc comment   -> counted as comment
+
+Auto-generated files are detected and reported separately:
+  - Filename contains '.gen.' (e.g. modifiers.gen.cwt)
+  - Zero comments AND zero blank lines AND total > 500 lines
+
+Output modes:
+  default   : per-subdirectory distribution + large-file hotspots + generated summary
+  --summary : condensed top-N hotspot list + generated stats only
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/config_hotspots.py [--threshold N] [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 

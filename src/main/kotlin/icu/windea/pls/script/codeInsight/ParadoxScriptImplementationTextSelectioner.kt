@@ -2,7 +2,7 @@ package icu.windea.pls.script.codeInsight
 
 import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
@@ -16,11 +16,11 @@ class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner
     override fun getTextStartOffset(element: PsiElement): Int {
         if (element is ParadoxScriptPropertyKey) return getTextStartOffset(element.parent)
         val canAttachComment = ParadoxScriptPsiUtil.canAttachComment(element)
-        return PlsPsiManager.findTextStartOffsetInView(element, canAttachComment)
+        return PsiService.findTextStartOffsetInView(element, canAttachComment)
     }
 
     override fun getTextEndOffset(element: PsiElement): Int {
         if (element is ParadoxScriptPropertyKey) return getTextStartOffset(element.parent)
-        return PlsPsiManager.findTextEndOffsetInView(element)
+        return PsiService.findTextEndOffsetInView(element)
     }
 }

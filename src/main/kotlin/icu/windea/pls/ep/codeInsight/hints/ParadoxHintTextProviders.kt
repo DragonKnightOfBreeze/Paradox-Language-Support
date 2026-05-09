@@ -7,7 +7,6 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -17,6 +16,7 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

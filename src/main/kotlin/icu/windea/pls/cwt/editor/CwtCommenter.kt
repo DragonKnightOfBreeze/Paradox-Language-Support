@@ -15,6 +15,7 @@ import icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjec
  */
 class CwtCommenter : CodeDocumentationAwareCommenterEx {
     companion object {
+        const val MD_DOC_COMMENT_PREFIX = "####"
         const val DOC_COMMENT_PREFIX = "###"
         const val OPTION_COMMENT_PREFIX = "##"
         const val LINE_COMMENT_PREFIX = "#"

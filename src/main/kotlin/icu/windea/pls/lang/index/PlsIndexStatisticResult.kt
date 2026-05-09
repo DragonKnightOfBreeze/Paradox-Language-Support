@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.index
 
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfoType
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 data class PlsIndexStatisticResult(

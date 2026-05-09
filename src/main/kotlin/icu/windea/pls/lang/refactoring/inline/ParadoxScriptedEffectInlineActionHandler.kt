@@ -32,7 +32,7 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if (reference != null && !ParadoxPsiMatcher.isInvocationReference(element, reference.element)) return false
+        if (reference != null && !ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) return false
         return super.canInlineElementInEditor(element, editor)
     }
 
@@ -42,14 +42,14 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty, reference: PsiReference?) {
-        if (reference != null && !ParadoxPsiMatcher.isInvocationReference(element, reference.element)) {
+        if (reference != null && !ParadoxPsiMatcher.isDefinitionCall(element, reference.element)) {
             val message = PlsBundle.message("refactoring.scriptedEffect.invocation", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
 
 
-        val isRecursive = ParadoxRecursionManager.checkDefinition(element) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
+        val isRecursive = ParadoxRecursionManager.checkDefinition(element) { _, re -> ParadoxPsiMatcher.isDefinitionCall(element, re) }
         if (isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedEffect.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

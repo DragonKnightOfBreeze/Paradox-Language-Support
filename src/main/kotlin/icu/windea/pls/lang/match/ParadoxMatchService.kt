@@ -12,8 +12,8 @@ object ParadoxMatchService {
         return options.normalized().fallback
     }
 
-    fun acceptDefinition(options: ParadoxMatchOptions? = null): Boolean {
-        return options.normalized().acceptDefinition
+    fun forDeclarationRoot(options: ParadoxMatchOptions? = null): Boolean {
+        return options.normalized().forDeclarationRoot
     }
 
     fun relax(options: ParadoxMatchOptions? = null): Boolean {

@@ -6,7 +6,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigCopyService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList
@@ -17,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
@@ -44,7 +45,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
         val finalConfigs = getConfig(parameterInfo, configGroup)?.to?.singletonList() ?: return null
-        val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigInlineService.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 
@@ -90,7 +91,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
         val inlinedContextConfigs = expressionContextConfigs.map { config ->
             if (config is CwtPropertyConfig) {
-                return@map CwtConfigManipulator.inlineSingleAlias(config) ?: config
+                return@map CwtConfigInlineService.inlineSingleAlias(config) ?: config
             }
             config
         }
@@ -110,12 +111,12 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
                 return@map CwtValueConfig.createMock(configGroup, config.key)
             }
-            val delegatedConfig = config.delegated(CwtConfigManipulator.deepCopyConfigs(config)).also { it.parentConfig = config.parentConfig }
+            val delegatedConfig = config.delegated(CwtConfigCopyService.deepCopyConfigs(config)).also { it.parentConfig = config.parentConfig }
             delegatedConfig.postOptimize() // 进行后续优化
             delegatedConfig
         }
         if (finalConfigs.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
+        val contextConfig = CwtConfigInlineService.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
 }
@@ -162,7 +163,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
         })
         if (result.isNullOrEmpty()) return null
-        return CwtConfigManipulator.inlineWithConfigs(null, result, configGroup)
+        return CwtConfigInlineService.inlineWithConfigs(null, result, configGroup)
     }
 
     private fun getConfigsFromNode(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {
@@ -177,7 +178,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             node is ParadoxScriptValueNode -> {
                 node.config.to.singletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.createMock(configGroup, e.expressionString) } }
             }
-            node is ParadoxScopeLinkNode -> {
+            node is ParadoxScopeNode -> {
                 CwtValueConfig.createMock(configGroup, "scope_field").to.singletonList()
             }
             node is ParadoxValueFieldNode -> {

@@ -37,7 +37,7 @@ interface GoToPathActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val gameType = getGameType(e) ?: return null
-            return PlsPathService.getInstance().getGameDataPath(gameType.title)
+            return PlsPathService.getInstance().getGameDataPath(gameType)
         }
     }
 }

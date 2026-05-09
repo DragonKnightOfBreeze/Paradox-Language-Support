@@ -5,13 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigResolverManager
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -24,11 +23,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 别名规则可用来简化规则文件，提升可读性和复用性。
  * 另外，包括触发器（trigger）、效果（effect）在内的多种概念对应的规则，都是以别名规则的形式提供的。
  *
- * 路径定位：`alias[{name}:{subName}]`，`{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
+ * 路径定位：
+ * - `alias[{name}:{subName}]`。其中 `{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * # declaration
  * alias[effect:some_effect] = { ... }
@@ -40,14 +43,14 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property subName 子名（受限支持的数据表达式）。
  * @property supportedScopes 允许的作用域（类型）的集合。
  * @property outputScope 输出的作用域。
  * @property subNameExpression 子名对应的数据表达式。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [subNameExpression]）。
  *
- * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias
+ * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineAlias
  */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("alias[$:*]")

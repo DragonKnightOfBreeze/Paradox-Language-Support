@@ -30,6 +30,7 @@ import kotlin.io.path.notExists
  *
  * @see icu.windea.pls.tools.config.generators.CwtConfigGenerator
  * @see icu.windea.pls.tools.actions.GenerateConfigActionBase
+ * @see icu.windea.pls.tools.actions.GenerateConfigActions
  */
 class GenerateConfigDialog(
     private val project: Project,

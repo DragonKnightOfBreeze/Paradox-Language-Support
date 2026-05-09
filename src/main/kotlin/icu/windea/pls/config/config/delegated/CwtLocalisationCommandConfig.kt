@@ -6,12 +6,11 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
@@ -30,11 +29,15 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  *
  * 在语义与格式上，它们类似编程语言中的属性或字段。
 
- * 路径定位：`localisation_commands/{name}`，`{name}` 匹配规则名称（命令字段名称）。
+ * 路径定位：
+ * - `localisation_commands/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * localisation_commands = {
  *     GetCountryType = { country }
@@ -44,7 +47,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * # then `[Owner.GetCountryType]` can be used in localisation text
  * ```
  *
- * @property name 名称（命令字段名称，忽略大小写）。
+ * @property name 规则名称（即命令字段名称，忽略大小写）。
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtLocalisationPromotionConfig

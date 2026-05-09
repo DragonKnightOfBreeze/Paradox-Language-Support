@@ -26,13 +26,13 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
@@ -50,7 +50,7 @@ import java.awt.Color
 import javax.swing.Icon
 
 /**
- * 将当前本地化与包括当前本地化的只读副本在内的相同名称的本地化进行DIFF。
+ * 对当前本地化与包括其只读副本在内的拥有相同名称的本地化进行差异比较。
  *
  * - 忽略直接位于游戏或模组的根目录下的文件。
  * - 按照覆盖方式进行排序。
@@ -129,7 +129,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         if (localisations.size <= 1) {
             // unexpected
             val content = PlsBundle.message("diff.compare.localisations.content.title.info.1")
-            PlsFacade.createNotification(NotificationType.INFORMATION, content).notify(project)
+            PlsNotificationGroups.diff().createNotification(content, NotificationType.INFORMATION).notify(project)
             return null
         }
 

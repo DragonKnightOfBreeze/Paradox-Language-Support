@@ -5,11 +5,11 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.ParadoxFile
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -18,8 +18,7 @@ class ParadoxCsvFile(
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxFile {
     companion object {
-        @JvmField
-        val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)
+        @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)
     }
 
     val header: ParadoxCsvHeader? get() = findChild<_>()
@@ -30,7 +29,7 @@ class ParadoxCsvFile(
 
     override fun getPresentation() = ParadoxCsvItemPresentation(this)
 
-    override fun toString() = PlsPsiManager.toPresentableString(this)
+    override fun toString() = PsiService.toPresentableString(this)
 
     override fun isEquivalentTo(another: PsiElement?): Boolean {
         return super.isEquivalentTo(another) || another is ParadoxCsvFile && ParadoxFileManager.isEquivalentFile(this, another)

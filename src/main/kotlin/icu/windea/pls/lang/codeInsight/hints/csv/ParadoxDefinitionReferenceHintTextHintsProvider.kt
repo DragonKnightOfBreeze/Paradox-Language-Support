@@ -8,7 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
-import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
+import icu.windea.pls.lang.codeInsight.ParadoxCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -45,7 +45,7 @@ class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider() {
         val resolved = reference.resolve() ?: return
         if (resolved !is ParadoxDefinitionElement) return
 
-        val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
+        val primaryLocalisation = ParadoxCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(primaryLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }

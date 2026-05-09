@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.extended.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
@@ -10,6 +11,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * @property name 名字。
  * @property enumName 枚举名。
  * @property config 对应的复杂枚举规则。
+ *
+ * @see CwtComplexEnumConfig
+ * @see CwtExtendedComplexEnumValueConfig
  */
 data class ParadoxComplexEnumValueInfo(
     val name: String,

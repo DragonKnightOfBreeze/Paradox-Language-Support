@@ -12,7 +12,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.forEachChild
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -61,7 +61,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         if (!settings.comments) return
-        val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
+        val allSiblingLineComments = PsiService.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
         allSiblingLineComments.forEach {
             val startOffset = it.first().startOffset

@@ -14,9 +14,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.select.asValue
 import icu.windea.pls.config.select.selectConfigScope
-import icu.windea.pls.config.select.walkUp
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
@@ -73,7 +71,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if (file !is ParadoxScriptFile) return
                 val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(file, file, configs)
             }
 
@@ -90,7 +88,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?: return
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(element, position, configs)
             }
 
@@ -129,7 +127,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             }
 
             private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
-                val (actual, min, _, relaxMin) = occurrence
+                val (actual, min, _, lenientMin) = occurrence
                 if (min != null && actual < min) {
                     val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
@@ -149,7 +147,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                         minDefine == null -> PlsBundle.message("inspection.script.missingExpression.desc.detail.1", min, actual)
                         else -> PlsBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
                     }
-                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(relaxMin)
+                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(lenientMin)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false

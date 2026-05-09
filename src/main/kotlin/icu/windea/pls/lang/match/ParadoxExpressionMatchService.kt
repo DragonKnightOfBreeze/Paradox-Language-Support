@@ -9,7 +9,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 
 object ParadoxExpressionMatchService {
     // region Script Expression Related

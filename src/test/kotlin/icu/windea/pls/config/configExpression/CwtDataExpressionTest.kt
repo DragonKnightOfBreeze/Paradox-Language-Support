@@ -316,8 +316,8 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.DatabaseObject, CwtDataExpression.resolve("\$database_object", false).type)
         }
         run {
-            val e = CwtDataExpression.resolve("stellaris_name_format[format_x]", false)
-            assertEquals(CwtDataTypes.StellarisNameFormat, e.type)
+            val e = CwtDataExpression.resolve("name_format[format_x]", false)
+            assertEquals(CwtDataTypes.NameFormat, e.type)
             assertEquals("format_x", e.value)
         }
     }

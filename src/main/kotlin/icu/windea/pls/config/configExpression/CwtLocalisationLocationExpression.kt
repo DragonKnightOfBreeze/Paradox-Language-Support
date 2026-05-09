@@ -18,9 +18,12 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
  * - 参数 `u` 表示将最终名称强制转为大写（[forceUpperCase]）。仅限使用占位符时有效。
  * - 当 [location] 含 `$` 时表示存在占位符，需要在后续步骤以“定义名或属性值”等替换。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * desc = "$_desc" # 用当前定义的名字替换占位符，解析为本地化的名字。
  * desc = "$_desc|$name" # 在前者基础上，改为用指定路径（`name`）的属性值替换占位符（多路径逗号分隔）。

@@ -29,10 +29,6 @@ class ParadoxCommandFieldValueNode(
         return linkConfigs
     }
 
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY
-    }
-
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldValueNode {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false

@@ -14,15 +14,14 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
-import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
@@ -36,10 +35,9 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
-import icu.windea.pls.lang.select.nameFieldElement
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -88,25 +86,11 @@ object ParadoxPsiManager {
     }
 
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
-        return PlsPsiManager.getOwnedComments(element) { true }
+        return PsiService.getOwnedComments(element) { true }
     }
 
-    @Inferred
-    fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
-        // - 忽略所有前导的 `#，然后再忽略所有首尾空白
-        // - 始终转义每行的注释文本
-
-        if (comments.isEmpty()) return null
-        return buildString {
-            for (comment in comments) {
-                val text = comment.text
-                val line = text.trimStart('#').trim()
-                if (line.isEmpty()) continue
-                val l = line.escapeXml()
-                append(l)
-                append(lineSeparator)
-            }
-        }.trimEnd()
+    fun getLineCommentText(comments: List<PsiComment>): String? {
+        return PsiService.getLineCommentText(comments)
     }
 
     fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
@@ -127,7 +111,7 @@ object ParadoxPsiManager {
             for (p in element.properties()) {
                 // 对于传入参数的名字，要求不为空，且不要求必须严格合法（匹配 `PlsPatterns.argumentName`）
                 val k = p.propertyKey.name.orNull() ?: continue
-                if (!PlsNameValidators.checkParameterName(k)) continue
+                if (!ParadoxNameValidators.checkParameterName(k)) continue
                 val v = p.propertyValue?.text ?: continue
                 this += tupleOf(k, v)
             }
@@ -415,7 +399,7 @@ object ParadoxPsiManager {
     }
 
     fun renameDefinition(element: ParadoxScriptProperty, name: String, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptProperty {
-        if (!PlsNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
+        if (!ParadoxNameValidators.checkDefinitionName(name)) throw IncorrectOperationException()
         when (definitionInfo.source) {
             ParadoxDefinitionSource.Property -> {
                 // 如果定义的名字来自某个定义属性，则修改那个属性的值

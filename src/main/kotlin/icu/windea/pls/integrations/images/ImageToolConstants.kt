@@ -14,7 +14,7 @@ object ImageToolConstants {
         const val url = "https://www.imagemagick.org"
 
         fun pathTip(): String {
-            val suffix = if(OS.isWindows()) ".exe" else ""
+            val suffix = if (OS.isWindows()) ".exe" else ""
             return "/path/to/magick$suffix"
         }
     }

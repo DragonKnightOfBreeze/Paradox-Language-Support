@@ -14,8 +14,8 @@ import icu.windea.pls.core.util.values.to
 import icu.windea.pls.lang.match.ParadoxExpressionMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxScriptExpressionMatchContext
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxConfigManager
+import icu.windea.pls.model.expressions.ParadoxScriptExpression
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -40,7 +40,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val element = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if (!element.isBlockMember()) return emptyList()
         val parentMember = element.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return emptyList()
-        val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(acceptDefinition = true))
+        val configs = ParadoxConfigManager.getConfigs(parentMember, ParadoxMatchOptions(forDeclarationRoot = true))
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, isKey = true)

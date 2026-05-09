@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.complexCompareBy
 import icu.windea.pls.core.isSamePosition
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale

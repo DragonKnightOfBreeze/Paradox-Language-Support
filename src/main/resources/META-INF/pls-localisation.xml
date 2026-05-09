@@ -8,7 +8,7 @@
     <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
     <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
-    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBaseAnnotator"/>
+    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationAnnotator"/>
     <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.editorActions.smartEnter.ParadoxLocalisationSmartEnterProcessor"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.findUsages.ParadoxLocalisationFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.localisation.findUsages.ParadoxLocalisationElementDescriptionProvider"/>

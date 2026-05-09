@@ -1,7 +1,7 @@
 package icu.windea.pls.model.scope
 
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 
 object ParadoxScopeContextResolver {
     fun getAny(): ParadoxScopeContext {
@@ -67,7 +67,7 @@ object ParadoxScopeContextResolver {
         return ParadoxScopeContext.Default(scope, root, from, fromFrom, fromFromFrom, fromFromFromFrom, prevStack)
     }
 
-    fun resolveNext(input: ParadoxScopeContext, links: List<Tuple2<ParadoxScopeLinkNode, ParadoxScopeContext>>): ParadoxScopeContext {
+    fun resolveNext(input: ParadoxScopeContext, links: List<Tuple2<ParadoxScopeNode, ParadoxScopeContext>>): ParadoxScopeContext {
         val prevStack = input.prevStack.toMutableList().also { it.add(0, input) }
         return ParadoxScopeContext.Linked(links, prevStack)
     }

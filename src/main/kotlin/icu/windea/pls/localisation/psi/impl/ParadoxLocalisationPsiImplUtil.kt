@@ -12,6 +12,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
@@ -383,7 +384,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConceptCommand, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationCommand
+        return PlsIcons.Nodes.LocalisationConceptCommand
     }
 
     @JvmStatic
@@ -402,11 +403,6 @@ object ParadoxLocalisationPsiImplUtil {
     // endregion
 
     // region ParadoxLocalisationConceptName
-
-    @JvmStatic
-    fun getIcon(element: ParadoxLocalisationConceptName, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationConcept
-    }
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationConceptName): PsiElement? {
@@ -525,6 +521,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PlsPsiManager.toPresentableString(element)
+        return PsiService.toPresentableString(element)
     }
 }

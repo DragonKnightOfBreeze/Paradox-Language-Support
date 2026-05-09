@@ -1,5 +1,5 @@
 ## @type string = block
-settings = {
+examples = {
     ## @type string = boolean
     boolean_value = yes
     ## @type string = float
@@ -12,11 +12,6 @@ settings = {
     string_value = "Foo\n bar "
     ## @type string = block
     values = {
-        ## @type string = string
-        foo = bar
-    }
-    ## @type string = block
-    values = {
         ## @type int
         1
         ## @type int
@@ -24,10 +19,15 @@ settings = {
         ## @type int
         3
     }
+    ## @type string = block
+    values = {
+        ## @type string = string
+        foo = bar
+    }
     ## @type string = color
     color = rgb { 142 188 241 }
     ## @type string = string
     parameter = $PARAM$
     ## @type string = inline_math
-    inline_math = @[ 2 + ( $MAX$ - 1 + var ) ]
+    inline_math = @[ var + ($NUM$ * 2) ]
 }

@@ -49,22 +49,25 @@
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.VALUE_FIELD">
-    <value>
-      <option name="FOREGROUND" value="56A8F5"/>
-    </value>
-  </option>
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
       <option name="FOREGROUND" value="BCBEC4"/>
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-
-  <option name="PARADOX_SCRIPT.DIRECTIVE">
+  <option name="PARADOX_SCRIPT.VALUE_FIELD">
     <value>
-      <option name="FOREGROUND" value="CF8E6D"/>
-      <option name="FONT_TYPE" value="1"/>
+      <option name="FOREGROUND" value="6D9CBE"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.COMMAND_FIELD">
+    <value>
+      <option name="FOREGROUND" value="6D9CBE"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.MACRO">
+    <value>
+      <option name="FOREGROUND" value="4EADE5"/>
     </value>
   </option>
 </list>

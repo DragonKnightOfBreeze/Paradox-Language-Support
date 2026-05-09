@@ -10,8 +10,8 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.model.ParadoxGameType
 import java.awt.Component
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class ParadoxModDependencySettingsDialog(

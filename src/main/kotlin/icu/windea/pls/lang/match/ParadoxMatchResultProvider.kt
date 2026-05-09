@@ -16,7 +16,6 @@ import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.CancelableCache
 import icu.windea.pls.core.cache.NestedCache
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
@@ -30,16 +29,16 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxLinkedExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.attributes.ParadoxComplexExpressionAttributesEvaluator
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.selectGameType
@@ -49,24 +48,23 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
-private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
-private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
+private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
+private typealias MatchResultNestedCacheKey = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
-        val cacheForDefinitions by createKeyForCache(PlsModificationTrackers.ScriptFile)
-        val cacheForLocalisations by createKeyForCache(PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
-        val cacheForSyncedLocalisations by createKeyForCache(PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
-        val cacheForPathReferences by createKeyForCache(PlsModificationTrackers.FilePath)
-        val cacheForComplexEnumValues by createKeyForCache(PlsModificationTrackers.ScriptFile)
-        val cacheForModifiers by createKeyForCache(PlsModificationTrackers.ScriptFile)
-        val cacheForTemplates by createKeyForCache(PlsModificationTrackers.ScriptFile, PlsModificationTrackers.LocalisationFile, PlsModificationTrackers.PreferredLocale)
+        val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
+        val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FilePath)
+        val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
 
         private fun createKeyForCache(vararg dependencies: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
-                createNestedCache<VirtualFile, _, _, _> {
+                createNestedCache<VirtualFile, _, _> {
                     CacheBuilder().build<String, ParadoxMatchResult>().cancelable()
                 }.withDependencyItems(*dependencies)
             }
@@ -104,7 +102,7 @@ object ParadoxMatchResultProvider {
         return ParadoxMatchResult.LazyBlockAwareMatch { ParadoxMatchProvider.matchesBlock(blockElement, config) }
     }
 
-    fun getCached(element: PsiElement, project: Project, key: KeyForCache, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
+    fun getCached(element: PsiElement, project: Project, key: MatchResultNestedCacheKey, cacheKey: String, matchResultProvider: (String) -> ParadoxMatchResult): ParadoxMatchResult {
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
@@ -287,8 +285,8 @@ object ParadoxMatchResultProvider {
         return forComplexExpressionFromAttributes(complexExpression)
     }
 
-    fun forStellarisNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
-        val complexExpression = StellarisNameFormatExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
+    fun forNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
+        val complexExpression = ParadoxNameFormatExpression.resolve(text, null, configGroup, config) ?: return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors().isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forComplexExpressionFromAttributes(complexExpression)
     }

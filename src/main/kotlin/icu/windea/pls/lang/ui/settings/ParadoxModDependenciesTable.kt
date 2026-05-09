@@ -166,7 +166,7 @@ class ParadoxModDependenciesTable(
             val addButton = ToolbarDecorator.findAddButton(panel)!!
             val removeButton = ToolbarDecorator.findRemoveButton(panel)!!
 
-            // 右键弹出菜单，提供一些操作项
+            // 右键弹出菜单，提供一些动作选项
             val actionGroup = DefaultActionGroup()
             actionGroup.addAction(addButton)
             actionGroup.addAction(removeButton)

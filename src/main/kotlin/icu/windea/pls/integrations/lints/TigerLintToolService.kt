@@ -11,16 +11,16 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.PlsIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -49,11 +49,11 @@ class TigerLintToolService : Disposable {
     }
 
     fun getModificationTracker(gameType: ParadoxGameType): SimpleModificationTracker {
-        return modificationTrackers.computeIfAbsent(gameType) { SimpleModificationTracker() }
+        return modificationTrackers.getOrPut(gameType) { SimpleModificationTracker() }
     }
 
     fun getLintResultLock(file: VirtualFile): Any {
-        return lintResultLocks.computeIfAbsent(file) { Any() }
+        return lintResultLocks.getOrPut(file) { Any() }
     }
 
     fun checkAvailableFor(file: PsiFile): Boolean {
@@ -126,8 +126,8 @@ class TigerLintToolService : Disposable {
                 this += getModificationTracker(gameType)
                 // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
                 if (value == null || value.error != null) {
-                    this += PlsModificationTrackers.ScriptFile
-                    this += PlsModificationTrackers.LocalisationFile
+                    this += ParadoxModificationTrackers.ScriptFile
+                    this += ParadoxModificationTrackers.LocalisationFile
                 }
             }
             value.withDependencyItems(trackers)
@@ -149,7 +149,7 @@ class TigerLintToolService : Disposable {
         val title = PlsIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> PlsIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: PlsIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        PlsFacade.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
+        PlsNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
     }
 
     override fun dispose() {

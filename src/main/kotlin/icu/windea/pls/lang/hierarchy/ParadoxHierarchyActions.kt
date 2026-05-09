@@ -16,8 +16,8 @@ import icu.windea.pls.core.function
 import icu.windea.pls.lang.element
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser
 import icu.windea.pls.lang.project
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
-import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsSettingsStrategies
 import icu.windea.pls.lang.settings.PlsSettingsStrategy

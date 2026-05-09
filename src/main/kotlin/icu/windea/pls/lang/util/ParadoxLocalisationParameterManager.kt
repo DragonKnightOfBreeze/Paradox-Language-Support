@@ -20,14 +20,12 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.parentOfKey
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -49,7 +47,7 @@ object ParadoxLocalisationParameterManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             ProgressManager.checkCanceled()
             val value = resolveParameters(element)
-            val dependencies = with(PlsModificationTrackers) { listOf(element, ScriptFile) }
+            val dependencies = with(ParadoxModificationTrackers) { listOf(element, ScriptFile) }
             value.withDependencyItems(dependencies)
         }
     }
@@ -89,7 +87,7 @@ object ParadoxLocalisationParameterManager {
 
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if (element is ParadoxScriptProperty) {
-            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+            val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
             if (configs.any { it isSamePointer config }) return true
         }
         return false

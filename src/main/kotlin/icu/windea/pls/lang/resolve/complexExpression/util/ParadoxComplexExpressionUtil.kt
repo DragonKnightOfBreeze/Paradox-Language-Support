@@ -5,7 +5,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 
@@ -19,7 +19,7 @@ object ParadoxComplexExpressionUtil {
             null -> marker in "{<[("
             is ParadoxScopeFieldExpression, is ParadoxValueFieldExpression, is ParadoxVariableFieldExpression -> marker == "("
             is ParadoxCommandExpression -> marker == "("
-            is StellarisNameFormatExpression -> marker in "{<["
+            is ParadoxNameFormatExpression -> marker in "{<["
             else -> false
         }
     }
@@ -29,7 +29,7 @@ object ParadoxComplexExpressionUtil {
             null -> marker in "{}<>[]()"
             is ParadoxScopeFieldExpression, is ParadoxValueFieldExpression, is ParadoxVariableFieldExpression -> marker == "()"
             is ParadoxCommandExpression -> marker == "()"
-            is StellarisNameFormatExpression -> marker in "{}<>[]"
+            is ParadoxNameFormatExpression -> marker in "{}<>[]"
             else -> false
         }
     }

@@ -16,7 +16,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.ui.evaluators.ParadoxInlineMathEvaluatorDialog
-import icu.windea.pls.lang.util.evaluators.MathResult
+import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFloat

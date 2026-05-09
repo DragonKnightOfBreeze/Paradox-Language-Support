@@ -38,7 +38,6 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
  */
 class FilePathBasedModificationTracker(val patterns: Set<String>) : SimpleModificationTracker() {
     companion object {
-        @JvmStatic
-        val NEVER_CHANGED = FilePathBasedModificationTracker(emptySet())
+        @JvmField val NEVER_CHANGED = FilePathBasedModificationTracker(emptySet())
     }
 }

@@ -90,7 +90,7 @@ suspend fun Flow<ChatFlowReply>.toCompletionResult(): ChatFlowCompletionResult {
 fun Flow<ChatFlowReply>.toTokenFlow(): Flow<String> {
     return transform { apply ->
         when (apply) {
-            // emit an partial token
+            // emit a partial token
             is ChatFlowReply.PartialResponse -> emit(apply.token)
             // emit an empty string here to ensure the flow is completed as expected
             is ChatFlowReply.CompleteResponse -> emit("")

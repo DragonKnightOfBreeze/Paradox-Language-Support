@@ -13,12 +13,13 @@ import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.withState
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
@@ -33,14 +34,13 @@ import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
@@ -77,7 +77,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsFileManager.isInjectedFile(file)) return true
+        if (VirtualFileService.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
         return false
     }
@@ -271,7 +271,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val support = getSupportOrUnsupported(supports, type)
         storage.writeByte(support.indexInfoType.key)
         val gameType = firstInfo.gameType
-        storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
+        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
         var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
             support.saveData(storage, info, previousInfo, gameType)
@@ -286,7 +286,7 @@ class ParadoxMergedIndex : ParadoxIndexInfoAwareFileBasedIndex<List<ParadoxIndex
         val key = storage.readByte()
         val supports = ParadoxMergedIndexSupport.EP_NAME.extensionList
         val support = getSupportOrUnsupported(supports, key)
-        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }

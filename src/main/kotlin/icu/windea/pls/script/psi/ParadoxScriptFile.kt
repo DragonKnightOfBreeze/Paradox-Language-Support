@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.lang.psi.ParadoxFile
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -17,8 +17,7 @@ class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxFile, ParadoxScriptMember, ParadoxDefinitionElement, ParadoxScriptMemberContainer {
     companion object {
-        @JvmField
-        val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)
+        @JvmField val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)
     }
 
     override val block: ParadoxScriptRootBlock? get() = findChild<_>()
@@ -29,7 +28,7 @@ class ParadoxScriptFile(
 
     override fun getPresentation() = ParadoxScriptItemPresentation(this)
 
-    override fun toString() = PlsPsiManager.toPresentableString(this)
+    override fun toString() = PsiService.toPresentableString(this)
 
     override fun isEquivalentTo(another: PsiElement?): Boolean {
         return super.isEquivalentTo(another) || another is ParadoxScriptFile && ParadoxFileManager.isEquivalentFile(this, another)

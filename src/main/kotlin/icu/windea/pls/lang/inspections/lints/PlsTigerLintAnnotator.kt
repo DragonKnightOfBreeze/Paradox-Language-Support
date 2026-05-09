@@ -92,7 +92,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
         }
     }
 
-    @Suppress("unused")
+    @Suppress("UNUSED_PARAMETER")
     private fun getExtraMessage(result: TigerLintResult, item: TigerLintResult.Item, location: TigerLintResult.Location): String {
         val list = buildList {
             item.confidence.name.lowercase().let { add("Confidence: $it") }
@@ -102,7 +102,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, Tige
         return list.joinToString(", ", " (", ")")
     }
 
-    @Suppress("unused")
+    @Suppress("UNUSED_PARAMETER")
     private fun getProblemGroup(result: TigerLintResult, item: TigerLintResult.Item): String {
         return "PLS_TIGER_LINT.${result.name}"
     }

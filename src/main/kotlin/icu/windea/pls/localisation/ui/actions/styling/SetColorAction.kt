@@ -6,8 +6,8 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.executeWriteCommand
-import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.model.ParadoxTextColorInfo
 
 // org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction

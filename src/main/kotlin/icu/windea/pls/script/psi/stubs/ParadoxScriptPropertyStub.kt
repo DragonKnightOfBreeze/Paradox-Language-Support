@@ -21,32 +21,29 @@ sealed interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> 
      * （作为脚本属性的）定值（命名空间/变量）的存根。
      *
      * @property namespace 命名空间。
-     * @property variable 变量名。如果当前存根对应命名空间，则为 `null`。
      */
     sealed interface Define : ParadoxScriptPropertyStub {
         val namespace: String
-        val variable: String?
     }
 
     /**
-     * （作为脚本属性的）定值的命名空间的存根。
+     * （作为脚本属性的）定值命名空间的存根。
      *
      * @property namespace 命名空间。等同于 [ParadoxScriptPropertyStub.name]。
      */
     sealed interface DefineNamespace : Define {
         override val namespace: String
-        override val variable: String? get() = null
     }
 
     /**
-     * （作为脚本属性的）定值的变量的存根。
+     * （作为脚本属性的）定值变量的存根。
      *
      * @property namespace 命名空间。来自父存根（[DefineNamespace]）。
      * @property variable 变量名。等同于 [ParadoxScriptPropertyStub.name]。
      */
     sealed interface DefineVariable : Define {
         override val namespace: String
-        override val variable: String
+        val variable: String
 
         override fun getParentStub(): DefineNamespace
     }

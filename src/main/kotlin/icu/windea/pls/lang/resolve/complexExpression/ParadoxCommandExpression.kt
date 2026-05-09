@@ -6,19 +6,19 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeLinkNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedCommandScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -30,13 +30,13 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。目前不支持用来匹配脚本表达式。
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
- * - 由零个或多个命令作用域链接节点（[ParadoxCommandScopeLinkNode]）以及一个命令字段节点（[ParadoxCommandFieldNode]）组成。之间用点号分隔。之后可能还有其他额外的后缀节点。
- * - 命令作用域链接节点可以是静态链接（[ParadoxSystemCommandScopeNode] 和 [ParadoxCommandScopeNode]）、动态链接（[ParadoxDynamicCommandScopeLinkNode]）或者带参数的链接（[ParadoxParameterizedCommandScopeLinkNode]）。
- * - 值字段链接节点可以是静态链接（[ParadoxPredefinedCommandFieldNode]）、动态链接（[ParadoxDynamicCommandFieldNode]）或者带参数的链接（[ParadoxParameterizedCommandFieldNode]）。
+ * - 由零个或多个命令作用域链接节点（[ParadoxCommandScopeNode]）以及一个命令字段节点（[ParadoxCommandFieldNode]）组成。之间用点号分隔。之后可能还有其他额外的后缀节点。
+ * - 命令作用域节点可以是系统链接（[ParadoxSystemCommandScopeNode]）、静态链接（ [ParadoxStaticCommandScopeNode]）、动态链接（[ParadoxDynamicCommandScopeNode]）或者带参数的链接（[ParadoxParameterizedCommandScopeNode]）。
+ * - 命令字段节点可以是静态链接（[ParadoxStaticCommandFieldNode]）、动态链接（[ParadoxDynamicCommandFieldNode]）或者带参数的链接（[ParadoxParameterizedCommandFieldNode]）。
  * - 动态链接可能是前缀形式（`Prefix:DS`），也可能是传参形式（`Prefix(X)`）。其中可能嵌套其他复杂表达式。
  * - 对于传参形式的动态链接，兼容多个传参（`Prefix(X,Y)`）和字面量传参（`Prefix('s')`）。
  *
- * [ParadoxDynamicCommandScopeLinkNode] 的数据源的解析优先级：
+ * [ParadoxDynamicCommandScopeNode] 的数据源的解析优先级：
  * - 如果数据源表达式的数据类型是 [CwtDataTypes.Command]，则解析为 [ParadoxCommandExpression]。
  * - 如果不是任何嵌套的复杂表达式，则解析为 [ParadoxDataSourceNode]。
  *
@@ -139,7 +139,7 @@ private class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Re
                         '.' -> if (depthParen == 0) {
                             val nodeText = expressionString0.substring(startIndex, i)
                             val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
-                            val node = ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                            val node = ParadoxCommandScopeNode.resolve(nodeText, nodeTextRange, configGroup)
                             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                             nodes += node
                             val dotRange = TextRange.create(i + offset, i + 1 + offset)

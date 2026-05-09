@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtLinkArgumentSeparator
@@ -13,8 +14,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.orNull
@@ -51,13 +50,16 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * 在语义与格式上，它们类似编程语言中的函数、属性或字段。
  *
  * 路径定位：
- * 1. 常规链接：`links/{name}`，`{name}` 匹配规则名称（链接名）。
- * 2. 本地化链接：`localisation_links/{name}`，`{name}` 匹配规则名称（链接名）。
- * 3. 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
+ * - 常规链接：`links/{name}`。其中 `{name}` 匹配规则名称。
+ * - 本地化链接：`localisation_links/{name}`。其中 `{name}` 匹配规则名称。
+ * - 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * links = {
  *     event_target = {
@@ -68,7 +70,7 @@ import icu.windea.pls.model.scope.ParadoxScopeId
  * }
  * ```
  *
- * @property name 规则名称（链接名）。
+ * @property name 规则名称（即链接名）。
  * @property type 链接类型（`scope`/`value`/`both`，默认为 `scope`）。
  * @property fromData 为动态链接时，是否从后置数据中读取动态数据。对应的节点格式形如 `prefix:data`。
  * @property fromArgument （扩展）为动态链接时，是否从传参中读取动态数据。对应的节点格式形如 `func(arg)`。

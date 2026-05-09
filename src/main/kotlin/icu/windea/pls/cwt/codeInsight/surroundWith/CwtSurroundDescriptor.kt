@@ -8,8 +8,8 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.cwt.psi.CwtBoundMemberContainer
-import icu.windea.pls.lang.psi.PlsPsiFileManager
 
 // com.intellij.json.surroundWith.JsonSurroundDescriptor
 // com.intellij.json.surroundWith.JsonSurrounderBase
@@ -22,7 +22,7 @@ class CwtSurroundDescriptor : SurroundDescriptor {
     )
 
     override fun getElementsToSurround(file: PsiFile, startOffset: Int, endOffset: Int): Array<out PsiElement> {
-        return PlsPsiFileManager.findElementsBetween(file, startOffset, endOffset) { getContainer(it, startOffset, endOffset) }
+        return PsiFileService.findElementsBetween(file, startOffset, endOffset) { getContainer(it, startOffset, endOffset) }
             .filter { it !is PsiWhiteSpace }
             .toList()
             .toTypedArray<PsiElement>()

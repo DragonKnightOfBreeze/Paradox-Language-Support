@@ -11,8 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.ide.analysis.PlsAnalysisManager
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.ide.util.PlsDaemonManager
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -69,7 +69,7 @@ class ParadoxLibraryService(private val project: Project) {
                 newRoots += modDependencyFile
             }
         }
-        newRoots.removeIf { PlsDaemonManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsAnalysisManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 

@@ -30,19 +30,19 @@ import icu.windea.pls.script.psi.isValidExpression
 import java.awt.Color
 
 /**
- * 用于为字符串字面量（[ParadoxScriptString]）提供颜色的装订线图标。
+ * 用于为字符串（[ParadoxScriptString]）提供颜色的装订线图标。
  *
- * 示例 - 脚本片段：
- *
- * ```paradox_script
- * color = 0x2288E1
- * ```
- *
- * 示例 - 需要匹配的规则：
+ * 示例（规则片段）：
  *
  * ```cwt
  * ## color_type = hex
  * color = scalar
+ * ```
+ *
+ * 示例（匹配的脚本片段）：
+ *
+ * ```paradox_script
+ * color = 0x2288E1
  * ```
  */
 class ParadoxScriptStringColorProvider : ParadoxColorProvider {
@@ -88,29 +88,28 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
 }
 
 /**
- * 用于为子句（[ParadoxScriptBlock]）提供颜色的装订线图标。
+ * 用于为块（[ParadoxScriptBlock]）提供颜色的装订线图标。
  *
- * 示例 - 脚本片段：
+ * 示例（规则片段）：
+ *
+ * ```cwt
+ * ## color_type = rgb
+ * color_rgb = {
+ *     ## cardinality = 3..4
+ *     int[0..255]
+ * }
+ * ## color_type = hsv
+ * color_hsv = {
+ *     ## cardinality = 3..4
+ *     float
+ * }
+ * ```
+ *
+ * 示例（匹配的脚本片段）：
  *
  * ```paradox_script
  * color_rgb = { 34 136 225 }
  * color_hsv = { 208 0.849 0.882 }
- * ```
- *
- *
- * 示例 - 需要匹配的规则：
- *
- * ```cwt
- * 	## color_type = rgb
- * 	color_rgb = {
- * 		## cardinality = 3..3
- * 		int[0..255]
- * 	}
- * 	## color_type = hsv
- * 	color_hsv = {
- * 		## cardinality = 3..3
- * 		float
- * 	}
  * ```
  */
 class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
@@ -184,21 +183,21 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
 }
 
 /**
- * 用于为颜色声明（[ParadoxScriptColor]）提供颜色的装订线图标。
+ * 用于为颜色字段（[ParadoxScriptColor]）提供颜色的装订线图标。
  *
- * 示例 - 脚本片段：
- * ```paradox_script
- * color_rgb = rgb { 34 136 225 }
- * color_hsv = hsv { 208 0.849 0.882 }
+ * 示例（规则片段）：
+ * ```cwt
+ * 	color_field_rgb = color[rgb]
+ * 	color_field_hsv = color[hsv]
  * ```
  *
- * 示例 - 需要匹配的规则：
- * ```cwt
- * 	color_rgb = color[rgb]
- * 	color_hsv = color[hsv]
+ * 示例（匹配的脚本片段）：
+ * ```paradox_script
+ * color_field_rgb = rgb { 34 136 225 }
+ * color_field_hsv = hsv { 208 0.849 0.882 }
  * ```
  */
-class ParadoxScriptColorColorProvider : ParadoxColorProvider {
+class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
     override fun getTargetElement(tokenElement: PsiElement): ParadoxScriptColor? {
         if (tokenElement.elementType != COLOR_TOKEN) return null
         return tokenElement.parent?.castOrNull()
@@ -214,7 +213,6 @@ class ParadoxScriptColorColorProvider : ParadoxColorProvider {
         runCatchingCancelable { doSetColor(element, color) }
         return true
     }
-
 
     private fun getColorFromCache(element: ParadoxScriptColor): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {

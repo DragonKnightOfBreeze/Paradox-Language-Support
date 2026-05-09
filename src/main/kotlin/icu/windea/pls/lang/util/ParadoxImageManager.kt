@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
-import icu.windea.pls.ide.util.PlsFileManager
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.images.dds.DdsFileType
@@ -29,13 +29,14 @@ import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxConfigExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.tools.PlsDataPathService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.constants.PlsPaths
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.nio.file.Path
@@ -43,7 +44,6 @@ import javax.imageio.ImageIO
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 
@@ -134,7 +134,8 @@ object ParadoxImageManager {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 ParadoxConfigExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
-        } ?: return null
+        }
+        if (resolved !is CwtImageLocationResolveResult.Static) return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
         return doResolveUrl(resolvedFile.virtualFile, resolvedFile.project, resolved.frameInfo)
     }
@@ -165,8 +166,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveImagePath(imageAbsPath: String, imageRelPath: String?, frameInfo: ImageFrameInfo): Path {
-        val imagesPath = PlsPaths.images
-        imagesPath.createDirectories()
+        val imagesPath = PlsDataPathService.getInstance().imagesPath
         if (imageRelPath != null) {
             // 路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
             // UUID：基于游戏或模组目录的绝对路径
@@ -191,7 +191,7 @@ object ParadoxImageManager {
 
     private fun doCreateImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
         if (imagePath.exists()) {
-            if (PlsFileManager.isStubFile(file)) return true
+            if (VirtualFileService.isStubFile(file)) return true
             val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
             val slicedInfos = ParadoxAnalysisManager.getSliceInfos(file)
             if (!slicedInfos.add(sliceInfo)) return true
@@ -215,7 +215,7 @@ object ParadoxImageManager {
         if (iconUrl == null) return false
         val iconFilePath = iconUrl.toPathOrNull()
         if (iconFilePath == null) return false
-        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0L)) return false
+        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0)) return false
         return true
     }
 }

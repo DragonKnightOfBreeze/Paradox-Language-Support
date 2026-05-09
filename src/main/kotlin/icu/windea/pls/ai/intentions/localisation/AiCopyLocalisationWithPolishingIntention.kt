@@ -13,16 +13,17 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
-import icu.windea.pls.ai.util.PlsAiManager
-import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.core.withErrorRef
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -32,29 +33,29 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("ai.intention.copyLocalisationWithPolishing")
+    override fun getFamilyName() = PlsAiBundle.message("ai.intention.copyLocalisationWithPolishing")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
+        return ParadoxLocalisationAiManipulationService.createPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
-        val description = PlsAiManager.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithPolishing.progress.title")) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+        val description = AiManipulationService.getOptimizedDescription(data)
+        withBackgroundProgress(project, PlsAiBundle.message("ai.intention.copyLocalisationWithPolishing.progress.title")) action@{
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
             var current = 0
 
             run {
-                if(contextsToHandle.isEmpty()) return@run
+                if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
                 reportRawProgress { reporter ->
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))
@@ -74,7 +75,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
             }
 
             if (errorRef.get() == null) {
-                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                val textToCopy = ParadoxLocalisationManipulationService.joinText(contexts)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
             createNotification(errorRef.get(), withWarnings).notify(project)
@@ -82,23 +83,23 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
     }
 
     private suspend fun handleText(request: PolishLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiPolishing(request, callback)
+        ParadoxLocalisationAiManipulationService.handleTextWithAiPolishing(request, callback)
     }
 
     private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.success())
-                return PlsFacade.createNotification(NotificationType.INFORMATION, content)
+                val content = PlsAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.success())
+                return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess())
-            return PlsFacade.createNotification(NotificationType.WARNING, content)
+            val content = PlsAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess())
+            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
-        val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
+        val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
-        return PlsFacade.createNotification(NotificationType.WARNING, content)
+        val content = PlsAiBundle.message("ai.intention.copyLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
+        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

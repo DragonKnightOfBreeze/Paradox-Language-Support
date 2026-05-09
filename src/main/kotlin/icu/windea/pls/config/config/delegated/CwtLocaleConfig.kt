@@ -6,12 +6,11 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -24,11 +23,15 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 插件基于这些规则，识别和推断上下文（如本地化文件）中的语言环境，或用户偏好的语言环境，
  * 以提供更恰当的 UI 展示与提示信息。
  *
- * 路径定位：`locales/{id}`，`{name}` 匹配语言环境 ID。
+ * 路径定位：
+ * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
  *
- * CWTools 兼容性：扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * locales = {
  *     l_english = {
@@ -40,9 +43,9 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  *
  * @property id 语言环境 ID（例如 `l_english`）。
  * @property codes 该语言环境包含的代码列表（如 `en`, `en-US` 等）。
- * @property text 该语言环境的展示文本（依具体实现）。
+ * @property text 该语言环境的显示文本（依具体实现）。
  * @property shortId 去除前缀 `l_` 的简短 ID。
- * @property idWithText 带展示文本的 ID。
+ * @property idWithText 带显示文本的 ID。
  */
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName

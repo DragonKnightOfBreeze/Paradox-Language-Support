@@ -7,8 +7,9 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
-import icu.windea.pls.lang.analysis.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
+import icu.windea.pls.lang.analysis.ParadoxRootMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -31,7 +32,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
-        val gameDataDirPath = PlsPathService.getInstance().getGameDataPath(gameType.title)
+        val gameDataDirPath = PlsPathService.getInstance().getGameDataPath(gameType)
         if (gameDataDirPath == null) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.gameDataDir0"))
         }
@@ -43,7 +44,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
         val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
 
         when {
-            ParadoxMetadataManager.useDescriptorMod(gameType) -> {
+            ParadoxGameTypeManager.useDescriptorMod(gameType) -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataUtil.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
@@ -75,7 +76,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 对应的 JSON 文件，或者游戏数据目录
         val jsonFileName = getJsonFileName(gameType)
-        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getInstance().getGameDataPath(gameType)?.takeIf { it.exists() } ?: return null
         val gameJsonPath = gameDataPath.resolve(jsonFileName).takeIf { it.exists() }
         if (gameJsonPath != null) return gameJsonPath
         return gameDataPath
@@ -83,7 +84,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {
         return when {
-            ParadoxMetadataManager.useDescriptorMod(gameType) -> Constants.dlcLoadPath
+            ParadoxGameTypeManager.useDescriptorMod(gameType) -> Constants.dlcLoadPath
             else -> Constants.contentLoadPath
         }
     }

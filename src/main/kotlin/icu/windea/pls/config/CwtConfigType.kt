@@ -2,6 +2,8 @@ package icu.windea.pls.config
 
 import icu.windea.pls.config.CwtConfigType.Companion.entries
 import icu.windea.pls.config.config.CwtConfigService
+import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.model.paths.CwtConfigPath
 import javax.swing.Icon
 
 /**
@@ -11,14 +13,16 @@ import javax.swing.Icon
  *
  * ### 解析逻辑
  *
- * 由 [CwtConfigService.resolveConfigType] 根据 CWT 元素的规则路径（config path）确定：
+ * 由 [CwtConfigService.resolveConfigType] 解析得到规则类型。
  *
- * - 首先排除内部规则文件（internal config files），然后获取元素的规则路径。
- * - 根据路径深度和首段路径分派到不同的规则类型。
+ * 首先获取传入的成员元素（[CwtMember]）的规则路径（[CwtConfigPath]），
+ * 接着根据路径深度和首段路径分派到不同的规则类型。
+ * 内部规则文件会被排除。
  *
  * ### 备注
  *
- * 此类使用引用相等（identity equality）而非结构相等。所有实例通过 [Builder] 构建并注册到 [entries] 中。
+ * - 此类使用引用相等（identity equality）而非结构相等。
+ * - 所有实例通过 [Builder] 构建并注册到 [entries] 中。
  *
  * @property id 唯一标识符。
  * @property category 所属分类。
@@ -28,7 +32,6 @@ import javax.swing.Icon
  * @property description 用于展示的描述文本。
  *
  * @see CwtConfigTypes
- * @see CwtConfigService.resolveConfigType
  */
 @Suppress("unused")
 class CwtConfigType private constructor(
@@ -60,6 +63,7 @@ class CwtConfigType private constructor(
         fun description(value: String) = apply { description = value }
 
         fun build(): CwtConfigType = CwtConfigType(id, category, isReference, icon, prefix, description).also { _entries[id] = it }
+        inline fun build(block: Builder.() -> Unit): CwtConfigType = also { block() }.build()
     }
 
     companion object {

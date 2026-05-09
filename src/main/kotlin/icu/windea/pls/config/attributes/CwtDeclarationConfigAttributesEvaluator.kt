@@ -13,7 +13,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 /**
  * 声明规则的综合属性的评估器。

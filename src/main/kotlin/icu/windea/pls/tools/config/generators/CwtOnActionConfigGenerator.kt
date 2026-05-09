@@ -16,10 +16,10 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从 `common/on_actions` 中的脚本文件生成 `on_actions.cwt`。

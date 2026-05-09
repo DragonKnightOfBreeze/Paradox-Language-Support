@@ -2,8 +2,8 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
+import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.CodeInjectorUtil
 import icu.windea.pls.inject.annotations.FieldCache
 import javassist.CtClass
 import javassist.CtField
@@ -19,7 +19,7 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
     private val logger = thisLogger()
 
     override fun apply(codeInjector: CodeInjector) {
-        val targetClass = codeInjector.getUserData(CodeInjectorUtil.targetClassKey) ?: return
+        val targetClass = codeInjector.getUserData(CodeInjectorContext.targetClassKey) ?: return
         val infos = codeInjector::class.findAnnotations<FieldCache>()
         if (infos.isEmpty()) return
 
@@ -59,7 +59,7 @@ class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
                 }
                 val field = CtField.make("private volatile Object ${fieldName} = __EMPTY_OBJECT__;", targetClass)
                 targetClass.addField(field)
-                val code1 = "{ if(${fieldName} != __EMPTY_OBJECT__) { return (\$r) ${fieldName}; } }"
+                val code1 = "{ if (${fieldName} != __EMPTY_OBJECT__) { return (\$r) ${fieldName}; } }"
                 method.insertBefore(code1)
                 val code2 = "{ ${fieldName} = (\$w)\$_; }"
                 method.insertAfter(code2)

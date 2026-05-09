@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
-import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.script.psi.ParadoxDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.model.ParadoxDefinitionSource
 
 @Suppress("unused")
 object ParadoxDefinitionCandidateManager {

@@ -12,9 +12,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.matchesPattern
+import icu.windea.pls.core.matchesPatterns
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
@@ -90,9 +89,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     run {
                         val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                         if (fileNames.isNullOrEmpty()) return@run
-                        ignoredFileNames.splitOptimized(';').forEach {
-                            if (fileNames.any { fileName -> fileName.matchesPattern(it, true) }) return
-                        }
+                        if (fileNames.any { fileName -> fileName.matchesPatterns(ignoredFileNames, ignoreCase = true) }) return // 忽略
                     }
                     val selector = selector(project, file).file() // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return

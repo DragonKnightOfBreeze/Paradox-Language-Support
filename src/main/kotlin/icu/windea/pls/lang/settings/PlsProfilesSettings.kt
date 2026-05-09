@@ -11,12 +11,12 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 插件的资料设置。
@@ -212,19 +212,8 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
 
 val ParadoxGameOrModSettingsState.qualifiedName: String
     get() = when (this) {
-        is ParadoxGameSettingsState -> buildString {
-            append(finalGameType.title)
-            if (gameVersion.isNotNullOrEmpty()) {
-                append("@").append(gameVersion)
-            }
-        }
-        is ParadoxModSettingsState -> buildString {
-            append(finalGameType.title).append(" Mod: ")
-            append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
-            if (version.isNotNullOrEmpty()) {
-                append("@").append(version)
-            }
-        }
+        is ParadoxGameSettingsState -> ParadoxGameTypeManager.getGameQualifiedName(finalGameType, gameVersion)
+        is ParadoxModSettingsState -> ParadoxGameTypeManager.getModQualifiedName(finalGameType, name, version)
     }
 
 /**

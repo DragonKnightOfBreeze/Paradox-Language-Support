@@ -9,17 +9,17 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.SoftValue
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOccurrence
 import icu.windea.pls.lang.match.ParadoxMatchOccurrenceService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -27,12 +27,13 @@ import icu.windea.pls.lang.match.toHashString
 import icu.windea.pls.lang.resolve.CwtConfigContext
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import java.util.concurrent.ConcurrentMap
 
 object ParadoxConfigManager {
     object Keys : KeyRegistry() {
         val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by registerKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrencesCache by registerKey<CachedValue<MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>(Keys)
+        val cachedConfigsCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>>>>(Keys)
+        val cachedChildOccurrencesCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>>(Keys)
     }
 
     /**
@@ -47,7 +48,7 @@ object ParadoxConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             ProgressManager.checkCanceled()
             val value = ParadoxConfigService.getConfigContext(element)
-            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
     }
 
@@ -57,22 +58,18 @@ object ParadoxConfigManager {
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         ProgressManager.checkCanceled()
-        val cache = getConfigsCacheFromCache(memberElement)
         val cacheKey = options.toHashString().optimized() // optimized to optimize memory
+        val cache = getConfigsCacheFromCache(memberElement).dereference()
         return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
     }
 
-    private fun getConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
-            val value = doGetConfigsCache()
-            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
-        }
-    }
-
     @Optimized
-    private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
-        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
-        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
+    private fun getConfigsCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>> {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
+            // use soft referenced concurrent map to optimize more memory
+            val value = SoftValue.ofConcurrentMap<String, List<CwtMemberConfig<*>>>()
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
+        }
     }
 
     /**
@@ -83,22 +80,17 @@ object ParadoxConfigManager {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
-        val cache = getChildOccurrencesCacheFromCache(element)
-        val cacheKey = CwtConfigKeyManipulator.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
+        val cacheKey = CwtConfigKeyManager.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
+        val cache = getChildOccurrencesCacheFromCache(element).dereference()
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }
 
-    private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
+    private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
-            val value = doGetChildOccurrencesCache()
-            value.withDependencyItems(element, PlsModificationTrackers.ConfigResolution)
+            // use soft referenced concurrent map to optimize more memory
+            val value = SoftValue.ofConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>()
+            value.withDependencyItems(element, ParadoxModificationTrackers.ConfigResolution)
         }
-    }
-
-    @Optimized
-    private fun doGetChildOccurrencesCache(): MutableMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>> {
-        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
-        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
     }
 
     @Optimized

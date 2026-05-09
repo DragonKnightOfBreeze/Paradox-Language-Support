@@ -134,7 +134,7 @@ class CwtCoreDataExpressionResolver : CwtTextPatternBasedDataExpressionResolver(
         fromLiteral(CwtDataTypes.Command, "\$command")
         fromLiteral(CwtDataTypes.DefineReference, "\$define_reference")
         fromLiteral(CwtDataTypes.DatabaseObject, "\$database_object")
-        fromParameterized(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() }
+        fromParameterized(CwtDataTypes.NameFormat, "name_format[", "]") { value = it.orNull() }
 
         fromLiteral(CwtDataTypes.Parameter, "\$parameter")
         fromLiteral(CwtDataTypes.ParameterValue, "\$parameter_value")

@@ -160,6 +160,7 @@ kotlin {
                 "-Xannotation-default-target=param-property",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlin.ExperimentalStdlibApi",
+                "-XXLanguage:+WhenGuards"
             )
         )
     }

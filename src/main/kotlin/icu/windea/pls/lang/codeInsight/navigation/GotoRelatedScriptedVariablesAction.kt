@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.core.editor
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
@@ -17,9 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class GotoRelatedScriptedVariablesAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedScriptedVariablesHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

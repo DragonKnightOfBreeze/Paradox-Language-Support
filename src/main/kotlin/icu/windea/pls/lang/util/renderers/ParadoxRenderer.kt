@@ -7,12 +7,22 @@ import com.intellij.psi.PsiElement
  *
  * 用于将输入（脚本文本、本地化文本、CSV 文本等）渲染为特定的格式（纯文本、富文本等）。
  */
-interface ParadoxRenderer<S : ParadoxRenderer.Scope<R>, R> {
-    fun createScope(): S
+interface ParadoxRenderer<T, C : ParadoxRenderContext<T>, S : ParadoxRenderSettings> {
+    val settings: S
 
-    fun render(input: PsiElement, scope: S = createScope()): R
+    fun createContext(): C
 
-    interface Scope<R> {
-        fun build(): R
-    }
+    fun render(input: PsiElement, context: C): T
 }
+
+/**
+ * 渲染上下文。
+ */
+interface ParadoxRenderContext<T> {
+    fun build(): T
+}
+
+/**
+ * 渲染设置。
+ */
+interface ParadoxRenderSettings

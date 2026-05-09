@@ -78,8 +78,8 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
     "\11\0\5\1\22\0\1\1\1\2\1\0\1\2\1\3"+
     "\1\4\2\0\1\5\1\6\1\7\1\10\1\0\1\11"+
-    "\1\12\1\13\12\14\2\0\4\2\1\0\32\15\1\2"+
-    "\1\0\1\2\1\0\1\15\1\0\32\15\1\2\1\16"+
+    "\1\12\1\13\12\14\2\0\4\2\1\15\32\16\1\2"+
+    "\1\0\1\2\1\0\1\16\1\0\32\16\1\2\1\17"+
     "\1\2\7\0\1\1\32\0\1\1\u01df\0\1\1\177\0"+
     "\13\1\35\0\2\1\5\0\1\1\57\0\1\1\240\0"+
     "\1\1\377\0";
@@ -111,10 +111,10 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final String ZZ_ACTION_PACKED_0 =
     "\4\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
     "\1\10\1\11\1\1\1\12\1\13\1\14\1\15\1\16"+
-    "\1\17\1\20\1\21\1\22\1\23\1\0";
+    "\1\17\1\20\1\21\1\22\1\23\1\24\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[25];
+    int [] result = new int[26];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -139,13 +139,13 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\17\0\36\0\55\0\74\0\113\0\74\0\74"+
-    "\0\74\0\74\0\74\0\74\0\74\0\132\0\74\0\151"+
-    "\0\170\0\74\0\207\0\74\0\226\0\74\0\245\0\132"+
-    "\0\132";
+    "\0\0\0\20\0\40\0\60\0\100\0\120\0\100\0\100"+
+    "\0\100\0\100\0\100\0\100\0\100\0\140\0\100\0\160"+
+    "\0\100\0\200\0\100\0\220\0\100\0\240\0\100\0\260"+
+    "\0\140\0\140";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[25];
+    int [] result = new int[26];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -169,15 +169,16 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\5\1\6\1\5\1\7\1\10\1\11\1\12\1\13"+
-    "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\5"+
-    "\1\23\1\5\1\24\11\5\1\25\1\26\1\27\1\23"+
-    "\1\5\1\24\13\27\1\5\1\23\1\5\1\24\13\5"+
-    "\20\0\1\6\31\0\1\30\14\0\1\31\1\0\1\20"+
-    "\1\21\15\0\2\21\2\0\1\23\31\0\2\25\1\0"+
-    "\1\27\3\0\13\27";
+    "\1\14\1\15\1\16\1\17\1\20\1\21\1\22\1\23"+
+    "\1\5\1\24\1\5\1\25\12\5\1\26\1\27\1\30"+
+    "\1\24\1\5\1\25\14\30\1\5\1\24\1\5\1\25"+
+    "\14\5\21\0\1\6\32\0\1\31\15\0\1\32\1\0"+
+    "\1\20\1\0\1\22\15\0\1\22\1\0\1\22\2\0"+
+    "\1\24\32\0\1\26\1\0\1\26\1\0\1\30\3\0"+
+    "\14\30";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[180];
+    int [] result = new int[192];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -215,11 +216,11 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\4\0\1\11\1\1\7\11\1\1\1\11\2\1\1\11"+
-    "\1\1\1\11\1\1\1\11\2\1\1\0";
+    "\4\0\1\11\1\1\7\11\1\1\1\11\1\1\1\11"+
+    "\1\1\1\11\1\1\1\11\1\1\1\11\2\1\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[25];
+    int [] result = new int[26];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -539,63 +540,68 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
             { return BAD_CHARACTER;
             }
           // fall through
-          case 20: break;
+          case 21: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 21: break;
+          case 22: break;
           case 3:
             { yybegin(IN_PARAMETER); return PARAMETER_START;
             }
           // fall through
-          case 22: break;
+          case 23: break;
           case 4:
             { return MOD_SIGN;
             }
           // fall through
-          case 23: break;
+          case 24: break;
           case 5:
             { return LP_SIGN;
             }
           // fall through
-          case 24: break;
+          case 25: break;
           case 6:
             { return RP_SIGN;
             }
           // fall through
-          case 25: break;
+          case 26: break;
           case 7:
             { return TIMES_SIGN;
             }
           // fall through
-          case 26: break;
+          case 27: break;
           case 8:
             { return PLUS_SIGN;
             }
           // fall through
-          case 27: break;
+          case 28: break;
           case 9:
             { return MINUS_SIGN;
             }
           // fall through
-          case 28: break;
+          case 29: break;
           case 10:
             { return DIV_SIGN;
             }
           // fall through
-          case 29: break;
+          case 30: break;
           case 11:
             { return INT_NUMBER_TOKEN;
             }
           // fall through
-          case 30: break;
+          case 31: break;
           case 12:
+            { return AT;
+            }
+          // fall through
+          case 32: break;
+          case 13:
             { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
-          case 31: break;
-          case 13:
+          case 33: break;
+          case 14:
             { if (leftAbsSign) {
             leftAbsSign = false;
             return LABS_SIGN;
@@ -605,37 +611,37 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
         }
             }
           // fall through
-          case 32: break;
-          case 14:
+          case 34: break;
+          case 15:
             { yybegin(YYINITIAL); return WHITE_SPACE;
             }
           // fall through
-          case 33: break;
-          case 15:
+          case 35: break;
+          case 16:
             { yybegin(YYINITIAL); return PARAMETER_END;
             }
           // fall through
-          case 34: break;
-          case 16:
+          case 36: break;
+          case 17:
             { return PARAMETER_TOKEN;
             }
           // fall through
-          case 35: break;
-          case 17:
+          case 37: break;
+          case 18:
             { yybegin(IN_PARAMETER_ARGUMENT); return PIPE;
             }
           // fall through
-          case 36: break;
-          case 18:
+          case 38: break;
+          case 19:
             { yybegin(IN_PARAMETER_ARGUMENT_END); return ARGUMENT_TOKEN;
             }
           // fall through
-          case 37: break;
-          case 19:
+          case 39: break;
+          case 20:
             { return FLOAT_NUMBER_TOKEN;
             }
           // fall through
-          case 38: break;
+          case 40: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

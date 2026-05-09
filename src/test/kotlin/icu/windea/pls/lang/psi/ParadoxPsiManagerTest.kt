@@ -2,9 +2,6 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.ofPath
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest

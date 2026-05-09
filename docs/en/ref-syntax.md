@@ -100,7 +100,7 @@ CWT features a three-level comment system, which is one of its main distinctions
 
 **Option comments** start with `##` and attach metadata to the immediately following member (property, value, or block). The content syntax is the same as a property, in the form `<optionKey> <sep> <optionValue>`. Common option comments include `## cardinality = 0..1` (declaring cardinality constraints), `## severity = warning` (declaring inspection severity level), `## push_scope = country` (declaring the pushed scope), etc.
 
-**Documentation comments** start with `###` and provide descriptive text for members. This text is displayed in code completion and quick documentation. In particular, documentation comments starting with `####` (or more `#` characters) will have their content rendered directly as HTML by the plugin.
+**Documentation comments** start with `###` and provide descriptive text for members. This text is displayed in code completion and quick documentation. In particular, for documentation comments starting with `####` (or more `#`), the comment text is treated as Markdown text by the plugin.
 
 ### Escaping {#cwt-escaping}
 
@@ -228,20 +228,18 @@ The following example is from the plugin's syntax test file, demonstrating typic
 @var = 1
 
 # Line comment
-settings = {
+examples = {
     boolean_value = yes
     number_value = 1.0
     number_value = @var
     string_value = Foo
     string_value = "Foo\n bar "
-    values = {
-        foo = bar
-    }
     values = { 1 2 3 }
+    values = { foo = bar }
     color = rgb { 142 188 241 }
     parameter = $PARAM$
     [[!PARAM] parameter_condition = $PARAM$ ]
-    inline_math = @[ 2 + ( $MAX$ - 1 + var ) ]
+    inline_math = @[ var + ($NUM$ * 2) ]
 }
 ```
 
@@ -359,11 +357,11 @@ l_english:
  text:0 "Value"
  text_multiline:0 "Value\nNew line"
  text_with_colorful_text:0 "Colorful text: §RRed text§!"
- text_with_parameter:0 "Parameter: $KEY$ and $KEY|Y$"
+ text_with_parameter:0 "Parameter: $KEY$ and $WITH_COLOR|Y$"
  text_with_scripted_variable_reference:0 "Scripted variable: $@var$"
  text_with_command:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
  text_with_icon:0 "Icon: £unity£ and £leader_skill|3£"
- text_with_concept_command:0 "Concept: ['concept', concept text] ['civic:some_civic']"
+ text_with_concept_command:0 "Concept command: ['concept', concept text] ['civic:some_civic']"
  text_with_text_format:0 "Text format: #v text#!"
  text_with_text_icon:0 "Text icon: @icon!"
 ```

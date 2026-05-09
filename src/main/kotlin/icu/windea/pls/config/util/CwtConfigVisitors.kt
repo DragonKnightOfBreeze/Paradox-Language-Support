@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.forEachFast
 
 /**
@@ -68,11 +67,11 @@ abstract class CwtMemberConfigInlinedRecursiveVisitor(
     }
 
     private fun visitInlinedProperty(config: CwtPropertyConfig): Boolean {
-        return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
+        return CwtConfigVisitorManager.visitInlined(config, forSingleAlias, forAlias, this)
     }
 
     private fun visitInlinedValue(config: CwtValueConfig): Boolean {
-        return CwtConfigManipulator.visitInlined(config, forSingleAlias, forAlias, this)
+        return CwtConfigVisitorManager.visitInlined(config, forSingleAlias, forAlias, this)
     }
 
     open fun visitSingleAlias(name: String, config: CwtSingleAliasConfig): Boolean {

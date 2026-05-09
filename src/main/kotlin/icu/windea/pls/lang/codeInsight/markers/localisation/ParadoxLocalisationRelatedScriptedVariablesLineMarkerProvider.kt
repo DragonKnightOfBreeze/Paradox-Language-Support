@@ -52,10 +52,8 @@ class ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider : ParadoxRel
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
-        NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("localisation.gutterIcon.relatedScriptedVariables.action"),
-            PlsActions.GotoRelatedScriptedVariables
-        )
+        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
+        val actionText = PlsBundle.message("localisation.gutterIcon.relatedScriptedVariables.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, PlsActions.GotoRelatedScriptedVariables)
     }
 }

@@ -13,12 +13,11 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.tools.PlsDataPathService
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.constants.PlsPaths
-import kotlin.io.path.createDirectories
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)
@@ -87,8 +86,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
 
         // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
-        val lintResultsPath = PlsPaths.lintResults
-        lintResultsPath.createDirectories()
+        val lintResultsPath = PlsDataPathService.getInstance().lintResultsPath
         val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
         val argOutputPath = outputPath.toString().quote('\'')
 
@@ -110,6 +108,20 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
         override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerPath
         override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerConfPath
+    }
+
+    class Eu5 : TigerLintToolProvider() {
+        override val name: String = "eu5-tiger"
+        override val forGameType: ParadoxGameType get() = ParadoxGameType.Eu5
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.eu5TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.eu5TigerConfPath
+    }
+
+    class Hoi4 : TigerLintToolProvider() {
+        override val name: String = "hoi4-tiger"
+        override val forGameType: ParadoxGameType get() = ParadoxGameType.Hoi4
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.hoi4TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.hoi4TigerConfPath
     }
 
     class Ir : TigerLintToolProvider() {

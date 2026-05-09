@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtMemberType
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -19,7 +20,6 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.model.CwtMemberType
 
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 

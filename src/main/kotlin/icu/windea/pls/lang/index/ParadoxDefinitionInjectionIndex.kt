@@ -13,11 +13,12 @@ import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.OptimizerFactory
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
@@ -27,9 +28,8 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
-import icu.windea.pls.model.forGameType
+import icu.windea.pls.model.forParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefinitionInjectionIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -59,7 +59,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsFileManager.isInjectedFile(file)) return true
+        if (VirtualFileService.isInjectedFile(file)) return true
         return false
     }
 
@@ -78,7 +78,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
-        val config = configGroup.directivesModel.definitionInjection ?: return
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)
@@ -162,7 +162,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         if (value.isEmpty()) return
 
         val gameType = value.first().gameType
-        storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
+        storage.writeByte(gameType.optimized(OptimizerFactory.forParadoxGameType()))
         var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
         value.forEachFast { info ->
             storage.writeOrWriteFrom(info, previousInfo, { it.mode }, { storage.writeUTFFast(it) })
@@ -177,7 +177,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
-        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
+        val gameType = storage.readByte().deoptimized(OptimizerFactory.forParadoxGameType())
         var previousInfo: ParadoxDefinitionInjectionIndexInfo? = null
         return MutableList(size) {
             val mode = storage.readOrReadFrom(previousInfo, { it.mode }, { storage.readUTFFast() })

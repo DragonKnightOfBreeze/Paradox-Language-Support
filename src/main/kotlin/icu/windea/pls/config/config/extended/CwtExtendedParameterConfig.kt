@@ -7,14 +7,13 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
@@ -31,15 +30,19 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 用于为对应的参数（parameter）提供额外的提示信息（文档注释），以及指定规则上下文与作用域上下文。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - 参数是指特定类型的定义（如封装触发器，scripted trigger）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 路径定位：`parameters/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：
+ * - `parameters/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * parameters = {
  *     ### Some documentation
@@ -59,7 +62,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。
@@ -143,7 +146,7 @@ private class CwtExtendedParameterConfigImpl(
     private fun computeContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
@@ -155,7 +158,7 @@ private class CwtExtendedParameterConfigImpl(
             else -> containerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
+        val contextConfig = CwtConfigInlineService.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }
 

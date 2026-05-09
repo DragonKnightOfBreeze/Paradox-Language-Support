@@ -1,6 +1,6 @@
 package icu.windea.pls.ai.providers
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiBundle
 
 /**
  * AI 服务提供者的类型。
@@ -11,15 +11,15 @@ enum class ChatModelProviderType(val text: String) {
     /**
      * 使用 [OPEN AI](https://openai.com) 的 API。
      */
-    OPEN_AI(PlsBundle.message("ai.providerType.openAI")),
+    OPEN_AI(PlsAiBundle.message("ai.providerType.openAI")),
     /**
      * 使用 [ANTHROPIC](https://www.anthropic.com) 的 API。
      */
-    ANTHROPIC(PlsBundle.message("ai.providerType.anthropic")),
+    ANTHROPIC(PlsAiBundle.message("ai.providerType.anthropic")),
     /**
-     * 使用本地模型（Ollama）。
+     * 使用 [Ollama](https://ollama.com)。
      */
-    LOCAL(PlsBundle.message("ai.providerType.local")),
+    LOCAL(PlsAiBundle.message("ai.providerType.local")),
     ;
 
     companion object {

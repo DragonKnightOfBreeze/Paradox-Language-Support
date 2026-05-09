@@ -13,6 +13,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
@@ -22,9 +25,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
 import javax.swing.JComponent
 
 /**

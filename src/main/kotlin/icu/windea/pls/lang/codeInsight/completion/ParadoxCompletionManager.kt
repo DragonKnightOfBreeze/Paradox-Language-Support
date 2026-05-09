@@ -19,8 +19,8 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.resolved
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
@@ -40,7 +40,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.PlsNameValidators
+import icu.windea.pls.lang.ParadoxNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -115,12 +115,12 @@ object ParadoxCompletionManager {
         }
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, relax = true))
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigManipulator.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
+                    configs += CwtConfigInlineService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
                 }
             }
         }
@@ -156,7 +156,7 @@ object ParadoxCompletionManager {
         if (!configContext.inRoot()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(acceptDefinition = true, relax = true))
+        val parentConfigs = ParadoxConfigManager.getConfigs(memberElement, ParadoxMatchOptions(forDeclarationRoot = true, relax = true))
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
@@ -435,7 +435,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsNameValidators.checkLocalisationName(keyword)) return
+        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -472,7 +472,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         // 优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsNameValidators.checkLocalisationName(keyword)) return
+        if (keyword.isNotEmpty() && !ParadoxNameValidators.checkLocalisationName(keyword)) return
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -799,11 +799,11 @@ object ParadoxCompletionManager {
 
     // endregion
 
-    // region Directive Completion Methods
+    // region Macro Completion Methods
 
     fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val configs = configGroup.directivesModel.inlineScript.orNull() ?: return
+        val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
         for (config in configs) {
             ProgressManager.checkCanceled()
             context.config = config
@@ -812,7 +812,7 @@ object ParadoxCompletionManager {
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Directive)
+                .withIcon(PlsIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(PlsCompletionPriorities.constant)
@@ -823,7 +823,7 @@ object ParadoxCompletionManager {
 
     fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val config = configGroup.directivesModel.definitionInjection ?: return
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         val file = context.parameters?.originalFile ?: return
         val fileInfo = file.fileInfo ?: return
@@ -846,11 +846,11 @@ object ParadoxCompletionManager {
                 val typeFile = modeConfig.pointer.containingFile
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withBoldness(true)
-                    .withIcon(PlsIcons.Nodes.Directive)
+                    .withIcon(PlsIcons.Nodes.Macro)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
                     .withInsertHandler(PlsInsertHandlers.addColon())
-                    .withPriority(PlsCompletionPriorities.prefix)
+                    .withPriority(PlsCompletionPriorities.macro)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)

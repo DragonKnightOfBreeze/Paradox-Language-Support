@@ -2,13 +2,40 @@
 
 ## Unreleased
 
-- [ ] [#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163) [CK3] Gene tags / Single scalar with multiple definitions separated by comma
-- [ ] [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263) [Vic3/EU5] Parser Breaks in CoA
-- [ ] 新功能：支持 `## key_prefix = x` 和 `## value_prefix = x` / NEW: Support `## key_prefix = x` and `## value_prefix = x` [#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
-- [ ] 新功能：支持通过内联脚本声明的定义（即内联定义） / NEW: Support to declare definitions via inline scripts (i.e., inline definitions) [#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194)
-- [ ] 性能分析与优化 / Performance analysis and optimization
-- [ ] 完善参考文档 / Improve reference documentation
-- [ ] 补充集成测试 / Supplementary integration tests
+- [x] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
+- [x] PLANNED 补充本地化文件中的快速复制文本的意向
+- [x] PLANNED 重构渲染器组件
+- [x] P2 消除或重构initializer组件 & `PlsDataPathService`
+- [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
+- [x] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
+- [x] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
+- [x] P2 color scheme - 优化/整理配色选项和预览文本。
+- [x] P3 检查设置页面，优化文字表述，修正错误。
+- [x] P3 为规则选项提供文档注释，基于schema规则文件。
+- [x] P3 在schema规则文件中补充文档注释。
+- [x] P3 清理和优化各个代码检查的检查项描述和报错描述。
+- [x] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
+- [x] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
+
+## 2.1.8-dev
+
+- [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected
+- [x] 优化生成的修正的解析逻辑，兼容存在多个非精确匹配的候选项的情况 / Optimized resolution logic for generated modifiers, compatible with situations where there are multiple non-exact matching candidates
+- [x] 在语法层面兼容内联数学表达式中的封装变量引用的前导的 `@` (如 `@[ @v + 1]`)，通过注解器检查 / Made compatible with leading `@` of scripted variable references in inline math expressions (e.g., `@[ @v + 1]`) on syntax level, checked by the annotator
+- [x] 补充意向，以复制当前语言环境下的本地化列表到剪贴板 / Added intentions to copy localization list of current locale to the clipboard
+- [x] 如果 CWT 文档注释至少存在4个前导的 `#`，则将注释文本视为 Markdown 文本 / If a CWT documentation comment has at least 4 leading `#`, the comment text is treated as Markdown text
+- [x] 为规则选项提供文档注释，基于 schema 规则文件 / Provided doc comments for config options, from the schema config file
+- [x] 优化配色方案 / Optimized color scheme
+- [x] 优化本地化的生成逻辑，提供额外的配置项 / Optimized localisation generation logic, providing extra settings ([#296](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/296))
+- [x] 优化 rootInfo 和 rootMetadata 的解析逻辑 / Optimized resolution logic for rootInfo and rootMetadata
+- [x] 为定值的命名空间和变量提供特殊的图标、代码高亮和快速文档 / Provided special icons, code highlight and quick docs for define namespaces and variables
+- [x] 为定值的命名空间和变量提供代码补全 / Provided code completion for define namespaces and variables
+- [x] 为定值变量提供导航动作、装订线图标和实现查询 / Provided navigation action, gutter icons and implementations search for define variables
+- [x] 为定值变量提供相关代码检查（重载、不正确的重载） / Provided related code inspections for define variables (override, incorrect override)
+- [x] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
+- [x] 添加并更新 Stellaris 的定值的规则文件 / Added and updated define config files for Stellaris
+- [x] 修复在某些情况下无法添加模组依赖的问题 / Fixed an issue that cannot add mod dependencies in some situations ([#323](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/323)) 
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28
 

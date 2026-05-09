@@ -13,14 +13,15 @@ import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
+import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -40,7 +41,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContext.from(it) }.toList() }
+            val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
@@ -56,7 +57,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
             }
 
             if (errorRef.get() == null) {
-                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                val textToCopy = ParadoxLocalisationManipulationService.joinText(contexts)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
             createNotification(selectedLocale, errorRef.get()).notify(project)
@@ -65,18 +66,18 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, selectedLocale: CwtLocaleConfig) {
         val locale = selectLocale(context.element) ?: return
-         ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale, selectedLocale)
+         ParadoxLocalisationManipulationService.handleTextWithTranslation(context, locale, selectedLocale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
-            return PlsFacade.createNotification(NotificationType.INFORMATION, content)
+            return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed()) + errorDetails
-        return PlsFacade.createNotification(NotificationType.WARNING, content)
+        return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

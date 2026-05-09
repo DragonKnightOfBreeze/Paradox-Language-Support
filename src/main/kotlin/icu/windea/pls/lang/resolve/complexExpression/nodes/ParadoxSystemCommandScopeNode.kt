@@ -10,24 +10,24 @@ import icu.windea.pls.config.resolveElementWithConfig
 import icu.windea.pls.core.util.values.singletonSet
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.editor.ParadoxSemanticAttributesKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.references.CwtConfigBasedPsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxSystemCommandScopeNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val config: CwtSystemScopeConfig
-) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeLinkNode, ParadoxSystemScopeAwareLinkNode, ParadoxIdentifierNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeNode, ParadoxSystemScopeAwareLinkNode, ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.to.singletonSet()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY
+        return ParadoxSemanticAttributesKeys.systemCommandScope(element.language)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference {

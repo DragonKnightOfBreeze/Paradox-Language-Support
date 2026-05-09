@@ -1,6 +1,6 @@
 package icu.windea.pls.model.index
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import icu.windea.pls.core.ReadWriteAccess
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -10,6 +10,6 @@ import icu.windea.pls.model.ParadoxGameType
 data class ParadoxDynamicValueIndexInfo(
     val name: String,
     val dynamicValueType: String,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
+    val readWriteAccess: ReadWriteAccess,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo()

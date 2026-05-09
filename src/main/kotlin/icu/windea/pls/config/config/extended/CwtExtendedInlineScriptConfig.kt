@@ -6,14 +6,13 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.option.CwtOptionDataHolder
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.cwt.psi.CwtMember
@@ -24,17 +23,21 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的内联脚本（inline script）提供额外的提示信息（文档注释），以及指定规则上下文与作用域上下文。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - 内联脚本文件是指扩展名为 `.txt`，位于 `common/inline_scripts` 目录下的脚本文件。
  *   这些脚本可以在其他脚本文件中（几乎任意位置）被调用。
  * - 名为 `x/y` 的规则会匹配路径为 `common/inline_scripts/x/y.txt` 的内联脚本文件。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 路径定位：`inline_scripts/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：
+ * - `inline_scripts/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * inline_scripts = {
  *     ### Some documentation
@@ -51,7 +54,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * }
  * ```
  *
- * @property name 名称。
+ * @property name 规则名称。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  *
  * @see CwtOptionDataHolder.replaceScopes
@@ -111,7 +114,7 @@ private class CwtExtendedInlineScriptConfigImpl(
     private fun computeContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
     }
 
     private fun computeContextConfigs(): List<CwtMemberConfig<*>> {
@@ -123,7 +126,7 @@ private class CwtExtendedInlineScriptConfigImpl(
             else -> containerConfig.valueConfig.to.singletonListOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
-        val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
+        val contextConfig = CwtConfigInlineService.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }
 

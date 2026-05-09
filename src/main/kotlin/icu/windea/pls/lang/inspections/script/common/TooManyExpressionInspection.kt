@@ -14,9 +14,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.select.asValue
 import icu.windea.pls.config.select.selectConfigScope
-import icu.windea.pls.config.select.walkUp
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.ep.resolve.config.CwtOverriddenConfigProvider
@@ -73,7 +71,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 if (file !is ParadoxScriptFile) return
                 val configContext = ParadoxConfigManager.getConfigContext(file) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(file, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(file, file, configs)
             }
 
@@ -90,7 +88,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?: return
                 val configContext = ParadoxConfigManager.getConfigContext(element) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return
-                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(acceptDefinition = true))
+                val configs = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(forDeclarationRoot = true))
                 doCheck(element, position, configs)
             }
 
@@ -129,7 +127,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
 
             private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: ParadoxMatchOccurrence, configExpression: CwtDataExpression): Boolean {
-                val (actual, _, max, _, relaxMax) = occurrence
+                val (actual, _, max, _, lenientMax) = occurrence
                 if (max != null && actual > max) {
                     val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
@@ -149,7 +147,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
-                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(relaxMax)
+                    val highlightType = PlsInspectionUtil.getWeakerHighlightType(lenientMax)
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false

@@ -6,9 +6,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionValidator
@@ -35,8 +35,8 @@ import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressi
  * - 固定以前缀 `define:` 开头，随后是命名空间与变量名，以 `|` 分隔：`define:<namespace>|<variable>`。
  *
  * #### 节点组成
- * - 命名空间：[ParadoxDefineNamespaceDataNode]（`common/defines` 下 .txt 的一级键）。
- * - 变量名：[ParadoxDefineVariableDataNode]（同文件的二级键）。
+ * - 命名空间：[ParadoxDefineNamespaceNode]（`common/defines` 下 .txt 的一级键）。
+ * - 变量名：[ParadoxDefineVariableNode]（同文件的二级键）。
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
     interface Resolver {
@@ -74,7 +74,7 @@ private class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefere
             run r2@{
                 val nodeText = if (pipeIndex == -1) text.substring(prefix.length) else text.substring(prefix.length, pipeIndex)
                 val nodeTextRange = TextRange.from(offset + prefix.length, nodeText.length)
-                val node = ParadoxDefineNamespaceDataNode.resolve(nodeText, nodeTextRange, configGroup, expression)
+                val node = ParadoxDefineNamespaceNode.resolve(nodeText, nodeTextRange, configGroup, expression)
                 nodes += node
             }
             if (pipeIndex == -1) return@r1
@@ -86,7 +86,7 @@ private class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefere
             run r2@{
                 val nodeText = text.substring(pipeIndex + 1)
                 val nodeTextRange = TextRange.from(offset + pipeIndex + 1, nodeText.length)
-                val node = ParadoxDefineVariableDataNode.resolve(nodeText, nodeTextRange, configGroup, expression)
+                val node = ParadoxDefineVariableNode.resolve(nodeText, nodeTextRange, configGroup, expression)
                 nodes += node
             }
         }

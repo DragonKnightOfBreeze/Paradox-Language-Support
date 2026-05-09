@@ -1,12 +1,13 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.ReferenceLinkProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.ignoredFileProvider" interface="icu.windea.pls.ep.analysis.ParadoxIgnoredFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.hintTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configFilterProvider" interface="icu.windea.pls.ep.config.config.CwtConfigFilterProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configPostProcessor" interface="icu.windea.pls.ep.config.config.CwtConfigPostProcessor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
@@ -53,27 +54,35 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
+    <referenceLinkProvider implementation="icu.windea.pls.ep.CwtConfigLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxScriptedVariableLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxDefinitionLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxLocalisationLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxFilePathLinkProvider"/>
+    <referenceLinkProvider implementation="icu.windea.pls.ep.ParadoxModifierLinkProvider"/>
+
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxSettingsBasedIgnoredFileProvider"/>
+    <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxTopLevelIgnoredFileProvider"/>
     <ignoredFileProvider implementation="icu.windea.pls.ep.analysis.ParadoxForcedIgnoredFileProvider"/>
 
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
 
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.Vic3GameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.Eu5GameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider"/>
+    <rootMetadataProvider id="launcherSettingsJsonBased" implementation="icu.windea.pls.ep.analysis.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
+    <rootMetadataProvider id="executableFileBased" implementation="icu.windea.pls.ep.analysis.ParadoxExecutableFileBasedGameMetadataProvider"/>
+    <rootMetadataProvider id="metadataJsonBased" implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
+    <rootMetadataProvider id="descriptorModBased" implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider"/>
 
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTextColorQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxDefineQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDefinitionQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedGameRuleQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedOnActionQuickDocTextProvider"/>
-    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedInlineScriptQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedParameterQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedComplexEnumValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
-    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedParameterQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedInlineScriptQuickDocTextProvider"/>
 
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxDefinitionHintTextProvider"/>
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredScriptedVariableHintTextProvider"/>
@@ -88,14 +97,10 @@
 
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptStringColorProvider"/>
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptBlockColorProvider"/>
-    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorFieldColorProvider"/>
 
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.CwtConfigLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxScriptedVariableLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxDefinitionLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxLocalisationLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxFilePathLinkProvider"/>
-    <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxModifierLinkProvider"/>
+    <configFilterProvider implementation="icu.windea.pls.ep.config.config.CwtApiStatusBasedConfigFilterProvider"/>
+    <configFilterProvider implementation="icu.windea.pls.ep.config.config.CwtForcedConfigFilterProvider"/>
 
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtBaseConfigPostProcessor"/>
     <configPostProcessor implementation="icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor"/>
@@ -178,7 +183,8 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.resolve.config.CwtColumnRelatedConfigProvider"/>
 
     <configContextProvider id="base" implementation="icu.windea.pls.ep.resolve.config.CwtBaseConfigContextProvider" order="last"/>
-    <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="last, before base"/>
+    <configContextProvider id="definition" implementation="icu.windea.pls.ep.resolve.config.CwtDefinitionConfigContextProvider" order="before base"/>
+    <configContextProvider id="defineVariable" implementation="icu.windea.pls.ep.resolve.config.CwtDefineVariableConfigContextProvider" order="before definition"/>
     <configContextProvider id="parameterValue" implementation="icu.windea.pls.ep.resolve.config.CwtParameterValueConfigContextProvider"/>
     <configContextProvider id="inlineScriptUsage" implementation="icu.windea.pls.ep.resolve.config.CwtInlineScriptUsageConfigContextProvider"/>
     <configContextProvider id="inlineScript" implementation="icu.windea.pls.ep.resolve.config.CwtInlineScriptConfigContextProvider"/>
@@ -208,7 +214,7 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptVariableFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDefineReferenceExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptDatabaseObjectExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.StellarisScriptNameFormatExpressionSupport"/>
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptNameFormatExpressionSupport"/>
 
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptParameterExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptLocalisationParameterExpressionSupport"/>

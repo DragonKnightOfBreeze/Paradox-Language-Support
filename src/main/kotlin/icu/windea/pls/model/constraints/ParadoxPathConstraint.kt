@@ -19,7 +19,7 @@ enum class ParadoxPathConstraint {
     },
 
     ModDescriptorFile {
-        override fun test(path: ParadoxPath) = !InLocalisationPath.test(path) && path.matchesExtension("mod")
+        override fun test(path: ParadoxPath) = path.fileName == PlsConstants.descriptorModFileName // NOTE 2.1.8 file-name-sensitive
     },
     ScriptFile {
         override fun test(path: ParadoxPath) = !InLocalisationPath.test(path) && path.matchesExtensions(PlsConstants.scriptFileExtensions)

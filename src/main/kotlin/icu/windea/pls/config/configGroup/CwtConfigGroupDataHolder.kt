@@ -6,7 +6,8 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -75,6 +76,8 @@ interface CwtConfigGroupDataHolder {
 
     val rows: Map<String, CwtRowConfig>
 
+    val defineNamespaces: Map<String, CwtDefineNamespaceConfig>
+
     // enumValue 可以是 int、float、bool 类型，统一用字符串表示
     val enums: Map<String, CwtEnumConfig>
     // 基于 enum_name 进行定位，对应的可能是 key/value
@@ -93,7 +96,6 @@ interface CwtConfigGroupDataHolder {
 
     val singleAliases: Map<String, CwtSingleAliasConfig>
     val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
-    val directives: List<CwtDirectiveConfig>
 
     // name - config
     val modifierCategories: Map<String, CwtModifierCategoryConfig>
@@ -102,6 +104,8 @@ interface CwtConfigGroupDataHolder {
 
     // name - config
     val databaseObjectTypes: Map<String, CwtDatabaseObjectTypeConfig>
+
+    val macros: List<CwtMacroConfig>
 
     // endregion
 
@@ -115,14 +119,14 @@ interface CwtConfigGroupDataHolder {
     val extendedGameRules: Map<String, CwtExtendedGameRuleConfig>
     // pattern - config
     val extendedOnActions: Map<String, CwtExtendedOnActionConfig>
+    // pattern - configs
+    val extendedParameters: Map<String, List<CwtExtendedParameterConfig>>
     // enum_name - pattern - config
     val extendedComplexEnumValues: Map<String, Map<String, CwtExtendedComplexEnumValueConfig>>
     // dynamic_value_type - pattern - config
     val extendedDynamicValues: Map<String, Map<String, CwtExtendedDynamicValueConfig>>
     // pattern - config
     val extendedInlineScripts: Map<String, CwtExtendedInlineScriptConfig>
-    // pattern - configs
-    val extendedParameters: Map<String, List<CwtExtendedParameterConfig>>
 
     // endregion
 
@@ -147,8 +151,8 @@ interface CwtConfigGroupDataHolder {
     val linksModel: CwtLinksModel
     /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinksModel: CwtLinksModel
-    /** 获取符合特定条件的指令规则。 */
-    val directivesModel: CwtDirectivesModel
+    /** 获取符合特定条件的宏规则。 */
+    val macrosModel: CwtMacrosModel
     /** 获取符合特定条件的定义类型。 */
     val definitionTypesModel: CwtDefinitionTypesModel
 
@@ -193,10 +197,10 @@ interface CwtLinksModel {
     fun trim()
 }
 
-/** 用于获取符合特定条件的指令规则。 */
-interface CwtDirectivesModel {
-    val inlineScript: List<CwtDirectiveConfig>
-    val definitionInjection: CwtDirectiveConfig?
+/** 用于获取符合特定条件的宏规则。 */
+interface CwtMacrosModel {
+    val forInlineScripts: List<CwtMacroConfig.InlineScript>
+    val forDefinitionInjections: CwtMacroConfig.DefinitionInjection?
 
     fun trim()
 }

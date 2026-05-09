@@ -4,11 +4,11 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.util.CwtConfigResolverScope
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
@@ -18,12 +18,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位。
  *
  * 路径定位：
- * 1. 本地化资源：`types/type[{type}]/localisation/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
- * 2. 图片资源：`types/type[{type}]/images/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
+ * - 本地化资源：`types/type[{type}]/localisation/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
+ * - 图片资源：`types/type[{type}]/images/{key}`。其中 `{type}` 匹配定义类型，`{key}` 匹配键名。
  *
- * CWTools 兼容性：兼容。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 兼容。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[army] = {
@@ -41,8 +44,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property required 是否是必需项。
  * @property primary 是否是主要项。
  *
- * @see CwtTypeImagesConfig
- * @see CwtTypeLocalisationConfig
+ * @see CwtTypePresentationConfig
  * @see CwtLocationExpression
  */
 interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {

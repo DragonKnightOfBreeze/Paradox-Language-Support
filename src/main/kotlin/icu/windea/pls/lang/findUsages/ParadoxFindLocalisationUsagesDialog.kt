@@ -28,7 +28,7 @@ class ParadoxFindLocalisationUsagesDialog(
         if (isToChange(cbUsages)) {
             options.isUsages = isSelected(cbUsages)
         }
-        // if(isToChange(cbCrossLocales)) {
+        // if (isToChange(cbCrossLocales)) {
         //    options.isCrossLocales = isSelected(cbCrossLocales)
         // }
     }

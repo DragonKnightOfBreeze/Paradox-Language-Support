@@ -6,23 +6,23 @@ import com.github.benmanes.caffeine.cache.Interner
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsCapacities
 import icu.windea.pls.core.cache.CacheBuilder
 import it.unimi.dsi.fastutil.Hash
 import java.util.*
 
-fun OptimizerRegistry.forString() = register(StringOptimizer)
-fun OptimizerRegistry.forStringList() = register(StringListOptimizer)
-fun OptimizerRegistry.forStringSet() = register(StringSetOptimizer)
-fun <E : Any> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
-fun <E : Any> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
-fun <K : Any, V : Any> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
+fun OptimizerFactory.forString() = get(StringOptimizer)
+fun OptimizerFactory.forStringList() = get(StringListOptimizer)
+fun OptimizerFactory.forStringSet() = get(StringSetOptimizer)
 
+fun <E : Any> OptimizerFactory.forList() = getTyped<List<E>, _>(ListOptimizer)
+fun <E : Any> OptimizerFactory.forSet() = getTyped<Set<E>, _>(SetOptimizer)
+fun <K : Any, V : Any> OptimizerFactory.forMap() = getTyped<Map<K, V>, _>(MapOptimizer)
 
 private const val SMALL_INTERN_THRESHOLD = 8
 
-private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
 private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
+private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
 private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     val className = c.name
     // Java immutable collections
@@ -32,7 +32,7 @@ private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     // Kotlin collections which are immutable
     if (className.startsWith("kotlin.collections.")) return true
     // Kotlin immutable collections, but bad memory
-    // if(className.startsWith("kotlinx.collections.immutable.")) return true
+    // if (className.startsWith("kotlinx.collections.immutable.")) return true
     return false
 }
 
@@ -74,7 +74,7 @@ private object ListOptimizer : Optimizer.Unary<List<Any>> {
 
     private inline fun ignore(input: List<Any>): Boolean {
         if (input is ImmutableList) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         return false
@@ -99,7 +99,7 @@ private object SetOptimizer : Optimizer.Unary<Set<Any>> {
 
     private inline fun ignore(input: Set<Any>): Boolean {
         if (input is ImmutableSet) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash
@@ -124,7 +124,7 @@ private object MapOptimizer : Optimizer.Unary<Map<Any, Any>> {
 
     private inline fun ignore(input: Map<*, Any>): Boolean {
         if (input is ImmutableMap) return true
-        if (PlsFacade.Capacities.relaxOptimize()) {
+        if (PlsCapacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash

@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
@@ -20,6 +21,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.util.builders.DocumentationBuilder
@@ -27,14 +29,17 @@ import icu.windea.pls.core.util.builders.buildDocumentation
 import icu.windea.pls.core.util.values.anonymous
 import icu.windea.pls.core.util.values.or
 import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.cwt.psi.isOptionValue
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.codeInsight.configType
+import icu.windea.pls.lang.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -56,12 +61,13 @@ import icu.windea.pls.lang.util.builders.getScopeContextText
 import icu.windea.pls.lang.util.builders.getScopeText
 import icu.windea.pls.lang.util.builders.getScopesText
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer
-import icu.windea.pls.model.codeInsight.ReferenceLinkType
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.model.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.model.scope.ParadoxScopeId
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object CwtDocumentationManager {
@@ -70,12 +76,65 @@ object CwtDocumentationManager {
     private const val SECTIONS_LOC = 2
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
+        if (element is CwtOptionMember) {
+            getOptionMemberDoc(element, originalElement, hint)?.let { return it }
+        }
         return when (element) {
             is CwtConfigSymbolLightElement -> getConfigSymbolDoc(element, originalElement, hint)
             is CwtMemberConfigLightElement -> getMemberConfigDoc(element, originalElement, hint)
             is CwtProperty -> getPropertyDoc(element, originalElement, hint)
             is CwtString -> getStringDoc(element, originalElement, hint)
             else -> null
+        }
+    }
+
+    private fun getOptionMemberDoc(element: CwtOptionMember, originalElement: PsiElement?, hint: Boolean): String? {
+        // 2.1.8 为规则选项提供文档注释，基于 schema 规则文件
+        return when (element) {
+            is CwtOption -> getOptionDoc(element, originalElement, hint)
+            is CwtValue if element.isOptionValue() -> getOptionFlagDoc(element, originalElement, hint)
+            else -> null
+        }
+    }
+
+    private fun getOptionDoc(element: CwtOption, originalElement: PsiElement?, hint: Boolean): String? {
+        val name = element.name.orNull() ?: return null
+        return buildDocumentation {
+            definition {
+                append(PlsStrings.optionPrefix).append(" ").append(name)
+            }
+            if (hint) return@buildDocumentation
+            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
+            buildDocumentationContentForOption(name, "options", configGroup)
+        }
+    }
+
+    private fun getOptionFlagDoc(element: CwtValue, originalElement: PsiElement?, hint: Boolean): String? {
+        val name = element.name.orNull() ?: return null
+        return buildDocumentation {
+            definition {
+                append(PlsStrings.optionFlagPrefix).append(" ").append(name)
+            }
+            if (hint) return@buildDocumentation
+            val configGroup = getConfigGroup(element, originalElement, element.project) ?: return@buildDocumentation
+            buildDocumentationContentForOption(name, "option_flags", configGroup)
+        }
+    }
+
+    private fun DocumentationBuilder.buildDocumentationContentForOption(name: String, constraint: String, configGroup: CwtConfigGroup) {
+        val schema = configGroup.schemas.firstOrNull() ?: return
+        val constraint = schema.constraints[constraint] ?: return
+        constraint.configs?.forEach { config ->
+            val r = when (config) {
+                is CwtPropertyConfig -> config.key == name
+                is CwtValueConfig -> config.value == name
+            }
+            if (!r) return@forEach
+            val documentation = config.documentation
+            if (documentation.isNullOrEmpty()) return@forEach
+            content {
+                append(documentation)
+            }
         }
     }
 
@@ -153,7 +212,7 @@ object CwtDocumentationManager {
 
             val config = element.getUserData(CwtConfigManager.Keys.config)
             val tagType = config?.castOrNull<CwtValueConfig>()?.tagType
-            val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
+            val referenceElement = PsiService.getReferenceElement(originalElement)
 
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
             val byName = if (shortName == name) null else name.orNull()
@@ -214,6 +273,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
         val contextElement = referenceElement
+        if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
@@ -269,10 +329,11 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
         val contextElement = referenceElement
+        if (contextElement !is ParadoxScriptStringExpressionElement) return
         val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
-            val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
+            val paths = ParadoxModifierManager.getModifierIconPaths(name, contextElement)
             paths.firstNotNullOfOrNull { path ->
                 val iconSelector = selector(project, element).file().contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
@@ -388,7 +449,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
         // 进行代码提示时也显示作用域上下文信息
         // @Suppress("DEPRECATION")
-        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // if (DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
 
@@ -404,8 +465,8 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val ownedComments = CwtPsiManager.getOwnedComments(element)
-        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedDocComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments)
         if (documentation.isNullOrEmpty()) return
         content {
             append(documentation)

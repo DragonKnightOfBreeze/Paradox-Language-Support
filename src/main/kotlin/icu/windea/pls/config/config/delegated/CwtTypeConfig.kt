@@ -8,6 +8,7 @@ import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.annotations.FromOptionMember
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributes
 import icu.windea.pls.config.attributes.CwtTypeConfigAttributesEvaluator
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
@@ -19,8 +20,6 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.resolveElementWithConfig
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
@@ -37,11 +36,15 @@ import icu.windea.pls.model.ParadoxTagType
  * 用于描述如何定位、匹配与命名对应类型的定义，以及如何提供相关本地化、相关图片等额外信息。
  * 按照路径模式匹配脚本文件，并在其中进一步匹配定义类型。
  *
- * 路径定位：`types/type[{type}]`，`{type}` 匹配规则名称（定义类型）。
+ * 路径定位：
+ * - `types/type[{type}]`。其中 `{type}` 匹配类型名（即规则名称）。
  *
- * CWTools 兼容性：兼容，但存在一些扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 部分兼容。插件进行了额外的扩展和改进。
+ *
+ * ### 示例
+ *
  * ```cwt
  * types = {
  *     type[civic_or_origin] = {
@@ -52,7 +55,7 @@ import icu.windea.pls.model.ParadoxTagType
  * }
  * ```
  *
- * @property name 类型名。
+ * @property name 规则名称（即类型名）。
  * @property baseType 基类型名，如果存在则表示继承另一类型的部分语义。
  * @property nameField 名称字段键（用于解析定义名）。如果为空字符串，则强制匿名；如果为 `-`，则从属性值解析定义名；否则从对应名字（忽略大小写）的子属性值解析定义名。
  * @property nameFromFile 是否从文件名解析定义名。默认为 `false`。
@@ -102,9 +105,9 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     val severity: String?
     @FromOptionMember("graph_related_types: string[]")
     val graphRelatedTypes: Set<String>?
-    @FromMember("subtype[*]: SubtypeInfo", multiple = true)
+    @FromMember("subtype[*]: SubtypeConfig", multiple = true)
     val subtypes: Map<String, CwtSubtypeConfig>
-    @FromMember("localisation: LocalisationInfo")
+    @FromMember("localisation: TypeLocalisationConfig")
     val localisation: CwtTypeLocalisationConfig?
     @FromMember("images: ImagesInfo")
     val images: CwtTypeImagesConfig?

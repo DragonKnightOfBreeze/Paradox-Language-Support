@@ -24,7 +24,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -33,6 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
 object ParadoxInlineScriptManager {
@@ -45,7 +45,7 @@ object ParadoxInlineScriptManager {
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val configs = configGroup.directivesModel.inlineScript
+        val configs = configGroup.macrosModel.forInlineScripts
         if (configs.isEmpty()) return false
         return true
     }

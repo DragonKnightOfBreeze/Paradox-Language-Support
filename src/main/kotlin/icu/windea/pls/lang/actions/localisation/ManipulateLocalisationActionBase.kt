@@ -14,13 +14,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.editor
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.ide.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import kotlinx.coroutines.launch
@@ -63,12 +63,12 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         if (!file.isFile) return false
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
-        if (PlsFileManager.isLightFile(file)) return false
+        if (VirtualFileService.isLightFile(file)) return false
         return true
     }
 
     protected open fun findFiles(e: AnActionEvent, project: Project): Sequence<PsiFile> {
-        return PlsFileManager.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
+        return VirtualFileService.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
     }
 
     protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
@@ -115,10 +115,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
             val localePopup = createLocalePopup(e, project)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
-                doHandleAllAsync(e, project, Context(files, selected))
-            }
+            localePopup.onSelected { selectedValue -> doHandleAllAsync(e, project, Context(files, selectedValue)) }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
         }
 
@@ -158,15 +155,14 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
             val localePopup = createLocalePopup(e, project)
-            localePopup.doFinalStep action@{
-                val selected = localePopup.selectedLocale ?: return@action
+            localePopup.onSelected { selectedValue ->
                 val popup = createPopup(e, project) {
-                    doHandleAllAsync(e, project, Context(files, selected, it))
+                    doHandleAllAsync(e, project, Context(files, selectedValue, it))
                 }
                 if (popup != null) {
                     popup.showInBestPositionFor(e.dataContext)
                 } else {
-                    doHandleAllAsync(e, project, Context(files, selected, null))
+                    doHandleAllAsync(e, project, Context(files, selectedValue, null))
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)

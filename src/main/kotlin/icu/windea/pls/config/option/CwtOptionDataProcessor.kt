@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.settings.PlsConfigInternalSettings
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
@@ -67,13 +68,13 @@ object CwtOptionDataProcessor {
                 val v = resolvePredicate(config) ?: return
                 optionData.predicate = v
             }
-            "replace_scope", "replace_scopes" -> {
-                val v = resolveReplaceScopes(config) ?: return
-                optionData.replaceScopes = v
-            }
             "push_scope" -> {
                 val v = resolvePushScope(config) ?: return
                 optionData.pushScope = v
+            }
+            "replace_scope", "replace_scopes" -> {
+                val v = resolveReplaceScopes(config) ?: return
+                optionData.replaceScopes = v
             }
             "scope", "scopes" -> {
                 val r = resolveSupportedScopes(config) ?: return
@@ -128,7 +129,7 @@ object CwtOptionDataProcessor {
                 optionData.severity = v
             }
             "file_extensions" -> {
-                val v = config.getOptionValueOrValues()?.optimized() ?: return
+                val v = config.getOptionValueOrValues()?.mapTo(mutableSetOf()) { it.optimizedPathExtension() }?.optimized() ?: return
                 optionData.fileExtensions = v
             }
             "modifier_categories" -> {

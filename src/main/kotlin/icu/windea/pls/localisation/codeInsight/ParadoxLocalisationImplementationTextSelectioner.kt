@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.codeInsight
 
 import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**
@@ -14,10 +14,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 class ParadoxLocalisationImplementationTextSelectioner : ImplementationTextSelectioner {
     override fun getTextStartOffset(element: PsiElement): Int {
         val canAttachComment = ParadoxLocalisationPsiUtil.canAttachComment(element)
-        return PlsPsiManager.findTextStartOffsetInView(element, canAttachComment)
+        return PsiService.findTextStartOffsetInView(element, canAttachComment)
     }
 
     override fun getTextEndOffset(element: PsiElement): Int {
-        return PlsPsiManager.findTextEndOffsetInView(element)
+        return PsiService.findTextEndOffsetInView(element)
     }
 }

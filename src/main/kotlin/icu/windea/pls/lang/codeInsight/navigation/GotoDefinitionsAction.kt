@@ -1,28 +1,25 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.core.editor
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
+ * 导航到当前定义的包括自身在内的拥有相同名称和主要类型的定义。
  *
  * 不支持直接声明为文件的定义。
  */
 class GotoDefinitionsAction : BaseCodeInsightAction() {
     private val handler = GotoDefinitionsHandler()
 
-    override fun getHandler(): CodeInsightActionHandler {
-        return handler
-    }
+    override fun getHandler() = handler
 
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation

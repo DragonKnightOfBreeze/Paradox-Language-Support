@@ -12,8 +12,11 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 /**
  * 规则符号的查询。
  */
-class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>(EP_NAME) {
-    class SearchParameters(
+class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.Parameters>(EP_NAME) {
+    /**
+     * 规则符号的查询参数。
+     */
+    class Parameters(
         val name: String?,
         val types: Collection<String>,
         val gameType: ParadoxGameType?,
@@ -22,25 +25,23 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
     )
 
     companion object {
-        @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfigSymbolIndexInfo, SearchParameters>>("icu.windea.pls.search.configSymbolSearch")
-        @JvmField
-        val INSTANCE = CwtConfigSymbolSearch()
+        @JvmField val EP_NAME = ExtensionPointName<QueryExecutor<CwtConfigSymbolIndexInfo, Parameters>>("icu.windea.pls.search.configSymbolSearch")
+        @JvmField val INSTANCE = CwtConfigSymbolSearch()
 
         /**
-         * @see CwtConfigSymbolSearch.SearchParameters
+         * @see CwtConfigSymbolSearch.Parameters
          */
         @JvmStatic
         fun search(name: String?, type: String, gameType: ParadoxGameType?, project: Project, scope: GlobalSearchScope): Query<CwtConfigSymbolIndexInfo> {
-            return INSTANCE.createQuery(SearchParameters(name, setOf(type), gameType, project, scope))
+            return INSTANCE.createQuery(Parameters(name, setOf(type), gameType, project, scope))
         }
 
         /**
-         * @see CwtConfigSymbolSearch.SearchParameters
+         * @see CwtConfigSymbolSearch.Parameters
          */
         @JvmStatic
         fun search(name: String?, types: Collection<String>, gameType: ParadoxGameType?, project: Project, scope: GlobalSearchScope): Query<CwtConfigSymbolIndexInfo> {
-            return INSTANCE.createQuery(SearchParameters(name, types, gameType, project, scope))
+            return INSTANCE.createQuery(Parameters(name, types, gameType, project, scope))
         }
     }
 }

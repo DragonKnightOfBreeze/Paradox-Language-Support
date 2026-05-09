@@ -58,14 +58,14 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val config = ParadoxConfigManager.getConfigs(element, ParadoxMatchOptions(fallback = false)).firstOrNull() ?: return
                 val configExpression = config.configExpression
                 val dataType = configExpression.type
-                if (dataType == CwtDataTypes.AbsoluteFilePath) return
                 if (dataType !in CwtDataTypeSets.PathReference) return
-                val fileExtensions = config.optionData.fileExtensions.orEmpty()
-                if (fileExtensions.isEmpty()) return
+                if (dataType == CwtDataTypes.Icon) return // no file extension in expression
+                val expectFileExtensions = config.optionData.fileExtensions.orEmpty()
+                if (expectFileExtensions.isEmpty()) return
                 val value = element.value
-                if (fileExtensions.any { value.endsWith(it, true) }) return
-                val extensionsString = fileExtensions.joinToString()
-                val description = PlsBundle.message("inspection.script.incorrectPathReference.desc.1", value, extensionsString)
+                val fileExtension = value.substringAfterLast('.', "")
+                if (expectFileExtensions.any { fileExtension.equals(it, true) }) return
+                val description = PlsBundle.message("inspection.script.incorrectPathReference.desc.1", value, expectFileExtensions.joinToString())
                 holder.registerProblem(element, description)
             }
         }

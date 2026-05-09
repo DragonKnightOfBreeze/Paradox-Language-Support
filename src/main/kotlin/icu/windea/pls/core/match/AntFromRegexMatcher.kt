@@ -14,7 +14,7 @@ import icu.windea.pls.core.trimFast
  *
  * 基于正则实现，已废弃，建议改用 [AntMatcher]。
  */
-@Deprecated(message = "", replaceWith = ReplaceWith("AntMatcher"))
+@Deprecated("Use `AntMatcher`", ReplaceWith("AntMatcher", "icu.windea.pls.core.match.AntMatcher"))
 object AntFromRegexMatcher {
     /**
      * 判断输入的字符串（[input]）是否匹配指定的 ANT 路径模式([pattern])。

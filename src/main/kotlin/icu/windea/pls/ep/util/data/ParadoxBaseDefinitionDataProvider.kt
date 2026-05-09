@@ -10,7 +10,7 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.PlsModificationTrackers
+import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithDefinitionType
 import icu.windea.pls.lang.annotations.WithGameType
@@ -47,7 +47,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         return CachedValuesManager.getCachedValue(element, key) {
             ProgressManager.checkCanceled()
             val value = getData(element, type)
-            val trackers = with(PlsModificationTrackers) {
+            val trackers = with(ParadoxModificationTrackers) {
                 listOf(element, ScriptedVariables, InlineScripts)
             }
             value.withDependencyItems(trackers)

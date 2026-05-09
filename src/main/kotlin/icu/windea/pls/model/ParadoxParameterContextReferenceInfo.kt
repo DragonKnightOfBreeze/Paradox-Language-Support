@@ -6,6 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import javax.swing.Icon
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 参数上下文引用信息。

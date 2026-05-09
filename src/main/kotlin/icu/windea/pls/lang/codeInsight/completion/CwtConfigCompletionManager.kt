@@ -349,10 +349,10 @@ object CwtConfigCompletionManager {
     ): Boolean {
         val icon = when {
             schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
-            config is CwtOptionConfig -> PlsIcons.Nodes.CwtOption
-            config is CwtOptionValueConfig -> PlsIcons.Nodes.CwtValue
-            config is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
-            config is CwtValueConfig -> PlsIcons.Nodes.CwtValue
+            config is CwtOptionConfig -> PlsIcons.Nodes.Option
+            config is CwtOptionValueConfig -> PlsIcons.Nodes.Value
+            config is CwtPropertyConfig -> PlsIcons.Nodes.Property
+            config is CwtValueConfig -> PlsIcons.Nodes.Value
             else -> null
         }
         val typeFile = schema.file.pointer.element
@@ -553,13 +553,13 @@ object CwtConfigCompletionManager {
                         val finalConfigs = configGroup.extendedOnActions
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
-                    "inline_script" -> {
-                        val finalConfigs = configGroup.extendedInlineScripts
-                        finalConfigs.process { (n, c) -> processLookupElement(n, c) }
-                    }
                     "parameter" -> {
                         val finalConfigs = configGroup.extendedParameters
                         finalConfigs.process { (n, c) -> processLookupElement(n, c.singleOrNull()) }
+                    }
+                    "inline_script" -> {
+                        val finalConfigs = configGroup.extendedInlineScripts
+                        finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "single_alias" -> {
                         val finalConfigs = configGroup.singleAliases
@@ -576,7 +576,7 @@ object CwtConfigCompletionManager {
                         val finalConfigs = configGroup.aliasGroups[aliasName] ?: return true
                         finalConfigs.process { (n, c) -> processLookupElement(n, c.singleOrNull()) }
                     }
-                    "directive" -> {
+                    "macro" -> {
                         true // no completion yet
                     }
                     else -> true

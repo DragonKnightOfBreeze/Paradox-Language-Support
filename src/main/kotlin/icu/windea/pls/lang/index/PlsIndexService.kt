@@ -18,10 +18,10 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.search.selector.ParadoxSearchSelector
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.IndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfoType
+import icu.windea.pls.model.ParadoxGameType
 
 object PlsIndexService {
     // region FileBasedIndex Methods

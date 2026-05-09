@@ -1,20 +1,21 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# cleanup_changelog.py — Normalize CHANGELOG issue links and released-version dates.
-#
-# This script updates CHANGELOG.md in two ways:
-# 1. Replace standalone issue IDs in list items, such as ` #123`, with Markdown links.
-# 2. Append release dates to released version headings, such as `## 2.0.0 - 2026-01-01`.
-#
-# Date source:
-# - Prefer the date of the corresponding git tag in the local repository.
-# - The tag name is resolved as `v<version>` first, then `<version>`.
-#
-# Usage:
-#   python scripts/util/cleanup_changelog.py
-#   python scripts/util/cleanup_changelog.py --check
-#   python scripts/util/cleanup_changelog.py --file CHANGELOG.md
+"""cleanup_changelog.py — Normalize CHANGELOG issue links and released-version dates.
+
+This script updates CHANGELOG.md in two ways:
+1. Replace standalone issue IDs in list items, such as ` #123`, with Markdown links.
+2. Append release dates to released version headings, such as `## 2.0.0 - 2026-01-01`.
+
+Date source:
+- Prefer the date of the corresponding git tag in the local repository.
+- The tag name is resolved as `v<version>` first, then `<version>`.
+
+Usage:
+  python scripts/util/cleanup_changelog.py
+  python scripts/util/cleanup_changelog.py --check
+  python scripts/util/cleanup_changelog.py --file CHANGELOG.md
+"""
 
 from __future__ import annotations
 

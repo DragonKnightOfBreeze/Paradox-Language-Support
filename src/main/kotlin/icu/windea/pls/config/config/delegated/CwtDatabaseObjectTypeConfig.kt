@@ -6,13 +6,12 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.annotations.FromMember
 import icu.windea.pls.config.annotations.FromName
+import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverScope
-import icu.windea.pls.config.util.withLocationPrefix
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -22,13 +21,17 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  *
  * 用于描述数据库对象表达式（[ParadoxDatabaseObjectExpression]）的类型与格式。
  * 这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
- * 目前，它们最终会引用一个定义或本地化。
+ * 它们最终会被解析为一个定义或本地化，并渲染到 UI 提示中。
  *
- * 路径定位：`database_object_types/{name}`，`{name}` 匹配规则名称。
+ * 路径定位：
+ * - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。
  *
- * CWTools 兼容性：扩展。
+ * ### CWTools 兼容性
  *
- * 示例：
+ * 不兼容。插件作为扩展提供。
+ *
+ * ### 示例
+ *
  * ```cwt
  * database_object_types = {
  *     civic = {
@@ -38,7 +41,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  * }
  * ```
  *
- * @property name 名称。匹配类型前缀（如 `civic:some_civic` 中的 `civic:`）。
+ * @property name 规则名称。匹配类型前缀（如 `civic:some_civic` 中的 `civic:`）。
  * @property type 如果存在，则将对象节点（如 `civic:some_civic` 中的 `some_civic`）视为该类型的定义引用。
  * @property swapType 如果存在，则将接续的对象节点（如 `civic:some_civic:some_swapped_civic` 中的 `some_swapped_civic`）视为该切换类型的定义引用。
  * @property localisation 如果存在，则将对象节点（如 `job:job_soldier` 中的 `job_soldier`）视为匹配该前缀的本地化引用。

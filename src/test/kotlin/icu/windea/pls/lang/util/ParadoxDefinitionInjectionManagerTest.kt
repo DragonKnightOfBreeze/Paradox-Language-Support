@@ -3,12 +3,8 @@ package icu.windea.pls.lang.util
 import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.util.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.ofPath
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -200,7 +196,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManager.getIdentifierKey(declaration, "\u0000", -1)
         // 应包含基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -224,7 +220,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         Assert.assertNotNull(declaration)
         declaration!!
 
-        val key = CwtConfigKeyManipulator.getIdentifierKey(declaration, "\u0000", -1)
+        val key = CwtConfigKeyManager.getIdentifierKey(declaration, "\u0000", -1)
         // 应包含基础字段
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("speed"))
@@ -244,12 +240,12 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
         // 获取目标定义的声明
         val titan = selectScope { baseFile.ofPath("titan_mk3").asProperty().one() }!!
         val titanInfo = ParadoxDefinitionManager.getInfo(titan)!!
-        val titanKey = CwtConfigKeyManipulator.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
+        val titanKey = CwtConfigKeyManager.getIdentifierKey(titanInfo.declaration!!, "\u0000", -1)
 
         // 获取注入的声明
         val injectProperty = selectScope { injectFile.properties().ofKey("INJECT:titan_mk3").one() } as ParadoxScriptProperty
         val injectInfo = ParadoxDefinitionInjectionManager.getInfo(injectProperty)!!
-        val injectKey = CwtConfigKeyManipulator.getIdentifierKey(injectInfo.declaration!!, "\u0000", -1)
+        val injectKey = CwtConfigKeyManager.getIdentifierKey(injectInfo.declaration!!, "\u0000", -1)
 
         // 注入的声明结构应与目标定义的声明结构一致
         Assert.assertEquals(titanKey, injectKey)
@@ -261,7 +257,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
 
     @Test
     fun testIsSupported() {
-        // 我们在测试配置中定义了 directive[definition_injection]，所以 Stellaris 应被支持
+        // 我们在测试配置中定义了 macro[definition_injection]，所以 Stellaris 应被支持
         Assert.assertTrue(ParadoxDefinitionInjectionManager.isSupported(gameType))
     }
 

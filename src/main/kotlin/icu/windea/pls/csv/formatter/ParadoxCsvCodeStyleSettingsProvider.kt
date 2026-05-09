@@ -52,6 +52,7 @@ class ParadoxCsvCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     private fun customizeCommenterSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
+            CommenterOption.LINE_COMMENT_ADD_SPACE_ON_REFORMAT.name,
             CommenterOption.LINE_COMMENT_ADD_SPACE.name
         )
     }

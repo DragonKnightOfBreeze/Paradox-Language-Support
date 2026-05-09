@@ -1,25 +1,26 @@
 # Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 # All rights reserved.
 
-# code_stats.py — Code statistics audit script for Paradox Language Support.
-#
-# Walks the repository source tree and collects per-language line metrics:
-#   - Total / min / max / average lines per file
-#   - Blank lines, comment lines, and code lines (non-blank, non-comment)
-#
-# Supported languages: Kotlin (.kt), Java (.java).
-# Comment detection covers single-line (//) and block (/* ... */) comments.
-#
-# Output modes:
-#   default   : per-directory detailed stats block
-#   --summary : condensed table with one row per directory
-#   --markdown: full markdown document (saved to file)
-#
-# Output defaults to stdout; use --output FILE to write to a file.
-# For --markdown, output defaults to a timestamped file under tmp/reports/.
-#
-# Usage:
-#   python scripts/code_stats.py [--summary] [--markdown] [--output FILE]
+"""code_stats.py — Code statistics audit script for the plugin.
+
+Walks the repository source tree and collects per-language line metrics:
+  - Total / min / max / average lines per file
+  - Blank lines, comment lines, and code lines (non-blank, non-comment)
+
+Supported languages: Kotlin (.kt), Java (.java).
+Comment detection covers single-line (//) and block (/* ... */) comments.
+
+Output modes:
+  default   : per-directory detailed stats block
+  --summary : condensed table with one row per directory
+  --markdown: full markdown document (saved to file)
+
+Output defaults to stdout; use --output FILE to write to a file.
+For --markdown, output defaults to a timestamped file under tmp/reports/.
+
+Usage:
+  python scripts/code_stats.py [--summary] [--markdown] [--output FILE]
+"""
 
 from __future__ import annotations
 

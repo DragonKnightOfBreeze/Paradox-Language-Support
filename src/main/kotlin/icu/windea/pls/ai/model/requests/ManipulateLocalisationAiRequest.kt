@@ -4,11 +4,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxLocalisationManipulationContext
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 
@@ -38,4 +38,3 @@ abstract class ManipulateLocalisationAiRequest(
         return variables
     }
 }
-

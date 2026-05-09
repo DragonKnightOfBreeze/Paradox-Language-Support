@@ -276,7 +276,7 @@ class PromptTemplateEngineTest {
     }
 
     @Test
-    fun testIf_ElseIf_Else_nested_then_elseif() {
+    fun testIf_ElseIf_Else_nested_then_elseif () {
         val out = engine.render(
             "prompts/template_if_elseif_else_nested.md",
             mapOf("a" to true, "b" to false, "c" to true)
@@ -363,7 +363,7 @@ class PromptTemplateEngineTest {
     }
 
     @Test
-    fun testIf_withInclude_elseif() {
+    fun testIf_withInclude_elseif () {
         val out = engine.render(
             "prompts/template_if_with_include.md",
             mapOf("flag" to false, "other" to true)

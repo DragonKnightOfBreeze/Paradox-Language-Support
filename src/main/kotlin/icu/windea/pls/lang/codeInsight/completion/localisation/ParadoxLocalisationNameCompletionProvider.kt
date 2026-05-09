@@ -5,9 +5,11 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
+import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -19,6 +21,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxLocalisationType
 
@@ -32,10 +35,13 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         val position = parameters.position
         if (ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return
 
-        val element = position.parent?.parent as? ParadoxLocalisationProperty ?: return
+        val element = position.parent as? ParadoxLocalisationPropertyKey ?: return
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val type = ParadoxLocalisationType.resolve(file) ?: return
         val project = parameters.originalFile.project
+
+        val offsetInParent = parameters.offset - element.startOffset
+        val keyword = element.getKeyword(offsetInParent)
 
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
@@ -44,7 +50,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            .filterBy { it.name != element.name } // 排除与正在输入的同名的
+            .filterBy { it.name != keyword } // skip if name = input
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name

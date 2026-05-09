@@ -17,13 +17,13 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.linkNodes
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataDataNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceDataNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxLinkPrefixNode
@@ -33,8 +33,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArg
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatDefinitionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.typeNode
 import icu.windea.pls.lang.resolve.complexExpression.util.ParadoxComplexExpressionErrorBuilder as ErrorBuilder
 
@@ -122,7 +122,7 @@ object ParadoxComplexExpressionValidator {
         val config = expression.typeNode?.config
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDatabaseObjectDataDataNode -> {
+                it is ParadoxDatabaseObjectDataNode -> {
                     when {
                         config?.localisation != null -> it.text.isParameterAwareIdentifier(".-'")
                         else -> it.text.isParameterAwareIdentifier()
@@ -140,8 +140,8 @@ object ParadoxComplexExpressionValidator {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, errors) {
             when {
-                it is ParadoxDefineNamespaceDataNode -> it.text.isParameterAwareIdentifier()
-                it is ParadoxDefineVariableDataNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
                 else -> true
             }
         }
@@ -150,17 +150,17 @@ object ParadoxComplexExpressionValidator {
         return errors
     }
 
-    fun validate(expression: StellarisNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
+    fun validate(expression: ParadoxNameFormatExpression, element: ParadoxExpressionElement? = null): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(expression, errors) {
             when (it) {
-                is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
-                is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")
+                is ParadoxNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
+                is ParadoxNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier(".-'")
                 else -> true
             }
         }
         val malformed = !result
-        if (malformed) errors += ErrorBuilder.malformedStellarisNameFormatExpression(expression.rangeInExpression, expression.text)
+        if (malformed) errors += ErrorBuilder.malformedNameFormatExpression(expression.rangeInExpression, expression.text)
         return errors
     }
 

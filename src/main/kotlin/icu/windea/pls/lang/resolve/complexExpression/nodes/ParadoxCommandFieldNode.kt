@@ -6,7 +6,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 interface ParadoxCommandFieldNode : ParadoxLinkNode {
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandFieldNode {
-            ParadoxPredefinedCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
+            ParadoxStaticCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxDynamicCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
             ParadoxParameterizedCommandFieldNode.resolve(text, textRange, configGroup)?.let { return it }
             return ParadoxErrorCommandFieldNode(text, textRange, configGroup)

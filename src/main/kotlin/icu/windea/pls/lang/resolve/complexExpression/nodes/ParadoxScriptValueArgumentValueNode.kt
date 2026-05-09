@@ -3,8 +3,9 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.ParadoxTypeService
+import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxScriptValueArgumentValueNode(
@@ -16,12 +17,12 @@ class ParadoxScriptValueArgumentValueNode(
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         // 为参数值提供基础代码高亮
-        val type = ParadoxTypeResolver.resolve(text)
+        val type = ParadoxTypeService.resolve(text)
         return when {
-            type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
-            type.isFloatType() -> ParadoxScriptAttributesKeys.NUMBER_KEY
-            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY
-            else -> ParadoxScriptAttributesKeys.STRING_KEY
+            type == ParadoxType.Boolean -> ParadoxScriptAttributesKeys.KEYWORD
+            ParadoxTypeService.isRelaxFloat(type) -> ParadoxScriptAttributesKeys.NUMBER
+            text.startsWith('@') -> ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_REFERENCE
+            else -> ParadoxScriptAttributesKeys.STRING
         }
     }
 
@@ -30,15 +31,15 @@ class ParadoxScriptValueArgumentValueNode(
 
     // region
     // override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
-    //    if(!getSettings().inference.parameterConfig) return null
+    //    if (!getSettings().inference.parameterConfig) return null
     //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
     //    return ParadoxParameterManager.getInferredConfig(parameterElement)
     // }
     //
     // override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
-    //    if(!getSettings().inference.parameterConfig) return null
-    //    if(valueNode == null) return null
-    //    if(text.isEmpty()) return null
+    //    if (!getSettings().inference.parameterConfig) return null
+    //    if (valueNode == null) return null
+    //    if (text.isEmpty()) return null
     //    val reference = valueNode.getReference(element)
     //    if (reference == null) return null
     //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
