@@ -250,7 +250,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
  * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
  * - 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
-class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
+class CwtInlineScriptFileConfigContextProvider : CwtConfigContextProvider {
     // 获取上下文规则后才能确定是否存在冲突以及是否存在递归
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
@@ -300,7 +300,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 }
 
 /**
- * 提供定义注入中的规则上下文。
+ * 提供定义注入声明中的规则上下文。
  *
  * - 基于文件信息（包括注入的文件信息）和成员路径。
  * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
