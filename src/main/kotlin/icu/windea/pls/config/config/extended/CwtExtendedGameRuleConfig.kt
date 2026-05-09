@@ -20,7 +20,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的游戏规则（game rule）提供额外的提示信息（文档注释和内嵌提示），以及重载声明规则。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - 游戏规则（game rule）即类型为 `game_rule` 的定义。
  *
  * 路径定位：

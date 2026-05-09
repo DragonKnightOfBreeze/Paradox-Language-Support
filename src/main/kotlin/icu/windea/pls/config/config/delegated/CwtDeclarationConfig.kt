@@ -27,7 +27,7 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
  *
  * 路径定位：
  * - `{name}`。其中 `{name}` 匹配规则名称。
- * - 任何无法在解析其他规则的过程中被匹配到的顶级属性，如果键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
+ * - 对于规则文件中的顶级属性，如果未在解析其他规则的过程中被匹配到，且键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
  *
  * ### CWTools 兼容性
  *

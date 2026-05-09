@@ -19,7 +19,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的动作触发（on action）提供额外的提示信息（文档注释和内嵌提示），以及指定事件类型。
  *
  * 说明：
- * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeSets.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则表达式（参见 [CwtDataTypeSets.PatternAware]）。
  * - on action 即类型为 `on_action` 的定义。
  * - 事件类型是通过 `## event_type` 选项指定的。这会重载声明规则中的所有对事件的引用为对该类型事件的引用。
  *
