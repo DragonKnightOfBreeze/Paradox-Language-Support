@@ -59,7 +59,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField val TAG = create("PARADOX_SCRIPT.TAG", DefaultLanguageHighlighterColors.METADATA)
     @JvmField val TAG_TYPE_KEY_PREFIX = create("PARADOX_SCRIPT.TAG.TYPE_KEY_PREFIX", TAG)
 
-    @JvmField val DIRECTIVE = create("PARADOX_SCRIPT.DIRECTIVE", DefaultLanguageHighlighterColors.KEYWORD) // JSP directive name
+    @JvmField val DIRECTIVE = create("PARADOX_SCRIPT.DIRECTIVE", DefaultLanguageHighlighterColors.KEYWORD) // org.rust.MACRO
     @JvmField val DIRECTIVE_INLINE_SCRIPT = create("PARADOX_SCRIPT.DIRECTIVE.INLINE_SCRIPT", DIRECTIVE)
     @JvmField val DIRECTIVE_DEFINITION_INJECTION = create("PARADOX_SCRIPT.DIRECTIVE.DEFINITION_INJECTION", DIRECTIVE)
 
