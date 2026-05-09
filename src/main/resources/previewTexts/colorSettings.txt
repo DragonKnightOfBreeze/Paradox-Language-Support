@@ -30,7 +30,7 @@ examples = {
 
 complex_expressions = {
     scope_field_expressions = {
-        key = <SYSTEM_SCOPE>root</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><SCOPE>owner</SCOPE>
+        key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><SCOPE>owner</SCOPE>
         key = <SYSTEM_SCOPE>this</SYSTEM_SCOPE><OPERATOR>.</OPERATOR><SCOPE_PREFIX>event_target:</SCOPE_PREFIX><DYNAMIC_VALUE>target</DYNAMIC_VALUE>
     }
     value_field_expression = {
