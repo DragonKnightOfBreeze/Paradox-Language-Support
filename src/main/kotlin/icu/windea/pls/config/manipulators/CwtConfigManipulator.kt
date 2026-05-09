@@ -138,20 +138,6 @@ object CwtConfigManipulator {
     // region Inline Methods
 
     @Optimized
-    fun inline(macroConfig: CwtMacroConfig): CwtPropertyConfig {
-        val other = macroConfig.config
-        val inlined = CwtPropertyConfig.copy(
-            sourceConfig = other,
-            keyExpression = CwtDataExpression.resolveKey(macroConfig.name),
-            configs = deepCopyConfigs(other),
-        )
-        inlined.postOptimize() // do post optimization
-        mergeOptionData(inlined.optionData, other.optionData) // merge option data
-        inlined.inlineConfig = macroConfig
-        return inlined
-    }
-
-    @Optimized
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val valueExpression = config.valueExpression
         if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
@@ -223,6 +209,20 @@ object CwtConfigManipulator {
             else -> inlined
         }
         return finalInlined
+    }
+
+    @Optimized
+    fun inlineMacro(macroConfig: CwtMacroConfig.InlineScript): CwtPropertyConfig {
+        val other = macroConfig.configForDeclaration
+        val inlined = CwtPropertyConfig.copy(
+            sourceConfig = other,
+            keyExpression = CwtDataExpression.resolveKey(macroConfig.name),
+            configs = deepCopyConfigs(other),
+        )
+        inlined.postOptimize() // do post optimization
+        mergeOptionData(inlined.optionData, other.optionData) // merge option data
+        inlined.inlineConfig = macroConfig
+        return inlined
     }
 
     @Optimized

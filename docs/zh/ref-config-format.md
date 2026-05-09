@@ -822,7 +822,7 @@ scope_groups = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-数据库对象类型规则为本地化中的"数据库对象表达式"（如 `['civic:some_civic', ...]`）定义类型与格式，支持在 UI 与提示中将其解析为定义或本地化。
+数据库对象类型规则用于描述数据库对象表达式的类型与格式。这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。它们最终会被解析为一个定义或本地化，并渲染到 UI 提示中。
 
 路径定位：
 
@@ -861,9 +861,9 @@ database_object_types = {
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-宏规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
+宏规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的宏可以拥有不同的规则结构。
 
-目前涉及的指令包括：
+目前涉及的宏包括：
 
 - **内联脚本（inline_script）**：（Stellaris）在解析阶段被替换为目标文件的内容，且可以指定参数。
 - **定义注入（definition_injection）**：（VIC3 / EU5）在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
@@ -875,8 +875,13 @@ database_object_types = {
 示例：
 
 ```cwt
-macro[inline_script] = {
-    # ...
+macro[inline_script] = filepath[common/inline_scripts/,.txt]
+
+macro[definition_injection] = {
+    modes = { INJECT REPLACE TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
+    relax_modes = { TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
+    replace_modes = { REPLACE TRY_REPLACE REPLACE_OR_CREATE }
+    create_modes = { REPLACE_OR_CREATE }
 }
 ```
 

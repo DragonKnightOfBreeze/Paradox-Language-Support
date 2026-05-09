@@ -78,7 +78,7 @@ class ParadoxDefinitionInjectionIndex : ParadoxIndexInfoAwareFileBasedIndex<List
 
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return
         val configGroup = PlsFacade.getConfigGroup(psiFile.project, gameType)
-        val config = configGroup.macrosModel.definitionInjection ?: return
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val path = fileInfo.path
         val fileLevelMatchContext = CwtTypeConfigMatchContext(configGroup, path)
         val fileLevelTypeConfigs = ParadoxConfigMatchService.getTypeConfigCandidates(fileLevelMatchContext)

@@ -38,7 +38,7 @@ class ChangeDefinitionInjectionModeIntention : ModCommandAction {
         val element = findElement(context) ?: return ModCommand.nop()
         val gameType = selectGameType(context.file) ?: return ModCommand.nop()
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val modes = configGroup.macrosModel.definitionInjection?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
+        val modes = configGroup.macrosModel.forDefinitionInjections?.modeConfigs?.keys?.orNull() ?: return ModCommand.nop()
         val items = modes.map { ItemIntention(element, it) }
         return ModCommand.chooseAction(PlsBundle.message("intention.changeDefinitionInjectionMode.title"), items)
     }

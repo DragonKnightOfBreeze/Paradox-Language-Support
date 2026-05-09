@@ -41,7 +41,7 @@ var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(Cw
 var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
 /** 绑定到当前属性规则的内联规则（解析阶段填充）。 */
-var CwtPropertyConfig.inlineConfig: CwtMacroConfig? by registerKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.inlineConfig: CwtMacroConfig.InlineScript? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前值规则的标签类型（解析阶段推断，用于渲染和提示）。 */
 var CwtValueConfig.tagType: ParadoxTagType? by registerKey(CwtMemberConfig.Keys)

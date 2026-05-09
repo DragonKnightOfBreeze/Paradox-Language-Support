@@ -304,7 +304,7 @@ single_alias[$single_alias$] = $declaration
 alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 #### Introduce a [Macro Config](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-macro)
-#### to describe special expressions and declarations that alter the game's runtime script parser behavior.
+#### to describe special expressions and structures that alter the game's runtime script parser behavior.
 macro[$macro$] = $any
 
 # endregion

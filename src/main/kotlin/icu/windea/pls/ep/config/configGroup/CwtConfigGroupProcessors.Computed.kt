@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.isStatic
 import icu.windea.pls.config.config.prefixFromArgument
@@ -240,9 +241,9 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         with(initializer.macrosModel) {
             val macros = initializer.macros
             macros.forEach { c ->
-                when (c.name) {
-                    "inline_script" -> inlineScript += c
-                    "definition_injection" -> definitionInjection = c
+                when (c) {
+                    is CwtMacroConfig.InlineScript -> forInlineScripts += c
+                    is CwtMacroConfig.DefinitionInjection -> forDefinitionInjections = c
                 }
             }
         }

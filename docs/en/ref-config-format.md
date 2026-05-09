@@ -816,7 +816,7 @@ scope_groups = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 
-Database object type configs define the type and format of "database object expressions" (e.g. `['civic:some_civic', ...]`) in localisation, supporting parsing them as definitions or localisation in UI and hints.
+Database object type configs are used to describe the type and format of database object expressions. Such expressions can be used as concept names in localization files (e.g. `['civic:some_civic', ...]`). They are eventually parsed into a definition or localization and rendered into UI hints.
 
 Path location:
 
@@ -869,8 +869,13 @@ Path location:
 Example:
 
 ```cwt
-macro[inline_script] = {
-    # ...
+macro[inline_script] = filepath[common/inline_scripts/,.txt]
+
+macro[definition_injection] = {
+    modes = { INJECT REPLACE TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
+    relax_modes = { TRY_INJECT TRY_REPLACE INJECT_OR_CREATE REPLACE_OR_CREATE }
+    replace_modes = { REPLACE TRY_REPLACE REPLACE_OR_CREATE }
+    create_modes = { REPLACE_OR_CREATE }
 }
 ```
 

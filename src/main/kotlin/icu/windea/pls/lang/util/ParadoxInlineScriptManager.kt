@@ -45,7 +45,7 @@ object ParadoxInlineScriptManager {
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val configs = configGroup.macrosModel.inlineScript
+        val configs = configGroup.macrosModel.forInlineScripts
         if (configs.isEmpty()) return false
         return true
     }

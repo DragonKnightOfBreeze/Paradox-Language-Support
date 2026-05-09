@@ -199,8 +199,8 @@ interface CwtLinksModel {
 
 /** 用于获取符合特定条件的宏规则。 */
 interface CwtMacrosModel {
-    val inlineScript: List<CwtMacroConfig>
-    val definitionInjection: CwtMacroConfig?
+    val forInlineScripts: List<CwtMacroConfig.InlineScript>
+    val forDefinitionInjections: CwtMacroConfig.DefinitionInjection?
 
     fun trim()
 }

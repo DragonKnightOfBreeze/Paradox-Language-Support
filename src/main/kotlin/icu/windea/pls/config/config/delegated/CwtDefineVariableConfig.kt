@@ -52,7 +52,7 @@ interface CwtDefineVariableConfig : CwtDefineConfig {
     override val namespace: String
     val variable: String
 
-    val configForDeclaration: CwtPropertyConfig?
+    val configForDeclaration: CwtPropertyConfig
 
     interface Resolver {
         /** 由属性规则解析为定值变量规则。 */
@@ -77,7 +77,7 @@ private class CwtDefineVariableConfigImpl(
     override val namespace: String,
     override val variable: String,
 ) : UserDataHolderBase(), CwtDefineVariableConfig {
-    override val configForDeclaration: CwtPropertyConfig? by lazy { computeConfigForDeclaration() }
+    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig {
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config

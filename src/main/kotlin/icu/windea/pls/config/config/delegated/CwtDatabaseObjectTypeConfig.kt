@@ -21,7 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpres
  *
  * 用于描述数据库对象表达式（[ParadoxDatabaseObjectExpression]）的类型与格式。
  * 这种表达式可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
- * 目前，它们最终会引用一个定义或本地化。
+ * 它们最终会被解析为一个定义或本地化，并渲染到 UI 提示中。
  *
  * 路径定位：
  * - `database_object_types/{name}`。其中 `{name}` 匹配规则名称。

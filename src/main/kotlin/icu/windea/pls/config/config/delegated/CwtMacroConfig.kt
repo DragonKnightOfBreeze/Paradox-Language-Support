@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -23,11 +24,11 @@ import icu.windea.pls.cwt.psi.CwtProperty
 /**
  * 宏规则。
  *
- * 用于描述脚本文件中区别于一般抽象的特殊的表达式和结构，并提供额外的用于提示和验证的元数据。
+ * 用于描述脚本文件中区别于一般抽象的特殊的表达式和结果，并提供额外的用于提示和验证的元数据。
  * 这些表达式和结构会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
  * 不同的宏可以拥有不同的规则结构。
  *
- * 目前涉及的语言特性：
+ * 目前涉及的宏包括：
  * - **内联脚本（inline_script）**：（Stellaris）会在解析阶段被替换为目标文件的内容，且可以指定参数。
  * - **定义注入（definition_injection）**：（VIC3 / EU5）会在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
  *
@@ -51,14 +52,27 @@ import icu.windea.pls.cwt.psi.CwtProperty
 interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("macro[$]")
     val name: String
-    @FromMember("modes: string[]")
-    val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
-    @FromMember("relax_modes: string[]")
-    val relaxModes: Set<@CaseInsensitive String>
-    @FromMember("replace_modes: string[]")
-    val replaceModes: Set<@CaseInsensitive String>
-    @FromMember("create_modes: string[]")
-    val createModes: Set<@CaseInsensitive String>
+
+    /**
+     * 内联脚本的宏规则。为内联脚本用法提供快速文档和规则上下文。
+     */
+    interface InlineScript : CwtMacroConfig {
+        val configForDeclaration: CwtPropertyConfig
+    }
+
+    /**
+     * 定义注入的宏规则，为定义注入模式提供快速文档与行为归类。
+     */
+    interface DefinitionInjection : CwtMacroConfig {
+        @FromMember("modes: string[]")
+        val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
+        @FromMember("relax_modes: string[]")
+        val relaxModes: Set<@CaseInsensitive String>
+        @FromMember("replace_modes: string[]")
+        val replaceModes: Set<@CaseInsensitive String>
+        @FromMember("create_modes: string[]")
+        val createModes: Set<@CaseInsensitive String>
+    }
 
     interface Resolver {
         /** 由属性规则解析为声明规则。 */
@@ -79,34 +93,65 @@ private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRes
         val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized()
             ?: config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() // stay compatible
             ?: return null
-        val propElements = config.properties.orEmpty()
-        val propGroup = propElements.groupBy { it.key }
-        val modeConfigs = propGroup.getOne("modes")?.let { prop ->
-            prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
-        }?.optimized().orEmpty()
-        val relaxModes = propGroup.getOne("relax_modes")?.let { prop ->
-            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-        }?.optimized().orEmpty()
-        val replaceModes = propGroup.getOne("replace_modes")?.let { prop ->
-            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-        }?.optimized().orEmpty()
-        val createModes = propGroup.getOne("create_modes")?.let { prop ->
-            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-        }?.optimized().orEmpty()
-        logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
-        return CwtMacroConfigImpl(config, name, modeConfigs, relaxModes, replaceModes, createModes)
+        return when (name) {
+            "inline_script" -> {
+                logger.debug { "Resolved macro config for inline scripts (name: $name).".withLocationPrefix(config) }
+                CwtInlineScriptMacroConfig(config, name)
+            }
+            "definition_injection" -> {
+                val propElements = config.properties.orEmpty()
+                val propGroup = propElements.groupBy { it.key }
+                val modeConfigs = propGroup.getOne("modes")?.let { prop ->
+                    prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
+                }?.optimized().orEmpty()
+                val relaxModes = propGroup.getOne("relax_modes")?.let { prop ->
+                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                }?.optimized().orEmpty()
+                val replaceModes = propGroup.getOne("replace_modes")?.let { prop ->
+                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                }?.optimized().orEmpty()
+                val createModes = propGroup.getOne("create_modes")?.let { prop ->
+                    prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+                }?.optimized().orEmpty()
+                logger.debug { "Resolved macro config for definition injections (name: $name).".withLocationPrefix(config) }
+                CwtDefinitionInjectionMacroConfig(config, name, modeConfigs, relaxModes, replaceModes, createModes)
+            } else -> {
+                logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
+                CwtMacroConfigImpl(config, name)
+            }
+        }
     }
 }
 
 private class CwtMacroConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
+) : UserDataHolderBase(), CwtMacroConfig {
+    override fun toString() = "CwtMacroConfigImpl(name='$name')"
+}
+
+private class CwtInlineScriptMacroConfig(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+) : UserDataHolderBase(), CwtMacroConfig.InlineScript {
+    override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
+
+    private fun computeConfigForDeclaration(): CwtPropertyConfig {
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+    }
+
+    override fun toString() = "CwtInlineScriptMacroConfig(name='$name')"
+}
+
+private class CwtDefinitionInjectionMacroConfig(
+    override val config: CwtPropertyConfig,
+    override val name: String,
     override val modeConfigs: Map<String, CwtValueConfig>,
     override val relaxModes: Set<String>,
     override val replaceModes: Set<String>,
     override val createModes: Set<String>,
-) : UserDataHolderBase(), CwtMacroConfig {
-    override fun toString() = "CwtMacroConfigImpl(name='$name')"
+) : UserDataHolderBase(), CwtMacroConfig.DefinitionInjection {
+    override fun toString() = "CwtDefinitionInjectionMacroConfig(name='$name')"
 }
 
 // endregion

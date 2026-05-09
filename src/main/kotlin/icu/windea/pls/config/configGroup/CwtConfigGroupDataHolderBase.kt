@@ -257,11 +257,11 @@ class CwtLinksModelBase : CwtLinksModel {
 }
 
 class CwtMacrosModelBase : CwtMacrosModel {
-    override val inlineScript: FastList<CwtMacroConfig> = FastList()
-    override var definitionInjection: CwtMacroConfig? = null
+    override val forInlineScripts: FastList<CwtMacroConfig.InlineScript> = FastList()
+    override var forDefinitionInjections: CwtMacroConfig.DefinitionInjection? = null
 
     override fun trim() {
-        inlineScript.trim()
+        forInlineScripts.trim()
     }
 }
 

@@ -803,7 +803,7 @@ object ParadoxCompletionManager {
 
     fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val configs = configGroup.macrosModel.inlineScript.orNull() ?: return
+        val configs = configGroup.macrosModel.forInlineScripts.orNull() ?: return
         for (config in configs) {
             ProgressManager.checkCanceled()
             context.config = config
@@ -823,7 +823,7 @@ object ParadoxCompletionManager {
 
     fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val config = configGroup.macrosModel.definitionInjection ?: return
+        val config = configGroup.macrosModel.forDefinitionInjections ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         val file = context.parameters?.originalFile ?: return
         val fileInfo = file.fileInfo ?: return
