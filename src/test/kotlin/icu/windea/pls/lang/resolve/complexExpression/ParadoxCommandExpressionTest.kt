@@ -11,7 +11,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldVa
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopePrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
@@ -20,8 +19,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStaticCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -32,7 +33,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

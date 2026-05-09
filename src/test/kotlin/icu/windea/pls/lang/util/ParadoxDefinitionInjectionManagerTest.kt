@@ -5,11 +5,8 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.select.asProperty
-import icu.windea.pls.lang.select.ofKey
-import icu.windea.pls.lang.select.ofPath
-import icu.windea.pls.lang.select.one
 import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.clearIntegrationTest
@@ -24,7 +21,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

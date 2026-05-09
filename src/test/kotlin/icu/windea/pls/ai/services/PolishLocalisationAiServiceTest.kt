@@ -6,10 +6,10 @@ import icu.windea.pls.ai.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
 import icu.windea.pls.test.AssumePredicates
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

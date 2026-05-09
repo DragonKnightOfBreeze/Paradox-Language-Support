@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.tools
 
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.AssumePredicates
 import org.junit.Before
 import org.junit.Test
-import icu.windea.pls.model.ParadoxGameType
 
 class PlsPathServiceTest {
     private val service = PlsPathServiceImpl()

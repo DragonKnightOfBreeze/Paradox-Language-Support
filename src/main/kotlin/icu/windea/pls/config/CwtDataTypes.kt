@@ -1,5 +1,7 @@
 package icu.windea.pls.config
 
+import icu.windea.pls.core.match.AntMatcher
+import icu.windea.pls.core.match.RegexMatcher
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.lang.annotations.WithGameType
@@ -13,7 +15,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.core.match.*
 
 /**
  * 所有预定义的数据类型。
@@ -450,6 +451,7 @@ object CwtDataTypes {
     val ShaderEffect = CwtDataType.builder("ShaderEffect"/*).reference(*/).build {
         withPriority(85.0)
     } // effects in .shader files
+
     /**
      * 带等级的科技类型。
      *

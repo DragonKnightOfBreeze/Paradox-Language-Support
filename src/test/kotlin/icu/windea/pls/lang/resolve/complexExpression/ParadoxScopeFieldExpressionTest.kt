@@ -17,6 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopePrefixNod
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -27,7 +28,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

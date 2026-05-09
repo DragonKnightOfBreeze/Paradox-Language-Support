@@ -10,6 +10,7 @@ import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsSqliteService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -32,7 +33,6 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

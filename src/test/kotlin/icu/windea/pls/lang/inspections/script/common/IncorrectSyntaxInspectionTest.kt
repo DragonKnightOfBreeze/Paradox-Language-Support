@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markConfigDirectory
@@ -14,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * @see IncorrectSyntaxInspection

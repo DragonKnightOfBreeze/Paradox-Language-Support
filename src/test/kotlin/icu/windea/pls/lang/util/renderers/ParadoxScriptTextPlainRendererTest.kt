@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rd.util.AtomicInteger
 import icu.windea.pls.core.util.values.FallbackStrings
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsStrings
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.test.clearIntegrationTest
@@ -15,7 +16,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import icu.windea.pls.model.ParadoxGameType
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

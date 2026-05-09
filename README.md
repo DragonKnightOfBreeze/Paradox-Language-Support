@@ -26,9 +26,9 @@ Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game m
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich IDE Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
+- **Rich Language Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
 - **Enhanced Information Hints**: Shows key information intuitively through quick documentation and inlay hints, including localisation text, images, scopes, parameters, etc.
-- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
+- **Advanced Language Constructs Support**: Compatible with various advanced constructs in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
 - **Directory Detection**: Automatically detects game and mod directories.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).

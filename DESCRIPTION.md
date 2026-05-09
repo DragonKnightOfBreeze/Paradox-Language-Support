@@ -9,9 +9,9 @@ Paradox Language Support is the IntelliJ IDEA plugin designed for Paradox game m
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich IDE Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
+- **Rich Language Features**: Provides code highlighting, code navigation, code completion, code refactoring, intention actions, code inspections, quick documentation, inlay hints, code hierarchy, diff viewing, diagrams and many other features.
 - **Enhanced Information Hints**: Shows key information intuitively through quick documentation and inlay hints, including localisation text, images, scopes, parameters, etc.
-- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
+- **Advanced Language Constructs Support**: Compatible with various advanced constructs in script and localization languages, including parameters, scopes, complex expressions, inline scripts, definition injections, etc.
 - **Directory Detection**: Automatically detects game and mod directories.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
@@ -29,7 +29,7 @@ Paradox Language Support 是为 Paradox 游戏模组开发者设计的 IntelliJ 
 **核心特性：**
 
 - **多语言支持**：支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用于编写规则的 CWT 语言。
-- **丰富的 IDE 功能**：提供代码高亮、代码导航、代码补全、代码重构、意向动作、代码检查、快速文档、内嵌提示、代码层级、差异比较和图表等多项 IDE 功能。
+- **丰富的语言功能**：提供代码高亮、代码导航、代码补全、代码重构、意向动作、代码检查、快速文档、内嵌提示、代码层级、差异比较和图表等多项语言功能。
 - **信息增强提示**：通过快速文档和内嵌提示，直观显示各类关键信息，包括本地化文本、图片、作用域和参数等。
 - **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、复杂表达式、内联脚本和定义注入等。
 - **目录检测**：自动检测游戏目录与模组目录。
