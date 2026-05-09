@@ -76,7 +76,9 @@ private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRes
     override fun resolve(config: CwtPropertyConfig): CwtMacroConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtMacroConfig? {
-        val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized() ?: return null
+        val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized()
+            ?: config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() // stay compatible
+            ?: return null
         val propElements = config.properties.orEmpty()
         val propGroup = propElements.groupBy { it.key }
         val modeConfigs = propGroup.getOne("modes")?.let { prop ->
