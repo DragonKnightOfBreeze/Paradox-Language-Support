@@ -29,7 +29,7 @@ import kotlin.io.path.relativeTo
 import kotlin.io.path.walk
 
 /**
- * TODO 2.1.8 不太可行：存在路径引用和动态引用。
+ * TODO 2.1.8+ 不太可行：存在路径引用和动态引用。
  */
 @Ignore
 @RunWith(JUnit4::class)
