@@ -62,12 +62,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObject"), ParadoxScriptAttributesKeys.DATABASE_OBJECT),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG),
-        AttributesDescriptor(PlsBundle.message("script.displayName.tag.typeKeyPrefix"), ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX),
-
         AttributesDescriptor(PlsBundle.message("script.displayName.macro"), ParadoxScriptAttributesKeys.MACRO),
-        AttributesDescriptor(PlsBundle.message("script.displayName.macro.inlineScript"), ParadoxScriptAttributesKeys.MACRO_INLINE_SCRIPT),
-        AttributesDescriptor(PlsBundle.message("script.displayName.macro.definitionInjection"), ParadoxScriptAttributesKeys.MACRO_DEFINITION_INJECTION),
-
         AttributesDescriptor(PlsBundle.message("script.displayName.pathReference"), ParadoxScriptAttributesKeys.PATH_REFERENCE),
     )
 
@@ -105,12 +100,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "DATABASE_OBJECT" to ParadoxScriptAttributesKeys.DATABASE_OBJECT,
 
         "TAG" to ParadoxScriptAttributesKeys.TAG,
-        "TAG_TYPE_KEY_PREFIX" to ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX,
-
         "MACRO" to ParadoxScriptAttributesKeys.MACRO,
-        "MACRO_INLINE_SCRIPT" to ParadoxScriptAttributesKeys.MACRO_INLINE_SCRIPT,
-        "MACRO_DEFINITION_INJECTION" to ParadoxScriptAttributesKeys.MACRO_DEFINITION_INJECTION,
-
         "PATH_REFERENCE" to ParadoxScriptAttributesKeys.PATH_REFERENCE,
     )
 

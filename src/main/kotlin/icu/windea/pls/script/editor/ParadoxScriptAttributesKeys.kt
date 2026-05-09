@@ -57,12 +57,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField val DATABASE_OBJECT = create("PARADOX_SCRIPT.DATABASE_OBJECT")
 
     @JvmField val TAG = create("PARADOX_SCRIPT.TAG", DefaultLanguageHighlighterColors.METADATA)
-    @JvmField val TAG_TYPE_KEY_PREFIX = create("PARADOX_SCRIPT.TAG.TYPE_KEY_PREFIX", TAG)
-
     @JvmField val MACRO = create("PARADOX_SCRIPT.MACRO", DefaultLanguageHighlighterColors.KEYWORD) // org.rust.MACRO
-    @JvmField val MACRO_INLINE_SCRIPT = create("PARADOX_SCRIPT.MACRO.INLINE_SCRIPT", MACRO)
-    @JvmField val MACRO_DEFINITION_INJECTION = create("PARADOX_SCRIPT.MACRO.DEFINITION_INJECTION", MACRO)
-
     @JvmField val PATH_REFERENCE = create("PARADOX_SCRIPT.PATH_REFERENCE", CodeInsightColors.INACTIVE_HYPERLINK_ATTRIBUTES)
 
     private fun create(name: String, fallback: TextAttributesKey? = null): TextAttributesKey {

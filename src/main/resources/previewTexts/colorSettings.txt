@@ -61,10 +61,10 @@ complex_expressions = {
 }
 
 <TAG>tag</TAG>
-<TAG_TYPE_KEY_PREFIX>type_key_prefix</TAG_TYPE_KEY_PREFIX> some_definition = { }
+<TAG>type_key_prefix</TAG> some_definition = { }
 
-<MACRO_INLINE_SCRIPT>inline_script</MACRO_INLINE_SCRIPT> = <PATH_REFERENCE>some/inline_script</PATH_REFERENCE>
-<MACRO_DEFINITION_INJECTION>INJECT</MACRO_DEFINITION_INJECTION><MARKER>:</MARKER><DEFINITION_REFERENCE>some_definition</DEFINITION_REFERENCE> = {}
+<MACRO>inline_script</MACRO> = <PATH_REFERENCE>some/inline_script</PATH_REFERENCE>
+<MACRO>INJECT</MACRO><MARKER>:</MARKER><DEFINITION_REFERENCE>some_definition</DEFINITION_REFERENCE> = {}
 
 path = <PATH_REFERENCE>some/image.dds</PATH_REFERENCE>
 path = <PATH_REFERENCE>some/icon</PATH_REFERENCE>
