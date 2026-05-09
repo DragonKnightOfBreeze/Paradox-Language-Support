@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -10,10 +9,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxCommandFieldValueNode(
     override val text: String,

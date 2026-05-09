@@ -9,12 +9,12 @@ import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从官方启动器的 JSON 配置文件导入模组信息。

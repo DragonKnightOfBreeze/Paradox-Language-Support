@@ -5,7 +5,7 @@ import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import org.intellij.lang.annotations.Language
-import java.util.Locale
+import java.util.*
 
 object Prompts {
     private val engine = PromptTemplateEngine()

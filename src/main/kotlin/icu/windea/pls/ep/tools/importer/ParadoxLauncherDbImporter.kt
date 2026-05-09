@@ -12,6 +12,7 @@ import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.analysis.ParadoxMetadataUtil
 import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import org.ktorm.database.Database
@@ -24,7 +25,6 @@ import org.ktorm.entity.toList
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.notExists
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 从官方启动器的数据库文件导入模组信息。

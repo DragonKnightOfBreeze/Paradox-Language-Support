@@ -2,11 +2,6 @@ package icu.windea.pls.model
 
 import icu.windea.pls.core.optimizer.Optimizer
 import icu.windea.pls.core.optimizer.OptimizerFactory
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.CwtSeparatorType
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxDefinitionSource
-import icu.windea.pls.model.ParadoxLocalisationType
 
 fun OptimizerFactory.forCwtType() = get(CwtTypeOptimizer)
 fun OptimizerFactory.forCwtSeparatorType() = get(CwtSeparatorTypeOptimizer)

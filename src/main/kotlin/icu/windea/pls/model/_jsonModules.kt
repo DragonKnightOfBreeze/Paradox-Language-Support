@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.SerializerProvider
 import icu.windea.pls.core.data.JsonModuleFactory
 import icu.windea.pls.core.data.JsonModuleWithType
-import icu.windea.pls.model.ParadoxGameType
 
 fun JsonModuleFactory.forParadoxGameTypeById() = get(ParadoxGameTypeByIdJsonModule())
 

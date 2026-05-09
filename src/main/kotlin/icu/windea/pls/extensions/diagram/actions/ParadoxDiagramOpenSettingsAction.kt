@@ -5,9 +5,9 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.core.options.OptionsService
 import icu.windea.pls.extensions.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.extensions.diagram.settings.PlsDiagramSettingsConfigurable
-import icu.windea.pls.core.options.OptionsService
 
 // com.intellij.uml.core.actions.DiagramOpenSettingsAction
 

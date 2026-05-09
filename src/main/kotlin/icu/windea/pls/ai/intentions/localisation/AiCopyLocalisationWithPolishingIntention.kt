@@ -14,11 +14,11 @@ import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
-import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase

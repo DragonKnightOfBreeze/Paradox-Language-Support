@@ -6,8 +6,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.manipulation.CwtConfigCopyService
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.values.singletonList

@@ -4,16 +4,12 @@ import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.editor
 import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.constraints.ParadoxPathConstraint
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前定值变量的包括自身在内的拥有相同命名空间和名称的定值变量。

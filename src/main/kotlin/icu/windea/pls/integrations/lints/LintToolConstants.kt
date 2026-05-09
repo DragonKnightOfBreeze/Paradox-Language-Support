@@ -1,8 +1,8 @@
 package icu.windea.pls.integrations.lints
 
 import icu.windea.pls.integrations.PlsIntegrationsBundle
-import org.cef.OS
 import icu.windea.pls.model.ParadoxGameType
+import org.cef.OS
 
 object LintToolConstants {
     object Tiger {

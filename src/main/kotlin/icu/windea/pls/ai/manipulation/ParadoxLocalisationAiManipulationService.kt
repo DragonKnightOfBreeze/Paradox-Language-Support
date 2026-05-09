@@ -10,7 +10,6 @@ import com.intellij.openapi.ui.popup.util.MinimizeButton
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest

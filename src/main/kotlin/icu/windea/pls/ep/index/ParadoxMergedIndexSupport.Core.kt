@@ -19,6 +19,7 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionCandidateInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
@@ -29,7 +30,6 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput
-import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxDynamicValueMergedIndexSupport : ParadoxMergedIndexSupport<ParadoxDynamicValueIndexInfo> {
     private val constraint = ParadoxResolveConstraint.DynamicValue

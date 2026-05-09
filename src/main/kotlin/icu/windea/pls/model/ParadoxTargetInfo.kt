@@ -14,7 +14,6 @@ import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.model.ParadoxLocalisationType
 
 sealed class ParadoxTargetInfo {
     abstract val name: String

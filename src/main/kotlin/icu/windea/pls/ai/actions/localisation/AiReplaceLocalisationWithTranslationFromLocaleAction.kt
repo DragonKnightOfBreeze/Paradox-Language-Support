@@ -13,11 +13,11 @@ import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiBundle
+import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
-import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.withErrorRef
