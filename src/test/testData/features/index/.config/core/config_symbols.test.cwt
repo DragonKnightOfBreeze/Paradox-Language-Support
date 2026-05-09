@@ -34,7 +34,7 @@ alias[ref_alias_value:value[dynamic_in_alias]] = scalar
 
 alias[alias_no_colon] = scalar
 
-directive[test_directive] = scalar
+macro[test_macro] = scalar
 
 links = {
     test_link = {

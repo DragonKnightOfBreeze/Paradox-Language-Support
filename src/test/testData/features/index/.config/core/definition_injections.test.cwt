@@ -1,4 +1,4 @@
-directive[definition_injection] = {
+macro[definition_injection] = {
     modes = {
         INJECT
         REPLACE

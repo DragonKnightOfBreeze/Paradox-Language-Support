@@ -854,14 +854,14 @@ database_object_types = {
 }
 ```
 
-#### 指令规则 {#config-directive}
+#### 宏规则 {#config-macro}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-指令规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
+宏规则用于描述脚本文件中区别于一般结构的特殊表达式和结构，并提供额外的提示和验证元数据。这些表达式和结构会改变游戏运行时脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。不同的指令可以拥有不同的规则结构。
 
 目前涉及的指令包括：
 
@@ -870,12 +870,12 @@ database_object_types = {
 
 路径定位：
 
-- `directive[{name}]`。其中 `{name}` 匹配规则名称。
+- `macro[{name}]`。其中 `{name}` 匹配规则名称。
 
 示例：
 
 ```cwt
-directive[inline_script] = {
+macro[inline_script] = {
     # ...
 }
 ```

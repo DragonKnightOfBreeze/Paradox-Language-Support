@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
@@ -138,16 +138,16 @@ object CwtConfigManipulator {
     // region Inline Methods
 
     @Optimized
-    fun inline(directiveConfig: CwtDirectiveConfig): CwtPropertyConfig {
-        val other = directiveConfig.config
+    fun inline(macroConfig: CwtMacroConfig): CwtPropertyConfig {
+        val other = macroConfig.config
         val inlined = CwtPropertyConfig.copy(
             sourceConfig = other,
-            keyExpression = CwtDataExpression.resolveKey(directiveConfig.name),
+            keyExpression = CwtDataExpression.resolveKey(macroConfig.name),
             configs = deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization
         mergeOptionData(inlined.optionData, other.optionData) // merge option data
-        inlined.inlineConfig = directiveConfig
+        inlined.inlineConfig = macroConfig
         return inlined
     }
 

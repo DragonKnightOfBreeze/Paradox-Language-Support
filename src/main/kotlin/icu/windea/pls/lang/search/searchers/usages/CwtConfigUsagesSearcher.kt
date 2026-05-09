@@ -23,7 +23,7 @@ import icu.windea.pls.cwt.psi.stringValue
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     // - 对于别名规则 `alias[x:y]`，其在脚本文件中匹配的属性名是 `y`，需要特殊处理
-    // - 对于指令规则 `directive[x]`，其在脚本文件中匹配的属性名可能是 `x`，需要特殊处理
+    // - 对于宏规则 `macro[x]`，其在脚本文件中匹配的属性名可能是 `x`，需要特殊处理
     // - 对于连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
@@ -49,9 +49,9 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
                 val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")?.orNull()
                 if (aliasSubName != null) extraWords.add(aliasSubName)
             }
-            CwtConfigTypes.Directive -> {
-                val directiveName = target.name.removeSurroundingOrNull("directive[", "]")?.orNull()
-                if (directiveName != null) extraWords.add(directiveName)
+            CwtConfigTypes.Macro -> {
+                val macroName = target.name.removeSurroundingOrNull("macro[", "]")?.orNull()
+                if (macroName != null) extraWords.add(macroName)
             }
             CwtConfigTypes.Link, CwtConfigTypes.LocalisationLink -> {
                 val prefixProperty = target.propertyValue<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }

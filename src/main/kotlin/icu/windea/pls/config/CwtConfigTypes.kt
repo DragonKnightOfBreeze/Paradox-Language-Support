@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
 import icu.windea.pls.config.config.delegated.CwtDefineVariableConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -207,17 +207,17 @@ object CwtConfigTypes {
         description(PlsBundle.message("config.description.alias"))
     }
     /**
-     * 指令规则。
+     * 宏规则。
      *
      * 路径定位：
-     * - `directive[{name}]`。其中 `{name}` 匹配规则名称。
+     * - `macro[{name}]`。其中 `{name}` 匹配规则名称。
      *
-     * @see CwtDirectiveConfig
+     * @see CwtMacroConfig
      */
-    val Directive = CwtConfigType.builder("Directive").build {
-        icon(PlsIcons.Configs.Directive)
-        prefix("(directive)")
-        description(PlsBundle.message("config.description.directive"))
+    val Macro = CwtConfigType.builder("Macro").build {
+        icon(PlsIcons.Configs.Macro)
+        prefix("(macro)")
+        description(PlsBundle.message("config.description.macro"))
     }
     /**
      * 链接规则。
@@ -381,7 +381,7 @@ object CwtConfigTypes {
      * 语言区域规则。
      *
      * 路径定位：
-     * - `locales/{id}`。其中 `{name}` 匹配语言环境 ID。
+     * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
      *
      * @see CwtLocaleConfig
      */

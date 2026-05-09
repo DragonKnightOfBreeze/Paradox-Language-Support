@@ -64,9 +64,9 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG),
         AttributesDescriptor(PlsBundle.message("script.displayName.tag.typeKeyPrefix"), ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX),
 
-        AttributesDescriptor(PlsBundle.message("script.displayName.directive"), ParadoxScriptAttributesKeys.DIRECTIVE),
-        AttributesDescriptor(PlsBundle.message("script.displayName.directive.inlineScript"), ParadoxScriptAttributesKeys.DIRECTIVE_INLINE_SCRIPT),
-        AttributesDescriptor(PlsBundle.message("script.displayName.directive.definitionInjection"), ParadoxScriptAttributesKeys.DIRECTIVE_DEFINITION_INJECTION),
+        AttributesDescriptor(PlsBundle.message("script.displayName.macro"), ParadoxScriptAttributesKeys.MACRO),
+        AttributesDescriptor(PlsBundle.message("script.displayName.macro.inlineScript"), ParadoxScriptAttributesKeys.MACRO_INLINE_SCRIPT),
+        AttributesDescriptor(PlsBundle.message("script.displayName.macro.definitionInjection"), ParadoxScriptAttributesKeys.MACRO_DEFINITION_INJECTION),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.pathReference"), ParadoxScriptAttributesKeys.PATH_REFERENCE),
     )
@@ -107,9 +107,9 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "TAG" to ParadoxScriptAttributesKeys.TAG,
         "TAG_TYPE_KEY_PREFIX" to ParadoxScriptAttributesKeys.TAG_TYPE_KEY_PREFIX,
 
-        "DIRECTIVE" to ParadoxScriptAttributesKeys.DIRECTIVE,
-        "DIRECTIVE_INLINE_SCRIPT" to ParadoxScriptAttributesKeys.DIRECTIVE_INLINE_SCRIPT,
-        "DIRECTIVE_DEFINITION_INJECTION" to ParadoxScriptAttributesKeys.DIRECTIVE_DEFINITION_INJECTION,
+        "MACRO" to ParadoxScriptAttributesKeys.MACRO,
+        "MACRO_INLINE_SCRIPT" to ParadoxScriptAttributesKeys.MACRO_INLINE_SCRIPT,
+        "MACRO_DEFINITION_INJECTION" to ParadoxScriptAttributesKeys.MACRO_DEFINITION_INJECTION,
 
         "PATH_REFERENCE" to ParadoxScriptAttributesKeys.PATH_REFERENCE,
     )

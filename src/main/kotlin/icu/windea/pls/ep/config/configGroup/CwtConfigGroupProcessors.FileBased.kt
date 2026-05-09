@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtDefineNamespaceConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -200,20 +200,20 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         initializer.types[typeConfig.name] = typeConfig
                     }
                 }
-                key == "defines" -> {
-                    val configs = property.properties ?: continue
-                    for (config in configs) {
-                        val defineNamespaceConfig = CwtDefineNamespaceConfig.resolve(config) ?: continue
-                        if (CwtConfigService.filter(defineNamespaceConfig)) continue
-                        initializer.defineNamespaces[defineNamespaceConfig.name] = defineNamespaceConfig
-                    }
-                }
                 key == "rows" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val rowConfig = CwtRowConfig.resolve(config) ?: continue
                         if (CwtConfigService.filter(rowConfig)) continue
                         initializer.rows[rowConfig.name] = rowConfig
+                    }
+                }
+                key == "defines" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        val defineNamespaceConfig = CwtDefineNamespaceConfig.resolve(config) ?: continue
+                        if (CwtConfigService.filter(defineNamespaceConfig)) continue
+                        initializer.defineNamespaces[defineNamespaceConfig.name] = defineNamespaceConfig
                     }
                 }
                 key == "enums" -> {
@@ -402,9 +402,9 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                         initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
                     }
                     run {
-                        val directiveConfig = CwtDirectiveConfig.resolve(property) ?: return@run
-                        if (CwtConfigService.filter(directiveConfig)) return@run
-                        initializer.directives += directiveConfig
+                        val macroConfig = CwtMacroConfig.resolve(property) ?: return@run
+                        if (CwtConfigService.filter(macroConfig)) return@run
+                        initializer.macros += macroConfig
                     }
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run

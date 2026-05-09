@@ -576,7 +576,7 @@ object CwtConfigCompletionManager {
                         val finalConfigs = configGroup.aliasGroups[aliasName] ?: return true
                         finalConfigs.process { (n, c) -> processLookupElement(n, c.singleOrNull()) }
                     }
-                    "directive" -> {
+                    "macro" -> {
                         true // no completion yet
                     }
                     else -> true

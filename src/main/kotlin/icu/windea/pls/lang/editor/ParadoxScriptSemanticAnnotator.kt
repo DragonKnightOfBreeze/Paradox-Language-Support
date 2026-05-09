@@ -127,7 +127,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         val name = element.name
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val r1 = TextRange.from(offset, name.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.MACRO).create()
         return true
     }
 
@@ -142,7 +142,7 @@ class ParadoxScriptSemanticAnnotator : Annotator {
         if (mode.isNullOrEmpty()) return false
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val modeRange = TextRange.from(offset, mode.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.DIRECTIVE).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.MACRO).create()
         val markerRange = TextRange.from(offset + mode.length, 1)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.MARKER).create()
 

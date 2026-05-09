@@ -76,7 +76,7 @@ object PlsIcons {
         @JvmField val DynamicCommandField = getIcon("/icons/nodes/semantic/dynamicCommandField.svg")
         @JvmField val DatabaseObjectType = getIcon("/icons/nodes/semantic/databaseObjectType.svg")
         @JvmField val Tag = getIcon("/icons/nodes/semantic/tag.svg")
-        @JvmField val Directive = getIcon("/icons/nodes/semantic/directive.svg")
+        @JvmField val Macro = getIcon("/icons/nodes/semantic/macro.svg")
         @JvmField val PathReference = AllIcons.FileTypes.Any_type
 
         @JvmField val EventNamespace = getIcon("/icons/nodes/semantic/eventNamespace.svg")
@@ -100,7 +100,7 @@ object PlsIcons {
 
         @JvmStatic
         fun PathReference(pathExpression: CwtDataExpression?) = when (pathExpression) {
-            ParadoxInlineScriptManager.inlineScriptPathExpression -> Directive
+            ParadoxInlineScriptManager.inlineScriptPathExpression -> Macro
             else -> PathReference
         }
     }
@@ -116,7 +116,7 @@ object PlsIcons {
         @JvmField val DynamicValueType = getIcon("/icons/configs/dynamicValueType.svg")
         @JvmField val DynamicValue = getIcon("/icons/configs/dynamicValue.svg")
         @JvmField val Alias = getIcon("/icons/configs/alias.svg")
-        @JvmField val Directive = getIcon("/icons/configs/directive.svg")
+        @JvmField val Macro = getIcon("/icons/configs/macro.svg")
         @JvmField val Link = getIcon("/icons/configs/link.svg")
         @JvmField val LocalisationPromotion = getIcon("/icons/configs/localisationPromotion.svg")
         @JvmField val LocalisationCommand = getIcon("/icons/configs/localisationCommand.svg")

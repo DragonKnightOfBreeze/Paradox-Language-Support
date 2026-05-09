@@ -52,7 +52,7 @@
           "dynamicCommandField.svg": "icons/nodes/semantic/dynamicCommandField.svg",
           "databaseObjectType.svg":"icons/nodes/semantic/databaseObjectType.svg",
           "tag.svg": "icons/nodes/semantic/tag.svg",
-          "directive.svg":"icons/nodes/semantic/directive.svg",
+          "macro.svg":"icons/nodes/semantic/macro.svg",
           "eventNamespace.svg": "icons/nodes/semantic/eventNamespace.svg",
           "event.svg":"icons/nodes/semantic/event.svg"
         }
@@ -68,7 +68,7 @@
         "dynamicValueType.svg": "icons/configs/dynamicValueType.svg",
         "dynamicValue.svg": "icons/configs/dynamicValue.svg",
         "alias.svg": "icons/configs/alias.svg",
-        "directive.svg": "icons/configs/directive.svg",
+        "macro.svg": "icons/configs/macro.svg",
         "link.svg": "icons/configs/link.svg",
         "localisationPromotion.svg": "icons/configs/localisationPromotion.svg",
         "localisationCommand.svg": "icons/configs/localisationCommand.svg",

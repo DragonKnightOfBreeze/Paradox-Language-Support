@@ -59,7 +59,7 @@ class CwtConfigSymbolIndexTest : BasePlatformTestCase() {
         assertSymbol(scope, CwtConfigTypes.Effect.id, "effect_const", ReadWriteAccess.Write, ParadoxGameType.Core)
         assertNoSymbol(scope, CwtConfigTypes.Trigger.id, "enum[not_const]")
         assertSymbol(scope, CwtConfigTypes.Alias.id, "alias_no_colon", ReadWriteAccess.Write, ParadoxGameType.Core)
-        assertSymbol(scope, CwtConfigTypes.Directive.id, "test_directive", ReadWriteAccess.Write, ParadoxGameType.Core)
+        assertSymbol(scope, CwtConfigTypes.Macro.id, "test_macro", ReadWriteAccess.Write, ParadoxGameType.Core)
     }
 
     // endregion

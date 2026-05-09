@@ -176,10 +176,10 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             computeLinksModel(initializer, initializer.localisationLinksModel, initializer.localisationLinks.values)
         }
 
-        // compute `directivesModel`
+        // compute `macrosModel`
         run {
             checkCanceled()
-            computeDirectivesModel(initializer)
+            computeMacrosModel(initializer)
         }
 
         // compute `definitionTypesModel`
@@ -236,10 +236,10 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
         }
     }
 
-    private fun computeDirectivesModel(initializer: CwtConfigGroupInitializer) {
-        with(initializer.directivesModel) {
-            val directives = initializer.directives
-            directives.forEach { c ->
+    private fun computeMacrosModel(initializer: CwtConfigGroupInitializer) {
+        with(initializer.macrosModel) {
+            val macros = initializer.macros
+            macros.forEach { c ->
                 when (c.name) {
                     "inline_script" -> inlineScript += c
                     "definition_injection" -> definitionInjection = c

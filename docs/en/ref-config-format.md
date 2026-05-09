@@ -848,14 +848,14 @@ database_object_types = {
 }
 ```
 
-#### Directive Config {#config-directive}
+#### Macro Config {#config-macro}
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDirectiveConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 <!-- @see cwt/cwtools-vic3-config/config/definition_injections.cwt -->
 <!-- @see cwt/cwtools-eu5-config/config/definition_injections.cwt -->
 
-Directive configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
+Macro configs describe special expressions and structures in script files that differ from regular structures, and provide additional hints and validation metadata. These expressions and structures alter the behavior of the game's runtime script parser, thereby modifying, extending, or reusing existing script fragments. Different directives can have different config structures.
 
 Currently involved directives include:
 
@@ -864,12 +864,12 @@ Currently involved directives include:
 
 Path location:
 
-- `directive[{name}]`, where `{name}` is the config name.
+- `macro[{name}]`, where `{name}` is the config name.
 
 Example:
 
 ```cwt
-directive[inline_script] = {
+macro[inline_script] = {
     # ...
 }
 ```

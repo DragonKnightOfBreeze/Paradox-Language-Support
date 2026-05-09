@@ -174,7 +174,7 @@ object CwtConfigService {
         val length = configPath.length
         val s0 = configPath.get(0)
 
-        // depth 1: single_alias[*], alias[*], directive[*]
+        // depth 1: single_alias[*], alias[*], macro[*]
         if (length == 1 && isProperty) {
             return when {
                 s0.surroundsWith("single_alias[", "]") -> CwtConfigTypes.SingleAlias
@@ -187,7 +187,7 @@ object CwtConfigService {
                         else -> CwtConfigTypes.Alias
                     }
                 }
-                s0.surroundsWith("directive[", "]") -> CwtConfigTypes.Directive
+                s0.surroundsWith("macro[", "]") -> CwtConfigTypes.Macro
                 else -> null
             }
         }
@@ -285,7 +285,7 @@ object CwtConfigService {
             CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
-            CwtConfigTypes.Directive -> text.removeSurroundingOrNull("directive[", "]")
+            CwtConfigTypes.Macro -> text.removeSurroundingOrNull("macro[", "]")
             else -> text
         }?.orNull()
     }

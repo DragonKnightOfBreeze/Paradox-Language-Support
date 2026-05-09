@@ -43,7 +43,6 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val colorType by registerKey<String?>(this)
         val fileExtensions by registerKey<Set<String>?>(this)
         val inject by registerKey<String?>(this)
-
         val required by registerKey(this, false)
         val primary by registerKey(this, false)
         val inherit by registerKey(this, false)
@@ -80,7 +79,6 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     final override var colorType by Keys.colorType
     final override var fileExtensions by Keys.fileExtensions
     final override var inject by Keys.inject
-
     final override var required by Keys.required
     final override var primary by Keys.primary
     final override var inherit by Keys.inherit

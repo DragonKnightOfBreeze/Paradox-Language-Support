@@ -36,7 +36,7 @@ object ParadoxDefinitionInjectionService {
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val config = configGroup.directivesModel.definitionInjection ?: return null
+        val config = configGroup.macrosModel.definitionInjection ?: return null
         val modeConfig = config.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
         run {

@@ -15,7 +15,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
 import icu.windea.pls.config.configGroup.scriptValueModificationTracker
@@ -471,7 +471,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
         // NOTE 2.1.0 这里目前不验证游戏类型
-        var inlineConfig: CwtDirectiveConfig? = null
+        var inlineConfig: CwtMacroConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1
         when (from) {
@@ -515,7 +515,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -564,7 +564,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
@@ -591,7 +591,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val inlineScriptExpression = ParadoxInlineScriptService.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.Directive
+        val contextIcon = PlsIcons.Nodes.Macro
         val contextKey = "inline_script@$inlineScriptExpression"
         val readWriteAccess = ReadWriteAccess.Write
         val gameType = config.configGroup.gameType

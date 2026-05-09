@@ -85,7 +85,7 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`.
 
 ### Config-driven integration tests (config groups + context injection)
 
-The plugin is config-driven. Many features (e.g. directives like `inline_script`, definition injection modes, type inference) depend on **CWT config groups** and a simulated “game/mod context”.
+The plugin is config-driven. Many features (e.g. type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
 
 Scope extensions exist to make these tests deterministic:
 
@@ -215,7 +215,7 @@ Here are some common terms:
   - event → 事件
   - event namespace → 事件命名空间
   - sprite → 精灵
-- directive → 指令
+- macro → 宏
   - inline script → 内联脚本
   - definition injection → 定义注入
 

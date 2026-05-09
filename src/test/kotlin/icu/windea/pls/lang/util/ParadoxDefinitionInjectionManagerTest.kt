@@ -257,7 +257,7 @@ class ParadoxDefinitionInjectionManagerTest : BasePlatformTestCase() {
 
     @Test
     fun testIsSupported() {
-        // 我们在测试配置中定义了 directive[definition_injection]，所以 Stellaris 应被支持
+        // 我们在测试配置中定义了 macro[definition_injection]，所以 Stellaris 应被支持
         Assert.assertTrue(ParadoxDefinitionInjectionManager.isSupported(gameType))
     }
 

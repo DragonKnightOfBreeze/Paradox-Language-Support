@@ -16,7 +16,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.manipulators.CwtConfigManipulator
@@ -121,7 +121,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
         config is CwtSingleAliasConfig -> config.config
-        config is CwtDirectiveConfig -> config.config
+        config is CwtMacroConfig -> config.config
         else -> null
     }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 

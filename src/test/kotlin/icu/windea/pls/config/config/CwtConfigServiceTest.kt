@@ -225,10 +225,10 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveConfigType_directive() {
+    fun testResolveConfigType_macro() {
         assertResolveConfigType("""
-            <caret>directive[my_dir] = something
-        """.trimIndent(), CwtConfigTypes.Directive)
+            <caret>macro[my_dir] = something
+        """.trimIndent(), CwtConfigTypes.Macro)
     }
 
     @Test
@@ -491,8 +491,8 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testResolveNameByConfigType_directive() {
-        assertEquals("my_dir", CwtConfigService.resolveNameByConfigType("directive[my_dir]", CwtConfigTypes.Directive))
+    fun testResolveNameByConfigType_macro() {
+        assertEquals("my_dir", CwtConfigService.resolveNameByConfigType("macro[my_dir]", CwtConfigTypes.Macro))
     }
 
     @Test

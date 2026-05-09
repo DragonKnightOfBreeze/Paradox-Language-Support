@@ -21,18 +21,18 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
- * 指令规则。
+ * 宏规则。
  *
  * 用于描述脚本文件中区别于一般抽象的特殊的表达式和结构，并提供额外的用于提示和验证的元数据。
  * 这些表达式和结构会改变游戏运行时的脚本解析器的行为，从而改变、扩展或复用已有的脚本片段。
- * 不同的指令可以拥有不同的规则结构。
+ * 不同的宏可以拥有不同的规则结构。
  *
  * 目前涉及的语言特性：
  * - **内联脚本（inline_script）**：（Stellaris）会在解析阶段被替换为目标文件的内容，且可以指定参数。
  * - **定义注入（definition_injection）**：（VIC3 / EU5）会在解析阶段对目标定义的声明进行注入或替换，且可以指定模式以决定具体行为。
  *
  * 路径定位：
- * - `directive[{name}]`。其中 `{name}` 匹配规则名称。
+ * - `macro[{name}]`。其中 `{name}` 匹配规则名称。
  *
  * ### CWTools 兼容性
  *
@@ -41,15 +41,15 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * ### 示例
  *
  * ```cwt
- * directive[inline_script] = {
+ * macro[inline_script] = {
  *     # ...
  * }
  * ```
  *
  * @property name 规则名称。
  */
-interface CwtDirectiveConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
-    @FromName("directive[$]")
+interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
+    @FromName("macro[$]")
     val name: String
     @FromMember("modes: string[]")
     val modeConfigs: Map<@CaseInsensitive String, CwtValueConfig>
@@ -62,21 +62,21 @@ interface CwtDirectiveConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig
 
     interface Resolver {
         /** 由属性规则解析为声明规则。 */
-        fun resolve(config: CwtPropertyConfig): CwtDirectiveConfig?
+        fun resolve(config: CwtPropertyConfig): CwtMacroConfig?
     }
 
-    companion object : Resolver by CwtDirectiveConfigResolverImpl()
+    companion object : Resolver by CwtMacroConfigResolverImpl()
 }
 
 // region Implementations
 
-private class CwtDirectiveConfigResolverImpl : CwtDirectiveConfig.Resolver, CwtConfigResolverScope {
+private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigResolverScope {
     private val logger = thisLogger()
 
-    override fun resolve(config: CwtPropertyConfig): CwtDirectiveConfig? = doResolve(config)
+    override fun resolve(config: CwtPropertyConfig): CwtMacroConfig? = doResolve(config)
 
-    private fun doResolve(config: CwtPropertyConfig): CwtDirectiveConfig? {
-        val name = config.key.removeSurroundingOrNull("directive[", "]")?.orNull()?.optimized() ?: return null
+    private fun doResolve(config: CwtPropertyConfig): CwtMacroConfig? {
+        val name = config.key.removeSurroundingOrNull("macro[", "]")?.orNull()?.optimized() ?: return null
         val propElements = config.properties.orEmpty()
         val propGroup = propElements.groupBy { it.key }
         val modeConfigs = propGroup.getOne("modes")?.let { prop ->
@@ -91,20 +91,20 @@ private class CwtDirectiveConfigResolverImpl : CwtDirectiveConfig.Resolver, CwtC
         val createModes = propGroup.getOne("create_modes")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
         }?.optimized().orEmpty()
-        logger.debug { "Resolved directive config (name: $name).".withLocationPrefix(config) }
-        return CwtDirectiveConfigImpl(config, name, modeConfigs, relaxModes, replaceModes, createModes)
+        logger.debug { "Resolved macro config (name: $name).".withLocationPrefix(config) }
+        return CwtMacroConfigImpl(config, name, modeConfigs, relaxModes, replaceModes, createModes)
     }
 }
 
-private class CwtDirectiveConfigImpl(
+private class CwtMacroConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val modeConfigs: Map<String, CwtValueConfig>,
     override val relaxModes: Set<String>,
     override val replaceModes: Set<String>,
     override val createModes: Set<String>,
-) : UserDataHolderBase(), CwtDirectiveConfig {
-    override fun toString() = "CwtDirectiveConfigImpl(name='$name')"
+) : UserDataHolderBase(), CwtMacroConfig {
+    override fun toString() = "CwtMacroConfigImpl(name='$name')"
 }
 
 // endregion

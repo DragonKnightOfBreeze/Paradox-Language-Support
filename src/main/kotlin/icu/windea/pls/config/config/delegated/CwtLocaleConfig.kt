@@ -24,7 +24,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
  * 以提供更恰当的 UI 展示与提示信息。
  *
  * 路径定位：
- * - `locales/{id}`。其中 `{name}` 匹配语言环境 ID。
+ * - `locales/{id}`。其中 `{id}` 匹配语言环境 ID。
  *
  * ### CWTools 兼容性
  *

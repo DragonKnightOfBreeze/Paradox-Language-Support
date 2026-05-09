@@ -49,7 +49,7 @@ object ParadoxDefinitionInjectionManager {
     fun isSupported(gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val config = configGroup.directivesModel.definitionInjection
+        val config = configGroup.macrosModel.definitionInjection
         if (config == null) return false
         return true
     }
@@ -61,7 +61,7 @@ object ParadoxDefinitionInjectionManager {
         if (gameType == null) return false
         if (mode.isEmpty()) return false
         val configGroup = PlsFacade.getConfigGroup(gameType)
-        val config = configGroup.directivesModel.definitionInjection
+        val config = configGroup.macrosModel.definitionInjection
         if (config == null) return false
         if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写
         return true
@@ -171,7 +171,7 @@ object ParadoxDefinitionInjectionManager {
     fun isRelaxMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.directivesModel.definitionInjection ?: return false
+        val config = configGroup.macrosModel.definitionInjection ?: return false
         return mode in config.relaxModes
     }
 
@@ -181,7 +181,7 @@ object ParadoxDefinitionInjectionManager {
     fun isReplaceMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.directivesModel.definitionInjection ?: return false
+        val config = configGroup.macrosModel.definitionInjection ?: return false
         return mode in config.replaceModes
     }
 
@@ -191,7 +191,7 @@ object ParadoxDefinitionInjectionManager {
     fun isCreateMode(definitionInjectionInfo: ParadoxDefinitionInjectionInfo): Boolean {
         val mode = definitionInjectionInfo.mode
         val configGroup = definitionInjectionInfo.configGroup
-        val config = configGroup.directivesModel.definitionInjection ?: return false
+        val config = configGroup.macrosModel.definitionInjection ?: return false
         return mode in config.createModes
     }
 
@@ -199,7 +199,7 @@ object ParadoxDefinitionInjectionManager {
      * 检查指定模式是否应被识别为定义声明（可以被索引和搜索）。
      */
     fun isCreateMode(mode: String, configGroup: CwtConfigGroup): Boolean {
-        val config = configGroup.directivesModel.definitionInjection ?: return false
+        val config = configGroup.macrosModel.definitionInjection ?: return false
         return mode in config.createModes
     }
 

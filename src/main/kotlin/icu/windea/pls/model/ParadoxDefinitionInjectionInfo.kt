@@ -4,7 +4,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtDirectiveConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.extended.CwtExtendedDefinitionConfig
@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  *
  * @see CwtTypeConfig
  * @see CwtDeclarationConfig
- * @see CwtDirectiveConfig
+ * @see CwtMacroConfig
  * @see CwtExtendedDefinitionConfig
  */
 data class ParadoxDefinitionInjectionInfo(

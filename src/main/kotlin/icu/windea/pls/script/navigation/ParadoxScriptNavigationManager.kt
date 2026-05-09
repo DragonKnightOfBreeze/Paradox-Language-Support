@@ -67,12 +67,12 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 作为内联脚本用法的属性
                     if (!ParadoxPsiMatcher.isInlineScriptUsage(element, selectGameType(element))) return@run
-                    return PlsIcons.Nodes.Directive
+                    return PlsIcons.Nodes.Macro
                 }
                 run {
                     // 作为定义注入的属性
                     if (!ParadoxPsiMatcher.isDefinitionInjectionUsage(element, selectGameType(element))) return@run
-                    return PlsIcons.Nodes.Directive
+                    return PlsIcons.Nodes.Macro
                 }
                 run {
                     // 作为定义的属性

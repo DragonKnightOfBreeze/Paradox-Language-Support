@@ -799,11 +799,11 @@ object ParadoxCompletionManager {
 
     // endregion
 
-    // region Directive Completion Methods
+    // region Macro Completion Methods
 
     fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val configs = configGroup.directivesModel.inlineScript.orNull() ?: return
+        val configs = configGroup.macrosModel.inlineScript.orNull() ?: return
         for (config in configs) {
             ProgressManager.checkCanceled()
             context.config = config
@@ -812,7 +812,7 @@ object ParadoxCompletionManager {
             val element = config.pointer.element ?: continue
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.Directive)
+                .withIcon(PlsIcons.Nodes.Macro)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(PlsCompletionPriorities.constant)
@@ -823,7 +823,7 @@ object ParadoxCompletionManager {
 
     fun completeDefinitionInjectionExpression(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        val config = configGroup.directivesModel.definitionInjection ?: return
+        val config = configGroup.macrosModel.definitionInjection ?: return
         val element = context.contextElement.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
         val file = context.parameters?.originalFile ?: return
         val fileInfo = file.fileInfo ?: return
@@ -846,7 +846,7 @@ object ParadoxCompletionManager {
                 val typeFile = modeConfig.pointer.containingFile
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withBoldness(true)
-                    .withIcon(PlsIcons.Nodes.Directive)
+                    .withIcon(PlsIcons.Nodes.Macro)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withCaseSensitivity(false)
                     .withInsertHandler(PlsInsertHandlers.addColon())
