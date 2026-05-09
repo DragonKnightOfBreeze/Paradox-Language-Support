@@ -12,6 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.test.AssumePredicates
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +25,11 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() = AssumePredicates.includeAi()
+
+    @After
+    fun doTearDown() {
+        System.clearProperty("pls.ai.providerType")
+    }
 
     @Test
     fun testOpenAi() {

@@ -15,7 +15,7 @@ import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.model.toLineFlow
 import icu.windea.pls.ai.providers.ChatModelManager
-import icu.windea.pls.ai.util.PlsPrompts
+import icu.windea.pls.ai.prompts.Prompts
 import icu.windea.pls.core.coroutines.chunked
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
@@ -61,13 +61,13 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
     }
 
     private fun getSystemMessage(request: PolishLocalisationAiRequest): SystemMessage {
-        val text = PlsPrompts.polishLocalisation(request)
+        val text = Prompts.polishLocalisation(request)
         logger.debug { "${request.logPrefix} System message: \n$text" }
         return SystemMessage.from(text)
     }
 
     private fun getUserMessage(request: PolishLocalisationAiRequest, chunk: List<ParadoxLocalisationManipulationContext>): UserMessage {
-        val text = PlsPrompts.fromLocalisationContexts(chunk)
+        val text = Prompts.fromLocalisationContexts(chunk)
         logger.debug { "${request.logPrefix} User message: \n$text" }
         return UserMessage.from(text)
     }

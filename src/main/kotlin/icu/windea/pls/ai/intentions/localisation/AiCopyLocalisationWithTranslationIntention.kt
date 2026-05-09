@@ -13,11 +13,12 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
-import icu.windea.pls.ai.util.PlsAiManager
+import icu.windea.pls.ai.manipulation.AiManipulationService
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("ai.intention.copyLocalisationWithTranslation")
+    override fun getFamilyName() = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
@@ -46,8 +47,8 @@ class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntenti
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
-        val description = PlsAiManager.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
+        val description = AiManipulationService.getOptimizedDescription(data)
+        withBackgroundProgress(project, PlsAiBundle.message("ai.intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationManipulationContextBuilder.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
@@ -89,17 +90,17 @@ class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntenti
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
+                val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
                 return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
+            val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
             return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
-        val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
+        val errorMessage = AiManipulationService.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        val content = PlsAiBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
         return PlsNotificationGroups.manipulation().createNotification(content, NotificationType.WARNING)
     }
 }

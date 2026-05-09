@@ -5,9 +5,9 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import dev.langchain4j.model.anthropic.AnthropicChatModel
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiConstants
+import icu.windea.pls.ai.AiConstants
+import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
@@ -40,30 +40,32 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
     }
 
     override fun doCheckStatus(options: Options): StatusResult {
-        val url = options.apiEndpoint.trimEnd('/')
+        val baseUrl = options.apiEndpoint.trimEnd('/')
         val ref = AtomicReference<StatusResult>()
 
+        // 使用 IDE 自身的代理设置和固定的超时，发出 HTTP 请求
         val action: suspend CoroutineScope.() -> Unit = {
-            // 弹出可取消的模态框，调用聊天方法
-
-            // say hello world
-            withContext(Dispatchers.IO) {
-                try {
-                    val chatModel = doGetChatModel(options)
-                    chatModel.chat("Say 'hello world'")
-                } catch (e: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.service", url, e.message.orEmpty()))
-                    ref.set(r)
-                }
-            }
+            checkHelloWorld(options, baseUrl, ref)
         }
         when {
             PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsBundle.message("ai.test.progress.title")) { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsBundle.message("ai.test.success.title"), PlsBundle.message("ai.test.success.service", url))
+        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+    }
+
+    private suspend fun checkHelloWorld(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
+        withContext(Dispatchers.IO) {
+            try {
+                val chatModel = doGetChatModel(options)
+                chatModel.chat("Say 'hello world'")
+            } catch (e: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                ref.set(r)
+            }
+        }
     }
 
     companion object {
@@ -84,21 +86,24 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
             }
 
             fun forUnitTest(): Options? {
-                val modelName = "deepseek-chat"
-                val apiEndpoint = "https://api.deepseek.com/anthropic"
-                val apiKey = System.getenv("DEEPSEEK_KEY")?.orNull() ?: return null
+                val modelName = System.getenv(AiConstants.Anthropic.defaultModelEnv)?.orNull()
+                    ?: AiConstants.Anthropic.defaultModel
+                val apiEndpoint = System.getenv(AiConstants.Anthropic.defaultBaseUrlEnv)?.orNull()
+                    ?: AiConstants.Anthropic.defaultBaseUrl
+                val apiKey = System.getenv(AiConstants.Anthropic.defaultApiKeyEnv)?.orNull()
+                    ?: return null
                 return Options(modelName, apiEndpoint, apiKey)
             }
 
             fun fromProperties(properties: Properties): Options? {
-                val modelName = OptionProvider.from(properties.modelName, PlsAiConstants.Anthropic.defaultModelName)
-                    .fromEnv(properties.fromEnv, properties.modelNameEnv, PlsAiConstants.Anthropic.defaultModelNameEnv)
+                val modelName = OptionProvider.from(properties.modelName, AiConstants.Anthropic.defaultModelFromLocale)
+                    .fromEnv(properties.fromEnv, properties.modelNameEnv, AiConstants.Anthropic.defaultModelEnv)
                     .get()
-                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, PlsAiConstants.Anthropic.defaultApiEndpoint)
-                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, PlsAiConstants.Anthropic.defaultApiEndpointEnv)
+                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, AiConstants.Anthropic.defaultBaseUrlFromLocale)
+                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, AiConstants.Anthropic.defaultBaseUrlEnv)
                     .get()
                 val apiKey = OptionProvider.from(properties.apiKey, null)
-                    .fromEnv(properties.fromEnv, properties.apiKeyEnv, PlsAiConstants.Anthropic.defaultApiKeyEnv)
+                    .fromEnv(properties.fromEnv, properties.apiKeyEnv, AiConstants.Anthropic.defaultApiKeyEnv)
                     .get()
                 if (apiKey == null) return null
                 return Options(modelName, apiEndpoint, apiKey)

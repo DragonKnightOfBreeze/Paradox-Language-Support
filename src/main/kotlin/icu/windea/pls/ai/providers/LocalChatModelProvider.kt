@@ -6,9 +6,9 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiConstants
+import icu.windea.pls.ai.AiConstants
+import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
@@ -42,60 +42,66 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         // com.intellij.util.net.ProxySettingsUi.doCheckConnection
         // com.intellij.util.io.RequestBuilder.tryConnect
 
-        val url = options.apiEndpoint.trimEnd('/')
-        val versionUrl = "$url/api/version"
-        val tagsUrl = "$url/api/tags"
+        val baseUrl = options.apiEndpoint.trimEnd('/')
         val ref = AtomicReference<StatusResult>()
 
+        // 使用 IDE 自身的代理设置和固定的超时，发出 HTTP 请求
         val action: suspend CoroutineScope.() -> Unit = action@{
-            // 使用 IDE 自身的代理设置和固定的超时，发出 HTTP 请求
-
-            // check /api/version api
-            withContext(Dispatchers.IO) {
-                try {
-                    HttpRequests.request(versionUrl).useProxy(true)
-                        .connectTimeout(3000).readTimeout(3000)
-                        .tryConnect()
-                } catch (_: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.local.unreachable", versionUrl))
-                    ref.set(r)
-                }
-            }
-            // check /api/tags api
+            checkApiVersion(baseUrl, ref)
             if (ref.get() != null) return@action
-            withContext(Dispatchers.IO) {
-                try {
-                    val text = HttpRequests.request(tagsUrl).useProxy(true)
-                        .connectTimeout(3000).readTimeout(3000)
-                        .readString()
-                    val n1 = "\"name\":\"${options.modelName}\""
-                    val n2 = "\"model\":\"${options.modelName}\""
-                    val isValid = text.contains(n1) || text.contains(n2)
-                    if (!isValid) throw IllegalStateException()
-                } catch (_: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.local.modelMissing", options.modelName))
-                    ref.set(r)
-                }
-            }
-            // say hello world
+            checkApiTags(options, baseUrl, ref)
             if (ref.get() != null) return@action
-            withContext(Dispatchers.IO) {
-                try {
-                    val chatModel = doGetChatModel(options)
-                    chatModel.chat("Say 'hello world'")
-                } catch (e: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.service", url, e.message.orEmpty()))
-                    ref.set(r)
-                }
-            }
+            checkHelloWorld(options, baseUrl, ref)
         }
         when {
             PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsBundle.message("ai.test.progress.title")) { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsBundle.message("ai.test.success.title"), PlsBundle.message("ai.test.success.service", url))
+        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+    }
+
+    private suspend fun checkApiVersion(baseUrl: String, ref: AtomicReference<StatusResult>) {
+        // check /api/version api
+        withContext(Dispatchers.IO) {
+            val versionUrl = "$baseUrl/api/version"
+            try {
+                HttpRequests.request(versionUrl).useProxy(true).connectTimeout(3000).readTimeout(3000).tryConnect()
+            } catch (_: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.local.unreachable", versionUrl))
+                ref.set(r)
+            }
+        }
+    }
+
+    private suspend fun checkApiTags(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
+        // check /api/tags api
+        withContext(Dispatchers.IO) {
+            val tagsUrl = "$baseUrl/api/tags"
+            try {
+                val text = HttpRequests.request(tagsUrl).useProxy(true).connectTimeout(3000).readTimeout(3000).readString()
+                val n1 = "\"name\":\"${options.modelName}\""
+                val n2 = "\"model\":\"${options.modelName}\""
+                val isValid = text.contains(n1) || text.contains(n2)
+                if (!isValid) throw IllegalStateException()
+            } catch (_: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.local.modelMissing", options.modelName))
+                ref.set(r)
+            }
+        }
+    }
+
+    private suspend fun checkHelloWorld(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
+        withContext(Dispatchers.IO) {
+            try {
+                val chatModel = doGetChatModel(options)
+                chatModel.chat("Say 'hello world'")
+            } catch (e: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                ref.set(r)
+            }
+        }
     }
 
     companion object {
@@ -115,17 +121,19 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
             }
 
             fun forUnitTest(): Options? {
-                val modelName = System.getenv("OLLAMA_MODEL")?.orNull() ?: return null
-                val apiEndpoint = System.getenv("OLLAMA_BASE_URL")?.orNull() ?: return null
+                val modelName = System.getenv(AiConstants.Local.defaultModelEnv)?.orNull()
+                    ?: return null
+                val apiEndpoint = System.getenv(AiConstants.Local.defaultBaseUrlEnv)?.orNull()
+                    ?: return null
                 return Options(modelName, apiEndpoint)
             }
 
             fun fromProperties(properties: Properties): Options? {
                 val modelName = OptionProvider.from(properties.modelName, null)
-                    .fromEnv(properties.fromEnv, properties.modelNameEnv, PlsAiConstants.Local.defaultModelNameEnv)
+                    .fromEnv(properties.fromEnv, properties.modelNameEnv, AiConstants.Local.defaultModelEnv)
                     .get()
-                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, PlsAiConstants.Local.defaultApiEndpoint)
-                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, PlsAiConstants.Local.defaultApiEndpointEnv)
+                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, AiConstants.Local.defaultBaseUrl)
+                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, AiConstants.Local.defaultBaseUrlEnv)
                     .get()
                 if (modelName == null) return null
                 return Options(modelName, apiEndpoint)

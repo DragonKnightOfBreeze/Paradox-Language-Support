@@ -1,14 +1,13 @@
-package icu.windea.pls.ai.util
+package icu.windea.pls.ai.prompts
 
 import com.intellij.DynamicBundle
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
-import icu.windea.pls.ai.prompts.PromptTemplateEngine
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import org.intellij.lang.annotations.Language
-import java.util.*
+import java.util.Locale
 
-object PlsPrompts {
+object Prompts {
     private val engine = PromptTemplateEngine()
 
     fun translateLocalisation(request: TranslateLocalisationAiRequest): String {

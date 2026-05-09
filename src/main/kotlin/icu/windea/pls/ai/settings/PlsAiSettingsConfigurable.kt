@@ -11,8 +11,8 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.PlsAiConstants
+import icu.windea.pls.ai.AiConstants
+import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.providers.AnthropicChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
@@ -20,7 +20,7 @@ import icu.windea.pls.ai.providers.LocalChatModelProvider
 import icu.windea.pls.ai.providers.OpenAiChatModelProvider
 import icu.windea.pls.ide.help.PlsHelpTopics
 
-class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
+class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
 
     override fun getHelpTopic() = PlsHelpTopics.aiSettings
@@ -31,29 +31,29 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
             // enable
             row {
-                checkBox(PlsBundle.message("settings.ai.enable")).bindSelected(settings::enable)
-                contextHelp(PlsBundle.message("settings.ai.enable.tip"))
+                checkBox(PlsAiBundle.message("settings.ai.enable")).bindSelected(settings::enable)
+                contextHelp(PlsAiBundle.message("settings.ai.enable.tip"))
             }
             // withContext
             row {
-                checkBox(PlsBundle.message("settings.ai.withContext")).bindSelected(settings::withContext)
-                contextHelp(PlsBundle.message("settings.ai.withContext.tip"))
+                checkBox(PlsAiBundle.message("settings.ai.withContext")).bindSelected(settings::withContext)
+                contextHelp(PlsAiBundle.message("settings.ai.withContext.tip"))
             }
             // providerType
             row {
-                label(PlsBundle.message("settings.ai.providerType"))
+                label(PlsAiBundle.message("settings.ai.providerType"))
                 comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
                     .bindItem(settings::providerType.toNullableProperty())
             }
 
             // features
-            collapsibleGroup(PlsBundle.message("settings.ai.features")) { configureGroupForFeatures() }
+            collapsibleGroup(PlsAiBundle.message("settings.ai.features")) { configureGroupForFeatures() }
             // openAI
-            collapsibleGroup(PlsBundle.message("settings.ai.openAI")) { configureGroupForOpenAi() }
+            collapsibleGroup(PlsAiBundle.message("settings.ai.openAI")) { configureGroupForOpenAi() }
             // anthropic
-            collapsibleGroup(PlsBundle.message("settings.ai.anthropic")) { configureGroupForAnthropic() }
+            collapsibleGroup(PlsAiBundle.message("settings.ai.anthropic")) { configureGroupForAnthropic() }
             // local (Ollama)
-            collapsibleGroup(PlsBundle.message("settings.ai.local")) { configureGroupForLocal() }
+            collapsibleGroup(PlsAiBundle.message("settings.ai.local")) { configureGroupForLocal() }
         }
     }
 
@@ -63,15 +63,15 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
         // localisationBatchSize
         row {
-            label(PlsBundle.message("settings.ai.features.localisationChunkSize")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.features.localisationChunkSize")).widthGroup(group)
             intTextField(1..Int.MAX_VALUE, 1).bindIntText(settings::localisationChunkSize)
-            contextHelp(PlsBundle.message("settings.ai.features.localisationChunkSize.tip"))
+            contextHelp(PlsAiBundle.message("settings.ai.features.localisationChunkSize.tip"))
         }
         // localisationMemorySize
         row {
-            label(PlsBundle.message("settings.ai.features.localisationMemorySize")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.features.localisationMemorySize")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::localisationMemorySize)
-            contextHelp(PlsBundle.message("settings.ai.features.localisationMemorySize.tip"))
+            contextHelp(PlsAiBundle.message("settings.ai.features.localisationMemorySize.tip"))
         }
     }
 
@@ -82,55 +82,55 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
         // modelName
         row {
-            label(PlsBundle.message("settings.ai.openAI.modelName")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultModelName) }
+                .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultModelFromLocale) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultModelNameEnv) }
+                .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultModelEnv) }
         }
         // apiEndpoint
         row {
-            label(PlsBundle.message("settings.ai.openAI.apiEndpoint")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultApiEndpoint) }
+                .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultBaseUrlFromLocale) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultApiEndpointEnv) }
+                .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultBaseUrlEnv) }
         }
         // apiKey
         row {
-            label(PlsBundle.message("settings.ai.openAI.apiKey")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.apiKey")).widthGroup(group)
             passwordField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiKey)
                 .bindText(settings::apiKey.toNonNullableProperty(""))
                 .validationOnInput { validateApiKey(this, it, properties.fromEnv.get()) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             passwordField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiKeyEnv)
                 .bindText(settings::apiKeyEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultApiKeyEnv) }
+                .applyToComponent { setEmptyState(AiConstants.OpenAi.defaultApiKeyEnv) }
         }
         // operations
         row {
-            button(PlsBundle.message("settings.ai.test")) {
+            button(PlsAiBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = OpenAiChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = OpenAiChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(PlsBundle.message("settings.ai.fromEnv"))
+            checkBox(PlsAiBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
@@ -143,55 +143,55 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
         // modelName
         row {
-            label(PlsBundle.message("settings.ai.anthropic.modelName")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultModelName) }
+                .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultModelFromLocale) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultModelNameEnv) }
+                .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultModelEnv) }
         }
         // apiEndpoint
         row {
-            label(PlsBundle.message("settings.ai.anthropic.apiEndpoint")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultApiEndpoint) }
+                .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultBaseUrlFromLocale) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultApiEndpointEnv) }
+                .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultBaseUrlEnv) }
         }
         // apiKey
         row {
-            label(PlsBundle.message("settings.ai.anthropic.apiKey")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.apiKey")).widthGroup(group)
             passwordField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiKey)
                 .bindText(settings::apiKey.toNonNullableProperty(""))
                 .validationOnInput { validateApiKey(this, it, properties.fromEnv.get()) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             passwordField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiKeyEnv)
                 .bindText(settings::apiKeyEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultApiKeyEnv) }
+                .applyToComponent { setEmptyState(AiConstants.Anthropic.defaultApiKeyEnv) }
         }
         // operations
         row {
-            button(PlsBundle.message("settings.ai.test")) {
+            button(PlsAiBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = AnthropicChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = AnthropicChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(PlsBundle.message("settings.ai.fromEnv"))
+            checkBox(PlsAiBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
@@ -204,60 +204,60 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
         // modelName
         row {
-            label(PlsBundle.message("settings.ai.local.modelName")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.modelName")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.modelName)
                 .bindText(settings::modelName.toNonNullableProperty(""))
                 .validationOnInput { validateModelName(this, it, properties.fromEnv.get()) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.modelNameEnv)
                 .bindText(settings::modelNameEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Local.defaultModelNameEnv) }
+                .applyToComponent { setEmptyState(AiConstants.Local.defaultModelEnv) }
         }
         // apiEndpoint
         row {
-            label(PlsBundle.message("settings.ai.local.apiEndpoint")).widthGroup(group)
+            label(PlsAiBundle.message("settings.ai.apiEndpoint")).widthGroup(group)
             textField().columns(COLUMNS_MEDIUM)
                 .bindText(properties.apiEndpoint)
                 .bindText(settings::apiEndpoint.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Local.defaultApiEndpoint) }
+                .applyToComponent { setEmptyState(AiConstants.Local.defaultBaseUrl) }
 
-            label(PlsBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
+            label(PlsAiBundle.message("settings.ai.env")).visibleIf(properties.fromEnv)
             textField().columns(COLUMNS_SHORT).visibleIf(properties.fromEnv)
                 .bindText(properties.apiEndpointEnv)
                 .bindText(settings::apiEndpointEnv.toNonNullableProperty(""))
-                .applyToComponent { setEmptyState(PlsAiConstants.Local.defaultApiEndpointEnv) }
+                .applyToComponent { setEmptyState(AiConstants.Local.defaultBaseUrlEnv) }
         }
         // operations
         row {
-            button(PlsBundle.message("settings.ai.test")) {
+            button(PlsAiBundle.message("settings.ai.test")) {
                 // 注意这里需要基于可能尚未保存的配置项进行测试
                 val options = LocalChatModelProvider.Options.fromProperties(properties.toProperties())
                 val r = LocalChatModelProvider.INSTANCE.checkStatus(options)
                 showTestMessage(r)
             }
-            checkBox(PlsBundle.message("settings.ai.fromEnv"))
+            checkBox(PlsAiBundle.message("settings.ai.fromEnv"))
                 .bindSelected(properties.fromEnv)
                 .bindSelected(settings::fromEnv)
         }
     }
 
     private fun validateModelName(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-        if (!skip && field.text.isEmpty()) return builder.warning(PlsBundle.message("ai.validation.missingModelName"))
+        if (!skip && field.text.isEmpty()) return builder.warning(PlsAiBundle.message("ai.validation.missingModelName"))
         return null
     }
 
     // private fun validateApiEndpoint(builder: ValidationInfoBuilder, field: JBTextField, skip: Boolean): ValidationInfo? {
-    //     if (!skip && field.text.isEmpty()) return builder.warning(PlsBundle.message("ai.validation.missingApiEndpoint"))
+    //     if (!skip && field.text.isEmpty()) return builder.warning(PlsAiBundle.message("ai.validation.missingApiEndpoint"))
     //     return null
     // }
 
     private fun validateApiKey(builder: ValidationInfoBuilder, field: JBPasswordField, skip: Boolean): ValidationInfo? {
         // 目前仅在输入时验证，不在应用时验证
         // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (!skip && field.password.isEmpty()) return builder.warning(PlsBundle.message("ai.validation.missingApiKey"))
+        if (!skip && field.password.isEmpty()) return builder.warning(PlsAiBundle.message("ai.validation.missingApiKey"))
         return null
     }
 

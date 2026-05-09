@@ -7,9 +7,9 @@ import com.intellij.util.io.HttpRequests
 import dev.langchain4j.model.chat.Capability
 import dev.langchain4j.model.openai.OpenAiChatModel
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiConstants
+import icu.windea.pls.ai.AiConstants
+import icu.windea.pls.ai.PlsAiBundle
 import icu.windea.pls.ai.providers.ChatModelProvider.*
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
@@ -48,43 +48,49 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
         // com.intellij.util.net.ProxySettingsUi.doCheckConnection
         // com.intellij.util.io.RequestBuilder.tryConnect
 
-        val url = options.apiEndpoint.trimEnd('/')
-        val modelsUrl = "$url/models"
+        val baseUrl = options.apiEndpoint.trimEnd('/')
         val ref = AtomicReference<StatusResult>()
 
+        // 使用 IDE 自身的代理设置和固定的超时，发出 HTTP 请求
         val action: suspend CoroutineScope.() -> Unit = action@{
-            // 使用 IDE 自身的代理设置和固定的超时，发出 HTTP 请求
-
-            // check /api/tags api
-            withContext(Dispatchers.IO) {
-                try {
-                    HttpRequests.request(modelsUrl).useProxy(true).connectTimeout(3000).readTimeout(3000)
-                        .tuner { it.setRequestProperty("Authorization", "Bearer ${options.apiKey}") } // 传入 API KEY
-                        .tryConnect()
-                } catch (e: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.service", url, e.message.orEmpty()))
-                    ref.set(r)
-                }
-            }
-            // say hello world
+            checkApiTag(options, baseUrl, ref)
             if (ref.get() != null) return@action
-            withContext(Dispatchers.IO) {
-                try {
-                    val chatModel = doGetChatModel(options)
-                    chatModel.chat("Say 'hello world'")
-                } catch (e: Exception) {
-                    val r = StatusResult(false, PlsBundle.message("ai.test.error.title"), PlsBundle.message("ai.test.error.service", url, e.message.orEmpty()))
-                    ref.set(r)
-                }
-            }
+            checkHelloWorld(options, baseUrl, ref)
         }
         when {
             PlsFacade.isUnitTestMode() -> runBlocking { action() }
-            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsBundle.message("ai.test.progress.title")) { action() }
+            else -> runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsAiBundle.message("ai.test.progress.title")) { action() }
         }
 
         ref.get()?.let { return it }
-        return StatusResult(true, PlsBundle.message("ai.test.success.title"), PlsBundle.message("ai.test.success.service", url))
+        return StatusResult(true, PlsAiBundle.message("ai.test.success.title"), PlsAiBundle.message("ai.test.success.service", baseUrl))
+    }
+
+    private suspend fun checkApiTag(options: Options, baseUrl: String, ref: AtomicReference<StatusResult>) {
+        // check /api/tags api
+        withContext(Dispatchers.IO) {
+            val modelsUrl = "$baseUrl/models"
+            try {
+                HttpRequests.request(modelsUrl).useProxy(true).connectTimeout(3000).readTimeout(3000)
+                    .tuner { it.setRequestProperty("Authorization", "Bearer ${options.apiKey}") } // 传入 API KEY
+                    .tryConnect()
+            } catch (e: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", baseUrl, e.message.orEmpty()))
+                ref.set(r)
+            }
+        }
+    }
+
+    private suspend fun checkHelloWorld(options: Options, url: String, ref: AtomicReference<StatusResult>) {
+        withContext(Dispatchers.IO) {
+            try {
+                val chatModel = doGetChatModel(options)
+                chatModel.chat("Say 'hello world'")
+            } catch (e: Exception) {
+                val r = StatusResult(false, PlsAiBundle.message("ai.test.error.title"), PlsAiBundle.message("ai.test.error.service", url, e.message.orEmpty()))
+                ref.set(r)
+            }
+        }
     }
 
     companion object {
@@ -105,21 +111,24 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
             }
 
             fun forUnitTest(): Options? {
-                val modelName = "deepseek-chat"
-                val apiEndpoint = "https://api.deepseek.com"
-                val apiKey = System.getenv("DEEPSEEK_KEY")?.orNull() ?: return null
+                val modelName = System.getenv(AiConstants.OpenAi.defaultModelEnv)?.orNull()
+                    ?: AiConstants.OpenAi.defaultModel
+                val apiEndpoint = System.getenv(AiConstants.OpenAi.defaultBaseUrlEnv)?.orNull()
+                    ?: AiConstants.OpenAi.defaultBaseUrl
+                val apiKey = System.getenv(AiConstants.OpenAi.defaultApiKeyEnv)?.orNull()
+                    ?: return null
                 return Options(modelName, apiEndpoint, apiKey)
             }
 
             fun fromProperties(properties: Properties): Options? {
-                val modelName = OptionProvider.from(properties.modelName, PlsAiConstants.OpenAi.defaultModelName)
-                    .fromEnv(properties.fromEnv, properties.modelNameEnv, PlsAiConstants.OpenAi.defaultModelNameEnv)
+                val modelName = OptionProvider.from(properties.modelName, AiConstants.OpenAi.defaultModelFromLocale)
+                    .fromEnv(properties.fromEnv, properties.modelNameEnv, AiConstants.OpenAi.defaultModelEnv)
                     .get()
-                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, PlsAiConstants.OpenAi.defaultApiEndpoint)
-                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, PlsAiConstants.OpenAi.defaultApiEndpointEnv)
+                val apiEndpoint = OptionProvider.from(properties.apiEndpoint, AiConstants.OpenAi.defaultBaseUrlFromLocale)
+                    .fromEnv(properties.fromEnv, properties.apiEndpointEnv, AiConstants.OpenAi.defaultBaseUrlEnv)
                     .get()
                 val apiKey = OptionProvider.from(properties.apiKey, null)
-                    .fromEnv(properties.fromEnv, properties.apiKeyEnv, PlsAiConstants.OpenAi.defaultApiKeyEnv)
+                    .fromEnv(properties.fromEnv, properties.apiKeyEnv, AiConstants.OpenAi.defaultApiKeyEnv)
                     .get()
                 if (apiKey == null) return null
                 return Options(modelName, apiEndpoint, apiKey)
