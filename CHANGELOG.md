@@ -35,6 +35,7 @@
 - [x] 为定值变量提供相关代码检查（重载、不正确的重载） / Provided related code inspections for define variables (override, incorrect override)
 - [x] 引入定值规则，从而为定值的命名空间和变量提供快速文档文本和规则上下文 / Introduced define configs, to provide quick doc text and config context for define namespace and variables
 - [x] 添加并更新 Stellaris 的定值的规则文件 / Added and updated define config files for Stellaris
+- [x] 修复在某些情况下无法添加模组依赖的问题 / Fixed an issue that cannot add mod dependencies in some situations ([#323](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/323)) 
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.7 - 2026-03-28

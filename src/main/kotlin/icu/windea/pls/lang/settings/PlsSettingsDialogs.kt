@@ -12,8 +12,8 @@ import icu.windea.pls.core.ui.EntryListTableModel
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.lang.actions.PlsDataKeys
 import icu.windea.pls.lang.analysis.ParadoxGameManager
-import javax.swing.JComponent
 import icu.windea.pls.model.ParadoxGameType
+import javax.swing.JComponent
 
 @Suppress("UnstableApiUsage")
 class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
@@ -29,14 +29,15 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
 
     override fun createCenterPanel(): DialogPanel {
         return panel {
-            properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
-                val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
+            for ((gameTypeId, gameDirectoryProperty) in properties) {
+                val gameType = ParadoxGameType.get(gameTypeId) ?: continue
+                val gameTypeProperty = AtomicProperty(gameType)
                 row {
                     // gameDirectory
                     label(gameType.title + ":").widthGroup("left")
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("gameDirectory.title"))
-                        .apply { putUserData(PlsDataKeys.gameTypeProperty, AtomicProperty(gameType)) }
+                        .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
                         .columns(COLUMNS_LARGE)
@@ -48,9 +49,9 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
 
             row {
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
-                    properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
-                        val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
-                        val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
+                    for ((gameTypeId, gameDirectoryProperty) in properties) {
+                        val gameType = ParadoxGameType.get(gameTypeId) ?: continue
+                        val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameType)?.orNull() ?: continue
                         gameDirectoryProperty.set(quickGameDirectory)
                     }
                 }

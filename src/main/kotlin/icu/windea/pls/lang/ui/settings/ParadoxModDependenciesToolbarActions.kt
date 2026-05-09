@@ -33,7 +33,7 @@ interface ParadoxModDependenciesToolbarActions {
             // 添加模组依赖时可以多选
             val settings = table.model.settings
             val qualifiedName = settings.qualifiedName
-            val gameType = settings.gameType ?: return
+            val gameType = settings.finalGameType
             val gameTypeProperty = AtomicProperty(gameType)
             val descriptor = FileChooserDescriptorFactory.multiDirs()
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
