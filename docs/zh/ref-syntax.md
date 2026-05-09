@@ -361,7 +361,7 @@ l_english:
  text_with_scripted_variable_reference:0 "Scripted variable: $@var$"
  text_with_command:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
  text_with_icon:0 "Icon: £unity£ and £leader_skill|3£"
- text_with_concept_command:0 "Concept: ['concept', concept text] ['civic:some_civic']"
+ text_with_concept_command:0 "Concept command: ['concept', concept text] ['civic:some_civic']"
  text_with_text_format:0 "Text format: #v text#!"
  text_with_text_icon:0 "Text icon: @icon!"
 ```

@@ -190,7 +190,7 @@ class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo', Foo]")
+        val r = render("Concept command: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("Foo"))
         Assert.assertFalse(r.contains("psi_element://"))
     }
@@ -202,7 +202,7 @@ class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_bar', Bar]")
+        val r = render("Concept command: ['concept_bar', Bar]")
         Assert.assertTrue(r.contains("Bar"))
         Assert.assertFalse(r.contains("psi_element://"))
     }
@@ -215,7 +215,7 @@ class ParadoxLocalisationTextHtmlRendererTest : BasePlatformTestCase() {
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         // no explicit conceptText -> should use tooltip_override
-        val r = render("Concept: ['concept_foo']")
+        val r = render("Concept command: ['concept_foo']")
         // should still link to definition, but display override text
         Assert.assertTrue(r.contains("Tooltip Text"))
         Assert.assertFalse(r.contains("psi_element://"))

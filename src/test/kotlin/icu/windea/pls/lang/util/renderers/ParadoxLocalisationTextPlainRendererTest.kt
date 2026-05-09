@@ -125,7 +125,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo', Foo]")
+        val r = render("Concept command: ['concept_foo', Foo]")
         Assert.assertTrue(r.contains("Foo"))
     }
 
@@ -146,7 +146,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        val r = render("Concept: ['concept_bar', Bar]")
+        val r = render("Concept command: ['concept_bar', Bar]")
         Assert.assertTrue(r.contains("Bar"))
     }
 
@@ -157,7 +157,7 @@ class ParadoxLocalisationTextPlainRendererTest : BasePlatformTestCase() {
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
-        val r = render("Concept: ['concept_foo']")
+        val r = render("Concept command: ['concept_foo']")
         Assert.assertTrue(r.contains("Tooltip Text"))
     }
 
