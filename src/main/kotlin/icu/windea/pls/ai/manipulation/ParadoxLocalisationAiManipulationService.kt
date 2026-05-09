@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.manipulators
+package icu.windea.pls.ai.manipulation
 
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -21,13 +21,13 @@ import icu.windea.pls.ai.services.TranslateLocalisationAiService
 import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import kotlinx.coroutines.flow.Flow
 import java.awt.Dimension
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-object ParadoxLocalisationAiManipulator {
+object ParadoxLocalisationAiManipulationService {
     suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
         val aiService = TranslateLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
@@ -109,7 +109,7 @@ object ParadoxLocalisationAiManipulator {
             .setCancelOnWindowDeactivation(false)
             .setCancelButton(MinimizeButton(IdeBundle.message("tooltip.hide")))
             .setMinSize(Dimension(640, 120))
-            .setDimensionServiceKey(project, "PLS_AI_LOCALISATION_MANIPULATION_POPUP", false)
+            .setDimensionServiceKey(project, "PLS_LOCALISATION_AI_MANIPULATION_POPUP", false)
             .setOkHandler { callback(textField.text.trim()) }
             .createPopup()
         submitted.afterSet { popup.closeOk(null) }

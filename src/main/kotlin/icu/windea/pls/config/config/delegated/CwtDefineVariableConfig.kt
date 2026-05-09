@@ -6,7 +6,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.annotations.FromName
 import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 
 /**
  * 定值变量规则。
@@ -80,7 +80,7 @@ private class CwtDefineVariableConfigImpl(
     override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtDefineVariableConfigImpl(namespace=$namespace, variable=$variable)"

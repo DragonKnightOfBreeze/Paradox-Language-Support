@@ -2,12 +2,12 @@ package icu.windea.pls.ai.services
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ai.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.test.AssumePredicates
@@ -47,13 +47,13 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
         val aiService = PolishLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
         runBlocking {
-            ParadoxLocalisationAiManipulator.collectResultFlow(request, resultFlow)
+            ParadoxLocalisationAiManipulationService.collectResultFlow(request, resultFlow)
         }
         assertEquals(contexts.size, request.index)
 
         println("AI SERVICE PROVIDER:")
         println(ChatModelManager.getProviderType())
         println("AI OUTPUT:")
-        println(ParadoxLocalisationManipulator.joinText(contexts))
+        println(ParadoxLocalisationManipulationService.joinText(contexts))
     }
 }

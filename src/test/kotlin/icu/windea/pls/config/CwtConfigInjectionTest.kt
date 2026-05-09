@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigCopyService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
@@ -162,12 +162,12 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
         // 关键思路：用测试专用 `CwtInjectedConfigProvider` 强制制造 `deepCopyConfigs` 重入
         //
         // 真正的“深递归”不是来自 `## inject` 本身（那是浅递归链），而是来自：
-        // - 注入时 `deepCopyForInjection` 会调用 `CwtConfigManipulator.deepCopyConfigs(configToInject, delegatedConfig)`
+        // - 注入时 `deepCopyForInjection` 会调用 `CwtConfigCopyService.deepCopyConfigs(configToInject, delegatedConfig)`
         // - 在 deep copy 过程中会调用 `CwtConfigService.injectConfigs(parentConfig, result)`
         // - 如果某个 `CwtInjectedConfigProvider` 在回调里再次触发 deep copy（对同一 parentConfig），就会出现 deep recursion / reentrancy。
         //
         // 在测试里临时注册了一个 provider：
-        // - 在 `injectConfigs(parentConfig, ...)` 里调用 `CwtConfigManipulator.deepCopyConfigs(parentConfig)`
+        // - 在 `injectConfigs(parentConfig, ...)` 里调用 `CwtConfigCopyService.deepCopyConfigs(parentConfig)`
         // - 由于此时 `deepCopyConfigs(parentConfig)` 正在进行中，新实现会通过 key-based recursion guard 返回 `null`
         // - 测试用 `AtomicBoolean` 记录“确实发生了递归拦截（返回空列表）”
 
@@ -175,7 +175,7 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
 
         val provider = object : CwtInjectedConfigProvider {
             override fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
-                val r = CwtConfigManipulator.deepCopyConfigs(parentConfig)
+                val r = CwtConfigCopyService.deepCopyConfigs(parentConfig)
                 if (r == emptyList<CwtMemberConfig<*>>()) recursionPrevented.set(true)
                 return false
             }

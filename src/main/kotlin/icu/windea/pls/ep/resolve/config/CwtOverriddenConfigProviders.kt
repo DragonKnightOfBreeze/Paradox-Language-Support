@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
@@ -47,7 +47,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
             if (resultTriggerConfig.config.valueType == CwtType.Block) continue // not simple trigger, skip
-            val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: continue
+            val inlined = CwtConfigInlineService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: continue
             resultConfigs.add(inlined)
         }
         return resultConfigs.cast<List<T>>()
@@ -85,7 +85,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
             if (resultTriggerConfig.config.valueType != CwtType.Block) continue // not complex trigger, skip
-            val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: continue
+            val inlined = CwtConfigInlineService.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
         return resultConfigs.cast<List<T>>()

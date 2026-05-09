@@ -1,4 +1,4 @@
-package icu.windea.pls.config.manipulators
+package icu.windea.pls.config.manipulation
 
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigManipulatorTest : BasePlatformTestCase() {
+class CwtConfigCopyServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
@@ -32,7 +32,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
 
         val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val container = CwtPropertyConfig.resolve(p, file, configGroup)!!
-        val copied = CwtConfigManipulator.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
         assertNotNull(copied)
         val list = copied!!
         // block_prop has 2 children: a(property) and val1(value)
@@ -46,7 +46,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigsInDeclaration_subtypeFlatten_and_parent() {
-        myFixture.configureByFile("features/manipulators/deep_copy_declaration.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/deep_copy_declaration.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -60,7 +60,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
             definitionSubtypes = listOf("foo"),
             configGroup = configGroup,
         )
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         val list = copied!!
         // expect: a (prop), b (prop), v1 (value). No subtype[...] nodes and no c.
@@ -79,14 +79,14 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_parentChain_nested() {
-        myFixture.configureByFile("features/manipulators/deep_copy_nested.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/deep_copy_nested.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         val topProp = root.findChild<CwtProperty> { it.name == "top" }!!
         val topCfg = CwtPropertyConfig.resolve(topProp, file, configGroup)!!
-        val copiedTopChildren = CwtConfigManipulator.deepCopyConfigs(topCfg, parentConfig = topCfg)!!
+        val copiedTopChildren = CwtConfigCopyService.deepCopyConfigs(topCfg, parentConfig = topCfg)!!
         // only one child: mid
         val midCfg = copiedTopChildren.filterIsInstance<CwtPropertyConfig>().single { it.key == "mid" }
         assertSame(topCfg, midCfg.parentConfig)
@@ -100,7 +100,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
 
     @Test
     fun testDeepCopyConfigs_optionConfigs_and_userData_semantics() {
-        myFixture.configureByFile("features/manipulators/deep_copy_options.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/deep_copy_options.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -112,7 +112,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val extraKey: Key<String> = createKey("test.deepcopy.extra")
         p2Original.putUserData(extraKey, "orig")
 
-        val copied = CwtConfigManipulator.deepCopyConfigs(containerCfg, parentConfig = containerCfg)!!
+        val copied = CwtConfigCopyService.deepCopyConfigs(containerCfg, parentConfig = containerCfg)!!
         val p2Copied = copied.filterIsInstance<CwtPropertyConfig>().single { it.key == "p2" }
         // optionData preserved (required + severity=info)
         assertTrue(p2Copied.optionData.required)
@@ -135,14 +135,14 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val copied = CwtConfigManipulator.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
 
     @Test
     fun testDeepCopyConfigs_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
-        myFixture.configureByFile("features/manipulators/deep_copy_empty.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -150,7 +150,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val copied = CwtConfigManipulator.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -167,14 +167,14 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
 
     @Test
     fun testDeepCopyConfigsInDeclaration_emptyContainerConfigs_returnsEmptyList_and_parentUnchanged() {
-        myFixture.configureByFile("features/manipulators/deep_copy_empty.test.cwt")
+        myFixture.configureByFile("features/config/manipulation/deep_copy_empty.test.cwt")
         val file = myFixture.file as CwtFile
         val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
@@ -183,7 +183,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -203,7 +203,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val blockProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
 
-        val copied = CwtConfigManipulator.deepCopyConfigs(container, parentConfig = otherParent)
+        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = otherParent)
         assertNull(copied)
         // ensure container's parent not changed to otherParent
         assertSame(parentBefore, container.parentConfig)
@@ -226,7 +226,7 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
 
-        val copied = CwtConfigManipulator.deepCopyConfigsInDeclaration(container, parentConfig = otherParent, context = context)
+        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = otherParent, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
         val otherChildren = otherParent.configs?.size

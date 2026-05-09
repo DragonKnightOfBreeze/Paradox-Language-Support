@@ -9,7 +9,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
@@ -80,7 +80,7 @@ object ParadoxConfigManager {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
-        val cacheKey = CwtConfigKeyManipulator.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
+        val cacheKey = CwtConfigKeyManager.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
         val cache = getChildOccurrencesCacheFromCache(element).dereference()
         return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized() }
     }

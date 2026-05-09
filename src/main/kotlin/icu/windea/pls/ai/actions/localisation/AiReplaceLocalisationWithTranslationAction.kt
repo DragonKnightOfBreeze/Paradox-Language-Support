@@ -12,7 +12,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
@@ -22,9 +22,9 @@ import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -35,7 +35,7 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
+        return ParadoxLocalisationAiManipulationService.createPopup(project, callback)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -83,19 +83,19 @@ class AiReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionB
             }
 
             createNotification(selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
-                .addAction(ParadoxLocalisationManipulator.createRevertAction(allContexts))
-                .addAction(ParadoxLocalisationManipulator.createReapplyAction(allContexts))
+                .addAction(ParadoxLocalisationManipulationService.createRevertAction(allContexts))
+                .addAction(ParadoxLocalisationManipulationService.createReapplyAction(allContexts))
                 .notify(project)
         }
     }
 
     private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
+        ParadoxLocalisationAiManipulationService.handleTextWithAiTranslation(request, callback)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
-        ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        ParadoxLocalisationManipulationService.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {

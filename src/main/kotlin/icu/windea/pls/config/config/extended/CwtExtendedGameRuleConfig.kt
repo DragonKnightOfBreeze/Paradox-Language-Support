@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.cwt.psi.CwtMember
 
 /**
@@ -84,7 +84,7 @@ private class CwtExtendedGameRuleConfigImpl(
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig? {
         if (config !is CwtPropertyConfig) return null
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtExtendedGameRuleConfigImpl(name='$name')"

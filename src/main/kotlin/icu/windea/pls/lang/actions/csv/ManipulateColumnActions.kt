@@ -18,7 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.getColumnIndex
-import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.manipulation.ParadoxCsvManipulationService
 import kotlinx.coroutines.launch
 
 class SelectColumnCellAction : ManipulateColumnActionBase() {
@@ -32,7 +32,7 @@ class SelectColumnCellAction : ManipulateColumnActionBase() {
             val column = readAction { elements.firstOrNull() } ?: return@launch
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                ParadoxCsvManipulator.selectElement(editor, column)
+                ParadoxCsvManipulationService.selectElement(editor, column)
             }
         }
     }
@@ -45,7 +45,7 @@ sealed class InsertColumnActionBase(private val left: Boolean) : ManipulateColum
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
-                ParadoxCsvManipulator.findAllColumnsOfIndex(file, index).toList()
+                ParadoxCsvManipulationService.findAllColumnsOfIndex(file, index).toList()
             }
             if (columnList.isEmpty()) return@launch
             val anchorList = readAction {
@@ -92,7 +92,7 @@ sealed class MoveColumnActionBase(private val left: Boolean) : ManipulateColumnA
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
-                ParadoxCsvManipulator.findAllColumnsOfIndex(file, index).toList()
+                ParadoxCsvManipulationService.findAllColumnsOfIndex(file, index).toList()
             }
             if (columnList.isEmpty()) return@launch
             val columnAndOtherColumnList = readAction {
@@ -132,12 +132,12 @@ class SelectColumnAction : ManipulateColumnActionBase() {
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
-                ParadoxCsvManipulator.findAllColumnsOfIndex(file, index).toList()
+                ParadoxCsvManipulationService.findAllColumnsOfIndex(file, index).toList()
             }
             if (columnList.isEmpty()) return@launch
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                ParadoxCsvManipulator.selectElements(editor, columnList)
+                ParadoxCsvManipulationService.selectElements(editor, columnList)
             }
         }
     }
@@ -152,7 +152,7 @@ class RemoveColumnAction : ManipulateColumnActionBase() {
         coroutineScope.launch {
             val index = readAction { elements.firstOrNull()?.getColumnIndex() } ?: return@launch
             val columnList = readAction {
-                ParadoxCsvManipulator.findAllColumnsOfIndex(file, index).toList()
+                ParadoxCsvManipulationService.findAllColumnsOfIndex(file, index).toList()
             }
             if (columnList.isEmpty()) return@launch
             val firstAndLastList = readAction {

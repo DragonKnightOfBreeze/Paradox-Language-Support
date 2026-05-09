@@ -20,7 +20,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getColumnSize
-import icu.windea.pls.lang.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.manipulation.ParadoxCsvManipulationService
 import kotlinx.coroutines.launch
 import java.util.function.Supplier
 
@@ -128,7 +128,7 @@ class SelectRowAction : ManipulateRowActionBase() {
             if (elementList.isEmpty()) return@launch
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                ParadoxCsvManipulator.selectElements(editor, elementList)
+                ParadoxCsvManipulationService.selectElements(editor, elementList)
             }
         }
     }

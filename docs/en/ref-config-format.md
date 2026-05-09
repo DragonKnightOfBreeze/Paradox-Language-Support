@@ -363,7 +363,7 @@ Path location:
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
 <!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.deepCopyConfigsInDeclaration -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigCopyService.deepCopyConfigsInDeclaration -->
 
 Declaration configs describe the structure of "definition entries" and serve as the foundation for features such as completion, inspection, and quick documentation.
 
@@ -416,8 +416,8 @@ Notes:
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineAlias -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineSingleAlias -->
 
 Alias configs abstract reusable config fragments into "named aliases" that can be referenced and expanded in multiple places. Single aliases are used for one-to-one reuse on the "value side".
 

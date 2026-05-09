@@ -19,7 +19,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.manipulators.ParadoxScopeManipulator
+import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -114,7 +114,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                             }
                         }
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -220,7 +220,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
                         val map = config.config.optionData.replaceScopes ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
-                            val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                            val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {
                                 scopeContextMap.clear()
                                 scopeContextMap.putAll(mergedMap)
@@ -352,7 +352,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -373,7 +373,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeManipulator.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManipulationService.mergeScopeId(oldRefScope, newRefScope)
                                 if (refScope == null) {
                                     return@p false
                                 }
@@ -505,7 +505,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (map.isEmpty()) return@p false
 
                             if (scopeContextMap.isNotEmpty()) {
-                                val mergedMap = ParadoxScopeManipulator.mergeScopeContextMap(scopeContextMap, map, true)
+                                val mergedMap = ParadoxScopeManipulationService.mergeScopeContextMap(scopeContextMap, map, true)
                                 if (mergedMap != null) {
                                     scopeContextMap.clear()
                                     scopeContextMap.putAll(mergedMap)
@@ -526,7 +526,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             if (oldRefScope == null) {
                                 scopeContextMap.put(toRef, newRefScope)
                             } else {
-                                val refScope = ParadoxScopeManipulator.mergeScopeId(oldRefScope, newRefScope)
+                                val refScope = ParadoxScopeManipulationService.mergeScopeId(oldRefScope, newRefScope)
                                 if (refScope == null) {
                                     return@p false
                                 }

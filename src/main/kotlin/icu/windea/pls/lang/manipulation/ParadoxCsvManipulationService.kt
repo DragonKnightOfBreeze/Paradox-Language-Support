@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.manipulators
+package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -8,7 +8,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getColumnIndex
 
-object ParadoxCsvManipulator {
+object ParadoxCsvManipulationService {
     fun findAllColumnsOfIndex(file: PsiFile, index: Int): Sequence<ParadoxCsvColumn> {
         return file.children().filterIsInstance<ParadoxCsvRowElement>().mapNotNull f@{ rowElement ->
             val column = rowElement.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()

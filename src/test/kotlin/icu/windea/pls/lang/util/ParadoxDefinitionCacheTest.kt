@@ -4,7 +4,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.manipulators.CwtConfigKeyManipulator
+import icu.windea.pls.config.util.CwtConfigKeyManager
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.select.selectScope
@@ -148,8 +148,8 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val phantomDecl = phantomInfo.declaration!!
 
         // 不同子类型的声明结构应不同
-        val titanKey = CwtConfigKeyManipulator.getIdentifierKey(titanDecl, "\u0000", -1)
-        val phantomKey = CwtConfigKeyManipulator.getIdentifierKey(phantomDecl, "\u0000", -1)
+        val titanKey = CwtConfigKeyManager.getIdentifierKey(titanDecl, "\u0000", -1)
+        val phantomKey = CwtConfigKeyManager.getIdentifierKey(phantomDecl, "\u0000", -1)
 
         Assert.assertNotEquals(titanKey, phantomKey)
         Assert.assertTrue(titanKey.contains("shield"))      // heavy 特有
@@ -341,7 +341,7 @@ class ParadoxDefinitionCacheTest : BasePlatformTestCase() {
         val declarationAfter = infoAfter.declaration
         Assert.assertNotNull(declarationAfter)
 
-        val key = CwtConfigKeyManipulator.getIdentifierKey(declarationAfter!!, "\u0000", -1)
+        val key = CwtConfigKeyManager.getIdentifierKey(declarationAfter!!, "\u0000", -1)
         Assert.assertTrue(key.contains("armor"))
         Assert.assertTrue(key.contains("shield"))  // heavy 子类型字段
     }

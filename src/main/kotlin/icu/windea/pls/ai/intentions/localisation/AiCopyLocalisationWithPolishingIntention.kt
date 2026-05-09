@@ -13,7 +13,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.ai.manipulation.ParadoxLocalisationAiManipulationService
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.settings.PlsAiSettings
@@ -21,8 +21,8 @@ import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -39,7 +39,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
+        return ParadoxLocalisationAiManipulationService.createPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
@@ -74,7 +74,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
             }
 
             if (errorRef.get() == null) {
-                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                val textToCopy = ParadoxLocalisationManipulationService.joinText(contexts)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
             createNotification(errorRef.get(), withWarnings).notify(project)
@@ -82,7 +82,7 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
     }
 
     private suspend fun handleText(request: PolishLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiPolishing(request, callback)
+        ParadoxLocalisationAiManipulationService.handleTextWithAiPolishing(request, callback)
     }
 
     private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {

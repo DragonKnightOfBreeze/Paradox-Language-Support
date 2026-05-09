@@ -27,7 +27,7 @@ import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.manipulators.ParadoxScopeManipulator
+import icu.windea.pls.lang.manipulation.ParadoxScopeManipulationService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
@@ -117,7 +117,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeManipulator.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeManipulationService.mergeScopeContextMap(map, info.scopeContextMap)
             }
         }
         val resultMap = map ?: return null
@@ -192,7 +192,7 @@ object ParadoxScopeService {
             if (map == null) {
                 map = info.scopeContextMap
             } else {
-                map = ParadoxScopeManipulator.mergeScopeContextMap(map, info.scopeContextMap)
+                map = ParadoxScopeManipulationService.mergeScopeContextMap(map, info.scopeContextMap)
             }
         }
         val resultMap = map ?: return null
@@ -298,7 +298,7 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element, definitionInfo)
-        if (inferredScopeContext != null) return ParadoxScopeManipulator.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.getAny()
+        if (inferredScopeContext != null) return ParadoxScopeManipulationService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.getAny()
 
         return scopeContext ?: ParadoxScopeContext.getAny()
     }
@@ -338,7 +338,7 @@ object ParadoxScopeService {
 
         // get inferred scope context from EPs, and use the merged result if exists
         val inferredScopeContext = getInferredScopeContext(element)
-        if (inferredScopeContext != null) return ParadoxScopeManipulator.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.getAny()
+        if (inferredScopeContext != null) return ParadoxScopeManipulationService.mergeScopeContext(scopeContext, inferredScopeContext) ?: ParadoxScopeContext.getAny()
 
         return scopeContext ?: ParadoxScopeContext.getAny()
     }

@@ -19,7 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -120,7 +120,7 @@ object ParadoxCompletionManager {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigManipulator.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
+                    configs += CwtConfigInlineService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
                 }
             }
         }

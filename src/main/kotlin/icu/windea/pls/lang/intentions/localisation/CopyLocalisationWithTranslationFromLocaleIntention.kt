@@ -17,9 +17,9 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
 import icu.windea.pls.integrations.translation.TranslationToolService
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
@@ -56,7 +56,7 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
             }
 
             if (errorRef.get() == null) {
-                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                val textToCopy = ParadoxLocalisationManipulationService.joinText(contexts)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
             createNotification(selectedLocale, errorRef.get()).notify(project)
@@ -64,9 +64,9 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
     }
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-        ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
+        ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
         val locale = selectLocale(context.element) ?: return
-        ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale, locale)
+        ParadoxLocalisationManipulationService.handleTextWithTranslation(context, selectedLocale, locale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

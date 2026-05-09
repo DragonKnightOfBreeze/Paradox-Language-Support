@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxFileInfo
@@ -38,4 +38,3 @@ abstract class ManipulateLocalisationAiRequest(
         return variables
     }
 }
-

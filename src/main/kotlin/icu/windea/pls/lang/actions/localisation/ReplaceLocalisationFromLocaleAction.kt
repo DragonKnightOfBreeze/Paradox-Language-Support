@@ -15,9 +15,9 @@ import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.ide.notification.PlsNotificationGroups
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContext
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulationContextBuilder
-import icu.windea.pls.lang.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContextBuilder
+import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -68,19 +68,19 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
             }
 
             createNotification(selectedLocale, processedRef.get(), errorRef.get())
-                .addAction(ParadoxLocalisationManipulator.createRevertAction(allContexts))
-                .addAction(ParadoxLocalisationManipulator.createReapplyAction(allContexts))
+                .addAction(ParadoxLocalisationManipulationService.createRevertAction(allContexts))
+                .addAction(ParadoxLocalisationManipulationService.createReapplyAction(allContexts))
                 .notify(project)
         }
     }
 
     private suspend fun handleText(context: ParadoxLocalisationManipulationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-        ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
+        ParadoxLocalisationManipulationService.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationManipulationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.replace")
-        ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        ParadoxLocalisationManipulationService.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {

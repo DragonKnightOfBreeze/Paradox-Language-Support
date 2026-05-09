@@ -44,7 +44,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 规则名称。
  *
- * @see icu.windea.pls.config.manipulators.CwtConfigManipulator.inlineSingleAlias
+ * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineSingleAlias
  */
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty> {
     @FromName("single_alias[$]")

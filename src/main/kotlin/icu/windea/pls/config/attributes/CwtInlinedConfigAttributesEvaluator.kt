@@ -6,8 +6,8 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
 import icu.windea.pls.config.match.CwtConfigExpressionMatchService
+import icu.windea.pls.config.util.CwtConfigVisitorManager
 import icu.windea.pls.config.util.CwtMemberConfigInlinedRecursiveVisitor
 import icu.windea.pls.core.annotations.Optimized
 
@@ -27,13 +27,13 @@ class CwtInlinedConfigAttributesEvaluator {
 
     fun evaluate(name: String, singleAliasConfig: CwtSingleAliasConfig, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
         val visitor = buildVisitor(configGroup)
-        CwtConfigManipulator.visitSingleAlias(name, singleAliasConfig, visitor)
+        CwtConfigVisitorManager.visitSingleAlias(name, singleAliasConfig, visitor)
         return buildAttributes()
     }
 
     fun evaluate(name: String, aliasConfigGroup: Collection<List<CwtAliasConfig>>, configGroup: CwtConfigGroup): CwtInlinedConfigAttributes {
         val visitor = buildVisitor(configGroup)
-        CwtConfigManipulator.visitAliasGroup(name, aliasConfigGroup, visitor)
+        CwtConfigVisitorManager.visitAliasGroup(name, aliasConfigGroup, visitor)
         return buildAttributes()
     }
 

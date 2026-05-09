@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.manipulators
+package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -23,7 +23,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-object ParadoxLocalisationManipulator {
+object ParadoxLocalisationManipulationService {
     suspend fun searchTextFromLocale(context: ParadoxLocalisationManipulationContext, project: Project, locale: CwtLocaleConfig) {
         val newText = readAction {
             val type = context.element?.type ?: return@readAction null

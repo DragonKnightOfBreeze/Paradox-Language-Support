@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.manipulators
+package icu.windea.pls.lang.manipulation
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.SmartPsiElementPointer

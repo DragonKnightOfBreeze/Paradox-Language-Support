@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.manipulators.CwtConfigManipulator
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
@@ -95,7 +95,7 @@ private class CwtDeclarationConfigImpl(
     override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
+        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtDeclarationConfigImpl(name='$name')"
