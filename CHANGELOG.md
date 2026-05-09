@@ -2,7 +2,6 @@
 
 ## Unreleased
 
-- [ ] DELAY ~~PLANNED #163 [CK3] Gene tags / Single scalar with multiple definitions separated by comma~~
 - [x] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
 - [x] PLANNED 补充本地化文件中的快速复制文本的意向
 - [x] PLANNED 重构渲染器组件
