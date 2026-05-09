@@ -2027,7 +2027,7 @@ In config files, the supported scopes for triggers and effects are specified via
 alias[trigger:has_country_flag] = value[country_flag]
 ```
 
-#### How to specify color types in config files {#faq-color-type}
+#### How to Specify Color Types in Config Files {#faq-color-type}
 
 <!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.colorType -->
 <!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
@@ -2078,7 +2078,7 @@ color_field_rgb = rgb { 34 136 225 }
 color_field_hsv = hsv { 208 0.849 0.882 }
 ```
 
-#### How to specify file extensions for path references in config files {#faq-file-extensions}
+#### How to Specify File Extensions for Path References in Config Files {#faq-file-extensions}
 
 <!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.fileExtensions -->
 
