@@ -646,7 +646,7 @@ $$options = {
 
     #### Specifies the color type (`hex` / `rgb` / `hsv` / `hsv360`).
     ####
-    #### Specifies the parsing/rendering mode for color values.
+    #### Specifies the parsing/rendering mode for color fields.
     ####
     #### Applicable to: Configs corresponding to definition members (including the root property) that carry color information.
     ####

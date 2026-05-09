@@ -2,6 +2,7 @@ package icu.windea.pls.config.option
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtConfigApiStatus
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
@@ -160,6 +161,31 @@ interface CwtOptionDataHolder : UserDataHolder {
     val predicate: Map<String, ReversibleValue<String>>?
 
     /**
+     * 入栈作用域（push scope）。
+     *
+     * 将指定作用域（通常为 `this`）推入作用域栈，影响后续规则匹配的上下文。
+     * 返回值为归一化后的作用域 ID。
+     *
+     * ### 适用对象
+     *
+     * 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 兼容。插件会做作用域 ID 归一化。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## push_scope = country
+     * ```
+     *
+     * @see ParadoxScope
+     * @see ParadoxScopeContext
+     */
+    val pushScope: String?
+
+    /**
      * 替换作用域上下文（replace scopes）。
      *
      * 将当前上下文的 `this/root/from/...` 映射到指定的作用域 ID。
@@ -184,31 +210,6 @@ interface CwtOptionDataHolder : UserDataHolder {
      * @see ParadoxScopeContext
      */
     val replaceScopes: Map<String, String>?
-
-    /**
-     * 入栈作用域（push scope）。
-     *
-     * 将指定作用域（通常为 `this`）推入作用域栈，影响后续规则匹配的上下文。
-     * 返回值为归一化后的作用域 ID。
-     *
-     * ### 适用对象
-     *
-     * 各种可存在作用域上下文的规则（如类型规则、声明规则、别名规则、扩展规则等）。
-     *
-     * ### CWTools 兼容性
-     *
-     * 兼容。插件会做作用域 ID 归一化。
-     *
-     * ### 示例
-     *
-     * ```cwt
-     * ## push_scope = country
-     * ```
-     *
-     * @see ParadoxScope
-     * @see ParadoxScopeContext
-     */
-    val pushScope: String?
 
     /**
      * 初始的作用域上下文。
@@ -243,7 +244,7 @@ interface CwtOptionDataHolder : UserDataHolder {
      *
      * ```cwt
      * ## scope = country
-     * ## scope = { country planet }
+     * ## scopes = { country planet }
      * ```
      *
      * @see ParadoxScope
@@ -331,9 +332,9 @@ interface CwtOptionDataHolder : UserDataHolder {
     val contextKey: String?
 
     /**
-     * 上下文配置的聚合类型。
+     * 上下文规则的聚合类型。
      *
-     * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
+     * 指定 `x = {...}` 根下的“上下文规则”是单个（`single`）还是多个（`multiple`）。
      * 默认为 `single`。
      *
      * ### 适用对象
@@ -436,7 +437,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     val startsWith: String?
 
     /**
-     * 排除名单（only_if_not）。
+     * 排除名单。
      *
      * 指定一个集合，只要“名称不在集合内”即可匹配。
      *
@@ -457,52 +458,35 @@ interface CwtOptionDataHolder : UserDataHolder {
     val onlyIfNot: Set<String>?
 
     /**
-     * 图相关的关联类型集合（graph_related_types）。
-     *
-     * 示例：`## graph_related_types = { special_project anomaly_category }`
+     * 图相关的关联类型集合（graph related types）。
      *
      * ### CWTools 兼容性
      *
      * 未使用。
+     *
+     * ### 示例
+     * ```cwt
+     * ## graph_related_types = { special_project anomaly_category }
+     * ```
      */
     val graphRelatedTypes: Set<String>?
 
     /**
-     * （基于规则的代码检查的）严重度。
-     *
-     * 示例：`## severity = warning`
+     * 基于规则的代码检查的严重度（severity）。
      *
      * ### CWTools 兼容性
      *
      * 未使用。
+     *
+     * ### 示例
+     * ```
+     * ## severity = warning
+     * ```
      */
     val severity: String?
 
     /**
-     * 允许的文件扩展名集合（file_extensions）。
-     *
-     * 用于约束路径引用，从而提供代码检查与过滤代码补全。
-     *
-     * ### 适用对象
-     *
-     * 值为路径引用的成员规则（[CwtMemberConfig]）。
-     *
-     * ### CWTools 兼容性
-     *
-     * 不兼容。插件作为扩展提供。
-     *
-     * ### 示例
-     *
-     * ```cwt
-     * ## file_extensions = { png dds tga }
-     * ```
-     *
-     * @see CwtDataTypeSets.PathReference
-     */
-    val fileExtensions: Set<String>?
-
-    /**
-     * 修正分类键集合（modifier_categories）。
+     * 修正分类键集合（modifier categories）。
      *
      * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
      *
@@ -521,7 +505,7 @@ interface CwtOptionDataHolder : UserDataHolder {
     /**
      * 颜色类型（`hex` / `rgb` / `hsv` / `hsv360`）。
      *
-     * 指定颜色值的解析/渲染模式。
+     * 指定颜色字段的解析/渲染模式。
      *
      * ### 适用对象
      *
@@ -545,6 +529,32 @@ interface CwtOptionDataHolder : UserDataHolder {
      * ```
      */
     val colorType: String?
+
+    /**
+     * 允许的文件扩展名集合。
+     *
+     * 用于约束路径引用，从而提供代码检查与过滤代码补全。
+     *
+     * 需要注意的是，某些数据类型（如 [Icon][CwtDataTypes.Icon]）与格式（如已制定了扩展名信息）的路径引用不会携带扩展名信息，
+     * 因此也不应使用此选项。
+     *
+     * ### 适用对象
+     *
+     * 值为路径引用的成员规则（[CwtMemberConfig]）。
+     *
+     * ### CWTools 兼容性
+     *
+     * 不兼容。插件作为扩展提供。
+     *
+     * ### 示例
+     *
+     * ```cwt
+     * ## file_extensions = { png dds tga }
+     * ```
+     *
+     * @see CwtDataTypeSets.PathReference
+     */
+    val fileExtensions: Set<String>?
 
     /**
      * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。

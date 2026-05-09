@@ -12,7 +12,6 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.values.ReversibleValue
-import icu.windea.pls.inject.injectors.addon.InlinedDelegateFieldCodeInjectors
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeId
 
@@ -24,8 +23,8 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val cardinalityMinDefine by registerKey<String?>(this)
         val cardinalityMaxDefine by registerKey<String?>(this)
         val predicate by registerKey<Map<String, ReversibleValue<String>>?>(this)
-        val replaceScopes by registerKey<Map<String, String>?>(this)
         val pushScope by registerKey<String?>(this)
+        val replaceScopes by registerKey<Map<String, String>?>(this)
         val scopeContext by registerKey<ParadoxScopeContext?>(this)
         val supportedScopes by registerKey(this, ParadoxScopeId.anyScopeIdSet)
         val type by registerKey<String?>(this)
@@ -40,10 +39,11 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
         val onlyIfNot by registerKey<Set<String>?>(this)
         val graphRelatedTypes by registerKey<Set<String>?>(this)
         val severity by registerKey<String?>(this)
-        val fileExtensions by registerKey<Set<String>?>(this)
         val modifierCategories by registerKey<Set<String>?>(this)
         val colorType by registerKey<String?>(this)
+        val fileExtensions by registerKey<Set<String>?>(this)
         val inject by registerKey<String?>(this)
+
         val required by registerKey(this, false)
         val primary by registerKey(this, false)
         val inherit by registerKey(this, false)
@@ -60,8 +60,8 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     final override var cardinalityMinDefine by Keys.cardinalityMinDefine
     final override var cardinalityMaxDefine by Keys.cardinalityMaxDefine
     final override var predicate by Keys.predicate
-    final override var replaceScopes by Keys.replaceScopes
     final override var pushScope by Keys.pushScope
+    final override var replaceScopes by Keys.replaceScopes
     final override var scopeContext by Keys.scopeContext
     final override var supportedScopes by Keys.supportedScopes
     final override var type: String? by Keys.type
@@ -76,10 +76,11 @@ abstract class CwtOptionDataHolderBase : UserDataHolderBase(), CwtOptionDataHold
     final override var onlyIfNot by Keys.onlyIfNot
     final override var graphRelatedTypes by Keys.graphRelatedTypes
     final override var severity by Keys.severity
-    final override var fileExtensions by Keys.fileExtensions
     final override var modifierCategories by Keys.modifierCategories
     final override var colorType by Keys.colorType
+    final override var fileExtensions by Keys.fileExtensions
     final override var inject by Keys.inject
+
     final override var required by Keys.required
     final override var primary by Keys.primary
     final override var inherit by Keys.inherit

@@ -68,13 +68,13 @@ object CwtOptionDataProcessor {
                 val v = resolvePredicate(config) ?: return
                 optionData.predicate = v
             }
-            "replace_scope", "replace_scopes" -> {
-                val v = resolveReplaceScopes(config) ?: return
-                optionData.replaceScopes = v
-            }
             "push_scope" -> {
                 val v = resolvePushScope(config) ?: return
                 optionData.pushScope = v
+            }
+            "replace_scope", "replace_scopes" -> {
+                val v = resolveReplaceScopes(config) ?: return
+                optionData.replaceScopes = v
             }
             "scope", "scopes" -> {
                 val r = resolveSupportedScopes(config) ?: return

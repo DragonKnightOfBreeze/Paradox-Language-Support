@@ -1297,7 +1297,7 @@ inline_scripts = {
 
 #### ColorField {#data-type-color-field}
 
-匹配颜色值。带参数时，还会验证颜色类型前缀。
+匹配脚本颜色字段（如 `rgb { 255 255 255 }`）。带参数时，还会验证颜色类型前缀。
 
 对应的数据表达式的格式：
 - `colour_field` `color_field`
@@ -1895,6 +1895,8 @@ title
 
 #### 关于模板表达式 {#faq-template}
 
+<!-- @see icu.windea.pls.config.CwtDataTypes.TemplateExpression -->
+
 模板表达式由多个[数据表达式](#config-expression-data)片段（如定义引用、枚举引用、动态值引用等）与常量片段组合而成，用来进行更加灵活的匹配。详见[模板表达式](#config-expression-template)章节。
 
 以下示例展示了从简单字面量到复杂模板的演进：
@@ -1915,7 +1917,9 @@ a_value[anything]_b
 
 #### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
-从插件版本 1.3.6 开始，可以在规则表达式中使用 ANT 路径模式进行更灵活的匹配。ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
+<!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
+
+从插件版本 1.3.6 开始，可以在数据表达式中使用 ANT 路径模式进行更灵活的匹配。ANT 表达式通过前缀标识：`ant:` 表示区分大小写，`ant.i:` 表示忽略大小写。
 
 ANT 路径模式支持以下通配符：
 
@@ -1932,7 +1936,9 @@ ant.i:/foo/bar?/*
 
 #### 如何在规则文件中使用正则表达式 {#faq-regex}
 
-从插件版本 1.3.6 开始，可以在规则表达式中使用正则表达式进行更灵活的匹配。正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。前缀之后的部分即为标准的正则表达式。
+<!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
+
+从插件版本 1.3.6 开始，可以在数据表达式中使用正则表达式进行更灵活的匹配。正则表达式通过前缀标识：`re:` 表示区分大小写，`re.i:` 表示忽略大小写。前缀之后的部分即为标准的正则表达式。
 
 **示例**：
 
@@ -1943,12 +1949,14 @@ re.i:foo.*
 
 #### 如何在规则文件中指定作用域上下文 {#faq-scope-context}
 
-在规则文件中，作用域上下文是通过选项 `## push_scope` 与 `## replace_scopes`（或 `## replace_scope`）来指定的。
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.pushScope -->
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.replaceScopes -->
+
+在规则文件中，作用域上下文是通过选项 `## push_scope` 与 `## replace_scopes`（或 `## replace_scope`）指定的。
 
 `## push_scope = x` 用于将指定的作用域类型压入当前的作用域堆栈。
 
-`## replace_scopes = { this = x root = y}` 用于将指定的系统作用域到作用域类型的映射替换到当前的作用域上下文。
-仅支持 `this`、`root` 和基于 `from` 的系统作用域，不支持基于 `prev` 的系统作用域。
+`## replace_scopes = { this = x root = y}` 用于将指定的系统作用域到作用域类型的映射替换到当前的作用域上下文。仅支持 `this`、`root` 和基于 `from` 的系统作用域，不支持基于 `prev` 的系统作用域。
 
 **示例**：
 
@@ -1965,7 +1973,9 @@ some_config = single_alias_right[trigger_clause]
 
 #### 如何在规则文件中指定支持的作用域 {#faq-supported-scopes}
 
-在规则文件中，触发器（trigger）与效果（effect）的支持的作用域是通过选项 `## scopes`（或 `## scope`）来指定的。
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.supportedScopes -->
+
+在规则文件中，触发器（trigger）与效果（effect）的支持的作用域是通过选项 `## scopes`（或 `## scope`）指定的。
 
 **示例**：
 
@@ -1975,7 +1985,84 @@ some_config = single_alias_right[trigger_clause]
 alias[trigger:has_country_flag] = value[country_flag]
 ```
 
+#### 如何在规则文件中指定颜色类型 {#faq-color-type}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.colorType -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
+<!-- @see icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider -->
+
+在规则文件中，属性和值的颜色类型是通过选项 `## color_type` 指定的，这适用于字符串和数字数组。
+
+对于脚本颜色字段（如 `rgb { 255 255 255 }`），颜色类型由其匹配的数据表达式 `color[{type}]` 中的 `{type}` 指定，可参见 [ColorField](#data-type-color-field)。
+
+通过指定颜色类型，可以为脚本文件中的各种目标提供颜色的装订线图标，以便查看与修改颜色。
+
+**示例（规则片段）**：
+
+```cwt
+# specify the color type as hexadecimal
+
+## color_type = hex
+color = scalar
+
+# specify the color type as rgb
+
+## color_type = rgb
+color_rgb = {
+    ## cardinality = 3..4
+    int[0..255]
+}
+## color_type = hsv
+color_hsv = {
+    ## cardinality = 3..4
+    float
+}
+
+# inferred from data expression
+
+color_field_rgb = color[rgb]
+color_field_hsv = color[hsv]
+```
+
+**示例（匹配的脚本片段）**：
+
+```paradox_script
+color = 0x2288E1
+
+color_rgb = { 34 136 225 }
+color_hsv = { 208 0.849 0.882 }
+
+color_field_rgb = rgb { 34 136 225 }
+color_field_hsv = hsv { 208 0.849 0.882 }
+```
+
+#### 如何在规则文件中指定路径引用的扩展名 {#faq-file-extensions}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.fileExtensions -->
+
+在规则文件中，路径引用的允许的扩展名是通过选项 `## file_extensions` 指定的。
+
+通过指定允许的扩展名，可以限制路径引用可匹配的文件扩展名，从而提供代码检查与过滤代码补全。
+
+需要注意的是，某些数据类型（如 [Icon](#data-type-icon)）与格式（如已制定了扩展名信息）的路径引用不会携带扩展名信息，因此也不应使用此选项。
+
+**示例**：
+
+```cwt
+## file_extensions = { png dds tga }
+icon = filepath
+
+## file_extensions = { png dds tga }
+texture = filename[gfx/models]
+
+## file_extensions = { ogg }
+file = filepath[./]
+```
+
 #### 如何在规则文件中进行规则注入 {#faq-config-injection}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
 从插件版本 2.1.0 开始，可以通过使用选项 `## inject` 在规则的解析阶段进行规则注入。
 

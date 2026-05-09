@@ -97,7 +97,7 @@
 
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptStringColorProvider"/>
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptBlockColorProvider"/>
-    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorFieldColorProvider"/>
 
     <configFilterProvider implementation="icu.windea.pls.ep.config.config.CwtApiStatusBasedConfigFilterProvider"/>
     <configFilterProvider implementation="icu.windea.pls.ep.config.config.CwtForcedConfigFilterProvider"/>

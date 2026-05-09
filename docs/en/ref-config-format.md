@@ -1297,7 +1297,7 @@ Data expression format:
 
 #### ColorField {#data-type-color-field}
 
-Matches color values. With a parameter, also validates the color type prefix.
+Matches color fields (e.g., `rgb { 255 255 255 }`). With a parameter, also validates the color type prefix.
 
 Data expression format:
 - `colour_field` `color_field`
@@ -1902,6 +1902,8 @@ Schema expressions support the following four forms:
 
 #### About Template Expressions {#faq-template}
 
+<!-- @see icu.windea.pls.config.CwtDataTypes.TemplateExpression -->
+
 Template expressions are composed of multiple [data expression](#config-expression-data) fragments (such as definition references, enum references, dynamic value references, etc.) combined with constant fragments, used for more flexible matching. See the [Template Expression](#config-expression-template) chapter for details.
 
 The following examples demonstrate the progression from simple literals to complex templates:
@@ -1922,7 +1924,9 @@ a_value[anything]_b
 
 #### How to Use ANT Path Patterns in Config Files {#faq-ant}
 
-Starting from plugin version 1.3.6, ANT path patterns can be used in config expressions for more flexible matching. ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
+<!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->
+
+Starting from plugin version 1.3.6, ANT path patterns can be used in data expressions for more flexible matching. ANT expressions are identified by prefix: `ant:` for case-sensitive, `ant.i:` for case-insensitive.
 
 ANT path patterns support the following wildcards:
 
@@ -1939,7 +1943,9 @@ ant.i:/foo/bar?/*
 
 #### How to Use Regular Expressions in Config Files {#faq-regex}
 
-Starting from plugin version 1.3.6, regular expressions can be used in config expressions for more flexible matching. Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive. The part after the prefix is a standard regular expression.
+<!-- @see icu.windea.pls.config.CwtDataTypes.Regex -->
+
+Starting from plugin version 1.3.6, regular expressions can be used in data expressions for more flexible matching. Regular expressions are identified by prefix: `re:` for case-sensitive, `re.i:` for case-insensitive. The part after the prefix is a standard regular expression.
 
 **Example**:
 
@@ -1950,12 +1956,14 @@ re.i:foo.*
 
 #### How to Specify Scope Context in Config Files {#faq-scope-context}
 
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.pushScope -->
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.replaceScopes -->
+
 In config files, scope context is specified via the options `## push_scope` and `## replace_scopes` (or `## replace_scope`).
 
 `## push_scope = x` pushes the specified scope type onto the current scope stack.
 
-`## replace_scopes = { this = x root = y}` replaces the specified system scope to scope type mappings into the current scope context.
-Only `this`, `root`, and `from`-based system scopes are supported; `prev`-based system scopes are not supported.
+`## replace_scopes = { this = x root = y}` replaces the specified system scope to scope type mappings into the current scope context. Only `this`, `root`, and `from`-based system scopes are supported; `prev`-based system scopes are not supported.
 
 **Example**:
 
@@ -1972,6 +1980,8 @@ some_config = single_alias_right[trigger_clause]
 
 #### How to Specify Supported Scopes in Config Files {#faq-supported-scopes}
 
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.supportedScopes -->
+
 In config files, the supported scopes for triggers and effects are specified via the option `## scopes` (or `## scope`).
 
 **Example**:
@@ -1982,7 +1992,88 @@ In config files, the supported scopes for triggers and effects are specified via
 alias[trigger:has_country_flag] = value[country_flag]
 ```
 
+#### How to specify color types in config files {#faq-color-type}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.colorType -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.ColorField -->
+<!-- @see icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider -->
+
+In config files, color types for properties and values are specified via the option `## color_type`, which accepts `hex`, `rgb`, `hsv`, or `hsv360`. This applies to strings and numeric arrays.
+
+For script color fields (e.g. `rgb { 255 255 255 }`), the color type is inferred from the `{type}` in the matching data expression `color[{type}]`; see [ColorField](#data-type-color-field).
+
+By specifying a color type, color gutter icons can be provided for various targets in script files, allowing convenient viewing and editing of colors.
+
+**Example (config fragments)**：
+
+```cwt
+# specify the color type as hexadecimal
+
+## color_type = hex
+color = scalar
+
+# specify the color type as rgb
+
+## color_type = rgb
+color_rgb = {
+    ## cardinality = 3..4
+    int[0..255]
+}
+## color_type = hsv
+color_hsv = {
+    ## cardinality = 3..4
+    float
+}
+
+# inferred from data expression
+
+color_field_rgb = color[rgb]
+color_field_hsv = color[hsv]
+```
+
+**Example (matched script fragments)**：
+
+```paradox_script
+color = 0x2288E1
+
+color_rgb = { 34 136 225 }
+color_hsv = { 208 0.849 0.882 }
+
+color_field_rgb = rgb { 34 136 225 }
+color_field_hsv = hsv { 208 0.849 0.882 }
+```
+
+#### How to specify file extensions for path references in config files {#faq-file-extensions}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.fileExtensions -->
+
+In config files, the allowed file extensions for path references are specified via the option `## file_extensions`.
+
+By specifying a color type, it can constrain which file extensions path references can match, providing code inspection and filtered code completion.
+
+Note that path references in some formats do not carry extension information.
+
+By specifying allowed extensions, the plugin can limit the file extensions that path references can match, providing code inspection and filtered code completion.
+
+Note that path references of some data types (such as [Icon](#data-type-icon)) and formats (such as extension information has been specified) will not carry extension information, so this option should not be used.
+
+**Example**:
+
+```cwt
+## file_extensions = { png dds tga }
+icon = filepath
+
+## file_extensions = { png dds tga }
+texture = filename[gfx/models]
+
+## file_extensions = { ogg }
+file = filepath[./]
+```
+
 #### How to Perform Config Injection in Config Files {#faq-config-injection}
+
+<!-- @see icu.windea.pls.config.option.CwtOptionDataHolder.inject -->
+<!-- @see icu.windea.pls.ep.config.config.CwtInjectConfigPostProcessor -->
 
 Starting from plugin version 2.1.0, config injection can be performed during the config parsing phase by using the option `## inject`.
 

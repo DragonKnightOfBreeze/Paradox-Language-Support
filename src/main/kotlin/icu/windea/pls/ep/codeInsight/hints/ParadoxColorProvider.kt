@@ -22,21 +22,5 @@ interface ParadoxColorProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxColorProvider>("icu.windea.pls.colorProvider")
-
-        fun getColor(element: PsiElement, fromToken: Boolean = false): Color? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                val targetElement = if (fromToken) ep.getTargetElement(element) else element
-                if (targetElement == null) return@f null
-                ep.getColor(targetElement)
-            }
-        }
-
-        fun setColor(element: PsiElement, color: Color, fromToken: Boolean = false) {
-            EP_NAME.extensionList.any f@{ ep ->
-                val targetElement = if (fromToken) ep.getTargetElement(element) else element
-                if (targetElement == null) return@f false
-                ep.setColor(targetElement, color)
-            }
-        }
     }
 }
