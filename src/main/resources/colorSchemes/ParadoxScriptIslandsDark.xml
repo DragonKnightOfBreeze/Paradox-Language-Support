@@ -49,18 +49,12 @@
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.VALUE_FIELD">
-    <value>
-      <option name="FOREGROUND" value="56A8F5"/>
-    </value>
-  </option>
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
       <option name="FOREGROUND" value="BCBEC4"/>
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-
   <option name="PARADOX_SCRIPT.DIRECTIVE">
     <value>
       <option name="FOREGROUND" value="CF8E6D"/>
