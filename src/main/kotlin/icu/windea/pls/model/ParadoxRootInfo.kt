@@ -2,6 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.analysis.ParadoxGameTypeManager
 import icu.windea.pls.model.analysis.ParadoxRootMetadata
 
 /**
@@ -25,7 +26,6 @@ sealed interface ParadoxRootInfo {
         override val rootFile: VirtualFile,
         open val metadata: ParadoxRootMetadata,
     ) : ParadoxRootInfo {
-        override val gameType: ParadoxGameType get() = metadata.gameType
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
     }
@@ -34,8 +34,9 @@ sealed interface ParadoxRootInfo {
         rootFile: VirtualFile,
         override val metadata: ParadoxRootMetadata.Game
     ) : MetadataBased(rootFile, metadata) {
-        override val qualifiedName: String get() = metadata.qualifiedName
-        override val steamId: String get() = metadata.steamId
+        override val gameType: ParadoxGameType get() = ParadoxGameTypeManager.getGameGameType(this)
+        override val qualifiedName: String get() = ParadoxGameTypeManager.getGameQualifiedName(gameType, version)
+        override val steamId: String get() = gameType.steamId
 
         override val mainEntries: Set<String> get() = gameType.metadata.gameMainEntries
         override val extraEntries: Set<String> get() = gameType.metadata.gameExtraEntries
@@ -47,15 +48,16 @@ sealed interface ParadoxRootInfo {
         rootFile: VirtualFile,
         override val metadata: ParadoxRootMetadata.Mod
     ) : MetadataBased(rootFile, metadata) {
-        val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
+        val inferredGameType: ParadoxGameType? get() = metadata.gameType
         val supportedVersion: String? get() = metadata.supportedVersion
         val picture: String? get() = metadata.picture // 相对于模组目录的路径
         val tags: Set<String> get() = metadata.tags
         val remoteId: String? get() = metadata.remoteId
         val source: ParadoxModSource get() = metadata.source
 
-        override val qualifiedName: String get() = metadata.qualifiedName
-        override val steamId: String? get() = metadata.steamId
+        override val gameType: ParadoxGameType get() = ParadoxGameTypeManager.getModGameType(this)
+        override val qualifiedName: String get() = ParadoxGameTypeManager.getModQualifiedName(gameType, name, version)
+        override val steamId: String? get() = if (source == ParadoxModSource.Steam) remoteId else null
 
         override val mainEntries: Set<String> get() = gameType.metadata.modMainEntries
         override val extraEntries: Set<String> get() = gameType.metadata.modExtraEntries

@@ -9,7 +9,9 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxDefaultGameTypeMetadata
 import icu.windea.pls.model.analysis.ParadoxFallbackGameTypeMetadata
 import icu.windea.pls.model.analysis.ParadoxGameTypeMetadata
@@ -68,6 +70,16 @@ object ParadoxGameTypeManager {
 
     fun getMetadata(gameType: ParadoxGameType): ParadoxGameTypeMetadata {
         return metadataMap.getValue(gameType)
+    }
+
+    fun getGameGameType(rootInfo: ParadoxRootInfo.Game): ParadoxGameType {
+        return rootInfo.metadata.gameType
+    }
+
+    fun getModGameType(rootInfo: ParadoxRootInfo.Mod): ParadoxGameType {
+        return rootInfo.metadata.gameType
+            ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootInfo.rootFile.path)?.gameType
+            ?: ParadoxGameType.getDefault()
     }
 
     fun getGameQualifiedName(gameType: ParadoxGameType, version: String?): String {

@@ -36,7 +36,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
 
         val metadata = rootInfo.metadata
         if (metadata !is ParadoxMetadataJsonBasedModMetadata) return null
-        if (metadata.inferredGameType != null) return null
+        if (metadata.gameType != null) return null
 
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
         if (!isInProject) return null
