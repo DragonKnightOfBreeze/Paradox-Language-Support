@@ -2,20 +2,25 @@
 
 ## Unreleased
 
-- [x] PLANNED #296 生成本地化时，支持配置本地化条目的排序方式，以及是否在分组之间添加空行
-- [x] PLANNED 补充本地化文件中的快速复制文本的意向
-- [x] PLANNED 重构渲染器组件
-- [x] P2 消除或重构initializer组件 & `PlsDataPathService`
-- [x] P2 模组描述符文件（在项目视图以及其他地方中）的图标与显示文本不符合预期的回归BUG
-- [x] P3 `CwtDefineConfig` - 为定值提供专门的规则以及基于此的语言功能。
-- [x] P3 接上，在解析类型规则和声明规则时，强制（目前可以硬编码）排除定值和内联脚本相关的。
-- [x] P2 color scheme - 优化/整理配色选项和预览文本。
-- [x] P3 检查设置页面，优化文字表述，修正错误。
-- [x] P3 为规则选项提供文档注释，基于schema规则文件。
-- [x] P3 在schema规则文件中补充文档注释。
-- [x] P3 清理和优化各个代码检查的检查项描述和报错描述。
-- [x] P3 如果用户在内联数学表达式中引入封装变量引用时使用了 `@var`（而非正确的 `var`），可以考虑在语法层面兼容，但是通过annotator提供报错和快速修复。
-- [x] P1 适用 `FileRenderCodeInjector` 时，如果需要解析 rootInfo，多次调用 `ParadoxMetadataService.getLauncherSettingsJsonFile` 可能导致 IDE 冻结一段时间。
+- [ ] P2 提供工具动作，弹出对话框，以便快速复制各种路径与链接。
+- [ ] P3 #314 表头列的列名（也就是 columnKey）可以重复，因此在解析规则数据和语义匹配时应基于列索引，而非列名。
+- [ ] P3 #314 为 rowConfig 添加一个属性，从而允许忽略解析文件中最后一行
+- [ ] P2 重构复杂表达式的API（改为基于手写的 scanner 和 resolver，进行递归向下解析）
+- [ ] P3 #163 支持复杂表达式 `ParadoxDynamicValueSetExpression`
+  - 读：`set_flags = "flag1,flag2"`
+  - 写：`required_flags ="flag1,not(flag2)"`
+- [ ] P3 支持复杂表达式 `ParadoxArrayDefineReferenceExpression`
+  - 格式：`array_define:Namespace|Variabe|Index`
+- [ ] P3 增强对数据类型 `ShaderEffect` 的支持（将其引用视为动态引用，尽管其声明实际上位于 `.shader` 文件中）
+  - 对应的数据表达式：`$shader_effect`
+- [ ] P3 增强对数据类型 `MeshLocator` 的支持（将其引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中）
+  - 对应的数据表达式：`$mesh_locator`
+- [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
+- [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
+- [ ] #324 Nested Subtypes in types localisation
+- [ ] #326 切换游戏类型问题
+
+## 2.1.9-dev
 
 ## 2.1.8 - 2026-05-10
 
