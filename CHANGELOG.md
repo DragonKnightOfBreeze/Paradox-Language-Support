@@ -17,8 +17,8 @@
   - 对应的数据表达式：`$mesh_locator`
 - [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
 - [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
-- [ ] #324 Nested Subtypes in types localisation
-- [ ] #326 切换游戏类型问题
+- [x] #324 Nested Subtypes in types localisation
+- [x] #326 切换游戏类型问题
 
 ## 2.1.9-dev
 
