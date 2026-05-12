@@ -1,6 +1,7 @@
 package icu.windea.pls.ide.analysis
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
@@ -17,13 +18,31 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object PlsAnalysisManager {
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
         // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
         // exclude some specific root file paths to avoid parsing and indexing unexpected files
         return rootFilePath.isEmpty() || rootFilePath == "/"
+    }
+
+    fun findAllOpenFiles(): Set<VirtualFile> {
+        val allEditors = EditorFactory.getInstance().allEditors
+        if (allEditors.isEmpty()) return emptySet()
+        val files = mutableSetOf<VirtualFile>()
+        runSmartReadAction {
+            for (editor in allEditors) {
+                val file = editor.virtualFile ?: continue
+                if (!file.isFile || file.fileType !is ParadoxFileType) continue
+                files.add(file)
+            }
+        }
+        if (files.isEmpty()) return emptySet()
+        return files
     }
 
     fun findAllFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
@@ -61,22 +80,30 @@ object PlsAnalysisManager {
         return files
     }
 
-    fun findAllOpenFiles(): Set<VirtualFile> {
-        val allEditors = EditorFactory.getInstance().allEditors
-        if (allEditors.isEmpty()) return emptySet()
+    fun findRootFilesByRootFilePaths(rootFilePaths: Set<String>): Set<VirtualFile> {
+        if (rootFilePaths.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
         runSmartReadAction {
-            for (editor in allEditors) {
-                val file = editor.virtualFile ?: continue
-                if (!file.isFile || file.fileType !is ParadoxFileType) continue
-                files.add(file)
+            for (rootFilePath in rootFilePaths) {
+                if (isExcludedRootFilePath(rootFilePath)) continue
+                val rootFile = rootFilePath.toVirtualFile() ?: continue
+                files.add(rootFile)
             }
         }
         if (files.isEmpty()) return emptySet()
         return files
     }
 
-    fun refreshAllFileTrackers() {
+    fun refreshAnalysisData(rootFiles: Collection<VirtualFile>) {
+        if (rootFiles.isEmpty()) return
+        with(ParadoxAnalysisDataService.getInstance()) {
+            rootFiles.forEach { rootFile ->
+                rootFile.cachedRootInfo = null
+            }
+        }
+    }
+
+    fun refreshFileModificationTrackers() {
         ParadoxModificationTrackers.ScriptFile.incModificationCount()
         ParadoxModificationTrackers.LocalisationFile.incModificationCount()
         ParadoxModificationTrackers.CsvFile.incModificationCount()
@@ -114,10 +141,12 @@ object PlsAnalysisManager {
 
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
-            // refresh all file trackers
-            refreshAllFileTrackers()
+            // refresh file trackers
+            refreshFileModificationTrackers()
             // reparse files
-            FileContentUtilCore.reparseFiles(files)
+            withContext(Dispatchers.EDT) {
+                FileContentUtilCore.reparseFiles(files)
+            }
         }
     }
 }

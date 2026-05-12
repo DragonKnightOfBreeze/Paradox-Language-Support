@@ -18,8 +18,6 @@ import icu.windea.pls.model.constants.PlsConstants
 
 @Optimized
 class ParadoxFileChangeCollector {
-    private val dataService get() = ParadoxAnalysisDataService.getInstance()
-
     private val rootInfoContextFiles: MutableSet<VirtualFile> = FastSet()
     private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = FastSet()
 
@@ -159,6 +157,7 @@ class ParadoxFileChangeCollector {
         // NOTE 2.1.2 分析数据缓存需要在 VFS 更改之后再清空，否则可能会被再次加载
 
         // 清空分析数据缓存
+        val dataService = ParadoxAnalysisDataService.getInstance()
         if (rootInfoContextFiles.isNotEmpty()) {
             rootInfoContextFiles.forEach { contextFile ->
                 selectRootFile(contextFile)?.let { rootFile -> rootFilesToClearRootInfo += rootFile }

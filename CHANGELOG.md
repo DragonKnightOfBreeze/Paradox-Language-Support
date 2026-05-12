@@ -22,6 +22,9 @@
 
 ## 2.1.9-dev
 
+- [x] 修复游戏类型发生变更时，分析数据可能未被正确刷新的问题 / Fixed an issue that analysis data may not be refreshed when game type is changed ([#326](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/32))
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 2.1.8 - 2026-05-10
 
 - [x] 修复模组描述符文件的图标与显示文本与预期不符的回归BUG / Fixed a regression bug where the icon and presentable text of the mod descriptor file were not as expected

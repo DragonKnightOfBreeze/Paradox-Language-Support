@@ -199,8 +199,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     fun reparseAllOpenFiles() {
         if (project.isDefault || project.isDisposed) return
         // 重新解析已打开的文件
-        val openedFiles = PlsAnalysisManager.findAllOpenFiles()
-        PlsAnalysisManager.reparseFiles(openedFiles)
+        val allOpenFiles = PlsAnalysisManager.findAllOpenFiles()
+        PlsAnalysisManager.reparseFiles(allOpenFiles)
     }
 
     fun reparseAllFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
