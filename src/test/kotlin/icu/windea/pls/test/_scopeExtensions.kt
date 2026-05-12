@@ -1,5 +1,6 @@
 package icu.windea.pls.test
 
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
@@ -49,6 +50,8 @@ context(_: UsefulTestCase)
 fun markIntegrationTest() {
     ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
     ParadoxAnalysisInjector.configureUseGameTypeInference(true)
+
+    addAdditionalAllowedRoots(PathManager.getPluginsDir()) // Why should I add this? So unreasonable.
 }
 
 context(_: UsefulTestCase)

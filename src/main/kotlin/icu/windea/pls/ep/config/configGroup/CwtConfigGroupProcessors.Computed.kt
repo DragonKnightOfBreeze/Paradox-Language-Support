@@ -154,7 +154,11 @@ class CwtComputedConfigGroupProcessor : CwtConfigGroupProcessor {
             with(initializer.relatedLocalisationPatterns) {
                 val r = mutableSetOf<String>()
                 initializer.types.values.forEach { c ->
-                    c.localisation?.locationConfigs?.forEach { (_, lc) -> r += lc.value }
+                    c.localisation?.locationConfigGroup?.values?.forEach { lcs ->
+                        lcs.forEach { lc ->
+                            r += lc.value
+                        }
+                    }
                 }
                 r.forEach { s ->
                     val i = s.indexOf('$')

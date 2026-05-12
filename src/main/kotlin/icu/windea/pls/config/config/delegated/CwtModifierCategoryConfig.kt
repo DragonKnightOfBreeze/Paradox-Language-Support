@@ -66,13 +66,13 @@ private class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.
 
     private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
         val name = config.key
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid modifier category config (name: $name): Missing properties.".withLocationPrefix(config))
             return null
         }
         // may be empty here (e.g., "AI Economy")
-        val supportedScopes = propElements.find { it.key == "supported_scopes" }?.let { prop ->
+        val supportedScopes = propConfigs.find { it.key == "supported_scopes" }?.let { prop ->
             buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) }
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeId.getId(v)) } }

@@ -43,12 +43,12 @@ private class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Re
             val map = caseInsensitiveStringKeyMap<CwtFoldingSettingsConfig>()
             for (property in groupProperty.properties.orEmpty()) {
                 val id = property.key
-                val propElements = property.properties
-                if (propElements.isNullOrEmpty()) {
+                val propConfigs = property.properties
+                if (propConfigs.isNullOrEmpty()) {
                     logger.warn("Skipped invalid internal folding settings config (id: $id): Missing properties".withLocationPrefix(property))
                     continue
                 }
-                val propGroup = propElements.groupBy { it.key }
+                val propGroup = propConfigs.groupBy { it.key }
                 val key = propGroup.getOne("key")?.stringValue
                 val keys = propGroup.getOne("keys")?.values?.mapNotNull { it.stringValue }
                 val placeholder = propGroup.getOne("placeholder")?.stringValue

@@ -63,12 +63,14 @@ object CwtConfigCopyService {
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
         configs.forEachFast f@{ config ->
-            val matched = isSubtypeMatchedInDeclarationConfig(config, context)
-            if (matched != null) {
+            run r@{
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
-                if (matched) {
-                    result += deepCopyConfigsInDeclaration(config, parentConfig, context).orEmpty()
-                }
+                val subtypes = context.definitionSubtypes ?: return@r
+                val subtypeExpression = getSubtypeExpression(config) ?: return@r
+                if (config.configs.isNullOrEmpty()) return@f // skip
+                val matched = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)
+                if (!matched) return@f // skip
+                result += deepCopyConfigsInDeclaration(config, parentConfig, context).orEmpty()
                 return@f
             }
 
@@ -81,14 +83,6 @@ object CwtConfigCopyService {
         result.forEachFast { it.parentConfig = parentConfig } // 确保绑定了父规则
         injectConfigsForDeepCopy(parentConfig, result) ?: return emptyList() // 尝试注入规则，如果失败则返回空列表（即使输入的结果为空也要尝试）
         return result // 这里需要直接返回可变列表
-    }
-
-    private fun isSubtypeMatchedInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): Boolean? {
-        if (config !is CwtPropertyConfig) return null
-        val subtypeString = config.key.removeSurroundingOrNull("subtype[", "]") ?: return null
-        val subtypeExpression = ParadoxDefinitionSubtypeExpression.resolve(subtypeString)
-        val subtypes = context.definitionSubtypes
-        return subtypes != null && subtypeExpression.matches(subtypes)
     }
 
     private fun injectConfigsForDeepCopy(parentConfig: CwtMemberConfig<*>, result: MutableList<CwtMemberConfig<*>>): Boolean? {
@@ -105,5 +99,37 @@ object CwtConfigCopyService {
         // NOTE 2.1.1 这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
         // NOTE 2.1.1 为了优化性能，这里可以直接检查是否引用相等
         return parentConfig.pointer.takeIf { it !== emptyPointer<PsiElement>() }
+    }
+
+    fun getSubtypeExpression(config: CwtMemberConfig<*>): String? {
+        if (config !is CwtPropertyConfig) return null
+        return config.key.removeSurroundingOrNull("subtype[", "]")
+    }
+
+    @Optimized
+    fun flattenBySubtypeExpression(rootConfig: CwtMemberConfig<*>, action: (config: CwtMemberConfig<*>, expression: String) -> Unit) {
+        flattenBySubtypeExpressionRecursively(rootConfig, "", action)
+    }
+
+    private fun flattenBySubtypeExpressionRecursively(rootConfig: CwtMemberConfig<*>, currentExpression: String, action: (CwtMemberConfig<*>, String) -> Unit) {
+        rootConfig.configs?.forEachFast f@{ config ->
+            val nextExpression = getSubtypeExpression(config)
+            if (nextExpression != null) {
+                if (config.configs.isNullOrEmpty()) return@f // skip
+                val mergedExpression = mergeSubtypeExpression(currentExpression, nextExpression)
+                flattenBySubtypeExpressionRecursively(config, mergedExpression, action)
+            } else {
+                action(config, currentExpression)
+            }
+        }
+    }
+
+    private fun mergeSubtypeExpression(expression1: String, expression2: String): String {
+        return when {
+            expression1.isEmpty() -> expression2
+            expression2.isEmpty() -> expression1
+            expression1 == expression2 -> expression1
+            else -> "$expression1&$expression2"
+        }
     }
 }

@@ -72,18 +72,18 @@ private class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigResol
     private fun doResolve(config: CwtPropertyConfig): CwtEnumConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.optimized() ?: return null
-        val valueElements = config.values
-        if (valueElements == null) {
+        val valueConfigs = config.values
+        if (valueConfigs == null) {
             logger.warn("Skipped invalid enum config (name: $name): Null values.".withLocationPrefix(config))
             return null
         }
-        if (valueElements.isEmpty()) {
+        if (valueConfigs.isEmpty()) {
             logger.debug { "Resolved enum config with empty values (name: $name).".withLocationPrefix(config) }
             return CwtEnumConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = caseInsensitiveStringSet() // ignore case
         val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // ignore case
-        for (valueElement in valueElements) {
+        for (valueElement in valueConfigs) {
             values.add(valueElement.value)
             valueConfigMap.put(valueElement.value, valueElement)
         }

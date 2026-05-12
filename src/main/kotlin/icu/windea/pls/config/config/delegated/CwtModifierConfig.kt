@@ -101,7 +101,7 @@ private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCon
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug { "Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config) }
+            logger.warn("Skipped invalid modifier config (name: $name): Null categories".withLocationPrefix(config))
             return null
         }
         logger.debug { "Resolved modifier config (name: $name).".withLocationPrefix(config) }
@@ -116,7 +116,7 @@ private class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCon
         // string | string[]
         val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
-            logger.debug { "Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config) }
+            logger.debug("Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config))
             return null
         }
         val modifierName = name.replace("$", "<$typeExpression>").optimized()

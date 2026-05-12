@@ -101,8 +101,8 @@ private class CwtMacroConfigResolverImpl : CwtMacroConfig.Resolver, CwtConfigRes
                 CwtInlineScriptMacroConfig(config, name)
             }
             "definition_injection" -> {
-                val propElements = config.properties.orEmpty()
-                val propGroup = propElements.groupBy { it.key }
+                val propConfigs = config.properties.orEmpty()
+                val propGroup = propConfigs.groupBy { it.key }
                 val modeConfigs = propGroup.getOne("modes")?.let { prop ->
                     prop.values?.associateByTo(caseInsensitiveStringKeyMap()) { it.stringValue }
                 }?.optimized().orEmpty()

@@ -44,12 +44,12 @@ private class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplateS
             val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
             for (property in groupProperty.properties.orEmpty()) {
                 val id = property.key
-                val propElements = property.properties
-                if (propElements.isNullOrEmpty()) {
+                val propConfigs = property.properties
+                if (propConfigs.isNullOrEmpty()) {
                     logger.warn("Skipped invalid internal postfix template settings config (id: $id): Missing properties".withLocationPrefix(property))
                     continue
                 }
-                val propGroup = propElements.groupBy { it.key }
+                val propGroup = propConfigs.groupBy { it.key }
                 val key = propGroup.getOne("key")?.stringValue
                 val example = propGroup.getOne("example")?.stringValue
                 val variables = propGroup.getOne("variables")?.properties?.associateBy({ it.key }, { it.value }).orEmpty()

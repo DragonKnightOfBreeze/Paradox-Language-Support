@@ -80,12 +80,12 @@ private class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeCon
 
     private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
         val name = config.key
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid database object type config (name: $name): Missing properties.".withLocationPrefix(config))
             return null
         }
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val type = propGroup.getOne("type")?.stringValue
         val swapType = propGroup.getOne("swap_type")?.stringValue
         val localisation = propGroup.getOne("localisation")?.stringValue

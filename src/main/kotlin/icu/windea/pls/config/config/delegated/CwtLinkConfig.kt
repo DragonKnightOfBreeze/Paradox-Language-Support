@@ -146,12 +146,13 @@ private class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigResol
 
     private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean = false): CwtLinkConfig? {
         val name = config.key
-        val props = config.properties ?: run {
-            logger.warn("Skipped invalid link config (name: $name): Missing properties.".withLocationPrefix(config))
+        val propConfigs = config.properties
+        if (propConfigs == null) {
+            logger.warn("Skipped invalid link config (name: $name): Null properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = props.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val type = propGroup.getOne("type")?.stringValue.let { CwtLinkType.resolve(it) }
         val fromData = propGroup.getOne("from_data")?.booleanValue ?: false
         val fromArgument = propGroup.getOne("from_argument")?.booleanValue ?: false

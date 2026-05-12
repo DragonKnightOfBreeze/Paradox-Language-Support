@@ -232,4 +232,22 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val otherChildren = otherParent.configs?.size
         assertEquals(otherChildren, otherParent.configs?.size)
     }
+
+    @Test
+    fun testFlattenBySubtypeExpression() {
+        myFixture.configureByFile("features/config/manipulation/flatten_by_subtype_expression.test.cwt")
+        val file = myFixture.file as CwtFile
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
+        val root = file.block!!
+
+        val containerProp = root.findChild<CwtProperty> { it.name == "k1" }!!
+        val container = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
+
+        val expressions = mutableListOf<String>()
+        CwtConfigCopyService.flattenBySubtypeExpression(container) { _, expression ->
+            expressions.add(expression)
+        }
+        val expect = listOf("", "t2", "t2&t4", "t2&t4&t5", "t2&t4&t6")
+        assertOrderedEquals(expressions, expect)
+    }
 }

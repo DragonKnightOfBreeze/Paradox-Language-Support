@@ -78,13 +78,13 @@ private class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolve
 
     private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
+        val propConfigs = config.properties
+        if (propConfigs.isNullOrEmpty()) {
             logger.warn("Skipped invalid row config (name: $name): Empty properties.".withLocationPrefix(config))
             return null
         }
 
-        val propGroup = propElements.groupBy { it.key }
+        val propGroup = propConfigs.groupBy { it.key }
         val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()

@@ -70,18 +70,18 @@ private class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.
     private fun doResolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
         val key = config.key
         val name = key.removeSurroundingOrNull("value[", "]")?.orNull()?.optimized() ?: return null
-        val valueElements = config.values
-        if (valueElements == null) {
+        val valueConfigs = config.values
+        if (valueConfigs == null) {
             logger.warn("Skipped invalid dynamic value type config (name: $name): Null values.".withLocationPrefix(config))
             return null
         }
-        if (valueElements.isEmpty()) {
+        if (valueConfigs.isEmpty()) {
             logger.debug { "Resolved dynamic value type config with empty values (name: $name).".withLocationPrefix(config) }
             return CwtDynamicValueTypeConfigImpl(config, name, emptySet(), emptyMap())
         }
         val values = mutableSetOf<String>()
         val valueConfigMap = mutableMapOf<String, CwtValueConfig>()
-        for (propertyConfigValue in valueElements) {
+        for (propertyConfigValue in valueConfigs) {
             val v = propertyConfigValue.value.optimized()
             values.add(v)
             valueConfigMap.put(v, propertyConfigValue)

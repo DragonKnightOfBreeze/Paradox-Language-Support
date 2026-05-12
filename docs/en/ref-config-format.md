@@ -327,7 +327,9 @@ Path location:
 - Localisation: `types/type[{type}]/localisation`, where `{type}` is the definition type.
 - Images: `types/type[{type}]/images`, where `{type}` is the definition type.
 
-Both share the same structure: composed of "subtype expression + location config" pairs. At runtime, they are filtered and merged based on the actual "definition's subtype set" to produce the final config list. Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
+Both have the same structure and contain multiple location configs. You can use `subtype[{expression}] = {...}` to specify the subtypes that need to be matched for a set of location configs, where `{expression}` is a subtype expression (e.g., `type`, `!type`, `type1&!type2`). Nesting is supported.
+
+Common options for location configs include `required` (whether the item is required) and `primary` (whether it is the primary item, used for the main display icon / primary name). For the detailed syntax of location expressions, see [Location Expression](#config-expression-location).
 
 Example:
 
