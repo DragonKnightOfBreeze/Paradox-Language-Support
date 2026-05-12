@@ -484,7 +484,15 @@ Path location:
 
 - `rows/row[{name}]`, where `{name}` is the config name.
 
-The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan. The `columns` section declares the mapping from column names to column configs, and `end_column` declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
+- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
+- `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
+- `columns`: Declares the mapping from column names to column configs
+- `end_column`: Declares the terminating column name (once matched, subsequent columns are treated as optional trailing columns).
+
+The path matching logic of row configs is the same as in [type configs](#config-type).
 
 Example:
 
@@ -568,7 +576,15 @@ enums = {
 
 Complex enums dynamically collect enum values from script files based on path and anchor points.
 
-The `path` / `path_file` / `path_extension` / `path_pattern` / `path_strict` combination determines the set of files to scan (path matching logic is the same as in [type configs](#config-type)). `start_from_root` specifies whether to start searching for anchor points from the file top (rather than the next level below top-level properties). The `name` section describes how to locate value anchors in matching files — the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
+- `path`: Directory path of files to scan (the `game/` prefix is automatically removed during parsing). Multiple values can be declared.
+- `path_file`: Restricts the filename (without extension). If specified, `path_extension` no longer takes effect independently.
+- `path_extension`: Restricts the file extension (automatically normalized during parsing, e.g. adding `.`). Only takes effect independently when `path_file` is not specified.
+- `path_pattern`: Uses ANT path patterns to match file paths. Multiple values can be declared, independent of `path` — if any `path_pattern` matches, the path check passes.
+- `path_strict`: When set to `yes`, forces exact directory matching without matching subdirectories.
+- `start_from_root`: Specifies whether to start searching for anchor points from the file top (rather than the next level below top-level properties).
+- `name`: Describes how to locate value anchors in matching files — the implementation collects all property keys, property values, or block member values named `enum_name` as anchors.
+
+The path matching logic of complex enum configs is the same as in [type configs](#config-type).
 
 Complex enum matching flow: For each string expression in a matching file, the plugin checks whether it can serve as an anchor for a complex enum value. The specific steps are: First, find config entries containing `enum_name` in the `name` section; then, based on the position where `enum_name` appears (as a property key, property value, or block member value), determine the current expression's role — if `enum_name` is on the property key side, the current property key is the enum value anchor; if `enum_name` is on the property value side, the current property's value is the enum value anchor; if `enum_name` is a block member value, that value itself is the enum value anchor. Finally, match parent structures upward layer by layer from the anchor until reaching the root of the `name` section (`start_from_root` being `yes` requires reaching the file root level; otherwise, reaching the next level below top-level properties is sufficient).
 

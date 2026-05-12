@@ -50,7 +50,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * ```
  *
  * @property name 规则名称。
- * @property columns 各列名到对应列规则的映射。
+ * @property columns 每一列的列名到对应列规则的映射。
  * @property endColumn 若匹配到该列名，视作可省略的最后一列。
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtFilePathMatchableConfig<CwtProperty> {
