@@ -2,7 +2,6 @@
 
 ## Unreleased
 
-- [ ] P2 提供工具动作，弹出对话框，以便快速复制各种路径与链接。
 - [ ] P3 #314 表头列的列名（也就是 columnKey）可以重复，因此在解析规则数据和语义匹配时应基于列索引，而非列名。
 - [ ] P3 #314 为 rowConfig 添加一个属性，从而允许忽略解析文件中最后一行
 - [ ] P2 重构复杂表达式的API（改为基于手写的 scanner 和 resolver，进行递归向下解析）
@@ -16,14 +15,14 @@
 - [ ] P3 增强对数据类型 `MeshLocator` 的支持（将其引用视为动态引用，尽管其声明实际上位于 `.mesh` 文件中）
   - 对应的数据表达式：`$mesh_locator`
 - [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
-- [ ] P4 对代码补全系统的重构（改为传递专门的、只读的上下文对象）
+- [ ] P4 对查询和查询器的重构（改为传递专门的、只读的上下文对象）
 - [x] #324 Nested Subtypes in types localisation
 - [x] #326 切换游戏类型问题
 
 ## 2.1.9-dev
 
 - [x] 修复游戏类型发生变更时，分析数据可能未被正确刷新的问题 / Fixed an issue that analysis data may not be refreshed when game type is changed ([#326](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/326))
-- [x] 支持在类型展示规则中使用嵌套的 `subtype[x] = {...}` / Supported nested `subtype[x] = {...}` in type presentation config ([#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324))
+- [x] 支持在类型展示规则中使用嵌套的 `subtype[x] = {...}` / Supported nested `subtype[x] = {...}` in type presentation configs ([#324](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/324))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.1.8 - 2026-05-10
