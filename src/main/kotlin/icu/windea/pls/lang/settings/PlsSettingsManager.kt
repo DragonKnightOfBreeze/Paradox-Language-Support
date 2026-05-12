@@ -33,7 +33,7 @@ object PlsSettingsManager {
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxPreferredLocaleListener.TOPIC).onChange(oldPreferredLocale, newPreferredLocale)
 
-        refreshForAllOpenFiles(callbackLock)
+        refreshInlayHints(callbackLock)
     }
 
     fun refreshForFilesByFileNames(callbackLock: CallbackLock, fileNames: MutableSet<String>) {
@@ -48,7 +48,8 @@ object PlsSettingsManager {
 
         ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
 
-        refreshForAllOpenFiles(callbackLock)
+        refreshFiles(callbackLock)
+        refreshInlayHints(callbackLock)
     }
 
     fun refreshForInlineScriptInference(callbackLock: CallbackLock) {
@@ -68,14 +69,19 @@ object PlsSettingsManager {
 
         ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
-        refreshForAllOpenFiles(callbackLock)
+        refreshFiles(callbackLock)
+        refreshInlayHints(callbackLock)
     }
 
-    fun refreshForAllOpenFiles(callbackLock: CallbackLock) {
-        if (!callbackLock.check("refreshForAllOpenFiles")) return
+    fun refreshFiles(callbackLock: CallbackLock) {
+        if (!callbackLock.check("refreshFiles")) return
 
-        // 刷新所有已打开的文件
-        val files = PlsAnalysisManager.findAllOpenFiles()
-        PlsAnalysisManager.refreshFiles(files)
+        PlsAnalysisManager.refreshFiles()
+    }
+
+    fun refreshInlayHints(callbackLock: CallbackLock) {
+        if (!callbackLock.check("refreshInlayHints")) return
+
+        PlsAnalysisManager.refreshInlayHints()
     }
 }

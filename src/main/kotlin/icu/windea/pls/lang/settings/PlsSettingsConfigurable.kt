@@ -53,18 +53,19 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
     private fun Panel.configureGroupForGeneral() {
         val groupName = "general"
+        val settings = PlsSettings.getInstance().state
         val gameTypes = ParadoxGameType.getAll()
 
         // defaultGameType
         row {
             label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupName)
                 .comment(PlsBundle.message("settings.general.defaultGameType.comment"))
-            var defaultGameType = PlsSettings.getInstance().state.defaultGameType
+            var defaultGameType = settings.defaultGameType
             comboBox(gameTypes, textListCellRenderer { it?.title })
-                .bindItem(PlsSettings.getInstance().state::defaultGameType.toNullableProperty())
+                .bindItem(settings::defaultGameType.toNullableProperty())
                 .onApply {
                     val oldDefaultGameType = defaultGameType
-                    val newDefaultGameType = PlsSettings.getInstance().state.defaultGameType
+                    val newDefaultGameType = settings.defaultGameType
                     if (oldDefaultGameType == newDefaultGameType) return@onApply
                     defaultGameType = newDefaultGameType
                     PlsSettingsManager.onDefaultGameTypeChanged(callbackLock, oldDefaultGameType, newDefaultGameType)
@@ -74,7 +75,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                 .comment(PlsBundle.message("settings.general.defaultGameDirectories.comment"))
-            val defaultGameDirectories = PlsSettings.getInstance().state.defaultGameDirectories
+            val defaultGameDirectories = settings.defaultGameDirectories
             gameTypes.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
             val defaultList = defaultGameDirectories.toMutableEntryList()
             var list = defaultList.mapTo(mutableListOf()) { it.copy() }
@@ -87,7 +88,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
                     val newDefaultGameDirectories = list.toMutableMap()
                     if (oldDefaultGameDirectories == newDefaultGameDirectories) return@onApply
-                    PlsSettings.getInstance().state.defaultGameDirectories = newDefaultGameDirectories
+                    settings.defaultGameDirectories = newDefaultGameDirectories
                     PlsSettingsManager.onDefaultGameDirectoriesChanged(callbackLock, oldDefaultGameDirectories, newDefaultGameDirectories)
                 }
                 .onReset { list = defaultList }
@@ -97,12 +98,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupName)
                 .comment(PlsBundle.message("settings.general.preferredLocale.comment"))
-            var preferredLocale = PlsSettings.getInstance().state.preferredLocale
+            var preferredLocale = settings.preferredLocale
             localeComboBox(withAuto = true)
-                .bindItem(PlsSettings.getInstance().state::preferredLocale.toNullableProperty())
+                .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     val oldPreferredLocale = preferredLocale.orEmpty()
-                    val newPreferredLocale = PlsSettings.getInstance().state.preferredLocale.orEmpty()
+                    val newPreferredLocale = settings.preferredLocale.orEmpty()
                     if (oldPreferredLocale == newPreferredLocale) return@onApply
                     preferredLocale = newPreferredLocale
                     PlsSettingsManager.onPreferredLocaleChanged(callbackLock, oldPreferredLocale, newPreferredLocale)
@@ -112,14 +113,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupName)
                 .comment(PlsBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
-            var ignoredFileNameSet = PlsSettings.getInstance().state.ignoredFileNameSet
+            var ignoredFileNameSet = settings.ignoredFileNameSet
             expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-                .bindText(PlsSettings.getInstance().state::ignoredFileNames.toNonNullableProperty(""))
+                .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
                 .align(Align.FILL)
                 .resizableColumn()
                 .onApply {
                     val oldIgnoredFileNameSet = ignoredFileNameSet.toSet()
-                    val newIgnoredFileNameSet = PlsSettings.getInstance().state.ignoredFileNameSet
+                    val newIgnoredFileNameSet = settings.ignoredFileNameSet
                     if (oldIgnoredFileNameSet == newIgnoredFileNameSet) return@onApply
                     ignoredFileNameSet = newIgnoredFileNameSet
                     val fileNames = mutableSetOf<String>()
@@ -595,14 +596,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             checkBox(PlsBundle.message("settings.inference.injectionForParameterValue"))
                 .bindSelected(settings::injectionForParameterValue)
-                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
             contextHelp(PlsBundle.message("settings.inference.injectionForParameterValue.tip"))
         }
         // injectionForLocalisationText
         row {
             checkBox(PlsBundle.message("settings.inference.injectionForLocalisationText"))
                 .bindSelected(settings::injectionForLocalisationText)
-                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
             contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
         }
         // configContextForParameters
@@ -710,13 +711,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         row {
             checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                 .bindSelected(settings::highlightLocalisationColorId)
-                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
         }
         // renderLocalisationColorfulText
         row {
             checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                 .bindSelected(settings::renderLocalisationColorfulText)
-                .onApply { PlsSettingsManager.refreshForAllOpenFiles(callbackLock) }
+                .onApply { PlsSettingsManager.refreshFiles(callbackLock) }
         }
     }
 }

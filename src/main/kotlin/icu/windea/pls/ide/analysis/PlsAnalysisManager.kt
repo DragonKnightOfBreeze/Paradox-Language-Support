@@ -1,14 +1,15 @@
 package icu.windea.pls.ide.analysis
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
+import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.isFile
-import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
@@ -94,6 +95,9 @@ object PlsAnalysisManager {
         return files
     }
 
+    /**
+     * 刷新解析数据（目前仅会清空 rootInfo）。
+     */
     fun refreshAnalysisData(rootFiles: Collection<VirtualFile>) {
         if (rootFiles.isEmpty()) return
         with(ParadoxAnalysisDataService.getInstance()) {
@@ -103,6 +107,9 @@ object PlsAnalysisManager {
         }
     }
 
+    /**
+     * 刷新 [ParadoxModificationTrackers] 中的所有文件更改追踪器。
+     */
     fun refreshFileModificationTrackers() {
         ParadoxModificationTrackers.ScriptFile.incModificationCount()
         ParadoxModificationTrackers.LocalisationFile.incModificationCount()
@@ -111,26 +118,36 @@ object PlsAnalysisManager {
     }
 
     /**
-     * 刷新指定的一组文件（刷新高亮和内嵌提示）。
+     * 刷新所有已打开的文件的高亮（仅限文件类型属于 [ParadoxFileType] 的文件）。注意这不会同时刷新内嵌提示。
      */
-    fun refreshFiles(files: Collection<VirtualFile>) {
-        if (files.isEmpty()) return
+    fun refreshFiles() {
         val allEditors = EditorFactory.getInstance().allEditors
         if (allEditors.isEmpty()) return
-        val psiFiles = mutableSetOf<PsiFile>()
-        runSmartReadAction {
-            for (editor in allEditors) {
-                val project = editor.project ?: continue
-                val file = editor.virtualFile ?: continue
-                if (!file.isFile || file.fileType !is ParadoxFileType) continue
-                val psiFile = file.toPsiFile(project) ?: continue
-                psiFiles.add(psiFile)
+        val coroutineScope = PlsFacade.getCoroutineScope()
+        coroutineScope.launch {
+            readAction {
+                for (editor in allEditors) {
+                    val project = editor.project ?: continue
+                    val file = editor.virtualFile ?: continue
+                    if (!file.isFile || file.fileType !is ParadoxFileType) continue
+                    val psiFile = file.toPsiFile(project) ?: continue
+                    DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
+                }
             }
         }
-        if (psiFiles.isEmpty()) return
+    }
 
-        // restart DaemonCodeAnalyzer
-        psiFiles.forEach { DaemonCodeAnalyzer.getInstance(it.project).restart(it) }
+    /**
+     * 刷新所有已打开的文件的内嵌提示（仅限文件类型属于 [ParadoxFileType] 的文件）。
+     */
+    fun refreshInlayHints() {
+        val allEditors = EditorFactory.getInstance().allEditors
+        if (allEditors.isEmpty()) return
+        for (editor in allEditors) {
+            val file = editor.virtualFile ?: continue
+            if (!file.isFile || file.fileType !is ParadoxFileType) continue
+            InlayHintsPassFactoryInternal.clearModificationStamp(editor)
+        }
     }
 
     /**
@@ -138,7 +155,6 @@ object PlsAnalysisManager {
      */
     fun reparseFiles(files: Collection<VirtualFile>) {
         if (files.isEmpty()) return
-
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             // refresh file trackers
