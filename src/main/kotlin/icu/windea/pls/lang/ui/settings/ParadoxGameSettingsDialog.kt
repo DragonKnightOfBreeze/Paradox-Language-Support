@@ -25,12 +25,12 @@ class ParadoxGameSettingsDialog(
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()
 
-    val gameType = settings.finalGameType
+    private val finalGameType = settings.finalGameType
 
-    val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(gameType)
+    private val graph = PropertyGraph()
+    private val gameTypeProperty = graph.property(finalGameType)
 
-    val modDependencies = settings.copyModDependencies()
+    private val modDependencies = settings.copyModDependencies()
 
     init {
         title = PlsBundle.message("game.settings")

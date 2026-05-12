@@ -12,7 +12,7 @@ import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 
 /**
- * 当添加或更改游戏配置后，刷新库信息。
+ * 当添加或更改游戏设置后，刷新库信息。
  *
  * @see ParadoxLibrary
  */

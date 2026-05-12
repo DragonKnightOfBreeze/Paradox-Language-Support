@@ -4,7 +4,7 @@ import com.intellij.util.messages.Topic
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 
 /**
- * 监听游戏配置的更改。
+ * 监听游戏设置的更改。
  */
 interface ParadoxGameSettingsListener {
     fun onAdd(gameSettings: ParadoxGameSettingsState)

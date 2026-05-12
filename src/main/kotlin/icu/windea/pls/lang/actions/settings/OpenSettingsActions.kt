@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 
 interface OpenSettingsActions {
     /**
-     * 打开游戏配置。当前文件是项目中的游戏文件或目录时启用。
+     * 打开游戏设置。当前文件是项目中的游戏文件或目录时启用。
      *
      * @see ParadoxGameSettingsState
      * @see ParadoxGameSettingsDialog
@@ -30,7 +30,7 @@ interface OpenSettingsActions {
     }
 
     /**
-     * 打开模组配置。当前文件是项目中的模组文件或目录时启用。
+     * 打开模组设置。当前文件是项目中的模组文件或目录时启用。
      *
      * @see ParadoxModSettingsState
      * @see ParadoxModSettingsDialog

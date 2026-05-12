@@ -102,7 +102,7 @@ object ParadoxAnalysisService {
         // 2.0.7 directories are allowed outside entry paths
         if (isDirectory) return pathToRoot to ""
         // 2.0.7 info files (e.g., `descriptor.mod`) are allowed outside entry paths
-        if (pathToRoot.path == rootInfo.infoPresentablePath) return pathToRoot to ""
+        if (pathToRoot.path == rootInfo.metadata.infoPresentablePath) return pathToRoot to ""
         // 2.0.7 null now
         return null
     }

@@ -14,7 +14,7 @@ import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotific
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 
 /**
- * 当添加或更改模组配置后，刷新库信息。
+ * 当添加或更改模组设置后，刷新库信息。
  *
  * @see ParadoxLibrary
  */
@@ -45,7 +45,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
 }
 
 /**
- * 当更改模组配置后，更新编辑器通知。
+ * 当更改模组设置后，更新编辑器通知。
  *
  * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
  */

@@ -896,7 +896,7 @@
 - [x] 修复无法查询自身为文件的定义的问题
 - [x] 进行代码补全时，如果需要，自动补上双引号
 - [x] 修复可能无法解析顶层的作用域切换中的表达式对应的规则的问题（`some_scripted_effect = { root = { ... } }`）
-- [x] 如果可能，尝试推断模组的游戏类型（例如，当模组目录位于对应游戏的创意工坊目录下时）（如果可以推断，就不允许通过模组配置更改）
+- [x] 如果可能，尝试推断模组的游戏类型（例如，当模组目录位于对应游戏的创意工坊目录下时）（如果可以推断，就不允许通过模组设置更改）
 - [x] 尝试使用语言注入功能推断脚本参数的传入值对应的CWT规则上下文，从而提供高级语言功能（待完善）
 - [x] 尝试使用语言注入功能推断脚本参数的默认值对应的CWT规则上下文，从而提供高级语言功能（待完善）
 - [x] 其他优化和BUG修复
@@ -918,7 +918,7 @@
 - [x] 修复 [#38](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/38) - value_field和variable_field应当可接受`-$PARAM$`
 - [x] 修复 [#39](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/39) - 允许`$SCOPE|this$.modifier:xxx`
 - [x] 修复 [#44](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/44) - 修复可能无法正确解析嵌套的定义声明中的内容的问题
-- [x] 修复更改游戏类型后无法打开模组配置的BUG
+- [x] 修复更改游戏类型后无法打开模组设置的BUG
 - [x] 更新CWT规则
 - [x] 其他BUG修复
 

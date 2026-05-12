@@ -5,9 +5,11 @@ import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.jbTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
+import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
@@ -31,27 +33,33 @@ class ParadoxModSettingsDialog(
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()
 
-    val oldGameType = settings.finalGameType
-    val defaultGameVersion get() = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
-    val defaultGameDirectory get() = PlsSettings.getInstance().state.defaultGameDirectories[oldGameType.id]
+    private val finalGameType = settings.finalGameType
+    private val inferredGameType = settings.inferredGameType
+    private val defaultGameDirectory = PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]
+    private val defaultGameVersion = ParadoxGameManager.getGameVersionFromGameDirectory(defaultGameDirectory)
 
-    val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(oldGameType)
-    val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
-    val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
+    private val graph = PropertyGraph()
+    private val gameTypeProperty = graph.property(finalGameType)
+    private val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
+    private val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
+
+    private val modDependencies = settings.copyModDependencies()
 
     init {
-        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxGameManager.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
+        handleModSettings()
+        title = PlsBundle.message("mod.settings")
+        init()
     }
 
-    var gameType by gameTypeProperty
-    var gameDirectory by gameDirectoryProperty
-    val modDependencies = settings.copyModDependencies()
+    private fun handleModSettings() {
+        gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxGameManager.getGameVersionFromGameDirectory(gameDirectoryProperty.get()).orEmpty() }
 
-    init {
-        title = PlsBundle.message("mod.settings")
-        handleModSettings()
-        init()
+        // 如果需要，加上缺失的模组自身的模组依赖配置
+        if (modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
+            val newSettings = ParadoxModDependencySettingsState()
+            newSettings.modDirectory = settings.modDirectory
+            modDependencies.add(newSettings)
+        }
     }
 
     override fun createCenterPanel(): DialogPanel {
@@ -82,13 +90,24 @@ class ParadoxModSettingsDialog(
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
+                // modDirectory
+                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
+                val descriptor = FileChooserDescriptorFactory.singleDir()
+                    .withTitle(PlsBundle.message("modDirectory.title"))
+                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
+                textFieldWithBrowseButton(descriptor, project)
+                    .text(settings.modDirectory.orEmpty())
+                    .columns(COLUMNS_LARGE)
+                    .align(Align.FILL)
+                    .enabled(false)
+            }
+            row {
                 // gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
-                    .onApply { settings.gameType = gameTypeProperty.get() } // set game type to non-default on apply
-                    .enabled(settings.inferredGameType == null) // disabled if game type can be inferred
+                    .enabled(inferredGameType == null) // disabled if game type can be inferred
                 // gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
@@ -108,25 +127,15 @@ class ParadoxModSettingsDialog(
                     .bindText(gameDirectoryProperty)
                     .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
-                    .validationOnApply { ParadoxGameManager.validateGameDirectory(this, gameType, gameDirectory) }
+                    .validationOnApply { validateGameDirectory(this) }
             }
             row {
-                link(PlsBundle.message("gameDirectory.quickSelect")) f@{
-                    val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
-                    gameDirectory = quickGameDirectory
+                link(PlsBundle.message("gameDirectory.quickSelect")) { quickSelectGameDirectory() }
+            }
+            if (inferredGameType != null) {
+                row {
+                    comment(PlsBundle.message("mod.settings.comment.1", inferredGameType.title))
                 }
-            }
-            row {
-                // modDirectory
-                label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
-                val descriptor = FileChooserDescriptorFactory.singleDir()
-                    .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
-                    .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(descriptor, project)
-                    .text(settings.modDirectory.orEmpty())
-                    .columns(COLUMNS_LARGE)
-                    .align(Align.FILL)
-                    .enabled(false)
             }
 
             // options
@@ -151,25 +160,25 @@ class ParadoxModSettingsDialog(
         }
     }
 
-    private fun handleModSettings() {
-        // 如果需要，加上缺失的模组自身的模组依赖配置
-        if (modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
-            val newSettings = ParadoxModDependencySettingsState()
-            newSettings.modDirectory = settings.modDirectory
-            modDependencies.add(newSettings)
-        }
+    private fun validateGameDirectory(builder: ValidationInfoBuilder): ValidationInfo? {
+        return ParadoxGameManager.validateGameDirectory(builder, gameTypeProperty.get(), gameDirectoryProperty.get())
+    }
+
+    private fun quickSelectGameDirectory() {
+        val quickGameDirectory = ParadoxGameManager.getQuickGameDirectory(gameTypeProperty.get())?.orNull() ?: return
+        gameDirectoryProperty.set(quickGameDirectory)
     }
 
     override fun doOKAction() {
         super.doOKAction()
 
-        settings.gameType = gameType
-        settings.gameDirectory = gameDirectory
+        settings.gameType = gameTypeProperty.get()
+        settings.gameDirectory = gameDirectoryProperty.get()
         settings.modDependencies = modDependencies
         PlsProfilesSettings.getInstance().state.updateSettings()
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
-        if (oldGameType != settings.gameType) {
+        if (finalGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
     }

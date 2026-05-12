@@ -9,6 +9,7 @@ interface ParadoxPreferredLocaleListener {
     fun onChange(oldLocale: String, newLocale: String)
 
     companion object {
+        @Topic.AppLevel
         val TOPIC = Topic(ParadoxPreferredLocaleListener::class.java, Topic.BroadcastDirection.NONE)
     }
 }

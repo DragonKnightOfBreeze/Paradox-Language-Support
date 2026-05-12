@@ -15,7 +15,7 @@ import icu.windea.pls.model.ParadoxModSource
  * @property remoteId 远端 ID（Steam/Paradox 等平台上的 ID）。如果为空，需要基于 [modDirectory] 进一步获取。
  * @property source 模组来源（本地、Steam、Paradox Launcher 等）。如果为空，需要基于 [modDirectory] 进一步获取。
  * @property version 模组版本。如果为空，需要基于 [modDirectory] 进一步获取。
- * @property supportedVersion 兼容的游戏版本。如果为空，需要基于 [modDirectory] 进一步获取。
+ * @property supportedVersion 支持的游戏版本。如果为空，需要基于 [modDirectory] 进一步获取。
  */
 data class ParadoxModInfo(
     val modDirectory: String? = null,

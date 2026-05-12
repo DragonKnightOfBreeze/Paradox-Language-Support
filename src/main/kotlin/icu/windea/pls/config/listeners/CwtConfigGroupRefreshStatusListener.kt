@@ -11,6 +11,6 @@ interface CwtConfigGroupRefreshStatusListener {
 
     companion object {
         @Topic.AppLevel
-        val TOPIC = Topic.create("CwtConfigGroupRefreshStatusListener", CwtConfigGroupRefreshStatusListener::class.java)
+        val TOPIC = Topic(CwtConfigGroupRefreshStatusListener::class.java)
     }
 }
