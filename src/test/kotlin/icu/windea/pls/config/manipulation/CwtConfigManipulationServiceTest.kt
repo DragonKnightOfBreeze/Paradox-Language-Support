@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigCopyServiceTest : BasePlatformTestCase() {
+class CwtConfigManipulationServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
@@ -32,7 +32,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
 
         val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val container = CwtPropertyConfig.resolve(p, file, configGroup)!!
-        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigManipulationService.deepCopyConfigs(container, parentConfig = container)
         assertNotNull(copied)
         val list = copied!!
         // block_prop has 2 children: a(property) and val1(value)
@@ -60,7 +60,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
             definitionSubtypes = listOf("foo"),
             configGroup = configGroup,
         )
-        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         val list = copied!!
         // expect: a (prop), b (prop), v1 (value). No subtype[...] nodes and no c.
@@ -86,7 +86,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
 
         val topProp = root.findChild<CwtProperty> { it.name == "top" }!!
         val topCfg = CwtPropertyConfig.resolve(topProp, file, configGroup)!!
-        val copiedTopChildren = CwtConfigCopyService.deepCopyConfigs(topCfg, parentConfig = topCfg)!!
+        val copiedTopChildren = CwtConfigManipulationService.deepCopyConfigs(topCfg, parentConfig = topCfg)!!
         // only one child: mid
         val midCfg = copiedTopChildren.filterIsInstance<CwtPropertyConfig>().single { it.key == "mid" }
         assertSame(topCfg, midCfg.parentConfig)
@@ -112,7 +112,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val extraKey: Key<String> = createKey("test.deepcopy.extra")
         p2Original.putUserData(extraKey, "orig")
 
-        val copied = CwtConfigCopyService.deepCopyConfigs(containerCfg, parentConfig = containerCfg)!!
+        val copied = CwtConfigManipulationService.deepCopyConfigs(containerCfg, parentConfig = containerCfg)!!
         val p2Copied = copied.filterIsInstance<CwtPropertyConfig>().single { it.key == "p2" }
         // optionData preserved (required + severity=info)
         assertTrue(p2Copied.optionData.required)
@@ -135,7 +135,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val strProp = root.findChild<CwtProperty> { it.name == "str_prop" }!! // non-block -> configs == null
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigManipulationService.deepCopyConfigs(container, parentConfig = container)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
@@ -150,7 +150,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val emptyProp = root.findChild<CwtProperty> { it.name == "empty_prop" }!! // block {} -> configs.isEmpty()
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
-        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = container)
+        val copied = CwtConfigManipulationService.deepCopyConfigs(container, parentConfig = container)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -167,7 +167,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(strProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
-        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
     }
@@ -183,7 +183,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(emptyProp, file, configGroup)!!
         val parentBefore = container.parentConfig
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
-        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, parentConfig = container, context = context)
         assertNotNull(copied)
         assertTrue(copied!!.isEmpty())
         assertSame(parentBefore, container.parentConfig)
@@ -203,7 +203,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val blockProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
 
-        val copied = CwtConfigCopyService.deepCopyConfigs(container, parentConfig = otherParent)
+        val copied = CwtConfigManipulationService.deepCopyConfigs(container, parentConfig = otherParent)
         assertNull(copied)
         // ensure container's parent not changed to otherParent
         assertSame(parentBefore, container.parentConfig)
@@ -226,7 +226,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val otherParent = CwtPropertyConfig.resolve(blockProp, file, configGroup)!!
         val context = CwtDeclarationConfigContext(null, "test", null, configGroup)
 
-        val copied = CwtConfigCopyService.deepCopyConfigsInDeclaration(container, parentConfig = otherParent, context = context)
+        val copied = CwtConfigManipulationService.deepCopyConfigsInDeclaration(container, parentConfig = otherParent, context = context)
         assertNull(copied)
         assertSame(parentBefore, container.parentConfig)
         val otherChildren = otherParent.configs?.size
@@ -244,7 +244,7 @@ class CwtConfigCopyServiceTest : BasePlatformTestCase() {
         val container = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
 
         val expressions = mutableListOf<String>()
-        CwtConfigCopyService.flattenBySubtypeExpression(container) { _, expression ->
+        CwtConfigManipulationService.flattenBySubtypeExpression(container) { _, expression ->
             expressions.add(expression)
         }
         val expect = listOf("", "t2", "t2&t4", "t2&t4&t5", "t2&t4&t6")

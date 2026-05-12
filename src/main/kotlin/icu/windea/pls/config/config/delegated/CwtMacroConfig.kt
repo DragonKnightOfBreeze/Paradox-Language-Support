@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -56,7 +56,7 @@ interface CwtMacroConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     /**
      * 内联脚本的宏规则。为内联脚本用法提供快速文档和规则上下文。
      *
-     * @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineMacro
+     * @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.inlineMacro
      */
     interface InlineScript : CwtMacroConfig {
         val configForDeclaration: CwtPropertyConfig
@@ -139,7 +139,7 @@ private class CwtInlineScriptMacroConfig(
     override val configForDeclaration: CwtPropertyConfig by lazy { computeConfigForDeclaration() }
 
     private fun computeConfigForDeclaration(): CwtPropertyConfig {
-        return CwtConfigInlineService.inlineSingleAlias(config) ?: config
+        return CwtConfigManipulationService.inlineSingleAlias(config) ?: config
     }
 
     override fun toString() = "CwtInlineScriptMacroConfig(name='$name')"

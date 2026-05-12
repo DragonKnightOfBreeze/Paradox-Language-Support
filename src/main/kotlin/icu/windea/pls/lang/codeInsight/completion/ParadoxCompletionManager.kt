@@ -19,7 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -40,7 +40,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
@@ -75,6 +74,7 @@ import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.lang.util.ParadoxNameValidators
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -120,7 +120,7 @@ object ParadoxCompletionManager {
         parentConfigs.forEach { c1 ->
             c1.configs?.forEach { c2 ->
                 if (c2 is CwtPropertyConfig) {
-                    configs += CwtConfigInlineService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
+                    configs += CwtConfigManipulationService.inlineSingleAlias(c2) ?: c2 // 这里需要进行必要的内联
                 }
             }
         }

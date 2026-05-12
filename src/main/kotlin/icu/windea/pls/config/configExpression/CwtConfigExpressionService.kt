@@ -6,7 +6,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.text.TextPattern
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.config.configExpression.CwtDataExpressionMerger
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionResolver
 
 object CwtConfigExpressionService {
@@ -40,20 +39,8 @@ object CwtConfigExpressionService {
             ep.processTextPatterns(consumer)
         }
     }
-
-    /**
-     * @see CwtDataExpressionMerger.merge
-     */
-    fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        if (configExpression1 == configExpression2) return configExpression1.expressionString
-        CwtDataExpressionMerger.EP_NAME.extensionList.forEach { ep ->
-            val r = ep.merge(configExpression1, configExpression2, configGroup)
-            if (r != null) return r
-        }
-        return null
-    }
-
-    fun findLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
+    
+    fun collectLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
         val dataType = configExpression.type
         when (dataType) {
             CwtDataTypes.Bool -> {
@@ -77,7 +64,7 @@ object CwtConfigExpressionService {
                     for (aliasConfigs in aliasConfigGroup.values) {
                         val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
                         withRecursionCheck(e) {
-                            findLiterals(e, configGroup, result)
+                            collectLiterals(e, configGroup, result)
                         }
                     }
                 }
@@ -88,7 +75,7 @@ object CwtConfigExpressionService {
                 withRecursionGuard { // 这里需要防止递归
                     val e = singleAliasConfig.config.valueExpression
                     withRecursionCheck(e) {
-                        findLiterals(e, configGroup, result)
+                        collectLiterals(e, configGroup, result)
                     }
                 }
             }

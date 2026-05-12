@@ -20,8 +20,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.filterProperties
 import icu.windea.pls.config.filterValues
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
-import icu.windea.pls.config.manipulation.CwtConfigMergeService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
@@ -347,7 +346,7 @@ object ParadoxConfigService {
 
         if (configs == null) return null // 不是作为参数的键，不作特殊处理
         if (configs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigMergeService.mergeAndMatchValueConfig(configs, configExpression)
+        return CwtConfigManipulationService.mergeAndMatchValueConfigs(configs, configExpression)
     }
 
     private fun inlineConfigForConfigContext(config: CwtPropertyConfig, key: String): List<CwtMemberConfig<*>>? {
@@ -356,11 +355,11 @@ object ParadoxConfigService {
         val valueExpression = config.valueExpression
         val result = when (valueExpression.type) {
             CwtDataTypes.SingleAliasRight -> {
-                val inlined = CwtConfigInlineService.inlineSingleAlias(config)
+                val inlined = CwtConfigManipulationService.inlineSingleAlias(config)
                 inlined?.to?.singletonList()
             }
             CwtDataTypes.AliasMatchLeft -> {
-                val inlined = CwtConfigInlineService.inlineAlias(config, key)
+                val inlined = CwtConfigManipulationService.inlineAlias(config, key)
                 inlined
             }
             else -> null

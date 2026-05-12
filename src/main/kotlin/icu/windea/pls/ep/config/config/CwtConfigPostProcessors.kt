@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.manipulation.CwtConfigCopyService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.model.ParadoxTagType
 
@@ -58,7 +58,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
 
         val targetConfig = config
         val originalConfigs = targetConfig.configs ?: return
-        val injectedConfigs = CwtConfigCopyService.createListForDeepCopy()
+        val injectedConfigs = CwtConfigManipulationService.createListForDeepCopy()
         configsToInject.forEach { configToInject ->
             injectedConfigs += deepCopyForInjection(configToInject, targetConfig)
         }
@@ -67,7 +67,7 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
             return
         }
 
-        val newConfigs = CwtConfigCopyService.createListForDeepCopy()
+        val newConfigs = CwtConfigManipulationService.createListForDeepCopy()
         newConfigs += originalConfigs
         newConfigs += injectedConfigs
 
@@ -100,10 +100,10 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {
         val sourceConfigs = configToInject.configs
             ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
-        val copiedChildConfigs = CwtConfigCopyService.createListForDeepCopy(sourceConfigs)
+        val copiedChildConfigs = CwtConfigManipulationService.createListForDeepCopy(sourceConfigs)
             ?: return configToInject.delegated(null).also { it.parentConfig = parentConfig }
         val delegatedConfig = configToInject.delegated(copiedChildConfigs).also { it.parentConfig = parentConfig }
-        copiedChildConfigs += CwtConfigCopyService.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
+        copiedChildConfigs += CwtConfigManipulationService.deepCopyConfigs(configToInject, delegatedConfig).orEmpty()
         delegatedConfig.postOptimize()
         return delegatedConfig
     }

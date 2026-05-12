@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfigResolverScope
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.config.manipulation.CwtConfigCopyService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.core.optimized
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
@@ -69,7 +69,7 @@ private class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
         // #324
-        CwtConfigCopyService.flattenBySubtypeExpression(config) action@{ c, e ->
+        CwtConfigManipulationService.flattenBySubtypeExpression(config) action@{ c, e ->
             if (c !is CwtPropertyConfig) return@action
             val locationConfig = CwtLocationConfig.resolve(c) ?: return@action
             val key = e.optimized()

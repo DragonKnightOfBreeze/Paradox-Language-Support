@@ -19,7 +19,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.manipulation.CwtConfigManipulationService
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -123,7 +123,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtSingleAliasConfig -> config.config
         config is CwtMacroConfig -> config.config
         else -> null
-    }?.let { c -> CwtConfigInlineService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
+    }?.let { c -> CwtConfigManipulationService.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
     val isKeyElement = contextElement is ParadoxScriptPropertyKey

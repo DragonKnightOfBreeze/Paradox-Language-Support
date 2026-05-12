@@ -365,7 +365,7 @@ types = {
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
 <!-- @see icu.windea.pls.ep.resolve.config.CwtDeclarationConfigContextProvider -->
 <!-- @see icu.windea.pls.ep.config.config.CwtInjectedConfigProvider -->
-<!-- @see icu.windea.pls.config.manipulation.CwtConfigCopyService.deepCopyConfigsInDeclaration -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.deepCopyConfigsInDeclaration -->
 
 声明规则描述了"定义条目"的结构，是补全、检查与快速文档等功能的基础。
 
@@ -418,8 +418,8 @@ building = {
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
-<!-- @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineAlias -->
-<!-- @see icu.windea.pls.config.manipulation.CwtConfigInlineService.inlineSingleAlias -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.inlineAlias -->
+<!-- @see icu.windea.pls.config.manipulation.CwtConfigManipulationService.inlineSingleAlias -->
 
 别名规则将可复用的规则片段抽象成"具名别名"，在多处引用并展开。单别名用于"值侧"的一对一复用。
 
